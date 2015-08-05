@@ -1,0 +1,12 @@
+#suppressMessages({
+#    library(testthat)
+#    library(STD)
+#    library(ape)
+#    library(diversitree)
+#})
+#test_dir("~/PhD/Projects/SpatioTemporal_Disparity/Functions/STD/test/")
+#source("~/PhD/Projects/SpatioTemporal_Disparity/Functions/test/test.sanitizing.R")
+#source("~/PhD/Projects/SpatioTemporal_Disparity/Functions/STD/test/test.check.length.R")
+#source("~/PhD/Projects/SpatioTemporal_Disparity/Functions/STD/test/test.tree.age_scale.R")
+#source("~/PhD/Projects/SpatioTemporal_Disparity/Functions/STD/test/test.tree.age_table.R")
+#source("~/PhD/Projects/SpatioTemporal_Disparity/Functions/STD/test/test.tree.age.R")

@@ -1,0 +1,35 @@
+##Functions
+export(anc.state)
+export(anc.unc)
+export(bhatt.coeff)
+export(pair.bhatt.coeff)
+export(disparity)
+export(disparity.test)
+export(disparity.test.time)
+export(int.pco)
+export(MorphDistMatrix.verbose)
+export(null.data)
+export(plot.disparity)
+export(slice.pco)
+export(slice.tree)
+export(time.disparity)
+export(tree.age)
+export(make.nexus) #utilities
+export(cor.diversity) #utilities
+export(cor.time.pco) #utilities
+export(states.count) #utilities
+export(extract.dist) #utilities
+export(combine.disp) #utilities
+export(lapply.root) #utilities
+export(extract.disp) #utilities
+export(read.data) #utilities
+export(mode.val) #utilities 
+export(check.class) #sanitizing
+export(check.length) #sanitizing
+export(clean.tree) #sanitizing
+export(clean.table) #sanitizing
+export(bin.tree) #sanitizing
+
+##Data
+
+##S3 methods
