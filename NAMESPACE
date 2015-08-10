@@ -33,3 +33,31 @@ export(bin.tree) #sanitizing
 ##Data
 
 ##S3 methods
+
+
+
+#Results should be
+
+##Functions
+#export(time.series)
+#export(cust.series)
+#export(dispRity)
+#export(test.diff)
+#export(summary.dispRity)
+#export(plot.dispRity)
+#export(tree.age) #utilities
+#export(mode.val) #utilities - not done
+#export(cor.diversity) #utilities - not done
+#export(cor.time.pco) #utilities - not done
+#export(make.metric) #utilities - not done
+#export(make.method) #utilities - not done
+#export(make.bootstrap) #utilities - not done
+
+
+##Data
+#export(lifespan)
+#export(lifespan_volant_192taxa)
+
+##S3 methods
+#S3method(plot, dispRity)
+#S3method(summary, dispRity)
