@@ -85,7 +85,7 @@ slice.tree_ACCTRAN<-function(tree, tip, tree_slice) {
 }
 
 #Modify the tree slicing by replacing the tips that are not at the cut by the offspring node towards the tip
-slice.tree_PROXIMITY<-function(tree, tip, tree_slice) {
+slice.tree_GRADUAL<-function(tree, tip, tree_slice) {
     #Calculating both the DELTRAN and the ACCTRAN node
     DEL_node<-slice.tree_DELTRAN(tree, tip, tree_slice)
     ACC_node<-slice.tree_ACCTRAN(tree, tip, tree_slice)

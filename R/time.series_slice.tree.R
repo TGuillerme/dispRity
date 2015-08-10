@@ -5,19 +5,19 @@
 #Modified from paleotree::timeSliceTree
 #v1.0
 #Update: added RATES method
-#Update: changed the RATES method into PROXIMITY
+#Update: changed the RATES method into GRADUAL
 #Update: added possibility of adding FAD_LAD data
-#Update: added random method
+#Update: added punctuated method
 ##########################
 #SYNTAX :
 #<tree> a 'phylo' object
 #<age> where to slice the tree
-#<method> the slicing method (what becomes of the sliced branches): can be random, acctran, deltran or proximity.
+#<method> the slicing method (what becomes of the sliced branches): can be punctuated, acctran, deltran or gradual.
 #<FAD> optional First Apparition Datum data (tree.age format)
 #<LAD> optional Last Apparition Datum data (tree.age format)
 ##########################
 #Method details: the slicing methods are the method of the edge to chose when cutting through a branch. At any point of the branch cut, the different method picks either the data of the parent node or one of the offspring node or tip.
-#random: randomly chose between parent and offspring (default);
+#punctuated: punctuatedly chose between parent and offspring (default);
 #acctran: always chose offspring;
 #deltran: always chose parent;
 #prozimity: chose between the parent or the offspring based on branch length. If the cut is equal to more than half the branch length, the offspring is chosen, else the parent.
@@ -28,28 +28,6 @@
 slice.tree<-function(tree, age, method, FAD, LAD) {
 
     #SANITIZING
-    #tree
-    check.class(tree, 'phylo')
-    #must have node labels
-    if(is.null(tree$node.label)) {
-        stop('The tree must have node label names.')
-    }
-
-    #age
-    check.class(age, 'numeric')
-    #age must be at least higher than the root age
-    if(age > tree$root.time) {
-        stop("age cannot be older than the tree's root age.")
-    }
-
-    #method
-    check.class(method, 'character', " must be either \'random\', \'acctran\', \'deltran\' or \'proximity\'.")
-    check.length(method, 1, " must be either \'random\', \'acctran\', \'deltran\' or \'proximity\'.", errorif=FALSE)
-    METHODS<-c("random", "acctran", "deltran", "proximity")
-    if(!any(method == METHODS)) {
-        stop("method must be either \'random\', \'acctran\', \'deltran\' or \'proximity\'.")
-    }
-
     #FAD/LAD
     if(missing(FAD)) {
         FAD<-tree.age(tree)
@@ -96,7 +74,7 @@ slice.tree<-function(tree, age, method, FAD, LAD) {
             } else {
 
                 #Chose the tip/node following the given method
-                if(method == "random") {
+                if(method == "punctuated") {
                     selected_method<-sample(c("deltran", "acctran"), 1)
                 } else {
                     selected_method<-method
@@ -112,9 +90,9 @@ slice.tree<-function(tree, age, method, FAD, LAD) {
                     tree_sliced$tip.label[tip]<-slice.tree_ACCTRAN(tree, tips[tip], tree_slice)
                 }
 
-                if(selected_method == "proximity") {
+                if(selected_method == "gradual") {
                     #Closest
-                    tree_sliced$tip.label[tip]<-slice.tree_PROXIMITY(tree, tips[tip], tree_slice)
+                    tree_sliced$tip.label[tip]<-slice.tree_GRADUAL(tree, tips[tip], tree_slice)
                 }              
             }
         } 
