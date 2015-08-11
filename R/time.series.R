@@ -1,5 +1,7 @@
-time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD) {
+time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbose=FALSE) {
     
+    message("time.series: UNTESTED")
+
     #----------------------
     # SANITIZING
     #----------------------
@@ -56,7 +58,8 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD) {
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         if(all(is.na(match(method, methods_list)))) stop('model must be either "acctran", "deltran", "punctuated" or "gradual".')
             #~~~~~~~~~~~
-            #Include the make.model option here?
+            # Include the make.model option here?
+            # make.model should be tested on slice.tree function
             #~~~~~~~~~~~
     }
 
@@ -84,7 +87,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD) {
             #Check if both nodes and tip labels match with the data rownames
             if(any(is.na(rownames(data), c(tree$tip.label, tree$node.label)))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
         } else {
-            stop('tThe labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
+            stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
         }
     } else {
         #else check if the tree and the table are the same length
@@ -115,9 +118,22 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD) {
         }
     }
 
+    #VERBOSE
+    check.class(verbose, 'logical')
+
     #----------------------
     # GENRATING THE TIME SERIES
     #----------------------
 
+    if(method == "discrete") {
+        time_series<-time.series.discrete(data, tree, time, FADLAD, inc.nodes)
+    }
+
+    if(method == "discrete") {
+        time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose) {
+
+    }
+
+    return(time_series)
 
 }

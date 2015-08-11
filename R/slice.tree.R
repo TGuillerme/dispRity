@@ -1,31 +1,13 @@
-##########################
-#slice.tree
-##########################
-#Slices a tree given a specific age
-#Modified from paleotree::timeSliceTree
-#v1.0
-#Update: added RATES method
-#Update: changed the RATES method into GRADUAL
-#Update: added possibility of adding FAD_LAD data
-#Update: added punctuated method
-##########################
-#SYNTAX :
-#<tree> a 'phylo' object
-#<age> where to slice the tree
-#<method> the slicing method (what becomes of the sliced branches): can be punctuated, acctran, deltran or gradual.
-#<FAD> optional First Apparition Datum data (tree.age format)
-#<LAD> optional Last Apparition Datum data (tree.age format)
-##########################
-#Method details: the slicing methods are the method of the edge to chose when cutting through a branch. At any point of the branch cut, the different method picks either the data of the parent node or one of the offspring node or tip.
-#punctuated: punctuatedly chose between parent and offspring (default);
-#acctran: always chose offspring;
-#deltran: always chose parent;
-#prozimity: chose between the parent or the offspring based on branch length. If the cut is equal to more than half the branch length, the offspring is chosen, else the parent.
-#----
-#guillert(at)tcd.ie 10/03/2015
-##########################
-
+#Function modified from paleotree::timeSliceTree
 slice.tree<-function(tree, age, method, FAD, LAD) {
+
+    message("slice.tree: UNTESTED")
+
+    #For adding modules (i.e. methods) follow the format
+    # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
+    # for (tip in 1:Ntip(tree_slice)) {
+    #   tree_sliced$tip.label[tip]<-module(tree, tips[tip], tree_slice)
+    # }
 
     #SANITIZING
     #FAD/LAD
@@ -47,7 +29,7 @@ slice.tree<-function(tree, age, method, FAD, LAD) {
 
     #Error with trees with two taxa
     if(Ntip(tree_slice) < 3) {
-        stop('To few taxa for the tree slice at age ', age, '!')
+        stop('To few taxa in the tree at age ', age, '!')
     }
 
     #Selecting the tips
