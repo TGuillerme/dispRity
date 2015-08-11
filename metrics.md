@@ -56,4 +56,4 @@ With:
 
 
 #### References
-References (i.e. CiteKeys) are available in the [References.bib](https://github.com/TGuillerme/dispRity/References.bib) file
+References (i.e. CiteKeys) are available in the [References.bib](https://github.com/TGuillerme/dispRity/blob/master/References.bib) file
