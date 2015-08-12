@@ -1,4 +1,4 @@
-time.series.discrete<-function(data, tree, intervals, FADLAD, include.nodes) {
+time.series.discrete<-function(data, tree, time, FADLAD, include.nodes) {
 
     message("time.series.discrete: UNTESTED")
 
@@ -23,9 +23,9 @@ time.series.discrete<-function(data, tree, intervals, FADLAD, include.nodes) {
     int_elements<-list()
 
     #Attribute each taxa/node to it's interval
-    for (interval in 1:(length(intervals)-1)) {
+    for (interval in 1:(length(time)-1)) {
         #Select the elements of one interval
-        int_elements[[interval]]<-ages_tree_FAD$edges[which(ages_tree_FAD$ages >= intervals[interval+1] & ages_tree_LAD$ages <= intervals[interval])]
+        int_elements[[interval]]<-ages_tree_FAD$edges[which(ages_tree_FAD$ages >= time[interval+1] & ages_tree_LAD$ages <= time[interval])]
     }
     
     #Remove the nodes (if necessary)
@@ -37,39 +37,39 @@ time.series.discrete<-function(data, tree, intervals, FADLAD, include.nodes) {
     }
 
     #Making the pco interval list
-    data_intervals<-NULL
-    data_intervals<-list()
+    time_series<-NULL
+    time_series<-list()
 
     for (interval in 1:length(int_elements)) {
         #Matching list
         matching<-match(as.character(int_elements[[interval]]),as.character(rownames(data)))
         #If only one taxa is matching, make sure it's not a vector
         if(length(matching) == 1) {
-            data_intervals[[interval]]<-matrix(data=data[matching,], nrow=1)
-            rownames(data_intervals[[interval]])<-rownames(data)[matching]
+            time_series[[interval]]<-matrix(data=data[matching,], nrow=1)
+            rownames(time_series[[interval]])<-rownames(data)[matching]
         } else {
-            data_intervals[[interval]]<-data[matching,]
+            time_series[[interval]]<-data[matching,]
         }
     }
 
-    #Naming the intervals
+    #Naming the series
     name_list<-NULL
     for(interval in 1:length(int_elements)) {
-        name_list[interval]<-paste(intervals[interval], intervals[interval+1], sep="-")
+        name_list[interval]<-paste(time[interval], time[interval+1], sep="-")
     }
     
     #If interval is empty, send warning and delete the interval
-    #list of empty intervals (empty)
-    empty_intervals<-NULL
-    for (interval in 1:length(data_intervals)) {
-        if(length(data_intervals[[interval]]) == 0) {
+    #list of empty series 
+    empty_time<-NULL
+    for (interval in 1:length(time_series)) {
+        if(length(time_series[[interval]]) == 0) {
             #Remove the interval
-            empty_intervals[interval]<-interval
+            empty_time[interval]<-interval
             #Select the empty interval
-            empty_interval<-paste(intervals[interval], intervals[interval+1], sep="-")
+            empty_interval<-paste(time[interval], time[interval+1], sep="-")
             message("The following interval is empty: ", empty_interval, ".")
         }
     }
 
-    return(data_intervals)
+    return(time_series)
 }

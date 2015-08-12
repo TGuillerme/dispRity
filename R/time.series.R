@@ -9,7 +9,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     #data must be a matrix
     check.class(data, 'matrix')
     #data must be of size k*<=k-1
-    if(nrow(data) > (ncol(data) - 1)) stop("Input data must have at least k-1 columns")
+    if(nrow(data) < (ncol(data) - 1)) stop("Input data must have at least k-1 columns")
 
     #TREE (1)
     #tree must be a phylo object
@@ -24,7 +24,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     check.length(method, 1, 'must be either "discrete", "d", "continuous", or "c".')
     #method must be either "discrete", "d", "continuous", or "c"
     all_methods <- c("discrete", "d", "continuous", "c")
-    if(all(is.na(match(method, methods_list)))) stop('method must be either "discrete", "d", "continuous", or "c".')
+    if(all(is.na(match(method, all_methods)))) stop('method must be either "discrete", "d", "continuous", or "c".')
     
     #if method is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
     if(method == "d") method <- "discrete"
@@ -36,13 +36,18 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         if(class(time) != 'integer') stop("time must be numeric.")
     }
     #If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
-    if(length(time) == 1) time <- seq(from=0, to=tree$root.time-0.01*tree$root.time, length.out=time)
+    if(length(time) == 1) {
+        #time must be at least 3 if discrete
+        if(method == "discrete" & time < 3) stop("If method is discrete, time must be at least 3.")
+        #or at least time 2 if continuous
+        if(method == "continuous" & time < 2) stop("If method is discrete, time must be at least 2.")
+        #Create the time vector
+        time <- seq(from=0, to=tree$root.time-0.01*tree$root.time, length.out=time)
+    }
     #time cannot be older than the root age
     if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")
     #time vector must go from past to present
-    if(time[1] < time[2]) {
-        time <- rev(time)
-    }
+    if(time[1] < time[2]) time <- rev(time)
 
     #MODEL
     #if method is discrete ignore model
@@ -50,13 +55,13 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         if(missing(model)) {
             model <- NULL
         } else {
-            warning("model is ignored if method is 'discrete")
+            warning("model is ignored if method is 'discrete'.")
             model <- NULL
         }
     } else {
     #else model must be one of the following
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
-        if(all(is.na(match(method, methods_list)))) stop('model must be either "acctran", "deltran", "punctuated" or "gradual".')
+        if(all(is.na(match(model, all_models)))) stop('model must be either "acctran", "deltran", "punctuated" or "gradual".')
             #~~~~~~~~~~~
             # Include the make.model option here?
             # make.model should be tested on slice.tree function
@@ -93,7 +98,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         #else check if the tree and the table are the same length
         if(nrow(data) != Ntip(tree)) stop('The labels in the table and in the tree do not match!')
         #Also check if the names are identical
-        if(any(is.na(rownames(data), tree$tip.label))) stop('The labels in the table and in the tree do not match!')
+        if(any(is.na(match(rownames(data), tree$tip.label)))) stop('The labels in the table and in the tree do not match!')
     }
 
 
@@ -130,8 +135,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     }
 
     if(method == "discrete") {
-        time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose) {
-
+        time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
     return(time_series)
