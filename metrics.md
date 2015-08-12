@@ -6,9 +6,13 @@ ID | Name | Category | Description | CiteKey | Function | Comment |
 2 | Sum of variances | variance | | Wills1994 | `variance.calc` + `sum.apply` | affected by sample size (Butler2012) |
 3 | Product of ranges | range | overall morphological variation | Wills1994 | `range.calc` + `prod.apply` | covariance? |
 4 | Sum of ranges | range | | Wills1994 | `range.calc` + `sum.apply` | affected by sample size (Butler2012) |
-5 | Mean distance from centroid | centroid |             |      | `centroid.apply` + `cen.apply.mea` |         |
-6 | Median distance from centroid | centroid |             |      | `centroid.apply` + `cen.apply.med` |         |
+5 | Mean distance from centroid | centroid |             | Wills1994 | `centroid.apply` + `cen.apply.mea` | ? |
+6 | Median distance from centroid | centroid |             |      | `centroid.apply` + `cen.apply.med` | ? |
+7 | PCO Volume | volume | corrected product of the two largest eigenvalues | Ciampaglio2001 |   | why only the two first eigenvalues? |
+8 | Ellipsoid Volume | volume | | Wills1994, Donohue2013 | | ecology |
+9 | Convex Hull volume | volume | | | | |
 
+Note that some metrics can be combined (in a more or less silly way). For example, the Ellipsoid Volume/Convex Hull can be a good way to measure the relative volume occupancy (i.e. the "average" volume / by the total volume); or the sum of distance from centroid (illustrating the spread of the data from the mean?).
 <!--
    |      |          |             |         |          |         |
 ID: arbitrary number of the metric
@@ -49,11 +53,20 @@ Don't forget to add the arguments of the formula at the bottom.
 ```
 Md{\displaystyle\sqrt{\sum_{i=1}^{k}{(\mathbf{v}_{n}-Centroid_{n})^2}}}
 ```
+##### 7 - PCO Volume 
+```
+\frac{\lambda_{1}\lambda_{2}}/{k^{2}}
+```
+##### 8 - Median distance from centroid 
+```
+\frac{\pi^{n/2}}/{\Gamma(\frac{n}{2}+1)}\prod{\lambda_{i}^{0.5}}
+```
 With:
 * `n` = number of dimensions (i.e. the number of ordination axis). Must be < `k-1`
 * `\mathbf{v}_{n}` = the eigen values for the `n` dimensions (i.e. the ordination scores)
 * `k` = number of elements (i.e. number of taxa)
-
+* `\lambda_{n}` = the eigenvalue of the n<sup>th</sup> dimension. Note that weirdly the eigenvalue is equal to the sum of the variance/covariance within each axis multiplied by the maximum number of dimensions (max = k-1). But maybe this is only in ordinations from (euclidean based?) distance matrices?
+* `\Gamma` = is the gamma distribution
 
 #### References
 References (i.e. CiteKeys) are available in the [References.bib](https://github.com/TGuillerme/dispRity/blob/master/References.bib) file
