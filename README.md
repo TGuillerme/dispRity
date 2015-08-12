@@ -27,6 +27,6 @@ refresh.dispRity<-function(){
 library(devtools)
 setwd('~/Packaging/')
 install('dispRity')
-library(dispRity)
+library(dispRity)}
 ```
 Make sure you change `setwd('~/Packaging/')` to the actual path. Note that this function is probably useless for most people.
