@@ -1,7 +1,4 @@
-time.series.discrete<-function(data, tree, time, FADLAD, include.nodes) {
-
-    message("time.series.discrete: UNTESTED")
-
+time.series.discrete<-function(data, tree, time, FADLAD, inc.nodes) {
     #BINING THE DATA
     #ages of tips/nodes + FAD/LAD
     ages_tree_FAD<-tree.age(tree)
@@ -9,12 +6,12 @@ time.series.discrete<-function(data, tree, time, FADLAD, include.nodes) {
     #Change the age if FAD or LAD are higher/lower than the age of the tip
     for(tip in 1:nrow(FADLAD)) {
         #Replace age of the tip if FAD is higher
-        if(FADLAD[tip,1] > ages_tree_FAD$ages[which(ages_tree_FAD$edges == rownames(FADLAD)[tip])]) {
-            ages_tree_FAD$ages[which(ages_tree_FAD$edges == rownames(FADLAD)[tip])]<-FADLAD[tip,1]
+        if(FADLAD[tip,1] > ages_tree_FAD$ages[which(as.character(ages_tree_FAD$elements) == as.character(rownames(FADLAD)[tip]))]) {
+            ages_tree_FAD$ages[which(ages_tree_FAD$elements == rownames(FADLAD)[tip])]<-FADLAD[tip,1]
         }
         #Replace age of the tip if LAD is lower
-        if(FADLAD[tip,2] < ages_tree_LAD$ages[which(ages_tree_LAD$edges == rownames(FADLAD)[tip])]) {
-            ages_tree_LAD$ages[which(ages_tree_LAD$edges == rownames(FADLAD)[tip])]<-FADLAD[tip,2]
+        if(FADLAD[tip,2] < ages_tree_LAD$ages[which(as.character(ages_tree_LAD$elements) == as.character(rownames(FADLAD)[tip]))]) {
+            ages_tree_LAD$ages[which(ages_tree_LAD$elements == rownames(FADLAD)[tip])]<-FADLAD[tip,2]
         }
     }
 
@@ -25,11 +22,11 @@ time.series.discrete<-function(data, tree, time, FADLAD, include.nodes) {
     #Attribute each taxa/node to it's interval
     for (interval in 1:(length(time)-1)) {
         #Select the elements of one interval
-        int_elements[[interval]]<-ages_tree_FAD$edges[which(ages_tree_FAD$ages >= time[interval+1] & ages_tree_LAD$ages <= time[interval])]
+        int_elements[[interval]]<-ages_tree_FAD$elements[which(ages_tree_FAD$ages >= time[interval+1] & ages_tree_LAD$ages <= time[interval])]
     }
     
     #Remove the nodes (if necessary)
-    if(include.nodes==FALSE) {
+    if(inc.nodes==FALSE) {
         for (interval in 1:length(int_elements)) {
         #Remove nomatch with tree$tip.label
             int_elements[[interval]]<-int_elements[[interval]][match(tree$tip.label, int_elements[[interval]])[-which(is.na(match(tree$tip.label, int_elements[[interval]])))]]

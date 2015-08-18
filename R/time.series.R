@@ -1,7 +1,5 @@
 time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbose=FALSE) {
     
-    message("time.series: UNTESTED")
-
     #----------------------
     # SANITIZING
     #----------------------
@@ -9,7 +7,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     #data must be a matrix
     check.class(data, 'matrix')
     #data must be of size k*<=k-1
-    if(nrow(data) < (ncol(data) - 1)) stop("Input data must have at least k-1 columns")
+    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at least k-1 columns")
 
     #TREE (1)
     #tree must be a phylo object
@@ -21,7 +19,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     #method must be a character string
     check.class(method, "character")
     #method must have only one element
-    check.length(method, 1, 'must be either "discrete", "d", "continuous", or "c".')
+    check.length(method, 1, ' must be either "discrete", "d", "continuous", or "c".')
     #method must be either "discrete", "d", "continuous", or "c"
     all_methods <- c("discrete", "d", "continuous", "c")
     if(all(is.na(match(method, all_methods)))) stop('method must be either "discrete", "d", "continuous", or "c".')
@@ -55,11 +53,13 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         if(missing(model)) {
             model <- NULL
         } else {
-            warning("model is ignored if method is 'discrete'.")
+            #warning("model is ignored if method is 'discrete'.")
             model <- NULL
         }
     } else {
     #else model must be one of the following
+        check.class(model, "character")
+        check.length(model, 1, ' must be either "acctran", "deltran", "punctuated" or "gradual".')
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         if(all(is.na(match(model, all_models)))) stop('model must be either "acctran", "deltran", "punctuated" or "gradual".')
             #~~~~~~~~~~~
@@ -74,7 +74,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         if(missing(inc.nodes)) {
             inc.nodes <- TRUE
         } else {
-            warning("inc.nodes is ignored if method is 'continuous")
+            #warning("inc.nodes is ignored if method is 'continuous")
             inc.nodes <- TRUE
         }
     } else {
@@ -90,7 +90,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
             #Check if the tree and the table are the same length
             if(nrow(data) != (Ntip(tree)+Nnode(tree))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
             #Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(rownames(data), c(tree$tip.label, tree$node.label)))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
+            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
         } else {
             stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
         }
@@ -108,11 +108,14 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         FADLAD <- data.frame("FAD"=tree.age(tree)[1:Ntip(tree),1], "LAD"=tree.age(tree)[1:Ntip(tree),1], row.names=tree.age(tree)[1:Ntip(tree),2])
         message("No FADLAD table has been provided so every tip is assumed to interval single points in time.")
     } else {
+        #Check if FADLAD is a table
+        check.class(FADLAD, "data.frame")
+        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively 'FAD' (First Apparition Datum) and 'LAD' (Last Apparition Datum).")
         #Check if the FADLAD contains all taxa
-        if(any(tree$tip.label %in% rownames(FADLAD) == FALSE)) {
+        if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             message("Some tips have FAD/LAD and are assumed to interval single points in time.")
             #If not generate the FADLAD for the missing taxa
-            missing_FADLAD<-which(is.na(match(tree$tip.label, rownames(FADLAD))))
+            missing_FADLAD<-which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD<-data.frame(tree.age(tree)[missing_FADLAD,1], tree.age(tree)[missing_FADLAD,1], row.names=tree.age(tree)[missing_FADLAD,2])
             colnames(add_FADLAD)<-colnames(FADLAD)
             FADLAD<-rbind(FADLAD, add_FADLAD)
@@ -122,6 +125,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
             FADLAD<-FADLAD[-c(which(is.na(match(rownames(FADLAD), tree$tip.label)))),]
         }
     }
+
 
     #VERBOSE
     check.class(verbose, 'logical')
