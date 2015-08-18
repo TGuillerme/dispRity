@@ -1,8 +1,6 @@
 #Function modified from paleotree::timeSliceTree
 slice.tree<-function(tree, age, method, FAD, LAD) {
 
-    message("slice.tree: UNTESTED")
-
     #For adding modules (i.e. methods) follow the format
     # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
     # for (tip in 1:Ntip(tree_slice)) {

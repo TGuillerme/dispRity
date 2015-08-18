@@ -61,11 +61,11 @@ slice.tree_DELTRAN<-function(tree, tip, tree_slice) {
             age_tree<-tree.age(tree)
             age_slic<-tree.age(tree_slice)
             #select the oldest node in tree_slice
-            root<-age_slic$edges[which(age_slic$age == max(age_slic$age))]
+            root<-age_slic$elements[which(age_slic$age == max(age_slic$age))]
             #calculate the slice age using the oldest node in tree_slice
-            age=age_tree[which(as.character(age_tree$edges) == as.character(root)),1] - age_slic[which(as.character(age_slic$edges) == as.character(root)),1]
+            age<-age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
             #extract the age of the offspring node
-            off_nod_age<-age_tree[which(age_tree$edge == offspring_node),1]
+            off_nod_age<-age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
             if(off_nod_age > age) {
                 parent_node<-offspring_node
                 remove(offspring_node)
@@ -124,13 +124,13 @@ slice.tree_GRADUAL<-function(tree, tip, tree_slice) {
         #Extracting the total edge length from DEL to ACC
         total.edge.length<-del_tree$edge.length[which(apply(del_tree$edge, 1, function(x) all(x == c(DEL_edge, ACC_edge))))] #edge connecting DEL_node to ACC_node
 
-        #Calculate the terminal edges branch length and check if the tip is closer to the parent or offspring node.
+        #Calculate the terminal elements branch length and check if the tip is closer to the parent or offspring node.
         terms <- tree_slice$edge[, 2] <= Ntip(tree_slice)
-        terminal.edges <- tree_slice$edge.length[terms]
-        names(terminal.edges) <- tree_slice$tip.label[tree_slice$edge[terms, 2]]
+        terminal.elements <- tree_slice$edge.length[terms]
+        names(terminal.elements) <- tree_slice$tip.label[tree_slice$edge[terms, 2]]
 
         #Select the terminal edge for tip
-        terminal.edge<-sort(terminal.edges[match(acc_tree$tip.label, names(terminal.edges))])
+        terminal.edge<-sort(terminal.elements[match(acc_tree$tip.label, names(terminal.elements))])
         names(terminal.edge) <- NULL
 
         #Choose ACC or DEL node
