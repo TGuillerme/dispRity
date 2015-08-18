@@ -2,7 +2,7 @@
 
 
 #Extract the ages table from a tree
-#Calculating the tips and the edges age
+#Calculating the tips and the elements age
 tree.age_table<-function(tree){
     ages<-dist.nodes(tree)[length(tree$tip.label)+1,]
     tip.names<-tree$tip.label
@@ -11,8 +11,8 @@ tree.age_table<-function(tree){
     } else {
         nod.names<-tree$node.label
     }
-    edges<-c(tip.names, nod.names)
-    ages.table<-data.frame(ages=ages,edges=edges)
+    elements<-c(tip.names, nod.names)
+    ages.table<-data.frame(ages=ages,elements=elements)
     return(ages.table)
 }
 

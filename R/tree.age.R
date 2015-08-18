@@ -29,7 +29,7 @@ tree.age<-function(tree, age, order='past'){
     if(age == 0) {
         ages.table<-tree.age_table(tree)
     } else {
-        ages.table<-tree.age_age(tree.age_table(tree), age)
+        ages.table<-tree.age_scale(tree.age_table(tree), age)
     }
 
     #Type

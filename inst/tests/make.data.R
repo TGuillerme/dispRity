@@ -70,7 +70,7 @@ ord_data_tipsNnodes<-cmdscale(dist_nodes$gower.dist.matrix, k=nrow(dist_nodes$go
 #Loading the FADLAD data
 ####################################
 
-FADLAD_data<-read.csv("Beck2014_FADLAD.csv")
+FADLAD_data<-read.csv("Beck2014_FADLAD.csv", row.names=1)
 
 test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
 
