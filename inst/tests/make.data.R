@@ -72,6 +72,9 @@ ord_data_tipsNnodes<-cmdscale(dist_nodes$gower.dist.matrix, k=nrow(dist_nodes$go
 
 FADLAD_data<-read.csv("Beck2014_FADLAD.csv", row.names=1)
 
+#removing taxa not present in the tree
+FADLAD_data<-FADLAD_data[-which(is.na(match(rownames(FADLAD_data), tree_data$tip.label))),]
+
 test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
 
 save(test_data, file="test_data.Rda")
