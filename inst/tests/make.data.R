@@ -63,11 +63,15 @@ dist_nodes<-MorphDistMatrix.verbose(matrix_nodes, verbose=TRUE)
 #Creating the two pco's (with and without nodes)
 ####################################
 
-
 ord_data_tips<-cmdscale(dist_tips$gower.dist.matrix, k=nrow(dist_tips$gower.dist.matrix) - 2, add=T)$points
 ord_data_tipsNnodes<-cmdscale(dist_nodes$gower.dist.matrix, k=nrow(dist_nodes$gower.dist.matrix) - 2, add=T)$points
 
+####################################
+#Loading the FADLAD data
+####################################
 
-test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes)
+FADLAD_data<-read.csv("Beck2014_FADLAD.csv")
+
+test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
 
 save(test_data, file="test_data.Rda")
