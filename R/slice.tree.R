@@ -1,7 +1,7 @@
 #Function modified from paleotree::timeSliceTree
-slice.tree<-function(tree, age, method, FAD, LAD) {
+slice.tree<-function(tree, age, model, FAD, LAD) {
 
-    #For adding modules (i.e. methods) follow the format
+    #For adding modules (i.e. models) follow the format
     # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
     # for (tip in 1:Ntip(tree_slice)) {
     #   tree_sliced$tip.label[tip]<-module(tree, tips[tip], tree_slice)
@@ -53,24 +53,24 @@ slice.tree<-function(tree, age, method, FAD, LAD) {
 
             } else {
 
-                #Chose the tip/node following the given method
-                if(method == "punctuated") {
-                    selected_method<-sample(c("deltran", "acctran"), 1)
+                #Chose the tip/node following the given model
+                if(model == "punctuated") {
+                    selected_model<-sample(c("deltran", "acctran"), 1)
                 } else {
-                    selected_method<-method
+                    selected_model<-model
                 }
 
-                if(selected_method == "deltran") {
+                if(selected_model == "deltran") {
                     #Parent
                     tree_sliced$tip.label[tip]<-slice.tree_DELTRAN(tree, tips[tip], tree_slice)
                 }
 
-                if(selected_method == "acctran") {
+                if(selected_model == "acctran") {
                     #Offspring
                     tree_sliced$tip.label[tip]<-slice.tree_ACCTRAN(tree, tips[tip], tree_slice)
                 }
 
-                if(selected_method == "gradual") {
+                if(selected_model == "gradual") {
                     #Closest
                     tree_sliced$tip.label[tip]<-slice.tree_GRADUAL(tree, tips[tip], tree_slice)
                 }              
