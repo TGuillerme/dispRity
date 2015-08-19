@@ -13,6 +13,104 @@
 #guillert(at)tcd.ie 20/07/2014
 ##########################
 
+
+dispRity<-function(data, metric, boostraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full") {
+
+    message("dispRity:UNTESTED")
+    #----------------------
+    # SANITIZING
+    #----------------------
+    #DATA
+    #If matrix, transform to list
+    if(class(data) == matrix) {
+        data<-list(data)
+    }
+    #Must be a list
+    check.class(data, "list", " must be a matrix or a list of matrices.")
+    #Each matrix must have the same number of columns
+    mat_columns<-unique(unlist(lapply(data, ncol)))
+    if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
+    #Matrices must be k*<k-1 columns
+    total_taxa<-unique(unlist(lapply(data, rownames)))
+    if(mat_columns > (length(total_taxa) - 1)) stop("Input data must have at maximum k-1 columns")
+    #Making sure there is at least 3 rows per element
+    if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
+
+    #METRIC
+    #must be a vector of two elements
+    check.length(metric, 2, " must be a vector of two elements, the first being the metric class and the second being the metric summary.")
+    #both elements must be functions
+    check.class(metric[1], "function")
+    check.class(metric[2], "function")
+    #both functions must work
+    metric1<-check.metric(metric[1])
+    metric2<-check.metric(metric[2])
+    #Both functions must be of different type
+    if(metric1 == metric2) stop("One metric must be a class metric and the other a summary metric.")
+    #Assigning each metric to it's type
+    if(metric1 == "class.metric") {
+        class.metric<-metric[1] ; summary.metric<-metric[2] 
+    } else {
+        class.metric<-metric[2] ; summary.metric<-metric[1] 
+    }
+
+    #BOOTSTRAP
+    #Must be a numeric value
+    check.class(bootstraps, "numeric", " must be a single (entire) numerical value.")
+    check.length(bootstraps, 1, " must be a single (entire) numerical value.")
+    #Make sure the bootstrap is a whole number
+    bootstraps<-round(abs(bootstraps))
+
+    #RAREFACTION
+    if(class(rarefaction) != "logical") {
+        check.class(rarefaction, "numeric", " must be either numeric or logical.")
+    }
+
+    #RM.LAST.AXIS
+    #If TRUE, set automatic threshold at 0.95
+    if(class(rm.last.axis) == "logical") {
+        if(rm.last.axis == FALSE) {
+            rm.axis<-FALSE
+        } else {
+            rm.axis<-TRUE
+            last.axis<-0.95
+        }
+    } else {
+        #Else must be a single numeric value (probability)
+        check.class(rm.last.axis, "numeric", " must be logical or a probability threshold value.")
+        check.length(rm.last.axis, 1, " must be logical or a probability threshold value.", errorif=FALSE)
+        if(rm.last.axis < 0) {
+            stop("rm.last.axis must be logical or a probability threshold value.")
+        } else {
+            if(rm.last.axis > 1) {
+                stop("rm.last.axis must be logical or a probability threshold value.")
+            } else {
+                rm.axis<-TRUE
+                last.axis<-rm.last.axis
+            }
+        }
+    }
+
+
+    #VERBOSE
+    check.class(verbose, "logical")
+
+    #BOOT.TYPE
+    check.class(boot.type, "character")
+    check.length(boot.type, 1, " must be a single character string")
+    #Must be one of these methods
+    boot.methods_list<-c('full', "single")
+    if(all(is.na(match(boot.type, boot.methods_list)))) {
+        stop("boot.method can be 'full' or 'single'.")
+    }
+    # ~~~
+    # Add some extra method i.e. proportion of bootstrap shifts?
+    # ~~~
+
+
+}
+
+
 time.disparity<-function(time_pco, relative=FALSE, method=c("centroid", "sum.range", "product.range", "sum.variance", "product.variance"), CI=c(50, 95), bootstraps=1000, central_tendency=median, rarefaction=FALSE, verbose=FALSE, rm.last.axis=FALSE, save.all=FALSE, centroid.type=NULL, boot.method="full") {
     #SANITIZING
     #time_pco
