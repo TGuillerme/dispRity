@@ -40,18 +40,18 @@ dispRity<-function(data, metric, boostraps=1000, rarefaction=FALSE, rm.last.axis
     #must be a vector of two elements
     check.length(metric, 2, " must be a vector of two elements, the first being the metric class and the second being the metric summary.")
     #both elements must be functions
-    check.class(metric[1], "function")
-    check.class(metric[2], "function")
+    check.class(metric[[1]], "function")
+    check.class(metric[[2]], "function")
     #both functions must work
-    metric1<-check.metric(metric[1])
-    metric2<-check.metric(metric[2])
+    metric1<-check.metric(metric[[1]])
+    metric2<-check.metric(metric[[2]])
     #Both functions must be of different type
     if(metric1 == metric2) stop("One metric must be a class metric and the other a summary metric.")
     #Assigning each metric to it's type
     if(metric1 == "class.metric") {
-        class.metric<-metric[1] ; summary.metric<-metric[2] 
+        class.metric<-metric[[1]] ; summary.metric<-metric[[2]] 
     } else {
-        class.metric<-metric[2] ; summary.metric<-metric[1] 
+        class.metric<-metric[[2]] ; summary.metric<-metric[[1]] 
     }
 
     #BOOTSTRAP
@@ -94,6 +94,20 @@ dispRity<-function(data, metric, boostraps=1000, rarefaction=FALSE, rm.last.axis
 
     #VERBOSE
     check.class(verbose, "logical")
+    # ~~~
+    # Use progress bars?
+    # ~~~
+        #total <- 20
+        ## create progress bar
+        #pb <- txtProgressBar(min = 0, max = total, style = 3)
+        #for(i in 1:total){
+        #Sys.sleep(0.1)
+        ## update progress bar
+        #setTxtProgressBar(pb, i)
+        #}
+        #close(pb)
+
+
 
     #BOOT.TYPE
     check.class(boot.type, "character")
@@ -107,28 +121,69 @@ dispRity<-function(data, metric, boostraps=1000, rarefaction=FALSE, rm.last.axis
     # Add some extra method i.e. proportion of bootstrap shifts?
     # ~~~
 
+    #----------------------
+    #CALCULTING DISPARITY
+    #----------------------
+
+    #REMOVING THE LAST AXIS (optional)
+    if(rm.axis==TRUE) {
+        #Recreate the "full" matrix
+        full_matrix<-data[[1]]
+        for(series in 2:length(data)) {
+            full_matrix<-rbind(full_matrix, data[[series]])
+        }
+        #Removing any duplicated taxa
+        full_matrix<-full_matrix[unique(rownames(full_matrix)),]
+
+        #calculate the cumulative variance per axis
+        scree_data<-cumsum(apply(full_matrix, 2, var) / sum(apply(full_matrix, 2, var)))
+        #extract the axis  below the threshold value
+        axis_selected<-length(which(scree_data < last.axis))
+        #remove the extra axis from the list
+        data_test <- lapply(data, "[", TRUE, (1:axis_selected))
+        #warning
+        message(paste("The", length(scree_data)-axis_selected, "last axis have been removed from the data."))
+    }
+
+    # BOOTSRAPING THE DATA
+    #verbose
+    if(verbose==TRUE) message("Bootstraping...", appendLF=FALSE)
+    #Bootstrap the data set 
+    BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+    #verbose
+    if(verbose==TRUE) message("Done.", appendLF=TRUE)
+
+    # CALCULATING THE DISPARITY
+    #verbose
+    if(verbose==TRUE) message("Calculating disparity...", appendLF=FALSE)
+    #Calculate disparity in all the series
+    results<-lapply(BSresult, disparity.calc, class.metric, summary.metric)
+    #verbose
+    if(verbose==TRUE) message("Done.", appendLF=FALSE)
 
 }
 
 
+
+######
+# Part that goes intro dispRity
+#####
+matrix_descriptor<-lapply(test, lapply_fun, fun=centroid.dist)
+matrix_summary<-lapply(matrix_descriptor, lapply_fun, fun=mode.val)
+
+
+
+
+
+#To utility
+not.run<-TRUE
+if(not.rum==FALSE) {
+    #Managing bins with only one data point
+    time_pco<-cor.time.pco(time_pco, minimum=3)
+}
+
+
 time.disparity<-function(time_pco, relative=FALSE, method=c("centroid", "sum.range", "product.range", "sum.variance", "product.variance"), CI=c(50, 95), bootstraps=1000, central_tendency=median, rarefaction=FALSE, verbose=FALSE, rm.last.axis=FALSE, save.all=FALSE, centroid.type=NULL, boot.method="full") {
-    #SANITIZING
-    #time_pco
-    check.class(time_pco, "list", " must be a list of time sections of pco data.")
-    if(length(names(time_pco))!= length(time_pco)) {
-        stop("time_pco data must have time sections names.")
-    }
-
-    #relative
-    check.class(relative, "logical")
-    if(relative==TRUE) {
-        stop("'relative' option is still in development.\nOnly relative=FALSE (default) can be used for now.")
-    }
-
-    #rarefaction
-    if(rarefaction == TRUE) {
-        message("Rarefaction is calculated and slows down the disparity calculation.\nUse Rarefaction=FALSE to speed up the calculations.")
-    }
 
     #Managing bins with only one data point
     time_pco<-cor.time.pco(time_pco, minimum=3)
@@ -136,31 +191,6 @@ time.disparity<-function(time_pco, relative=FALSE, method=c("centroid", "sum.ran
     #CALCULATING THE DISPARITY FOR EACH BIN
     disparity_interval<-lapply(time_pco, disparity, method=method, CI=CI, bootstraps=bootstraps, central_tendency=central_tendency, rarefaction=rarefaction, verbose=verbose, rm.last.axis=rm.last.axis, save.all=save.all, centroid.type=centroid.type, boot.method=boot.method)
 
-    #SCALING (if relative == TRUE)
-    if(relative==TRUE){
-
-        #Recreating the full space
-        full_space<-time_pco[[1]]
-        for(interval in 2:length(time_pco)) {
-            full_space<-rbind(full_space, time_pco[[interval]])
-        }
-        #Removing any duplicated taxa
-        full_space<-full_space[unique(rownames(full_space)),]
-        #Calculating the metrics for the full space
-        full_space_metric<-disparity(full_space, method=method, CI=CI, bootstraps=0, central_tendency=central_tendency, rarefaction=FALSE, verbose=FALSE, rm.last.axis=rm.last.axis, save.all=FALSE, centroid.type=centroid.type)
-         
-
-        #Dividing the results by the full_space_metric
-        if(save.all==TRUE) {
-            for (interval in 1:length(time_pco)) {
-                disparity_interval[[interval]][[1]]<-disparity_interval[[interval]][[1]]/full_space_metric
-            }
-        } else {
-            for (interval in 1:length(time_pco)) {
-                disparity_interval[[interval]]<-disparity_interval[[interval]]/full_space_metric
-            }            
-        }
-    }
 
 
     #Return the table only
