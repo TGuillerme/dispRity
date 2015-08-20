@@ -1,4 +1,4 @@
-boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, verbose=FALSE, boot.type="full") {
+boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full") {
     #----------------------
     # SANITIZING
     #----------------------
@@ -61,11 +61,56 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, verbose=FALSE, b
     # Add some extra method i.e. proportion of bootstrap shifts?
     # ~~~
 
+    #RM.LAST.AXIS
+    #If TRUE, set automatic threshold at 0.95
+    if(class(rm.last.axis) == "logical") {
+        if(rm.last.axis == FALSE) {
+            rm.axis<-FALSE
+        } else {
+            rm.axis<-TRUE
+            last.axis<-0.95
+        }
+    } else {
+        #Else must be a single numeric value (probability)
+        check.class(rm.last.axis, "numeric", " must be logical or a probability threshold value.")
+        check.length(rm.last.axis, 1, " must be logical or a probability threshold value.", errorif=FALSE)
+        if(rm.last.axis < 0) {
+            stop("rm.last.axis must be logical or a probability threshold value.")
+        } else {
+            if(rm.last.axis > 1) {
+                stop("rm.last.axis must be logical or a probability threshold value.")
+            } else {
+                rm.axis<-TRUE
+                last.axis<-rm.last.axis
+            }
+        }
+    }
+
     #----------------------
-    #CALCULTING DISPARITY
+    #BOOTSTRAPING THE DATA
     #----------------------
 
-    # BOOTSRAPING THE DATA
+    #REMOVING THE LAST AXIS (optional)
+    if(rm.axis==TRUE) {
+        #Recreate the "full" matrix
+        full_matrix<-data[[1]]
+        for(series in 2:length(data)) {
+            full_matrix<-rbind(full_matrix, data[[series]])
+        }
+        #Removing any duplicated taxa
+        full_matrix<-full_matrix[unique(rownames(full_matrix)),]
+
+        #calculate the cumulative variance per axis
+        scree_data<-cumsum(apply(full_matrix, 2, var) / sum(apply(full_matrix, 2, var)))
+        #extract the axis  below the threshold value
+        axis_selected<-length(which(scree_data < last.axis))
+        #remove the extra axis from the list
+        data <- lapply(data, "[", TRUE, (1:axis_selected))
+        #warning
+        message(paste("The", length(scree_data)-axis_selected, "last axis have been removed from the data."))
+    }
+
+    #BOOTSRAPING THE DATA
     #verbose
     if(verbose==TRUE) message("Bootstraping...", appendLF=FALSE)
     #Bootstrap the data set 
@@ -74,16 +119,25 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, verbose=FALSE, b
     if(verbose==TRUE) message("Done.", appendLF=TRUE)
 
     #Setting the output
-    boot.call<-paste("Data bootstrapped ", bootstraps, " using the ", boot.type, " bootstrap method.", sep="")
+    boot.call<-paste("Data bootstrapped ", bootstraps, " times, using the ", boot.type, " bootstrap method.", sep="")
     if(logic.rare == TRUE) {
         if(rarefaction == TRUE) {
-            boot.call<-paste(boot.call, "Data was fully rarefied (up to 3 taxa).", sep="\n")
+            boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 taxa).", sep="\n")
         }
     } else {
         boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
     }
+    if(rm.last.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
 
-    output<-list("bootstraps"=BSresult, "call"=boot.call)
+    #SIZE
+    taxa_list<-unlist(lapply(data, rownames))
+    series_list<-names(data)
+    if(is.null(series_list)) {
+        series_list<-length(data)
+    }
+
+    output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, call=boot.call)
+    class(output)<-"BSdispRity"
 
 return(output)
 }

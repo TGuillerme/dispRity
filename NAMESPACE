@@ -24,5 +24,7 @@ export(make.boot) #utilities - not done
 #export(lifespan_volant_192taxa)
 
 ##S3 methods
-#S3method(plot, dispRity)
-#S3method(summary, dispRity)
+S3method(plot, dispRity)
+S3method(summary, dispRity)
+S3method(print, dispRity)
+S3method(print, BSdispRity)
