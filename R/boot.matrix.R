@@ -1,12 +1,10 @@
 boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, verbose=FALSE, boot.type="full") {
-
-    message("boot.matrix:UNTESTED")
     #----------------------
     # SANITIZING
     #----------------------
     #DATA
     #If matrix, transform to list
-    if(class(data) == matrix) {
+    if(class(data) == "matrix") {
         data<-list(data)
     }
     #Must be a list
@@ -76,16 +74,16 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, verbose=FALSE, b
     if(verbose==TRUE) message("Done.", appendLF=TRUE)
 
     #Setting the output
-    call.boot<-paste("Data bootstrapped ", bootstraps, " using the ", boot.type, " bootstrap method.", sep="")
+    boot.call<-paste("Data bootstrapped ", bootstraps, " using the ", boot.type, " bootstrap method.", sep="")
     if(logic.rare == TRUE) {
         if(rarefaction == TRUE) {
-            call.boot<-paste(call.boot, "Data was fully rarefied (up to 3 taxa).", sep="\n")
+            boot.call<-paste(boot.call, "Data was fully rarefied (up to 3 taxa).", sep="\n")
         }
     } else {
-        call.boot<-paste(call.boot, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
+        boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
     }
 
-    output<-list("call"=call.boot, "bootstraps"=BSresult)
+    output<-list("bootstraps"=BSresult, "call"=boot.call)
 
 return(output)
 }
