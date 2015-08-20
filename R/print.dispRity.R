@@ -1,3 +1,5 @@
+#Inspired from ape::print.phylo
+
 print.dispRity<-function(x, ...) {
     #head
     cat(paste("Disparity measurements across ", length(x$series), " series for ", length(x$taxa), " taxa.", sep=""), "\n")
@@ -7,10 +9,10 @@ print.dispRity<-function(x, ...) {
         cat(paste(length(x$series), "unnamed series."))
     } else {
         cat("Series:\n")
-        if(length(x$series > 6)) {
-            cat(paste(x$series[1:6],"...", sep=", "))
+        if(length(x$series) > 6) {
+            cat(paste(x$series[1:6], collapse=", "),"...")
         } else {
-            cat(paste(x$series, sep=", "))
+            cat(paste(x$series, collapse=", "), ".", sep="")
         }
     }
 
@@ -28,10 +30,10 @@ print.BSdispRity<-function(x, ...) {
         cat(paste(length(x$series), "unnamed series."))
     } else {
         cat("Series:\n")
-        if(length(x$series > 6)) {
-            cat(paste(x$series[1:6],"...", sep=", "))
+        if(length(x$series) > 6) {
+            cat(paste(x$series[1:6], collapse=", "),"...")
         } else {
-            cat(paste(x$series, sep=", "))
+            cat(paste(x$series, collapse=", "), ".", sep="")
         }
     }
 

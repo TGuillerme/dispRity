@@ -92,13 +92,17 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
 
     #REMOVING THE LAST AXIS (optional)
     if(rm.axis==TRUE) {
-        #Recreate the "full" matrix
-        full_matrix<-data[[1]]
-        for(series in 2:length(data)) {
-            full_matrix<-rbind(full_matrix, data[[series]])
+        if(length(data) > 1) {
+            #Recreate the "full" matrix
+            full_matrix<-data[[1]]
+            for(series in 2:length(data)) {
+                full_matrix<-rbind(full_matrix, data[[series]])
+            }
+            #Removing any duplicated taxa
+            full_matrix<-full_matrix[unique(rownames(full_matrix)),]
+        } else {
+            full_matrix<-data[[1]]
         }
-        #Removing any duplicated taxa
-        full_matrix<-full_matrix[unique(rownames(full_matrix)),]
 
         #calculate the cumulative variance per axis
         scree_data<-cumsum(apply(full_matrix, 2, var) / sum(apply(full_matrix, 2, var)))
@@ -107,7 +111,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         #remove the extra axis from the list
         data <- lapply(data, "[", TRUE, (1:axis_selected))
         #warning
-        message(paste("The", length(scree_data)-axis_selected, "last axis have been removed from the data."))
+        #message(paste("The", length(scree_data)-axis_selected, "last axis have been removed from the data."))
     }
 
     #BOOTSRAPING THE DATA
@@ -127,7 +131,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     } else {
         boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
     }
-    if(rm.last.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
+    if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
 
     #SIZE
     taxa_list<-unlist(lapply(data, rownames))
