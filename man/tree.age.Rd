@@ -13,6 +13,7 @@ tree.age(tree, age, order='past')
 \item{tree}{a `phylo`' object.}
 \item{age}{the age of the tree. If missing the age is set to be the tree hight.}
 \item{order}{either 'past' if the units is express time since the present (e.g. Mya), or 'present' if the unit is expressed in time since the root.}
+}
 
 %\details{If needed}
 

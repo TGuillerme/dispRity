@@ -8,8 +8,5 @@ Description: series of disparity function for disparity paper
 Depends:
     R (>= 3.0.0),
     ape,
-    caper,
-    phytools,
     paleotree,
-    vegan,
 License: GPL (>= 2)

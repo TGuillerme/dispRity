@@ -10,7 +10,7 @@ time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
 }
 
 \arguments{
-\item{data}{an ordinated matrix of maximal dimensions \eqn{k\times(k-1).}
+\item{data}{an ordinated matrix of maximal dimensions \eqn{k\times(k-1)}.}
 \item{tree}{a \code{phylo} object matching the data and with a \code{root.time} element.}
 \item{method}{the time series method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
 \item{time}{either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.}
@@ -18,6 +18,7 @@ time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
 \item{inc.nodes}{a logical value indicating whether nodes should be included in the time series. Is ignored if \code{method = "continuous"}}
 \item{FALAD}{an optional \code{data.frame} containing the first and last occurrence data.}
 \item{verbose}{a logical value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.}
+}
 
 \details{
 If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time series is:

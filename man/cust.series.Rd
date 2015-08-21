@@ -12,6 +12,7 @@ time.series(data, series)
 \arguments{
 \item{data}{can also be a list from time.series!}
 \item{series}{some description}
+}
 
 \details{If needed}
 
