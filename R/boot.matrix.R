@@ -141,7 +141,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     }
 
     output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, call=boot.call)
-    class(output)<-"BSdispRity"
+    class(output)<-c("dispRity", "bootstrap")
 
 return(output)
 }
