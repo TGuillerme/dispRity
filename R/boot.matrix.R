@@ -140,8 +140,8 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         series_list<-length(data)
     }
 
-    output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, call=boot.call)
-    class(output)<-c("dispRity", "bootstrap")
+    output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, "call"=boot.call)
+    class(output)<-c("dispRity")
 
 return(output)
 }

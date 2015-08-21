@@ -4,7 +4,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     #DATA
     #Check if matrix is a bootstrapped list
-    if(class(data)[1] == "dispRity") {
+    if(class(data) == "dispRity") {
         is.bootstraped<-TRUE
         BSresult<-data$bootstraps
         boot.call<-data$call
