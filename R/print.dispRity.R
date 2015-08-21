@@ -1,7 +1,7 @@
 #Inspired from ape::print.phylo
 
 print.dispRity<-function(x, ...) {
-    if(class(x)[2] == "bootstrap") {
+    if(length(class(x)) == 2) {
         #head
         cat(paste("Bootstrapped ordinated matrix with", length(x$taxa), "taxa."), "\n")
 

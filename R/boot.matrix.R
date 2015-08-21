@@ -123,7 +123,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     if(verbose==TRUE) message("Done.", appendLF=TRUE)
 
     #Setting the output
-    boot.call<-paste("Data bootstrapped ", bootstraps, " times, using the ", boot.type, " bootstrap method.", sep="")
+    boot.call<-paste("Data was bootstrapped ", bootstraps, " times, using the ", boot.type, " bootstrap method.", sep="")
     if(logic.rare == TRUE) {
         if(rarefaction == TRUE) {
             boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 taxa).", sep="\n")
