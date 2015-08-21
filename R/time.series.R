@@ -7,7 +7,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
     #data must be a matrix
     check.class(data, 'matrix')
     #data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at least k-1 columns")
+    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at maximum k-1 columns")
 
     #TREE (1)
     #tree must be a phylo object

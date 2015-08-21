@@ -33,5 +33,9 @@ cust.series<-function(data, factor) {
         selected_elements<-rownames(factor)[which(factor == levels(as.factor(factor[,1]))[[series]])]
         series_list[[series]]<-data[selected_elements,]
     }
+
+    #Adding names to the list (the levels of the custom series)
+    names(series_list)<-levels(as.factor(factor[,1]))
+
     return(series_list)
 }
