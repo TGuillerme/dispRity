@@ -1,17 +1,15 @@
 dispRity<-function(data, metric, verbose=FALSE) {
-
-    message("dispRity:UNTESTED")
     #----------------------
     # SANITIZING
     #----------------------
     #DATA
     #Check if matrix is a bootstrapped list
-    if(class(data)[2] == "bootstrap") {
+    if(class(data)[1] == "dispRity") {
         is.bootstraped<-TRUE
         BSresult<-data$bootstraps
         boot.call<-data$call
-        taxa<-data$taxa
-        series<-data$series
+        taxa_list<-data$taxa
+        series_list<-data$series
     } else {
         is.bootstraped<-FALSE
         #If matrix, transform to list
@@ -35,6 +33,10 @@ dispRity<-function(data, metric, verbose=FALSE) {
         if(is.null(series_list)) {
             series_list<-length(data)
         }
+
+        #Make the data bootstrap results format (0 bootstrap)
+        BSresult<-boot.matrix(data, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$bootstrap
+
     }
 
     #METRIC
@@ -90,11 +92,10 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #OUTPUT
     #----------------------
     #call details
-    if(is.bootstraped == TRUE) {
-        dispRity.call<-paste(boot.call, "\nDisparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]],".", sep="")
-    } else {
-        dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]],".", sep="")
-    }
+    dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]],".", sep="")
+    #Add BS details
+    if(is.bootstraped == TRUE) dispRity.call<-paste(dispRity.call, boot.call, sep="\n")
+
 
     #Creating the output object
     if(is.bootstraped == TRUE) {

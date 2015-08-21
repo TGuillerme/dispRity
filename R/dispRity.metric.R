@@ -44,10 +44,3 @@ centroid.dist<-function(data_matrix) {
 mode.val<-function(X){
     return(as.numeric(names(sort(-table(X))[1])))
 }
-
-
-######
-# Part that goes intro dispRity
-#####
-matrix_descriptor<-lapply(test, lapply_fun, fun=centroid.dist)
-matrix_summary<-lapply(matrix_descriptor, lapply_fun, fun=mode.val)
