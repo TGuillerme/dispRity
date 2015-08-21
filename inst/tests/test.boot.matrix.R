@@ -1,4 +1,4 @@
-#TESTING TIME.SERIES
+#TESTING BOOT.MATRIX
 source("../../R/sanitizing.R")
 source("../../R/print.dispRity.R")
 library(ape)

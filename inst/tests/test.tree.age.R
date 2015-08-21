@@ -1,4 +1,4 @@
-#TEST TREE AGE
+#TEST TREE.AGE
 source("../../R/tree.age.R")
 source("../../R/tree.age_fun.R")
 library(testthat)

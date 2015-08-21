@@ -1,4 +1,4 @@
-#TEST SLICE TREE
+#TEST SLICE.TREE
 source("../../R/slice.tree.R")
 source("../../R/slice.tree_fun.R")
 source("../../R/tree.age.R")
