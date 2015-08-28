@@ -15,3 +15,14 @@ Which metric is best with:
 * sample size
 * taxonomic diversity (k)
 * phylogenetic diversity (branch length)
+
+### Comparisons
+
+   | axis variance | axis range | distance from centroid | intertaxa distance |
+---|------|------|---------|----------|
+mean | | | | |
+median | | | | |
+sum | | | | |
+product | | | | |
+variance | | | | |
+range | | | | |
