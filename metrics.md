@@ -6,11 +6,12 @@ ID | Name | Category | Description | CiteKey | Function | Comment |
 2 | Sum of variances | variance | | Wills1994 | `variance.calc` + `sum.apply` | affected by sample size (Butler2012) |
 3 | Product of ranges | range | overall morphological variation | Wills1994 | `range.calc` + `prod.apply` | covariance? |
 4 | Sum of ranges | range | | Wills1994 | `range.calc` + `sum.apply` | affected by sample size (Butler2012) |
-5 | Mean distance from centroid | centroid |             | Wills1994 | `centroid.apply` + `cen.apply.mea` | ? |
-6 | Median distance from centroid | centroid |             |      | `centroid.apply` + `cen.apply.med` | ? |
+5 | Mean distance from centroid | centroid (distance?) |             | Wills1994 | `centroid.apply` + `cen.apply.mea` | ? |
+6 | Median distance from centroid | centroid (distance?) |             |      | `centroid.apply` + `cen.apply.med` | ? |
 7 | PCO Volume | volume | corrected product of the two largest eigenvalues | Ciampaglio2001 |   | why only the two first eigenvalues? |
 8 | Ellipsoid Volume | volume | | Wills1994, Donohue2013 | | ecology |
 9 | Convex Hull volume | volume | | | | |
+10 | Mean/median inter-taxa distance | distance | | | | |
 
 Note that some metrics can be combined (in a more or less silly way). For example, the Ellipsoid Volume/Convex Hull can be a good way to measure the relative volume occupancy (i.e. the "average" volume / by the total volume); or the sum of distance from centroid (illustrating the spread of the data from the mean?).
 <!--
@@ -69,4 +70,4 @@ With:
 * `\Gamma` = is the gamma distribution
 
 #### References
-References (i.e. CiteKeys) are available in the [References.bib](https://github.com/TGuillerme/dispRity/blob/master/References.bib) file
+References (i.e. CiteKeys) are available in the [References.bib](https://github.com/TGuillerme/dispRity/blob/master/References.bib) file.
