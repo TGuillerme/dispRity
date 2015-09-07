@@ -1,0 +1,102 @@
+summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
+    #----------------------
+    # SANITIZING
+    #----------------------
+    #DATA
+    #must be class dispRity
+    check.class(data, "dispRity")
+    #must have 5 elements
+    check.length(data, 5, " must be a 'dispRity' object.")
+    #must have one element called dispRity
+    if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
+    results<-data$disparity
+    #is the data bootstrapped?   
+    if(!is.na(match("bootstraps", names(data)))) {
+        #must have more than one bootstrap!
+        if(length(data$bootstrap[[1]][[1]]) > 1) {
+            is.bootstrapped<-TRUE
+        } else {
+            is.bootstrapped<-FALSE
+        }
+    } else {
+        is.bootstrapped<-FALSE
+    }
+    
+    #CI
+    #Only check if the data is bootstrapped
+    if(is.bootstrapped == TRUE) {
+        check.class(CI, "numeric", " must be any value between 1 and 100.")
+        #remove warnings
+        options(warn=-1)
+        if(any(CI) < 1) {
+            stop("CI must be any value between 1 and 100.")
+        }
+        if(any(CI) > 100) {
+            stop("CI must be any value between 1 and 100.")
+        }
+        options(warn=0)
+    }
+
+    #cent.tend
+    #Must be a function
+    #both elements must be functions
+    check.class(cent.tend, "function")
+    #The function must work
+    silent<-check.metric(cent.tend)
+
+    #round
+    if(missing(round)) {
+        #Set to default (see below)
+        round<-"default"
+    } else {
+        check.class(round, "numeric")
+    }
+
+    #Get call
+    match_call<-match.call()
+
+    #----------------------
+    # TRANSFORMING THE DATA INTO A TABLE
+    #----------------------
+    #Unlisting the bootstrap values
+    BSresults<-unlist(recursive.unlist(results), recursive=FALSE)
+
+    #Calculating the CIs
+    results_CI<-lapply(BSresults, quantile, probs=CI.converter(CI))
+    
+    #Calculating the central tendency
+    results_cent<-lapply(BSresults, cent.tend)
+
+    #Create the results table
+    results_matrix<-cbind(matrix(data=unlist(results_cent), ncol=1, byrow=TRUE), matrix(data=unlist(results_CI), ncol=length(CI)*2, byrow=TRUE))
+
+    #Round the results (number of decimals = maximum number of digits in the entire)
+    if(round == "default") {
+        for(column in 1:ncol(results_matrix)) {
+            results_matrix[,column]<-round(results_matrix[,column], digit=get.digit(results_matrix[,column]))
+        }
+    } else {
+        results_matrix<-round(results_matrix, digit=round)
+    }
+    
+    #Add the taxonomic count
+    results_matrix<-cbind(diversity.count(data[[1]]), results_matrix)
+
+    #Add the series
+    results_table<-as.data.frame(cbind(rep(data$series, each=length(results[[1]])), results_matrix))
+
+    #Add columns names
+    if(is.null(match_call$cent.tend)) {
+        colnames(results_table)<-c("series", "n", "mean", names(results_CI[[1]]))
+    } else {
+        colnames(results_table)<-c("series", "n", match_call$cent.tend, names(results_CI[[1]]))
+    }
+    #colnames(results_table)<-c("series", "n", "cent.tend", names(results_CI[[1]])) ; message("DEBUG")  
+
+    #----------------------
+    # OUTPUT
+    #----------------------
+
+    return(results_table)
+
+}
