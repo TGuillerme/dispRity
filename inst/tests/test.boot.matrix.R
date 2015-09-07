@@ -74,3 +74,6 @@ expect_equal(nrow(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single
 #Remove last axis
 expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=TRUE)[[1]][[1]][[1]][[1]]), ncol(data[[1]])-6); message('.', appendLF=FALSE)
 expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.5)[[1]][[1]][[1]][[1]]), ncol(data[[1]])-35); message('.', appendLF=FALSE)
+
+#Rarefaction = c(5, 8:10)
+expect_equal(length(boot.matrix(data, bootstraps, rarefaction=c(5, 8:10))), 4); message('.', appendLF=FALSE)

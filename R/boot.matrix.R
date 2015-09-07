@@ -26,11 +26,20 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     bootstraps<-round(abs(bootstraps))
 
     #RAREFACTION
+    #Is it not logical?
     if(class(rarefaction) != "logical") {
         logic.rare<-FALSE
+        #Is it numeric?
         check.class(rarefaction, "numeric", " must be either numeric or logical.")
+        #Is it only one value?
+        if(length(rarefaction) == 1) {
+            rare.list<-FALSE
+        } else {
+            rare.list<-TRUE
+        }
     } else {
         logic.rare<-TRUE
+        rare.list<-FALSE
     }
 
     #VERBOSE
@@ -129,7 +138,12 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
             boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 taxa).", sep="\n")
         }
     } else {
-        boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
+        if(rare.list == FALSE) {
+            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
+        } else {
+            rare.elements<-paste(paste(rarefaction[-length(rarefaction)], collapse=", "), rarefaction[length(rarefaction)], sep=" and ")
+            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " taxa.", sep="")
+        }
     }
     if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
 

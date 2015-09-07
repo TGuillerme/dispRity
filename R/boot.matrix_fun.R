@@ -18,13 +18,15 @@ boot.single<-function(data, rare) {
 Bootstrap.rarefaction<-function(data, bootstraps, rarefaction, boot.type) {
     #This function is based on DisparityCalc() from Smith et al. 2014 - Evolution (http://dx.doi.org/10.1111/evo.12435) http://datadryad.org/resource/doi:10.5061/dryad.d380g 
     #Set rarefaction (or not)
-    if(rarefaction == TRUE) {
-        rarefaction_max<-seq(1:nrow(data))
-        rarefaction_max<-rarefaction_max[-c(1,2)]
+    if(rarefaction[1] == TRUE) {
+        rarefaction_max<-seq(from=3, to=nrow(data))
     } else {
-        if(class(rarefaction) == "numeric") {
+        if((class(rarefaction) == "numeric") | (class(rarefaction) == "integer")) {
             rarefaction_max<-rarefaction
         } else {
+            if(class(rarefaction) == "integer") {
+
+            }
             rarefaction_max<-nrow(data)
         }
     }
@@ -36,7 +38,8 @@ Bootstrap.rarefaction<-function(data, bootstraps, rarefaction, boot.type) {
         bootstraps<-1
         no.BS<-TRUE
     } else {
-        no.BS<-FALSE}
+        no.BS<-FALSE
+    }
 
     #Set the bootstrap method
     #boot.type="single"
@@ -70,12 +73,13 @@ Bootstrap.rarefaction<-function(data, bootstraps, rarefaction, boot.type) {
     }
 
     #Remove two first element if rarefaction
-    if(rarefaction == TRUE) {
+    if(rarefaction[1] == TRUE) {
         BSresult[[2]]=NULL
         BSresult[[1]]=NULL
     } else {
-        #Removing the n-1 first elements
-        BSresult<-BSresult[-c(1:(rarefaction_max-1))]
+        #Removing the null elements
+        nulls<-unlist(lapply(BSresult, is.null))==FALSE
+        BSresult<-BSresult[nulls]
     }
     return(BSresult)
 }
