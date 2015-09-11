@@ -93,7 +93,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #OUTPUT
     #----------------------
     #call details
-    dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]],".", sep="")
+    dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]], " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep="")
     #Add BS details
     if(is.bootstraped == TRUE) dispRity.call<-paste(dispRity.call, boot.call, sep="\n")
 
