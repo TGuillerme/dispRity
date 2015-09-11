@@ -92,11 +92,11 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(round == "default") {
-        for(column in 1:ncol(results_matrix)) {
-            results_matrix[,column]<-round(results_matrix[,column], digit=get.digit(results_matrix[,column]))
+        for(column in 3:ncol(results_table)) {
+            results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
         }
     } else {
-        results_matrix<-round(results_matrix, digit=round)
+        results_table<-round(as.numeric(results_table[,c(3:ncol(results_table))]), digit=round)
     }
 
 

@@ -16,12 +16,6 @@ library(testthat)
 load("test_data.Rda")
 data<-test_data$ord_data_tips
 
-#load the functions
-source("../../R/dispRity.metric.R")
-source("../../R/dispRity.R")
-source("../../R/dispRity_fun.R")
-source("../../R/cust.series.R")
-source
 #Testing
 
 #Case 1, no bootstrap
