@@ -58,17 +58,34 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
+
     #Unlisting the bootstrap values
     BSresults<-unlist(recursive.unlist(results), recursive=FALSE)
 
-    #Calculating the CIs
-    results_CI<-lapply(BSresults, quantile, probs=CI.converter(CI))
-    
     #Calculating the central tendency
     results_cent<-lapply(BSresults, cent.tend)
 
     #Create the results table
-    results_matrix<-cbind(matrix(data=unlist(results_cent), ncol=1, byrow=TRUE), matrix(data=unlist(results_CI), ncol=length(CI)*2, byrow=TRUE))
+    results_table<-as.data.frame(cbind(rep(data$series, each=length(results[[1]])), diversity.count(data[[1]]), results_cent))
+
+    #Add columns names
+    if(is.null(match_call$cent.tend)) {
+        colnames(results_table)<-c("series", "n", "mean")
+    } else {
+        colnames(results_table)<-c("series", "n", match_call$cent.tend)
+    }
+
+    #Calculating CIs (if bootstrapped results)
+    if(is.bootstrapped == TRUE) {
+        #Calculate the CIs
+        results_CI<-lapply(BSresults, quantile, probs=CI.converter(CI))
+
+        #Add to the result table
+        results_table<-cbind(results_table, matrix(data=unlist(results_CI), ncol=length(CI)*2, byrow=TRUE))
+
+        #Add the CI names
+        colnames(results_table)[c(4:(length(CI)*2+3))]<-names(results_CI[[1]])
+    }   
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(round == "default") {
@@ -78,20 +95,7 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
     } else {
         results_matrix<-round(results_matrix, digit=round)
     }
-    
-    #Add the taxonomic count
-    results_matrix<-cbind(diversity.count(data[[1]]), results_matrix)
 
-    #Add the series
-    results_table<-as.data.frame(cbind(rep(data$series, each=length(results[[1]])), results_matrix))
-
-    #Add columns names
-    if(is.null(match_call$cent.tend)) {
-        colnames(results_table)<-c("series", "n", "mean", names(results_CI[[1]]))
-    } else {
-        colnames(results_table)<-c("series", "n", match_call$cent.tend, names(results_CI[[1]]))
-    }
-    #colnames(results_table)<-c("series", "n", "cent.tend", names(results_CI[[1]])) ; message("DEBUG")  
 
     #----------------------
     # OUTPUT

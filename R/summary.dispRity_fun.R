@@ -24,8 +24,11 @@ CI.converter<-function(CI) {
 #Calculates taxonomic diversity per slice (include rarefaction)
 diversity.count<-function(data) {
     if(class(data) == "matrix") {
-        return(nrow(matrix))
+        return(nrow(data))
     } else {
+        if(class(data[[1]]) == "matrix") {
+            return(nrow(data[[1]]))
+        }
         #lapply frenzy!
         return(unlist(lapply(lapply(data, lapply, lapply, nrow), lapply, unique), use.names=FALSE))
     }
