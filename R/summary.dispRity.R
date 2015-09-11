@@ -1,4 +1,4 @@
-summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
+summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, round) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -43,6 +43,9 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
     check.class(cent.tend, "function")
     #The function must work
     silent<-check.metric(cent.tend)
+
+    #recall
+    check.class(recall, "logical")
 
     #round
     if(missing(round)) {
@@ -100,7 +103,9 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, round) {
     #----------------------
     # OUTPUT
     #----------------------
-
+    if(recall==TRUE) {
+        cat(data$call, sep="\n")
+    }
     return(results_table)
 
 }
