@@ -149,7 +149,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
 
     #SIZE
     taxa_list<-unlist(lapply(data, rownames))
-    rownames(taxa_list)<-NULL
+    names(taxa_list)<-NULL
     series_list<-names(data)
     if(is.null(series_list)) {
         series_list<-length(data)
