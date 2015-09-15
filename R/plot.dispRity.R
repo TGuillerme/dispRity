@@ -1,24 +1,80 @@
-##########################
-#Plotting disparity results
-##########################
-#Plots the disparity results
-#v0.2.2
-##########################
-#SYNTAX :
-#<disparity> disparity data
-#<measure> the name of the column containing the disparity measurement. If set to 'default' the measure will be the first measure (second column) of the table.
-#<rarefaction> whether to plot the rarefaction results or not
-#<diversity> optional. Must be a vector of the same length as disparity_data.
-#<add> optional. Whether to add the a previous called graph
-#<ylim> optional. A set of values for the y axis limit
-#<y2lab> optional. A value for the label of the second y axis (diversity)
-#<cex.xaxis> optional. A value for the size of the font of the x axis
-##########################
-#----
-#guillert(at)tcd.ie 15/05/2015
-##########################
 
-plot.disparity<-function(disparity_data, measure="Cent.dist", rarefaction=FALSE, xlab="default", ylab="default", col="default", diversity, add=FALSE, ylim, y2lab, cex.xaxis, ...){
+
+plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, add=FALSE, ylim, xlab="default", ylab="default", col="default", ...){
+    #cex.xaxis?
+
+
+    #SANITIZING
+    #DATA
+    #must be class dispRity
+    check.class(data, "dispRity")
+    #must have 5 elements
+    check.length(data, 5, " must be a 'dispRity' object.")
+    #must have one element called dispRity
+    if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
+    results<-data$disparity
+    #is the data bootstrapped?   
+    if(!is.na(match("bootstraps", names(data)))) {
+        #must have more than one bootstrap!
+        if(length(data$bootstrap[[1]][[1]]) > 1) {
+            is.bootstrapped<-TRUE
+        } else {
+            is.bootstrapped<-FALSE
+        }
+    } else {
+        is.bootstrapped<-FALSE
+    }
+    
+    #CI
+    #Only check if the data is bootstrapped
+    if(is.bootstrapped == TRUE) {
+        check.class(CI, "numeric", " must be any value between 1 and 100.")
+        #remove warnings
+        options(warn=-1)
+        if(any(CI) < 1) {
+            stop("CI must be any value between 1 and 100.")
+        }
+        if(any(CI) > 100) {
+            stop("CI must be any value between 1 and 100.")
+        }
+        options(warn=0)
+    }
+
+    #cent.tend
+    #Must be a function
+    check.class(cent.tend, "function")
+    #The function must work
+    silent<-check.metric(cent.tend)
+
+    #type
+    #type must be a character string
+    check.class(type, "character")
+    #type must have only one element
+    check.length(type, 1, ' must be either "discrete", "d", "continuous", or "c".')
+    #type must be either "discrete", "d", "continuous", or "c"
+    all_types <- c("discrete", "d", "continuous", "c")
+    if(all(is.na(match(type, all_types)))) stop('type must be either "discrete", "d", "continuous", or "c".')
+    
+    #if type is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
+    if(type == "d") type <- "discrete"
+    if(type == "c") type <- "continuous"
+
+    if(is.bootstrapped == TRUE)
+    #rarefaction
+    #must be logical
+    check.class(rarefaction, "logical")
+    #check if data is actually rarefied
+    if(rarefaction == TRUE) {
+
+    }
+
+
+
+
+    #End
+    }
+
+    measure="Cent.dist", rarefaction=FALSE, xlab="default", ylab="default", col="default", diversity, add=FALSE, ylim, y2lab, cex.xaxis, ...){
     #SANITIZING
     #Disparity
     check.class(disparity_data, 'data.frame')
