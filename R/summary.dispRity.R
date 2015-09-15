@@ -1,4 +1,4 @@
-summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, round) {
+summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -46,12 +46,12 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     #recall
     check.class(recall, "logical")
 
-    #round
-    if(missing(round)) {
+    #rounding
+    if(missing(rounding)) {
         #Set to default (see below)
-        round<-"default"
+        rounding<-"default"
     } else {
-        check.class(round, "numeric")
+        check.class(rounding, "numeric")
     }
 
     #Get call
@@ -90,12 +90,14 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     }   
 
     #Round the results (number of decimals = maximum number of digits in the entire)
-    if(round == "default") {
+    if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
             results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
         }
     } else {
-        results_table<-round(as.numeric(results_table[,c(3:ncol(results_table))]), digit=round)
+        for(column in 3:ncol(results_table)) {
+            results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+        }
     }
 
 

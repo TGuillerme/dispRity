@@ -85,3 +85,4 @@ test<-summary(data)
 expect_is(test, "data.frame") ; message('.', appendLF=FALSE)
 expect_equal(nrow(test), 4) ; message('.', appendLF=FALSE)
 expect_equal(ncol(test), 7) ; message('.', appendLF=FALSE)
+
