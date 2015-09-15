@@ -1,8 +1,6 @@
-
-
-plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, add=FALSE, ylim, xlab="default", ylab="default", col="default", ...){
+plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, ...){
     #cex.xaxis?
-
+    #add=FALSE?
 
     #SANITIZING
     #DATA
@@ -59,20 +57,99 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     if(type == "d") type <- "discrete"
     if(type == "c") type <- "continuous"
 
-    if(is.bootstrapped == TRUE)
+    #diversity
+    #must be logical
+    check.class(diversity, "logical")
+
     #rarefaction
     #must be logical
     check.class(rarefaction, "logical")
-    #check if data is actually rarefied
-    if(rarefaction == TRUE) {
 
+    #CAN ALSO BE A NUMERIC VALUE (SEE DISRITY STYLE) !
+
+
+    #xlab
+    if(missing(xlab)) { 
+        xlab<-"default"
+    } else {
+        #length must be 1
+        check.length(xlab, 1, " must be a character string.")
     }
 
+    #ylab
+    if(missing(ylab)) {
+        ylab<-"default"
+    } else {
+        #length must be 
+        if(diversity == FALSE) {
+            check.length(ylab, 1, " must be a character string.")
+        } else {
+            if(length(ylab) > 2, "ylab can have maximum two elements.")
+        }
+    }
 
+    #col
+    #if default, is ok
+    if(missing(col)) {
+        col<-"default"
+    } else {
+        check.class(col, "character", " must be a character string.")
+    }
 
+    #ylim
+    if(missing(ylim)) {
+        ylim<-"default"
+    } else {
+        check.class(ylim, "numeric")
+        check.length(ylim, 2, " must be a vector of two elements.")
+    }
+
+    #PREPARING THE PLOT
+
+    #summarising the data
+    summarised_data<-summary.dispRity(data, CI=CI, cent.tend=cent.tend, rounding=5)
+
+    #Check the rarefaction
+    if(length(unique(summarised_data$n)) == 1) {
+        rarefaction<-FALSE
+        warning("Data is not rarefied: rarefaction is set to FALSE.")
+    }
+
+    #Check continuous (set to discrete if only one series)
+    if(length(unique(summarised_data$series)) == 1) {
+        type <- "discrete"
+        warning('Only one series of data available: type is set to "discrete".')
+    }
+
+    #Setting the default arguments
+    default_arg<-set.default(summarised_data, data$call, type, diversity, ylim, xlab, ylab, col)
+    ylim<-default_arg[[1]]
+    xlab<-default_arg[[2]]
+    ylab<-default_arg[[3]]
+    col <-default_arg[[4]]
+
+    #PLOTTING THE RESULTS
+
+    if(rarefaction == TRUE) {
+        plot.rarefaction()
+    } else {
+        if(type == "discrete") {
+            plot.discrete()
+        } else {
+            plot.continuous()
+        }
+    }
 
     #End
     }
+
+
+
+
+
+
+
+
 
     measure="Cent.dist", rarefaction=FALSE, xlab="default", ylab="default", col="default", diversity, add=FALSE, ylim, y2lab, cex.xaxis, ...){
     #SANITIZING
