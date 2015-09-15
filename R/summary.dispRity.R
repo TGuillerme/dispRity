@@ -39,7 +39,6 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
 
     #cent.tend
     #Must be a function
-    #both elements must be functions
     check.class(cent.tend, "function")
     #The function must work
     silent<-check.metric(cent.tend)
