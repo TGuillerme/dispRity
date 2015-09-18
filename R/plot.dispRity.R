@@ -1,4 +1,4 @@
-plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, ...){
+plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, type_d="box", ...){
     #cex.xaxis?
     #add=FALSE?
 
@@ -63,10 +63,18 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
 
     #rarefaction
     #must be logical
-    check.class(rarefaction, "logical")
-
-    #CAN ALSO BE A NUMERIC VALUE (SEE DISRITY STYLE) !
-
+    if(class(rarefaction) == "logical") {
+        logic.rare<-TRUE
+        if(rarefaction == TRUE) {
+            which.rare<-"min"
+        } else {
+            which.rare<-"max"
+        }
+    } else {
+        check.class(rarefaction, "numeric", " must be either logical or a single numeric value.")
+        check.length(rarefaction, 1, " must be either logical or a single numeric value.")
+        which.rare<-rarefaction
+    }
 
     #xlab
     if(missing(xlab)) { 
@@ -104,6 +112,12 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
         check.length(ylim, 2, " must be a vector of two elements.")
     }
 
+    #type_d
+    if(type_d == "discrete") {
+        type_d_methods<-c("box", "line")
+        if(all(is.na(match(type_d, type_d_methods)))) stop('type must be either "box" or "line".')
+    }
+
     #PREPARING THE PLOT
 
     #summarising the data
@@ -130,6 +144,31 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
 
     #PLOTTING THE RESULTS
 
+    #Continuous plot
+    if(type == "continuous") {
+        if(diversity == FALSE) {
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+        } else {
+            bigger_margin<-par(mar=c(4,4,4,4))
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            plot.diversity(summarised_data, which.rare, ylab, col, ...)
+            par(bigger_margin)
+        }
+    }
+
+    #Discrete plots
+    if(type == "discrete") {
+        if(diversity == FALSE) {
+            plot.discrete(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...)
+        } else {
+            bigger_margin<-par(mar=c(4,4,4,4))
+            plot.discrete(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...)
+            plot.diversity(summarised_data, which.rare, ylab, col, ...)
+            par(bigger_margin)
+        }        
+    }
+
+
     if(rarefaction == TRUE) {
         plot.rarefaction()
     } else {
@@ -139,6 +178,7 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
             plot.continuous()
         }
     }
+
 
     #End
     }
