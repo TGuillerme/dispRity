@@ -1,9 +1,5 @@
 library(Claddis)
 library(mulTree)
-source("../../R/sanitizing.R")
-source("../../R/utilities.R")
-source("../../R/tree.age.R")
-source("../../R/tree.age_fun.R")
 source("MorphDistMatrix.verbose.R")
 source("anc.state.R")
 source("anc.state_fun.R")
@@ -77,4 +73,4 @@ FADLAD_data<-FADLAD_data[-which(is.na(match(rownames(FADLAD_data), tree_data$tip
 
 test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
 
-save(test_data, file="test_data.Rda")
+save(test_data, file="../test_data.Rda")

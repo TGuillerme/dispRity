@@ -5,8 +5,9 @@ Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.0.0
 Date: 2015-07-11
 Description: series of disparity function for disparity paper
-Depends:
+Depends: 
     R (>= 3.0.0),
     ape,
     paleotree,
 License: GPL (>= 2)
+Suggests: testthat
