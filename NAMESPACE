@@ -9,8 +9,8 @@ export(boot.matrix)
 export(dispRity)
 #export(test.diff) - TO DO
 export(tree.age)
-#export(summary.dispRity) - TO DO
-#export(plot.dispRity) - TO DO
+export(summary.dispRity)
+export(plot.dispRity)
 export(print.dispRity)
 #export(mode.val) #utilities - not done
 #export(cor.diversity) #utilities - not done
@@ -24,7 +24,7 @@ export(make.boot) #utilities - not done
 #export(data_test)
 
 ##S3 methods
-#S3method(plot, dispRity) - TO DO
-#S3method(summary, dispRity) - TO DO
-S3method(print, dispRity)#  add S3 to test? - TO DO
+S3method(plot, dispRity)
+S3method(summary, dispRity)
+S3method(print, dispRity)
  
