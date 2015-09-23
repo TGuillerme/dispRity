@@ -1,6 +1,4 @@
-plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, type_d="box", ...){
-    #cex.xaxis?
-    #add=FALSE?
+plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", ...){
 
     #SANITIZING
     #DATA
@@ -62,18 +60,29 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     check.class(diversity, "logical")
 
     #rarefaction
-    #must be logical
-    if(class(rarefaction) == "logical") {
-        logic.rare<-TRUE
-        if(rarefaction == TRUE) {
-            which.rare<-"min"
+    #Set to null (default)
+    which.rare<-NULL
+    #if rarefaction is "plot", plot the rarefaction curves
+    if(rarefaction != "plot") {
+    #Else, make sure rarefaction works    
+        #must be logical
+        if(class(rarefaction) == "logical") {
+            logic.rare<-TRUE
+            if(rarefaction == TRUE) {
+                which.rare<-"min"
+            } else {
+                which.rare<-"max"
+            }
         } else {
-            which.rare<-"max"
+            check.class(rarefaction, "numeric", " must be either logical or a single numeric value.")
+            check.length(rarefaction, 1, " must be either logical or a single numeric value.")
+            which.rare<-rarefaction
         }
     } else {
-        check.class(rarefaction, "numeric", " must be either logical or a single numeric value.")
-        check.length(rarefaction, 1, " must be either logical or a single numeric value.")
-        which.rare<-rarefaction
+        #Rarefaction plot
+        which.rare<-"plot"
+        #Cancel plot type
+        type<-"rarefaction"
     }
 
     #xlab
@@ -112,10 +121,10 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
         check.length(ylim, 2, " must be a vector of two elements.")
     }
 
-    #type_d
-    if(type_d == "discrete") {
-        type_d_methods<-c("box", "line")
-        if(all(is.na(match(type_d, type_d_methods)))) stop('type must be either "box" or "line".')
+    #discrete_type
+    if(type == "discrete") {
+        discrete_type_methods<-c("box", "line")
+        if(all(is.na(match(discrete_type, discrete_type_methods)))) stop('type must be either "box" or "line".')
     }
 
     #PREPARING THE PLOT
@@ -124,19 +133,33 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     summarised_data<-summary.dispRity(data, CI=CI, cent.tend=cent.tend, rounding=5)
 
     #Check the rarefaction
-    if(length(unique(summarised_data$n)) == 1) {
-        rarefaction<-FALSE
-        warning("Data is not rarefied: rarefaction is set to FALSE.")
+    if(which.rare != "max") {
+        if(length(unique(summarised_data$n)) == 1) {
+            if(which.rare == "plot") {
+                stop("Data is not rarefied!")
+            }
+            rarefaction<-FALSE
+            which.rare<-"max"
+            message("Data is not rarefied: rarefaction is set to FALSE.")
+        }
+    }
+    #Rarefaction must be in summarised_data
+    if(class(rarefaction) == "numeric") {
+        if(is.na(match(rarefaction, unlist(summarised_data$n)))) stop(paste("No rarefaction calculated for", rarefaction, "elements."))
     }
 
     #Check continuous (set to discrete if only one series)
-    if(length(unique(summarised_data$series)) == 1) {
-        type <- "discrete"
-        warning('Only one series of data available: type is set to "discrete".')
+    if(which.rare != "plot") {
+        if(type == "continuous") {
+            if(length(unique(summarised_data$series)) == 1) {
+                type <- "discrete"
+                message('Only one series of data available: type is set to "discrete".')
+            }
+        }
     }
 
     #Setting the default arguments
-    default_arg<-set.default(summarised_data, data$call, type, diversity, ylim, xlab, ylab, col)
+    default_arg<-set.default(summarised_data, data$call, type, diversity, ylim, xlab, ylab, col, which.rare)
     ylim<-default_arg[[1]]
     xlab<-default_arg[[2]]
     ylab<-default_arg[[3]]
@@ -144,14 +167,18 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
 
     #PLOTTING THE RESULTS
 
+
     #Continuous plot
     if(type == "continuous") {
         if(diversity == FALSE) {
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(4,4,4,4))
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
-            plot.diversity(summarised_data, which.rare, ylab, col, ...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
@@ -159,41 +186,36 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     #Discrete plots
     if(type == "discrete") {
         if(diversity == FALSE) {
-            plot.discrete(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(4,4,4,4))
-            plot.discrete(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...)
-            plot.diversity(summarised_data, which.rare, ylab, col, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }
 
 
-    if(rarefaction == TRUE) {
-        plot.rarefaction()
-    } else {
-        if(type == "discrete") {
-            plot.discrete()
-        } else {
-            plot.continuous()
-        }
-    }
+    if(which.rare == "plot") {
+        #How many rarefaction plots?
+        n_plots<-length(unique(summarised_data[,1]))
 
+        #Open the multiple plots
+        op_tmp<-par(mfrow=c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+
+        #Rarefaction plots
+        for(nPlot in 1:n_plots) {
+            tmp_summarised_data<-get.series(summarised_data, rare_level=nPlot)
+            #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name, ...)
+            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name) ; warning("DEBUG: plot")
+        }
+
+        #Done!
+        par(op_tmp)
+    } 
 
     #End
 }
-
-
-        # if(rarefaction == TRUE) {
-        #     #ylim
-        #     if(missing(ylim)) {
-        #         ylim=c(min(disparity_data[,CI_min]),max(disparity_data[,CI_max]))
-        #     }
-        #     #Plotting the rarefaction curve
-        #     plot(disparity_data[,1], disparity_data[,measure_col], type='l', ylim=ylim , ...)
-        #     #Add the CIs
-        #     for (n in 1:(CI_length/2)) {
-        #         #Add both lines
-        #         lines(disparity_data[,1], disparity_data[,CI_pairs[n,1]], type='l', lty=lty_list[n+1])
-        #         lines(disparity_data[,1], disparity_data[,CI_pairs[n,2]], type='l', lty=lty_list[n+1])
-        #     }

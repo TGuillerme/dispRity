@@ -1,34 +1,33 @@
 #default settings
-set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, col) {
+set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, col, which.rare) {
 
     #ylim
-    if(ylim == "default") {
+    if(ylim[[1]] == "default") {
         #Setting the ylim to min/max -/+ 5%.
         ylim=c(min(summarised_data[,-c(1:2)])-min(summarised_data[,-c(1:2)])*0.05 , max(summarised_data[,-c(1:2)])+max(summarised_data[,-c(1:2)])*0.05)
     }
 
     #xlab
     if(xlab == "default") {
-        #Set to time (if continuous)
-        if(type == "continuous") {
-            xlab<-"Time (Ma)"
+        if(which.rare == "plot") {
+            xlab<-"Elements"
         } else {
-            #Else to series
             xlab<-"Series"
         }
     }
+    
 
     #ylab
-    if(ylab == "default") {
+    if(ylab[[1]] == "default") {
         #Set to call label
         ylab<-strsplit(strsplit(call, split="as: ")[[1]][2], split=" for")[[1]][1]
         if(diversity == TRUE) {
-            ylab[2]<-"diversity"
+            ylab[2]<-"Diversity"
         }
     }
 
     #col
-    if(col == "default") {
+    if(col[[1]] == "default") {
         col<-"black"
         #If any CIs add, grey colours
         if(ncol(summarised_data) > 3) {
@@ -57,6 +56,12 @@ extract.summary<-function(summarised_data, what, which.rare="max") {
     }
 }
 
+#Extracting summary values for a specific series
+get.series<-function(summarised_data, rare_level) {
+    output<-summarised_data[which(as.factor(unlist(summarised_data[,1])) == levels(as.factor(unlist(summarised_data[,1])))[rare_level]),]
+    level_name<<-levels(as.factor(unlist(summarised_data[,1])))[rare_level]
+    return(output)
+}
 
 
 plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
@@ -98,7 +103,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
         #Set the colours
         if(length(col[-1]) < CIs_n) {
-            col<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default")[[4]]
+            col<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
         } else {
@@ -161,7 +166,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ..
 
         #Set the colours
         if(length(col[-1]) < CIs_n) {
-            col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default")[[4]]
+            col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
         } else {
@@ -186,6 +191,35 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ..
 
 
 #rarefaction plottings
-plot.rarefaction<-function(summarised_data, ylim, xlab, ylab, col, ...) {
+plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ...) {
 #plots rarefaction curves (continuous, multiple panels if series > 1)
+
+    plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ...)
+    #plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]]) ; warning("DEBUG: plot")
+
+    #Add the CIs
+    #Check if bootstrapped
+    if(ncol(summarised_data) > 3) {
+        #How many CIs?
+        CIs_n<-(ncol(summarised_data)-3)/2
+
+        #Set the colours
+        if(length(col[-1]) < CIs_n) {
+            col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            poly_col<-col[-1]
+            poly_col<-rev(poly_col)
+        } else {
+            poly_col<-col[-1]
+            poly_col<-rev(poly_col)
+        }
+
+        #Add the CI lines (from inner to outer CIs)
+        for (cis in 1:CIs_n) {
+            #lower CI
+            lines(summarised_data[,(3+CIs_n-(cis-1))], lty=(1+cis))
+            #upper CI
+            lines(summarised_data[,3+CIs_n+cis], lty=(1+cis))
+        }
+
+    }
 }
