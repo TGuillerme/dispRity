@@ -21,8 +21,18 @@ boot.matrix(data, boostraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose
 \seealso{\link{make.boot}}
 
 \examples{
-## Some example
-1+1
+## Loading the Beck and Lee 2014 dataset
+data(BeckLee)
+
+## Bootstrapping an ordinated matrix
+boot.matrix(BeckLee_mat50, bootstraps=20)
+
+## Bootstrapping an ordinated matrix with rarefaction
+boot.matrix(BeckLee_mat50, bootstraps=20, rarefaction=TRUE)
+
+## Bootstrapping an ordinated matrix with only 10 taxa sampled
+boot.matrix(BeckLee_mat50, bootstraps=20, rarefaction=10)
+
 }
 
 \author{Thomas Guillerme}

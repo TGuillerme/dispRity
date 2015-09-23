@@ -6,7 +6,7 @@
 \description{Splits the ordinated data into a customized series list.}
 
 \usage{
-time.series(data, series)
+cust.series(data, series)
 }
 
 \arguments{
