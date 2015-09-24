@@ -19,10 +19,6 @@ export(make.metric) #utilities - not done
 export(make.model) #utilities - not done
 export(make.boot) #utilities - not done
 
-
-##Data
-#export(data_test)
-
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)

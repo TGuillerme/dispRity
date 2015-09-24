@@ -1,3 +1,42 @@
+#' @title Separating ordinated data in time series.
+#'
+#' @description Splits the ordinated data into a time series list.
+#'
+#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
+#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
+#' @param method The time series method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
+#' @param time Either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
+#' @param inc.nodes A logical value indicating whether nodes should be included in the time series. Is ignored if \code{method = "continuous"}.
+#' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
+#' @param verbose A logical value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
+#'
+#' @details
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time series is:
+#' \itemize{
+#'   \item \code{"acctran"}: always the one of the ancestral node.
+#'   \item \code{"deltran"}: always the one of the offspring node or tip.
+#'   \item \code{"punctuated"}: randomly selected from the ancestral node or the offspring node or tip.
+#'   \item \code{"gradual"}:either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the offspring node or tip.
+#' }
+#'
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+#' ## Time bining (discrete method)
+#' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
+#' binned_data <- time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+#' str(binned_data) # A list of two matrices
+#' ## Generate the same one but including nodes
+#' binned_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
+#' str(binned_data) # A list of two matrices
+#' ## Time slicing (continuous method)
+#' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "gradual", time = 5, FADLAD = BeckLee_ages)
+#'
+#' @author Thomas Guillerme
+
+
 time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbose=FALSE) {
     
     #----------------------
@@ -138,7 +177,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         time_series<-time.series.discrete(data, tree, time, FADLAD, inc.nodes)
     }
 
-    if(method == "discrete") {
+    if(method == "continuous") {
         time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
