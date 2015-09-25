@@ -1,3 +1,38 @@
+#' @title dispRity object summary
+#'
+#' @description Creates a summary of a \code{dispRity} object.
+#'
+#' @param data A \code{dispRity} object.
+#' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
+#' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input.
+#' @param rounding Optional, a value for rounding the central tendency and the confidence intervals in the output table.
+#'
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat50)
+#'
+#' ## Calculating the disparity from a customised series
+#' ## Generating the series
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#' customised_series <- cust.series(BeckLee_mat50, factors)
+#' ## Bootstrapping the data
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+#' ## Caculating the sum of ranges
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+#'
+#' ## Summarising the results
+#' summary(sum_of_ranges) # default
+#' ## Using different options
+#' summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)
+#' ## Recalling the dispRity parameters
+#'  
+#' 
+#' @seealso \code{\link{dispRity}}
+#'
+#' @author Thomas Guillerme
+
+
 summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
     # SANITIZING
@@ -5,6 +40,8 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     #DATA
     #must be class dispRity
     check.class(data, "dispRity")
+    #Check if it's a bootstrapped dispRity object
+    if(class(data) == "dispRity" & length(data) == 4) stop(paste(data$call), "\nUse the dispRity function to calculate disparity.", sep="")
     #must have 5 elements
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity

@@ -1,3 +1,56 @@
+#' @title Bootstraps an rarefies ordinated data.
+#'
+#' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
+#'
+#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
+#' @param bootstraps The number of bootstrap pseudo-replicates (\code{default = 1000}).
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data.
+#' @param rm.last.axis Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.
+#' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
+#'
+#' @return
+#' This function outputs a \code{dispRity} object containing:
+#' \item{bootstraps}{A \code{list} of boostraped matrices.}
+#' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
+#' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
+#' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+#' 
+#' @details  
+#' \code{rarefaction}: when the input is \code{numeric}, the number of taxa is set to the value(s) for each bootstrap.
+#'  
+#' \code{rm.last.axis}: the provided \code{numeric} value should be the percentage of axis to keep. By default when \code{rm.last.axis = TRUE}, 95% of the axis are preserved (the last 5% are removed).
+#'
+#' \code{boot.type}: the different bootstrap algorithms are:
+#' \itemize{
+#'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the taxa can be duplicated in each bootstrap).
+#'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one taxa can be duplicated in each boostrap).
+#' }
+#'
+#' @examples
+#' ## Load the Beck & Lee 2014 matrix
+#' data(BeckLee_mat50)
+#' 
+#' ## Bootstrapping a matrix
+#' ## Bootstrapping an ordinated matrix 20 times
+#' boot.matrix(BeckLee_mat50, bootstraps = 20)
+#' ## Bootstrapping an ordinated matrix with rarefaction
+#' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+#' ## Bootstrapping an ordinated matrix with only 7,10 and 11 taxa sampled
+#' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
+#' ## Bootstrapping an ordinated matrix with only 90% of the first axis
+#' boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.)
+#' 
+#' ## Bootstrapping a series of matrices
+#' ## Generating a dummy series of matrices
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+#' matrix.list <- cust.series(ordinated_matrix, factors)
+#' ## Bootstrapping the series of matrices 20 times (each)
+#' boot.matrix(matrix.list, bootstraps = 20)
+#' 
+#' @author Thomas Guillerme
+
 boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full") {
     #----------------------
     # SANITIZING
@@ -13,8 +66,9 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     mat_columns<-unique(unlist(lapply(data, ncol)))
     if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
     #Matrices must be k*<k-1 columns
-    total_taxa<-unique(unlist(lapply(data, rownames)))
-    if(mat_columns > (length(total_taxa) - 1)) stop("Input data must have at maximum k-1 columns")
+    # total_taxa<-unique(unlist(lapply(data, rownames)))
+    # if(mat_columns > (length(total_taxa) - 1)) stop("Input data must have at maximum k-1 columns")
+        #OPTIMISE THIS TEST
     #Making sure there is at least 3 rows per element
     if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
 

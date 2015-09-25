@@ -103,11 +103,11 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
         #Set the colours
         if(length(col[-1]) < CIs_n) {
-            col<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
-            poly_col<-col[-1]
+            col_tmp<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            poly_col<-col_tmp[-1]
             poly_col<-rev(poly_col)
         } else {
-            poly_col<-col[-1]
+            poly_col<-col_tmp[-1]
             poly_col<-rev(poly_col)
         }
 

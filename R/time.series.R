@@ -2,14 +2,16 @@
 #'
 #' @description Splits the ordinated data into a time series list.
 #'
+#' @usage time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+#'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
 #' @param method The time series method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
-#' @param inc.nodes A logical value indicating whether nodes should be included in the time series. Is ignored if \code{method = "continuous"}.
+#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time series. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
-#' @param verbose A logical value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
+#' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #'
 #' @details
 #' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time series is:
@@ -23,6 +25,7 @@
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+#'
 #' ## Time bining (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
 #' binned_data <- time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
@@ -30,9 +33,11 @@
 #' ## Generate the same one but including nodes
 #' binned_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #' str(binned_data) # A list of two matrices
+#'
 #' ## Time slicing (continuous method)
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
 #' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "gradual", time = 5, FADLAD = BeckLee_ages)
+#' str(sliced_data) # A list of 5 matrices
 #'
 #' @author Thomas Guillerme
 
@@ -79,7 +84,15 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         #or at least time 2 if continuous
         if(method == "continuous" & time < 2) stop("If method is discrete, time must be at least 2.")
         #Create the time vector
-        time <- seq(from=0, to=tree$root.time-0.01*tree$root.time, length.out=time)
+        #Make sure the oldest slice has at least 3 taxa:
+        #Set the oldest slice at 1% of tree height
+        percent<-0.01
+        while(Ntip(timeSliceTree(tree, tree$root.time-percent*tree$root.time, drop.extinct=TRUE, plot=FALSE)) < 3) {
+            #Increase percent until slice has 3 elements
+            percent <- percent+0.01
+        }
+        #Set up time
+        time <- seq(from=0, to=tree$root.time-percent*tree$root.time, length.out=time)
     }
     #time cannot be older than the root age
     if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")

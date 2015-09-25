@@ -1,4 +1,60 @@
-plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", ...){
+#' @title dispRity object plotting
+#'
+#' @description Plots a \code{dispRity} object.
+#'
+#' @param data A \code{dispRity} object.
+#' @param type Either \code{"continuous"} or \code{"discrete"}.
+#' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
+#' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
+#' @param diversity \code{logica} whether to plot the diversity levels (i.e. the number of rows in the matrix).
+#' @param discrete_type Either \code{"box"} for boxplots or \code{"line"} for distribution lines.
+#' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
+#'
+#' @details
+#' \code{type}:
+#' \itemize{
+#'   \item \code{"continuous"}: plots the results in a continuous fashion (e.g. disparity function of time)
+#'   \item \code{"discrete"}:plots the results in a discrete fashion (e.g. disparity function of factors)
+#' }
+#'
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+#'
+#' ## Discrete plotting
+#' ## Generating the series
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#' customised_series <- cust.series(BeckLee_mat50, factors)
+#' ## Bootstrapping the data
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+#' ## Caculating the sum of ranges
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+#' ## Plotting the results
+#' plot(sum_of_ranges, type = "discrete")
+#' ## Same plot with various options
+#' plot(sum_of_ranges, type = "discrete", diversity = TRUE, ylab = c("Disparity", "Number of taxa"), xlab = "Factors", discrete_type = "line", main = "Some disparity plot", col = "red")
+
+#' ## Setting the data
+#' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(120,90,60,30,0), FADLAD = BeckLee_ages)
+#' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
+#' 
+#' ## Discrete plotting
+#' plot(sum_of_ranges, type = "continuous")
+
+#' ## Summarising the results
+#' summary(sum_of_ranges) # default
+#' ## Using different options
+#' summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)
+#' ## Recalling the dispRity parameters
+#'  
+#' 
+#' @seealso \code{\link{dispRity}}
+#'
+#' @author Thomas Guillerme
+plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", ...){
 
     #SANITIZING
     #DATA
@@ -171,14 +227,14 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     #Continuous plot
     if(type == "continuous") {
         if(diversity == FALSE) {
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(4,4,4,4))
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
@@ -186,14 +242,14 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
     #Discrete plots
     if(type == "discrete") {
         if(diversity == FALSE) {
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(4,4,4,4))
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }
@@ -209,8 +265,8 @@ plot.dispRity<-function(data, type="continuous", CI=c(50,95), cent.tend=mean, ra
         #Rarefaction plots
         for(nPlot in 1:n_plots) {
             tmp_summarised_data<-get.series(summarised_data, rare_level=nPlot)
-            #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name, ...)
-            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name) ; warning("DEBUG: plot")
+            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name, ...)
+            #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name) ; warning("DEBUG: plot")
         }
 
         #Done!

@@ -1,3 +1,53 @@
+#' @title Calculates disparity from an ordinated matrix.
+#'
+#' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
+#'
+#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.
+#' @param metric A vector containing the class metric and the summary metric (see details).
+#' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#'
+#' @return
+#' This function outputs a \code{dispRity} object containing:
+#' \item{bootstraps}{A \code{list} of boostraped matrices.}
+#' \item{disparity}{A \code{list} of disparity values.}
+#' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
+#' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
+#' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
+#' 
+#' @details  
+#' \code{metric} should be input as a vector containing both the class and the summary metric.
+#' The class metric is the descriptor of the matrix (e.g. ranges of the dimensions or distance between taxa and centroid).
+#' The summary metris is the metric used to summarise the matrix descriptor (e.g. the sum of the ranges of the dimensions or the median distance between taxa and centroid).
+#' For example use \code{metric = c(sum, range)} for using the sum of the ranges of the dimensions as a disparity metric.
+#' Details on the implemented metric (class and summary) can be found at \code{\link{dispRity.metric}}.
+#' Note that metrics can be also user specified.
+#'
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat50)
+#'
+#' ## Calculating the disparity as the sum of ranges from a single matrix
+#' sum_of_ranges<-dispRity(BeckLee_mat50, metric = c(sum, range))
+#' summary(sum_of_ranges)
+#' ## Bootstraping this value
+#' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
+#' dispRity(bootstrapped_data, metric=c(sum, range))
+#'
+#' ## Calculating the disparity from a customised series
+#' ## Generating the series
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#' customised_series <- cust.series(BeckLee_mat50, factors)
+#' ## Bootstrapping the data
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+#' ## Caculating the sum of ranges
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+#' summary(sum_of_ranges)
+#' 
+#' @seealso \code{\link{boot.matrix}} for bootstraping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
+#'
+#' @author Thomas Guillerme
+
 dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     # SANITIZING
