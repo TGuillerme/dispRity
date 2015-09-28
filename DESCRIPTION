@@ -3,7 +3,7 @@ Title: A package for measuring disparity in R.
 Authors: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.0
-Date: 2015-07-11
+Date: 2015-09-28
 Description: this is a modulable package for calculating disparity in R. Disparity can be
 	calculated from any ordinated matrix. Traditionally one ordinates cladistic or
 	morphometric data but the package is not restrictive, ecological data or any other
