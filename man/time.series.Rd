@@ -50,12 +50,12 @@ data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ag
 ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
 time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 ## Generate the same one but including nodes
-binned_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
+time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 
 ## Time slicing (continuous method)
 ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "gradual", time = 5, FADLAD = BeckLee_ages)
-lapply(sliced_data$data, class) # A list of 5 matrices
+sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+str(lapply(sliced_data$data, class)) # A list of 5 matrices
 }
 \author{
 Thomas Guillerme

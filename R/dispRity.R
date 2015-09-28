@@ -44,7 +44,17 @@
 #' ## Caculating the sum of ranges
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
 #' summary(sum_of_ranges)
-#' 
+#'
+
+
+#' ## Setting the data
+#' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+#' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
+
+
+
 #' @seealso \code{\link{boot.matrix}} for bootstraping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
 #'
 #' @author Thomas Guillerme

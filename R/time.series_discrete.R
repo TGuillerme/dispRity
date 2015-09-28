@@ -68,5 +68,10 @@ time.series.discrete<-function(data, tree, time, FADLAD, inc.nodes) {
         }
     }
 
+    #Adding the time series names
+    if(!is.null(name_list)) {
+        names(time_series)<-name_list
+    }
+
     return(time_series)
 }
