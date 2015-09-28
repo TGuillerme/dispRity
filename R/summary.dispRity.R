@@ -103,7 +103,7 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     results_cent<-lapply(BSresults, cent.tend)
 
     #Create the results table
-    results_table<-as.data.frame(cbind(rep(data$series, each=length(results[[1]])), diversity.count(data[[1]]), results_cent))
+    results_table<-as.data.frame(cbind(rep(data$series, unlist(lapply(results, length))), diversity.count(data[[1]]), results_cent))
 
     #Add columns names
     if(is.null(match_call$cent.tend)) {

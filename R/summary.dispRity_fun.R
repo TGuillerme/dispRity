@@ -1,13 +1,13 @@
 #Bootstrap unlisting
 recursive.unlist<-function(results) {
     n_series<-length(results)
-    n_rare<-length(results[[1]])
+    n_rare<-unlist(lapply(results, length))
     n_bootstraps<-length(results[[1]][[1]])
 
     series_rare_boot<-list()
     for(series in 1:n_series) {
         rare_boot<-list()
-        for (rare in 1:n_rare) {
+        for (rare in 1:n_rare[series]) {
             rare_boot[[rare]]<-unlist(results[[series]][[rare]])
         }
         series_rare_boot[[series]]<-rare_boot
