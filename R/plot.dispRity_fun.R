@@ -43,16 +43,39 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
 
 #Extract summary values
 extract.summary<-function(summarised_data, what, which.rare="max") {
-    if(what=="column") {
-        return(which(summarised_data$n == max(unlist(summarised_data[[2]]))))
+    #Set up which rarefaction function
+    if(is.numeric(which.rare)) {
+        rare.fun<-FALSE
     } else {
-        if(is.numeric(which.rare)) {
-            return(unlist(summarised_data[which(summarised_data$n == which.rare), what]))
-        } else {
-            if(which.rare == "max") which.rare.fun<-max
-            if(which.rare == "min") which.rare.fun<-min
-        return(unlist(summarised_data[which(summarised_data$n == which.rare.fun(unlist(summarised_data[[2]]))), what]))
+        rare.fun<-TRUE
+        if(which.rare == "max") which.rare.fun<-max
+        if(which.rare == "min") which.rare.fun<-min
+    }
+
+    #Extracting specific a level of rarefaction
+    if(rare.fun == FALSE) {
+        which_rows<-which(unlist(summarised_data$n) == which.rare)
+    }
+
+    #Extracting the minimum or maximum rarefaction
+    if(rare.fun == TRUE) {
+        #Get the different levels
+        series_levels<-unique(summarised_data$series)
+        #Get the right rarefaction value
+        which_rows<-NULL
+        for(series in 1:length(series_levels)) {
+            #Selecting the right series
+            right_series<-which(unlist(summarised_data$series) == series_levels[series])
+            #Selecting the max/min from there
+            which_rows[series]<-which.rare.fun(right_series)
         }
+    }
+
+    #Return the right values
+    if(what == "rows") {
+        return(unlist(which_rows))
+    } else {
+        return(unlist(summarised_data[which_rows, what]))
     }
 }
 
@@ -83,10 +106,12 @@ plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
 #discrete plotting
 plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...) {
     #How many points?
-    points_n<-length(extract.summary(summarised_data, "column"))
+    points_n<-length(unique(summarised_data$series))
 
     #dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat<-matrix(1:points_n, ncol=points_n)
+
+    #BUG
     colnames(dummy_mat)<-extract.summary(summarised_data, 1)
 
     #Empty plot
@@ -99,7 +124,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
         CIs_n<-(ncol(summarised_data)-3)/2
 
         #Set the width (default)
-        width=points_n/5
+        width=points_n/10
 
         #Set the colours
         if(length(col[-1]) < CIs_n) {
@@ -107,7 +132,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
             poly_col<-col_tmp[-1]
             poly_col<-rev(poly_col)
         } else {
-            poly_col<-col_tmp[-1]
+            poly_col<-col[-1]
             poly_col<-rev(poly_col)
         }
 
@@ -151,13 +176,20 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 }
 
 #continuous plotting
-plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ...) {
+plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...) {
     #How many points?
-    points_n<-length(extract.summary(summarised_data, "column"))
+    points_n<-length(unique(summarised_data$series))
 
     #Plot the central tendency
-    plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
-    #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+    if(time_slicing[1] == FALSE) {
+        #Plot with standard xaxis
+        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+    } else {
+        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+        axis(1, 1:points_n, time_slicing)
+    }
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {

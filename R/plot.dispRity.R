@@ -7,8 +7,9 @@
 #' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
-#' @param diversity \code{logica} whether to plot the diversity levels (i.e. the number of rows in the matrix).
+#' @param diversity \code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix).
 #' @param discrete_type Either \code{"box"} for boxplots or \code{"line"} for distribution lines.
+#' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
@@ -24,24 +25,26 @@
 #'
 #' ## Setting the data
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(120,90,60,30,0), FADLAD = BeckLee_ages)
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
 #' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
 #' 
 #' ## Discrete plotting
-#' plot(sum_of_ranges, type = "continuous")
-
-#' ## Summarising the results
-#' summary(sum_of_ranges) # default
+#' plot(sum_of_ranges, type = "discrete")
 #' ## Using different options
-#' summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)
-#' ## Recalling the dispRity parameters
-#'  
+#' plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"), 
+#'      ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
 #' 
-#' @seealso \code{\link{dispRity}}
+#' ## Continuous plotting (all default options)
+#' plot(sum_of_ranges, type = "continuous")
+#' ## Using different options (with non time.slicing option)
+#' plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red", "orange", "yellow"))
+#' 
+#' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
 #'
 #' @author Thomas Guillerme
-plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", ...){
+
+plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, ...){
 
     #SANITIZING
     #DATA
@@ -63,7 +66,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     } else {
         is.bootstrapped<-FALSE
     }
-    
+
     #CI
     #Only check if the data is bootstrapped
     if(is.bootstrapped == TRUE) {
@@ -97,6 +100,19 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #if type is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
     if(type == "d") type <- "discrete"
     if(type == "c") type <- "continuous"
+
+    #If continuous, set time to continuous Ma (default)
+    if(type == "continuous" & time.series == TRUE) {
+        #Check if time.slicing was used (saved in call)
+        if(grep("Data was split using continuous method", data$call) == 1) {
+            time_slicing<-data$series
+            xlab<-"Time (Ma)"
+        } else {
+            time_slicing<-FALSE
+        }
+    } else {
+        time_slicing<-FALSE
+    }
 
     #diversity
     #must be logical
@@ -214,11 +230,11 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #Continuous plot
     if(type == "continuous") {
         if(diversity == FALSE) {
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(4,4,4,4))
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, ...)
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
             plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
             #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
