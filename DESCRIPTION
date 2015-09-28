@@ -17,4 +17,7 @@ Depends:
     ape,
     paleotree,
 License: GPL (>= 2)
-Suggests: testthat
+VignetteBuilder: knitr 
+Suggests:
+    testthat
+    knitr

@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+
+\newcommand{\dispRity}{\texttt{dispRity} }
+\newcommand{\R}{\texttt{R} }
+
+\begin{document}
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
+options(formatR.arrow=TRUE,width=90)
+@
+
+
+\title{dispRity demo}
+
+
+\author{Thomas Guillerme}
+
+\maketitle
+
+This a quick demo to go through the beta version of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}).
+Many parts are still missing (see section \ref{whatsleft}) but this version should be running all right and give an idea of what's implemented in the package.
+
+\section{Before starting}
+
+\dispRity is a package for calculating disparity in \R.
+What is disparity? Well that's a more complex question...
+To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
+% More explanations to put here?
+
+\subsection{Installation}
+You can install this package pretty easily if you use the latest version of \R and \texttt{devtools}.
+Just copy past the following
+<<installation, eval=FALSE>>=
+install.packages("devtools")
+library(devtools)
+install_github("TGuillerme/dispRity", ref="release")
+library(dispRity)
+@
+
+Note that we use here the \texttt{release} branch which is version \Sexpr{packageVersion("dispRity")}.
+If you want the piping-hot (and full of bugs) version, change the option \texttt{ref="release"} to \texttt{ref="master"}.
+
+This package depends heavily on the \texttt{ape} package as well as the nice function \texttt{timeSliceTree::paleotree}.
+However, I recommend to also install the packages \texttt{geomorph} or \texttt{Claddis} if you want to try this example on your own morphometric or cladistic data.
+
+\subsection{Getting the data}
+You'll need to do this and that
+
+\section{A super quick go through}
+This package allows to:
+\begin{enumerate}
+    \item Splitting the data
+    \item Bootstrapping the data
+    \item Calculating disparity
+    \item Summarising the results
+\end{enumerate}
+
+<<Quick go, fig.width=4, fig.height=4, out.width='.4\\linewidth'>>=
+## Separate your ordinated data into different series for example
+1+1
+## Bootstrap this data
+1+1
+## Calculate a disparity metric from it
+1+1
+# Summarise and plot the disparity
+summary(1)
+plot(1)
+@ 
+
+
+\section{In more details}
+
+\subsection{Splitting the data}
+
+\subsection{Bootstrapping the data}
+
+\subsection{Calculating disparity}
+
+\subsection{Summarising the results}
+
+\section{What's left?}
+\label{whatsleft}
+
+\end{document}

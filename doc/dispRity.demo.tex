@@ -1,0 +1,168 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+
+\newcommand{\dispRity}{\texttt{dispRity} }
+\newcommand{\R}{\texttt{R} }
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+\title{dispRity demo}
+
+
+\author{Thomas Guillerme}
+
+\maketitle
+
+This a quick demo to go through the beta version of the \dispRity package (v.0.1.0).
+Many parts are still missing (see section \ref{whatsleft}) but this version should be running all right and give an idea of what's implemented in the package.
+
+\section{Before starting}
+
+\dispRity is a package for calculating disparity in \R.
+What is disparity? Well that's a more complex question...
+To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
+% More explanations to put here?
+
+\subsection{Installation}
+You can install this package pretty easily if you use the latest version of \R and \texttt{devtools}.
+Just copy past the following
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{install.packages}\hlstd{(}\hlstr{"devtools"}\hlstd{)}
+\hlkwd{library}\hlstd{(devtools)}
+\hlkwd{install_github}\hlstd{(}\hlstr{"TGuillerme/dispRity"}\hlstd{,} \hlkwc{ref}\hlstd{=}\hlstr{"release"}\hlstd{)}
+\hlkwd{library}\hlstd{(dispRity)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Note that we use here the \texttt{release} branch which is version 0.1.0.
+If you want the piping-hot (and full of bugs) version, change the option \texttt{ref="release"} to \texttt{ref="master"}.
+
+This package depends heavily on the \texttt{ape} package as well as the nice function \texttt{timeSliceTree::paleotree}.
+However, I recommend to also install the packages \texttt{geomorph} or \texttt{Claddis} if you want to try this example on your own morphometric or cladistic data.
+
+\subsection{Getting the data}
+You'll need to do this and that
+
+\section{A super quick go through}
+This package allows to:
+\begin{enumerate}
+    \item Separate your ordinated data into different series for example
+    \item Bootstrap this data
+    \item Calculate a disparity metric from it
+    \item Summarise and plot the disparity
+\end{enumerate}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Separate your ordinated data into different series for example}
+\hlnum{1}\hlopt{+}\hlnum{1}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\begin{alltt}
+\hlcom{## Bootstrap this data}
+\hlnum{1}\hlopt{+}\hlnum{1}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\begin{alltt}
+\hlcom{## Calculate a disparity metric from it}
+\hlnum{1}\hlopt{+}\hlnum{1}
+\end{alltt}
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+\begin{alltt}
+\hlcom{# Summarise and plot the disparity}
+\hlkwd{summary}\hlstd{(}\hlnum{1}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       1       1       1       1       1       1
+\end{verbatim}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(}\hlnum{1}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.4\linewidth]{figure/minimal-Quick_go-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\section{What's left?}
+\label{whatsleft}
+
+\end{document}
