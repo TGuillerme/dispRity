@@ -9,7 +9,6 @@ Or soon to be implemented...
 
 ##Installing dispRity
 #### Go to the [master branch](https://github.com/TGuillerme/dispRity) for the piping hot news!
-###### You can install it following the instruction below but it's likely to crash.
 ```r
 #install.packages("devtools")
 library(devtools)
