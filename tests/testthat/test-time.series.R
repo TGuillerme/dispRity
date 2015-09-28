@@ -126,3 +126,14 @@ test_that("Sanitizing works for time.series (wrapper)", {
     #FADlAD
     expect_error(time.series(data, tree, method, time, model, inc.nodes, FADLAD=data.frame(nrow=2, ncol=3), verbose=FALSE))
 })
+
+#Output
+test_that("Output format is correct", {
+    out_test<-time.series(data, tree, method, time, model, inc.nodes, FADLAD)
+    #Class
+    expect_is(out_test, "dispRity")
+    #Length
+    expect_equal(length(out_test), 3)
+    #Names
+    expect_equal(names(out_test), c("data", "taxa", "series"))
+})

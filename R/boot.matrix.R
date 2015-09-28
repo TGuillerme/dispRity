@@ -15,7 +15,8 @@
 #' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
 #' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
-#' 
+#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#'
 #' @details  
 #' \code{rarefaction}: when the input is \code{numeric}, the number of taxa is set to the value(s) for each bootstrap.
 #'  
@@ -56,19 +57,43 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     # SANITIZING
     #----------------------
     #DATA
-    #If matrix, transform to list
-    if(class(data) == "matrix") {
-        data<-list(data)
+    #If class is dispRity, data is serial
+    if(class(data) == "dispRity") {
+        #Must be proper format
+        check.length(data, 3, "data must be either a matrix, a list of matrices or an output from time.series or cust.series.")
+        #Extracting the info
+        taxa_list<-data$taxa
+        series_list<-data$series[-1]
+        series_type<-data$series[1]
+        data<-data$data
+        #Set previous call logic
+        prev_call<-TRUE
+
+    } else {
+        #Set previous call logic
+        prev_call<-FALSE
+
+        #If data is matrix, transform to list
+        if(class(data) == "matrix") {
+            data<-list(data)
+        }
+
+        #Data must be a list
+        check.class(data, "list", " must be either a matrix, a list of matrices or an output from time.series or cust.series.")
+
+        #Extract info
+        taxa_list<-unlist(lapply(data, rownames))
+        names(taxa_list)<-NULL
+        series_list<-names(data)
+        if(is.null(series_list)) {
+            series_list<-length(data)
+        }
     }
-    #Must be a list
-    check.class(data, "list", " must be a matrix or a list of matrices.")
+
     #Each matrix must have the same number of columns
     mat_columns<-unique(unlist(lapply(data, ncol)))
     if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
-    #Matrices must be k*<k-1 columns
-    # total_taxa<-unique(unlist(lapply(data, rownames)))
-    # if(mat_columns > (length(total_taxa) - 1)) stop("Input data must have at maximum k-1 columns")
-        #OPTIMISE THIS TEST
+
     #Making sure there is at least 3 rows per element
     if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
 
@@ -187,6 +212,13 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
 
     #Setting the output
     boot.call<-paste("Data was bootstrapped ", bootstraps, " times, using the ", boot.type, " bootstrap method.", sep="")
+
+    #Series
+    if(prev_call == TRUE) {
+        boot.call<-paste("Data was split using ", series_type, " method.\n", boot.call, sep="")
+    }
+
+    #Rarefaction
     if(logic.rare == TRUE) {
         if(rarefaction == TRUE) {
             boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 taxa).", sep="\n")
@@ -199,16 +231,11 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
             boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " taxa.", sep="")
         }
     }
+
+    #Remove last axis
     if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
 
     #SIZE
-    taxa_list<-unlist(lapply(data, rownames))
-    names(taxa_list)<-NULL
-    series_list<-names(data)
-    if(is.null(series_list)) {
-        series_list<-length(data)
-    }
-
     output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, "call"=boot.call)
     class(output)<-c("dispRity")
 

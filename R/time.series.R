@@ -13,6 +13,13 @@
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #'
+#' @return
+#' This function outputs a \code{dispRity} object containing:
+#' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+#' \item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+#' \item{series}{A \code{vector} containing the name of the series.}
+#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' 
 #' @details
 #' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time series is:
 #' \itemize{
@@ -194,6 +201,19 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
         time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
-    return(time_series)
+    #----------------------
+    # OUTPUT OBJECT ("dispRity")
+    #----------------------
+
+    taxa_list<-rownames(data)
+    series_list<-names(time_series)
+    if(is.null(series_list)) {
+        series_list<-length(data)
+    }
+
+    output<-list("data"=time_series, "taxa"=taxa_list, "series"=c(method, series_list))
+    class(output)<-c("dispRity")
+
+    return(output)
 
 }

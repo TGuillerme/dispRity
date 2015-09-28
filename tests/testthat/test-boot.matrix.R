@@ -57,7 +57,6 @@ test_that("Removing the last axis works", {
 })
 
 #Input is a time.series
-source("../../R/cust.series.R")
 factor<-as.data.frame(matrix(data=c(rep("series1", nrow(data)/2),rep("series2", nrow(data)/2)), nrow=nrow(data), ncol=1))
 rownames(factor)<-rownames(data)
 data<-cust.series(data, factor)
@@ -70,7 +69,7 @@ test_that("Rarefaction is 1 + bootstraps + series", {
 
 #Rarefaction = TRUE, bootstraps = 5
 test_that("Rarefaction is TRUE + bootstraps + series", {
-    expect_equal(length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]]), nrow(data[[1]])-2)
+    expect_equal(length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]]), nrow(data[[1]][[1]])-2)
     expect_equal(length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]][[1]]), 5)
 })
 
@@ -90,8 +89,8 @@ expect_equal(nrow(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single
 
 #Remove last axis
 test_that("Rarefaction is 1 + bootstraps + series + single boot.type + rm.last axis", {
-expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=TRUE)[[1]][[1]][[1]][[1]]), ncol(data[[1]])-6)
-expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.5)[[1]][[1]][[1]][[1]]), ncol(data[[1]])-35)
+expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=TRUE)[[1]][[1]][[1]][[1]]), ncol(data[[1]][[1]])-6)
+expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.5)[[1]][[1]][[1]][[1]]), ncol(data[[1]][[1]])-35)
 })
 
 #Rarefaction = c(5, 8:10)

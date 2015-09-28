@@ -13,6 +13,7 @@
 #' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
 #' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+#' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
@@ -53,41 +54,66 @@ dispRity<-function(data, metric, verbose=FALSE) {
     # SANITIZING
     #----------------------
     #DATA
-    #Check if matrix is a bootstrapped list
+    #Check if the input is a dispRity object
     if(class(data) == "dispRity") {
-        is.bootstraped<-TRUE
-        BSresult<-data$bootstraps
-        boot.call<-data$call
-        taxa_list<-data$taxa
-        series_list<-data$series
+
+        #If length is 3, no bootstrap, just time series
+        if(length(data) == 3) {
+            #Data is not bootstrapped
+            is.bootstraped<-FALSE
+            #Extracting the info
+            prev_info<-TRUE
+            taxa_list<-data$taxa
+            series_list<-data$series[-1]
+            series_type<-data$series[1]
+            data<-data$data
+        }
+
+        #If length is 4, bootstrap (+ time series?)
+        if(length(data) == 4) {
+            #Data is bootstrapped
+            is.bootstraped<-TRUE
+            #Extracting the info
+            BSresult<-data$bootstraps
+            boot.call<-data$call
+            taxa_list<-data$taxa
+            series_list<-data$series
+        }
+
     } else {
+        #Data is not bootstrapped
         is.bootstraped<-FALSE
+        prev_info<-FALSE
+    }
+
+    #Checking the matrix list (if bs=F)
+    if(is.bootstraped == FALSE) {
+
         #If matrix, transform to list
         if(class(data) == "matrix") {
             data<-list(data)
         }
+
         #Must be a list
         check.class(data, "list", " must be a matrix or a list of matrices.")
         #Each matrix must have the same number of columns
         mat_columns<-unique(unlist(lapply(data, ncol)))
         if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
-        #Matrices must be k*<k-1 columns
-        total_taxa<-unique(unlist(lapply(data, rownames)))
-        if(mat_columns > (length(total_taxa) - 1)) stop("Input data must have at maximum k-1 columns")
         #Making sure there is at least 3 rows per element
         if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
 
-        #SIZE data
-        taxa_list<-unlist(lapply(data, rownames))
-        names(taxa_list)<-NULL
-        series_list<-names(data)
-        if(is.null(series_list)) {
-            series_list<-length(data)
+        #Setting the info
+        if(prev_info == FALSE) {
+            taxa_list<-unlist(lapply(data, rownames))
+            names(taxa_list)<-NULL
+            series_list<-names(data)
+            if(is.null(series_list)) {
+                series_list<-length(data)
+            }            
         }
 
         #Make the data bootstrap results format (0 bootstrap)
-        BSresult<-boot.matrix(data, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$bootstrap
-
+        BSresult<-boot.matrix(data, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$bootstrap        
     }
 
     #METRIC
@@ -144,8 +170,14 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     #call details
     dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]], " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep="")
-    #Add BS details
-    if(is.bootstraped == TRUE) dispRity.call<-paste(dispRity.call, boot.call, sep="\n")
+    #Add BS (and series) details
+    if(is.bootstraped == TRUE) {
+        dispRity.call<-paste(dispRity.call, boot.call, sep="\n")
+    } else {
+        if(prev_info == TRUE) {
+            dispRity.call<-paste(dispRity.call, "\nData was split using ", series_type, " method.", sep="")
+        }
+    }
 
 
     #Creating the output object

@@ -7,6 +7,13 @@
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param series A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames and a single column.
 #'
+#' @return
+#' This function outputs a \code{dispRity} object containing:
+#' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+#' \item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+#' \item{series}{A \code{vector} containing the name of the series.}
+#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' 
 #' @details
 #' The customized series can typically be a factor. For a finite number of taxonomic groups, traits, etc.
 #'
@@ -59,5 +66,18 @@ cust.series<-function(data, factor) {
     #Adding names to the list (the levels of the custom series)
     names(series_list)<-levels(as.factor(factor[,1]))
 
-    return(series_list)
+    #----------------------
+    # OUTPUT OBJECT ("dispRity")
+    #----------------------
+
+    taxa_list<-rownames(data)
+    series_names<-names(series_list)
+    if(is.null(series_names)) {
+        series_names<-length(data)
+    }
+
+    output<-list("data"=series_list, "taxa"=taxa_list, "series"=c("custom", series_names))
+    class(output)<-c("dispRity")
+
+    return(output)
 }

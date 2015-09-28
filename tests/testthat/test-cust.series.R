@@ -30,6 +30,16 @@ test<-cust.series(data, factor)
 
 #Test
 test_that("cust.series works", {
-    expect_equal(length(test), 2)
-    expect_equal(nrow(test[[1]]), 5)
+    expect_equal(length(test), 3)
+    expect_equal(nrow(test[[1]][[1]]), 5)
+})
+
+#Output
+test_that("Output format is correct", {
+    #Class
+    expect_is(test, "dispRity")
+    #Length
+    expect_equal(length(test), 3)
+    #Names
+    expect_equal(names(test), c("data", "taxa", "series"))
 })

@@ -22,19 +22,6 @@
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
 #'
-#' ## Discrete plotting
-#' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-#' customised_series <- cust.series(BeckLee_mat50, factors)
-#' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
-#' ## Caculating the sum of ranges
-#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
-#' ## Plotting the results
-#' plot(sum_of_ranges, type = "discrete")
-#' ## Same plot with various options
-#' plot(sum_of_ranges, type = "discrete", diversity = TRUE, ylab = c("Disparity", "Number of taxa"), xlab = "Factors", discrete_type = "line", main = "Some disparity plot", col = "red")
-
 #' ## Setting the data
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
 #' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(120,90,60,30,0), FADLAD = BeckLee_ages)

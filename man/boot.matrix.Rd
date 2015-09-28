@@ -26,6 +26,7 @@ This function outputs a \code{dispRity} object containing:
 \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
 \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+\code{dispRity} objects can be summarised using \code{print} (S3).
 }
 \description{
 Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.

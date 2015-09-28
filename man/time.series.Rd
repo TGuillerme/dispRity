@@ -23,6 +23,13 @@ time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.}
 }
+\value{
+This function outputs a \code{dispRity} object containing:
+\item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+\item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+\item{series}{A \code{vector} containing the name of the series.}
+\code{dispRity} objects can be summarised using \code{print} (S3).
+}
 \description{
 Splits the ordinated data into a time series list.
 }
