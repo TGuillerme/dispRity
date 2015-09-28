@@ -137,3 +137,23 @@ test_that("Output format is correct", {
     #Names
     expect_equal(names(out_test), c("data", "taxa", "series"))
 })
+
+
+#Example TESTING
+test_that("Example works", {
+    data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+    ex1<-time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+    expect_equal(length(ex1), 3)
+    expect_equal(length(ex1[[1]]), 2)
+    expect_equal(dim(ex1[[1]][[1]]), c(8,48))
+
+    ex2<-time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
+    expect_equal(length(ex2), 3)
+    expect_equal(length(ex2[[1]]), 2)
+    expect_equal(dim(ex2[[1]][[1]]), c(32,97))
+
+    ex3<-time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+    expect_equal(length(ex3), 3)
+    expect_equal(length(ex3[[1]]), 5)
+    expect_equal(dim(ex3[[1]][[1]]), c(3,97))
+})

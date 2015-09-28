@@ -100,6 +100,8 @@ expect_equal(length(boot.matrix(data, bootstraps, rarefaction=c(5, 8:10))), 4)
 
 #Examples
 test_that("Example works", {
+    data(BeckLee_mat50)
+    
     ex1<-boot.matrix(BeckLee_mat50, bootstraps = 20)
     expect_is(ex1, "dispRity")
     expect_equal(length(ex1), 4)

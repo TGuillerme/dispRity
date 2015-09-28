@@ -75,3 +75,27 @@ test_that("dispRity works with a bootstrapped, rarefied, custom series", {
     expect_equal(length(test$series), 2)
     expect_equal(length(test$taxa), 50)
 })
+
+#testing example
+test_that("Example works", {
+    data(BeckLee_mat50)
+
+    sum_of_ranges<-dispRity(BeckLee_mat50, metric = c(sum, range))
+    ex1<-summary(sum_of_ranges)
+    expect_is(ex1, "data.frame")
+    expect_equal(dim(ex1), c(1,3))
+
+    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
+    ex2<-dispRity(bootstrapped_data, metric=c(sum, range))
+    expect_is(ex2, "dispRity")
+    expect_equal(dim(ex2[[1]][[1]][[1]][[1]]), c(50,48))
+
+    factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_series <- cust.series(BeckLee_mat50, factors)
+    set.seed(1)
+    bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+    sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+    ex3<-summary(sum_of_ranges)
+    expect_is(ex3, "data.frame")
+    expect_equal(ex3[,3], c(32.67,33.85))
+})
