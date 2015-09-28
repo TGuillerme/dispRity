@@ -37,8 +37,7 @@ sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
 ## Summarising the results
 summary(sum_of_ranges) # default
 ## Using different options
-summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)
-## Recalling the dispRity parameters
+summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0, recall=TRUE)
 }
 \author{
 Thomas Guillerme

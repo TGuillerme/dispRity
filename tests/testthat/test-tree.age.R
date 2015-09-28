@@ -37,3 +37,13 @@ test_that("tree.age works", {
     #max age is 1 (age)
     expect_equal(max(tree_age[,1]), 1)
 })
+
+#Testing the example
+test_that("Example runs", {
+    ex1<-tree.age(rtree(10), age=50)
+    expect_is(ex1, "data.frame")
+    expect_equal(dim(ex1), c(19,2))
+    ex2<-tree.age(rtree(10), order='present')
+    expect_is(ex1, "data.frame")
+    expect_equal(dim(ex1), c(19,2))    
+})

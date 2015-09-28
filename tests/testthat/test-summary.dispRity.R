@@ -95,3 +95,14 @@ test_that("Works with series, bootstraps and rarefaction", {
     expect_equal(ncol(test), 7)
 })
 
+#Example
+test_that("Example works", {
+    factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_series <- cust.series(BeckLee_mat50, factors)
+    bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+    sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+    expect_is(summary(sum_of_ranges), "data.frame")
+    expect_equal(dim(summary(sum_of_ranges)), c(2,7))
+    expect_is(summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0), "data.frame")
+    expect_equal(dim(summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)), c(2,5))
+})

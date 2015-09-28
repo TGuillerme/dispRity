@@ -43,3 +43,14 @@ test_that("Output format is correct", {
     #Names
     expect_equal(names(test), c("data", "taxa", "series"))
 })
+
+#Example
+test_that("Example works", {
+    ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+    factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+    ex1<-cust.series(ordinated_matrix, factors)
+    expect_is(ex1, "dispRity")
+    expect_equal(length(ex1),3)
+    expect_equal(dim(ex1[[1]][[1]]), c(5,9))
+    expect_equal(length(ex1[[1]]), 2)
+})

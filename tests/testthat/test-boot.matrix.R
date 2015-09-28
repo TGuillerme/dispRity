@@ -97,3 +97,35 @@ expect_equal(ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.
 test_that("Multiple rarefaction works", {
 expect_equal(length(boot.matrix(data, bootstraps, rarefaction=c(5, 8:10))), 4)
 })
+
+#Examples
+test_that("Example works", {
+    ex1<-boot.matrix(BeckLee_mat50, bootstraps = 20)
+    expect_is(ex1, "dispRity")
+    expect_equal(length(ex1), 4)
+    expect_equal(dim(ex1[[1]][[1]][[1]][[1]]), c(50,48))
+
+    ex2<-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+    expect_is(ex2, "dispRity")
+    expect_equal(length(ex2), 4)
+    expect_equal(dim(ex2[[1]][[1]][[1]][[1]]), c(3,48))
+
+    ex3<-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
+    expect_is(ex3, "dispRity")
+    expect_equal(length(ex3), 4)
+    expect_equal(dim(ex3[[1]][[1]][[1]][[1]]), c(7,48))
+
+    ex4<-boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
+    expect_is(ex4, "dispRity")
+    expect_equal(length(ex4), 4)
+    expect_equal(dim(ex4[[1]][[1]][[1]][[1]]), c(50,37))
+
+    ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+    factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+    matrix.list <- cust.series(ordinated_matrix, factors)
+    ex5<-boot.matrix(matrix.list, bootstraps = 20)
+    expect_is(ex5, "dispRity")
+    expect_equal(length(ex5), 4)
+    expect_equal(dim(ex5[[1]][[1]][[1]][[1]]), c(5,9))
+    expect_equal(length(ex5[[1]]), 2)
+})

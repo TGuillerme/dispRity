@@ -35,16 +35,16 @@
 #'
 #' ## Time bining (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-#' binned_data <- time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
-#' str(binned_data) # A list of two matrices
+#' time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+# Does not work properly!
 #' ## Generate the same one but including nodes
 #' binned_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
-#' str(binned_data) # A list of two matrices
+# Does not work properly!
 #'
 #' ## Time slicing (continuous method)
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
 #' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "gradual", time = 5, FADLAD = BeckLee_ages)
-#' str(sliced_data) # A list of 5 matrices
+#' lapply(sliced_data$data, class) # A list of 5 matrices
 #'
 #' @author Thomas Guillerme
 
