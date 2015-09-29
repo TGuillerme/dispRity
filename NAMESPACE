@@ -19,6 +19,13 @@ export(make.metric) #utilities - not done
 export(make.model) #utilities - not done
 export(make.boot) #utilities - not done
 
+##disparity metrics
+export(variances)
+export(ranges)
+export(centroids)
+export(mode.val)
+
+
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)

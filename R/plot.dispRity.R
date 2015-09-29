@@ -27,7 +27,7 @@
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
 #' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
 #' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
-#' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 #' 
 #' ## Discrete plotting
 #' plot(sum_of_ranges, type = "discrete")

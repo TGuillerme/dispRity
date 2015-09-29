@@ -32,7 +32,7 @@ customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
 ## Caculating the sum of ranges
-sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
 ## Summarising the results
 summary(sum_of_ranges) # default

@@ -20,7 +20,7 @@
 #' \code{metric} should be input as a vector containing both the class and the summary metric.
 #' The class metric is the descriptor of the matrix (e.g. ranges of the dimensions or distance between taxa and centroid).
 #' The summary metris is the metric used to summarise the matrix descriptor (e.g. the sum of the ranges of the dimensions or the median distance between taxa and centroid).
-#' For example use \code{metric = c(sum, range)} for using the sum of the ranges of the dimensions as a disparity metric.
+#' For example use \code{metric = c(sum, ranges)} for using the sum of the ranges of the dimensions as a disparity metric.
 #' Details on the implemented metric (class and summary) can be found at \code{\link{dispRity.metric}}.
 #' Note that metrics can be also user specified.
 #'
@@ -29,11 +29,11 @@
 #' data(BeckLee_mat50)
 #'
 #' ## Calculating the disparity as the sum of ranges from a single matrix
-#' sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, range))
+#' sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
 #' summary(sum_of_ranges)
 #' ## Bootstraping this value
 #' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
-#' dispRity(bootstrapped_data, metric=c(sum, range))
+#' dispRity(bootstrapped_data, metric=c(sum, ranges))
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
@@ -42,7 +42,7 @@
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
 #' ## Caculating the sum of ranges
-#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, range))
+#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 #' summary(sum_of_ranges)
 #'
 #' @seealso \code{\link{boot.matrix}} for bootstraping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.

@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dispRity.metrics variance range centroid mode.val
+#' @aliases dispRity.metrics variances ranges centroids mode.val
 #'
 #' @title Disparity metrics
 #'
@@ -14,9 +14,9 @@
 #' @details
 #' These are inbuilt functions for calculating disparity. The currently implemented class.metric are:
 #' \itemize{
-#'   \item \code{range}: calculates the range of each axis of the matrix.
-#'   \item \code{variance}: calculates the variance of each axis of the matrix.
-#'   \item \code{centroid}: calculates the euclidean distance between each row and the centroid of the matrix.
+#'   \item \code{ranges}: calculates the range of each axis of the matrix.
+#'   \item \code{variances}: calculates the variance of each axis of the matrix.
+#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
 #' }
 #' The currently implemented summary.metric are:
 #' \itemize{
@@ -33,12 +33,12 @@
 #' @author Thomas Guillerme
 
 #Calculating each axis variance
-variance<-function(matrix) {
+variances<-function(matrix) {
     return(apply(matrix, 2, var))
 }
 
 #Calculating each axis ranges
-range<-function(matrix) {
+ranges<-function(matrix) {
     #Max values
     max_values<-apply(matrix, 2, max)
     #Min values
@@ -49,7 +49,7 @@ range<-function(matrix) {
 }
 
 #Calculating the distance from centroid
-centroid<-function(matrix) {
+centroids<-function(matrix) {
 
     #Calculating the centroid point
     centroid<-apply(matrix, 2, mean)
