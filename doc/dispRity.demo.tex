@@ -106,61 +106,280 @@ If you want the piping-hot (and full of bugs) version, change the option \texttt
 This package depends heavily on the \texttt{ape} package as well as the nice function \texttt{timeSliceTree::paleotree}.
 However, I recommend to also install the packages \texttt{geomorph} or \texttt{Claddis} if you want to try this example on your own morphometric or cladistic data.
 
-\subsection{Getting the data}
+\subsection{Which data?}
 You'll need to do this and that
-
-\section{A super quick go through}
-This package allows to:
-\begin{enumerate}
-    \item Separate your ordinated data into different series for example
-    \item Bootstrap this data
-    \item Calculate a disparity metric from it
-    \item Summarise and plot the disparity
-\end{enumerate}
+%To develop
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## Separate your ordinated data into different series for example}
-\hlnum{1}\hlopt{+}\hlnum{1}
+\hlcom{## Loading demo and the package data}
+\hlkwd{library}\hlstd{(dispRity)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: paleotree}}\begin{alltt}
+\hlcom{## An ordinated matrix with the tips only}
+\hlkwd{data}\hlstd{(BeckLee_mat50)}
+\hlkwd{dim}\hlstd{(BeckLee_mat50)}
 \end{alltt}
 \begin{verbatim}
-## [1] 2
+## [1] 50 48
 \end{verbatim}
 \begin{alltt}
-\hlcom{## Bootstrap this data}
-\hlnum{1}\hlopt{+}\hlnum{1}
+\hlkwd{head}\hlstd{(BeckLee_mat50[,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{])}
 \end{alltt}
 \begin{verbatim}
-## [1] 2
+##                    [,1]          [,2]        [,3]       [,4]      [,5]
+## Cimolestes   -0.5319679  0.1117759259  0.09865194 -0.1933148 0.2035833
+## Maelestes    -0.4087147  0.0139690317  0.26268300  0.2297096 0.1310953
+## Batodon      -0.6923194  0.3308625215 -0.10175223 -0.1899656 0.1003108
+## Bulaklestes  -0.6802291 -0.0134872777  0.11018009 -0.4103588 0.4326298
+## Daulestes    -0.7386111  0.0009001369  0.12006449 -0.4978191 0.4741342
+## Uchkudukodon -0.5105254 -0.2420633915  0.44170317 -0.1172972 0.3602273
 \end{verbatim}
 \begin{alltt}
-\hlcom{## Calculate a disparity metric from it}
-\hlnum{1}\hlopt{+}\hlnum{1}
+\hlcom{## An ordinated matrix with the tips and the nodes (named nX)}
+\hlkwd{data}\hlstd{(BeckLee_mat99)}
+\hlkwd{dim}\hlstd{(BeckLee_mat99)}
 \end{alltt}
 \begin{verbatim}
-## [1] 2
+## [1] 99 97
 \end{verbatim}
 \begin{alltt}
-\hlcom{# Summarise and plot the disparity}
-\hlkwd{summary}\hlstd{(}\hlnum{1}\hlstd{)}
+\hlkwd{head}\hlstd{(BeckLee_mat99[,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##       1       1       1       1       1       1
+##                  [,1]       [,2]       [,3]       [,4]        [,5]
+## Cimolestes -0.6082437 -0.0323683 0.08458885 -0.4338448 -0.30536875
+## Maelestes  -0.5730206 -0.2840361 0.01308847 -0.1258848  0.06123611
 \end{verbatim}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlstd{)}
+\hlkwd{tail}\hlstd{(BeckLee_mat99[,}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{],} \hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+##            [,1]      [,2]       [,3]       [,4]       [,5]
+## n48 -0.05529018 0.4799330 0.04118477 0.04944912 -0.3558830
+## n49 -0.13067785 0.4478168 0.11956268 0.13800340 -0.3222785
+\end{verbatim}
+\begin{alltt}
+\hlcom{## A list of first and last occurence data for some fossils}
+\hlkwd{data}\hlstd{(BeckLee_ages)}
+\hlkwd{head}\hlstd{(BeckLee_ages)}
+\end{alltt}
+\begin{verbatim}
+##             FAD  LAD
+## Adapis     37.2 36.8
+## Asioryctes 83.6 72.1
+## Leptictis  33.9 33.3
+## Miacis     49.0 46.7
+## Mimotona   61.6 59.2
+## Notharctus 50.2 47.0
+\end{verbatim}
+\begin{alltt}
+\hlcom{## And a phylogeny:}
+\hlkwd{data}\hlstd{(BeckLee_tree)}
+\hlkwd{plot}\hlstd{(BeckLee_tree) ;} \hlkwd{nodelabels}\hlstd{(}\hlkwc{cex}\hlstd{=}\hlnum{0.8}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.4\linewidth]{figure/minimal-Quick_go-1} 
+{\centering \includegraphics[width=.8\linewidth]{figure/minimal-data-1} 
 
 }
 
 
 
 \end{knitrout}
+
+\section{A super quick go through}
+This package allows to:
+\begin{enumerate}
+    \item Splitting the data
+    \item Bootstrapping the data
+    \item Calculating disparity
+    \item Summarising the results
+\end{enumerate}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Splitting the data}
+\hlstd{sliced_data} \hlkwb{<-} \hlkwd{time.series}\hlstd{(BeckLee_mat99, BeckLee_tree,} \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
+    \hlkwc{model} \hlstd{=} \hlstr{"acctran"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{5}\hlstd{,} \hlkwc{FADLAD} \hlstd{= BeckLee_ages)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Some tips have FAD/LAD and are assumed to interval single points in time.}}\begin{alltt}
+\hlcom{## Bootstrapping the data}
+\hlstd{bootstrapped_data} \hlkwb{<-} \hlkwd{boot.matrix}\hlstd{(sliced_data,} \hlnum{100}\hlstd{)}
+
+\hlcom{## Calculating disparity}
+\hlstd{sum_of_ranges} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(bootstrapped_data,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, range))}
+
+\hlcom{## Summarising the results}
+\hlkwd{summary}\hlstd{(sum_of_ranges)}
+\end{alltt}
+\begin{verbatim}
+##      series  n   mean   2.5%    25%    75%  97.5%
+## 1 133.51104  3 -0.348 -0.397 -0.350 -0.349 -0.230
+## 2 100.13328 14  0.101 -0.252 -0.046  0.214  0.291
+## 3  66.75552 23 -0.059 -0.163 -0.112  0.031  0.115
+## 4  33.37776 11  0.008 -0.134 -0.086  0.132  0.217
+## 5         0 10  0.009 -0.134 -0.086  0.140  0.187
+\end{verbatim}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(sum_of_ranges,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.8\linewidth]{figure/minimal-Quick_go-1} 
+
+}
+
+
+
+\end{knitrout}
+
+
+\section{In more details}
+
+\subsection{The \dispRity objects}
+Disparity analysis involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
+For example, try to use \texttt{str} to show the structure of the object created above:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{str}\hlstd{(sum_of_ranges)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Therefore this package proposes a new class of object called \dispRity (how unexpected!) that allow to use a \texttt{S3 print.dispRity} method.
+In other words, when you are creating objects using the \dispRity functions, you can quickly and easily have a look at them by just printing it.
+For example:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Which class is the sum_of_ranges object?}
+\hlkwd{class}\hlstd{(sum_of_ranges)}
+\end{alltt}
+\begin{verbatim}
+## [1] "dispRity"
+\end{verbatim}
+\begin{alltt}
+\hlcom{## We can summarise it using the S3 method print.dispRity}
+\hlstd{sum_of_ranges}
+\end{alltt}
+\begin{verbatim}
+## Disparity measurements across 5 series for 99 taxa. 
+## Series:
+## 133.51104, 100.13328, 66.75552, 33.37776, 0.
+## Disparity calculated as: sum range for 97 dimensions.
+## Data was split using continuous method.
+## Data was bootstrapped 100 times, using the full bootstrap method.
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Note that each object output from different functions will show summarise slightly different informations.
+
+\subsection{Splitting the data}
+One of the first functionality of this package is to facilitate splitting the ordinated matrix in subsamples.
+The original ordinated matrix represents the total any-o-space.
+
+\subsubsection{Custom splitting}
+\texttt{cust.series} is a fairly straightforward function and allows to split the data according to a factor determined by the user.
+For example, here we can split the matrix based on phylogeny: let's classify in two different groups the crown and stem mammals present in the tree.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## We want to separate the species around the node 71 (see phylogeny above).}
+\hlcom{## All the descendant are crown and all the ancestors are stem}
+\hlstd{crown} \hlkwb{<-} \hlkwd{extract.clade}\hlstd{(BeckLee_tree,} \hlkwc{node} \hlstd{=} \hlnum{71}\hlstd{)}\hlopt{$}\hlstd{tip.label}
+\hlstd{stem} \hlkwb{<-} \hlkwd{drop.tip}\hlstd{(BeckLee_tree,} \hlkwc{tip} \hlstd{= crown)}\hlopt{$}\hlstd{tip.label}
+
+\hlcom{## We then have to feed this information in a data.frame with one column}
+\hlstd{factors} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(}
+    \hlkwd{matrix}\hlstd{(}\hlkwc{data} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlstr{"crown"}\hlstd{,} \hlkwd{length}\hlstd{(crown)),} \hlkwd{rep}\hlstd{(}\hlstr{"stem"}\hlstd{,} \hlkwd{length}\hlstd{(stem))),}
+    \hlkwc{ncol} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{dimnames} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwd{c}\hlstd{(crown, stem))))}
+
+\hlcom{## Then we can use the customised series function}
+\hlstd{crown_stem} \hlkwb{<-} \hlkwd{cust.series}\hlstd{(BeckLee_mat50, factors)}
+
+\hlcom{## This created a dispRity object containing two series: crown and stem}
+\hlkwd{class}\hlstd{(crown_stem)}
+\end{alltt}
+\begin{verbatim}
+## [1] "dispRity"
+\end{verbatim}
+\begin{alltt}
+\hlstd{crown_stem}
+\end{alltt}
+\begin{verbatim}
+## 2 custom series for 50 taxa. 
+## Series:
+## crown, stem.
+\end{verbatim}
+\begin{alltt}
+\hlcom{## This object contains three elements}
+\hlkwd{names}\hlstd{(crown_stem)}
+\end{alltt}
+\begin{verbatim}
+## [1] "data"   "taxa"   "series"
+\end{verbatim}
+\begin{alltt}
+\hlcom{## With "data" being the list sub-matrices}
+\hlkwd{str}\hlstd{(crown_stem}\hlopt{$}\hlstd{data)}
+\end{alltt}
+\begin{verbatim}
+## List of 2
+##  $ crown: num [1:30, 1:48] 0.3079 0.6531 0.5089 -0.1652 -0.0419 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:30] "Dasypodidae" "Bradypus" "Myrmecophagidae" "Todralestes" ...
+##   .. ..$ : NULL
+##  $ stem : num [1:20, 1:48] -0.739 -0.68 -0.511 -0.477 -0.473 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:20] "Daulestes" "Bulaklestes" "Uchkudukodon" "Kennalestes" ...
+##   .. ..$ : NULL
+\end{verbatim}
+\begin{alltt}
+\hlcom{## "taxa" being the list of taxa in the original ordinated matrix}
+\hlkwd{str}\hlstd{(crown_stem}\hlopt{$}\hlstd{taxa)}
+\end{alltt}
+\begin{verbatim}
+##  chr [1:50] "Cimolestes" "Maelestes" "Batodon" "Bulaklestes" "Daulestes" ...
+\end{verbatim}
+\begin{alltt}
+\hlcom{## "series" containing information on the series type (custom) and names (crown and stem)}
+\hlstd{crown_stem}\hlopt{$}\hlstd{series}
+\end{alltt}
+\begin{verbatim}
+## [1] "custom" "crown"  "stem"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Of course, using phylogeny as a factor is just an example.
+Any type of factors can be used in this example (e.g. body mass categories, habitat, diet, etc...).
+Which leads us to another type of category used a lot in disparity-through-time analysis: time!
+
+\subsubsection{Time splitting}
+\texttt{time.series} is a function that allows to split the matrix in different ways using time as a category.
+Two types of time series splitting can be performed with the \dispRity package by using the \texttt{method} option in \texttt{time.series}.
+\begin{enumerate}
+\item the classical discrete time splitting (or time-binning) using \texttt{method = "discrete"};
+\item or a new continuous time splitting (or time-slicing) using \texttt{method = "continuous"}.
+\end{enumerate}
+
+
+\subsection{Bootstrapping the data}
+
+\subsection{Calculating disparity}
+
+\subsection{Summarising the results}
 
 \section{What's left?}
 \label{whatsleft}

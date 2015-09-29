@@ -58,8 +58,33 @@ If you want the piping-hot (and full of bugs) version, change the option \texttt
 This package depends heavily on the \texttt{ape} package as well as the nice function \texttt{timeSliceTree::paleotree}.
 However, I recommend to also install the packages \texttt{geomorph} or \texttt{Claddis} if you want to try this example on your own morphometric or cladistic data.
 
-\subsection{Getting the data}
+\subsection{Which data?}
 You'll need to do this and that
+%To develop
+
+<<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+## Loading demo and the package data
+library(dispRity)
+
+## An ordinated matrix with the tips only
+data(BeckLee_mat50)
+dim(BeckLee_mat50)
+head(BeckLee_mat50[,1:5])
+
+## An ordinated matrix with the tips and the nodes (named nX)
+data(BeckLee_mat99)
+dim(BeckLee_mat99)
+head(BeckLee_mat99[,1:5], 2)
+tail(BeckLee_mat99[,1:5], 2)
+
+## A list of first and last occurence data for some fossils
+data(BeckLee_ages)
+head(BeckLee_ages)
+
+## And a phylogeny:
+data(BeckLee_tree)
+plot(BeckLee_tree) ; nodelabels(cex=0.8)
+@ 
 
 \section{A super quick go through}
 This package allows to:
@@ -70,22 +95,98 @@ This package allows to:
     \item Summarising the results
 \end{enumerate}
 
-<<Quick go, fig.width=4, fig.height=4, out.width='.4\\linewidth'>>=
-## Separate your ordinated data into different series for example
-1+1
-## Bootstrap this data
-1+1
-## Calculate a disparity metric from it
-1+1
-# Summarise and plot the disparity
-summary(1)
-plot(1)
+<<Quick go, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+## Splitting the data
+sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
+    model = "acctran", time = 5, FADLAD = BeckLee_ages)
+
+## Bootstrapping the data
+bootstrapped_data <- boot.matrix(sliced_data, 100)
+
+## Calculating disparity
+sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
+
+## Summarising the results
+summary(sum_of_ranges)
+plot(sum_of_ranges, type = "continuous")
 @ 
 
 
 \section{In more details}
 
+\subsection{The \dispRity objects}
+Disparity analysis involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
+For example, try to use \texttt{str} to show the structure of the object created above:
+
+<<dispRity class1, eval=FALSE>>=
+str(sum_of_ranges)
+@
+
+Therefore this package proposes a new class of object called \dispRity (how unexpected!) that allow to use a \texttt{S3 print.dispRity} method.
+In other words, when you are creating objects using the \dispRity functions, you can quickly and easily have a look at them by just printing it.
+For example:
+
+<<dispRity class2>>=
+## Which class is the sum_of_ranges object?
+class(sum_of_ranges)
+
+## We can summarise it using the S3 method print.dispRity
+sum_of_ranges 
+@ 
+
+Note that each object output from different functions will show summarise slightly different informations.
+
 \subsection{Splitting the data}
+One of the first functionality of this package is to facilitate splitting the ordinated matrix in subsamples.
+The original ordinated matrix represents the total any-o-space.
+
+\subsubsection{Custom splitting}
+\texttt{cust.series} is a fairly straightforward function and allows to split the data according to a factor determined by the user.
+For example, here we can split the matrix based on phylogeny: let's classify in two different groups the crown and stem mammals present in the tree.
+
+<<cust.series2>>=
+## We want to separate the species around the node 71 (see phylogeny above).
+## All the descendant are crown and all the ancestors are stem
+crown <- extract.clade(BeckLee_tree, node = 71)$tip.label
+stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
+
+## We then have to feed this information in a data.frame with one column
+factors <- as.data.frame(
+    matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
+    ncol = 1, dimnames = list(c(crown, stem))))
+
+## Then we can use the customised series function
+crown_stem <- cust.series(BeckLee_mat50, factors)
+
+## This created a dispRity object containing two series: crown and stem
+class(crown_stem)
+crown_stem
+
+## This object contains three elements
+names(crown_stem)
+
+## With "data" being the list sub-matrices
+str(crown_stem$data)
+
+## "taxa" being the list of taxa in the original ordinated matrix
+str(crown_stem$taxa)
+
+## "series" containing information on the series type (custom) and names (crown and stem)
+crown_stem$series
+@ 
+
+Of course, using phylogeny as a factor is just an example.
+Any type of factors can be used in this example (e.g. body mass categories, habitat, diet, etc...).
+Which leads us to another type of category used a lot in disparity-through-time analysis: time!
+
+\subsubsection{Time splitting}
+\texttt{time.series} is a function that allows to split the matrix in different ways using time as a category.
+Two types of time series splitting can be performed with the \dispRity package by using the \texttt{method} option in \texttt{time.series}.
+\begin{enumerate}
+\item the classical discrete time splitting (or time-binning) using \texttt{method = "discrete"};
+\item or a new continuous time splitting (or time-slicing) using \texttt{method = "continuous"}.
+\end{enumerate}
+
 
 \subsection{Bootstrapping the data}
 
