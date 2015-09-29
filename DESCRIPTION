@@ -18,6 +18,4 @@ Depends:
     paleotree,
 License: GPL (>= 2)
 VignetteBuilder: knitr 
-Suggests:
-    testthat
-    knitr
+Suggests: testthat, knitr
