@@ -96,14 +96,12 @@ plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
     #Add the lines
     if(type == "continuous") {
         #Continuous (straightforward)
-        par(new=TRUE)
         plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
     } else {
         #Creating the dummy data table
         points_n<-length(unique(summarised_data$series))
         dummy_mat<-matrix(extract.summary(summarised_data, 2, which.rare), ncol=points_n)
         colnames(dummy_mat)<-extract.summary(summarised_data, 1)
-        par(new=TRUE)
         boxplot(dummy_mat,  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
     }
     #lines(extract.summary(summarised_data, 2, which.rare), lty=2)re
@@ -121,8 +119,8 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
     colnames(dummy_mat)<-extract.summary(summarised_data, 1)
 
     #Empty plot
-    boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, ...)
-    #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab) ; warning("DEBUG: plot")
+    boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001, ...)
+    #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001) ; warning("DEBUG: plot")
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
