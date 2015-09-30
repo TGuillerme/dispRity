@@ -94,8 +94,19 @@ plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
     }
 
     #Add the lines
-    par(new=TRUE)
-    lines(extract.summary(summarised_data, 2, which.rare), lty=2)
+    if(type == "continuous") {
+        #Continuous (straightforward)
+        par(new=TRUE)
+        plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+    } else {
+        #Creating the dummy data table
+        points_n<-length(unique(summarised_data$series))
+        dummy_mat<-matrix(extract.summary(summarised_data, 2, which.rare), ncol=points_n)
+        colnames(dummy_mat)<-extract.summary(summarised_data, 1)
+        par(new=TRUE)
+        boxplot(dummy_mat,  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+    }
+    #lines(extract.summary(summarised_data, 2, which.rare), lty=2)re
     axis(4, lty=2)
     mtext(ylab[[2]], side=4, line=2)
 }
@@ -107,8 +118,6 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
     #dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat<-matrix(1:points_n, ncol=points_n)
-
-    #BUG
     colnames(dummy_mat)<-extract.summary(summarised_data, 1)
 
     #Empty plot

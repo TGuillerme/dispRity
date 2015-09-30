@@ -231,13 +231,13 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     if(type == "continuous") {
         if(diversity == FALSE) {
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing) ; warning("DEBUG: plot")
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, ...)
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
@@ -251,8 +251,8 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
             bigger_margin<-par(mar=c(5,4,4,4))
             plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
             #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col) ; warning("DEBUG: plot")
+            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, ...)
+            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }
