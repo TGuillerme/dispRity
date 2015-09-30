@@ -90,18 +90,15 @@ get.series<-function(summarised_data, rare_level) {
 plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
     #Check if ylab2 exists
     if(length(ylab) == 1) {
-        ylab[[2]]<-"diversity"
+        ylab[[2]]<-"Diversity"
     }
 
     #Add the lines
     par(new=TRUE)
-    plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+    lines(extract.summary(summarised_data, 2, which.rare), lty=2)
     axis(4, lty=2)
-    mtext(ylab[[2]], side=4, line=2, cex=1)
-
+    mtext(ylab[[2]], side=4, line=2)
 }
-
-
 
 #discrete plotting
 plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...) {

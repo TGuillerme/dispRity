@@ -233,7 +233,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
-            bigger_margin<-par(mar=c(4,4,4,4))
+            bigger_margin<-par(mar=c(5,4,4,4))
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
             plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
@@ -248,7 +248,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
             plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
             #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         } else {
-            bigger_margin<-par(mar=c(4,4,4,4))
+            bigger_margin<-par(mar=c(5,4,4,4))
             plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
             #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
             plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, ...)
