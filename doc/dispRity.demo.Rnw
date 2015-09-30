@@ -98,7 +98,7 @@ This package allows the following:
     \item Summarising the results
 \end{enumerate}
 
-<<Quick go, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+<<Quick go, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
 ## Splitting the data
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
     model = "acctran", time = 5, FADLAD = BeckLee_ages)
@@ -298,7 +298,7 @@ Okay, that's all well and good but this function can also deal with a list of ma
 Like this:
 
 <<boot.matrix3>>=
-#Let's do a full rarefaction on the crown/stem data for later
+## Let's do a full rarefaction on the crown/stem data for later
 crown_stemBS <- boot.matrix(crown_stem, rarefaction = TRUE)
 ## And just bootstrapping for the time binning/slicing
 time_binsBS <- boot.matrix(time_bins)
@@ -363,8 +363,10 @@ dispRity(crown_stem, metric = c(sum, ranges))
 disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(sum, ranges))
 ## Note that the bootstrapped + rarefied data takes some time to run (it's
 ## calculating disparity from 46 matrices!)
-disp_time_binsBS <- dispRity(time_binsBS, metric = c(sum, ranges))
-disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(sum, ranges))
+
+## Let's calculate a different metric for the disparity-through-time analysis
+disp_time_binsBS <- dispRity(time_binsBS, metric = c(median, centroids))
+disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(median, centroids))
 @
 
 Again, note that the results are \dispRity objects and can displayed through the S3 \texttt{print.dispRity} method to remind users what are in these objects.
@@ -407,33 +409,40 @@ Let's start with plotting the difference in disparity between the crown and the 
 For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
 In our case, we are interested in looking at the results in a discrete way.
 
+<<plot1, fig.width=15, fig.height=5, out.width='1\\linewidth'>>=
+## Graphical options
+quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
 
-<<plot1, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
-plot(disp_crown_stemBS, type = "discrete")
+## Plotting the score for both groups
+plot(disp_crown_stemBS, type = "discrete" , ylim = c(25,40))
+
+## Same one with the number of taxa for each data set
+plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, ylim = c(25,40))
+
+## Same one with rarefied data (note how that affects the diversity data as well!)
+plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, rarefaction = 20, ylim = c(25,40))
 @
 
 The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean. As we can see, the disparity seems a bit higher in crown mammals.
 Now that can be due just to the difference in the number of species in both crown and stem mammals.
 By the way, how many taxa where in each group? We can look at that by using the \texttt{diversity} option.
 
-<<plot2, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
-plot(disp_crown_stemBS, type = "discrete", diversity = TRUE)
-@
-
 This shows that the number of taxa is higher (30) in crown mammals than in stem ones (20), that is why it is maybe interesting to look at the rarefied data using the \texttt{rarefaction} option.
 This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
 Additionally, it can be a specific number to plot a specific number of taxa.
 Let say we want both groups to have 20 taxa maximum.
 
-<<plot3, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
-plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, rarefaction = 20)
-@
-
 We can see now that the confidence intervals overlap more than previously
 To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
 
-<<plot4, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+<<plot2, fig.width=5, fig.height=8, out.width='0.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+
+## The rarefaction curves
 plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, rarefaction = "plot")
+## Note that the function automatically draws the curves for each series and splits
+## the plot screen accordingly.
 @
 
 The different dashed lines represent the different confidence intervals.
@@ -442,30 +451,50 @@ Additionally, for the \texttt{type = "discrete"} option, we might also decide to
 The \texttt{discrete\_type} option allows to switch between \texttt{"box"} or \texttt{"line"} for showing the results in one or the other format.
 Let's look at that with the time binned data (even though there is only three time bins).
 
-<<plot5, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+<<plot3, fig.width=10, fig.height=5, out.width='1\\linewidth'>>=
+## Graphical options
+quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
+
+## The disparity-through-time data in a time-binned way
 plot(disp_time_binsBS, type = "discrete", discrete_type = "line")
+
+## The disparity-through-time data in a time-sliced ways
+plot(disp_time_slicesBS, type = "continuous")
+
 @
 
 Finally, we can use the \texttt{type = "continuous"} option that comes in handy for plotting continuous data like in the time sliced analysis (obviously...).
 
-<<plot6, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
-plot(disp_time_slicesBS, type = "continuous")
+<<plot4, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+
+## First, plotting the continuous data
+plot(disp_time_slicesBS, type = "continuous", ylim=c(0.5,2))
+
+## Second, adding the discrete data
+par(new = TRUE)
+plot(disp_time_binsBS, type = "discrete", discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
 @
 
 I encourage you to play with the graphical options to have some prettier results.
 Note that most of the options from \texttt{plot} can be passed to \texttt{plot.dispRity} via \texttt{...}.
 
-<<plot7, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
-op<-par(bty="n")
+<<plot5, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+
+## A plot with many options!
 plot(disp_time_slicesBS, CI = c(50, 75, 95), cent.tend = median, type = "continuous",
     diversity = TRUE, col = c("black", "red", "orange", "yellow"), ylab = c("Disparity", "Diversity"),
     xlab = "Time (in in units from past to present)", time.series = FALSE, main = "Many options...")
-par(op)
 @
 
 \section{What's left?}
 \label{whatsleft}
-
+\subsection{Some statistics}
+\subsection{Users defined metrics}
+\subsection{More user defined stuff}
 
 \bibliographystyle{vancouver}
 \bibliography{References}

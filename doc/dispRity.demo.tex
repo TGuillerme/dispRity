@@ -224,18 +224,18 @@ This package allows the following:
 \end{alltt}
 \begin{verbatim}
 ##      series  n  mean  2.5%   25%   75% 97.5%
-## 1 133.51104  3 17.57  0.00 15.51 24.35 24.35
-## 2 100.13328 14 51.76 45.88 50.30 53.78 56.73
-## 3  66.75552 23 64.41 59.89 62.89 66.17 68.61
-## 4  33.37776 11 42.57 36.65 40.95 44.39 46.82
-## 5         0 10 40.53 34.39 38.60 42.76 45.36
+## 1 133.51104  3 17.81  0.00 15.51 24.35 24.35
+## 2 100.13328 14 52.05 45.80 49.90 54.50 57.67
+## 3  66.75552 23 64.80 59.23 63.20 66.57 69.25
+## 4  33.37776 11 42.95 37.94 41.40 44.77 47.43
+## 5         0 10 40.94 35.13 39.22 42.69 46.13
 \end{verbatim}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(sum_of_ranges,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-Quick_go-1} 
+{\centering \includegraphics[width=.5\linewidth]{figure/minimal-Quick_go-1} 
 
 }
 
@@ -587,7 +587,7 @@ Like this:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{#Let's do a full rarefaction on the crown/stem data for later}
+\hlcom{## Let's do a full rarefaction on the crown/stem data for later}
 \hlstd{crown_stemBS} \hlkwb{<-} \hlkwd{boot.matrix}\hlstd{(crown_stem,} \hlkwc{rarefaction} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \hlcom{## And just bootstrapping for the time binning/slicing}
 \hlstd{time_binsBS} \hlkwb{<-} \hlkwd{boot.matrix}\hlstd{(time_bins)}
@@ -724,8 +724,10 @@ Of course, this function can take an ordinated matrix but, more interesting it c
 \hlstd{disp_crown_stemBS} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(crown_stemBS,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, ranges))}
 \hlcom{## Note that the bootstrapped + rarefied data takes some time to run (it's}
 \hlcom{## calculating disparity from 46 matrices!)}
-\hlstd{disp_time_binsBS} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(time_binsBS,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, ranges))}
-\hlstd{disp_time_slicesBS} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(time_slicesBS,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, ranges))}
+
+\hlcom{## Let's calculate a different metric for the disparity-through-time analysis}
+\hlstd{disp_time_binsBS} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(time_binsBS,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(median, centroids))}
+\hlstd{disp_time_slicesBS} \hlkwb{<-} \hlkwd{dispRity}\hlstd{(time_slicesBS,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(median, centroids))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -747,9 +749,9 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{alltt}
 \begin{verbatim}
 ##   series  n  mean  2.5%   25%   75% 97.5%
-## 1 120-80  8 20.20 16.58 19.28 21.64 23.39
-## 2  80-40 27 33.97 31.65 33.29 34.73 35.78
-## 3   40-0 16 29.00 26.24 28.19 29.92 31.30
+## 1 120-80  8 1.114 0.915 1.080 1.167 1.235
+## 2  80-40 27 1.322 1.274 1.308 1.338 1.358
+## 3   40-0 16 1.324 1.248 1.306 1.345 1.372
 \end{verbatim}
 \begin{alltt}
 \hlcom{## The CIs are calculated as 50 and 95 and the central tendency is the mean by default.}
@@ -758,9 +760,9 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{alltt}
 \begin{verbatim}
 ##   series  n median 37.5% 62.5%
-## 1 120-80  8     20    20    21
-## 2  80-40 27     34    34    34
-## 3   40-0 16     29    29    29
+## 1 120-80  8      1     1     1
+## 2  80-40 27      1     1     1
+## 3   40-0 16      1     1     1
 \end{verbatim}
 \begin{alltt}
 \hlcom{## Also, if we happen to have forgotten what was in the disp_time_binsBS object (as in which}
@@ -768,20 +770,20 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \hlkwd{summary}\hlstd{(disp_time_binsBS,} \hlkwc{recall} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## Disparity calculated as: sum ranges for 48 dimensions.
+## Disparity calculated as: median centroids for 48 dimensions.
 ## Data was split using discrete method.
 ## Data was bootstrapped 1000 times, using the full bootstrap method.
 ##   series  n  mean  2.5%   25%   75% 97.5%
-## 1 120-80  8 20.20 16.58 19.28 21.64 23.39
-## 2  80-40 27 33.97 31.65 33.29 34.73 35.78
-## 3   40-0 16 29.00 26.24 28.19 29.92 31.30
+## 1 120-80  8 1.114 0.915 1.080 1.167 1.235
+## 2  80-40 27 1.322 1.274 1.308 1.338 1.358
+## 3   40-0 16 1.324 1.248 1.306 1.345 1.372
 \end{verbatim}
 \begin{alltt}
 \hlcom{## Note that the recall just prints text. The output of summary.dispRity is always a data.frame}
 \hlstd{summary_table} \hlkwb{<-} \hlkwd{summary}\hlstd{(disp_time_binsBS,} \hlkwc{recall} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## Disparity calculated as: sum ranges for 48 dimensions.
+## Disparity calculated as: median centroids for 48 dimensions.
 ## Data was split using discrete method.
 ## Data was bootstrapped 1000 times, using the full bootstrap method.
 \end{verbatim}
@@ -797,12 +799,12 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{alltt}
 \begin{verbatim}
 ##   series n  mean  2.5%   25%   75% 97.5%
-## 1  crown 3 15.17 10.04 15.16 16.04 16.64
-## 2  crown 4 18.39 14.83 18.34 19.42 19.95
-## 3  crown 5 20.83 18.04 19.68 21.83 22.42
-## 4  crown 6 22.70 19.20 21.75 23.76 24.41
-## 5  crown 7 24.15 21.01 23.47 25.29 26.11
-## 6  crown 8 25.44 22.06 24.77 26.48 27.43
+## 1  crown 3 15.19 10.19 15.17 16.08 16.66
+## 2  crown 4 18.47 14.97 18.40 19.41 19.89
+## 3  crown 5 20.83 17.99 19.66 21.81 22.46
+## 4  crown 6 22.60 18.84 21.68 23.77 24.51
+## 5  crown 7 24.23 21.16 23.49 25.32 26.15
+## 6  crown 8 25.46 22.40 24.82 26.51 27.42
 \end{verbatim}
 \begin{alltt}
 \hlcom{## This outputs a longer table with all the variations of the number of crown/stem taxa}
@@ -820,15 +822,24 @@ Let's start with plotting the difference in disparity between the crown and the 
 For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
 In our case, we are interested in looking at the results in a discrete way.
 
-
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{)}
+\hlcom{## Graphical options}
+\hlkwd{quartz}\hlstd{(}\hlkwc{width} \hlstd{=} \hlnum{15}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{5}\hlstd{) ;} \hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{= (}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{)),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+
+\hlcom{## Plotting the score for both groups}
+\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"} \hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
+
+\hlcom{## Same one with the number of taxa for each data set}
+\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
+
+\hlcom{## Same one with rarefied data (note how that affects the diversity data as well!)}
+\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot1-1} 
+{\centering \includegraphics[width=1\linewidth]{figure/minimal-plot1-1} 
 
 }
 
@@ -840,40 +851,10 @@ The grey squares represent the confidence intervals (50 in dark grey and 90 in l
 Now that can be due just to the difference in the number of species in both crown and stem mammals.
 By the way, how many taxa where in each group? We can look at that by using the \texttt{diversity} option.
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot2-1} 
-
-}
-
-
-
-\end{knitrout}
-
 This shows that the number of taxa is higher (30) in crown mammals than in stem ones (20), that is why it is maybe interesting to look at the rarefied data using the \texttt{rarefaction} option.
 This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
 Additionally, it can be a specific number to plot a specific number of taxa.
 Let say we want both groups to have 20 taxa maximum.
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{20}\hlstd{)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot3-1} 
-
-}
-
-
-
-\end{knitrout}
 
 We can see now that the confidence intervals overlap more than previously
 To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
@@ -881,11 +862,17 @@ To understand how the number of taxa affects each series, we can use the \texttt
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## Graphical options}
+\hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+
+\hlcom{## The rarefaction curves}
 \hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlstr{"plot"}\hlstd{)}
+\hlcom{## Note that the function automatically draws the curves for each series and splits}
+\hlcom{## the plot screen accordingly.}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot4-1} 
+{\centering \includegraphics[width=0.5\linewidth]{figure/minimal-plot2-1} 
 
 }
 
@@ -902,11 +889,18 @@ Let's look at that with the time binned data (even though there is only three ti
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## Graphical options}
+\hlkwd{quartz}\hlstd{(}\hlkwc{width} \hlstd{=} \hlnum{10}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{5}\hlstd{) ;} \hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{= (}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{)),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+
+\hlcom{## The disparity-through-time data in a time-binned way}
 \hlkwd{plot}\hlstd{(disp_time_binsBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{discrete_type} \hlstd{=} \hlstr{"line"}\hlstd{)}
+
+\hlcom{## The disparity-through-time data in a time-sliced ways}
+\hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot5-1} 
+{\centering \includegraphics[width=1\linewidth]{figure/minimal-plot3-1} 
 
 }
 
@@ -919,11 +913,19 @@ Finally, we can use the \texttt{type = "continuous"} option that comes in handy 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
+\hlcom{## Graphical options}
+\hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+
+\hlcom{## First, plotting the continuous data}
+\hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{2}\hlstd{))}
+
+\hlcom{## Second, adding the discrete data}
+\hlkwd{par}\hlstd{(}\hlkwc{new} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{plot}\hlstd{(disp_time_binsBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{discrete_type} \hlstd{=} \hlstr{"line"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{2}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot6-1} 
+{\centering \includegraphics[width=.5\linewidth]{figure/minimal-plot4-1} 
 
 }
 
@@ -937,15 +939,17 @@ Note that most of the options from \texttt{plot} can be passed to \texttt{plot.d
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{op}\hlkwb{<-}\hlkwd{par}\hlstd{(}\hlkwc{bty}\hlstd{=}\hlstr{"n"}\hlstd{)}
+\hlcom{## Graphical options}
+\hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+
+\hlcom{## A plot with many options!}
 \hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{CI} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{50}\hlstd{,} \hlnum{75}\hlstd{,} \hlnum{95}\hlstd{),} \hlkwc{cent.tend} \hlstd{= median,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
     \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlstr{"red"}\hlstd{,} \hlstr{"orange"}\hlstd{,} \hlstr{"yellow"}\hlstd{),} \hlkwc{ylab} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"Disparity"}\hlstd{,} \hlstr{"Diversity"}\hlstd{),}
     \hlkwc{xlab} \hlstd{=} \hlstr{"Time (in in units from past to present)"}\hlstd{,} \hlkwc{time.series} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{"Many options..."}\hlstd{)}
-\hlkwd{par}\hlstd{(op)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot7-1} 
+{\centering \includegraphics[width=.5\linewidth]{figure/minimal-plot5-1} 
 
 }
 
@@ -955,7 +959,9 @@ Note that most of the options from \texttt{plot} can be passed to \texttt{plot.d
 
 \section{What's left?}
 \label{whatsleft}
-
+\subsection{Some statistics}
+\subsection{Users defined metrics}
+\subsection{More user defined stuff}
 
 \bibliographystyle{vancouver}
 \bibliography{References}
