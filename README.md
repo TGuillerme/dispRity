@@ -9,7 +9,7 @@ A package for measuring disparity in `R`
 ```r
 #install.packages("devtools")
 library(devtools)
-install_github("TGuillerme/dispRity", ref="release")
+install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
@@ -25,11 +25,11 @@ Here is a really quick go through demo see the detailed vignette [here (in .Rnw)
 
 ````r
 ## Loading the package and the demo data
-library(dispRity) ; data(BeckLee_mat99) ; data(BeckLee_tree)
+library(dispRity) ; data(BeckLee_mat99) ; data(BeckLee_tree) ; data(BeckLee_ages)
 
 ## Splitting the data
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-    model = "acctran", time = 5, FADLAD = MyData_ages)
+    model = "acctran", time = 5, FADLAD = BeckLee_ages)
 
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(sliced_data, 100)
