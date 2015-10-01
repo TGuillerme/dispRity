@@ -1,2 +1,12 @@
 language: r
 sudo: required
+
+# blacklist
+branches:
+  except:
+    - master
+
+# whitelist
+branches:
+  only:
+    - release
