@@ -87,7 +87,7 @@ get.series<-function(summarised_data, rare_level) {
 }
 
 
-plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
+plot.diversity<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
     #Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]]<-"Diversity"
@@ -96,13 +96,22 @@ plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
     #Add the lines
     if(type == "continuous") {
         #Continuous (straightforward)
-        plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+        if(div.log == FALSE) {
+            plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+        } else {
+            plot(log(extract.summary(summarised_data, 2, which.rare)), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+        }
     } else {
         #Creating the dummy data table
         points_n<-length(unique(summarised_data$series))
         dummy_mat<-matrix(extract.summary(summarised_data, 2, which.rare), ncol=points_n)
         colnames(dummy_mat)<-extract.summary(summarised_data, 1)
-        boxplot(dummy_mat,  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+        if(div.log == FALSE) {
+            boxplot(dummy_mat,  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+        } else {
+            boxplot(log(dummy_mat),  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+        }
+
     }
     #lines(extract.summary(summarised_data, 2, which.rare), lty=2)re
     axis(4, lty=2)
