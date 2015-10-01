@@ -81,33 +81,34 @@ Many parts are still missing (see section \ref{whatsleft}) but this version shou
 
 \section{Before starting}
 
-\dispRity is a package for calculating disparity in \R.
-What is disparity? Well that's a more complex question...
+\dispRity is a package for calculating disparity in \texttt{R}.
 To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
-% More explanations to put here?
+These ordinated matrices can be called the morphospace (when using morphometric data) or the cladisto-space (for cladistic data) and will represent the total spread of the forms available in the dataset.
+However, keep in mind that if you are using other type of data, say ecological data for example, then the ordinated matrix will represent the eco-space which represents the total spread of ecological traits available in the dataset.
+In the rest of this demo, I will sometimes refer to the ordinated matrix as the any-o-space where you can replace \textit{any} by any prefix you want your space to be based on!
 
 \subsection{Installation}
-You can install this package pretty easily if you use the latest version of \R and \texttt{devtools}.
-Just copy past the following
+You can install this package easily if you use the latest version of \R and \texttt{devtools}.
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{install.packages}\hlstd{(}\hlstr{"devtools"}\hlstd{)}
 \hlkwd{library}\hlstd{(devtools)}
-\hlkwd{install_github}\hlstd{(}\hlstr{"TGuillerme/dispRity"}\hlstd{,} \hlkwc{ref}\hlstd{=}\hlstr{"release"}\hlstd{)}
+\hlkwd{install_github}\hlstd{(}\hlstr{"TGuillerme/dispRity"}\hlstd{,} \hlkwc{ref} \hlstd{=} \hlstr{"release"}\hlstd{)}
 \hlkwd{library}\hlstd{(dispRity)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
-Note that we use here the \texttt{release} branch which is version 0.1.0.
-If you want the piping-hot (and full of bugs) version, change the option \texttt{ref="release"} to \texttt{ref="master"}.
-
-This package depends heavily on the \texttt{ape} package as well as the nice function \texttt{timeSliceTree::paleotree}.
-However, I recommend to also install the packages \texttt{geomorph} or \texttt{Claddis} if you want to try this example on your own morphometric or cladistic data.
+Note that we use the \texttt{release} branch here which is version 0.1.0.
+If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
+This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
+Future version will just require the specific function but this version (0.1.0) will install \texttt{paleotree} as a dependency (which is not that bad since it is a super useful package anyway!).
+Additionally, I warmly recommend to install the packages \texttt{geomorph} or/and \texttt{Claddis} if you want to try this demo with your very own ordinated morphometric or cladistic data.
 
 \subsection{Which data?}
-In this demo we are going to use the data from Beck and Lee 2014 \cite{beckancient2014}:
+In this demo we are going to use a subset of the ordinated cladistic data from Beck and Lee 2014 \cite{beckancient2014}:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -162,7 +163,7 @@ In this demo we are going to use the data from Beck and Lee 2014 \cite{beckancie
 ## n49 -0.13067785 0.4478168 0.11956268 0.13800340 -0.3222785
 \end{verbatim}
 \begin{alltt}
-\hlcom{## A list of first and last occurence data for some fossils}
+\hlcom{## A list of first and last occurrences data for some fossils}
 \hlkwd{data}\hlstd{(BeckLee_ages)}
 \hlkwd{head}\hlstd{(BeckLee_ages)}
 \end{alltt}
@@ -191,11 +192,31 @@ In this demo we are going to use the data from Beck and Lee 2014 \cite{beckancie
 \end{knitrout}
 
 However, I greatly encourage you to use your own data (after all, that's the point of an \R package).
-You will simply need a ordinated distance matrix (make sure that the number of column is at maximum the number of rows minus one) and a phylogenetic tree (with the tips matching the ordinated matrix).
-Just replace all the \texttt{BeckLee} mentions in this demo by your very own data!
+You will simply need (1) an ordinated distance matrix: make sure that the number of column is at maximum the number of rows minus one.
+And secondly (2) a phylogenetic tree with the tips matching the ordinated matrix and a \texttt{\$root.time} element for determining the age of the tree.
+You can use the function \texttt{tree.age} provided in this package but not described in this demo for generating the root.time automatically (see \texttt{?tree.age}).
+In the following examples, just replace all the \texttt{BeckLee} mentions in this demo by your very own data:
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## My ordinated matrix with tips only}
+\hlstd{MyData_mat50} \hlkwb{<-} \hlstd{BeckLee_mat50}
+
+\hlcom{## My ordinated matrix with tips and nodes}
+\hlstd{MyData_mat99} \hlkwb{<-} \hlstd{BeckLee_mat99}
+
+\hlcom{## My first and last occurence data}
+\hlstd{MyData_ages} \hlkwb{<-} \hlstd{BeckLee_ages}
+
+\hlcom{## My phylogenetic tree}
+\hlstd{MyData_tree} \hlkwb{<-} \hlstd{BeckLee_tree}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \section{A super quick go through}
-This package allows the following:
+Without much explanation, here's what this package allows to run:
 \begin{enumerate}
     \item Splitting the data
     \item Bootstrapping the data
@@ -207,8 +228,8 @@ This package allows the following:
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Splitting the data}
-\hlstd{sliced_data} \hlkwb{<-} \hlkwd{time.series}\hlstd{(BeckLee_mat99, BeckLee_tree,} \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
-    \hlkwc{model} \hlstd{=} \hlstr{"acctran"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{5}\hlstd{,} \hlkwc{FADLAD} \hlstd{= BeckLee_ages)}
+\hlstd{sliced_data} \hlkwb{<-} \hlkwd{time.series}\hlstd{(MyData_mat99, MyData_tree,} \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
+    \hlkwc{model} \hlstd{=} \hlstr{"acctran"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{5}\hlstd{,} \hlkwc{FADLAD} \hlstd{= MyData_ages)}
 \end{alltt}
 
 
@@ -224,11 +245,11 @@ This package allows the following:
 \end{alltt}
 \begin{verbatim}
 ##      series  n  mean  2.5%   25%   75% 97.5%
-## 1 133.51104  3 17.81  0.00 15.51 24.35 24.35
-## 2 100.13328 14 52.05 45.80 49.90 54.50 57.67
-## 3  66.75552 23 64.80 59.23 63.20 66.57 69.25
-## 4  33.37776 11 42.95 37.94 41.40 44.77 47.43
-## 5         0 10 40.94 35.13 39.22 42.69 46.13
+## 1 133.51104  3 16.67  0.00 15.51 18.67 24.35
+## 2 100.13328 14 51.48 45.03 49.29 53.62 56.54
+## 3  66.75552 23 64.77 60.09 63.26 66.34 69.58
+## 4  33.37776 11 42.41 35.87 40.94 44.40 46.98
+## 5         0 10 40.20 34.46 38.38 42.46 44.57
 \end{verbatim}
 \begin{alltt}
 \hlkwd{plot}\hlstd{(sum_of_ranges,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
@@ -243,9 +264,11 @@ This package allows the following:
 
 \end{knitrout}
 
-Et voil\`{a}...
+\textit{Et voil\`{a}}, that's pretty much it...
 
 \section{In more details}
+In this section we are going to look at each functionality in more details. Of course, at this stage of the development of the package, any suggestion is most welcome.
+Please create an issue on the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} or even just drop me an email at \href{mailto:guillert@tcd.ie}{guillert@tcd.ie}.
 
 \subsection{The \dispRity objects}
 Disparity analysis involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
@@ -255,12 +278,13 @@ For example, try to use \texttt{str} to show the structure of the object created
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{str}\hlstd{(sum_of_ranges)}
+\hlcom{## That's a 2512 lines output!}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
-Therefore this package proposes a new class of object called \dispRity (how unexpected!) that allow to use a \texttt{S3 print.dispRity} method.
-In other words, when you are creating objects using the \dispRity functions, you can quickly and easily have a look at them by just printing it.
+Therefore this package proposes a new class of object called \dispRity (how unexpected!) that allow to use a S3 \texttt{print.dispRity} method.
+In other words, when you are creating objects using the \dispRity functions, you can quickly and easily have a look at them by just calling the object (it will automatically print it via \texttt{print.dispRity}).
 For example:
 
 \begin{knitrout}
@@ -284,34 +308,38 @@ For example:
 ## Data was split using continuous method.
 ## Data was bootstrapped 100 times, using the full bootstrap method.
 \end{verbatim}
+\begin{alltt}
+\hlcom{## Some attentive ape package users will note the similarities with a phylo object...}
+\end{alltt}
 \end{kframe}
 \end{knitrout}
 
-Note that each object output from different functions will show summarise slightly different informations.
+Note that each object output from the different functions detailed below will display slightly different summarised informations (depending on the object content).
 
 \subsection{Splitting the data}
 One of the first functionality of this package is to facilitate splitting the ordinated matrix in subsamples.
-The original ordinated matrix represents the total any-o-space.
+In fact, in many disparity analysis, one will analysis differences in subsamples of the any-o-space.
+For example, the subsamples can be composed of elements at a certain point in time (disparity-through-time analysis), or elements with some traits in common (e.g. habitat, phylogeny, etc.).
 
 \subsubsection{Custom splitting}
-\texttt{cust.series} is a fairly straightforward function and allows to split the data according to a factor determined by the user.
+\texttt{cust.series} is a function that allows to split the ordinated matrix according to a factor determined by the user.
 For example, here we can split the matrix based on phylogeny: let's classify in two different groups the crown and stem mammals present in the tree.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## We want to separate the species around the node 71 (see phylogeny above).}
-\hlcom{## All the descendant are crown and all the ancestors are stem}
-\hlstd{crown} \hlkwb{<-} \hlkwd{extract.clade}\hlstd{(BeckLee_tree,} \hlkwc{node} \hlstd{=} \hlnum{71}\hlstd{)}\hlopt{$}\hlstd{tip.label}
-\hlstd{stem} \hlkwb{<-} \hlkwd{drop.tip}\hlstd{(BeckLee_tree,} \hlkwc{tip} \hlstd{= crown)}\hlopt{$}\hlstd{tip.label}
+\hlcom{## All the descendant of these node are crown and all the ancestors are stem}
+\hlstd{crown} \hlkwb{<-} \hlkwd{extract.clade}\hlstd{(MyData_tree,} \hlkwc{node} \hlstd{=} \hlnum{71}\hlstd{)}\hlopt{$}\hlstd{tip.label}
+\hlstd{stem} \hlkwb{<-} \hlkwd{drop.tip}\hlstd{(MyData_tree,} \hlkwc{tip} \hlstd{= crown)}\hlopt{$}\hlstd{tip.label}
 
-\hlcom{## We then have to feed this information in a data.frame with one column}
+\hlcom{## We then have to feed this information in a data frame with one column}
 \hlstd{factors} \hlkwb{<-} \hlkwd{as.data.frame}\hlstd{(}
     \hlkwd{matrix}\hlstd{(}\hlkwc{data} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlstr{"crown"}\hlstd{,} \hlkwd{length}\hlstd{(crown)),} \hlkwd{rep}\hlstd{(}\hlstr{"stem"}\hlstd{,} \hlkwd{length}\hlstd{(stem))),}
     \hlkwc{ncol} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{dimnames} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwd{c}\hlstd{(crown, stem))))}
 
-\hlcom{## Then we can use the customised series function}
-\hlstd{crown_stem} \hlkwb{<-} \hlkwd{cust.series}\hlstd{(BeckLee_mat50, factors)}
+\hlcom{## We then can use the customised series function}
+\hlstd{crown_stem} \hlkwb{<-} \hlkwd{cust.series}\hlstd{(MyData_mat50, factors)}
 
 \hlcom{## This created a dispRity object containing two series: crown and stem}
 \hlkwd{class}\hlstd{(crown_stem)}
@@ -357,7 +385,8 @@ For example, here we can split the matrix based on phylogeny: let's classify in 
 ##  chr [1:50] "Cimolestes" "Maelestes" "Batodon" "Bulaklestes" "Daulestes" ...
 \end{verbatim}
 \begin{alltt}
-\hlcom{## "series" containing information on the series type (custom) and names (crown and stem)}
+\hlcom{## and finally, "series" containing information on the series type (custom) and names}
+\hlcom{## (crown and stem)}
 \hlstd{crown_stem}\hlopt{$}\hlstd{series}
 \end{alltt}
 \begin{verbatim}
@@ -368,18 +397,17 @@ For example, here we can split the matrix based on phylogeny: let's classify in 
 
 Of course, using phylogeny as a factor is just an example.
 Any type of factors can be used in this example (e.g. body mass categories, habitat, diet, etc...).
-Which leads us to another type of category used a lot in disparity-through-time analysis: time!
 
 \subsubsection{Time splitting}
 \texttt{time.series} is a function that allows to split the matrix in different ways using time as a category.
 This functions needs as input an ordinated matrix and a matching phylogenetic tree.
-Two types of time series splitting can be performed with the \dispRity package by using the \texttt{method} option in \texttt{time.series}.
+Two types of time series splitting can be performed by using the \texttt{method} option:
 \begin{enumerate}
 \item the classical discrete time splitting (or time-binning) using \texttt{method = "discrete"};
 \item or a new continuous time splitting (or time-slicing) using \texttt{method = "continuous"}.
 \end{enumerate}
 For the time-slicing method details, see Guillerme and Cooper \textit{in prep.} \cite{GuillermeSTD}.
-Once the method is chosen, the function asks to specify the \texttt{time} which can be given as a vector of \texttt{numeric} values for:
+Once the method is chosen, the function intakes the \texttt{time} argument which can be a vector of \texttt{numeric} values for:
 \begin{enumerate}
 \item defining the boundaries of the time bins (when \texttt{method = "discrete"});
 \item defining the time-slicing places (when using \texttt{method = "continuous"}).
@@ -393,7 +421,7 @@ Let's see and example for time-binning (\texttt{method = "discrete"}):
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Let's generate three time bins containing the data present every 40 Ma}
-\hlstd{time_bins} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat50,} \hlkwc{tree} \hlstd{= BeckLee_tree,}
+\hlstd{time_bins} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat50,} \hlkwc{tree} \hlstd{= MyData_tree,}
     \hlkwc{method} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{80}\hlstd{,} \hlnum{40}\hlstd{,} \hlnum{0}\hlstd{))}
 \end{alltt}
 
@@ -402,8 +430,8 @@ Let's see and example for time-binning (\texttt{method = "discrete"}):
 \hlcom{## Note that the function provides a warning saying that tips where single}
 \hlcom{## points in time (no FAD/LAD information). We can fix that by adding the}
 \hlcom{## age data for the taxa that have some longer occurrence spans.}
-\hlstd{time_bins} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat50,} \hlkwc{tree} \hlstd{= BeckLee_tree,}
-    \hlkwc{method} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{80}\hlstd{,} \hlnum{40}\hlstd{,} \hlnum{0}\hlstd{),} \hlkwc{FADLAD} \hlstd{= BeckLee_ages)}
+\hlstd{time_bins} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat50,} \hlkwc{tree} \hlstd{= MyData_tree,}
+    \hlkwc{method} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{80}\hlstd{,} \hlnum{40}\hlstd{,} \hlnum{0}\hlstd{),} \hlkwc{FADLAD} \hlstd{= MyData_ages)}
 \end{alltt}
 
 
@@ -429,7 +457,7 @@ Note that we can also generate equivalent results by just telling the function t
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat50,} \hlkwc{tree} \hlstd{= BeckLee_tree,} \hlkwc{method} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{3}\hlstd{)}
+\hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat50,} \hlkwc{tree} \hlstd{= MyData_tree,} \hlkwc{method} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{3}\hlstd{)}
 \end{alltt}
 
 
@@ -440,12 +468,14 @@ Note that we can also generate equivalent results by just telling the function t
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
 We now have three time bins of 44.50368 Ma each. But hey, that's a bit silly, let's stick to bins of 40 Ma.
-Note that we can also ask to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between taxa AND nodes.
+When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1\% of the the tree length as long as at least three elements are present at that point in time (an extra 1\% is added until reaching the three elements).
+We can also ask to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between tips AND nodes.
 
 For the time-slicing method (\texttt{method = "continuous"}), the idea is pretty similar.
-We just need to provide a matrix that contains the ordinated distance between taxa AND nodes and an evolutionary model via the \texttt{model} argument.
-For now they are four evolutionary models implemented \cite{GuillermeSTD}:
+We need to provide a matrix that contains the ordinated distance between taxa AND nodes and an evolutionary model via the \texttt{model} argument.
+For now they are four evolutionary models implemented \cite{GuillermeSTD} (but see section \ref{whatsleft}):
 \begin{enumerate}
 \item \texttt{"acctran"} where the data chosen on each time slice is always the one of the offspring
 \item \texttt{"deltran"} where the data chosen on each time slice is always the one of the descendant
@@ -456,10 +486,10 @@ For now they are four evolutionary models implemented \cite{GuillermeSTD}:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{## Let's generate four time slices every 40 Ma}
-\hlstd{time_slices} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat99,} \hlkwc{tree} \hlstd{= BeckLee_tree,}
+\hlcom{## Let's generate four time slices every 40 Ma assuming a gradual evolution model}
+\hlstd{time_slices} \hlkwb{<-} \hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat99,} \hlkwc{tree} \hlstd{= MyData_tree,}
     \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,} \hlkwc{model} \hlstd{=} \hlstr{"gradual"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{80}\hlstd{,} \hlnum{40}\hlstd{,} \hlnum{0}\hlstd{),}
-    \hlkwc{FADLAD} \hlstd{= BeckLee_ages)}
+    \hlkwc{FADLAD} \hlstd{= MyData_ages)}
 \end{alltt}
 
 
@@ -474,7 +504,7 @@ For now they are four evolutionary models implemented \cite{GuillermeSTD}:
 \begin{alltt}
 \hlcom{## Note that in the same way as for the discrete method, we can also}
 \hlcom{## automatically generate the slices}
-\hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat99,} \hlkwc{tree} \hlstd{= BeckLee_tree,} \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
+\hlkwd{time.series}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat99,} \hlkwc{tree} \hlstd{= MyData_tree,} \hlkwc{method} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
     \hlkwc{model} \hlstd{=} \hlstr{"gradual"}\hlstd{,} \hlkwc{time} \hlstd{=} \hlnum{4}\hlstd{)}
 \end{alltt}
 
@@ -485,12 +515,13 @@ For now they are four evolutionary models implemented \cite{GuillermeSTD}:
 ## 133.51104, 89.00736, 44.50368, 0.
 \end{verbatim}
 \begin{alltt}
-\hlcom{## But that gives the same silly results (slicing ~ 44.50368 Ma)}
+\hlcom{## But that gives the same silly results (slicing every 44.50368 Ma)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
 \subsection{Bootstrapping the data}
+After separating the any-o-space into submatrices, one can directly calculate disparity within each subsample or first test the robustness of the data.
 To measure how robust is the data, we can perform bootstrap pseudo-replications or rarefaction analysis to make sure the results are not dependant on weird outliers.
 The \texttt{boot.matrix} allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
 The default options will bootstrap the matrix 1000 times with no rarefaction.
@@ -498,7 +529,7 @@ The default options will bootstrap the matrix 1000 times with no rarefaction.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{boot.matrix}\hlstd{(}\hlkwc{data} \hlstd{= BeckLee_mat50)}
+\hlkwd{boot.matrix}\hlstd{(}\hlkwc{data} \hlstd{= MyData_mat50)}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -507,14 +538,14 @@ The default options will bootstrap the matrix 1000 times with no rarefaction.
 \end{verbatim}
 \begin{alltt}
 \hlcom{## As we can wee, the output is also a dispRity object that is summarised}
-\hlcom{## automatically, giving information on the data as well as the number of}
+\hlcom{## automatically, and gives information on the data as well as the number of}
 \hlcom{## bootstraps and the bootstraps methods.}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
 This function proposes the user to specify the bootstrap algorithm with the \texttt{boot.type} method.
-Currently two algorithms are implemented:
+Currently two algorithms are implemented (but see section \ref{whatsleft}):
 \begin{enumerate}
 \item \texttt{"full"} where the bootstrapping is entirely stochastic (all the data is bootstrapped)
 \item \texttt{"single"} where only one random taxa is replaced by one other random taxa each pseudo-replication
@@ -531,7 +562,7 @@ Here is a series of examples:
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Bootstrapping with the single bootstrap method}
-\hlkwd{boot.matrix}\hlstd{(BeckLee_mat50,} \hlkwc{boot.type} \hlstd{=} \hlstr{"single"}\hlstd{)}
+\hlkwd{boot.matrix}\hlstd{(MyData_mat50,} \hlkwc{boot.type} \hlstd{=} \hlstr{"single"}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -540,7 +571,7 @@ Here is a series of examples:
 \end{verbatim}
 \begin{alltt}
 \hlcom{## Bootstrapping with the full rarefaction}
-\hlkwd{boot.matrix}\hlstd{(BeckLee_mat50,} \hlkwc{bootstraps} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{boot.matrix}\hlstd{(MyData_mat50,} \hlkwc{bootstraps} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -550,7 +581,7 @@ Here is a series of examples:
 \end{verbatim}
 \begin{alltt}
 \hlcom{## Or with a set number of rarefaction levels}
-\hlkwd{boot.matrix}\hlstd{(BeckLee_mat50,} \hlkwc{bootstraps} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{6}\hlopt{:}\hlnum{8}\hlstd{,}\hlnum{3}\hlstd{))}
+\hlkwd{boot.matrix}\hlstd{(MyData_mat50,} \hlkwc{bootstraps} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{6}\hlopt{:}\hlnum{8}\hlstd{,}\hlnum{3}\hlstd{))}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -560,7 +591,7 @@ Here is a series of examples:
 \end{verbatim}
 \begin{alltt}
 \hlcom{## And removing the last axis (default)}
-\hlkwd{boot.matrix}\hlstd{(BeckLee_mat50,} \hlkwc{rm.last.axis} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{boot.matrix}\hlstd{(MyData_mat50,} \hlkwc{rm.last.axis} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -570,7 +601,7 @@ Here is a series of examples:
 \end{verbatim}
 \begin{alltt}
 \hlcom{## Or with a fix value (50%)}
-\hlkwd{boot.matrix}\hlstd{(BeckLee_mat50,} \hlkwc{rm.last.axis} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlkwd{boot.matrix}\hlstd{(MyData_mat50,} \hlkwc{rm.last.axis} \hlstd{=} \hlnum{0.5}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
 ## Bootstrapped ordinated matrix with 50 taxa. 
@@ -581,7 +612,8 @@ Here is a series of examples:
 \end{kframe}
 \end{knitrout}
 
-Okay, that's all well and good but this function can also deal with a list of matrices or with a \dispRity object output from the \texttt{cust.series} or \texttt{time.series} functions.
+Of course, one could be interested in directly supplying the subsampled matrices generated above directly to this function.
+In fact, it can also deal with a list of matrices or with a \dispRity object output from the \texttt{cust.series} or \texttt{time.series} functions.
 Like this:
 
 \begin{knitrout}
@@ -628,37 +660,26 @@ Like this:
 \end{knitrout}
 
 \subsection{Calculating disparity}
-Until now, all the functions where merely splitting and bootstrapping matrices.
 Now we're going to see the functionalities of the core function of this package: the \dispRity function.
 This function is a modulable function that allow to simply (and quickly!) calculate disparity from a matrix.
-Wait, what's modulable? and back to the introduction, what's disparity?
 
-Because disparity can be measured in many ways, this function is just a tool to measure the disparity \textit{as defined by the user} (and here's where the modulable part comes in).
+Because disparity can be measured in many ways, this function is a tool to measure disparity \textit{as defined by the user} (and here's where the modulable part comes in).
 In fact, the \dispRity function intakes two main arguments: the data and the disparity metric.
 The disparity metric boils down to a single value that describes the matrix.
-Some are really classic like the sum or the products of the ranges or the variances of the matrix columns \cite{Wills1994} (i.e. the any-o-space dimensions).
+Some are classic like the sum or the product of the ranges or the variances of the matrix columns (i.e. the any-o-space axis/dimensions) \cite{Wills1994}.
 However, many more exist like the median distances between the taxa and the any-o-space centroid \cite{GuillermeSTD}.
 
 One can usually decompose the disparity metrics into two elements:
 \begin{enumerate}
-\item the \textbf{class metric} that is typically a descriptor of the matrix. For example describing the ranges of each column in the matrix or the euclidean distance between each row and the centroid of the matrix.
-\item the \textbf{summary metric} that is typically a summarise of the class metric values. For example, the sum of the ranges or the median euclidean distance. 
+\item the \textbf{class metric} that is a descriptor of the matrix. For example describing the ranges of each column in the matrix or the euclidean distances between each row and the centroid of the matrix.
+\item the \textbf{summary metric} that is a summary of the class metric values. For example, the sum of the ranges or the median of the euclidean distances. 
 \end{enumerate}
 Basically the combination can be infinite between the class and summary metrics.
-For example, people might want to measure the median variance of the axis or the product of the distance from the centroid.
-However, it is probable that some metrics are better to reflect some biological aspects of the any-o-space than others...
+For example, people might want to measure the median variances of the axis or the product of the distances from the centroid.
+However, it is probable that some metrics are better to reflect some biological aspects of the any-o-space than others (see section \ref{whatsleft})...
 
 In practice, the \dispRity function intakes a pair of class and summary metrics as a definition of disparity.
-Several of these metrics are implemented in other packages (like \texttt{stats::median}, \texttt{base::sum}, etc.) and this package proposes several metrics listed in \texttt{dispRity.metric}:
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlopt{?}\hlstd{dispRity.metric}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
+Several of these metrics are implemented in other packages (like \texttt{stats::median}, \texttt{base::sum}, etc.) and this package proposes several metrics listed in \texttt{dispRity.metric} (see \texttt{?dispRity.metric}).
 It is even possible to use your very own class and summary metrics!
 This will be actually heavily encouraged and facilitate with the \texttt{make.metric} function in a future version (see \ref{whatsleft}).
 
@@ -667,7 +688,7 @@ To use these metrics pairs in the \dispRity function, it's pretty easy:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{dispRity}\hlstd{(BeckLee_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, ranges))}
+\hlkwd{dispRity}\hlstd{(MyData_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, ranges))}
 \end{alltt}
 \begin{verbatim}
 ## Disparity measurements across 1 series for 50 taxa. 
@@ -677,8 +698,8 @@ To use these metrics pairs in the \dispRity function, it's pretty easy:
 \begin{alltt}
 \hlcom{## Yep, that's it. The order of the metrics does not matter (the function detects}
 \hlcom{## automatically which one is the class and the summary metric) so the combinations}
-\hlcom{## are high!}
-\hlkwd{dispRity}\hlstd{(BeckLee_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, variances))}
+\hlcom{## are numerous!}
+\hlkwd{dispRity}\hlstd{(MyData_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(sum, variances))}
 \end{alltt}
 \begin{verbatim}
 ## Disparity measurements across 1 series for 50 taxa. 
@@ -686,7 +707,7 @@ To use these metrics pairs in the \dispRity function, it's pretty easy:
 ## Disparity calculated as: sum variances for 48 dimensions.
 \end{verbatim}
 \begin{alltt}
-\hlkwd{dispRity}\hlstd{(BeckLee_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(prod, centroids))}
+\hlkwd{dispRity}\hlstd{(MyData_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(prod, centroids))}
 \end{alltt}
 \begin{verbatim}
 ## Disparity measurements across 1 series for 50 taxa. 
@@ -694,17 +715,30 @@ To use these metrics pairs in the \dispRity function, it's pretty easy:
 ## Disparity calculated as: prod centroids for 48 dimensions.
 \end{verbatim}
 \begin{alltt}
-\hlkwd{dispRity}\hlstd{(BeckLee_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(mode.val, ranges))}
+\hlkwd{dispRity}\hlstd{(MyData_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(mode.val, ranges))}
 \end{alltt}
 \begin{verbatim}
 ## Disparity measurements across 1 series for 50 taxa. 
 ## 1 unnamed series.
 ## Disparity calculated as: mode.val ranges for 48 dimensions.
 \end{verbatim}
+\begin{alltt}
+\hlcom{## Or funny user defined ones!}
+\hlstd{total.range} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{X}\hlstd{)} \hlkwd{abs}\hlstd{(}\hlkwd{range}\hlstd{(X)[}\hlnum{1}\hlstd{]}\hlopt{-}\hlkwd{range}\hlstd{(X)[}\hlnum{2}\hlstd{])}
+\hlkwd{dispRity}\hlstd{(MyData_mat50,} \hlkwc{metric} \hlstd{=} \hlkwd{c}\hlstd{(total.range, ranges))}
+\end{alltt}
+\begin{verbatim}
+## Disparity measurements across 1 series for 50 taxa. 
+## 1 unnamed series.
+## Disparity calculated as: total.range ranges for 48 dimensions.
+\end{verbatim}
+\begin{alltt}
+\hlcom{## That would be disparity as the range of the axis ranges!}
+\end{alltt}
 \end{kframe}
 \end{knitrout}
 
-Of course, this function can take an ordinated matrix but, more interesting it can also deal with a list of matrices (from the \texttt{cust.series} or \texttt{time.series} functions for example) or a bootstrapped or/and rarefied matrix (from the \texttt{boot.matrix} function for example).
+Of course, this function can take a simple ordinated matrix but, more interesting it can also deal with a list of matrices (from the \texttt{cust.series} or \texttt{time.series} functions for example) or a bootstrapped or/and rarefied matrix (from the \texttt{boot.matrix} function for example).
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -733,13 +767,14 @@ Of course, this function can take an ordinated matrix but, more interesting it c
 \end{knitrout}
 
 Again, note that the results are \dispRity objects and can displayed through the S3 \texttt{print.dispRity} method to remind users what are in these objects.
+Also note that an even faster parallel version will be developed in the future (see section \ref{whatsleft}).
 
 \subsection{Summarising the results}
-Finally, after calculating disparity, probably the main thing we want to do is actually see the values of the disparity metrics, either in a table or in a plot.
-Well, that again is easily doable by using the S3 \texttt{summary.dispRity} and \texttt{plot.dispRity} functions.
+As shown in these examples above however, even though the disparity has been calculated in many way, the function doesn't directly outputs the results, rather just a summary of the analysis.
+To really display the results we can use the S3 \texttt{summary.dispRity} and \texttt{plot.dispRity} functions.
 
 \subsubsection{\texttt{summary} function}
-This function intakes a \dispRity object plus various options namely the \texttt{CI} values for the confidence intervals levels; the \texttt{cent.tend} for the central tendency to use for summarising the results and to "graphical" options which are whether to recall the \dispRity options and how much digits are wanted in the results.
+This function intakes a \dispRity object plus various options namely the \texttt{CI} values for the confidence intervals levels; the \texttt{cent.tend} for the central tendency to use for summarising the results and two \textit{visual} options which are whether to recall the \dispRity options and how much digits are wanted in the results.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -749,9 +784,9 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{alltt}
 \begin{verbatim}
 ##   series  n  mean  2.5%   25%   75% 97.5%
-## 1 120-80  8 1.114 0.915 1.080 1.167 1.235
-## 2  80-40 27 1.322 1.274 1.308 1.338 1.358
-## 3   40-0 16 1.324 1.248 1.306 1.345 1.372
+## 1 120-80  8 1.110 0.899 1.075 1.162 1.225
+## 2  80-40 27 1.322 1.275 1.308 1.337 1.361
+## 3   40-0 16 1.324 1.253 1.306 1.347 1.373
 \end{verbatim}
 \begin{alltt}
 \hlcom{## The CIs are calculated as 50 and 95 and the central tendency is the mean by default.}
@@ -765,8 +800,8 @@ This function intakes a \dispRity object plus various options namely the \texttt
 ## 3   40-0 16      1     1     1
 \end{verbatim}
 \begin{alltt}
-\hlcom{## Also, if we happen to have forgotten what was in the disp_time_binsBS object (as in which}
-\hlcom{## options where used to modify the original matrix) we can use the recall option}
+\hlcom{## Also, if we happen to have forgotten what was in the disp_time_binsBS object (as in}
+\hlcom{## which options where used to modify the original matrix) we can use the recall option:}
 \hlkwd{summary}\hlstd{(disp_time_binsBS,} \hlkwc{recall} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -774,12 +809,13 @@ This function intakes a \dispRity object plus various options namely the \texttt
 ## Data was split using discrete method.
 ## Data was bootstrapped 1000 times, using the full bootstrap method.
 ##   series  n  mean  2.5%   25%   75% 97.5%
-## 1 120-80  8 1.114 0.915 1.080 1.167 1.235
-## 2  80-40 27 1.322 1.274 1.308 1.338 1.358
-## 3   40-0 16 1.324 1.248 1.306 1.345 1.372
+## 1 120-80  8 1.110 0.899 1.075 1.162 1.225
+## 2  80-40 27 1.322 1.275 1.308 1.337 1.361
+## 3   40-0 16 1.324 1.253 1.306 1.347 1.373
 \end{verbatim}
 \begin{alltt}
-\hlcom{## Note that the recall just prints text. The output of summary.dispRity is always a data.frame}
+\hlcom{## Note that the recall just prints text. The output of summary.dispRity is always a}
+\hlcom{## data.frame}
 \hlstd{summary_table} \hlkwb{<-} \hlkwd{summary}\hlstd{(disp_time_binsBS,} \hlkwc{recall} \hlstd{=} \hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
@@ -799,12 +835,12 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{alltt}
 \begin{verbatim}
 ##   series n  mean  2.5%   25%   75% 97.5%
-## 1  crown 3 15.19 10.19 15.17 16.08 16.66
-## 2  crown 4 18.47 14.97 18.40 19.41 19.89
-## 3  crown 5 20.83 17.99 19.66 21.81 22.46
-## 4  crown 6 22.60 18.84 21.68 23.77 24.51
-## 5  crown 7 24.23 21.16 23.49 25.32 26.15
-## 6  crown 8 25.46 22.40 24.82 26.51 27.42
+## 1  crown 3 15.22 10.27 15.20 16.05 16.71
+## 2  crown 4 18.33 14.82 18.19 19.36 19.94
+## 3  crown 5 20.75 17.74 19.48 21.81 22.40
+## 4  crown 6 22.71 19.18 21.75 23.79 24.45
+## 5  crown 7 24.14 20.97 23.47 25.29 26.04
+## 6  crown 8 25.34 21.71 24.65 26.47 27.44
 \end{verbatim}
 \begin{alltt}
 \hlcom{## This outputs a longer table with all the variations of the number of crown/stem taxa}
@@ -814,7 +850,7 @@ This function intakes a \dispRity object plus various options namely the \texttt
 \end{knitrout}
 
 \subsubsection{\texttt{plot} function}
-Finally, this function allows to visualise the disparity results in a often nicer fashion than just a table (even though it tends to be the exact same data).
+This final function allows to visualise the disparity results in a often nicer fashion than just a table (even though the exact same data is displayed).
 The \texttt{plot.dispRity} option intakes the same options as \texttt{summary.dispRity} along side with various graphical options described in the function manual.
 Here, let's just have a look a few of these options.
 
@@ -822,20 +858,28 @@ Let's start with plotting the difference in disparity between the crown and the 
 For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
 In our case, we are interested in looking at the results in a discrete way.
 
+The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean.
+However, it might be interesting to see how many taxa are present in each group.
+This can be done via the \texttt{diversity} option.
+A third interesting option is to plot the rarefied data if a rarefaction was applied on the data with the \texttt{boot.matrix} function.
+For displaying the rarefied data we can use the \texttt{rarefaction} option.
+This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
+Additionally, it can be a specific number to plot a specific number of taxa.
+Let say we want both groups to have 20 taxa maximum.
+We can see now that the confidence intervals overlap more than previously
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Graphical options}
 \hlkwd{quartz}\hlstd{(}\hlkwc{width} \hlstd{=} \hlnum{15}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{5}\hlstd{) ;} \hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{= (}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{)),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
-
 \hlcom{## Plotting the score for both groups}
 \hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"} \hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
-
 \hlcom{## Same one with the number of taxa for each data set}
 \hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
-
 \hlcom{## Same one with rarefied data (note how that affects the diversity data as well!)}
-\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{20}\hlstd{,} \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
+\hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlnum{20}\hlstd{,}
+    \hlkwc{ylim} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{25}\hlstd{,}\hlnum{40}\hlstd{))}
 \end{alltt}
 \end{kframe}
 
@@ -847,16 +891,6 @@ In our case, we are interested in looking at the results in a discrete way.
 
 \end{knitrout}
 
-The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean. As we can see, the disparity seems a bit higher in crown mammals.
-Now that can be due just to the difference in the number of species in both crown and stem mammals.
-By the way, how many taxa where in each group? We can look at that by using the \texttt{diversity} option.
-
-This shows that the number of taxa is higher (30) in crown mammals than in stem ones (20), that is why it is maybe interesting to look at the rarefied data using the \texttt{rarefaction} option.
-This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
-Additionally, it can be a specific number to plot a specific number of taxa.
-Let say we want both groups to have 20 taxa maximum.
-
-We can see now that the confidence intervals overlap more than previously
 To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
 
 \begin{knitrout}
@@ -864,7 +898,6 @@ To understand how the number of taxa affects each series, we can use the \texttt
 \begin{alltt}
 \hlcom{## Graphical options}
 \hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
-
 \hlcom{## The rarefaction curves}
 \hlkwd{plot}\hlstd{(disp_crown_stemBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{rarefaction} \hlstd{=} \hlstr{"plot"}\hlstd{)}
 \hlcom{## Note that the function automatically draws the curves for each series and splits}
@@ -880,21 +913,22 @@ To understand how the number of taxa affects each series, we can use the \texttt
 
 \end{knitrout}
 
-The different dashed lines represent the different confidence intervals.
+The different dashed lines represent the different confidence intervals around each rarefaction curve.
 
 Additionally, for the \texttt{type = "discrete"} option, we might also decide to plot many boxplots (which can be a bit messy).
 The \texttt{discrete\_type} option allows to switch between \texttt{"box"} or \texttt{"line"} for showing the results in one or the other format.
 Let's look at that with the time binned data (even though there is only three time bins).
+Finally, we can use the \texttt{type = "continuous"} option that comes in handy for plotting continuous data like in the time sliced analysis (obviously...).
+
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Graphical options}
 \hlkwd{quartz}\hlstd{(}\hlkwc{width} \hlstd{=} \hlnum{10}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{5}\hlstd{) ;} \hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{= (}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{)),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
-
-\hlcom{## The disparity-through-time data in a time-binned way}
+\hlcom{## The disparity-through-time data in a time-binned way (with lines rather than}
+\hlcom{## boxes)}
 \hlkwd{plot}\hlstd{(disp_time_binsBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{discrete_type} \hlstd{=} \hlstr{"line"}\hlstd{)}
-
 \hlcom{## The disparity-through-time data in a time-sliced ways}
 \hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{)}
 \end{alltt}
@@ -908,20 +942,19 @@ Let's look at that with the time binned data (even though there is only three ti
 
 \end{knitrout}
 
-Finally, we can use the \texttt{type = "continuous"} option that comes in handy for plotting continuous data like in the time sliced analysis (obviously...).
+We can even plot both results (discrete and continuous) on the same graph:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlcom{## Graphical options}
 \hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
-
 \hlcom{## First, plotting the continuous data}
 \hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{2}\hlstd{))}
-
 \hlcom{## Second, adding the discrete data}
 \hlkwd{par}\hlstd{(}\hlkwc{new} \hlstd{=} \hlnum{TRUE}\hlstd{)}
-\hlkwd{plot}\hlstd{(disp_time_binsBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{discrete_type} \hlstd{=} \hlstr{"line"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{2}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
+\hlkwd{plot}\hlstd{(disp_time_binsBS,} \hlkwc{type} \hlstd{=} \hlstr{"discrete"}\hlstd{,} \hlkwc{discrete_type} \hlstd{=} \hlstr{"line"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{2}\hlstd{),}
+    \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
@@ -933,6 +966,9 @@ Finally, we can use the \texttt{type = "continuous"} option that comes in handy 
 
 \end{knitrout}
 
+Note that the results vary in values but not in pattern.
+The change in values might be due to the fact that nodes data are not included in the discrete analysis.
+
 I encourage you to play with the graphical options to have some prettier results.
 Note that most of the options from \texttt{plot} can be passed to \texttt{plot.dispRity} via \texttt{...}.
 
@@ -941,15 +977,15 @@ Note that most of the options from \texttt{plot} can be passed to \texttt{plot.d
 \begin{alltt}
 \hlcom{## Graphical options}
 \hlkwd{par}\hlstd{(}\hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
-
 \hlcom{## A plot with many options!}
-\hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{CI} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{50}\hlstd{,} \hlnum{75}\hlstd{,} \hlnum{95}\hlstd{),} \hlkwc{cent.tend} \hlstd{= median,} \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{,}
-    \hlkwc{diversity} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlstr{"red"}\hlstd{,} \hlstr{"orange"}\hlstd{,} \hlstr{"yellow"}\hlstd{),} \hlkwc{ylab} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"Disparity"}\hlstd{,} \hlstr{"Diversity"}\hlstd{),}
-    \hlkwc{xlab} \hlstd{=} \hlstr{"Time (in in units from past to present)"}\hlstd{,} \hlkwc{time.series} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{"Many options..."}\hlstd{)}
+\hlkwd{plot}\hlstd{(disp_time_slicesBS,} \hlkwc{CI} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlnum{10}\hlstd{,} \hlkwc{to}\hlstd{=}\hlnum{100}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{10}\hlstd{)),} \hlkwc{cent.tend} \hlstd{= sd,}
+    \hlkwc{type} \hlstd{=} \hlstr{"continuous"}\hlstd{,} \hlkwc{diversity} \hlstd{=} \hlstr{"log"}\hlstd{,} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlkwd{rainbow}\hlstd{(}\hlnum{10}\hlstd{)),}
+    \hlkwc{ylab} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"Disparity"}\hlstd{,} \hlstr{"log(Diversity)"}\hlstd{),} \hlkwc{xlab} \hlstd{=} \hlstr{"Time (in in units from
+    past to present)"}\hlstd{,} \hlkwc{time.series} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{"Many options..."}\hlstd{)}
 \end{alltt}
 \end{kframe}
 
-{\centering \includegraphics[width=.5\linewidth]{figure/minimal-plot5-1} 
+{\centering \includegraphics[width=.8\linewidth]{figure/minimal-plot5-1} 
 
 }
 
@@ -959,9 +995,29 @@ Note that most of the options from \texttt{plot} can be passed to \texttt{plot.d
 
 \section{What's left?}
 \label{whatsleft}
+As stated at the start of the demo, this version 0.1.0 is still in development and many parts are missing.
+Here are the new functionalities that will be implemented before the proper release version (v.1).
+
 \subsection{Some statistics}
+Some people might get interested in p-values and other statsy numbers.
+Because the format of the \dispRity objects is a bit special, I am currently developing a \texttt{dispRity.test} function that will allow to intake your favourite statistical test and a \dispRity object.
+I will also propose several inbuilt test such as the time lag t-test \cite{GuillermeSTD}.
+Any other suggestions are most welcome!
+
 \subsection{Users defined metrics}
+To help people develop their own disparity metrics (both class and summary) and to make sure they will be usable in the \dispRity function, I am developing a \texttt{make.metric} function that will test the metric in two ways:
+(1) is the output sensible (defined by the user)?
+(2) does it compute properly in the \dispRity function?
+
+Along side with developing this package, I also aim to test the efficiency of some metrics in describing some aspects of the any-o-space so that it could be used as guidelines for disparity analysis
+
 \subsection{More user defined stuff}
+I intend also develop functions to help users to develop their own algorithms for the bootstrap method (via \texttt{make.boot}) or the evolutionary models (via \texttt{make.model}).
+Both functions will provide similar testing as the \texttt{make.metric} function.
+
+\subsection{Faster!}
+Finally, for long analysis, I intend to develop a parallel running version of the package.
+In fact, most of the internal functions are base on \texttt{lapply} functions that can be easily passed to \texttt{snow::parLapply} or similar parallel functions.
 
 \bibliographystyle{vancouver}
 \bibliography{References}
