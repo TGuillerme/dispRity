@@ -1,6 +1,6 @@
 Package: dispRity
 Title: A package for measuring disparity in R.
-Authors: Thomas Guillerme <guillert@tcd.ie>
+Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.0
 Date: 2015-10-01
