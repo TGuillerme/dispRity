@@ -47,7 +47,7 @@
 #' @author Thomas Guillerme
 
 
-time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbose=FALSE) {
+time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
     
     #----------------------
     # SANITIZING
@@ -97,7 +97,8 @@ time.series<-function(data, tree, method, time, model, inc.nodes, FADLAD, verbos
             percent <- percent+0.01
         }
         #Set up time
-        time <- seq(from=0, to=tree$root.time-percent*tree$root.time, length.out=time)
+        if(method == "discrete") time <- seq(from=0, to=tree$root.time-percent*tree$root.time, length.out=time+1)
+        if(method == "continuous") time <- seq(from=0, to=tree$root.time-percent*tree$root.time, length.out=time)    
     }
     #time cannot be older than the root age
     if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")
