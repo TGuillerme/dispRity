@@ -3,7 +3,17 @@ A package for measuring disparity in `R`
 
 **dispRity** is a `R` package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
 
+<<<<<<< HEAD
 ## Installing dispRity
+=======
+**dispRity** is a colaborative and modulable `R` package for measuring disparity from ordinated data (PCA, PCO, PCoA, MDS, etc).
+
+#### [Implemented metric](https://github.com/TGuillerme/dispRity/blob/master/metrics.md)
+Or soon to be implemented...
+
+##Installing dispRity
+#### Go to the [master branch](https://github.com/TGuillerme/dispRity) for the piping hot news!
+>>>>>>> origin/release
 ```r
 #install.packages("devtools")
 library(devtools)
@@ -11,6 +21,7 @@ install_github("TGuillerme/dispRity", ref="release")
 library(dispRity)
 ```
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
+<<<<<<< HEAD
 
 <!-- ##### Patch notes <!-- A patch note is usless for now
 * 2015/10/01 - v0.1.0
@@ -52,3 +63,5 @@ Authors
 -------
 A proper citation format will be availble soon
 -->
+=======
+>>>>>>> origin/release
