@@ -19,7 +19,7 @@
 
 \item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
 
-\item{diversity}{\code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix).}
+\item{diversity}{\code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix); or \code{"log"} for plotting the logged diversity.}
 
 \item{discrete_type}{Either \code{"box"} for boxplots or \code{"line"} for distribution lines.}
 
@@ -45,7 +45,7 @@ data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ag
 ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
 sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
 bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
-sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, range))
+sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 
 ## Discrete plotting
 plot(sum_of_ranges, type = "discrete")

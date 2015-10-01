@@ -87,21 +87,36 @@ get.series<-function(summarised_data, rare_level) {
 }
 
 
-plot.diversity<-function(summarised_data, which.rare, type, ylab, col, ...) {
+plot.diversity<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
     #Check if ylab2 exists
     if(length(ylab) == 1) {
-        ylab[[2]]<-"diversity"
+        ylab[[2]]<-"Diversity"
     }
 
     #Add the lines
-    par(new=TRUE)
-    plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+    if(type == "continuous") {
+        #Continuous (straightforward)
+        if(div.log == FALSE) {
+            plot(extract.summary(summarised_data, 2, which.rare), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+        } else {
+            plot(log(extract.summary(summarised_data, 2, which.rare)), type="l", lty=2, xaxt="n",yaxt="n",xlab="",ylab="")
+        }
+    } else {
+        #Creating the dummy data table
+        points_n<-length(unique(summarised_data$series))
+        dummy_mat<-matrix(extract.summary(summarised_data, 2, which.rare), ncol=points_n)
+        colnames(dummy_mat)<-extract.summary(summarised_data, 1)
+        if(div.log == FALSE) {
+            boxplot(dummy_mat,  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+        } else {
+            boxplot(log(dummy_mat),  xaxt="n",yaxt="n",xlab="",ylab="", boxwex=0.5/points_n, lty=2)
+        }
+
+    }
+    #lines(extract.summary(summarised_data, 2, which.rare), lty=2)re
     axis(4, lty=2)
-    mtext(ylab[[2]], side=4, line=2, cex=1)
-
+    mtext(ylab[[2]], side=4, line=2)
 }
-
-
 
 #discrete plotting
 plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...) {
@@ -110,13 +125,11 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
     #dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat<-matrix(1:points_n, ncol=points_n)
-
-    #BUG
     colnames(dummy_mat)<-extract.summary(summarised_data, 1)
 
     #Empty plot
-    boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, ...)
-    #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab) ; warning("DEBUG: plot")
+    boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001, ...)
+    #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001) ; warning("DEBUG: plot")
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
