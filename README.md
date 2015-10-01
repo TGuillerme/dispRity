@@ -1,4 +1,6 @@
 # dispRity
+[![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
+
 A package for measuring disparity in `R`
 
 **dispRity** is a `R` package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
