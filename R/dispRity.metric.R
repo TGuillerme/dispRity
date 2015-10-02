@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dispRity.metrics variances ranges centroids mode.val
+#' @aliases variances ranges centroids mode.val
 #'
 #' @title Disparity metrics
 #'

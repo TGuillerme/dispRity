@@ -143,7 +143,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     #Must be one of these methods
     boot.methods_list<-c('full', "single")
     if(all(is.na(match(boot.type, boot.methods_list)))) {
-        stop("boot.method can be 'full' or 'single'.")
+        stop("boot.method must be 'full' or 'single'.")
     }
     # ~~~
     # Add some extra method i.e. proportion of bootstrap shifts?
@@ -159,14 +159,14 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
             last.axis<-0.95
         }
     } else {
-        #Else must be a single numeric value (probability)
-        check.class(rm.last.axis, "numeric", " must be logical or a probability threshold value.")
-        check.length(rm.last.axis, 1, " must be logical or a probability threshold value.", errorif=FALSE)
+        #Else must be a single numeric value (proportional)
+        check.class(rm.last.axis, "numeric", " must be logical or a proportional threshold value.")
+        check.length(rm.last.axis, 1, " must be logical or a proportional threshold value.", errorif=FALSE)
         if(rm.last.axis < 0) {
-            stop("rm.last.axis must be logical or a probability threshold value.")
+            stop("rm.last.axis must be logical or a proportional threshold value.")
         } else {
             if(rm.last.axis > 1) {
-                stop("rm.last.axis must be logical or a probability threshold value.")
+                stop("rm.last.axis must be logical or a v threshold value.")
             } else {
                 rm.axis<-TRUE
                 last.axis<-rm.last.axis

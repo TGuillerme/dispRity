@@ -53,7 +53,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #must have 5 elements
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
+    if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
     results<-data$disparity
     #is the data bootstrapped?   
     if(!is.na(match("bootstraps", names(data)))) {

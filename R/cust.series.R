@@ -35,7 +35,7 @@ cust.series<-function(data, factor) {
     #data must be a matrix
     check.class(data, 'matrix')
     #data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at least k-1 columns")
+    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at maximum (rows-1) columns")
 
     #FACTOR
     #must be matrix or data.frame

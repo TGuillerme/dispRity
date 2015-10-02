@@ -121,7 +121,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
         # Make summary metric is not mandatory
         # ~~~~
     #must be a vector of two elements
-    check.length(metric, 2, " must be a vector of two elements, the first being the metric class and the second being the metric summary.")
+    check.length(metric, 2, " must be a vector of two elements: the class and the summary metric.\nSee ?dispRity.metric for more details.")
     #both elements must be functions
     check.class(metric[[1]], "function")
     check.class(metric[[2]], "function")
