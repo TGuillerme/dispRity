@@ -27,7 +27,11 @@ diversity.count<-function(data) {
         return(nrow(data))
     } else {
         if(class(data[[1]]) == "matrix") {
-            return(nrow(data[[1]]))
+            #Get the number of rows per matrices
+            output<-unlist(lapply(data, nrow))
+            #Remove matrices names
+            names(output) <- NULL
+            return(output)
         }
         #lapply frenzy!
         return(unlist(lapply(lapply(data, lapply, lapply, nrow), lapply, unique), use.names=FALSE))

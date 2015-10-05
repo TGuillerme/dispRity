@@ -3,7 +3,6 @@
 \name{dispRity.metric}
 \alias{centroids}
 \alias{dispRity.metric}
-\alias{dispRity.metrics}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}

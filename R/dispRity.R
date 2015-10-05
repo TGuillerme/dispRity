@@ -55,29 +55,30 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     #DATA
     #Check if the input is a dispRity object
-    if(class(data) == "dispRity") {
+    data_fetch<-data
+    if(class(data_fetch) == "dispRity") {
 
         #If length is 3, no bootstrap, just time series
-        if(length(data) == 3) {
+        if(length(data_fetch) == 3) {
             #Data is not bootstrapped
             is.bootstraped<-FALSE
             #Extracting the info
             prev_info<-TRUE
-            taxa_list<-data$taxa
-            series_list<-data$series[-1]
-            series_type<-data$series[1]
-            data<-data$data
+            taxa_list<-data_fetch$taxa
+            series_list<-data_fetch$series[-1]
+            series_type<-data_fetch$series[1]
+            data<-data_fetch$data
         }
 
         #If length is 4, bootstrap (+ time series?)
-        if(length(data) == 4) {
+        if(length(data_fetch) == 4) {
             #Data is bootstrapped
             is.bootstraped<-TRUE
             #Extracting the info
-            BSresult<-data$bootstraps
-            boot.call<-data$call
-            taxa_list<-data$taxa
-            series_list<-data$series
+            BSresult<-data_fetch$bootstraps
+            boot.call<-data_fetch$call
+            taxa_list<-data_fetch$taxa
+            series_list<-data_fetch$series
         }
 
     } else {
