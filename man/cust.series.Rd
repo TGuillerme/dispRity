@@ -9,7 +9,7 @@ cust.series(data, series)
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
 
-\item{series}{A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames and a single column.}
+\item{series}{A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
