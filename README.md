@@ -22,7 +22,7 @@ The following installs the latest released version (see patch notes below). For 
 All patch notes can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 ## Using dispRity
-Here is a really quick go through demo see the detailed vignette [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf) for more details.
+Here is a really quick go through demo see the detailed vignette below.
 
 ````r
 ## Loading the package and the demo data
@@ -45,6 +45,9 @@ summary(sum_of_ranges) ; plot(sum_of_ranges)
 #### Implemented metric
 A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
 
+#### Demos
+*  A general tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf).
+*  An ecological tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-ecology-demo.pdf).
 
 Authors
 -------
