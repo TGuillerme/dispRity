@@ -32,7 +32,7 @@ options(formatR.arrow=TRUE,width=90)
 
 \maketitle
 
-This a quick demo to go through the beta version of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}).
+This is a quick demo to go through the beta version of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}).
 Many parts are still missing (see section \ref{whatsleft}) but this version should be running all right and give an idea of what's implemented in the package.
 
 \section{Before starting}
@@ -65,22 +65,18 @@ In this demo we are going to use a subset of the ordinated cladistic data from B
 <<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Loading demo and the package data
 library(dispRity)
-
 ## An ordinated matrix with the tips only
 data(BeckLee_mat50)
 dim(BeckLee_mat50)
 head(BeckLee_mat50[,1:5])
-
 ## An ordinated matrix with the tips and the nodes (named nX)
 data(BeckLee_mat99)
 dim(BeckLee_mat99)
 head(BeckLee_mat99[,1:5], 2)
 tail(BeckLee_mat99[,1:5], 2)
-
 ## A list of first and last occurrences data for some fossils
 data(BeckLee_ages)
 head(BeckLee_ages)
-
 ## And a phylogeny:
 data(BeckLee_tree)
 plot(BeckLee_tree) ; nodelabels(cex=0.8)
@@ -95,13 +91,10 @@ In the following examples, just replace all the \texttt{BeckLee} mentions in thi
 <<Setup the data>>=
 ## My ordinated matrix with tips only
 MyData_mat50 <- BeckLee_mat50
-
 ## My ordinated matrix with tips and nodes
 MyData_mat99 <- BeckLee_mat99
-
 ## My first and last occurence data
 MyData_ages <- BeckLee_ages
-
 ## My phylogenetic tree
 MyData_tree <- BeckLee_tree
 @ 
@@ -118,17 +111,14 @@ Without much explanation, here's what this package allows to run:
 <<Quick go, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
 ## Splitting the data
 sliced_data <- time.series(MyData_mat99, MyData_tree, method = "continuous",
-    model = "acctran", time = 5, FADLAD = MyData_ages)
-
+    model = "acctran", time = 9, FADLAD = MyData_ages)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(sliced_data, 100)
-
 ## Calculating disparity
 sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
-
 ## Summarising the results
 summary(sum_of_ranges)
-plot(sum_of_ranges, type = "continuous")
+plot(sum_of_ranges)
 @ 
 
 \textit{Et voil\`{a}}, that's pretty much it...
@@ -153,7 +143,6 @@ For example:
 <<dispRity class2>>=
 ## Which class is the sum_of_ranges object?
 class(sum_of_ranges)
-
 ## We can summarise it using the S3 method print.dispRity
 sum_of_ranges
 ## Some attentive ape package users will note the similarities with a phylo object...
@@ -175,28 +164,21 @@ For example, here we can split the matrix based on phylogeny: let's classify in 
 ## All the descendant of these node are crown and all the ancestors are stem
 crown <- extract.clade(MyData_tree, node = 71)$tip.label
 stem <- drop.tip(MyData_tree, tip = crown)$tip.label
-
 ## We then have to feed this information in a data frame with one column
 factors <- as.data.frame(
     matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
     ncol = 1, dimnames = list(c(crown, stem))))
-
 ## We then can use the customised series function
 crown_stem <- cust.series(MyData_mat50, factors)
-
 ## This created a dispRity object containing two series: crown and stem
 class(crown_stem)
 crown_stem
-
 ## This object contains three elements
 names(crown_stem)
-
 ## With "data" being the list sub-matrices
 str(crown_stem$data)
-
 ## "taxa" being the list of taxa in the original ordinated matrix
 str(crown_stem$taxa)
-
 ## and finally, "series" containing information on the series type (custom) and names
 ## (crown and stem)
 crown_stem$series
@@ -228,18 +210,15 @@ Let's see and example for time-binning (\texttt{method = "discrete"}):
 ## Let's generate three time bins containing the data present every 40 Ma
 time_bins <- time.series(data = MyData_mat50, tree = MyData_tree,
     method = "discrete", time = c(120, 80, 40, 0))
-
 ## Note that the function provides a warning saying that tips where single
 ## points in time (no FAD/LAD information). We can fix that by adding the
 ## age data for the taxa that have some longer occurrence spans.
 time_bins <- time.series(data = MyData_mat50, tree = MyData_tree,
     method = "discrete", time = c(120, 80, 40, 0), FADLAD = MyData_ages)
-
 ## To entirely avoid the warning we could collect the occurrence span data
 ## for all the taxa but that's not necessary. The function automatically
 ## assumes no occurrence span time (i.e. single points in time) for all taxa
 ## by default.
-
 time_bins
 @
 
@@ -271,7 +250,6 @@ time_slices <- time.series(data = MyData_mat99, tree = MyData_tree,
     FADLAD = MyData_ages)
 
 time_slices
-
 ## Note that in the same way as for the discrete method, we can also
 ## automatically generate the slices
 time.series(data = MyData_mat99, tree = MyData_tree, method = "continuous",
@@ -329,7 +307,6 @@ crown_stemBS <- boot.matrix(crown_stem, rarefaction = TRUE)
 ## And just bootstrapping for the time binning/slicing
 time_binsBS <- boot.matrix(time_bins)
 time_slicesBS <- boot.matrix(time_slices)
-
 ## And just to remind us what's in each objects
 crown_stemBS
 time_binsBS
@@ -429,6 +406,8 @@ Here, let's just have a look a few of these options.
 Let's start with plotting the difference in disparity between the crown and the stem mammals.
 For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
 In our case, we are interested in looking at the results in a discrete way.
+Note that the plot \texttt{type} can be left missing.
+The function will then use \texttt{"discrete"} as default or \texttt{"continuous"} if the input data came from the \texttt{time.series} function with \texttt{method = "continuous"}.
 
 The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean.
 However, it might be interesting to see how many taxa are present in each group.
@@ -444,12 +423,11 @@ We can see now that the confidence intervals overlap more than previously
 ## Graphical options
 quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
 ## Plotting the score for both groups
-plot(disp_crown_stemBS, type = "discrete" , ylim = c(25,40))
+plot(disp_crown_stemBS, ylim = c(25,40))
 ## Same one with the number of taxa for each data set
-plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, ylim = c(25,40))
+plot(disp_crown_stemBS, diversity = TRUE, ylim = c(25,40))
 ## Same one with rarefied data (note how that affects the diversity data as well!)
-plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, rarefaction = 20,
-    ylim = c(25,40))
+plot(disp_crown_stemBS, diversity = TRUE, rarefaction = 20, ylim = c(25,40))
 @
 
 To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
@@ -458,7 +436,7 @@ To understand how the number of taxa affects each series, we can use the \texttt
 ## Graphical options
 par(bty = "n")
 ## The rarefaction curves
-plot(disp_crown_stemBS, type = "discrete", diversity = TRUE, rarefaction = "plot")
+plot(disp_crown_stemBS, diversity = TRUE, rarefaction = "plot")
 ## Note that the function automatically draws the curves for each series and splits
 ## the plot screen accordingly.
 @
@@ -476,9 +454,9 @@ Finally, we can use the \texttt{type = "continuous"} option that comes in handy 
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 ## The disparity-through-time data in a time-binned way (with lines rather than
 ## boxes)
-plot(disp_time_binsBS, type = "discrete", discrete_type = "line")
+plot(disp_time_binsBS, discrete_type = "line")
 ## The disparity-through-time data in a time-sliced ways
-plot(disp_time_slicesBS, type = "continuous")
+plot(disp_time_slicesBS)
 
 @
 
@@ -488,11 +466,10 @@ We can even plot both results (discrete and continuous) on the same graph:
 ## Graphical options
 par(bty = "n")
 ## First, plotting the continuous data
-plot(disp_time_slicesBS, type = "continuous", ylim=c(0.5,2))
+plot(disp_time_slicesBS, ylim=c(0.5,2))
 ## Second, adding the discrete data
 par(new = TRUE)
-plot(disp_time_binsBS, type = "discrete", discrete_type = "line", ylim=c(0.5,2),
-    xlab="", ylab="")
+plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
 @
 
 Note that the results vary in values but not in pattern.
