@@ -2,10 +2,9 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.31742.svg)](http://dx.doi.org/10.5281/zenodo.31742)
 
-
 A package for measuring disparity in `R`
 
-**dispRity** is a `R` package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
+**dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 ## Installing dispRity
 ```r
@@ -16,12 +15,12 @@ library(dispRity)
 ```
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
 
-<!-- ##### Patch notes <!-- A patch note is usless for now
+##### Patch notes
 * 2015/10/01 - v0.1.0
   * first release!
   
 All patch notes can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
--->
+
 ## Using dispRity
 Here is a really quick go through demo see the detailed vignette [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf) for more details.
 
@@ -40,7 +39,7 @@ bootstrapped_data <- boot.matrix(sliced_data, 100)
 sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 
 ## Summarising the results
-summary(sum_of_ranges) ;plot(sum_of_ranges, type = "continuous")
+summary(sum_of_ranges) ; plot(sum_of_ranges)
 ````
 
 #### Implemented metric
@@ -54,7 +53,7 @@ Authors
 
 Citation
 -------
-If you are using this package, please cite:
+If you are using this package, please cite the following Zenodo DOI (an associated paper will be added soon):
 
 * Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
 
