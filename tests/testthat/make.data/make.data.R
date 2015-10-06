@@ -74,3 +74,28 @@ FADLAD_data<-FADLAD_data[-which(is.na(match(rownames(FADLAD_data), tree_data$tip
 test_data<-list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
 
 save(test_data, file="../test_data.Rda")
+
+
+####################################
+# Ecology data
+####################################
+
+#Loading the data
+McClean_data<-read.csv("2015-McClean.csv")
+
+#Generating the matrix
+McClean_matrix<-with(McClean_data,tapply(McClean_data$Abundance,list(McClean_data$Tdepth,McClean_data$Genus),mean))
+McClean_matrix<-as.matrix(cbind(McClean_matrix[,1:93]))
+
+#Calculating the distance matrix
+McClean_distance<-as.matrix(dist(McClean_matrix, method="euclidean"))
+
+#Ordinating the distance matrix
+McClean_ordination<-cmdscale(McClean_distance, eig = TRUE, k = nrow(McClean_distance)-1)$points
+
+#Factors
+treatment<-c("treat1","treat1","treat2","treat2","treat1","treat1","treat1","treat2","treat2","treat1","treat1","treat2","treat2","treat2","treat2","treat2","treat2","treat2","treat1","treat2","treat2","treat1","treat2","treat2","treat2","treat2","treat1","treat1","treat1","treat2","treat2","treat1","treat1","treat1","treat1","treat1","treat1","treat1","treat1","treat1")
+depth<-c(1,2,1,2,1,1,2,1,2,1,2,1,2,1,2,1,2,2,2,1,2,1,1,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,1)
+
+#Output list
+McClean_data<-list("ordination"=McClean_ordination, "treatment"=treatment, "depth"=depth)
