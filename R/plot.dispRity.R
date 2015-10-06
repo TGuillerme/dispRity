@@ -3,7 +3,7 @@
 #' @description Plots a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param type Either \code{"continuous"} or \code{"discrete"}.
+#' @param type Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.
 #' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
@@ -30,7 +30,7 @@
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 #' 
 #' ## Discrete plotting
-#' plot(sum_of_ranges, type = "discrete")
+#' plot(sum_of_ranges)
 #' ## Using different options
 #' plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"), 
 #'      ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
@@ -89,17 +89,26 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     silent<-check.metric(cent.tend)
 
     #type
-    #type must be a character string
-    check.class(type, "character")
-    #type must have only one element
-    check.length(type, 1, ' must be either "discrete", "d", "continuous", or "c".')
-    #type must be either "discrete", "d", "continuous", or "c"
-    all_types <- c("discrete", "d", "continuous", "c")
-    if(all(is.na(match(type, all_types)))) stop('type must be either "discrete", "d", "continuous", or "c".')
-    
-    #if type is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
-    if(type == "d") type <- "discrete"
-    if(type == "c") type <- "continuous"
+    if(missing(type)) {
+        #Set type to default
+        if(grep("continuous method", data$call) == 1) {
+            type <- "continuous"
+        } else {
+            type <- "discrete"
+        }
+    } else {
+        #type must be a character string
+        check.class(type, "character")
+        #type must have only one element
+        check.length(type, 1, ' must be either "discrete", "d", "continuous", or "c".')
+        #type must be either "discrete", "d", "continuous", or "c"
+        all_types <- c("discrete", "d", "continuous", "c")
+        if(all(is.na(match(type, all_types)))) stop('type must be either "discrete", "d", "continuous", or "c".')
+        
+        #if type is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
+        if(type == "d") type <- "discrete"
+        if(type == "c") type <- "continuous"
+    }
 
     #If continuous, set time to continuous Ma (default)
     if(type == "continuous" & time.series == TRUE) {

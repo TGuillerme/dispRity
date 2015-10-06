@@ -16,7 +16,6 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
         }
     }
     
-
     #ylab
     if(ylab[[1]] == "default") {
         #Set to call label
@@ -239,8 +238,8 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
 plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ...) {
 #plots rarefaction curves (continuous, multiple panels if series > 1)
 
-    plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ...)
-    #plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]]) ; warning("DEBUG: plot")
+    plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim, ...)
+    #plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim) ; warning("DEBUG: plot")
 
     #Add the CIs
     #Check if bootstrapped

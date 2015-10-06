@@ -11,7 +11,7 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} or \code{"discrete"}.}
+\item{type}{Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.}
 
 \item{CI}{The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
