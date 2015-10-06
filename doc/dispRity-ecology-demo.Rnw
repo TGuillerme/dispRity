@@ -33,15 +33,13 @@ options(formatR.arrow=TRUE,width=90)
 \maketitle
 
 This is a quick demo for using the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) in ecological analysis.
-See the \href{https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf}{dispRity-tutorial} vignette for a general demo of the \dispRity package.
+See the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos} for a general demo of the \dispRity package.
 
 \section{Before starting}
 
 \dispRity is a package for calculating disparity in \texttt{R}.
 To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
-These ordinated matrices can be called the morphospace (when using morphometric data) or the cladisto-space (for cladistic data) and will represent the total spread of the forms available in the dataset.
-However, keep in mind that if you are using other type of data, say ecological data for example, then the ordinated matrix will represent the eco-space which represents the total spread of ecological traits available in the dataset.
-In the rest of this demo, I will sometimes refer to the ordinated matrix as the any-o-space where you can replace \textit{any} by any prefix you want your space to be based on!
+These ordinated matrices can represent the any-o-space of possibilities of your analyses (e.g. for morphological data, the morphospace represents all the possible morphologies).
 
 \subsection{Installation}
 You can install this package easily if you use the latest version of \R and \texttt{devtools}.
@@ -53,29 +51,30 @@ install_github("TGuillerme/dispRity", ref = "master")
 library(dispRity)
 @
 
-WARNING: this is going to load the latest version, it might contain bugs.
-A further version of this vignette will be based on the release version.
-
 Note that we use the \texttt{release} branch here which is version \Sexpr{packageVersion("dispRity")}.
 If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
 This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
 
 \subsection{Data}
 
+For this example with ecological data we are going to use data from McClean (unpubl.) that contains an ordination of a distance matrix between different experimental plots.
+
 <<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Loading demo and the package data
 library(dispRity)
 ## let's use the matrix from McClean (unpubl.)
 data(McClean_data)
-## This dataset contains an ordinated matrix
+## This dataset contains an ordinated matrix (in 20 dimensions) of the distance
+## between experimental plots.
 ord_matrix <- McClean_data$ordination
-## As well as two list of factors for separating the rows of the matrix
+## As well as two list of different factors affecting each experimental plot:
+## the treatment and the depth.
 treatments <- McClean_data$treatment
 depth <- McClean_data$depth
 @ 
 
 \section{A classic PCA}
-A classical way to represent this ordinated data will be to use PCA plots
+A classical way to represent this ordinated data will be to use PCA plots.
 
 <<PCAplot, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## The x and y axis represent the two first dimensions of the PCA
@@ -94,12 +93,16 @@ plot(x, y, col = cols, pch = pchs, xlab = "PCA1", ylab = "PCA2",
     xlim = range(x) + c(0, 100))
 @
 
+This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix.
 However, the problem, is it ignores the 18 other axis of the ordination and the PCA axis 1 and 2 do not represent a biological reality \textit{per se} but more some ordinations of correlations between the data and some factors.
-Therefore, one might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset.
+Therefore, one might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a \textit{n}-dimensional object.
+In practice, we might be interested in looking how some experimental treatment for example, will affect the position of our experimental plots in this \textit{n}-dimensional object.
+For example: do the experimental plots shift in some specific space of the \textit{n}-dimensional object when depth increases?
 
 \section{Splitting the data}
 
-First let's make a factor table.
+As a first split, one might want to split the data (i.e. the \textit{n}-dimensional object) into subsamples that we want to compare.
+First let's make a factor table:
 
 <<factors>>=
 ## Making the factor table
@@ -122,7 +125,7 @@ class(customised_series)
 customised_series
 @
 
-For more details on the \dispRity objects, see the \href{https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf}{dispRity-tutorial} vignette.
+For more details on the \dispRity objects, see the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos}.
 Basically the idea is to avoid jamming the \R console such as when using:
 
 <<dispRity class, eval=FALSE>>=
@@ -135,7 +138,7 @@ str(customised_series)
 Now we're going to see the functionalities of the core function of this package: the \dispRity function.
 This function is a modulable function that allow to simply (and quickly!) calculate disparity from a matrix.
 Disparity can be calculated in many ways, this function is a tool to measure disparity \textit{as defined by the user} (and here's where the modulable part comes in).
-For more details on disparity, see the \href{https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf}{dispRity-tutorial} vignette.
+For more details on disparity, see the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos}.
 
 One can usually decompose the disparity metrics into two elements:
 \begin{enumerate}
@@ -144,12 +147,12 @@ One can usually decompose the disparity metrics into two elements:
 \end{enumerate}
 Basically the combination can be infinite between the class and summary metrics.
 For example, people might want to measure the median variances of the axis or the product of the distances from the centroid.
-However, it is probable that some metrics are better to reflect some biological aspects of the any-o-space than others (see section \ref{whatsleft})...
+However, it is probable that some metrics are better to reflect some biological aspects of the any-o-space than others...
 
 In practice, the \dispRity function intakes a pair of class and summary metrics as a definition of disparity.
 Several of these metrics are implemented in other packages (like \texttt{stats::median}, \texttt{base::sum}, etc.) and this package proposes several metrics listed in \texttt{dispRity.metric} (see \texttt{?dispRity.metric}).
 It is even possible to use your very own class and summary metrics!
-This will be actually heavily encouraged and facilitate with the \texttt{make.metric} function in a future version (see \ref{whatsleft}).
+This will be actually heavily encouraged and facilitate with the \texttt{make.metric} function in a future version.
 
 To use these metrics pairs in the \dispRity function, it's pretty easy:
 
@@ -181,7 +184,7 @@ We can classically do so by bootstrapping the data!
 
 The \dispRity pacakge also provides easy way to bootstrap the data via the \texttt{boot.matrix} function.
 We can even rarefy the data to see the effect of the number of plots per series:
-For more details on the bootstrapping options, see the \href{https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf}{dispRity-tutorial} vignette.
+For more details on the bootstrapping options, see the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos}.
 
 <<boot.matrix>>=
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -198,6 +201,8 @@ disparity_rare <- dispRity(rarefied_data, metric = c(median, centroids))
 ## Note that calculation time is increased!
 @
 
+\subsection{Summarising the data}
+
 We can now summarise the data using various options such as the confidence intervals levels and the central tendency.
 
 <<summary>>=
@@ -212,6 +217,7 @@ head(summary(disparity_rare))
 ## This outputs a longer table with all the variations of plots down to 3 plots per series.
 @
 
+Finally we can also plot the results using the simple \texttt{plot.dispRity S3} method:
 
 <<disparity plots, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Graphical option
@@ -220,9 +226,7 @@ par(bty = "n")
 plot(disparity_BS)
 @
 
-
-
-
+Or have a look at the effect of the number of experimental plots:
 
 <<rare plots, fig.width=10, fig.height=5, out.width='1\\linewidth'>>=
 ## Graphical options
@@ -231,8 +235,9 @@ quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 plot(disparity_rare, diversity = TRUE)
 ## With the same number of plots per group
 plot(disparity_rare, diversity = TRUE, rarefaction = 17)
-
 @
+
+Or event have a look at the rarefaction curves:
 
 <<rare plots2, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Graphical option
