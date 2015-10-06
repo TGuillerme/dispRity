@@ -30,7 +30,7 @@
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 #' 
 #' ## Discrete plotting
-#' plot(sum_of_ranges)
+#' plot(sum_of_ranges, type = "discrete")
 #' ## Using different options
 #' plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"), 
 #'      ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
@@ -91,7 +91,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #type
     if(missing(type)) {
         #Set type to default
-        if(grep("continuous method", data$call) == 1) {
+        if(any(grep("continuous method", data$call))) {
             type <- "continuous"
         } else {
             type <- "discrete"
@@ -113,7 +113,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #If continuous, set time to continuous Ma (default)
     if(type == "continuous" & time.series == TRUE) {
         #Check if time.slicing was used (saved in call)
-        if(grep("Data was split using continuous method", data$call) == 1) {
+        if(any(grep("Data was split using continuous method", data$call))) {
             time_slicing<-data$series
             xlab<-"Time (Ma)"
         } else {
@@ -161,6 +161,14 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
         #Cancel plot type
         type<-"rarefaction"
     }
+
+    #Test if rarefaction data exists!
+    if(which.rare != "max") {
+        if(any(grep("rarefied", data$call)) == FALSE) {
+            stop("Data set is not rarefied. Use rarefaction = FALSE.")
+        }
+    }
+
 
     #xlab
     if(missing(xlab)) { 
@@ -217,12 +225,17 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
             }
             rarefaction<-FALSE
             which.rare<-"max"
-            message("Data is not rarefied: rarefaction is set to FALSE.")
         }
     }
+
     #Rarefaction must be in summarised_data
-    if(class(rarefaction) == "numeric") {
-        if(is.na(match(rarefaction, unlist(summarised_data$n)))) stop(paste("No rarefaction calculated for", rarefaction, "elements."))
+    if(class(which.rare) == "numeric") {
+        #The data must have the right number of rarefaction elements
+        elements_in <- length(which(unlist(summarised_data$n) == which.rare))
+        elements_req <- length(unique(unlist(summarised_data[[1]])))
+        if(elements_in != elements_req) {
+            stop(paste("Rarefaction: only ", elements_in,"/",elements_req, " series have at least ", which.rare, " elements.", sep=""))
+        }
     }
 
     #Check continuous (set to discrete if only one series)
@@ -243,7 +256,6 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     col <-default_arg[[4]]
 
     #PLOTTING THE RESULTS
-
 
     #Continuous plot
     if(type == "continuous") {

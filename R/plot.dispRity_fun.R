@@ -80,8 +80,8 @@ extract.summary<-function(summarised_data, what, which.rare="max") {
 
 #Extracting summary values for a specific series
 get.series<-function(summarised_data, rare_level) {
-    output<-summarised_data[which(as.factor(unlist(summarised_data[,1])) == levels(as.factor(unlist(summarised_data[,1])))[rare_level]),]
-    level_name<<-levels(as.factor(unlist(summarised_data[,1])))[rare_level]
+    output<-summarised_data[which(as.factor(unlist(summarised_data[,1])) == unique(unlist(summarised_data[,1]))[rare_level]),]
+    level_name<<-unique(unlist(summarised_data[,1]))[rare_level]
     return(output)
 }
 
@@ -196,10 +196,10 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
     if(time_slicing[1] == FALSE) {
         #Plot with standard xaxis
         plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
     } else {
-        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
         axis(1, 1:points_n, time_slicing)
     }
 
