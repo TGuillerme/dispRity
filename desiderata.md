@@ -12,6 +12,7 @@
 * Fix verbose typos
 * Implement coverage approach for rarefactions (see Kotric and Knoll in Paleobiology)
 * Allow `print.dispRity` to print the full list of lists.
+* Do not limit `dispRity` to two metric functions: allow any number of metrics to be used.
 
 ## Testing the metrics
 Which metric is best with:
