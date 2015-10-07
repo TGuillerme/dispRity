@@ -16,7 +16,7 @@
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
-#' \item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 #' \item{series}{A \code{vector} containing the name of the series.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' 
@@ -210,7 +210,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         series_list<-length(data)
     }
 
-    output<-list("data"=time_series, "taxa"=taxa_list, "series"=c(method, series_list))
+    output<-list("data"=time_series, "elements"=taxa_list, "series"=c(method, series_list))
     class(output)<-c("dispRity")
 
     return(output)

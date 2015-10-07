@@ -47,12 +47,13 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    results<-data$disparity
-    #is the data bootstrapped?   
-    if(!is.na(match("bootstraps", names(data)))) {
+    OBSresults<-data$disparity$observed
+    #is the data bootstrapped? 
+    if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
-        if(length(data$bootstrap[[1]][[1]]) > 1) {
+        if(length(data$data$bootstraps[[1]][[1]]) > 1) {
             is.bootstrapped<-TRUE
+            BSresults<-data$disparity$bootstrapped
         } else {
             is.bootstrapped<-FALSE
         }
@@ -99,14 +100,40 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
-    #Unlisting the bootstrap values
-    BSresults<-unlist(recursive.unlist(results), recursive=FALSE)
+    #Extracting the observed disparity
+    OBSresults<-unlist(recursive.unlist(OBSresults), recursive=FALSE)
 
-    #Calculating the central tendency
-    results_cent<-lapply(BSresults, cent.tend)
+    #Getting the table length
+    if(is.bootstrapped == TRUE) {
+        #Unlisting the bootstrap values
+        BSresults<-unlist(recursive.unlist(BSresults), recursive=FALSE)
+
+        #Calculating the central tendency
+        results_cent<-lapply(BSresults, cent.tend)
+
+        #Table length
+        tab_length<-unlist(lapply(BSresults, length)))
+    } else {
+        #Table length
+        tab_length<-unlist(lapply(OBSresults, length)))       
+    }
 
     #Create the results table
-    results_table<-as.data.frame(cbind(rep(data$series, unlist(lapply(results, length))), diversity.count(data[[1]]), results_cent))
+
+    ###############
+    # This part needs some rewriting. Separate observed and rarefied results output table should be
+    # series    n   observed    cent.tend   CIs
+    #
+    # or
+    #
+    # series    n   observed
+    #
+    # if non bootstrapped/rarefied
+    #
+    # Rewrite the whole thing with a simple is.boostrapped or not
+    ###############
+    #
+    results_table<-as.data.frame(cbind(rep(data$series, tab_length, diversity.count(data$data$), results_cent))
 
     #Add columns names
     if(is.null(match_call$cent.tend)) {

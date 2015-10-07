@@ -17,27 +17,33 @@ test_that("Sanitizing works", {
     expect_error(dispRity(data, metric=c(sum, 1), FALSE))
     expect_error(dispRity(data, c(sum, ranges), verbose="yes"))
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #one matrix
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with a single matrix", {
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("matrix","disparity","taxa","series","call"))
-    expect_is(test$matrix, "list")
+    expect_equal(names(test), c("data","disparity","elements","series","call"))
+    expect_is(test$data$observed, "list")
     expect_equal(length(test$series), 1)
-    expect_equal(length(test$taxa), 50)
+    expect_equal(length(test$elements), 50)
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #bootstrapped
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with a bootstrapped matrix", {
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("bootstraps","disparity","taxa","series","call"))
-    expect_is(test$bootstraps, "list")
+    expect_equal(names(test), c("data","disparity","elements","series","call"))
+    expect_is(test$data$bootstraps, "list")
     expect_equal(length(test$series), 1)
-    expect_equal(length(test$taxa), 50)
+    expect_equal(length(test$elements), 50)
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #bootstrapped + rarefied
 data<-test_data$ord_data_tips
@@ -45,11 +51,13 @@ data<-boot.matrix(data, bootstrap=5, rarefaction=TRUE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with a bootstrapped and rarefied matrix", {
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("bootstraps","disparity","taxa","series","call"))
-    expect_is(test$bootstraps, "list")
+    expect_equal(names(test), c("data","disparity","elements","series","call"))
+    expect_is(test$data$bootstraps, "list")
     expect_equal(length(test$series), 1)
-    expect_equal(length(test$taxa), 50)
+    expect_equal(length(test$elements), 50)
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #one matrix with series
 data<-test_data$ord_data_tips
@@ -59,28 +67,35 @@ data<-cust.series(data, factor)
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with custom series", {
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("matrix","disparity","taxa","series","call"))
-    expect_is(test$matrix, "list")
+    expect_equal(names(test), c("data","disparity","elements","series","call"))
+    expect_is(test$data$observed, "list")
     expect_equal(length(test$series), 2)
-    expect_equal(length(test$taxa), 50)
+    expect_equal(length(test$elements), 50)
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #bootstrapped + rarefied + series
+factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
+rownames(factor)<-rownames(data)
+data<-cust.series(data, factor)
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with a bootstrapped, rarefied, custom series", {
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("bootstraps","disparity","taxa","series","call"))
-    expect_is(test$bootstraps, "list")
+    expect_equal(names(test), c("data","disparity","elements","series","call"))
+    expect_is(test$data$bootstraps, "list")
     expect_equal(length(test$series), 2)
-    expect_equal(length(test$taxa), 50)
+    expect_equal(length(test$elements), 50)
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
 #testing example
 test_that("Example works", {
     data(BeckLee_mat50)
 
-    sum_of_ranges<-dispRity(BeckLee_mat50, metric = c(sum, ranges))
+    sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
     ex1<-summary(sum_of_ranges)
     expect_is(ex1, "data.frame")
     expect_equal(dim(ex1), c(1,3))
@@ -99,3 +114,5 @@ test_that("Example works", {
     expect_is(ex3, "data.frame")
     expect_equal(ex3[,3], c(32.67,33.85))
 })
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
