@@ -3,7 +3,7 @@
 #' @description Creates a summary of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input.
 #' @param rounding Optional, a value for rounding the central tendency and the confidence intervals in the output table.
@@ -14,7 +14,9 @@
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+#'      dimnames = list(rownames(BeckLee_mat50))))
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -24,14 +26,15 @@
 #' ## Summarising the results
 #' summary(sum_of_ranges) # default
 #' ## Using different options
-#' summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0, recall=TRUE)
+#' summary(sum_of_ranges, quantile = 75, cent.tend = median,
+#'      rounding=  0, recall = TRUE)
 #' 
 #' @seealso \code{\link{dispRity}}
 #'
 #' @author Thomas Guillerme
 
 
-summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
+summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -57,17 +60,17 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
         is.bootstrapped<-FALSE
     }
     
-    #CI
+    #quantile
     #Only check if the data is bootstrapped
     if(is.bootstrapped == TRUE) {
-        check.class(CI, "numeric", " must be any value between 1 and 100.")
+        check.class(quantile, "numeric", " must be any value between 1 and 100.")
         #remove warnings
         options(warn=-1)
-        if(any(CI) < 1) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) < 1) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
-        if(any(CI) > 100) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) > 100) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
         options(warn=0)
     }
@@ -112,16 +115,16 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
         colnames(results_table)<-c("series", "n", match_call$cent.tend)
     }
 
-    #Calculating CIs (if bootstrapped results)
+    #Calculating quantiles (if bootstrapped results)
     if(is.bootstrapped == TRUE) {
-        #Calculate the CIs
-        results_CI<-lapply(BSresults, quantile, probs=CI.converter(CI))
+        #Calculate the quantiles
+        results_quantile<-lapply(BSresults, quantile, probs=CI.converter(quantile))
 
         #Add to the result table
-        results_table<-cbind(results_table, matrix(data=unlist(results_CI), ncol=length(CI)*2, byrow=TRUE))
+        results_table<-cbind(results_table, matrix(data=unlist(results_quantile), ncol=length(quantile)*2, byrow=TRUE))
 
-        #Add the CI names
-        colnames(results_table)[c(4:(length(CI)*2+3))]<-names(results_CI[[1]])
+        #Add the quantile names
+        colnames(results_table)[c(4:(length(quantile)*2+3))]<-names(results_quantile[[1]])
     }   
 
     #Round the results (number of decimals = maximum number of digits in the entire)

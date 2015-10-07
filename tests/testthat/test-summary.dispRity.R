@@ -103,6 +103,6 @@ test_that("Example works", {
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     expect_is(summary(sum_of_ranges), "data.frame")
     expect_equal(dim(summary(sum_of_ranges)), c(2,7))
-    expect_is(summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0), "data.frame")
-    expect_equal(dim(summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0)), c(2,5))
+    expect_is(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame")
+    expect_equal(dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,5))
 })

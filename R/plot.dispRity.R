@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object.
 #' @param type Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.
-#' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param diversity \code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix); or \code{"log"} for plotting the logged diversity.
@@ -25,26 +25,29 @@
 #'
 #' ## Setting the data
 #' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
+#'      model = "acctran", time = 5, FADLAD = BeckLee_ages)
 #' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 #' 
 #' ## Discrete plotting
 #' plot(sum_of_ranges, type = "discrete")
 #' ## Using different options
-#' plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"), 
-#'      ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
+#' plot(sum_of_ranges, type = "discrete", quantile = c(50,75,95), cent.tend = median,
+#'      rarefaction = TRUE, diversity = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"), 
+#'      ylab=c("disparity", "taxonomic richness"), col = "red", discrete_type = "line")
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(sum_of_ranges, type = "continuous")
 #' ## Using different options (with non time.slicing option)
-#' plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red", "orange", "yellow"))
+#' plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red",
+#'      "orange","yellow"))
 #' 
 #' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
-plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, ...){
+plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, ...){
 
     #SANITIZING
     #DATA
@@ -67,17 +70,17 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
         is.bootstrapped<-FALSE
     }
 
-    #CI
+    #quantile
     #Only check if the data is bootstrapped
     if(is.bootstrapped == TRUE) {
-        check.class(CI, "numeric", " must be any value between 1 and 100.")
+        check.class(quantile, "numeric", " must be any value between 1 and 100.")
         #remove warnings
         options(warn=-1)
-        if(any(CI) < 1) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) < 1) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
-        if(any(CI) > 100) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) > 100) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
         options(warn=0)
     }
@@ -215,7 +218,7 @@ plot.dispRity<-function(data, type, CI=c(50,95), cent.tend=mean, rarefaction=FAL
     #PREPARING THE PLOT
 
     #summarising the data
-    summarised_data<-summary.dispRity(data, CI=CI, cent.tend=cent.tend, rounding=5)
+    summarised_data<-summary.dispRity(data, quantile=quantile, cent.tend=cent.tend, rounding=5)
 
     #Check the rarefaction
     if(which.rare != "max") {

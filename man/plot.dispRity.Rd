@@ -4,7 +4,7 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, CI = c(50, 95), cent.tend = mean,
+\method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, diversity = FALSE, ylim, xlab, ylab, col,
   discrete_type = "box", time.series = TRUE, ...)
 }
@@ -13,7 +13,7 @@
 
 \item{type}{Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.}
 
-\item{CI}{The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantile}{The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
@@ -43,20 +43,23 @@ data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ag
 
 ## Setting the data
 ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
+     model = "acctran", time = 5, FADLAD = BeckLee_ages)
 bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
 sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 
 ## Discrete plotting
 plot(sum_of_ranges, type = "discrete")
 ## Using different options
-plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"),
-     ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
+plot(sum_of_ranges, type = "discrete", quantile = c(50,75,95), cent.tend = median,
+     rarefaction = TRUE, diversity = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"),
+     ylab=c("disparity", "taxonomic richness"), col = "red", discrete_type = "line")
 
 ## Continuous plotting (all default options)
 plot(sum_of_ranges, type = "continuous")
 ## Using different options (with non time.slicing option)
-plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red", "orange", "yellow"))
+plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red",
+     "orange","yellow"))
 }
 \author{
 Thomas Guillerme

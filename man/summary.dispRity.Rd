@@ -4,13 +4,13 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, CI = c(50, 95), cent.tend = mean,
+\method{summary}{dispRity}(data, quantile = c(50, 95), cent.tend = mean,
   recall = FALSE, rounding)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{CI}{The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantile}{The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
@@ -27,7 +27,9 @@ data(BeckLee_mat50)
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+     dimnames = list(rownames(BeckLee_mat50))))
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -37,7 +39,8 @@ sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 ## Summarising the results
 summary(sum_of_ranges) # default
 ## Using different options
-summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0, recall=TRUE)
+summary(sum_of_ranges, quantile = 75, cent.tend = median,
+     rounding=  0, recall = TRUE)
 }
 \author{
 Thomas Guillerme

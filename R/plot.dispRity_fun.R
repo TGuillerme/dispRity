@@ -28,11 +28,11 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
     #col
     if(col[[1]] == "default") {
         col<-"black"
-        #If any CIs add, grey colours
+        #If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
-            n_CIs<-(ncol(summarised_data)-3)/2
+            n_quantiles<-(ncol(summarised_data)-3)/2
             colfun<-colorRampPalette(c("grey", "lightgrey"))
-            col<-c(col, colfun(n_CIs))
+            col<-c(col, colfun(n_quantiles))
         }
     }
 
@@ -132,14 +132,14 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many CIs?
-        CIs_n<-(ncol(summarised_data)-3)/2
+        #How many quantiles?
+        quantiles_n<-(ncol(summarised_data)-3)/2
 
         #Set the width (default)
         width=points_n/10
 
         #Set the colours
-        if(length(col[-1]) < CIs_n) {
+        if(length(col[-1]) < quantiles_n) {
             col_tmp<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col_tmp[-1]
             poly_col<-rev(poly_col)
@@ -148,12 +148,12 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
             poly_col<-rev(poly_col)
         }
 
-        #Add the CIs
+        #Add the quantiles
         if(type_d == "box") {
             for (point in 1:points_n) {
-                for(cis in 1:CIs_n) {
+                for(cis in 1:quantiles_n) {
                     #Setting X
-                    x_vals<-c(point-width/(CIs_n-cis+1.5), point+width/(CIs_n-cis+1.5), point+width/(CIs_n-cis+1.5), point-width/(CIs_n-cis+1.5))
+                    x_vals<-c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     #Setting Y
                     y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare)[point],
                               extract.summary(summarised_data, 3+cis, which.rare)[point],
@@ -166,9 +166,9 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
             }
         } else {
             for (point in 1:points_n) {
-                for(cis in 1:CIs_n) {
+                for(cis in 1:quantiles_n) {
                     #Setting X
-                    x_vals<-c(point-width/(CIs_n-cis+1.5), point+width/(CIs_n-cis+1.5), point+width/(CIs_n-cis+1.5), point-width/(CIs_n-cis+1.5))
+                    x_vals<-c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     #Setting Y
                     y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare)[point],
                               extract.summary(summarised_data, 3+cis, which.rare)[point],
@@ -176,7 +176,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
                     #Plotting the box
                     lines(x=c(point, point), y=c(extract.summary(summarised_data, 3+cis, which.rare)[point], extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point]),
-                        lty=(CIs_n-cis+1), lwd=cis*1.5, col=col[[1]])
+                        lty=(quantiles_n-cis+1), lwd=cis*1.5, col=col[[1]])
                 }
             }
         }
@@ -205,11 +205,11 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many CIs?
-        CIs_n<-(ncol(summarised_data)-3)/2
+        #How many quantiles?
+        quantiles_n<-(ncol(summarised_data)-3)/2
 
         #Set the colours
-        if(length(col[-1]) < CIs_n) {
+        if(length(col[-1]) < quantiles_n) {
             col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
@@ -219,7 +219,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
         }
 
         #Add the polygons
-        for (cis in 1:CIs_n) {
+        for (cis in 1:quantiles_n) {
             x_vals<-c(1:points_n, points_n:1)
             y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)))
             polygon(x_vals, y_vals, col=poly_col[[cis]], border="NA")
@@ -241,14 +241,14 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
     plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim, ...)
     #plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim) ; warning("DEBUG: plot")
 
-    #Add the CIs
+    #Add the quantiles
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many CIs?
-        CIs_n<-(ncol(summarised_data)-3)/2
+        #How many quantiles?
+        quantiles_n<-(ncol(summarised_data)-3)/2
 
         #Set the colours
-        if(length(col[-1]) < CIs_n) {
+        if(length(col[-1]) < quantiles_n) {
             col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
@@ -257,12 +257,12 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
             poly_col<-rev(poly_col)
         }
 
-        #Add the CI lines (from inner to outer CIs)
-        for (cis in 1:CIs_n) {
-            #lower CI
-            lines(summarised_data[,(3+CIs_n-(cis-1))], lty=(1+cis))
-            #upper CI
-            lines(summarised_data[,3+CIs_n+cis], lty=(1+cis))
+        #Add the quantile lines (from inner to outer quantiles)
+        for (cis in 1:quantiles_n) {
+            #lower quantile
+            lines(summarised_data[,(3+quantiles_n-(cis-1))], lty=(1+cis))
+            #upper quantile
+            lines(summarised_data[,3+quantiles_n+cis], lty=(1+cis))
         }
 
     }
