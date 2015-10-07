@@ -94,7 +94,7 @@ McClean_distance<-as.matrix(dist(McClean_matrix, method="euclidean"))
 McClean_ordination<-cmdscale(McClean_distance, eig = TRUE, k = nrow(McClean_distance)-1)$points
 
 #Factors
-treatment<-c("treat1","treat1","treat2","treat2","treat1","treat1","treat1","treat2","treat2","treat1","treat1","treat2","treat2","treat2","treat2","treat2","treat2","treat2","treat1","treat2","treat2","treat1","treat2","treat2","treat2","treat2","treat1","treat1","treat1","treat2","treat2","treat1","treat1","treat1","treat1","treat1","treat1","treat1","treat1","treat1")
+treatment<-c("a","a","b","b","a","a","a","b","b","a","a","b","b","b","b","b","b","b","a","b","b","a","b","b","b","b","a","a","a","b","b","a","a","a","a","a","a","a","a","a")
 depth<-c(1,2,1,2,1,1,2,1,2,1,2,1,2,1,2,1,2,2,2,1,2,1,1,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,1)
 
 #Output list

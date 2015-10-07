@@ -51,8 +51,9 @@ install_github("TGuillerme/dispRity", ref = "master")
 library(dispRity)
 @
 
-Note that we use the \texttt{release} branch here which is version \Sexpr{packageVersion("dispRity")}.
-If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
+Note that we use the \texttt{master} branch here which is version \Sexpr{packageVersion("dispRity")}.
+This is the piping-hot latest version.
+If you want a more stable (and tested version), change \texttt{ref = "master"} to \texttt{ref = "release"}.
 This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
 
 \subsection{Data}
@@ -81,8 +82,8 @@ A classical way to represent this ordinated data will be to use PCA plots.
 x <- ord_matrix[, 1]
 y <- ord_matrix[, 2]
 ## The colors will represent the treatments
-cols <- sub("treat1", "red", treatments)
-cols <- sub("treat2", "blue", cols)
+cols <- sub("a", "red", treatments)
+cols <- sub("b", "blue", cols)
 ## The symbols will represent the depth
 pchs <- sub(1, 16, depth)
 pchs <- as.numeric(sub(2, 17, pchs))
@@ -151,7 +152,7 @@ However, it is probable that some metrics are better to reflect some biological 
 
 In practice, the \dispRity function intakes a pair of class and summary metrics as a definition of disparity.
 Several of these metrics are implemented in other packages (like \texttt{stats::median}, \texttt{base::sum}, etc.) and this package proposes several metrics listed in \texttt{dispRity.metric} (see \texttt{?dispRity.metric}).
-It is even possible to use your very own class and summary metrics!
+But it is even possible to use your very own class and summary metrics! Or even any metric you decide makes sense (note that this is not yet implemented in v.\Sexpr{packageVersion("dispRity")}).
 This will be actually heavily encouraged and facilitate with the \texttt{make.metric} function in a future version.
 
 To use these metrics pairs in the \dispRity function, it's pretty easy:
