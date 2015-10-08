@@ -5,8 +5,8 @@
 \title{dispRity object plotting}
 \usage{
 \method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
-  rarefaction = FALSE, diversity = FALSE, ylim, xlab, ylab, col,
-  discrete_type = "box", time.series = TRUE, ...)
+  rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
+  discrete_type = "box", time.series = TRUE, observed = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -19,11 +19,13 @@
 
 \item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
 
-\item{diversity}{\code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix); or \code{"log"} for plotting the logged diversity.}
+\item{elements}{\code{logical} whether to plot the number of elements per series.}
 
 \item{discrete_type}{Either \code{"box"} for boxplots or \code{"line"} for distribution lines.}
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
+
+\item{observed}{\code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }

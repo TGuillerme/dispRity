@@ -4,7 +4,7 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
     #ylim
     if(ylim[[1]] == "default") {
         #Setting the ylim to min/max -/+ 5%.
-        ylim=c(min(summarised_data[,-c(1:2)])-min(summarised_data[,-c(1:2)])*0.05 , max(summarised_data[,-c(1:2)])+max(summarised_data[,-c(1:2)])*0.05)
+        ylim=c(min(summarised_data[,-c(1:2)], na.rm=TRUE)-min(summarised_data[,-c(1:2)], na.rm=TRUE)*0.02 , max(summarised_data[,-c(1:2)], na.rm=TRUE)+max(summarised_data[,-c(1:2)], na.rm=TRUE)*0.02)
     }
 
     #xlab
@@ -21,7 +21,7 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
         #Set to call label
         ylab<-strsplit(strsplit(call, split="as: ")[[1]][2], split=" for")[[1]][1]
         if(diversity == TRUE) {
-            ylab[2]<-"Diversity"
+            ylab[2]<-"Elements"
         }
     }
 
@@ -89,7 +89,7 @@ get.series<-function(summarised_data, rare_level) {
 plot.diversity<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
     #Check if ylab2 exists
     if(length(ylab) == 1) {
-        ylab[[2]]<-"Diversity"
+        ylab[[2]]<-"Elements"
     }
 
     #Add the lines
@@ -118,7 +118,7 @@ plot.diversity<-function(summarised_data, which.rare, type, ylab, col, div.log, 
 }
 
 #discrete plotting
-plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, ...) {
+plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, observed, ...) {
     #How many points?
     points_n<-length(unique(summarised_data$series))
 
@@ -133,7 +133,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
         #How many quantiles?
-        quantiles_n<-(ncol(summarised_data)-3)/2
+        quantiles_n<-(ncol(summarised_data)-4)/2
 
         #Set the width (default)
         width=points_n/10
@@ -155,8 +155,8 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
                     #Setting X
                     x_vals<-c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     #Setting Y
-                    y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare)[point],
-                              extract.summary(summarised_data, 3+cis, which.rare)[point],
+                    y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare)[point],
+                              extract.summary(summarised_data, 4+cis, which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
                     #Plotting the box
@@ -167,8 +167,6 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
         } else {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
-                    #Setting X
-                    x_vals<-c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     #Setting Y
                     y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare)[point],
                               extract.summary(summarised_data, 3+cis, which.rare)[point],
@@ -183,30 +181,48 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
     }
 
     #Add the points estimates
-    points(1:points_n, extract.summary(summarised_data, 3, which.rare), col=col[[1]], pch=19)
+    points(1:points_n, extract.summary(summarised_data, 4, which.rare), col=col[[1]], pch=19)
+
+
+    if(observed == TRUE) {
+        if(any(!is.na(extract.summary(summarised_data, 3, which.rare))))
+        #Add the points observed (if existing)
+        if(type_d == "box") {
+            for (point in 1:points_n) {
+                x_coord<-c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
+                y_coord<-rep(extract.summary(summarised_data, 3, which.rare)[point], 2)
+                lines(x_coord, y_coord, col=col[[1]], lty=3, lwd=2)
+            }
+        } else {
+            for (point in 1:points_n) {
+                y_coord<-extract.summary(summarised_data, 3, which.rare)[point]
+                points(point, y_coord, col=col[[1]], pch=4, cex=1.5)
+            }
+        }
+    }
 
 }
 
 #continuous plotting
-plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...) {
+plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...) {
     #How many points?
     points_n<-length(unique(summarised_data$series))
 
     #Plot the central tendency
     if(time_slicing[1] == FALSE) {
         #Plot with standard xaxis
-        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
     } else {
-        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
+        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
         axis(1, 1:points_n, time_slicing)
     }
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
         #How many quantiles?
-        quantiles_n<-(ncol(summarised_data)-3)/2
+        quantiles_n<-(ncol(summarised_data)-4)/2
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
@@ -221,7 +237,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
         #Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals<-c(1:points_n, points_n:1)
-            y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)))
+            y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)))
             polygon(x_vals, y_vals, col=poly_col[[cis]], border="NA")
             ####
             # ADD A DENSITY OPTION!
@@ -229,8 +245,17 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
         }
 
         #Add the central tendency on top
-        lines(seq(from=1, to=points_n), extract.summary(summarised_data, 3, which.rare), lty=1, col=col[[1]])
+        lines(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), lty=1, col=col[[1]])
+
+        #Add the observed values on top
+        if(observed == TRUE) {
+            for (point in 1:points_n) {
+                y_coord<-extract.summary(summarised_data, 3, which.rare)[point]
+                points(point, y_coord, col=col[[1]], pch=4, cex=1.5)
+            }
+        }
     }
+
 }
 
 

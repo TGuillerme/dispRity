@@ -105,7 +105,7 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
 
         #Create the result table
-        results_table<-as.data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)))
+        results_table<-data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors=FALSE)
 
         #Add columns names
         colnames(results_table)<-c("series", "n", "observed")
@@ -124,7 +124,7 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         multiplier<-unlist(lapply(BSresults, length))
 
         #Create the result table
-        results_table<-as.data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent))
+        results_table<-data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent), stringsAsFactors=FALSE)
 
         #Add columns names
         if(is.null(match_call$cent.tend)) {
@@ -136,7 +136,8 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         #Checking if the observed values match the n_obs (otherwise replace by NA)
         n_obs<-diversity.count(data$data$observed)
         for(ser in 1:length(data$series)) {
-            suppressWarnings(results_table$observed[which(results_table$series == data$series[ser])][results_table$n != n_obs[ser]]  <- NA)
+            to_remove<-which(as.numeric(results_table[which(results_table$series == data$series[ser]), 2]) != n_obs[ser])
+            results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA          
         }
 
         #Calculate the quantiles
@@ -168,6 +169,8 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         }
     }
 
+    #Make the rarefaction column numeric
+    results_table[,2]<-as.numeric(results_table[,2])
 
     #----------------------
     # OUTPUT

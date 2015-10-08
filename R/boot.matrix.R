@@ -235,7 +235,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     }
 
     #Remove last axis
-    if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
+    if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis were removed from the original ordinated data.")
 
     #SIZE
     output<-list("data"=list("bootstraps"=BSresult, "observed"=OBSresult), "elements"=taxa_list, "series"=series_list, "call"=boot.call)

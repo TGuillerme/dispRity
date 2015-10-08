@@ -7,9 +7,10 @@
 #' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
-#' @param diversity \code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix); or \code{"log"} for plotting the logged diversity.
+#' @param elements \code{logical} whether to plot the number of elements per series.
 #' @param discrete_type Either \code{"box"} for boxplots or \code{"line"} for distribution lines.
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
+#' @param observed \code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
@@ -47,7 +48,7 @@
 #'
 #' @author Thomas Guillerme
 
-plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, diversity=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, ...){
+plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, observed=FALSE, ...){
 
     #SANITIZING
     #DATA
@@ -57,12 +58,13 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
-    results<-data$disparity
+    OBSresults<-data$disparity$observed
     #is the data bootstrapped?   
-    if(!is.na(match("bootstraps", names(data)))) {
+    if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
-        if(length(data$bootstrap[[1]][[1]]) > 1) {
+        if(length(data$data$bootstrap[[1]][[1]]) > 1) {
             is.bootstrapped<-TRUE
+            BSresults<-data$disparity$bootstrapped
         } else {
             is.bootstrapped<-FALSE
         }
@@ -127,6 +129,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     }
 
     #diversity
+    #Lazy name change
+    diversity<-elements
     #must be logical
     if(class(diversity) != "logical") {
         if(diversity != "log") {
@@ -263,12 +267,12 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #Continuous plot
     if(type == "continuous") {
         if(diversity == FALSE) {
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing) ; warning("DEBUG: plot")
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, ...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing) ; warning("DEBUG: plot")
+            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
+            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
             plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
             #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
@@ -279,12 +283,12 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #Discrete plots
     if(type == "discrete") {
         if(diversity == FALSE) {
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, ...)
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
+            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
             plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
             #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
