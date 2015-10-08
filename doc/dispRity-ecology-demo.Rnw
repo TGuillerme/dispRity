@@ -60,7 +60,7 @@ This package depends mainly on the \texttt{ape} package and the \texttt{timeSlic
 
 For this example with ecological data we are going to use data from McClean (unpubl.) that contains an ordination of a distance matrix between different experimental plots.
 
-<<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+<<data>>=
 ## Loading demo and the package data
 library(dispRity)
 ## let's use the matrix from McClean (unpubl.)
@@ -209,9 +209,9 @@ We can now summarise the data using various options such as the confidence inter
 <<summary>>=
 ## The default:
 summary(disparity_BS)
-## The CIs are calculated as 50 and 95 and the central tendency is the mean by default.
+## The quantiles are calculated as 50 and 95 and the central tendency is the mean by default.
 ## But we can specify different options
-summary(disparity_BS, CI=90, cent.tend=median)
+summary(disparity_BS, quantile=90, cent.tend=median)
 
 ## Finally we can see the results of the rarefaction analysis:
 head(summary(disparity_rare))
@@ -233,9 +233,9 @@ Or have a look at the effect of the number of experimental plots:
 ## Graphical options
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 ## The same but looking at the number of plots
-plot(disparity_rare, diversity = TRUE)
+plot(disparity_rare, elements = TRUE)
 ## With the same number of plots per group
-plot(disparity_rare, diversity = TRUE, rarefaction = 17)
+plot(disparity_rare, elements = TRUE, rarefaction = 17)
 @
 
 Or event have a look at the rarefaction curves:
