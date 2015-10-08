@@ -3,10 +3,10 @@
 #' @description Creates a summary of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param CI The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input.
-#' @param rounding Optional, a value for rounding the central tendency and the confidence intervals in the output table.
+#' @param round Optional, a value for rounding the central tendency and the confidence intervals in the output table (default = 2).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -14,7 +14,9 @@
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+#'      dimnames = list(rownames(BeckLee_mat50))))
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -24,14 +26,15 @@
 #' ## Summarising the results
 #' summary(sum_of_ranges) # default
 #' ## Using different options
-#' summary(sum_of_ranges, CI=75, cent.tend=median, rounding=0, recall=TRUE)
+#' summary(sum_of_ranges, quantile = 75, cent.tend = median,
+#'      rounding=  0, recall = TRUE)
 #' 
 #' @seealso \code{\link{dispRity}}
 #'
 #' @author Thomas Guillerme
 
 
-summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
+summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -44,12 +47,13 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    results<-data$disparity
-    #is the data bootstrapped?   
-    if(!is.na(match("bootstraps", names(data)))) {
+    OBSresults<-data$disparity$observed
+    #is the data bootstrapped? 
+    if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
-        if(length(data$bootstrap[[1]][[1]]) > 1) {
+        if(length(data$data$bootstraps[[1]][[1]]) > 1) {
             is.bootstrapped<-TRUE
+            BSresults<-data$disparity$bootstrapped
         } else {
             is.bootstrapped<-FALSE
         }
@@ -57,17 +61,17 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
         is.bootstrapped<-FALSE
     }
     
-    #CI
+    #quantile
     #Only check if the data is bootstrapped
     if(is.bootstrapped == TRUE) {
-        check.class(CI, "numeric", " must be any value between 1 and 100.")
+        check.class(quantile, "numeric", " must be any value between 1 and 100.")
         #remove warnings
         options(warn=-1)
-        if(any(CI) < 1) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) < 1) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
-        if(any(CI) > 100) {
-            stop("CI must be any value between 1 and 100.")
+        if(any(quantile) > 100) {
+            stop("Quantile(s) must be any value between 1 and 100.")
         }
         options(warn=0)
     }
@@ -96,45 +100,77 @@ summary.dispRity<-function(data, CI=c(50,95), cent.tend=mean, recall=FALSE, roun
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
-    #Unlisting the bootstrap values
-    BSresults<-unlist(recursive.unlist(results), recursive=FALSE)
+    if(is.bootstrapped == FALSE) {
+        #Extracting the observed disparity
+        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
 
-    #Calculating the central tendency
-    results_cent<-lapply(BSresults, cent.tend)
+        #Create the result table
+        results_table<-data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors=FALSE)
 
-    #Create the results table
-    results_table<-as.data.frame(cbind(rep(data$series, unlist(lapply(results, length))), diversity.count(data[[1]]), results_cent))
-
-    #Add columns names
-    if(is.null(match_call$cent.tend)) {
-        colnames(results_table)<-c("series", "n", "mean")
+        #Add columns names
+        colnames(results_table)<-c("series", "n", "observed")
+    
     } else {
-        colnames(results_table)<-c("series", "n", match_call$cent.tend)
-    }
+        #Extracting the observed disparity
+        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
 
-    #Calculating CIs (if bootstrapped results)
-    if(is.bootstrapped == TRUE) {
-        #Calculate the CIs
-        results_CI<-lapply(BSresults, quantile, probs=CI.converter(CI))
+        #Unlisting the bootstrap values
+        BSresults_unl<-unlist(recursive.unlist(BSresults), recursive=FALSE)
+        
+        #Calculating the central tendency
+        results_cent<-unlist(lapply(BSresults_unl, cent.tend))
+
+        #Multiplier (for rep)
+        multiplier<-unlist(lapply(BSresults, length))
+
+        #Create the result table
+        results_table<-data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent), stringsAsFactors=FALSE)
+
+        #Add columns names
+        if(is.null(match_call$cent.tend)) {
+            colnames(results_table)<-c("series", "n", "observed", "mean")
+        } else {
+            colnames(results_table)<-c("series", "n", "observed", match_call$cent.tend)
+        }
+
+        #Checking if the observed values match the n_obs (otherwise replace by NA)
+        n_obs<-diversity.count(data$data$observed)
+        for(ser in 1:length(data$series)) {
+            to_remove<-which(as.numeric(results_table[which(results_table$series == data$series[ser]), 2]) != n_obs[ser])
+            results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA          
+        }
+
+        #Calculate the quantiles
+        results_quantile<-lapply(BSresults_unl, quantile, probs=CI.converter(quantile))
 
         #Add to the result table
-        results_table<-cbind(results_table, matrix(data=unlist(results_CI), ncol=length(CI)*2, byrow=TRUE))
+        results_table<-cbind(results_table, matrix(data=unlist(results_quantile), ncol=length(quantile)*2, byrow=TRUE))
 
-        #Add the CI names
-        colnames(results_table)[c(4:(length(CI)*2+3))]<-names(results_CI[[1]])
-    }   
+        #Add the quantile names
+        colnames(results_table)[c(5:(length(quantile)*2+4))]<-names(results_quantile[[1]])
+    }
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
-            results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
+            } else {
+                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=get.digit(as.numeric(as.character(results_table[,column]))))
+            }
         }
     } else {
         for(column in 3:ncol(results_table)) {
-            results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+            } else {
+                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=rounding)
+            }
         }
     }
 
+    #Make the rarefaction column numeric
+    results_table[,2]<-as.numeric(results_table[,2])
 
     #----------------------
     # OUTPUT

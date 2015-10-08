@@ -11,21 +11,21 @@
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{bootstraps}{A \code{list} of boostraped matrices.}
-#' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
+#' \item{data}{A \code{list} of the observed and boostraped matrices.}
+#' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 #' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
-#' \code{rarefaction}: when the input is \code{numeric}, the number of taxa is set to the value(s) for each bootstrap.
+#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap.
 #'  
 #' \code{rm.last.axis}: the provided \code{numeric} value should be the percentage of axis to keep. By default when \code{rm.last.axis = TRUE}, 95% of the axis are preserved (the last 5% are removed).
 #'
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
-#'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the taxa can be duplicated in each bootstrap).
-#'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one taxa can be duplicated in each boostrap).
+#'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
+#'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each boostrap).
 #' }
 #'
 #' @examples
@@ -37,7 +37,7 @@
 #' boot.matrix(BeckLee_mat50, bootstraps = 20)
 #' ## Bootstrapping an ordinated matrix with rarefaction
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
-#' ## Bootstrapping an ordinated matrix with only 7,10 and 11 taxa sampled
+#' ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
 #' ## Bootstrapping an ordinated matrix with only 90% of the first axis
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
@@ -60,9 +60,9 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     #If class is dispRity, data is serial
     if(class(data) == "dispRity") {
         #Must be proper format
-        check.length(data, 3, "data must be either a matrix, a list of matrices or an output from time.series or cust.series.")
+        check.length(data, 3, " must be either a matrix, a list of matrices or an output from time.series or cust.series.")
         #Extracting the info
-        taxa_list<-data$taxa
+        taxa_list<-data$elements
         series_list<-data$series[-1]
         series_type<-data$series[1]
         data<-data$data
@@ -143,7 +143,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     #Must be one of these methods
     boot.methods_list<-c('full', "single")
     if(all(is.na(match(boot.type, boot.methods_list)))) {
-        stop("boot.method can be 'full' or 'single'.")
+        stop("boot.method must be 'full' or 'single'.")
     }
     # ~~~
     # Add some extra method i.e. proportion of bootstrap shifts?
@@ -159,14 +159,14 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
             last.axis<-0.95
         }
     } else {
-        #Else must be a single numeric value (probability)
-        check.class(rm.last.axis, "numeric", " must be logical or a probability threshold value.")
-        check.length(rm.last.axis, 1, " must be logical or a probability threshold value.", errorif=FALSE)
+        #Else must be a single numeric value (proportional)
+        check.class(rm.last.axis, "numeric", " must be logical or a proportional threshold value.")
+        check.length(rm.last.axis, 1, " must be logical or a proportional threshold value.", errorif=FALSE)
         if(rm.last.axis < 0) {
-            stop("rm.last.axis must be logical or a probability threshold value.")
+            stop("rm.last.axis must be logical or a proportional threshold value.")
         } else {
             if(rm.last.axis > 1) {
-                stop("rm.last.axis must be logical or a probability threshold value.")
+                stop("rm.last.axis must be logical or a v threshold value.")
             } else {
                 rm.axis<-TRUE
                 last.axis<-rm.last.axis
@@ -207,6 +207,8 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     if(verbose==TRUE) message("Bootstraping...", appendLF=FALSE)
     #Bootstrap the data set 
     BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+    #Getting the observed results
+    OBSresult<-lapply(data, Bootstrap.rarefaction, bootstraps=0, rarefaction=FALSE, boot.type="full")
     #verbose
     if(verbose==TRUE) message("Done.", appendLF=TRUE)
 
@@ -221,22 +223,22 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     #Rarefaction
     if(logic.rare == TRUE) {
         if(rarefaction == TRUE) {
-            boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 taxa).", sep="\n")
+            boot.call<-paste(boot.call, "Data was fully rarefied (down to 3 elements).", sep="\n")
         }
     } else {
         if(rare.list == FALSE) {
-            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " taxa.", sep="")
+            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " elements", sep="")
         } else {
             rare.elements<-paste(paste(rarefaction[-length(rarefaction)], collapse=", "), rarefaction[length(rarefaction)], sep=" and ")
-            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " taxa.", sep="")
+            boot.call<-paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " elements", sep="")
         }
     }
 
     #Remove last axis
-    if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis have been removed from the original data.")
+    if(rm.axis == TRUE) boot.call<-paste(boot.call, "\nThe", length(scree_data)-axis_selected, "last axis were removed from the original ordinated data.")
 
     #SIZE
-    output<-list("bootstraps"=BSresult, "taxa"=taxa_list, "series"=series_list, "call"=boot.call)
+    output<-list("data"=list("bootstraps"=BSresult, "observed"=OBSresult), "elements"=taxa_list, "series"=series_list, "call"=boot.call)
     class(output)<-c("dispRity")
 
 return(output)

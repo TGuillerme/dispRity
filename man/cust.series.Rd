@@ -9,12 +9,12 @@ cust.series(data, series)
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
 
-\item{series}{A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames and a single column.}
+\item{series}{A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
 \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
-\item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+\item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 \item{series}{A \code{vector} containing the name of the series.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
 }

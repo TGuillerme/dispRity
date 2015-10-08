@@ -8,9 +8,9 @@
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{bootstraps}{A \code{list} of boostraped matrices.}
+#' \item{data}{A \code{list} of the observed and boostraped matrices.}
 #' \item{disparity}{A \code{list} of disparity values.}
-#' \item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
+#' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 #' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
@@ -55,29 +55,31 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     #DATA
     #Check if the input is a dispRity object
-    if(class(data) == "dispRity") {
+    data_fetch<-data
+    if(class(data_fetch) == "dispRity") {
 
         #If length is 3, no bootstrap, just time series
-        if(length(data) == 3) {
+        if(length(data_fetch) == 3) {
             #Data is not bootstrapped
             is.bootstraped<-FALSE
             #Extracting the info
             prev_info<-TRUE
-            taxa_list<-data$taxa
-            series_list<-data$series[-1]
-            series_type<-data$series[1]
-            data<-data$data
+            taxa_list<-data_fetch$elements
+            series_list<-data_fetch$series[-1]
+            series_type<-data_fetch$series[1]
+            data<-data_fetch$data
         }
 
         #If length is 4, bootstrap (+ time series?)
-        if(length(data) == 4) {
+        if(length(data_fetch) == 4) {
             #Data is bootstrapped
             is.bootstraped<-TRUE
             #Extracting the info
-            BSresult<-data$bootstraps
-            boot.call<-data$call
-            taxa_list<-data$taxa
-            series_list<-data$series
+            BSresult<-data_fetch$data$bootstraps
+            data<-data_fetch$data$observed
+            boot.call<-data_fetch$call
+            taxa_list<-data_fetch$elements
+            series_list<-data_fetch$series
         }
 
     } else {
@@ -113,7 +115,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
         }
 
         #Make the data bootstrap results format (0 bootstrap)
-        BSresult<-boot.matrix(data, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$bootstrap        
+        BSresult<-boot.matrix(data, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$data$bootstraps
     }
 
     #METRIC
@@ -121,7 +123,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
         # Make summary metric is not mandatory
         # ~~~~
     #must be a vector of two elements
-    check.length(metric, 2, " must be a vector of two elements, the first being the metric class and the second being the metric summary.")
+    check.length(metric, 2, " must be a vector of two elements: the class and the summary metric.\nSee ?dispRity.metric for more details.")
     #both elements must be functions
     check.class(metric[[1]], "function")
     check.class(metric[[2]], "function")
@@ -162,6 +164,11 @@ dispRity<-function(data, metric, verbose=FALSE) {
     if(verbose==TRUE) message("Calculating disparity...", appendLF=FALSE)
     #Calculate disparity in all the series
     results<-lapply(BSresult, disparity.calc, class.metric, summary.metric)
+    
+    #if data is bootstrapped, also calculate the observed disparity
+    if(is.bootstraped == TRUE) {
+        OBSresults<-lapply(data_fetch$data$observed, disparity.calc, class.metric, summary.metric)
+    }
     #verbose
     if(verbose==TRUE) message("Done.", appendLF=FALSE)
 
@@ -182,9 +189,9 @@ dispRity<-function(data, metric, verbose=FALSE) {
 
     #Creating the output object
     if(is.bootstraped == TRUE) {
-        output<-list("bootstraps"=BSresult, "disparity"=results, "taxa"=taxa_list, "series"=series_list, "call"=dispRity.call)
+        output<-list("data"=list("bootstraps"=BSresult, "observed"=data) , "disparity"=list("bootstrapped"=results, "observed"=OBSresults), "elements"=taxa_list, "series"=series_list, "call"=dispRity.call)
     } else {
-        output<-list("matrix"=data, "disparity"=results, "taxa"=taxa_list, "series"=series_list, "call"=dispRity.call)
+        output<-list("data"=list("observed"=data), "disparity"=list("observed"=results), "elements"=taxa_list, "series"=series_list, "call"=dispRity.call)
     }
     #Output object is a dispRity object
     class(output)<-"dispRity"

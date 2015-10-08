@@ -41,7 +41,7 @@ test_that("Output format is correct", {
     #Length
     expect_equal(length(test), 3)
     #Names
-    expect_equal(names(test), c("data", "taxa", "series"))
+    expect_equal(names(test), c("data", "elements", "series"))
 })
 
 #Example

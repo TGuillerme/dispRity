@@ -16,7 +16,7 @@
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
-#' \item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 #' \item{series}{A \code{vector} containing the name of the series.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' 
@@ -62,7 +62,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     #tree must be a phylo object
     check.class(tree, 'phylo')
     #tree must be dated
-    if(length(tree$root.time) == 0) stop("Tree must be a dated tree with $root.time.")
+    if(length(tree$root.time) == 0) stop("Tree must be a dated tree with a $root.time element.")
 
     #METHOD
     #method must be a character string
@@ -85,9 +85,9 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     #If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
         #time must be at least 3 if discrete
-        if(method == "discrete" & time < 3) stop("If method is discrete, time must be at least 3.")
+        if(method == "discrete" & time < 3) stop("If method is discrete, time must have at least 3 elements.")
         #or at least time 2 if continuous
-        if(method == "continuous" & time < 2) stop("If method is discrete, time must be at least 2.")
+        if(method == "continuous" & time < 2) stop("If method is discrete, time must have at least 2 elements.")
         #Create the time vector
         #Make sure the oldest slice has at least 3 taxa:
         #Set the oldest slice at 1% of tree height
@@ -164,14 +164,14 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     if(missing(FADLAD)) {
         #If missing, create the FADLAD table
         FADLAD <- data.frame("FAD"=tree.age(tree)[1:Ntip(tree),1], "LAD"=tree.age(tree)[1:Ntip(tree),1], row.names=tree.age(tree)[1:Ntip(tree),2])
-        message("No FADLAD table has been provided so every tip is assumed to interval single points in time.")
+        message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
     } else {
         #Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
-        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively 'FAD' (First Apparition Datum) and 'LAD' (Last Apparition Datum).")
+        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n'FAD' (First Apparition Datum) and 'LAD' (Last Apparition Datum).")
         #Check if the FADLAD contains all taxa
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
-            message("Some tips have FAD/LAD and are assumed to interval single points in time.")
+            message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             #If not generate the FADLAD for the missing taxa
             missing_FADLAD<-which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD<-data.frame(tree.age(tree)[missing_FADLAD,1], tree.age(tree)[missing_FADLAD,1], row.names=tree.age(tree)[missing_FADLAD,2])
@@ -210,7 +210,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         series_list<-length(data)
     }
 
-    output<-list("data"=time_series, "taxa"=taxa_list, "series"=c(method, series_list))
+    output<-list("data"=time_series, "elements"=taxa_list, "series"=c(method, series_list))
     class(output)<-c("dispRity")
 
     return(output)

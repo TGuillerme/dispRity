@@ -4,26 +4,28 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, CI = c(50, 95), cent.tend = mean,
-  rarefaction = FALSE, diversity = FALSE, ylim, xlab, ylab, col,
-  discrete_type = "box", time.series = TRUE, ...)
+\method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
+  rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
+  discrete_type = "box", time.series = TRUE, observed = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} or \code{"discrete"}.}
+\item{type}{Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.}
 
-\item{CI}{The confidence intervals values (default is \code{CI = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantile}{The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
 \item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
 
-\item{diversity}{\code{logical} whether to plot the diversity levels (i.e. the number of rows in the matrix); or \code{"log"} for plotting the logged diversity.}
+\item{elements}{\code{logical} whether to plot the number of elements per series.}
 
 \item{discrete_type}{Either \code{"box"} for boxplots or \code{"line"} for distribution lines.}
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
+
+\item{observed}{\code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }
@@ -43,20 +45,23 @@ data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ag
 
 ## Setting the data
 ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
+     model = "acctran", time = 5, FADLAD = BeckLee_ages)
 bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
 sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 
 ## Discrete plotting
 plot(sum_of_ranges, type = "discrete")
 ## Using different options
-plot(sum_of_ranges, type = "discrete", CI=c(50,75,95), cent.tend=median, rarefaction=TRUE, diversity=TRUE, ylim=c(10,40), xlab=("Time (Ma)"),
-     ylab=c("disparity", "taxonomic richness"), col="red", discrete_type="line")
+plot(sum_of_ranges, type = "discrete", quantile = c(50,75,95), cent.tend = median,
+     rarefaction = TRUE, diversity = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"),
+     ylab=c("disparity", "taxonomic richness"), col = "red", discrete_type = "line")
 
 ## Continuous plotting (all default options)
 plot(sum_of_ranges, type = "continuous")
 ## Using different options (with non time.slicing option)
-plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red", "orange", "yellow"))
+plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red",
+     "orange","yellow"))
 }
 \author{
 Thomas Guillerme

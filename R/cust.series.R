@@ -5,12 +5,12 @@
 #' @usage cust.series(data, series)
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
-#' @param series A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames and a single column.
+#' @param series A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
-#' \item{taxa}{A \code{vector} containing all the rownames from the input matrix.}
+#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 #' \item{series}{A \code{vector} containing the name of the series.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' 
@@ -35,7 +35,7 @@ cust.series<-function(data, factor) {
     #data must be a matrix
     check.class(data, 'matrix')
     #data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at least k-1 columns")
+    if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at maximum (rows-1) columns")
 
     #FACTOR
     #must be matrix or data.frame
@@ -44,27 +44,34 @@ cust.series<-function(data, factor) {
             stop("factor must be either a 'matrix' or a 'data.frame'.")
         }
     }
-    #must have one column (if more they're ignored)
-    if(ncol(factor) > 1) warning("Only the first column of 'factor' will be used.")
     #must have the same number of rows than data
     if(nrow(factor) != nrow(data)) stop('"factor" must have the same number of rows than "data".')
     #must have the same labels as data
     if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' do not match.")
     #must have at least 3 elements per levels
-    if(any(table(as.factor(factor[,1])) < 3)) stop("There must be at least three elements per series.")
+    check.elements <- function(factor) {
+        any(table(as.factor(factor)) < 3)
+    }
+    if(any(apply(factor, 2, check.elements))) stop("There must be at least three elements per series.")
 
     #----------------------
     # SPLITING THE DATA INTO A LIST
     #----------------------
 
-    series_list<-list()
-    for(series in 1:length(levels(as.factor(factor[,1])))) {
-        selected_elements<-rownames(factor)[which(factor == levels(as.factor(factor[,1]))[[series]])]
-        series_list[[series]]<-data[selected_elements,]
+    split.elements <- function(X, Y, data) {
+        series_list<-list()
+        for(series in 1:length(levels(as.factor(X)))) {
+            selected_elements<-rownames(Y)[which(as.character(X) == as.character(levels(as.factor(X))[[series]]))]
+            series_list[[series]]<-data[selected_elements,]
+        }
+        ## Adding names to the list (the levels of the custom series)
+        names(series_list)<-levels(as.factor(X))
+        ## Output
+        return(series_list)
     }
 
-    #Adding names to the list (the levels of the custom series)
-    names(series_list)<-levels(as.factor(factor[,1]))
+    tmp_series<-apply(factor, 2, split.elements, Y=factor, data=data)
+    series_list<-unlist(tmp_series, recursive=FALSE)
 
     #----------------------
     # OUTPUT OBJECT ("dispRity")
@@ -76,7 +83,7 @@ cust.series<-function(data, factor) {
         series_names<-length(data)
     }
 
-    output<-list("data"=series_list, "taxa"=taxa_list, "series"=c("custom", series_names))
+    output<-list("data"=series_list, "elements"=taxa_list, "series"=c("custom", series_names))
     class(output)<-c("dispRity")
 
     return(output)
