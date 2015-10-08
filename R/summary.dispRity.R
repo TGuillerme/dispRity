@@ -6,7 +6,7 @@
 #' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input.
-#' @param rounding Optional, a value for rounding the central tendency and the confidence intervals in the output table.
+#' @param round Optional, a value for rounding the central tendency and the confidence intervals in the output table (default = 2).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -100,68 +100,71 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
-    #Extracting the observed disparity
-    OBSresults<-unlist(recursive.unlist(OBSresults), recursive=FALSE)
+    if(is.bootstrapped == FALSE) {
+        #Extracting the observed disparity
+        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
 
-    #Getting the table length
-    if(is.bootstrapped == TRUE) {
+        #Create the result table
+        results_table<-as.data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)))
+
+        #Add columns names
+        colnames(results_table)<-c("series", "n", "observed")
+    
+    } else {
+        #Extracting the observed disparity
+        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
+
         #Unlisting the bootstrap values
-        BSresults<-unlist(recursive.unlist(BSresults), recursive=FALSE)
-
+        BSresults_unl<-unlist(recursive.unlist(BSresults), recursive=FALSE)
+        
         #Calculating the central tendency
-        results_cent<-lapply(BSresults, cent.tend)
+        results_cent<-unlist(lapply(BSresults_unl, cent.tend))
 
-        #Table length
-        tab_length<-unlist(lapply(BSresults, length)))
-    } else {
-        #Table length
-        tab_length<-unlist(lapply(OBSresults, length)))       
-    }
+        #Multiplier (for rep)
+        multiplier<-unlist(lapply(BSresults, length))
 
-    #Create the results table
+        #Create the result table
+        results_table<-as.data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent))
 
-    ###############
-    # This part needs some rewriting. Separate observed and rarefied results output table should be
-    # series    n   observed    cent.tend   CIs
-    #
-    # or
-    #
-    # series    n   observed
-    #
-    # if non bootstrapped/rarefied
-    #
-    # Rewrite the whole thing with a simple is.boostrapped or not
-    ###############
-    #
-    results_table<-as.data.frame(cbind(rep(data$series, tab_length, diversity.count(data$data$), results_cent))
+        #Add columns names
+        if(is.null(match_call$cent.tend)) {
+            colnames(results_table)<-c("series", "n", "observed", "mean")
+        } else {
+            colnames(results_table)<-c("series", "n", "observed", match_call$cent.tend)
+        }
 
-    #Add columns names
-    if(is.null(match_call$cent.tend)) {
-        colnames(results_table)<-c("series", "n", "mean")
-    } else {
-        colnames(results_table)<-c("series", "n", match_call$cent.tend)
-    }
+        #Checking if the observed values match the n_obs (otherwise replace by NA)
+        n_obs<-diversity.count(data$data$observed)
+        for(ser in 1:length(data$series)) {
+            suppressWarnings(results_table$observed[which(results_table$series == data$series[ser])][results_table$n != n_obs[ser]]  <- NA)
+        }
 
-    #Calculating quantiles (if bootstrapped results)
-    if(is.bootstrapped == TRUE) {
         #Calculate the quantiles
-        results_quantile<-lapply(BSresults, quantile, probs=CI.converter(quantile))
+        results_quantile<-lapply(BSresults_unl, quantile, probs=CI.converter(quantile))
 
         #Add to the result table
         results_table<-cbind(results_table, matrix(data=unlist(results_quantile), ncol=length(quantile)*2, byrow=TRUE))
 
         #Add the quantile names
-        colnames(results_table)[c(4:(length(quantile)*2+3))]<-names(results_quantile[[1]])
-    }   
+        colnames(results_table)[c(5:(length(quantile)*2+4))]<-names(results_quantile[[1]])
+    }
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
-            results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
+            } else {
+                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=get.digit(as.numeric(as.character(results_table[,column]))))
+            }
         }
     } else {
         for(column in 3:ncol(results_table)) {
-            results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+            } else {
+                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=rounding)
+            }
         }
     }
 

@@ -103,7 +103,7 @@ test_that("Example works", {
     bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
     ex2<-dispRity(bootstrapped_data, metric=c(sum, ranges))
     expect_is(ex2, "dispRity")
-    expect_equal(dim(ex2[[1]][[1]][[1]][[1]]), c(50,48))
+    expect_equal(dim(ex2[[1]][[1]][[1]][[1]][[1]]), c(50,48))
 
     factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
     customised_series <- cust.series(BeckLee_mat50, factors)
@@ -112,7 +112,7 @@ test_that("Example works", {
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     ex3<-summary(sum_of_ranges)
     expect_is(ex3, "data.frame")
-    expect_equal(ex3[,3], c(32.67,33.85))
+    expect_equal(ex3[,4], c(32.67,33.85))
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips

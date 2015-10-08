@@ -22,8 +22,8 @@ boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{bootstraps}{A \code{list} of boostraped matrices.}
-\item{taxa}{A \code{vector} containing all the names of the taxa from the original matrix.}
+\item{data}{A \code{list} of the observed and boostraped matrices.}
+\item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
@@ -32,14 +32,14 @@ This function outputs a \code{dispRity} object containing:
 Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 }
 \details{
-\code{rarefaction}: when the input is \code{numeric}, the number of taxa is set to the value(s) for each bootstrap.
+\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap.
 
 \code{rm.last.axis}: the provided \code{numeric} value should be the percentage of axis to keep. By default when \code{rm.last.axis = TRUE}, 95% of the axis are preserved (the last 5% are removed).
 
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
-  \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the taxa can be duplicated in each bootstrap).
-  \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one taxa can be duplicated in each boostrap).
+  \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
+  \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each boostrap).
 }
 }
 \examples{
@@ -51,7 +51,7 @@ data(BeckLee_mat50)
 boot.matrix(BeckLee_mat50, bootstraps = 20)
 ## Bootstrapping an ordinated matrix with rarefaction
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
-## Bootstrapping an ordinated matrix with only 7,10 and 11 taxa sampled
+## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
 ## Bootstrapping an ordinated matrix with only 90\% of the first axis
 boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
