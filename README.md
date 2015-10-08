@@ -16,8 +16,15 @@ library(dispRity)
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
 
 ##### Patch notes
-* 2015/10/01 - v0.1.0
-  * first release!
+* 2015/10/08 - v0.1.1
+  * Fixed many error/warning messages
+  * `plot.dispRity` options improved (rarefaction + default)
+  * `cust.series` can now intake multiple factors columns
+  * Added exampple for ecological data
+  * Changed `taxa` to `elements`
+  * `boot.matrix`, `dispRity`, `summary` and `plot` now also include observed values
+  * `plot` has now a `observed` option to plot the observed disparity
+  * `plot` option `diversity` has been renamed `elements`
   
 All patch notes can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
@@ -46,7 +53,7 @@ summary(sum_of_ranges) ; plot(sum_of_ranges)
 A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
 
 #### Demos
-*  A general tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.0.1.0.pdf).
+*  A general tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.pdf).
 *  An ecological tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-ecology-demo.pdf).
 
 Authors
