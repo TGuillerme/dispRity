@@ -1,5 +1,5 @@
 #default settings
-set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, col, which.rare) {
+set.default<-function(summarised_data, call, type, elements, ylim, xlab, ylab, col, which.rare) {
 
     #ylim
     if(ylim[[1]] == "default") {
@@ -20,7 +20,7 @@ set.default<-function(summarised_data, call, type, diversity, ylim, xlab, ylab, 
     if(ylab[[1]] == "default") {
         #Set to call label
         ylab<-strsplit(strsplit(call, split="as: ")[[1]][2], split=" for")[[1]][1]
-        if(diversity == TRUE) {
+        if(elements == TRUE) {
             ylab[2]<-"Elements"
         }
     }
@@ -86,7 +86,7 @@ get.series<-function(summarised_data, rare_level) {
 }
 
 
-plot.diversity<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
+plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
     #Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]]<-"Elements"
@@ -140,7 +140,7 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col_tmp<-set.default(summarised_data, call=1, "discrete", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            col_tmp<-set.default(summarised_data, call=1, "discrete", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col_tmp[-1]
             poly_col<-rev(poly_col)
         } else {
@@ -226,7 +226,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            col<-set.default(summarised_data, call=1, "continuous", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
         } else {
@@ -274,7 +274,7 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col<-set.default(summarised_data, call=1, "continuous", diversity=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            col<-set.default(summarised_data, call=1, "continuous", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
         } else {

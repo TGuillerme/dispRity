@@ -54,14 +54,14 @@ sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 plot(sum_of_ranges, type = "discrete")
 ## Using different options
 plot(sum_of_ranges, type = "discrete", quantile = c(50,75,95), cent.tend = median,
-     rarefaction = TRUE, diversity = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"),
+     rarefaction = TRUE, elements = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"),
      ylab=c("disparity", "taxonomic richness"), col = "red", discrete_type = "line")
 
 ## Continuous plotting (all default options)
 plot(sum_of_ranges, type = "continuous")
 ## Using different options (with non time.slicing option)
-plot(sum_of_ranges, type = "continuous", time.series = FALSE, diversity=TRUE, col=c("red",
-     "orange","yellow"))
+plot(sum_of_ranges, type = "continuous", time.series = FALSE, elements = TRUE,
+     col=c("red","orange","yellow"))
 }
 \author{
 Thomas Guillerme

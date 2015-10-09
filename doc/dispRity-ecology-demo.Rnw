@@ -47,13 +47,12 @@ You can install this package easily if you use the latest version of \R and \tex
 <<installation, eval=FALSE>>=
 install.packages("devtools")
 library(devtools)
-install_github("TGuillerme/dispRity", ref = "master")
+install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 @
 
-Note that we use the \texttt{master} branch here which is version \Sexpr{packageVersion("dispRity")}.
-This is the piping-hot latest version.
-If you want a more stable (and tested version), change \texttt{ref = "master"} to \texttt{ref = "release"}.
+Note that we use the \texttt{release} branch here which is version 0.1.1.
+If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
 This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
 
 \subsection{Data}
