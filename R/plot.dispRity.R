@@ -128,15 +128,13 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         time_slicing<-FALSE
     }
 
-    #diversity
-    #Lazy name change
-    diversity<-elements
+    #elements
     #must be logical
-    if(class(diversity) != "logical") {
-        if(diversity != "log") {
+    if(class(elements) != "logical") {
+        if(elements != "log") {
             stop("Diversity must be either a logical or 'log'.")
         } else {
-            diversity <- TRUE
+            elements <- TRUE
             div.log <- TRUE
         }
     } else {
@@ -190,7 +188,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         ylab<-"default"
     } else {
         #length must be 
-        if(diversity == FALSE) {
+        if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
             if(length(ylab) > 2) stop("ylab can have maximum two elements.")
@@ -256,7 +254,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     }
 
     #Setting the default arguments
-    default_arg<-set.default(summarised_data, data$call, type, diversity, ylim, xlab, ylab, col, which.rare)
+    default_arg<-set.default(summarised_data, data$call, type, elements, ylim, xlab, ylab, col, which.rare)
     ylim<-default_arg[[1]]
     xlab<-default_arg[[2]]
     ylab<-default_arg[[3]]
@@ -266,7 +264,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #Continuous plot
     if(type == "continuous") {
-        if(diversity == FALSE) {
+        if(elements == FALSE) {
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
         } else {
@@ -274,15 +272,15 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
             #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
+            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
 
     #Discrete plots
     if(type == "discrete") {
-        if(diversity == FALSE) {
+        if(elements == FALSE) {
             plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
             #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
         } else {
@@ -290,8 +288,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
             #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
-            #plot.diversity(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
+            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }
