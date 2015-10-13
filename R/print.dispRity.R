@@ -2,7 +2,7 @@
 #'
 #' @description Summarises the content of a \code{dispRity} object.
 #'
-#' @param x A \code{dispRity} object.
+#' @param data A \code{dispRity} object.
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).
 #'
 #' @examples
@@ -22,76 +22,76 @@
 #'
 #' @author Thomas Guillerme
 
-print.dispRity<-function(x, all=FALSE, ...) {
+print.dispRity<-function(data, all=FALSE, ...) {
 
-    #If all = TRUE, return the whole x (no summary)
+    #If all = TRUE, return the whole data (no summary)
     if(all == TRUE) {
-        y <- x
+        y <- data
         class(y)<-"list"
         print(y)
         
     } else {
         #Series
-        if(length(x) == 3) {
+        if(length(data) == 3) {
             #head
-            cat(paste((length(x$series)-1), x$series[1], "series for", length(x$elements), "elements"), "\n")
+            cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
             
             #series
             #remove the method time
-            x$series<-x$series[-1]
+            data$series<-data$series[-1]
             
-            if(length(x$series) == 1) {
-                cat(paste(length(x$series), "unnamed series."))
+            if(length(data$series) == 1) {
+                cat(paste(data$series))
             } else {
                 cat("Series:\n")
-                if(length(x$series) > 6) {
-                    cat(paste(x$series[1:6], collapse=", "),"...")
+                if(length(data$series) > 6) {
+                    cat(paste(data$series[1:6], collapse=", "),"...")
                 } else {
-                    cat(paste(x$series, collapse=", "), ".", sep="")
+                    cat(paste(data$series, collapse=", "), ".", sep="")
                 }
             }
         }
 
         #Bootstraps
-        if(length(x) == 4) {
+        if(length(data) == 4) {
             #head
-            cat(paste("Bootstrapped ordinated matrix with", length(x$elements), "elements"), "\n")
+            cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
 
             #series
-            if(length(x$series) == 1) {
-                cat(paste(length(x$series), "unnamed series."))
+            if(length(data$series) == 1) {
+                cat(paste(data$series))
             } else {
                 cat("Series:\n")
-                if(length(x$series) > 6) {
-                    cat(paste(x$series[1:6], collapse=", "),"...")
+                if(length(data$series) > 6) {
+                    cat(paste(data$series[1:6], collapse=", "),"...")
                 } else {
-                    cat(paste(x$series, collapse=", "), ".", sep="")
+                    cat(paste(data$series, collapse=", "), ".", sep="")
                 }
             }
 
             #call
-            cat("\n", x$call, sep="")
+            cat("\n", data$call, sep="")
         }
 
         #Disparity
-        if(length(x) == 5) {
+        if(length(data) == 5) {
             #head
-            cat(paste("Disparity measurements across ", length(x$series), " series for ", length(x$elements), " elements", sep=""), "\n")
+            cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
 
             #series
-            if(length(x$series) == 1) {
-                cat(paste(length(x$series), "unnamed series."))
+            if(length(data$series) == 1) {
+                cat(paste(data$series))
             } else {
                 cat("Series:\n")
-                if(length(x$series) > 6) {
-                    cat(paste(x$series[1:6], collapse=", "),"...")
+                if(length(data$series) > 6) {
+                    cat(paste(data$series[1:6], collapse=", "),"...")
                 } else {
-                    cat(paste(x$series, collapse=", "), ".", sep="")
+                    cat(paste(data$series, collapse=", "), ".", sep="")
                 }
             }
 
             #call
-            cat("\n", x$call, sep="")
+            cat("\n", data$call, sep="")
         }
     }
 }
