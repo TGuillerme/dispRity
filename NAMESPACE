@@ -12,6 +12,7 @@ export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
+export(get.dispRity)
 #export(mode.val) #utilities - not done
 #export(cor.diversity) #utilities - not done
 #export(cor.time.pco) #utilities - not done
