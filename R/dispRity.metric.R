@@ -5,22 +5,25 @@
 #'
 #' @description Different implemented disparity metrics.
 #'
-#' @usage class.metric(matrix)
-#' summary.metric(X)
+#' @usage mat.trans(matrix)
+#' vec.aggr(matrix)
+#' val.aggr(X)
 #'
-#' @param matrix An ordinated matrix.
-#' @param X A vector of \code{class.metric} results.
+#' @param matrix A matrix.
+#' @param X A vector or a matrix.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. The currently implemented class.metric are:
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{mat.trans}, \code{vec.aggr} and \code{vec.aggr}.
+#' The currently implemented vector aggregate metrics (\code{vec.aggr}) are:
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix.
 #'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
 #' }
-#' The currently implemented summary.metric are:
+#' The currently implemented value aggregate metrics (\code{val.aggr}) are:
 #' \itemize{
 #'   \item \code{mode.val}: calculates the modal value of a vector.
+#'   \item \code{volume}: calculates the volume of a matrix.
 #' }
 #' See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
 #' 
