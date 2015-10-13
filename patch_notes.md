@@ -1,5 +1,10 @@
 Patch notes
 ----
+* 2015/10/?? - v0.1.2
+  * added function `get.dispRity` to subsample dispRity objects
+  * `metric` argument from `dispRity` can now intake any number of that have to be arranged serially
+  * added `make.metric` function
+  * added `test.dispRity` function
 * 2015/10/08 - v0.1.1
   * Fixed many error/warning messages
   * `plot.dispRity` options improved (rarefaction + default)
