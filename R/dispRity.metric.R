@@ -5,22 +5,22 @@
 #'
 #' @description Different implemented disparity metrics.
 #'
-#' @usage mat.trans(matrix)
-#' vec.aggr(matrix)
-#' val.aggr(X)
+#' @usage level3.fun(matrix)
+#' level2.fun(matrix)
+#' level1.fun(X)
 #'
 #' @param matrix A matrix.
 #' @param X A vector or a matrix.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{mat.trans}, \code{vec.aggr} and \code{vec.aggr}.
-#' The currently implemented vector aggregate metrics (\code{vec.aggr}) are:
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
+#' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix.
 #'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
 #' }
-#' The currently implemented value aggregate metrics (\code{val.aggr}) are:
+#' The currently implemented value aggregate metrics (\code{level1.fun}) are:
 #' \itemize{
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'   \item \code{volume}: calculates the volume of a matrix.

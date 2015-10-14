@@ -1,6 +1,42 @@
 #' @title Creating disparity metrics
 #'
-#' @description IN DEVELOPEMENT
+#' @description Testing the level of disparity metrics
+#'
+#' @param fun Your very own \code{function}!
+#' @param silent \code{logical}; if \code{FALSE} (default), the function will be verbose and give no ouput; if \code{TRUE}, the function will only output the function level.
+#'
+#' @details
+#' This function tests:
+#' \itemize{
+#'   \item 1: if your function can deal with a matrix as an \code{input}.
+#'   \item 2: which level is your function (level 1, 2 or 3, see \code{\link{dispRity.metric}}).
+#'   \item 3: whether the function can properly be implemented in the \code{dispRity} function.
+#' }
+#' The 3 different metric levels correspond to the dimensions of the output and are:
+#' \itemize{
+#'   \item "level 1": for functions that decompose a \code{matrix} into a single value.
+#'   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
+#'   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
+#' }
+#' For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{ranges}} is composed of two metric levels:
+#' \itemize{
+#'   \item The \code{\link[dispRity]{ranges}} (level 2) that calculates the ranges per column in a matrix (aggregates a \code{matrix} into a \code{vector}).
+#'   \item The \code{\link[base]{sum}} (level 1) that transform the \code{vector} of ranges into a single value.
+#' }
+#' See function example for a concrete illustration (three different level of the function \code{\link[base]{sum}}).
+#'
+#' @examples
+#' ## A level 1 function
+#' my_fun <- function(x) sum(x)
+#' make.metric(my_fun)
+#'
+#' ## A level 2 function
+#' my_fun <- function(x) apply(x, 2, sum)
+#' make.metric(my_fun)
+#'
+#' ## A level 3 function
+#' my_fun <- function(x) (x + sum(x))
+#' make.metric(my_fun)
 #'
 #' @seealso \code{\link{dispRity}} and \code{\link{dispRity.metric}}.
 #'
@@ -25,40 +61,80 @@ make.metric<-function(fun, silent=FALSE) {
 
     #Did the test failed?
     if(is.null(test)) {
-        if(silent == FALSE) stop(paste("The provided function did not output anything!\nDoes the following works?\n", match_call$fun,"(matrix(rnorm(9),3,3))", sep=""))
+        if(silent == FALSE) stop(paste("The provided function did not output anything!\nDoes the following works?\n",
+            as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep=""))
     } else {
 
+        ##########
         #What is the output class of the function?
+        ##########
 
-        #If class is matrix -> mat.trans
+        #If class is matrix -> level3.fun
         if(class(test) == "matrix") {
-            fun_type <- "mat.trans"
+            fun_type <- "level3"
             if(silent == FALSE) {
-                cat(paste(match_call$fun," outputs a matrix object.\n", match_call$fun, " is detected as being a matrix transformation (mat.trans) function.", sep=""))
-                cat(paste("\nAdditional vector aggregate (vec.aggr) and/or value aggregate\n    (val.aggr) function(s) will be needed.", sep=""))
+                cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n",
+                    as.expression(match_call$fun), " is detected as being a matrix transformation (level3.fun) function.", sep=""))
+                cat(paste("\nAdditional vector aggregate (level2.fun) and/or value aggregate (level1.fun) function(s) will be needed.", sep=""))
             }
         } else {
             #If class is numeric
             if(class(test) == "numeric") {
-                #If only one value -> val.aggr
+                #If only one value -> level1.fun
                 if(length(test) == 1) {
-                    fun_type <- "val.aggr"    
+                    fun_type <- "level1"
                     if(silent == FALSE) {
-                        cat(paste(match_call$fun," outputs a single value.\n", match_call$fun, " is detected as being a value aggregate (val.aggr) function.", sep=""))
+                        cat(paste(as.expression(match_call$fun)," outputs a single value.\n", as.expression(match_call$fun),
+                            " is detected as being a value aggregate (level1.fun) function.", sep=""))
                     }
-                #If more than one value -> val.aggr
+                #If more than one value -> level1.fun
                 } else {
-                    fun_type <- "vec.trans"
+                    fun_type <- "level2"
                     if(silent == FALSE) {
-                        cat(paste(match_call$fun," outputs a matrix object.\n", match_call$fun, " is detected as being a vector aggregate (vec.aggr) function.", sep=""))
-                        cat(paste("\nAdditional value aggregate (val.aggr) function will be needed.", sep=""))
+                        cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun),
+                            " is detected as being a vector aggregate (level2.fun) function.", sep=""))
+                        cat(paste("\nAdditional value aggregate (level1.fun) function will be needed.", sep=""))
                     }
                 }
             } else {
                 #Function provides a wrong output
-                if(silent == FALSE) stop(paste("The provided function did not output a matrix or a vector!\nDoes the following outputs a matrix or a vector?\n", match_call$fun,"(matrix(rnorm(9),3,3))", sep=""))
+                if(silent == FALSE) {
+                    stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following outputs a matrix or a numeric vector?\n",
+                    as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep=""))
+                }
             }
         }
-
     }
+
+    ##########
+    #Does fun works in the dispRity apply?
+    ##########
+    #Making the data similar to the dispRity internal input
+    matrix<-list(matrix)
+    BSresult<-boot.matrix(matrix, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$data$bootstraps
+
+    #Checking the disparity.calc function in lapply
+
+    if(fun_type == "level3") {
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean)), silent=TRUE)
+    }
+
+    if(fun_type == "level2") {
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean)), silent=TRUE)
+    }
+
+    if(fun_type == "level1") {
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun)), silent=TRUE)
+    }
+
+    #length of test_lapply must be equal to one
+    if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
+        " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
+            as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep=""))
+
+    ##########
+    #Return the level type for dispRity
+    ##########
+
+    if(silent == TRUE) return(fun_type)
 }
