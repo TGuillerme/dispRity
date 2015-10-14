@@ -2,7 +2,7 @@ Patch notes
 ----
 * 2015/10/?? - v0.1.2
   * added function `get.dispRity` to subsample dispRity objects
-  * `metric` argument from `dispRity` can now intake any number of that have to be arranged serially
+  * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
   * added `make.metric` function
   * added `test.dispRity` function
 * 2015/10/08 - v0.1.1

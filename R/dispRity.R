@@ -3,7 +3,7 @@
 #' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.
-#' @param metric A vector containing the class metric and the summary metric (see details).
+#' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #'
 #' @return
@@ -17,12 +17,13 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' \code{metric} should be input as a vector containing both the class and the summary metric.
-#' The class metric is the descriptor of the matrix (e.g. ranges of the dimensions or distance between taxa and centroid).
-#' The summary metris is the metric used to summarise the matrix descriptor (e.g. the sum of the ranges of the dimensions or the median distance between taxa and centroid).
-#' For example use \code{metric = c(sum, ranges)} for using the sum of the ranges of the dimensions as a disparity metric.
-#' Details on the implemented metric (class and summary) can be found at \code{\link{dispRity.metric}}.
-#' Note that metrics can be also user specified.
+#' \code{metric} should be input as a vector up to three functions.
+#' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
+#' \code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
+#' level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
+#' \code{matrix} or a \code{vector} and output a single value.
+#' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
+#' user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -54,6 +55,10 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #----------------------
     # SANITIZING
     #----------------------
+    
+    #Saving the call
+    match_call<-match.call()
+
     #DATA
     #Check if the input is a dispRity object
     data_fetch<-data
@@ -120,24 +125,59 @@ dispRity<-function(data, metric, verbose=FALSE) {
     }
 
     #METRIC
-        # ~~~~
-        # Make summary metric is not mandatory
-        # ~~~~
-    #must be a vector of two elements
-    check.length(metric, 2, " must be a vector of two elements: the class and the summary metric.\nSee ?dispRity.metric for more details.")
-    #both elements must be functions
-    check.class(metric[[1]], "function")
-    check.class(metric[[2]], "function")
-    #both functions must work
-    metric1<-check.metric(metric[[1]])
-    metric2<-check.metric(metric[[2]])
-    #Both functions must be of different type
-    if(metric1 == metric2) stop("One metric must be a class metric and the other a summary metric.")
-    #Assigning each metric to it's type
-    if(metric1 == "class.metric") {
-        class.metric<-metric[[1]] ; summary.metric<-metric[[2]] 
+    #must be at least one metric
+    if(length(metric) < 1) {
+        stop("At least one metric must be provided.")
+    }
+    #must be maximum 3
+    if(length(metric) > 3) {
+        stop("Only three functions can be used for metric.\nYou can try transforming one of the functions to do more than one operation.")
+    }
+    #Making the list of metrics for testing
+    if(length(metric) == 1) {
+        check.class(metric, "function")
     } else {
-        class.metric<-metric[[2]] ; summary.metric<-metric[[1]] 
+        for(i in 1:length(metric)) {
+            check.class(metric[[i]], "function")
+        }
+    }
+
+    #Sorting the metrics by levels
+    if(length(metric) == 1) {
+        #Getting the metric level
+        metric_level <- make.metric(metric, silent=TRUE)
+        #Metric must be level1
+        if(metric_level != "level1") {
+            stop(paste(match_call$metric, " must be a 'level1' metric. For more information, use:\nmake.metric(",match_call$metric,")", sep=""))
+        } else {
+            level3.fun=NULL; level2.fun=NULL; level1.fun=metric
+        }
+    } else {
+        #getting the metric levels
+        levels <- unlist(lapply(metric, make.metric, silent=TRUE))
+        #can only unique levels
+        if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same 'level'. For more information, see:\n?make.metric()")
+        if(is.na(match("level1", levels))) {
+            #At least one level1 metric is required
+            stop("At least one metric must be 'level1'. For more information, see:\n?make.metric()")
+        } else {
+            #Get the level 1 metric (mandatory)
+            level1.fun <- metric[[match("level1", levels)]]
+            #Get the level 2 metric
+            if(!is.na(match("level2", levels))) {
+                level2.fun <- metric[[match("level2", levels)]]
+            } else {
+                #is null if doesn't exist
+                level2.fun <- NULL
+            }
+            #Get the level 3 metric
+            if(!is.na(match("level3", levels))) {
+                level3.fun <- metric[[match("level3", levels)]]
+            } else {
+                #is null if doesn't exist
+                level3.fun <- NULL
+            }
+        }
     }
 
     #VERBOSE
@@ -155,20 +195,17 @@ dispRity<-function(data, metric, verbose=FALSE) {
         #}
         #close(pb)
 
-    #Saving the call
-    match_call<-match.call()
-
     #----------------------
     #CALCULTING DISPARITY
     #----------------------
     #verbose
     if(verbose==TRUE) message("Calculating disparity...", appendLF=FALSE)
     #Calculate disparity in all the series
-    results<-lapply(BSresult, disparity.calc, class.metric, summary.metric)
+    results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun)
     
     #if data is bootstrapped, also calculate the observed disparity
     if(is.bootstraped == TRUE) {
-        OBSresults<-lapply(data_fetch$data$observed, disparity.calc, class.metric, summary.metric)
+        OBSresults<-lapply(data_fetch$data$observed, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun)
     }
     #verbose
     if(verbose==TRUE) message("Done.", appendLF=FALSE)
@@ -177,7 +214,7 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #OUTPUT
     #----------------------
     #call details
-    dispRity.call<-paste("Disparity calculated as: ", match_call$metric[[2]]," ", match_call$metric[[3]], " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep="")
+    dispRity.call<-paste("Disparity calculated as: ", match_call$metric, " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep="")
     #Add BS (and series) details
     if(is.bootstraped == TRUE) {
         dispRity.call<-paste(dispRity.call, boot.call, sep="\n")
