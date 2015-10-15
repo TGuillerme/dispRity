@@ -13,7 +13,7 @@ library(devtools)
 install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
-The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
+The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 ##### Patch notes
 * 2015/10/08 - v0.1.1
