@@ -121,15 +121,26 @@ make.metric(var)
 @ 
 
 \section{metric argument in \dispRity}
-Of course, functions can be more complex and involve multiple operations such as the \texttt{centroids} function (see \texttt{?dispRity.metric}) that calculates the euclidean distance between each elements and the ordinated space centroid.
-The \texttt{make.metric} function implemented in \dispRity is designed to help testing and finding the level of the functions.
-Concretely, This function tests:
-\begin{enumerate}
-  \item if your function can deal with a matrix as an \texttt{input}.
-  \item which level is your function (level 1, 2 or 3, see \texttt{?dispRity.metric}).
-  \item whether the function can properly be implemented in the \texttt{dispRity} function.
-\end{enumerate}
-For example, let's see if the functions described above are the right levels:
+Using this metric structure, on can easily use any disparity metric in the \dispRity function as follows:
+
+<<dispRity example>>=
+## First we need to load the data
+data(BeckLee_mat50)
+## Measuring disparity as the standard deviation of all the value of the ordinated
+## matrix (level 1 function).
+summary(dispRity(BeckLee_mat50, metric = sd))
+## Measuring disparity as the standard deviation of the variance of each axis of
+## the ordinated matrix (level 1 and level 2 functions).
+summary(dispRity(BeckLee_mat50, metric = c(sd, variances)))
+## Measuring disparity as the standard deviation of the variance of each axis of
+## the variance covariance matrix (level 1, level 2 and level 3 functions).
+summary(dispRity(BeckLee_mat50, metric = c(sd, variances, var)), round=10)
+## Note that the order of each function in the metric argument does not matter,
+## the algorithm always classifies them by levels and computes first level 3,
+## then level 2 and finally level 1.
+summary(dispRity(BeckLee_mat50, metric = c(variances, sd, var)), round=10)
+## Both ways output the same disparity values.
+@ 
 
 \bibliographystyle{vancouver}
 \bibliography{References}

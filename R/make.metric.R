@@ -74,8 +74,8 @@ make.metric<-function(fun, silent=FALSE) {
             fun_type <- "level3"
             if(silent == FALSE) {
                 cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n",
-                    as.expression(match_call$fun), " is detected as being a matrix transformation (level3.fun) function.", sep=""))
-                cat(paste("\nAdditional vector aggregate (level2.fun) and/or value aggregate (level1.fun) function(s) will be needed.", sep=""))
+                    as.expression(match_call$fun), " is detected as being a level 3 function.", sep=""))
+                cat(paste("\nAdditional level 2 and/or level 1 function(s) will be needed.", sep=""))
             }
         } else {
             #If class is numeric
@@ -85,15 +85,15 @@ make.metric<-function(fun, silent=FALSE) {
                     fun_type <- "level1"
                     if(silent == FALSE) {
                         cat(paste(as.expression(match_call$fun)," outputs a single value.\n", as.expression(match_call$fun),
-                            " is detected as being a value aggregate (level1.fun) function.", sep=""))
+                            " is detected as being a level 1 function.", sep=""))
                     }
                 #If more than one value -> level1.fun
                 } else {
                     fun_type <- "level2"
                     if(silent == FALSE) {
                         cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun),
-                            " is detected as being a vector aggregate (level2.fun) function.", sep=""))
-                        cat(paste("\nAdditional value aggregate (level1.fun) function will be needed.", sep=""))
+                            " is detected as being a level 2 function.", sep=""))
+                        cat(paste("\nAdditional level 1 function will be needed.", sep=""))
                     }
                 }
             } else {
