@@ -2,6 +2,7 @@ Patch notes
 ----
 * 2015/10/?? - v0.1.2
   * added function `get.dispRity` to subsample dispRity objects
+  * added function `extract.dispRity` to extract disparity results
   * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
   * added `make.metric` function
   * added `test.dispRity` function

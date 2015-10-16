@@ -1,6 +1,6 @@
 #Dependencies
 import(ape)
-import(paleotree)
+import(paleotree) #paleotree::timeSliceTree
 
 ##Functions
 export(time.series)
@@ -12,13 +12,13 @@ export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
-export(get.dispRity)
-#export(mode.val) #utilities - not done
 #export(cor.diversity) #utilities - not done
 #export(cor.time.pco) #utilities - not done
-export(make.metric) #utilities - not done
+export(make.metric) #utilities
 export(make.model) #utilities - not done
 export(make.boot) #utilities - not done
+export(get.dispRity) #utilities
+export(extract.dispRity) #utilities
 
 ##disparity metrics
 export(variances)
