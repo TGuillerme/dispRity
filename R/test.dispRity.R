@@ -111,9 +111,11 @@ test.dispRity<-function(data, test, comparisons, ...) { #format
             if(class(comparisons) == "numeric") {
                 if(any(is.na(match(comparisons, seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
             }
+            comp <- "custom"
         } else {
             #Make sure only one inbuilt comparison is given
             check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise' or a vector of series names/numbers.")
+            comp <- comparisons
         }
     } else {
         is.pair <- TRUE
@@ -129,12 +131,30 @@ test.dispRity<-function(data, test, comparisons, ...) { #format
     #Extracting the data
     extracted_data <- extract.dispRity(data, observed=FALSE)
 
-    #Apply the simple test if data is a pair
+    #Apply the test to the two distributions only
     if(is.pair == TRUE) {
         #running the test
         output <- test(extracted_data[[1]], extracted_data[[2]])
         #fixing the data name (if hclass)
         if(class(output) == "hclass") output$data.name <- paste(data$series, collapse=" and ")
+    } else {
+        #Apply the test to the multiple distributions
+        if(comp = "referential") {
+            #Referential comparisons (first distribution to the others)
+            
+        }
+        if(comp = "pairwise") {
+            #Pairwise comparisons (all to all)
+
+        }
+        if(comp = "sequential") {
+            #Sequential comparisons (one to each other)
+
+        }
+        if(comp = "custom") {
+            #User defined
+            
+        }
     }
 
     #output
