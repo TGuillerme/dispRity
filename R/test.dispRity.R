@@ -5,7 +5,7 @@
 #' @param data A \code{dispRity} object.
 #' @param test A statistical \code{function} to apply to the data.
 ##' @param format The expected input format to the function (either \code{"matrix"} or \code{"vector"} - default).
-#' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"} or an even \code{vector} of series names/number to compare (see details).
+#' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"}, \code{"all"} or an even \code{vector} of series names/number to compare (see details).
 #' @param ... Additional options to pass to the test \code{function}.
 #'
 #' @details  
@@ -14,6 +14,7 @@
 #'   \item \code{"referential"}: compares the first series to all the others.
 #'   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
 #'   \item \code{"pairwise"}: pairwise comparisons of all the series.
+#'   \item \code{"all"}: compares all the series simultaneously (ANOVA type).
 #'   \item An even \code{vector} of names or number of series to compare.
 #' }
 #'
@@ -43,7 +44,7 @@
 #' @author Thomas Guillerme
 
 
-test.dispRity<-function(data, test, comparisons, ...) { #format
+test.dispRity<-function(data, test, comparisons, ...) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
@@ -94,27 +95,31 @@ test.dispRity<-function(data, test, comparisons, ...) { #format
     test_data_length <- extract.dispRity(data)
     #Stop if only one series
     if(length(test_data_length) == 1) stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
-    #Ignore if length data = 2
-    if(length(test_data_length) == 2) comparisons <- NULL
+
+    # #Ignore if length data = 2
+    # if(length(test_data_length) == 2) comparisons <- NULL
+
     #Else, check comparisons
-    if(length(test_data_length) > 2) {
-        is.pair <- FALSE
-        all_comparisons <- c("referential", "sequential", "pairwise")
+    if(length(test_data_length) >= 2) {
+        all_comparisons <- c("referential", "sequential", "pairwise", "all")
+
+        #Check if the comparisons is not one of the inbuilt comparisons
         if(all(is.na(match(comparisons, all_comparisons)))) {
-            #Check if the length of comparisons is even
+            #Input bust be even
             if(comparisons%%2 != 0) stop(paste(as.expression(match_call$comparisons), " is not an even vector!", sep=""))
-            #Check if the given vector corresponds to the series names
+            #If character, input must match the series
             if(class(comparisons) == "character") {
                 if(any(is.na(match(comparisons, data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
             }
-            #Check if the given vector corresponds to the series numbers
+            #If numeric, input must match de series numbers
             if(class(comparisons) == "numeric") {
                 if(any(is.na(match(comparisons, seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
             }
+            #Comparison is "custom"
             comp <- "custom"
         } else {
             #Make sure only one inbuilt comparison is given
-            check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise' or a vector of series names/numbers.")
+            check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
             comp <- comparisons
         }
     } else {
@@ -124,11 +129,8 @@ test.dispRity<-function(data, test, comparisons, ...) { #format
     #----------------------
     # APPLYING THE TEST
     #----------------------
-    #~~~~~~~~~~
-    # Add a controller for observed data
-    #~~~~~~~~~~
 
-    #Extracting the data
+    #Extracting the data (sends error if data is not bootstrapped)
     extracted_data <- extract.dispRity(data, observed=FALSE)
 
     #Apply the test to the two distributions only
@@ -137,25 +139,48 @@ test.dispRity<-function(data, test, comparisons, ...) { #format
         output <- test(extracted_data[[1]], extracted_data[[2]])
         #fixing the data name (if hclass)
         if(class(output) == "hclass") output$data.name <- paste(data$series, collapse=" and ")
-    } else {
-        #Apply the test to the multiple distributions
-        if(comp = "referential") {
-            #Referential comparisons (first distribution to the others)
-            
-        }
-        if(comp = "pairwise") {
-            #Pairwise comparisons (all to all)
+    } 
 
-        }
-        if(comp = "sequential") {
-            #Sequential comparisons (one to each other)
 
-        }
-        if(comp = "custom") {
-            #User defined
-            
-        }
+    #Referential comparisons (first distribution to the others)
+    if(comp == "referential") {
+        #Select the reference series
+        reference_series <- extracted_data[[1]]
+        other_series <- extracted_data[-1]
+
+        #Applying the test to the list of other series
+        details_out <- lapply(other_series, flip.ref.lapply, referential=reference_series, test=test, ...)
+        #details_out <- lapply(other_series, flip.ref.lapply, referential=reference_series, test=test) ; warning("DEBUG")
     }
+
+    #Pairwise comparisons (all to all)
+    if(comp == "pairwise") {
+        #Create the list of pairs
+        pair_series <- combn(1:length(extracted_data), 2)
+
+        #convert pair series table in a list of pairs
+        pair_series <- unlist(apply(pair_series, 2, list), recursive=FALSE)
+
+        #Applying the test to the list of pairwise comparisons
+        details_out <- lapply(pair_series, test.pair.lapply, data, test, ...)
+        #details_out <- lapply(pair_series, test.pair.lapply, data, test, ...) ; warning("DEBUG")
+    }
+
+    #Sequential comparisons (one to each other)
+    if(comp == "sequential") {
+
+    }
+
+    #ANOVA type
+    if(comp == "all") {
+        
+    }
+
+    #User defined
+    if(comp == "custom") {
+        
+    }
+    
 
     #output
     return(output)

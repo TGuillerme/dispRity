@@ -11,7 +11,7 @@ test.dispRity(data, test, comparisons, ...)
 
 \item{test}{A statistical \code{function} to apply to the data.}
 
-\item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"} or an even \code{vector} of series names/number to compare (see details).}
+\item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"}, \code{"all"} or an even \code{vector} of series names/number to compare (see details).}
 
 \item{...}{Additional options to pass to the test \code{function}.}
 
@@ -26,6 +26,7 @@ The \code{comparison} argument can be:
   \item \code{"referential"}: compares the first series to all the others.
   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
   \item \code{"pairwise"}: pairwise comparisons of all the series.
+  \item \code{"all"}: compares all the series simultaneously (ANOVA type).
   \item An even \code{vector} of names or number of series to compare.
 }
 }
