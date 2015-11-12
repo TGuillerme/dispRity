@@ -26,3 +26,18 @@ set.sequence <- function(length) {
 convert.to.numeric <- function(list, object) {
     return(lapply(list, match, names(object)))
 }
+
+#Convert a list into a table (for aov)
+list.to.table <- function(extracted_data) {
+    #function for repeating the extracted_data names
+    mapply.rep.names <- function(name, series) {
+        return(rep(name, length(series)))
+    }
+
+    #Get the list of names
+    names_list<-as.list(names(extracted_data))
+
+    #Create the data.frame
+    output <- data.frame("data"=unlist(extracted_data), row.names=NULL, "factor"=unlist(mapply(mapply.rep.names, names_list, extracted_data, SIMPLIFY=FALSE)))
+    return(output)
+}

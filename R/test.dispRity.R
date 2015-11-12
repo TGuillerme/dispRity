@@ -6,7 +6,7 @@
 #' @param test A statistical \code{function} to apply to the data.
 ##' @param format The expected input format to the function (either \code{"matrix"} or \code{"vector"} - default).
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
-#' @param ... Additional options to pass to the test \code{function}. Typically \code{formula} if comparisons is set to \code{"all"}.
+#' @param ... Additional options to pass to the test \code{function}.
 #'
 #' @details  
 #' The \code{comparison} argument can be:
@@ -14,8 +14,7 @@
 #'   \item \code{"referential"}: compares the first series to all the others.
 #'   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
 #'   \item \code{"pairwise"}: pairwise comparisons of all the series.
-#'   \item \code{"all"}: compares all the series simultaneously (ANOVA type). Note that this option might necessitate additional arguments
-#'      (e.g. if the test is \code{\link{aov}}, the function needs an additional \code{formula} argument).
+#'   \item \code{"all"}: compares all the series simultaneously (ANOVA type). The applyied formula will be \code{bootstrapped disparity ~ series names}.
 #'   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
 # Change that to allow any comparisons pattern?
@@ -111,7 +110,7 @@ test.dispRity<-function(data, test, comparisons, ...) { #format: get additional 
             #must be a list
             check.class(comparisons, "list", " must be a list of one or more pairs of series.")
             #must be pairs
-            if(unlist(comparisons)%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
+            if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
             #If character, input must match the series
             if(class(unlist(comparisons)) == "character") {
                 if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
@@ -200,10 +199,19 @@ test.dispRity<-function(data, test, comparisons, ...) { #format: get additional 
     
     #ANOVA type
     if(comp == "all") {
+        #Transform the extracted data into a table
+        series_table <- list.to.table(extracted_data)
         
-        
+        #running the test
+        details_out <- test(series_table$data~series_table$factor, ...)
+        #details_out <- test(series_table$data~series_table$factor) ; warning("DEBUG")
     }
 
+    #Dealing with the output!
+
+
+
+
     #output
-    return(output)
+    return(details_out)
 }
