@@ -4,20 +4,21 @@
 #'
 #' @param data A \code{dispRity} object.
 #' @param test A statistical \code{function} to apply to the data.
-##' @param format The expected input format to the function (either \code{"matrix"} or \code{"vector"} - default).
-#' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"referential"}, \code{"sequential"}, \code{"pairwise"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
+#' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
 #' @param ... Additional options to pass to the test \code{function}.
 #'
 #' @details  
 #' The \code{comparison} argument can be:
 #' \itemize{
+#'   \item \code{"pairwise"}: pairwise comparisons of all the series (default).
 #'   \item \code{"referential"}: compares the first series to all the others.
 #'   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
-#'   \item \code{"pairwise"}: pairwise comparisons of all the series.
 #'   \item \code{"all"}: compares all the series simultaneously (ANOVA type). The applyied formula will be \code{bootstrapped disparity ~ series names}.
 #'   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
 # Change that to allow any comparisons pattern?
+#' \code{Important:} if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
+#' don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
 #' }
 #'
 #' @examples
@@ -26,27 +27,31 @@
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-#'      dimnames = list(rownames(BeckLee_mat50))))
+#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13),
+#'      rep(3, 25), dimnames =list(rownames(BeckLee_mat50))),
+#'      ncol = 1)
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
 #' ## Caculating the sum of ranges
 #' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 #'
-#' ## Summarising the results
-#' summary(sum_of_ranges) # default
-#' ## Using different options
-#' summary(sum_of_ranges, quantile = 75, cent.tend = median,
-#'      rounding=  0, recall = TRUE)
+#' ## Measuring the series overlap
+#' test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
 #' 
-#' @seealso \code{\link{dispRity}}
+#' ## Measuring differences from a reference_series
+#' test.dispRity(sum_of_ranges, wilcox.test, "referential")
+#'
+#' ## Testing the effect of the factors
+#' test.dispRity(sum_of_ranges, aov, "all")
+#' ## warning: this violates aov assumptions!
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{dispRity.test}}
 #'
 #' @author Thomas Guillerme
 
 
-test.dispRity<-function(data, test, comparisons, ...) { #format: get additional option for input format?
+test.dispRity<-function(data, test, comparisons="pairwise", ...) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
