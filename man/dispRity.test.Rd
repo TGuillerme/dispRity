@@ -20,7 +20,7 @@ Different implemented tests for comparing series.
 \details{
 These are inbuilt statistical tests for comparing disparity series.
 \itemize{
-  \item \code{bhatt.coeff}: calculates the Bhattacharrya Coefficient (probability of overlap) between two distributions.
+  \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
 }
 }
 \examples{
