@@ -37,25 +37,29 @@ data(BeckLee_mat50)
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-     dimnames = list(rownames(BeckLee_mat50))))
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13),
+     rep(3, 25), dimnames =list(rownames(BeckLee_mat50))),
+     ncol = 1)
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
 ## Caculating the sum of ranges
 sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-## Summarising the results
-summary(sum_of_ranges) # default
-## Using different options
-summary(sum_of_ranges, quantile = 75, cent.tend = median,
-     rounding=  0, recall = TRUE)
+## Measuring the series overlap
+test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
+
+## Measuring differences from a reference_series
+test.dispRity(sum_of_ranges, wilcox.test, "referential")
+
+## Testing the effect of the factors
+test.dispRity(sum_of_ranges, aov, "all")
+## warning: this violates aov assumptions!
 }
 \author{
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}
+\code{\link{dispRity}}, \code{\link{dispRity.test}}
 }
 

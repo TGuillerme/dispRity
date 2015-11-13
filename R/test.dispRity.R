@@ -6,6 +6,7 @@
 #' @param test A statistical \code{function} to apply to the data.
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
 #' @param ... Additional options to pass to the test \code{function}.
+#' @param details Whether to output the details of each test (non-formated; default = \code{FALSE}).
 #'
 #' @details  
 #' The \code{comparison} argument can be:
@@ -27,9 +28,7 @@
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13),
-#'      rep(3, 25), dimnames =list(rownames(BeckLee_mat50))),
-#'      ncol = 1)
+#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -44,14 +43,14 @@
 #'
 #' ## Testing the effect of the factors
 #' test.dispRity(sum_of_ranges, aov, "all")
-#' ## warning: this violates aov assumptions!
+#' ## warning: this violates some aov assumptions!
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{dispRity.test}}
 #'
 #' @author Thomas Guillerme
 
 
-test.dispRity<-function(data, test, comparisons="pairwise", ...) { #format: get additional option for input format?
+test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
@@ -87,16 +86,8 @@ test.dispRity<-function(data, test, comparisons="pairwise", ...) { #format: get 
     check.class(test, "function", " must be a single function.")
     check.length(test, 1, " must be a single function.")
 
-    # #Format
-    # #must be a single character string
-    # check.class(format, "character", " must be either 'matrix' or 'vector'.")
-    # check.length(format, 1, " must be either 'matrix' or 'vector'.")
-    # #must be either matrix or vector
-    # if(format != "matrix") {
-    #     if(format != "vector") {
-    #         stop(paste(as.expression(match_call$format), " must be either 'matrix' or 'vector'.", sep=""))
-    #     }
-    # }
+    #Details
+    check.class(details, "logical")
 
     #Comparisons
     test_data_length <- extract.dispRity(data)
@@ -212,7 +203,26 @@ test.dispRity<-function(data, test, comparisons="pairwise", ...) { #format: get 
         #details_out <- test(series_table$data~series_table$factor) ; warning("DEBUG")
     }
 
-    #Dealing with the output!
+    #Formatting the output
+    if(details == TRUE) {
+        #Getting the output class
+        out.class <- unique(unlist(lapply(details_out, class)))
+
+        #1 - detect the output class
+        #2 - apply one of the sorting functions
+
+        #numeric output
+        if(out.class == "numeric") {
+
+        }
+
+        #3 - if no output class, just output the details
+
+    } else {
+        #returning the detailed output
+        return(details_out)
+    }
+
 
 
 

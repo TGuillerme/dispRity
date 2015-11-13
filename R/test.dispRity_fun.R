@@ -41,3 +41,12 @@ list.to.table <- function(extracted_data) {
     output <- data.frame("data"=unlist(extracted_data), row.names=NULL, "factor"=unlist(mapply(mapply.rep.names, names_list, extracted_data, SIMPLIFY=FALSE)))
     return(output)
 }
+
+####################
+#Output readers
+####################
+
+numeric.out.reader <- function(details_out) {
+    #transform the list into a data.frame + add the comparisons + the test name
+    matrix(data=)
+}
