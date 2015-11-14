@@ -25,7 +25,7 @@ options(formatR.arrow=TRUE,width=90)
 @
 
 
-\title{dispRity tests}
+\title{Testing differences in \texttt{dispRity}}
 
 
 \author{Thomas Guillerme}
@@ -34,34 +34,12 @@ options(formatR.arrow=TRUE,width=90)
 
 This vignette details how to apply statistical test to \dispRity objects in the \dispRity package (v.\Sexpr{packageVersion("dispRity")}).
 
-\section{Disparity metrics}
-There are many ways for measuring disparity.
-In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. MDS, PCA, PCO, PCoA).
-For example, one can look at ellipsoid hyper-volume of the ordinated space \cite{DonohueDim}, the sum and the product of the ranges and variances of the ordinated space dimensions \cite{Wills1994} or the median position of the elements in the ordinated space relative to its centroid \cite{GuillermeSTD}.
-Of course, there is many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.
+The \dispRity package allows to easily apply some statistical (or non statistical!) tests to the bootstrapped disparity calculations.
+This is done in a modulable way, quite similar to the way disparity metrics are implemented in this package (see \href{https://github.com/TGuillerme/dispRity}{the vignette about dispRity metrics}).
 
-Because of this great diversity of metric, the package \dispRity has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis.
-In fact, the core function of the package, \dispRity, allows the user to define any metric in the \texttt{metric} argument.
-However, because of the infrastructure of the package (especially the on of the \dispRity objects -- see the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos}), the \texttt{metric} argument has to follow certain slightly restrictive rules described in detail below.
-\begin{enumerate}
-    \item \texttt{metric} must be between one or three \texttt{function} objects
-    \item \texttt{metric} must intake a \texttt{matrix} or \texttt{vector} object
-    \item \texttt{metric} individual functions must be classified in one of the three levels
-    \item \texttt{metric} one of the functions must be a level 1 function
-\end{enumerate}
+\section{\texttt{test.dispRity}}
 
-\section{The function levels}
-The metric functions levels determine the dimensional level of decomposition of the input \texttt{matrix}.
-In other words, each level designate the dimensions of the output: either three (a \texttt{matrix}); two (a \texttt{vector}); or one (a single \texttt{numeric} value) dimensions (see \ref{fun_type}).
-
-\begin{figure}[!htbp]
-\centering
-    \includegraphics[keepaspectratio=true]{dispRity_fun.pdf}
-    \caption{Illustration of the different levels of output of a function with an input \texttt{matrix}}
-    \label{fun_type}
-\end{figure}
-
-\newpage
+The \texttt{test.dispRity} function allows to apply a user defined test to the disparity scores of the \dispRity object.
 
 \subsection{A level 1 function}
 A level 1 function for example, will decompose the \texttt{matrix} (or a \texttt{vector} output from a level 2 function, see below) into a single value:
