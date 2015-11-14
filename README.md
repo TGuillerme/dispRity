@@ -35,7 +35,7 @@ library(dispRity) ; data(BeckLee_mat99) ; data(BeckLee_tree) ; data(BeckLee_ages
 
 ## Splitting the data
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-    model = "acctran", time = 5, FADLAD = BeckLee_ages)
+    model = "acctran", time = c(130,100,60,30,0), FADLAD = BeckLee_ages)
 
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(sliced_data, 100)
