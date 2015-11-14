@@ -2,8 +2,6 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.31742.svg)](http://dx.doi.org/10.5281/zenodo.31742)
 
-A package for measuring disparity in `R`
-
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 ## Installing dispRity
@@ -47,12 +45,15 @@ sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
 
 ## Summarising the results
 summary(sum_of_ranges) ; plot(sum_of_ranges)
+
+## Looking at the differences between series
+test.dispRity(sum_of_ranges, wilcox.test, "sequential")
 ````
 
 #### Implemented metric
 A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
 
-#### Demos
+#### Vignettes
 *  A general tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.pdf).
 *  An ecological tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-ecology-demo.pdf).
 *  The disparity metrics [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-metrics.pdf).
