@@ -4,7 +4,7 @@
 \alias{test.dispRity}
 \title{Disparity statistics}
 \usage{
-test.dispRity(data, test, comparisons = "pairwise", ...)
+test.dispRity(data, test, comparisons = "pairwise", ..., details = FALSE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -14,6 +14,8 @@ test.dispRity(data, test, comparisons = "pairwise", ...)
 \item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).}
 
 \item{...}{Additional options to pass to the test \code{function}.}
+
+\item{details}{Whether to output the details of each test (non-formated; default = \code{FALSE}).}
 }
 \description{
 Applying statistical tests to dispRity objects
@@ -37,9 +39,7 @@ data(BeckLee_mat50)
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13),
-     rep(3, 25), dimnames =list(rownames(BeckLee_mat50))),
-     ncol = 1)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
@@ -54,7 +54,7 @@ test.dispRity(sum_of_ranges, wilcox.test, "referential")
 
 ## Testing the effect of the factors
 test.dispRity(sum_of_ranges, aov, "all")
-## warning: this violates aov assumptions!
+## warning: this violates some aov assumptions!
 }
 \author{
 Thomas Guillerme

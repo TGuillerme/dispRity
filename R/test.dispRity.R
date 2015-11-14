@@ -149,6 +149,12 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
         #Applying the test to the list of other series
         details_out <- lapply(other_series, flip.ref.lapply, referential=reference_series, test=test, ...)
         #details_out <- lapply(other_series, flip.ref.lapply, referential=reference_series, test=test) ; warning("DEBUG")
+
+        #Saving the list of comparisons
+        comparisons_list <- paste(names(extracted_data[1]), names(extracted_data[-1]), sep=" - ")
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
 
     #Pairwise comparisons (all to all)
@@ -162,6 +168,13 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
         #Applying the test to the list of pairwise comparisons
         details_out <- lapply(pair_series, test.list.lapply, extracted_data, test, ...)
         #details_out <- lapply(pair_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
+
+        #Saving the list of comparisons
+        comparisons_list <- convert.to.character(pair_series, extracted_data)
+        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
 
     #Sequential comparisons (one to each other)
@@ -176,6 +189,12 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
         details_out <- lapply(seq_series, test.list.lapply, extracted_data, test, ...)
         #details_out <- lapply(seq_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
 
+        #Saving the list of comparisons
+        comparisons_list <- convert.to.character(seq_series, extracted_data)
+        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
 
     #User defined
@@ -190,43 +209,76 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
 
         #Applying the test to the custom list
         details_out <- lapply(cust_series, test.list.lapply, extracted_data, test, ...)
-        #details_out <- lapply(cust_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")        
+        #details_out <- lapply(cust_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
+
+        #Saving the list of comparisons
+        comparisons_list <- convert.to.character(cust_series, extracted_data)
+        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
     
     #ANOVA type
     if(comp == "all") {
         #Transform the extracted data into a table
-        series_table <- list.to.table(extracted_data)
-        
+        data <- list.to.table(extracted_data)
+
+        #Renaming the colnames
+        colnames(data) <- c("data", "series")
+
         #running the test
-        details_out <- test(series_table$data~series_table$factor, ...)
-        #details_out <- test(series_table$data~series_table$factor) ; warning("DEBUG")
+        details_out <- test(data~series, data=data, ...)
+        #details_out <- test(data~series, data=data) ; warning("DEBUG")
     }
 
-    #Formatting the output
-    if(details == TRUE) {
+    #Formatting the output (if needed)
+    if(details == FALSE & comparisons != "all") {
         #Getting the output class
         out.class <- unique(unlist(lapply(details_out, class)))
 
-        #1 - detect the output class
-        #2 - apply one of the sorting functions
-
         #numeric output
-        if(out.class == "numeric") {
+        if(any(out.class == "numeric")) {
+            #Transforming list to table
+            table_out <- do.call(rbind.data.frame, details_out)
+            #Getting col names
+            colnames(table_out) <- as.expression(match_call$test)
+            #Getting row names (the comparisons)
+            row.names(table_out) <- comparisons_list
 
+            return(table_out)
+
+        } else {
+
+            #htest output
+            if(any(out.class == "htest")) {
+                #Getting the test elements of interest
+                table_out <- lapply(details_out, htest.to.vector, print=list("statistic", "parameter", "p.value"))
+                #Transforming list to table
+                table_out <- do.call(rbind.data.frame, table_out)
+                #Getting col names
+                if(ncol(table_out) == 2) {
+                    #Non-parametric test
+                    colnames(table_out) <- c("statistic", "p.value")
+                } else {
+                    #Parametric test
+                    colnames(table_out) <- c("statistic", "parameter", "p.value")
+                }
+                #Getting row names (the comparisons)
+                row.names(table_out) <- comparisons_list
+
+                return(table_out)
+
+            } else {
+
+                #output class not implemented
+                #warning(paste("Output class not implemented for ", match_call$test, ".\nDetails of each test is returned as a raw list.", sep=""))
+                return(details_out)
+            }
         }
-
-        #3 - if no output class, just output the details
 
     } else {
         #returning the detailed output
         return(details_out)
     }
-
-
-
-
-
-    #output
-    return(details_out)
 }

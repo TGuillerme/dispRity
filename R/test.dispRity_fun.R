@@ -27,6 +27,17 @@ convert.to.numeric <- function(list, object) {
     return(lapply(list, match, names(object)))
 }
 
+#convert a list from numeric to character
+convert.to.character <- function(list, object) {
+    #Getting the names (character)
+    names.fun <- function(list, object) {
+        return(names(object[c(list)]))
+    }
+    #Applying to the list
+    return(lapply(list, names.fun, object))
+}
+
+
 #Convert a list into a table (for aov)
 list.to.table <- function(extracted_data) {
     #function for repeating the extracted_data names
@@ -42,11 +53,12 @@ list.to.table <- function(extracted_data) {
     return(output)
 }
 
-####################
-#Output readers
-####################
 
-numeric.out.reader <- function(details_out) {
-    #transform the list into a data.frame + add the comparisons + the test name
-    matrix(data=)
+htest.to.vector <- function(htest, print) {
+    #print is a vector of htest elements to print
+    #lapply fun
+    get.element <- function(print, htest) {
+        return(htest[grep(print, names(htest))][[1]])
+    }
+    return(unlist(lapply(print, get.element, htest)))
 }
