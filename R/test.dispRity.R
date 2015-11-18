@@ -252,18 +252,26 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
 
             #htest output
             if(any(out.class == "htest")) {
+
+                #What's in the test?
+                test_elements <- unique(unlist(lapply(details_out, names)))
+                #Only select the numeric or integer elements
+                test_elements <- test_elements[grep("numeric|integer", unlist(lapply(as.list(details_out[[1]]), class)))]
+                #Remove null.value and conf.int (if present)
+                remove <- match(c("null.value", "conf.int"), test_elements)
+                if(any(is.na(remove))) {
+                    remove <- remove[-which(is.na(remove))]
+                }
+                if(length(remove) > 0) {
+                    test_elements <- test_elements[-remove]
+                }
                 #Getting the test elements of interest
-                table_out <- lapply(details_out, htest.to.vector, print=list("statistic", "parameter", "p.value"))
+                table_out <- lapply(details_out, htest.to.vector, print=as.list(test_elements))
                 #Transforming list to table
                 table_out <- do.call(rbind.data.frame, table_out)
                 #Getting col names
-                if(ncol(table_out) == 2) {
-                    #Non-parametric test
-                    colnames(table_out) <- c("statistic", "p.value")
-                } else {
-                    #Parametric test
-                    colnames(table_out) <- c("statistic", "parameter", "p.value")
-                }
+                col_names <- unlist(lapply(as.list(test_elements), get.name, htest=details_out[[1]]))
+                colnames(table_out) <- col_names
                 #Getting row names (the comparisons)
                 row.names(table_out) <- comparisons_list
 

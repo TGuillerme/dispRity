@@ -62,3 +62,12 @@ htest.to.vector <- function(htest, print) {
     }
     return(unlist(lapply(print, get.element, htest)))
 }
+
+get.name <- function(X, htest) {
+    output <- names(htest[[match(X, names(htest))]])
+    if(is.null(output)) {
+        return(X)
+    } else {
+        return(output)
+    }
+}
