@@ -38,10 +38,16 @@ To keep it short, this package allows to summarise ordinated matrices (e.g. MDS,
 
 This demo, which will use dummy data will quickly cover the following points:
 \begin{enumerate}
-\item 
+\item Installing \dispRity
+\item Ordinated matrices
+\item Creating submatrices
+\item Bootstrapping the data
+\item Calculating disparity
+\item Plotting the results
+\item Testing differences
 \end{enumerate}
 
-\section{Installation}
+\section{Installing \dispRity}
 You can install this package easily if you are using the latest version of \R and \texttt{devtools}.
 
 <<installation, eval=FALSE>>=
@@ -51,7 +57,106 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 @
 
-\section{}
+\section{Ordinated matrices}
+Ordinated matrices are transformed distance matrices based on various methods (e.g. MDS, PCA, PCO, PCoA). For this example, we will just generate \textit{dummy} data with 26 elements and 15 variables.
+
+<<data>>=
+## Loading the package
+library(dispRity)
+## random seed for reproducibility
+set.seed(1)
+
+## This is a multivariate matrix:
+dummy_data <- replicate(15, rnorm(26, mean=sample(1:10)))
+rownames(dummy_data) <- LETTERS
+head(dummy_data[,1:5])
+## We can the calculate the distance matrix:
+dummy_dist <- dist(dummy_data)
+## And ordinate it into 10 dimensions:
+dummy_ord <- cmdscale(dummy_dist, k=10)
+head(dummy_ord)
+@ 
+This ordinated data will constitute our multidimensional space (e.g. the ecospace, morphospace, cladistospace, etc...).
+
+\section{Creating submatrices}
+We can now create two different groups if we are interested in looking at the difference in occupancy of the multidimensional space between the vowels and the consonants.
+
+<<cust.data>>=
+## Creating a data.frame that contains information on the letter type
+factors <- data.frame("type"=rep("consonant", 26), row.names=LETTERS,
+    stringsAsFactors=FALSE)
+factors[c(1,5,9,15,21,25),1] <- rep("vowels", 6)
+
+## Splitting the data into sub-matrices according the the factors data.frame
+data_series <- cust.series(dummy_ord, factors)
+@ 
+
+Note that from now on, objects are attributed the class \dispRity that summarises the object content.
+
+<<class>>=
+class(data_series)
+str(data_series)
+data_series
+@ 
+
+\section{Bootstrapping the data}
+We can now bootstrap to get rid of problems from outliers and also rarefy the dataset to have the same number of vowels or consonants.
+
+<<boot.data>>=
+## Simple bootstrapping
+boot_data <- boot.matrix(data_series)
+
+## Bootstrapping and rarefaction to get the same number of elements
+## in both categories (vowels and consonants)
+rare_data <- boot.matrix(data_series, rarefaction=6)
+
+## Again both objects can be quickly summarised by just calling them
+boot_data
+rare_data
+@ 
+
+\section{Calculating disparity}
+We can calculate disparity as the sum of the variance of each dimension for each sub-matrix to measure the spread of the data for vowels of consonants.
+
+<<disparity>>=
+## Calculating disparity for both objects
+disparity_boot <- dispRity(boot_data, metric=c(sum, variances))
+disparity_rare <- dispRity(rare_data, metric=c(sum, variances))
+
+## Again, printing the objects will just give basic information.
+disparity_boot
+
+## To actually get the results, we can use the summary function
+summary(disparity_boot)
+summary(disparity_rare)
+@ 
+
+\section{Plotting the results}
+As we can guess from the summary, our results differ between consonants and vowels but consonants seems not affected by sample size.
+But let's visualise it:
+
+<<plot1, fig.width=10, fig.height=5, out.width='1\\linewidth'>>=
+## Graphical options
+quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
+## The disparity-through-time data in a time-binned way (with lines rather than
+## boxes) with the observed data as crosses
+plot(disparity_boot, main="raw data", elements=TRUE, ylab=c("disparity", "letters"))
+## The disparity-through-time data in a time-sliced ways
+plot(disparity_rare, main="rarefied data", elements=TRUE, ylab=c("disparity", "letters"))
+@
+
+\section{Testing differences}
+Finally, to be sure if the disparity is different between vowels and consonants or not, we can apply a statistical test to both categories:
+
+<<test>>=
+## Graphical options
+quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
+## The disparity-through-time data in a time-binned way (with lines rather than
+## boxes) with the observed data as crosses
+plot(disparity_boot, main="raw data", elements=TRUE, ylab=c("disparity", "letters"))
+## The disparity-through-time data in a time-sliced ways
+plot(disparity_rare, main="rarefied data", elements=TRUE, ylab=c("disparity", "letters"))
+@
 
 
 \dispRity is a package for calculating disparity in \texttt{R}.
