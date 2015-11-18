@@ -3,7 +3,7 @@
 #' @description Applying statistical tests to dispRity objects
 #'
 #' @param data A \code{dispRity} object.
-#' @param test A statistical \code{function} to apply to the data.
+#' @param test A test \code{function} to apply to the data.
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
 #' @param ... Additional options to pass to the test \code{function}.
 #' @param details Whether to output the details of each test (non-formated; default = \code{FALSE}).

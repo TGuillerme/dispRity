@@ -9,7 +9,7 @@ test.dispRity(data, test, comparisons = "pairwise", ..., details = FALSE)
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{test}{A statistical \code{function} to apply to the data.}
+\item{test}{A test \code{function} to apply to the data.}
 
 \item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).}
 
