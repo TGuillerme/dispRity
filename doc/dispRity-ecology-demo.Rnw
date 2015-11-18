@@ -25,7 +25,7 @@ options(formatR.arrow=TRUE,width=90)
 @
 
 
-\title{dispRity demo for ecological data}
+\title{A \texttt{dispRity} tutorial for ecologists}
 
 
 \author{Thomas Guillerme}

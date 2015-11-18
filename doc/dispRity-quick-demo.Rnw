@@ -1,0 +1,541 @@
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+
+\newcommand{\dispRity}{\texttt{dispRity} }
+\newcommand{\R}{\texttt{R} }
+
+\begin{document}
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
+options(formatR.arrow=TRUE,width=90)
+@
+
+
+\title{\dispRity quick demo}
+
+\author{Thomas Guillerme\\guillert@tcd.ie}
+
+\maketitle
+
+This is quick demo aiming to give a quick overview of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}).
+Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more details.
+
+To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into values called \textbf{disparity}. It then allows to visualise and analyse the disparity of the ordinated matrices.
+
+This demo, which will use dummy data will quickly cover the following points:
+\begin{enumerate}
+\item 
+\end{enumerate}
+
+\section{Installation}
+You can install this package easily if you are using the latest version of \R and \texttt{devtools}.
+
+<<installation, eval=FALSE>>=
+install.packages("devtools")
+library(devtools)
+install_github("TGuillerme/dispRity", ref = "release")
+library(dispRity)
+@
+
+\section{}
+
+
+\dispRity is a package for calculating disparity in \texttt{R}.
+To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
+These ordinated matrices can be called the morphospace (when using morphometric data) or the cladisto-space (for cladistic data) and will represent the total spread of the forms available in the dataset.
+However, keep in mind that if you are using other type of data, say ecological data for example, then the ordinated matrix will represent the eco-space which represents the total spread of ecological traits available in the dataset.
+In the rest of this demo, I will sometimes refer to the ordinated matrix as the any-o-space where you can replace \textit{any} by any prefix you want your space to be based on!
+
+\subsection{Installation}
+You can install this package easily if you use the latest version of \R and \texttt{devtools}.
+
+<<installation, eval=FALSE>>=
+install.packages("devtools")
+library(devtools)
+install_github("TGuillerme/dispRity", ref = "release")
+library(dispRity)
+@
+
+Note that we use the \texttt{release} branch here which is version \Sexpr{packageVersion("dispRity")}.
+If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
+This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
+Future version will just require the specific function but this version (\Sexpr{packageVersion("dispRity")}) will install \texttt{paleotree} as a dependency (which is not that bad since it is a super useful package anyway!).
+Additionally, I warmly recommend to install the packages \texttt{geomorph} or/and \texttt{Claddis} if you want to try this demo with your very own ordinated morphometric or cladistic data.
+
+\subsection{Which data?}
+In this demo we are going to use a subset of the ordinated cladistic data from Beck and Lee 2014 \cite{beckancient2014}:
+
+<<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+## Loading demo and the package data
+library(dispRity)
+## An ordinated matrix with the tips only
+data(BeckLee_mat50)
+dim(BeckLee_mat50)
+head(BeckLee_mat50[,1:5])
+## An ordinated matrix with the tips and the nodes (named nX)
+data(BeckLee_mat99)
+dim(BeckLee_mat99)
+head(BeckLee_mat99[,1:5], 2)
+tail(BeckLee_mat99[,1:5], 2)
+## A list of first and last occurrences data for some fossils
+data(BeckLee_ages)
+head(BeckLee_ages)
+## And a phylogeny:
+data(BeckLee_tree)
+plot(BeckLee_tree) ; nodelabels(cex=0.8)
+@ 
+
+However, I greatly encourage you to use your own data (after all, that's the point of an \R package).
+You will simply need (1) an ordinated distance matrix: make sure that the number of column is at maximum the number of rows minus one.
+And secondly (2) a phylogenetic tree with the tips matching the ordinated matrix and a \texttt{\$root.time} element for determining the age of the tree.
+You can use the function \texttt{tree.age} provided in this package but not described in this demo for generating the \texttt{\$root.time} automatically (see \texttt{?tree.age}).
+In the following examples, just replace all the \texttt{BeckLee} mentions in this demo by your very own data:
+
+<<Setup the data>>=
+## My ordinated matrix with tips only
+MyData_mat50 <- BeckLee_mat50
+## My ordinated matrix with tips and nodes
+MyData_mat99 <- BeckLee_mat99
+## My first and last occurence data
+MyData_ages <- BeckLee_ages
+## My phylogenetic tree
+MyData_tree <- BeckLee_tree
+@ 
+
+\section{A super quick go through}
+Without much explanation, here's what this package allows to run:
+\begin{enumerate}
+    \item Splitting the data
+    \item Bootstrapping the data
+    \item Calculating disparity
+    \item Summarising the results
+\end{enumerate}
+
+<<Quick go, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+## Splitting the data
+sliced_data <- time.series(MyData_mat99, MyData_tree, method = "continuous",
+    model = "acctran", time = 9, FADLAD = MyData_ages)
+## Bootstrapping the data
+bootstrapped_data <- boot.matrix(sliced_data, 100)
+## Calculating disparity
+sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
+## Summarising the results
+summary(sum_of_ranges)
+plot(sum_of_ranges)
+@ 
+
+\textit{Et voil\`{a}}, that's pretty much it...
+
+\section{In more details}
+In this section we are going to look at each functionality in more details. Of course, at this stage of the development of the package, any suggestion is most welcome.
+Please create an issue on the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} or even just drop me an email at \href{mailto:guillert@tcd.ie}{guillert@tcd.ie}.
+
+\subsection{The \dispRity objects}
+Disparity analysis involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
+For example, try to use \texttt{str} to show the structure of the object created above:
+
+<<dispRity class1, eval=FALSE>>=
+str(sum_of_ranges)
+## That's a more than 4000 lines of output
+@
+
+Therefore this package proposes a new class of object called \dispRity (how unexpected!) that allow to use a S3 \texttt{print.dispRity} method.
+In other words, when you are creating objects using the \dispRity functions, you can quickly and easily have a look at them by just calling the object (it will automatically print it via \texttt{print.dispRity}).
+For example:
+
+<<dispRity class2>>=
+## Which class is the sum_of_ranges object?
+class(sum_of_ranges)
+## We can summarise it using the S3 method print.dispRity
+sum_of_ranges
+## Some attentive ape package users will note the similarities with a phylo object...
+@ 
+
+Note that each object output from the different functions detailed below will display slightly different summarised informations (depending on the object content).
+
+\subsection{Splitting the data}
+One of the first functionality of this package is to facilitate splitting the ordinated matrix in subsamples.
+In fact, in many disparity analysis, one will analysis differences in subsamples of the any-o-space.
+For example, the subsamples can be composed of elements at a certain point in time (disparity-through-time analysis), or elements with some traits in common (e.g. habitat, phylogeny, etc.).
+
+\subsubsection{Custom splitting}
+\texttt{cust.series} is a function that allows to split the ordinated matrix according to a factor determined by the user.
+For example, here we can split the matrix based on phylogeny: let's classify in two different groups the crown and stem mammals present in the tree.
+
+<<cust.series2>>=
+## We want to separate the species around the node 71 (see phylogeny above).
+## All the descendant of these node are crown and all the ancestors are stem
+crown <- extract.clade(MyData_tree, node = 71)$tip.label
+stem <- drop.tip(MyData_tree, tip = crown)$tip.label
+## We then have to feed this information in a data frame with one column
+factors <- as.data.frame(
+    matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
+    ncol = 1, dimnames = list(c(crown, stem), "Group")))
+## We then can use the customised series function
+crown_stem <- cust.series(MyData_mat50, factors)
+## This created a dispRity object containing two series: crown and stem
+class(crown_stem)
+crown_stem
+## This object contains three elements
+names(crown_stem)
+## With "data" being the list sub-matrices
+str(crown_stem$data)
+## "taxa" being the list of taxa in the original ordinated matrix
+str(crown_stem$taxa)
+## and finally, "series" containing information on the series type (custom) and names
+## (crown and stem)
+crown_stem$series
+@ 
+
+Of course, using phylogeny as a factor is just an example.
+Any type of factors can be used in this example (e.g. body mass categories, habitat, diet, etc...).
+See the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos} for other specific examples.
+
+\subsubsection{Time splitting}
+\texttt{time.series} is a function that allows to split the matrix in different ways using time as a category.
+This functions needs as input an ordinated matrix and a matching phylogenetic tree.
+Two types of time series splitting can be performed by using the \texttt{method} option:
+\begin{enumerate}
+\item the classical discrete time splitting (or time-binning) using \texttt{method = "discrete"};
+\item or a new continuous time splitting (or time-slicing) using \texttt{method = "continuous"}.
+\end{enumerate}
+For the time-slicing method details, see Guillerme and Cooper \textit{in prep.} \cite{GuillermeSTD}.
+Once the method is chosen, the function intakes the \texttt{time} argument which can be a vector of \texttt{numeric} values for:
+\begin{enumerate}
+\item defining the boundaries of the time bins (when \texttt{method = "discrete"});
+\item defining the time-slicing places (when using \texttt{method = "continuous"}).
+\end{enumerate}
+Otherwise, the \texttt{time} argument can be set as a single \texttt{numeric} value for automatically generating a fix number of equidistant time-bins/slices.
+Additionally, we can also input a data frame containing the First/Last Occurrence Data (\texttt{FADLAD}) for taxa that span over a longer time than the tips/nodes age.
+
+Let's see and example for time-binning (\texttt{method = "discrete"}):
+
+<<discrete.series>>=
+## Let's generate three time bins containing the data present every 40 Ma
+time_bins <- time.series(data = MyData_mat50, tree = MyData_tree,
+    method = "discrete", time = c(120, 80, 40, 0))
+## Note that the function provides a warning saying that tips where single
+## points in time (no FAD/LAD information). We can fix that by adding the
+## age data for the taxa that have some longer occurrence spans.
+time_bins <- time.series(data = MyData_mat50, tree = MyData_tree,
+    method = "discrete", time = c(120, 80, 40, 0), FADLAD = MyData_ages)
+## To entirely avoid the warning we could collect the occurrence span data
+## for all the taxa but that's not necessary. The function automatically
+## assumes no occurrence span time (i.e. single points in time) for all taxa
+## by default.
+time_bins
+@
+
+This generated indeed a list of 3 sub matrices.
+Note that we can also generate equivalent results by just telling the function that we want three time-bins (series) as follow: 
+
+<<discrete.series2>>=
+time.series(data = MyData_mat50, tree = MyData_tree, method = "discrete", time = 3)
+@
+
+We now have three time bins of 44.50368 Ma each. But hey, that's a bit silly, let's stick to bins of 40 Ma.
+When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1\% of the the tree length as long as at least three elements are present at that point in time (an extra 1\% is added until reaching the required minimum of three elements).
+We can also ask to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between tips \textit{AND} nodes.
+
+For the time-slicing method (\texttt{method = "continuous"}), the idea is pretty similar.
+We need to provide a matrix that contains the ordinated distance between taxa AND nodes and an evolutionary model via the \texttt{model} argument.
+For now they are four evolutionary models implemented \cite{GuillermeSTD} (but see section \ref{whatsleft}):
+\begin{enumerate}
+\item \texttt{"acctran"} where the data chosen on each time slice is always the one of the offspring
+\item \texttt{"deltran"} where the data chosen on each time slice is always the one of the descendant
+\item \texttt{"punctuated"} where the data chosen on each time slice is randomly chosen between the offspring or the descendant
+\item \texttt{"gradual"} where the data chosen on each time slice is either the offspring or the descendant depending on branch length
+\end{enumerate}
+
+<<continuous.series>>=
+## Let's generate four time slices every 40 Ma assuming a gradual evolution model
+time_slices <- time.series(data = MyData_mat99, tree = MyData_tree, 
+    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
+    FADLAD = MyData_ages)
+time_slices
+## Note that in the same way as for the discrete method, we can also
+## automatically generate the slices
+time.series(data = MyData_mat99, tree = MyData_tree, method = "continuous",
+    model = "gradual", time = 4)
+## But that gives the same silly results (slicing every 44.50368 Ma)
+@
+
+\subsection{Bootstrapping the data}
+After separating the any-o-space into submatrices, one can directly calculate disparity within each subsample or first test the robustness of the data.
+To measure how robust is the data, we can perform bootstrap pseudo-replications or rarefaction analysis to make sure the results are not dependant on weird outliers.
+The \texttt{boot.matrix} allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
+The default options will bootstrap the matrix 1000 times with no rarefaction.
+
+<<boot.matrix1>>=
+boot.matrix(data = MyData_mat50)
+## As we can wee, the output is also a dispRity object that is summarised
+## automatically, and gives information on the data as well as the number of
+## bootstraps and the bootstraps methods.
+@
+
+This function proposes the user to specify the bootstrap algorithm with the \texttt{boot.type} method.
+Currently two algorithms are implemented (but see section \ref{whatsleft}):
+\begin{enumerate}
+\item \texttt{"full"} where the bootstrapping is entirely stochastic (all the data is bootstrapped)
+\item \texttt{"single"} where only one random taxa is replaced by one other random taxa each pseudo-replication
+\end{enumerate}
+This function also has a \texttt{rarefaction} option to rarefy the data (how unexpected!).
+The default status is \texttt{FALSE} but it can be set to \texttt{TRUE} to fully rarefy the data (i.e. remove $n$ taxa for the number of pseudo-replicates, where $n$ varies from the maximum number of taxa present in the dataset to a minimum of 3 elements).
+It can also be set to a fix \texttt{numeric} value (or a set of numeric values).
+Finally, the last option from this function, \texttt{rm.last.axis}, is whether to remove a certain amount of axis of the ordinated data.
+This option can be logical where \texttt{FALSE} (default) will not remove any axis and \texttt{TRUE} will remove the 5\% last axis or it can be set to a user defined proportion.
+This is a common practice in disparity-through-time analysis but it is hard to justify statistically.
+Here is a series of examples:
+
+<<boot.matrix2>>=
+## Bootstrapping with the single bootstrap method
+boot.matrix(MyData_mat50, boot.type = "single")
+## Bootstrapping with the full rarefaction
+boot.matrix(MyData_mat50, bootstraps = 20, rarefaction = TRUE)
+## Or with a set number of rarefaction levels
+boot.matrix(MyData_mat50, bootstraps = 20, rarefaction = c(6:8,3))
+## And removing the last axis (default)
+boot.matrix(MyData_mat50, rm.last.axis = TRUE)
+## Or with a fix value (50%)
+boot.matrix(MyData_mat50, rm.last.axis = 0.5)
+@
+
+Of course, one could be interested in directly supplying the subsampled matrices generated above directly to this function.
+In fact, it can also deal with a list of matrices or with a \dispRity object output from the \texttt{cust.series} or \texttt{time.series} functions.
+Like this:
+
+<<boot.matrix3>>=
+## Let's do a full rarefaction on the crown/stem data for later
+crown_stemBS <- boot.matrix(crown_stem, rarefaction = TRUE)
+## And just bootstrapping for the time binning/slicing
+time_binsBS <- boot.matrix(time_bins)
+time_slicesBS <- boot.matrix(time_slices)
+## And just to remind us what's in each objects
+crown_stemBS
+time_binsBS
+time_slicesBS
+@
+
+\subsection{Calculating disparity}
+Now we're going to see the functionalities of the core function of this package: the \dispRity function.
+This function is a modulable function that allow to simply (and quickly!) calculate disparity from a matrix.
+
+Because disparity can be measured in many ways, this function is a tool to measure disparity \textit{as defined by the user} (and here's where the modulable part comes in).
+In fact, the \dispRity function intakes two main arguments: the data and the disparity metric.
+%To change in future version!
+The disparity metric boils down to a single value that describes the matrix.
+Some are classic like the sum or the product of the ranges or the variances of the matrix columns (i.e. the any-o-space axis/dimensions) \cite{Wills1994}.
+However, many more exist like the median distances between the taxa and the any-o-space centroid \cite{GuillermeSTD}.
+
+One can usually decompose the disparity metrics into two elements:
+\begin{enumerate}
+\item the \textbf{class metric} that is a descriptor of the matrix. For example describing the ranges of each column in the matrix or the euclidean distances between each row and the centroid of the matrix.
+\item the \textbf{summary metric} that is a summary of the class metric values. For example, the sum of the ranges or the median of the euclidean distances. 
+\end{enumerate}
+Basically the combination can be infinite between the class and summary metrics.
+For example, people might want to measure the median variances of the axis or the product of the distances from the centroid.
+However, it is probable that some metrics are better to reflect some biological aspects of the any-o-space than others (see section \ref{whatsleft})...
+
+In practice, the \dispRity function intakes a pair of class and summary metrics as a definition of disparity.
+Several of these metrics are implemented in other packages (like \texttt{stats::median}, \texttt{base::sum}, etc.) and this package proposes several metrics listed in \texttt{dispRity.metric} (see \texttt{?dispRity.metric}).
+It is even possible to use your very own class and summary metrics!
+This will be actually heavily encouraged and facilitate with the \texttt{make.metric} function in a future version (see \ref{whatsleft}).
+
+To use these metrics pairs in the \dispRity function, it's pretty easy:
+
+<<dispRity1>>=
+dispRity(MyData_mat50, metric = c(sum, ranges))
+## Yep, that's it. The order of the metrics does not matter (the function detects
+## automatically which one is the class and the summary metric) so the combinations
+## are numerous!
+dispRity(MyData_mat50, metric = c(sum, variances))
+dispRity(MyData_mat50, metric = c(prod, centroids))
+dispRity(MyData_mat50, metric = c(mode.val, ranges))
+## Or funny user defined ones!
+total.range <- function(X) abs(range(X)[1]-range(X)[2])
+dispRity(MyData_mat50, metric = c(total.range, ranges))
+## That would be disparity as the range of the axis ranges!
+@
+
+Of course, this function can take a simple ordinated matrix but, more interesting it can also deal with a list of matrices (from the \texttt{cust.series} or \texttt{time.series} functions for example) or a bootstrapped or/and rarefied matrix (from the \texttt{boot.matrix} function for example).
+
+<<dispRity2>>=
+## For example, let's calculate the sum of ranges from our crown/stem mammals
+dispRity(crown_stem, metric = c(sum, ranges))
+## Or even better, from the bootstrapped data
+disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(sum, ranges))
+## Note that the bootstrapped + rarefied data takes some time to run (it's
+## calculating disparity from 46 matrices!)
+
+## Let's calculate a different metric for the disparity-through-time analysis
+disp_time_binsBS <- dispRity(time_binsBS, metric = c(median, centroids))
+disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(median, centroids))
+@
+
+Again, note that the results are \dispRity objects and can displayed through the S3 \texttt{print.dispRity} method to remind users what are in these objects.
+Also note that an even faster parallel version will be developed in the future (see section \ref{whatsleft}).
+
+\subsection{Summarising the results}
+As shown in these examples above however, even though the disparity has been calculated in many way, the function doesn't directly outputs the results, rather just a summary of the analysis.
+To really display the results we can use the S3 \texttt{summary.dispRity} and \texttt{plot.dispRity} functions.
+
+\subsubsection{\texttt{summary} function}
+This function intakes a \dispRity object plus various options namely the \texttt{quantile} values for the confidence intervals levels; the \texttt{cent.tend} for the central tendency to use for summarising the results and two \textit{visual} options which are whether to recall the \dispRity options and how much digits are wanted in the results.
+
+<<summary>>=
+## Let's have a look at the disparity-through-time using in the time-binned data
+summary(disp_time_binsBS)
+## The 50 and 95 quantiles are calculated and the central tendency is the mean by default.
+## Note that the function also displays the observed disparity (non-bootstrapped).
+## We can change that easily by specifying different values in the options
+summary(disp_time_binsBS, quantile = 88, cent.tend = sd, rounding = 1)
+## Also, if we happen to have forgotten what was in the disp_time_binsBS object (as in
+## which options where used to modify the original matrix) we can use the recall option:
+summary(disp_time_binsBS, recall = TRUE)
+## Note that the recall just prints text. The output of summary.dispRity is always a
+## data.frame
+summary_table <- summary(disp_time_binsBS, recall = TRUE)
+class(summary_table)
+
+## Finally we can see the results of the rarefaction analysis for the crown/stem data
+head(summary(disp_crown_stemBS))
+## This outputs a longer table with all the variations of the number of crown/stem taxa
+## from the maximum (30 and 20) to the minimum (3). Note that the observed disparity
+## is NA for rarefied data.
+@
+
+\subsubsection{\texttt{plot} function}
+This final function allows to visualise the disparity results in a often nicer fashion than just a table (even though the exact same data is displayed).
+The \texttt{plot.dispRity} option intakes the same options as \texttt{summary.dispRity} along side with various graphical options described in the function manual.
+Here, let's just have a look a few of these options.
+
+Let's start with plotting the difference in disparity between the crown and the stem mammals.
+For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
+In our case, we are interested in looking at the results in a discrete way.
+Note that the plot \texttt{type} can be left missing.
+The function will then use \texttt{"discrete"} as default or \texttt{"continuous"} if the input data came from the \texttt{time.series} function with \texttt{method = "continuous"}.
+
+The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean.
+However, it might be interesting to see how many taxa are present in each group.
+This can be done via the \texttt{elements} option.
+A third interesting option is to plot the rarefied data if a rarefaction was applied on the data with the \texttt{boot.matrix} function.
+For displaying the rarefied data we can use the \texttt{rarefaction} option.
+This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
+Additionally, it can be a specific number to plot a specific number of taxa.
+Let say we want both groups to have 20 taxa maximum.
+We can see now that the confidence intervals overlap more than previously
+
+<<plot1, fig.width=15, fig.height=5, out.width='1\\linewidth'>>=
+## Graphical options
+quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
+## Plotting the score for both groups
+plot(disp_crown_stemBS, ylim = c(25,40))
+## Same one with the number of taxa for each data set
+plot(disp_crown_stemBS, elements = TRUE, ylim = c(25,40))
+## Same one with rarefied data (note how that affects the elements data as well!)
+plot(disp_crown_stemBS, elements = TRUE, rarefaction = 20, ylim = c(25,40))
+@
+
+To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
+
+<<plot2, fig.width=5, fig.height=8, out.width='0.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+## The rarefaction curves
+plot(disp_crown_stemBS, elements = TRUE, rarefaction = "plot")
+## Note that the function automatically draws the curves for each series and splits
+## the plot screen accordingly.
+@
+
+The different dashed lines represent the different confidence intervals around each rarefaction curve.
+
+Additionally, for the \texttt{type = "discrete"} option, we might also decide to plot many boxplots (which can be a bit messy).
+The \texttt{discrete\_type} option allows to switch between \texttt{"box"} or \texttt{"line"} for showing the results in one or the other format.
+We can also plot the observed data when existing (i.e. not with some rarefaction levels) by using \texttt{observed = TRUE}.
+Let's look at that with the time binned data (even though there is only three time bins).
+Finally, we can use the \texttt{type = "continuous"} option that comes in handy for plotting continuous data like in the time sliced analysis (obviously...).
+
+
+<<plot3, fig.width=10, fig.height=5, out.width='1\\linewidth'>>=
+## Graphical options
+quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
+## The disparity-through-time data in a time-binned way (with lines rather than
+## boxes) with the observed data as crosses
+plot(disp_time_binsBS, discrete_type = "line", observed = TRUE)
+## The disparity-through-time data in a time-sliced ways
+plot(disp_time_slicesBS)
+
+@
+
+We can even plot both results (discrete and continuous) on the same graph:
+
+<<plot4, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+## First, plotting the continuous data
+plot(disp_time_slicesBS, ylim=c(0.5,2))
+## Second, adding the discrete data
+par(new = TRUE)
+plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
+@
+
+Note that the results vary in values but not in pattern.
+The change in values might be due to the fact that nodes data are not included in the discrete analysis.
+
+I encourage you to play with the graphical options to have some prettier results.
+Note that most of the options from \texttt{plot} can be passed to \texttt{plot.dispRity} via \texttt{...}.
+
+<<plot5, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+## A plot with many options!
+plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd,
+    type = "continuous", elements = "log", col = c("black", rainbow(10)),
+    ylab = c("Disparity", "log(Diversity)"), xlab = "Time (in in units from
+    past to present)", time.series = FALSE, observed = TRUE, main = "Many options...")
+@
+
+\section{What's left?}
+\label{whatsleft}
+As stated at the start of the demo, this version \Sexpr{packageVersion("dispRity")} is still in development and many parts are missing.
+Here are the new functionalities that will be implemented before the proper release version (v.1).
+
+\subsection{Some statistics}
+Some people might get interested in p-values and other statsy numbers.
+Because the format of the \dispRity objects is a bit special, I am currently developing a \texttt{dispRity.test} function that will allow to intake your favourite statistical test and a \dispRity object.
+I will also propose several inbuilt test such as the time lag t-test \cite{GuillermeSTD}.
+Any other suggestions are most welcome!
+
+\subsection{Users defined metrics}
+To help people develop their own disparity metrics (both class and summary) and to make sure they will be usable in the \dispRity function, I am developing a \texttt{make.metric} function that will test the metric in two ways:
+(1) is the output sensible (defined by the user)?
+(2) does it compute properly in the \dispRity function?
+
+Along side with developing this package, I also aim to test the efficiency of some metrics in describing some aspects of the any-o-space so that it could be used as guidelines for disparity analysis
+
+\subsection{More user defined stuff}
+I intend also develop functions to help users to develop their own algorithms for the bootstrap method (via \texttt{make.boot}) or the evolutionary models (via \texttt{make.model}).
+Both functions will provide similar testing as the \texttt{make.metric} function.
+
+\subsection{Faster!}
+Finally, for long analysis, I intend to develop a parallel running version of the package.
+In fact, most of the internal functions are base on \texttt{lapply} functions that can be easily passed to \texttt{snow::parLapply} or similar parallel functions.
+
+\bibliographystyle{vancouver}
+\bibliography{References}
+
+\end{document}
