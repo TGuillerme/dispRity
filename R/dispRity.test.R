@@ -86,58 +86,46 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 #End
 }
 
-
-
-# Anderson.test<-function(BSresults, time_pco) {
+# t.test.smith<-function(x, y, ...) {
 #     #Disparity T-Test calculation from Anderson and Friedman 2012.
 #     #Code modified from Smith et al. 2014 - Evolution
 
-#     #Extracting the sample sizes
-#     sample_size<-unlist(lapply(time_pco, nrow))
+#     #SANITIZING
+#     #x and y
+#     check.class(x, "numeric")
+#     check.class(y, "numeric")
 
-#     #Getting the mean and the variance from the BSresults
-#     variance_int<-apply(BSresults, 2, var)
-#     mean_int<-apply(BSresults, 2, mean)
+#     #TESTING
+#     #Mean difference
+#     mean_difference <- abs(mean(x) - mean(y))
 
-#     #Calculating the T_statistics functions
-#     mean.difference<-function(x,y, mean_int) {mean_int[x]-mean_int[y]}
-#     term.A<-function(x,y,sample_size, variance_int) { ((sample_size[x]-1)*(sample_size[x])* variance_int[x] + (sample_size[y]-1)*(sample_size[y])* variance_int[y] )/(sample_size[x]+sample_size[y]+2) }
-#     term.B<-function(x,y, sample_size) { (sample_size[x] + sample_size [y])/(sample_size[x] * sample_size [y]) }
+#     #Degree of freedom
+#     degree_freedom <- length(x) + length(y) - 2
 
-#     #Calculating the statistic, df and p-value.
-#     difference<-p_values<-degrees_freedom<-t_statistic<-as.data.frame(matrix(NA, nrow=ncol(BSresults), ncol=ncol(BSresults)))
-#     rownames(difference)<-rownames(p_values)<-rownames(degrees_freedom)<-rownames(t_statistic)<-names(time_pco)
-#     colnames(difference)<-colnames(p_values)<-colnames(degrees_freedom)<-colnames(t_statistic)<-names(time_pco)
-#     for(row in 1:ncol(BSresults)) {
-#         for(col in 1:ncol(BSresults)) {
-#             #Calculate difference
-#             difference[row,col]<-mean.difference(row,col, mean_int)
-#             #Calculate T
-#             t_statistic[row,col]<-mean.difference(row,col, mean_int)/sqrt(term.A(row,col,sample_size,variance_int)*term.B(row,col,sample_size))
-#             if(!is.finite(t_statistic[row,col])) {
-#                 #Exist the loop if some variance or differences are not finit numbers.
-#                 message("T statistic cannot be calculate. Probable reason: some values are is near Inf or -Inf.")
-#                 return(list("diff"=difference, "df"=degrees_freedom, "T"=t_statistic, "p"=p_values))
-#             }
+#     #T statistic
+#     term_A <- ((length(x)-1) * length(x) * var(x) + (length(y)-1) * length(y) * var(y)) / degree_freedom
+#     term_B <- (length(x) + length(y))/(length(x) * length(y))
+#     t_statistic <- mean_difference/sqrt(term_A*term_B)
 
-#             #Calculate df
-#             degrees_freedom[row,col]<-sample_size[row]+sample_size[col]-2
-#             #Calculate p
-#             p_values[row,col]<- 1-pt(t_statistic[row, col], df = degrees_freedom[row, col])
+#     #p value
+#     p_value <- 1-pt(t_statistic, df = degree_freedom)
 
-#             #make test two-tailed
-#             if (p_values [row,col] > 0.5) {
-#                 p_values [row,col] <- 2*(1-p_values[row,col])
-#             } else {
-#                 if (p_values [row,col] < 0.5){
-#                     p_values [row,col] <- 2*(p_values[row,col])   
-#                 } else {
-#                     if (p_values [row,col] == 0.5){
-#                         p_values [row,col] <- 1
-#                     }
-#                 }
+#     #make test two-tailed
+#     if (p_value > 0.5) {
+#         p_value <- 2*(1-p_value)
+#     } else {
+#         if (p_value < 0.5){
+#             p_value <- 2*(p_value)   
+#         } else {
+#             if (p_value == 0.5){
+#                 p_value <- 1
 #             }
 #         }
 #     }
-#     return(list("diff"=difference, "df"=degrees_freedom, "T"=t_statistic, "p"=p_values))
+
+#     #Output
+#     table_out <- as.data.frame(matrix(c(mean_difference, p_value, degree_freedom, t_statistic), nrow=1, ncol=4))
+#     names(table_out) <- c("diff", "p_value", "df", "T")
+#     return(table_out)
 # }
+
