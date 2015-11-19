@@ -8,9 +8,8 @@ Patch notes
   * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
   * many improved functions manuals and examples!
   * improved vignettes:
-    * *dispRity quick demo* for people that don't have much time
-    * *dispRity palaeo demo* for palaeobiologists that want to have a look at the package
-    * *dispRity ecology demo* for ecologists that want to have a look at the package
+    * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist
+    * *dispRity ecology demo* a quick demo aimed more for ecologists
     * *dispRity tutorial* for people that want to know the package in details
     * *dispRity metrics* for explaining how the disparity metric implementation works
 * 2015/10/08 - v0.1.1
