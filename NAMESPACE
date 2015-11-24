@@ -7,18 +7,19 @@ export(time.series)
 export(cust.series)
 export(boot.matrix)
 export(dispRity)
-#export(test.diff) - TO DO
+export(test.dispRity)
 export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
-#export(cor.diversity) #utilities - not done
-#export(cor.time.pco) #utilities - not done
-export(make.metric) #utilities
-export(make.model) #utilities - not done
-export(make.boot) #utilities - not done
-export(get.dispRity) #utilities
-export(extract.dispRity) #utilities
+##Utilities
+export(make.metric)
+export(make.model)
+export(make.boot)
+export(get.dispRity)
+export(extract.dispRity)
+#export(cor.diversity) - TO DO!
+#export(cor.time.pco) - TO DO!
 
 ##disparity metrics
 export(variances)
