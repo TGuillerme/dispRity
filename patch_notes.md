@@ -5,6 +5,7 @@ Patch notes
   * new function: `extract.dispRity` for extracting disparity results
   * new function: `test.dispRity` for applying tests to `dispRity` objects
   * new function: `make.metric` for helping creating your very own disparity metric
+  * new metric: `hyper.volume` for measuring the morphospace hyper-ellipsoid volume
   * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
   * many improved functions manuals and examples!
   * improved vignettes:
