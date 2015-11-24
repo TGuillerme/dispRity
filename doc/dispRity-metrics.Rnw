@@ -2,6 +2,7 @@
 \usepackage[sc]{mathpazo}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
+\usepackage{natbib}
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
@@ -25,7 +26,7 @@ options(formatR.arrow=TRUE,width=90)
 @
 
 
-\title{dispRity metrics}
+\title{\texttt{dispRity} metrics}
 
 
 \author{Thomas Guillerme}
@@ -37,17 +38,17 @@ This vignette details how the disparity metrics are implemented in the \dispRity
 \section{Disparity metrics}
 There are many ways for measuring disparity.
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. MDS, PCA, PCO, PCoA).
-For example, one can look at ellipsoid hyper-volume of the ordinated space \cite{DonohueDim}, the sum and the product of the ranges and variances of the ordinated space dimensions \cite{Wills1994} or the median position of the elements in the ordinated space relative to its centroid \cite{GuillermeSTD}.
-Of course, there is many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.
+For example, one can look at ellipsoid hyper-volume of the ordinated space \citep{DonohueDim}, the sum and the product of the ranges and variances of the ordinated space dimensions \citep{Wills1994} or the median position of the elements in the ordinated space relative to its centroid \citep{GuillermeSTD}.
+Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.
 
 Because of this great diversity of metric, the package \dispRity has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis.
 In fact, the core function of the package, \dispRity, allows the user to define any metric in the \texttt{metric} argument.
-However, because of the infrastructure of the package (especially the on of the \dispRity objects -- see the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos}), the \texttt{metric} argument has to follow certain slightly restrictive rules described in detail below.
+However, because of the infrastructure of the package (especially the on of the \dispRity objects -- see the \href{https://github.com/TGuillerme/dispRity}{other vignettes}), the \texttt{metric} argument has to follow certain slightly restrictive rules described in detail below.
 \begin{enumerate}
     \item \texttt{metric} must be between one or three \texttt{function} objects
-    \item \texttt{metric} must intake a \texttt{matrix} or \texttt{vector} object
-    \item \texttt{metric} individual functions must be classified in one of the three levels
-    \item \texttt{metric} one of the functions must be a level 1 function
+    \item \texttt{metric} must can have only one argument as input: a \texttt{matrix} or a \texttt{vector}
+    \item \texttt{metric} individual functions must be classified in one of the three levels (see below)
+    \item \texttt{metric} one of the functions must be a level 1 function (see below)
 \end{enumerate}
 
 \section{The function levels}
@@ -70,19 +71,19 @@ A level 1 function for example, will decompose the \texttt{matrix} (or a \texttt
 ## First, let's create a dummy matrix
 dummy_matrix <- matrix(rnorm(12), 4, 3)
 ## Any summary metric such as mean or median are good examples of level 1
-## functions as they reduce the matrix to a single dimensions (value):
+## functions as they reduce the matrix to a single dimension (value):
 mean(dummy_matrix)
 median(dummy_matrix)
 @ 
 
 \subsection{A level 2 function}
-A level 2 function for example, will decompose the \texttt{matrix} into a \texttt{vector}.
-Several level 2 functions are implemented in \dispRity (see \texttt{?dispRity.metric}) such as the \texttt{variances} function that calculates the variance of each column of the ordinated matrix (or axis/dimensions):
+A level 2 function will decompose the \texttt{matrix} into a \texttt{vector}.
+Several level 2 functions are implemented in \dispRity (see \texttt{?dispRity.metric}) such as the \texttt{variances} function that calculates the variance of each column of the ordinated matrix (i.e. it's axis or dimensions):
 
 <<level 2 example>>=
 ## We can define a different function that outputs the products of the rows:
 rows <- function(matrix) apply(matrix, 1, prod)
-## Rows is a level 2 function as well (outputs a vector of 4 values):
+## rows is a level 2 function as well (outputs a vector of 4 values):
 rows(dummy_matrix)
 @ 
 
@@ -101,8 +102,8 @@ Of course, functions can be more complex and involve multiple operations such as
 The \texttt{make.metric} function implemented in \dispRity is designed to help testing and finding the level of the functions.
 Concretely, This function tests:
 \begin{enumerate}
-  \item if your function can deal with a matrix as an \texttt{input}.
-  \item which level is your function (level 1, 2 or 3, see \texttt{?dispRity.metric}).
+  \item if your function can deal with a \texttt{matrix} or a \texttt{vector} as an \texttt{input}.
+  \item which level is your function (level 1, 2 or 3, see above).
   \item whether the function can properly be implemented in the \texttt{dispRity} function.
 \end{enumerate}
 For example, let's see if the functions described above are the right levels:
@@ -142,7 +143,7 @@ summary(dispRity(BeckLee_mat50, metric = c(variances, sd, var)), round=10)
 ## Both ways output the same disparity values.
 @ 
 
-\bibliographystyle{vancouver}
+\bibliographystyle{sysbio}
 \bibliography{References}
 
 \end{document}
