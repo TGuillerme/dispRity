@@ -5,6 +5,7 @@
 #' @param data A \code{dispRity} object.
 #' @param test A test \code{function} to apply to the data.
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
+#' @param correction which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applyed.
 #' @param ... Additional options to pass to the test \code{function}.
 #' @param details Whether to output the details of each test (non-formated; default = \code{FALSE}).
 #'
@@ -50,7 +51,7 @@
 #' @author Thomas Guillerme
 
 
-test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) { #format: get additional option for input format?
+test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., details=FALSE) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
@@ -121,6 +122,18 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
             #Make sure only one inbuilt comparison is given
             check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
             comp <- comparisons
+        }
+    }
+
+    #correction
+    if(!missing(correction)) {
+        check.class(correction, 'character')
+        p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+        if(all(is.na(match(correction, p.adjust_list)))) {
+            stop("correction type must be one of the p.adjust function options.")
+        }
+        if(length(data$data$bootstrap) > 2 & correction == "none") {
+            message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
         }
     }
 
@@ -274,6 +287,12 @@ test.dispRity<-function(data, test, comparisons="pairwise", ..., details=FALSE) 
                 colnames(table_out) <- col_names
                 #Getting row names (the comparisons)
                 row.names(table_out) <- comparisons_list
+
+
+                #Applying the correction
+                if(!missing(correction)) {
+                    table_out$p.value <- p.adjust(table_out$p.value, method="bonferroni")
+                }
 
                 return(table_out)
 
