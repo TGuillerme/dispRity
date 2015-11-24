@@ -15,13 +15,20 @@ level1.fun(X)
 \arguments{
 \item{matrix}{A matrix.}
 
-\item{X}{A vector or a matrix.}
+\item{X}{A vector.}
 }
 \description{
 Different implemented disparity metrics.
 }
 \details{
 These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
+The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
+\itemize{
+  \item \code{hyper.volume}: calculates the hyperdimensional volume of a matrix.
+     \itemize{
+         \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+     }
+}
 The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 \itemize{
   \item \code{ranges}: calculates the range of each axis of the matrix.
@@ -31,7 +38,6 @@ The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 The currently implemented value aggregate metrics (\code{level1.fun}) are:
 \itemize{
   \item \code{mode.val}: calculates the modal value of a vector.
-  \item \code{volume}: calculates the volume of a matrix.
 }
 See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
 }
