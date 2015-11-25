@@ -47,6 +47,7 @@ Here is a list of what are the exact meaning of these term:
 \item \textbf{Ordinated space}: it designates the mathematical multidimensional object studied here. In morphometrics, this one is often referred as being the morphospace, or the cladisto-space for cladisticts or the eco-space for ecology, etc. In practice though, this term designates an ordinated matrix where the columns represent the dimensions of the ordinated space (often $>$ 3!) and the rows represent the elements within this space.
 \item \textbf{Elements}: it designates the rows of the ordinated space, elements can be either taxa, field sites, countries, etc...
 \item \textbf{Dimensions}: it designates the columns of the ordinated space. The dimensions can also be referred to as axis.
+\item \textbf{Series}: it designates sub-samples of the ordinated space. Basically a series contain the same number of dimensions as the morphospace but might contain a smaller number of elements. For example, if our ordinated space is composed of birds and mammals (i.e. the elements) and 50 dimensions, we can create two series of just mammals or birds as elements (but the same 50 dimensions) to look at the difference in disparity between both groups.
 \end{itemize}
 
 \subsection{Installation}
@@ -111,7 +112,7 @@ plot(sum_of_variances)
 summary(test.dispRity(sum_of_variances, test = aov, comparisons = "all"))
 @
 
-\section{Package specificity}
+\section{Package specificities}
 
 \subsection{The \dispRity objects}
 Disparity analysis can involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
@@ -127,22 +128,53 @@ These objects allow to easily use a S3 method functions such as \texttt{summary.
 But also, this allows to use the S3 method for printing \dispRity objects via \texttt{print.dispRity} that allows to summarise the content of the objects similar to the \texttt{phylo} class objects (see \texttt{print.phylo::ape}).
 
 <<dispRity class2>>=
-## Which class is the sum_of_ranges object?
-class(sum_of_ranges)
+## Which class is the sum_of_variances object?
+class(sum_of_variances)
+## What's in the object
+names(sum_of_variances)
 ## We can summarise it using the S3 method print.dispRity
-sum_of_ranges
+sum_of_variances
 ## This displays some information about what's in the object
 @ 
 
 \noindent Note however, that it is always possible to recall the full object using the argument \texttt{all=TRUE}:
 
-<<dispRity class3>>=
-## This displays some information about what's in the object
-sum_of_ranges
-## This displays some information about what's in the object
+<<dispRity class3, eval=FALSE>>=
+## Displaying the full object
+print(sum_of_variances, all=TRUE)
 @ 
 
+\noindent Finally, some utility functions such as \texttt{get.dispRity} or \texttt{extract.dispRity} allows to access to some specific content of the object:
+
+<<dispRity class4>>=
+## Extracting some specific series from the disparity object
+series_1_and_4 <- get.dispRity(sum_of_variances, what=c(1,4))
+series_1_and_4
+## The observed disparity
+extract.dispRity(sum_of_variances)
+## The list of bootstrapped scores of disparity
+str(extract.dispRity(sum_of_variances, observed = FALSE))
+@
+
 \subsection{Modular functions}
+This package aims to be a modular package where users can personalise some aspects of the package fairly easily.
+In this version \Sexpr{packageVersion("dispRity")} only one function is fully modular (\dispRity; see section \ref{disparity}) but more will be hopefully available in the near future (see section \ref{developments}).
+
+The modular idea is that users can use implemented tools to help facilitating their own personalised function.
+For example, the \dispRity function intake a \texttt{metric} argument designating how disparity should be calculated.
+This argument can take some already implemented functions such as \texttt{mean} but also some completely new ones such as the sum divided by length:
+
+<<dispRity modular>>=
+## Disparity measured as the mean
+summary(dispRity(sliced_data, metric = mean))
+## A function for measuring the sum divided by the length (the mean!)
+sum.by.length <- function(X)  sum(X)/length(X)
+## Disparity measured as the mean divided by the length
+summary(dispRity(sliced_data, metric = sum.by.length))
+## Giving the exact same results!
+@
+
+\noindent For more information concerning this modularity, please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for the vignette about the metric implementation in \dispRity.
 
 \section{Functions}
 
@@ -151,12 +183,25 @@ sum_of_ranges
 \subsection{\texttt{time.series}}
 \subsection{\texttt{boot.matrix}}
 \subsection{\texttt{dispRity}}
+\label{disparity}
 \subsection{\texttt{summary}}
 \label{summary}
 \subsection{\texttt{plot}}
 \label{plot}
 \subsection{\texttt{test.dispRity}}
 
+\section{Developments}
+\label{developments}
+As stated at the start of the demo, this version \Sexpr{packageVersion("dispRity")} is still in development and many parts are missing.
+Here are the new functionalities that will be implemented before the proper release version (v.1).
+
+\subsection{More user defined stuff}
+I intend also develop functions to help users to develop their own algorithms for the bootstrap method (via \texttt{make.boot}) or the evolutionary models (via \texttt{make.model}).
+Both functions will provide similar testing as the \texttt{make.metric} function.
+
+\subsection{Faster!}
+Finally, for long analysis, I intend to develop a parallel running version of the package.
+In fact, most of the internal functions are base on \texttt{lapply} functions that can be easily passed to \texttt{snow::parLapply} or similar parallel functions.
 
 \bibliographystyle{sysbio}
 \bibliography{References}
