@@ -177,11 +177,12 @@ summary(dispRity(sliced_data, metric = sum.by.length))
 \noindent For more information concerning this modularity, please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for the vignette about the metric implementation in \dispRity.
 
 \section{Functions}
+One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter \textit{series}).
+These series correspond at regions of the ordinated space that we want to compare to each other.
 
 \subsection{\texttt{cust.series}}
-
-\texttt{cust.series} is a function that allows to split the ordinated matrix according to a factor determined by the user.
-For example, here we can split the matrix based on phylogeny: let's classify in two different groups the crown and stem mammals present in the tree.
+The \texttt{cust.series} function allows to create these series according to factors determined by the user.
+In this example, we can split the matrix based on the phylogeny and separate to different groups of taxa: the crown mammals (all the living mammals and their direct ancestor) and the stem mammals (all the mammals that have no direct offspring).
 
 <<cust.series2>>=
 ## We want to separate the species around the node 71 (see phylogeny above).
@@ -192,11 +193,15 @@ stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
 factors <- as.data.frame(
     matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
     ncol = 1, dimnames = list(c(crown, stem), "Group")))
-## We then can use the customised series function
+
+## We then can use the customised series function to create the two series
+## i.e. the two regions of the ordinated space
 crown_stem <- cust.series(BeckLee_mat50, factors)
+
 ## This created a dispRity object containing two series: crown and stem
 class(crown_stem)
 crown_stem
+
 ## This object contains three elements
 names(crown_stem)
 ## With "data" being the list sub-matrices
@@ -208,32 +213,29 @@ str(crown_stem$taxa)
 crown_stem$series
 @ 
 
-Of course, using phylogeny as a factor is just an example.
-Any type of factors can be used in this example (e.g. body mass categories, habitat, diet, etc...).
-See the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos} for other specific examples.
-
 \subsection{\texttt{time.series}}
 
-\texttt{time.series} is a function that allows to split the matrix in different ways using time as a category.
-This functions needs as input an ordinated matrix and a matching phylogenetic tree.
-Two types of time series splitting can be performed by using the \texttt{method} option:
+Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
+The \texttt{time.series} function allows to create series that contain all the elements present at specific points in time.
+This functions needs as input an ordinated space and a matching phylogenetic tree.
+Two types of time series can be performed by using the \texttt{method} option:
 \begin{enumerate}
-\item the classical discrete time splitting (or time-binning) using \texttt{method = "discrete"};
-\item or a new continuous time splitting (or time-slicing) using \texttt{method = "continuous"}.
+\item discrete time series (or time-binning) using \texttt{method = "discrete"};
+\item continuous time series (or time-slicing) using \texttt{method = "continuous"}.
 \end{enumerate}
-For the time-slicing method details, see Guillerme and Cooper \textit{in prep.} \cite{GuillermeSTD}.
-Once the method is chosen, the function intakes the \texttt{time} argument which can be a vector of \texttt{numeric} values for:
+For the time-slicing method details see \cite{GuillermeSTD}.
+For both methods, the function intakes the \texttt{time} argument which can be a vector of \texttt{numeric} values for:
 \begin{enumerate}
 \item defining the boundaries of the time bins (when \texttt{method = "discrete"});
 \item defining the time-slicing places (when using \texttt{method = "continuous"}).
 \end{enumerate}
-Otherwise, the \texttt{time} argument can be set as a single \texttt{numeric} value for automatically generating a fix number of equidistant time-bins/slices.
-Additionally, we can also input a data frame containing the First/Last Occurrence Data (\texttt{FADLAD}) for taxa that span over a longer time than the tips/nodes age.
+Otherwise, the \texttt{time} argument can be set as a single \texttt{numeric} value for automatically generating a given number of equidistant time-bins/slices.
+Additionally, it is also possible to input a data frame containing the First/Last Occurrence Data (\texttt{FADLAD}) for taxa that span over a longer time than the tips/nodes age.
 
-Let's see and example for time-binning (\texttt{method = "discrete"}):
+Here is an example for \texttt{method = "discrete"}:
 
 <<discrete.series>>=
-## Let's generate three time bins containing the data present every 40 Ma
+## Generating three time bins containing the data present every 40 Ma
 time_bins <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
     method = "discrete", time = c(120, 80, 40, 0))
 ## Note that the function provides a warning saying that tips where single
@@ -248,20 +250,20 @@ time_bins <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
 time_bins
 @
 
-This generated indeed a list of 3 sub matrices.
+\noindent This generated indeed a list of 3 sub matrices.
 Note that we can also generate equivalent results by just telling the function that we want three time-bins (series) as follow: 
 
 <<discrete.series2>>=
+## Automatically generate three equal length bins:
 time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = 3)
 @
+\noindent We now have three time bins of 44.50368 Ma each.
 
-We now have three time bins of 44.50368 Ma each. But hey, that's a bit silly, let's stick to bins of 40 Ma.
-When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1\% of the the tree length as long as at least three elements are present at that point in time (an extra 1\% is added until reaching the required minimum of three elements).
+When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1\% of the tree length as long as at least three elements are present at that point in time (an extra 1\% is added until reaching the required minimum of three elements).
 We can also ask to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between tips \textit{AND} nodes.
 
-For the time-slicing method (\texttt{method = "continuous"}), the idea is pretty similar.
-We need to provide a matrix that contains the ordinated distance between taxa AND nodes and an evolutionary model via the \texttt{model} argument.
-For now they are four evolutionary models implemented \cite{GuillermeSTD} (but see section \ref{whatsleft}):
+For the time-slicing method (\texttt{method = "continuous"}), the idea is really similar.
+This option intakes a matrix that contains the ordinated distance between taxa \textit{AND} nodes and an assumed evolutionary model via the \texttt{model} argument:
 \begin{enumerate}
 \item \texttt{"acctran"} where the data chosen on each time slice is always the one of the offspring
 \item \texttt{"deltran"} where the data chosen on each time slice is always the one of the descendant
@@ -270,7 +272,7 @@ For now they are four evolutionary models implemented \cite{GuillermeSTD} (but s
 \end{enumerate}
 
 <<continuous.series>>=
-## Let's generate four time slices every 40 Ma assuming a gradual evolution model
+## Generating four time slices every 40 Ma assuming a gradual evolution model
 time_slices <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, 
     method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages)
@@ -279,37 +281,35 @@ time_slices
 ## automatically generate the slices
 time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
     model = "gradual", time = 4)
-## But that gives the same silly results (slicing every 44.50368 Ma)
 @
 
 
 \subsection{\texttt{boot.matrix}}
 
-After separating the any-o-space into submatrices, one can directly calculate disparity within each subsample or first test the robustness of the data.
-To measure how robust is the data, we can perform bootstrap pseudo-replications or rarefaction analysis to make sure the results are not dependant on weird outliers.
+Once we obtain our different series, we might want to bootstrap or/and rarefy it (i.e. pseudo-replicating the data).
+The bootstrap will allow us to make each subsample more robust to outliers and the rarefaction will allow us to compare slices with the same number of elements to get rid of eventual sampling problems.
 The \texttt{boot.matrix} allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
-The default options will bootstrap the matrix 1000 times with no rarefaction.
-
+The default options will bootstrap the matrix 1000 times without rarefaction.
+The number of bootstrap pseudo-replicates can be defined using the \texttt{bootstraps} option (see below)
+.
 <<boot.matrix1>>=
 boot.matrix(data = BeckLee_mat50)
-## As we can wee, the output is also a dispRity object that is summarised
+## As we can see, the output is also a dispRity object that is summarised
 ## automatically, and gives information on the data as well as the number of
 ## bootstraps and the bootstraps methods.
 @
 
-This function proposes the user to specify the bootstrap algorithm with the \texttt{boot.type} method.
-Currently two algorithms are implemented (but see section \ref{whatsleft}):
+Additionally, this function allows to control the bootstrap algorithm through the \texttt{boot.type} argument.
+Currently two algorithms are implemented:
 \begin{enumerate}
 \item \texttt{"full"} where the bootstrapping is entirely stochastic (all the data is bootstrapped)
-\item \texttt{"single"} where only one random taxa is replaced by one other random taxa each pseudo-replication
+\item \texttt{"single"} where only one random elements is replaced by one other random elements each pseudo-replication
 \end{enumerate}
-This function also has a \texttt{rarefaction} option to rarefy the data (how unexpected!).
-The default status is \texttt{FALSE} but it can be set to \texttt{TRUE} to fully rarefy the data (i.e. remove $n$ taxa for the number of pseudo-replicates, where $n$ varies from the maximum number of taxa present in the dataset to a minimum of 3 elements).
+This function also also to rarefy the data using the \texttt{rarefaction} argument.
+The default argument is \texttt{FALSE} but it can be set to \texttt{TRUE} to fully rarefy the data (i.e. remove $n$ elements for the number of pseudo-replicates, where $n$ varies from the maximum number of elements present in the dataset to a minimum of 3 elements).
 It can also be set to a fix \texttt{numeric} value (or a set of numeric values).
-Finally, the last option from this function, \texttt{rm.last.axis}, is whether to remove a certain amount of axis of the ordinated data.
-This option can be logical where \texttt{FALSE} (default) will not remove any axis and \texttt{TRUE} will remove the 5\% last axis or it can be set to a user defined proportion.
-This is a common practice in disparity-through-time analysis but it is hard to justify statistically.
-Here is a series of examples:
+Finally, one last argument, \texttt{rm.last.axis} allows to remove a certain amount of dimensions (or axis) for the ordinated space.
+This can be logical argument where \texttt{FALSE} (default) will not remove any dimension and \texttt{TRUE} will remove the last dimensions that bear up to 5\% of the total ordinated space's variance.
 
 <<boot.matrix2>>=
 ## Bootstrapping with the single bootstrap method
@@ -326,20 +326,19 @@ boot.matrix(BeckLee_mat50, rm.last.axis = 0.5)
 
 Of course, one could be interested in directly supplying the subsampled matrices generated above directly to this function.
 In fact, it can also deal with a list of matrices or with a \dispRity object output from the \texttt{cust.series} or \texttt{time.series} functions.
-Like this:
+let's bootstrap our previously generate series:
 
 <<boot.matrix3>>=
-## Let's do a full rarefaction on the crown/stem data for later
+## Bootstrap and full rarefaction on the crown/stem series
 crown_stemBS <- boot.matrix(crown_stem, rarefaction = TRUE)
-## And just bootstrapping for the time binning/slicing
+## Bootstrap on the time binning/slicing series
 time_binsBS <- boot.matrix(time_bins)
 time_slicesBS <- boot.matrix(time_slices)
-## And just to remind us what's in each objects
+## Note that all these objects are of class dispRity
 crown_stemBS
 time_binsBS
 time_slicesBS
 @
-
 
 \subsection{\texttt{dispRity}}
 \label{disparity}
@@ -387,10 +386,10 @@ dispRity(BeckLee_mat50, metric = c(total.range, ranges))
 Of course, this function can take a simple ordinated matrix but, more interesting it can also deal with a list of matrices (from the \texttt{cust.series} or \texttt{time.series} functions for example) or a bootstrapped or/and rarefied matrix (from the \texttt{boot.matrix} function for example).
 
 <<dispRity2>>=
-## For example, let's calculate the sum of ranges from our crown/stem mammals
-dispRity(crown_stem, metric = c(sum, ranges))
+## For example, let's calculate the sum of variances from our crown/stem mammals
+dispRity(crown_stem, metric = c(sum, variances))
 ## Or even better, from the bootstrapped data
-disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(sum, ranges))
+disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(sum, variances))
 ## Note that the bootstrapped + rarefied data takes some time to run (it's
 ## calculating disparity from 46 matrices!)
 
