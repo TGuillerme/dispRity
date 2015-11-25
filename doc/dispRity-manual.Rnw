@@ -1,0 +1,164 @@
+\documentclass{article}
+\usepackage[sc]{mathpazo}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{natbib}
+\usepackage[utf8]{inputenc}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{url}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\hypersetup{
+ pdfstartview={XYZ null null 1}}
+
+\newcommand{\dispRity}{\texttt{dispRity} }
+\newcommand{\R}{\texttt{R} }
+
+\begin{document}
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+# set global chunk options
+opts_chunk$set(fig.path='figure/minimal-', fig.align='center', fig.show='hold')
+options(formatR.arrow=TRUE,width=90)
+@
+
+
+\title{\texttt{dispRity} manual}
+
+
+\author{Thomas Guillerme}
+
+\maketitle
+
+\dispRity is a package for calculating disparity in \texttt{R}.
+It allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
+
+\tableofcontents
+
+\section{Before starting}
+\subsection{Glossary}
+Because this package is aimed to be multidisciplinary, many names or terms used in this tutorial might be non-familiar to certain fields.
+Here is a list of what are the exact meaning of these term:
+\begin{itemize}
+\item \textbf{Ordinated space}: it designates the mathematical multidimensional object studied here. In morphometrics, this one is often referred as being the morphospace, or the cladisto-space for cladisticts or the eco-space for ecology, etc. In practice though, this term designates an ordinated matrix where the columns represent the dimensions of the ordinated space (often $>$ 3!) and the rows represent the elements within this space.
+\item \textbf{Elements}: it designates the rows of the ordinated space, elements can be either taxa, field sites, countries, etc...
+\item \textbf{Dimensions}: it designates the columns of the ordinated space. The dimensions can also be referred to as axis.
+\end{itemize}
+
+\subsection{Installation}
+You can install this package easily if you use the latest version of \R and \texttt{devtools}.
+
+<<installation, eval=FALSE>>=
+install.packages("devtools")
+library(devtools)
+install_github("TGuillerme/dispRity", ref = "release")
+library(dispRity)
+@
+
+\noindent Note that we use the \texttt{release} branch here which is version \Sexpr{packageVersion("dispRity")}.
+For the piping-hot (but potentially full of bugs) version, one can change the argument \texttt{ref = "release"} to \texttt{ref = "master"}.
+This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
+
+\subsection{Data}
+In this tutorial we are going to use a subset of the ordinated cladistic data from \cite{beckancient2014} that contains 50 taxa ordinated using their cladistic distance (i.e. the distance between their discrete morphological characters).
+Note that this data is more oriented towards palaebiology analysis but that it can apply to other disciplines.
+Please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes covering some specific example of the package with ecological data.
+
+<<data, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
+## Loading the package
+library(dispRity)
+
+## Loading the ordinated matrix containing 50 taxa
+data(BeckLee_mat50)
+dim(BeckLee_mat50)
+head(BeckLee_mat50[,1:5])
+
+## Loading another ordinated matrix containing 50 tips + 49 nodes
+data(BeckLee_mat99)
+dim(BeckLee_mat99)
+head(BeckLee_mat99[,1:5], 2)
+tail(BeckLee_mat99[,1:5], 2)
+
+## Loading a list of first and last occurrence data
+data(BeckLee_ages)
+head(BeckLee_ages)
+
+## Loading the phylogeny
+data(BeckLee_tree)
+plot(BeckLee_tree) ; nodelabels(cex=0.8) ; axisPhylo(root=140)
+@ 
+
+\subsection{A quick go through}
+Here is a really crude and quick go through the package to show some of the features of this package.
+Note that all these features will be discussed in more details below.
+
+<<Quick go, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+## Splitting the data
+sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
+    model = "acctran", time = rev(seq(from=0, to=130, by=15)), FADLAD = BeckLee_ages)
+## Bootstrapping the data
+bootstrapped_data <- boot.matrix(sliced_data, 100)
+## Calculating disparity
+sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+## Summarising the results
+summary(sum_of_variances)
+plot(sum_of_variances)
+## Testing some the effect of time on disparity
+summary(test.dispRity(sum_of_variances, test = aov, comparisons = "all"))
+@
+
+\section{Package specificity}
+
+\subsection{The \dispRity objects}
+Disparity analysis can involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
+For example, we can have a look at the structure of the object created in the quick example:
+
+<<dispRity class1, eval=FALSE>>=
+str(sum_of_variances)
+## That's a more than 4500 lines of output!
+@
+
+\noindent Therefore this package proposes a new class of object called \dispRity objects.
+These objects allow to easily use a S3 method functions such as \texttt{summary.dispRity} (just called as \texttt{summary}; see section \ref{summary}) or \texttt{plot.dispRity} (just called as \texttt{plot}; see section \ref{plot}).
+But also, this allows to use the S3 method for printing \dispRity objects via \texttt{print.dispRity} that allows to summarise the content of the objects similar to the \texttt{phylo} class objects (see \texttt{print.phylo::ape}).
+
+<<dispRity class2>>=
+## Which class is the sum_of_ranges object?
+class(sum_of_ranges)
+## We can summarise it using the S3 method print.dispRity
+sum_of_ranges
+## This displays some information about what's in the object
+@ 
+
+\noindent Note however, that it is always possible to recall the full object using the argument \texttt{all=TRUE}:
+
+<<dispRity class3>>=
+## This displays some information about what's in the object
+sum_of_ranges
+## This displays some information about what's in the object
+@ 
+
+\subsection{Modular functions}
+
+\section{Functions}
+
+\subsection{\texttt{tree.age}}
+\subsection{\texttt{cust.series}}
+\subsection{\texttt{time.series}}
+\subsection{\texttt{boot.matrix}}
+\subsection{\texttt{dispRity}}
+\subsection{\texttt{summary}}
+\label{summary}
+\subsection{\texttt{plot}}
+\label{plot}
+\subsection{\texttt{test.dispRity}}
+
+
+\bibliographystyle{sysbio}
+\bibliography{References}
+
+\end{document}
