@@ -24,7 +24,7 @@ The following installs the latest released version (see patch notes below). For 
   * `plot` has now a `observed` option to plot the observed disparity
   * `plot` option `diversity` has been renamed `elements`
   
-All patch notes can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
+Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 ## Using dispRity
 Here is a really quick go through demo see the detailed vignette below.
