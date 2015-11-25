@@ -11,7 +11,7 @@ Patch notes
   * improved vignettes:
     * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist
     * *dispRity ecology demo* a quick demo aimed more for ecologists
-    * *dispRity tutorial* for people that want to know the package in details
+    * *dispRity manual* for people that want to know the package in details
     * *dispRity metrics* for explaining how the disparity metric implementation works
 * 2015/10/08 - v0.1.1
   * Fixed many error/warning messages
