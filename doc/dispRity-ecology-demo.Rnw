@@ -25,24 +25,42 @@ options(formatR.arrow=TRUE,width=90)
 @
 
 
-\title{A \texttt{dispRity} tutorial for ecologists}
+\title{\texttt{dispRity} demo for ecologists}
 
 
-\author{Thomas Guillerme}
+
+
+%1-Introduce the data
+%"the data represents experimental plots in different treatments at two different water depths"
+
+%2-Explain rarefaction better
+%"the data represents experimental plots in different treatments at two different water depths"
+
+%3-Hypothesis
+%We want to know whether the treatments had an effect on the density of different species in the plots (Does treatment alter invertebrate community composition?). And does depth have an effect on community composition in the experimental plots? Annnnd: Do the treatments affect the communities differently at different depths? 
+
+
+%(Personally I hate them as you know!)  Just use them as a way of visually showing that the 'multivariate' communities in the different treatments/ depths are different or similar and I guess which components explain most of the variance. They really aren't that powerful which is why I love your approach. You sold it so well to me, I think your best selling points (and indeed perhaps actually including a sentence at the start) are that you don't lose all the dimensions of the data like you do in PCA. And that you can keep the important ones in (again like you sold to me, that, some axes may be far more influential than a pca with throw up). 
+
+\author{Thomas Guillerme \\ guillert@tcd.ie}
+
 
 \maketitle
 
-This is a quick demo for using the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) in ecological analysis.
-See the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos} for a general demo of the \dispRity package.
+This demo aims to give quick overview of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) for ecological analysis.
+Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more details.
+
+To keep it short, this package allows to use all the dimensions of ordinated matrices (i.e. PCA, MDS, PCO) for statistical analysis rather than just a sub-set of dimensions.
+For example, one might want to know whether the some sort of water treatment alters invertebrate communities and composition in natural habitats.
+
+
+
+\tableofcontents
+
 
 \section{Before starting}
-
-\dispRity is a package for calculating disparity in \texttt{R}.
-To keep it short, this package allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values.
-These ordinated matrices can represent the any-o-space of possibilities of your analyses (e.g. for morphological data, the morphospace represents all the possible morphologies).
-
-\subsection{Installation}
-You can install this package easily if you use the latest version of \R and \texttt{devtools}.
+\subsection{Installing \dispRity}
+You can install this package easily if you are using the latest version of \R and \texttt{devtools}.
 
 <<installation, eval=FALSE>>=
 install.packages("devtools")
@@ -51,17 +69,19 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 @
 
-Note that we use the \texttt{release} branch here which is version 0.1.1.
-If you want the piping-hot (and full of bugs) version, change the option \texttt{ref = "release"} to \texttt{ref = "master"}.
-This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
+This is a quick demo for using the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) in ecological analysis.
+See the \href{https://github.com/TGuillerme/dispRity}{other dispRity demos} for a general demo of the \dispRity package.
 
 \subsection{Data}
-
 For this example with ecological data we are going to use data from McClean (unpubl.) that contains an ordination of a distance matrix between different experimental plots.
 
 <<data>>=
 ## Loading demo and the package data
 library(dispRity)
+
+## Setting the random seed for repeatability
+set.seed(123)
+
 ## let's use the matrix from McClean (unpubl.)
 data(McClean_data)
 ## This dataset contains an ordinated matrix (in 20 dimensions) of the distance
@@ -73,7 +93,8 @@ treatments <- McClean_data$treatment
 depth <- McClean_data$depth
 @ 
 
-\section{A classic PCA}
+
+\section{A classical two dimensional approach}
 A classical way to represent this ordinated data will be to use PCA plots.
 
 <<PCAplot, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
@@ -93,13 +114,18 @@ plot(x, y, col = cols, pch = pchs, xlab = "PCA1", ylab = "PCA2",
     xlim = range(x) + c(0, 100))
 @
 
+However, a common problem in this type of multivariate analysis is that often only a handful of dimensions are studied (usually the ones that bears the most variance of the ordinated matrix).
+
+
 This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix.
 However, the problem, is it ignores the 18 other axis of the ordination and the PCA axis 1 and 2 do not represent a biological reality \textit{per se} but more some ordinations of correlations between the data and some factors.
 Therefore, one might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a \textit{n}-dimensional object.
 In practice, we might be interested in looking how some experimental treatment for example, will affect the position of our experimental plots in this \textit{n}-dimensional object.
 For example: do the experimental plots shift in some specific space of the \textit{n}-dimensional object when depth increases?
 
-\section{Splitting the data}
+
+\section{A multidimensional approach with \dispRity}
+\subsection{Splitting the data}
 
 As a first split, one might want to split the data (i.e. the \textit{n}-dimensional object) into subsamples that we want to compare.
 First let's make a factor table:
@@ -245,5 +271,11 @@ par(bty = "n")
 ## Plotting the rarefaction curves
 plot(disparity_rare, rarefaction = "plot")
 @
+
+\subsection{Testing the hypothesis}
+
+
+\bibliographystyle{sysbio}
+\bibliography{References}
 
 \end{document}
