@@ -246,6 +246,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     }
 
     #Formatting the output (if needed)
+    options(warn=-1)
     if(details == FALSE & comparisons != "all") {
         #Getting the output class
         out.class <- unique(unlist(lapply(details_out, class)))
@@ -308,4 +309,5 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
         #returning the detailed output
         return(details_out)
     }
+    options(warn=0)
 }
