@@ -73,6 +73,9 @@ Please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: g
 ## Loading the package
 library(dispRity)
 
+## Setting the random seed for repeatability
+set.seed(123)
+
 ## Loading the ordinated matrix containing 50 taxa
 data(BeckLee_mat50)
 dim(BeckLee_mat50)
