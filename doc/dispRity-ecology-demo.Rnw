@@ -48,9 +48,9 @@ options(formatR.arrow=TRUE,width=90)
 \maketitle
 
 This demo aims to give quick overview of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) for ecological analysis.
-Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more details.
+Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more detail.
 
-To keep it short, this package allows to use all the dimensions of ordinated matrices (i.e. PCA, MDS, PCO) for statistical analysis rather than just a sub-set of dimensions.
+To keep it short, this package allows the use of all of the dimensions of ordinated matrices (i.e. PCA, MDS, PCO) for statistical analysis rather than just a sub-set of dimensions.
 For example, one might want to know whether the sort of water treatment at certain depth alters invertebrate communities and composition in natural habitats.
 
 \tableofcontents
@@ -117,11 +117,12 @@ plot(x, y, col = cols, pch = pchs, xlab = "Dimension 1", ylab = "Dimension 2",
 @
 
 This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix (i.e. the first two dimensions).
+At a first glance, it seems difficult to see a clear effect from the treatments or the depth since the different experimental plots with the same parameters don't seem to cluster.
 However, the problem, is that this plot ignores the 18 other dimensions of the ordination!
 Additionally, these two represented dimensions do not represent a biological reality \textit{per se}; i.e. the values on the first dimension do not represent some continuous traits (e.g. depth) but just the ordinations of correlations between the data and some factors.
 
 Therefore, one might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a \textit{n}-dimensional object.
-To explore our hypothesis, we could look if there are differences in the hyper-volume that different treatments occupy in the ordinated space to see the effect of water treatments on the communities.
+To explore our hypothesis, we could look to see if there are differences in the hyper-volume that different treatments occupy in the ordinated space to see the effect of water treatments on the communities.
 
 \section{A multidimensional approach with \dispRity}
 \subsection{Splitting the data}

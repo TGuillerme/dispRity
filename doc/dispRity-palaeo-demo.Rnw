@@ -34,7 +34,7 @@ options(formatR.arrow=TRUE,width=90)
 \maketitle
 
 This demo aims to give quick overview of the \dispRity package (v.\Sexpr{packageVersion("dispRity")}) for palaeobiology analysis.
-Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more details.
+Please refer to \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for other vignettes, namely the \dispRity tutorial that explains the functions in more detail.
 
 To keep it short, this package allows to easily perform \textbf{disparity-through-time} analysis.
 This type of analysis often starts by ordinating \textbf{morphometric} or \textbf{cladistic} data into a multidimensional object hereafter called the \textbf{morphospace}.
