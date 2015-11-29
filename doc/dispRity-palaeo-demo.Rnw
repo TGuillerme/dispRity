@@ -41,7 +41,7 @@ This type of analysis often starts by ordinating \textbf{morphometric} or \textb
 One might then be interested how the occupancy of the morphospace changes through time by measuring a summary metric of this morphospace through time, called \textbf{disparity}.
 In the morphospace case, disparity might be seen as a value summarising the diversity of morphologies.
 
-This demo showcases a typical disparity-through-time analyse: we are going to test whether the disparity changed through time in this dataset since the last 100 million years.
+This demo showcases a typical disparity-through-time analyse: we are going to test whether the disparity changed through time in a subset of Eutheria since the last 100 million years.
 
 \tableofcontents
 
@@ -50,8 +50,7 @@ This demo showcases a typical disparity-through-time analyse: we are going to te
 You can install this package easily if you are using the latest version of \R and \texttt{devtools}.
 
 <<installation, eval=FALSE>>=
-install.packages("devtools")
-library(devtools)
+if(!require(devtools)) install.packages("devtools")
 install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 @
@@ -86,8 +85,7 @@ plot(BeckLee_tree, cex=0.8); axisPhylo(root=140)
 Note that you can have an even nicer tree if you use the \texttt{strap} package:
 
 <<strap, eval=FALSE>>=
-install.packages(strap)
-library(strap)
+if(!require(strap)) install.packages("strap")
 geoscalePhylo(BeckLee_tree, cex.tip=0.8, cex.ts=0.6)
 @
 
@@ -96,9 +94,9 @@ geoscalePhylo(BeckLee_tree, cex.tip=0.8, cex.ts=0.6)
 One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller sub-samples that contain the total amount of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning).
 Basically, the full morphospace in the previous step represents the total amount of morphologies in all time and is likely to be greater than any sub-sample of the morphospace.
 
-The \dispRity package provides a \texttt{time.series} function that allows to split the morphospace time slices (using \texttt{method="continuous"}) or into time bins (using \texttt{method="discrete"}).
+The \dispRity package provides a \texttt{time.series} function that allows to split the morphospace time slices (using \texttt{method = "continuous"}) or into time bins (using \texttt{method = "discrete"}).
 In this example, we are going to split the morphospace into 5 equal time bins of 20 million years long from 100 million years ago (Mya) to the present.
-Note that we can also provide here the table containing the first and last occurrences data for some fossils to take into account some fossils that might span between our different bins.
+Note that we will also provide to the function the table containing the first and last occurrences data for some fossils to take into account the fact that some fossils might span between our different time bins.
 
 <<time-binning>>=
 ## Creating the vector of time bins ages
@@ -110,10 +108,11 @@ binned_morphospace <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
     FADLAD = BeckLee_ages)
 @ 
 
-The warning message tells us that some taxa were considered as single points in time because we didn't provide any temporal range information for some taxa.
+The warning message tells us that some taxa were considered as single points in time because we didn't provide temporal range information for all the taxa: they are therefore considered as unique time points without any occurrence range.
+
 The output object is a \dispRity object.
-For details about this object class, please refer to the \href{https://github.com/TGuillerme/dispRity}{other vignettes}.
-In brief however, \dispRity objects are lists of different elements (i.e. disparity results, morphospace sub-samples, etc...) that display only a summary of the object when calling the object for visualisation reasons.
+For details about this object class, please refer to the \href{https://github.com/TGuillerme/dispRity}{the \dispRity manual}.
+In brief, \dispRity objects are lists of different elements (i.e. disparity results, morphospace sub-samples, etc...) that display only a summary of the object when calling the object for avoiding jamming the \R console.
 
 <<time-binning2>>=
 ## The object class
@@ -127,12 +126,12 @@ names(binned_morphospace)
 binned_morphospace
 @ 
 
-Note that these objects will gradually contain more information when reaching higher steps in the disparity-through-time analysis.
+Note that these objects will gradually contain more information when reaching the following steps in the disparity-through-time analysis.
 
 \subsection{Bootstrapping the data}
-Once we obtain our different subsamples, we might want to bootstrap or/and rarefy it (i.e. pseudo-replicating the data).
-The bootstrap will allow us to make each subsample more robust to outliers and the rarefaction will allow us to compare slices with the same number of taxa to get rid of eventual sampling problems.
-For that, we can use the \texttt{boot.matrix} function that allows to bootstrap the \dispRity object along with the \texttt{rarefaction} option that will rarefy it.
+Once we obtain our different subsamples, we can bootstrap and rarefy them (i.e. pseudo-replicating the data).
+The bootstrapping will allow to make each subsample more robust to outliers and the rarefaction will allow us to compare slices with the same number of taxa to get rid of eventual sampling problems (i.e. more taxa in one bin than the other).
+The \texttt{boot.matrix} function that allows to bootstrap the \dispRity object and the \texttt{rarefaction} option within allows to rarefy it.
 
 <<boot.rare>>=
 ## Bootstrapping each sub-sample 100 times
@@ -148,18 +147,20 @@ rare_bin_morphospace <- boot.matrix(binned_morphospace, bootstraps = 100,
 ## Note that the output objects are both from the "dispRity" class ...
 class(boot_bin_morphospace); class(rare_bin_morphospace)
 
-## ... and display some more information on the previous step when called
+## ... and display some more information on the previous step when printed:
 boot_bin_morphospace
 rare_bin_morphospace
 @ 
 
 \subsection{Calculating disparity}
 
-We can now calculate the disparity within each sub-sample along side with some confidence intervals generated by the pseudo-replication step above (bootstrap/rarefaction).
+We can now calculate the disparity within each sub-sample along side with some confidence intervals generated by the pseudo-replication step above (bootstraps/rarefaction).
 Disparity can be calculated in many ways and this package allows user to come up with their own disparity metrics.
-For more info, please refer to the \href{https://github.com/TGuillerme/dispRity}{other vignettes}.
+For more info, please refer to the \href{https://github.com/TGuillerme/dispRity}{\dispRity manual and the metric vignette}.
 
 In this example, we are going to calculate the spread of the data in each sub-sample by calculating the disparity as the sum of the variance of each dimension of the morphospace in each sub-sample using the \dispRity function.
+Thus, in this example, the disparity is defined by the multi-dimensional variance of each sub-sample (i.e. the spread of the taxa within the morphospace).
+Note that this metric comes with a caveat not solved here since it ignores the covariance among the dimensions of the morphospace.
 
 <<disparity>>=
 ## Disparity for the bootstrapped data
@@ -190,8 +191,8 @@ For that we can use the \texttt{plot} function to plot the \dispRity objects.
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 
 ## Plotting the bootstrapped and rarefied results
-plot(boot_disparity, main = "bootstrapped results")
-plot(rare_disparity, main = "rarefied results")
+plot(boot_disparity, type = "continuous", main = "bootstrapped results")
+plot(rare_disparity, type = "continuous", main = "rarefied results")
 
 ## See more options on the plot function:
 ?plot.dispRity
@@ -202,9 +203,9 @@ As we can see in this case, the rarefaction tends to increase the confidence int
 \subsection{Testing differences}
 Finally, to draw some conclusions from these results, we need to apply some statistical testing.
 As stated before, we wanted to test whether the disparity changed through time in this dataset since the last 100 million years.
-To do so, we can simply apply some comparisons of the means between each time-bins in a sequential manner to see whether the disparity in bin X is equal to the disparity in bin Y which is in turn equal to the disparity in bin Z, etc.
-Because our data is temporally auto-correlated (i.e. what happens in bin Y is dependent on what happened in bin X) and was pseudo-replicated (i.e. each bootstrap draw creates non-independent sub-samples because they are all based on the same sub-sample), we are going to apply a non-parametric mean comparison: the \texttt{wilcox.test}.
-Also, we are going to apply a p-value correction to avoid type I error inflation due to performing multiple test for the same hypothesis.
+To do so, we can apply some comparisons of the means between each time-bins in a sequential manner to see whether the disparity in bin X is equal to the disparity in bin Y which is in turn equal to the disparity in bin Z, etc.
+Because our data is temporally auto-correlated (i.e. what happens in bin Y depends on what happened in bin X) and was pseudo-replicated (i.e. each bootstrap draw creates non-independent sub-samples because they are all based on the same sub-sample), we are going to apply a non-parametric mean comparison: the \texttt{wilcox.test}.
+Also, we are going to apply a p-value correction to avoid type I error inflation due to performing multiple test for the same hypothesis (see \texttt{?p.adjust} for more details).
 
 <<testing>>=
 ## testing the differences between bins in the bootstrapped dataset.
