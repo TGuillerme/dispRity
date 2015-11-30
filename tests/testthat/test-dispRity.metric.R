@@ -55,7 +55,7 @@ test_that("mode.val metric", {
     expect_equal(mode1, mode2)
 })
 
-test_that("volume metric", {
+test_that("ellipse.volume metric", {
     # Calculate the proper volume (using the eigen values)
     volume.true <- function(matrix, eigen.val) {
         #Correct calculation of the volume (using the eigen values)
@@ -84,7 +84,7 @@ test_that("volume metric", {
     # Calculate the true volume (with eigen values)
     true_vol <- volume.true(dummy_ord, dummy_eig)
     # Calculate the volume without the eigen values
-    test_vol <- hyper.volume(dummy_ord)
+    test_vol <- ellipse.volume(dummy_ord)
     # test
     expect_equal(true_vol, test_vol)
 
@@ -95,7 +95,7 @@ test_that("volume metric", {
     # Calculate the true volume (with eigen values)
     true_vol <- volume.true(dummy_ord, dummy_eig)
     # Calculate the volume without the eigen values
-    test_vol <- hyper.volume(dummy_ord)
+    test_vol <- ellipse.volume(dummy_ord)
     # test
     expect_equal(true_vol, test_vol)
 
@@ -107,7 +107,7 @@ test_that("volume metric", {
     # # Calculate the true volume (with eigen values)
     # true_vol <- volume.true(dummy_ord, dummy_eig)
     # # Calculate the volume without the eigen values
-    # test_vol <- hyper.volume(dummy_ord)
+    # test_vol <- ellipse.volume(dummy_ord)
     # # test
     # expect_equal(true_vol, test_vol)
 
@@ -120,7 +120,7 @@ test_that("volume metric", {
     # # Calculate the true volume (with eigen values)
     # true_vol <- volume.true(dummy_ord, dummy_eig)
     # # Calculate the volume without the eigen values
-    # test_vol <- hyper.volume(dummy_ord)
+    # test_vol <- ellipse.volume(dummy_ord)
     # # test
     # expect_equal(true_vol, test_vol)
 
@@ -134,7 +134,7 @@ test_that("volume metric", {
     # # Calculate the true volume (with eigen values)
     # true_vol <- volume.true(dummy_ord, dummy_eig)
     # # Calculate the volume without the eigen values
-    # test_vol <- hyper.volume(dummy_ord)
+    # test_vol <- ellipse.volume(dummy_ord)
     # # test
     # expect_equal(true_vol, test_vol)
 
@@ -146,7 +146,7 @@ test_that("volume metric", {
     # # Calculate the true volume (with eigen values)
     # true_vol <- volume.true(dummy_ord, dummy_eig)
     # # Calculate the volume without the eigen values
-    # test_vol <- hyper.volume(dummy_ord)
+    # test_vol <- ellipse.volume(dummy_ord)
     # # test
     # expect_equal(true_vol, test_vol) ## Getting closer...
 

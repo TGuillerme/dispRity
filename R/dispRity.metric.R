@@ -16,7 +16,7 @@
 #' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
 #' The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
 #' \itemize{
-#'   \item \code{hyper.volume}: calculates the hyperdimensional volume of a matrix.
+#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
 #'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
 #'      }
@@ -76,8 +76,8 @@ mode.val <- function(X){
     return(as.numeric(names(sort(-table(X))[1])))
 }
 
-# Calculate the volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
-hyper.volume <- function(matrix) {
+# Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
+ellipse.volume <- function(matrix) {
     # The eigen value is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
     eigen.value<-abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
@@ -87,3 +87,16 @@ hyper.volume <- function(matrix) {
 
     return(volume)
 }
+
+# # Calculate the ellipsoid perimeter of an eigen matrix
+# ellipse.perime <- function(matrix)
+
+# # Calculate the volume of an eigen matrix (modified from Blonder et al 2014, Macroecological methods) #http://onlinelibrary.wiley.com/doi/10.1111/geb.12146/pdf
+# hyper.volume <- function(matrix)
+
+# # Calculate the hyper-chull volume
+# chull.volume <- function(matrix)
+# convhulln::geometry
+# # Calculate the hyper-chull perimeter length
+# chull.perime <- function(matrix)
+

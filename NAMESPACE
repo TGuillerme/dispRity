@@ -26,7 +26,7 @@ export(variances)
 export(ranges)
 export(centroids)
 export(mode.val)
-export(hyper.volume)
+export(ellipse.volume)
 
 
 ##S3 methods

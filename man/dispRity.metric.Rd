@@ -24,7 +24,7 @@ Different implemented disparity metrics.
 These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
 The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
 \itemize{
-  \item \code{hyper.volume}: calculates the hyperdimensional volume of a matrix.
+  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{
          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
      }
