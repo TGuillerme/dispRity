@@ -61,8 +61,7 @@ For example, one might want to know whether the sort of water treatment at certa
 You can install this package easily if you are using the latest version of \R and \texttt{devtools}.
 
 <<installation, eval=FALSE>>=
-install.packages("devtools")
-library(devtools)
+if(!require(devtools)) install.packages("devtools")
 install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 @
