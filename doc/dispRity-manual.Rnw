@@ -189,7 +189,7 @@ In this example, we can split the matrix based on the phylogeny and separate to 
 
 <<cust.series2>>=
 ## We want to separate the species around the node 71 (see phylogeny above).
-## All the descendant of these node are crown and all the ancestors are stem
+## All the descendant of these node are crown and all the ancestors are stem.
 crown <- extract.clade(BeckLee_tree, node = 71)$tip.label
 stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
 ## We then have to feed this information in a data frame with one column
@@ -291,6 +291,7 @@ time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
 
 
 \subsection{\texttt{boot.matrix}}
+\label{rare}
 
 Once we obtain our different series, we might want to bootstrap and rarefy it (i.e. pseudo-replicating the data).
 The bootstrap will allow us to make each subsample more robust to outliers and the rarefaction will allow us to compare slices with the same number of elements to get rid of eventual sampling problems.
@@ -391,7 +392,7 @@ vars1 <- dispRity(BeckLee_mat50, metric = c(sd, variances, var))
 ## Note that the order of the function is not important since the levels of
 ## each function are automatically detected by the dispRity algorithm.
 vars2 <- dispRity(BeckLee_mat50, metric = c(variances, var, sd))
-all(summary(vars) == summary(vars2))
+all(summary(vars1) == summary(vars2))
 @
 
 \noindent Note that these functions do not directly output the disparity values but only the summary of the \dispRity objects.
@@ -414,130 +415,113 @@ disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(median, centroids))
 A faster parallel version will be implemented in future releases (see section \ref{whatsleft}).
 
 
-% STOPPED HERE
-
-
 \subsection{\texttt{summary}}
 \label{summary}
 
-As shown in these examples above however, even though the disparity has been calculated in many way, the function doesn't directly outputs the results, rather just a summary of the analysis.
-
+This function is a S3 function (\texttt{summary.dispRity}) allowing to summarize the content of \dispRity objects that contain disparity calculations.
 This function intakes a \dispRity object plus various options namely the \texttt{quantile} values for the confidence intervals levels; the \texttt{cent.tend} for the central tendency to use for summarising the results and two \textit{visual} options which are whether to recall the \dispRity options and how much digits are wanted in the results.
 
 <<summary>>=
-## Let's have a look at the disparity-through-time using in the time-binned data
 summary(disp_time_binsBS)
-## The 50 and 95 quantiles are calculated and the central tendency is the mean by default.
-## Note that the function also displays the observed disparity (non-bootstrapped).
-## We can change that easily by specifying different values in the options
-summary(disp_time_binsBS, quantile = 88, cent.tend = sd, rounding = 1)
-## Also, if we happen to have forgotten what was in the disp_time_binsBS object (as in
-## which options where used to modify the original matrix) we can use the recall option:
-summary(disp_time_binsBS, recall = TRUE)
-## Note that the recall just prints text. The output of summary.dispRity is always a
-## data.frame
-summary_table <- summary(disp_time_binsBS, recall = TRUE)
-class(summary_table)
+## By default, the 50 and 95 quantiles and the mean are calculated.
+## Note that the function also displays the observed disparity
+## (non-bootstrapped).
 
-## Finally we can see the results of the rarefaction analysis for the crown/stem data
-head(summary(disp_crown_stemBS))
-## This outputs a longer table with all the variations of the number of crown/stem taxa
-## from the maximum (30 and 20) to the minimum (3). Note that the observed disparity
-## is NA for rarefied data.
+## These arguments can be changed easily as follow
+summary(disp_time_binsBS, quantile = 88, cent.tend = sd, rounding = 1)
+
+## If on happens to forgot what was calculated in the summarised object,
+## it is possible to recall the different steps details using recall:
+summary(disp_time_binsBS, recall = TRUE)
+
+## Note that the information with each different number of elements is
+## displayed for rarefied data:
+summary(disp_crown_stemBS)
+## The observed disparity is NA for rarefied data.
 @
 
 
 \subsection{\texttt{plot}}
 \label{plot}
 
-This final function allows to visualise the disparity results in a often nicer fashion than just a table (even though the exact same data is displayed).
-The \texttt{plot.dispRity} option intakes the same options as \texttt{summary.dispRity} along side with various graphical options described in the function manual.
-Here, let's just have a look a few of these options.
+A nicer way to summarise the data is to plot the results using the S3 method \texttt{plot.dispRity}.
+This function intakes the same options as \texttt{summary.dispRity} along side with various graphical options described in the function manual (see \texttt{?plot.dispRity}).
 
-Let's start with plotting the difference in disparity between the crown and the stem mammals.
-For this we are going to simply specify the type of plots using the \texttt{type} option that allows to choose between the \texttt{"continuous"} or \texttt{"discrete"} method.
-In our case, we are interested in looking at the results in a discrete way.
-Note that the plot \texttt{type} can be left missing.
-The function will then use \texttt{"discrete"} as default or \texttt{"continuous"} if the input data came from the \texttt{time.series} function with \texttt{method = "continuous"}.
+Two main categories of plots can be displayed: discrete plots with the argument \texttt{type = "discrete"} and continuous plots with the argument \texttt{type = "continuous"} (see below).
+Note that this argument can be left missing.
+In this case, the algorithm will automatically detect the type of series from the \dispRity object.
 
-The grey squares represent the confidence intervals (50 in dark grey and 90 in light grey) and the dot represents the mean.
-However, it might be interesting to see how many taxa are present in each group.
-This can be done via the \texttt{elements} option.
-A third interesting option is to plot the rarefied data if a rarefaction was applied on the data with the \texttt{boot.matrix} function.
-For displaying the rarefied data we can use the \texttt{rarefaction} option.
-This option can be either \texttt{FALSE} (default) for always plotting the maximum number of taxa per series or \texttt{TRUE} to always plot the minimum.
-Additionally, it can be a specific number to plot a specific number of taxa.
-Let say we want both groups to have 20 taxa maximum.
-We can see now that the confidence intervals overlap more than previously
+The \texttt{type = "discrete"} argument plots superimposed boxes that represent the different levels of confidence intervals and a dot representing the central tendency.
+It is also possible to display the number of elements per series (has a horizontal doted line) using the option \texttt{elements = TRUE}.
+Additionally, when the data is rarefied (see section \ref{rare}), one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the \texttt{rarefaction} argument. 
 
 <<plot1, fig.width=15, fig.height=5, out.width='1\\linewidth'>>=
 ## Graphical options
 quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
-## Plotting the score for both groups
-plot(disp_crown_stemBS, ylim = c(25,40))
-## Same one with the number of taxa for each data set
-plot(disp_crown_stemBS, elements = TRUE, ylim = c(25,40))
-## Same one with rarefied data (note how that affects the elements data as well!)
-plot(disp_crown_stemBS, elements = TRUE, rarefaction = 20, ylim = c(25,40))
+
+## Plotting the disparity for both groups
+plot(disp_crown_stemBS, type = "discrete")
+## Same plot but with the number of elements on the right. Note that the type 
+## argument is not necessary since the "discrete" type is automatically detected
+## from the input dispRity object.
+plot(disp_crown_stemBS, elements = TRUE)
+## Rarefied version of the same plot (20 elements per series)
+plot(disp_crown_stemBS, elements = TRUE, rarefaction = 20)
 @
 
-To understand how the number of taxa affects each series, we can use the \texttt{rarefaction = "plot"} function to plot the rarefaction curves.
+\noindent It is also possible to easily look at the behaviour of the disparity metric with the rarefied data (i.e. how does the disparity score change when the number of elements goes down) by using the \texttt{rarefaction = "plot"} argument:
 
 <<plot2, fig.width=5, fig.height=8, out.width='0.5\\linewidth'>>=
 ## Graphical options
 par(bty = "n")
 ## The rarefaction curves
 plot(disp_crown_stemBS, elements = TRUE, rarefaction = "plot")
-## Note that the function automatically draws the curves for each series and splits
-## the plot screen accordingly.
 @
 
-The different dashed lines represent the different confidence intervals around each rarefaction curve.
+\noindent The different dashed lines represent the different confidence intervals around each rarefaction curve.
+We can see that the disparity metric becomes stable after more than 10 elements.
 
-Additionally, for the \texttt{type = "discrete"} option, we might also decide to plot many boxplots (which can be a bit messy).
-The \texttt{discrete\_type} option allows to switch between \texttt{"box"} or \texttt{"line"} for showing the results in one or the other format.
-We can also plot the observed data when existing (i.e. not with some rarefaction levels) by using \texttt{observed = TRUE}.
-Let's look at that with the time binned data (even though there is only three time bins).
-Finally, we can use the \texttt{type = "continuous"} option that comes in handy for plotting continuous data like in the time sliced analysis (obviously...).
+It is also possible, when using the \texttt{type = "discrete"} argument, to plot lines rather than box by switching the \texttt{discrete\_type} from \texttt{"box"} to \texttt{"line"} to display one dimensional boxplots.
+This option can be useful when displaying many series.
+Additionally, it is possible to plot the observed data when existing (i.e. not when the data is rarefied) by using the option \texttt{observed = TRUE}.
 
-
-<<plot3, fig.width=10, fig.height=5, out.width='1\\linewidth'>>=
+<<plot3, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Graphical options
-quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
+par(bty = "n")
 ## The disparity-through-time data in a time-binned way (with lines rather than
 ## boxes) with the observed data as crosses
 plot(disp_time_binsBS, discrete_type = "line", observed = TRUE)
-## The disparity-through-time data in a time-sliced ways
-plot(disp_time_slicesBS)
 
 @
 
-We can even plot both results (discrete and continuous) on the same graph:
+The \texttt{type = "continuous"} argument plots superimposed continuous (along the x axis) polygons that represent the confidence intervals and a continuous line that represents the central tendency of the data.
+Note that, as a S3 method function, \texttt{plot.dispRity} can take the classic graphical options from the \texttt{plot} function or even to add other plots to the previous ones.
 
 <<plot4, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
 ## Graphical options
 par(bty = "n")
-## First, plotting the continuous data
-plot(disp_time_slicesBS, ylim=c(0.5,2))
+
+## First, plotting the continuous data with a y axis limit
+plot(disp_time_slicesBS, type = "continuous", ylim = c(0.5,2))
+## Note that the type = "continuous" argument is not mandatory here.
+
 ## Second, adding the discrete data
 par(new = TRUE)
 plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
 @
 
-Note that the results vary in values but not in pattern.
-The change in values might be due to the fact that nodes data are not included in the discrete analysis.
-
-I encourage you to play with the graphical options to have some prettier results.
+\noindent I encourage you to play with the graphical options to have some prettier results.
 Note that most of the options from \texttt{plot} can be passed to \texttt{plot.dispRity} via \texttt{...}.
 
 <<plot5, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
 ## Graphical options
 par(bty = "n")
 ## A plot with many options!
-plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd,
-    type = "continuous", elements = "log", col = c("black", rainbow(10)),
-    ylab = c("Disparity", "log(Diversity)"), xlab = "Time (in in units from
-    past to present)", time.series = FALSE, observed = TRUE, main = "Many options...")
+plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)),
+    cent.tend = sd, type = "continuous", elements = "log",
+    col = c("black", rainbow(10)), ylab = c("Disparity", "log(Diversity)"),
+    xlab = "Time (in in units from past to present)", time.series = FALSE,
+    observed = TRUE, main = "Many options...")
 @
 
 \subsection{\texttt{test.dispRity}}
