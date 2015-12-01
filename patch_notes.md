@@ -1,6 +1,6 @@
 Patch notes
 ----
-* 2015/11/?? - v0.1.2
+* 2015/12/01 - v0.1.2
   * new function: `get.dispRity` for subsampling dispRity objects
   * new function: `extract.dispRity` for extracting disparity results
   * new function: `test.dispRity` for applying tests to `dispRity` objects
