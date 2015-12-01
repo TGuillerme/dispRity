@@ -1,10 +1,23 @@
 Patch notes
 ----
+* 2015/12/01 - v0.1.2
+  * new function: `get.dispRity` for subsampling dispRity objects
+  * new function: `extract.dispRity` for extracting disparity results
+  * new function: `test.dispRity` for applying tests to `dispRity` objects
+  * new function: `make.metric` for helping creating your very own disparity metric
+  * new metric: `hyper.volume` for measuring the morphospace hyper-ellipsoid volume
+  * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
+  * many improved functions manuals and examples!
+  * improved vignettes:
+    * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist
+    * *dispRity ecology demo* a quick demo aimed more for ecologists
+    * *dispRity manual* for people that want to know the package in details
+    * *dispRity metrics* for explaining how the disparity metric implementation works
 * 2015/10/08 - v0.1.1
   * Fixed many error/warning messages
   * `plot.dispRity` options improved (rarefaction + default)
   * `cust.series` can now intake multiple factors columns
-  * Added exampple for ecological data
+  * Added example for ecological data
   * Changed `taxa` to `elements`
   * `boot.matrix`, `dispRity`, `summary` and `plot` now also include observed values
   * `plot` has now a `observed` option to plot the observed disparity

@@ -5,17 +5,20 @@
 check.class<-function(object, class, msg, errorif=FALSE) {
     #Set msg if missing
     if(missing(msg)) {
-        msg<-paste(" must be ", class, ".", sep="")
+        msg<-paste(" must be of class: ", class, ".", sep="")
     }
+
+    match_call<-match.call()
+
     #check if object is class.
     if(length(class) == 1) {
         if(errorif==FALSE) {
             if(class(object) != class) {
-                stop(as.character(substitute(object)), msg , call.=FALSE)
+                stop(match_call$object, msg , call.=FALSE)
             }
         } else {
             if(class(object) == class) {
-                stop(as.character(substitute(object)), msg , call.=FALSE)
+                stop(match_call$object, msg , call.=FALSE)
             }        
         }
     } else {
@@ -29,7 +32,7 @@ check.class<-function(object, class, msg, errorif=FALSE) {
         if(exists(as.character(quote(class.test)))) {
             return(class.test)
         } else {
-            stop(as.character(substitute(object)), msg , call.=FALSE)
+            stop(match_call$object, msg , call.=FALSE)
         }
     }
 }
@@ -37,13 +40,16 @@ check.class<-function(object, class, msg, errorif=FALSE) {
 
 #Checking the class of an object and returning an error message if != class
 check.length<-function(object, length, msg, errorif=FALSE) {
+
+    match_call<-match.call()
+
     if(errorif==FALSE) {
         if(length(object) != length) {
-            stop(as.character(substitute(object)), msg , call.=FALSE)
+            stop(match_call$object, msg , call.=FALSE)
         }
     } else {
         if(length(object) == length) {
-            stop(as.character(substitute(object)), msg , call.=FALSE)
+            stop(match_call$object, msg , call.=FALSE)
         }        
     }
 }
@@ -143,22 +149,4 @@ make.nexus<-function(matrix, header, ordering, weights) {
     nexus$min.vals<-apply(matrix, 2, min, na.rm=TRUE)
 
     return(nexus)
-}
-
-
-#Checking class metric
-check.metric<-function(metric) {
-    #Testing the metric test
-    try(some_name.that.probAbly.doesnt.ExIsT<-metric(matrix(rnorm(25),5,5)), silent=TRUE)
-    #If function worked
-    if(exists("some_name.that.probAbly.doesnt.ExIsT")) {
-        #Is it a summary metric (one value)?
-        if(length(some_name.that.probAbly.doesnt.ExIsT) == 1) {
-            return("summary.metric")
-        } else {
-            return("class.metric")
-        }
-    } else {
-        stop("Invalid metric.")
-    }
 }

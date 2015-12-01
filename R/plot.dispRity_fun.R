@@ -201,6 +201,8 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
         }
     }
 
+    # Save parameters
+    return(par())
 }
 
 #continuous plotting
@@ -256,6 +258,8 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
         }
     }
 
+    # Save parameters
+    return(par())
 }
 
 
@@ -291,4 +295,7 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
         }
 
     }
+
+    # Save parameters
+    return(par())
 }

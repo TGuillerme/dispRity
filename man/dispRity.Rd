@@ -9,7 +9,7 @@ dispRity(data, metric, verbose = FALSE)
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.}
 
-\item{metric}{A vector containing the class metric and the summary metric (see details).}
+\item{metric}{A vector containing up to three functions and at least a "level 1" function (see details).}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 }
@@ -27,12 +27,13 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 }
 \details{
-\code{metric} should be input as a vector containing both the class and the summary metric.
-The class metric is the descriptor of the matrix (e.g. ranges of the dimensions or distance between taxa and centroid).
-The summary metris is the metric used to summarise the matrix descriptor (e.g. the sum of the ranges of the dimensions or the median distance between taxa and centroid).
-For example use \code{metric = c(sum, ranges)} for using the sum of the ranges of the dimensions as a disparity metric.
-Details on the implemented metric (class and summary) can be found at \code{\link{dispRity.metric}}.
-Note that metrics can be also user specified.
+\code{metric} should be input as a vector up to three functions.
+The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
+\code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
+level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
+\code{matrix} or a \code{vector} and output a single value.
+Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
+user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
@@ -47,7 +48,8 @@ dispRity(bootstrapped_data, metric=c(sum, ranges))
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)),
+     nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)

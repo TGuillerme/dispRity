@@ -265,15 +265,15 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #Continuous plot
     if(type == "continuous") {
         if(elements == FALSE) {
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+            saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
+            #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
-            plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
-            #plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+            saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
+            #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
-            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab, ...)
+            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
@@ -281,15 +281,15 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #Discrete plots
     if(type == "discrete") {
         if(elements == FALSE) {
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
+            saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
+            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
-            plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
-            #plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
+            saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
+            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, cex.lab=0.1) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, ...)
-            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab, ...)
+            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }

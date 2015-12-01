@@ -12,7 +12,7 @@ test_that("Sanitizing works", {
     expect_error(dispRity(data=1, c(sum, ranges), FALSE))
     expect_error(dispRity(data, metric="a", FALSE))
     expect_error(dispRity(data, metric=1, FALSE))
-    expect_error(dispRity(data, metric=sum, FALSE))
+    #expect_error(dispRity(data, metric=sum, FALSE)) #Is ok since v 0.1.2
     expect_error(dispRity(data, metric=c(1,2), FALSE))
     expect_error(dispRity(data, metric=c(sum, 1), FALSE))
     expect_error(dispRity(data, c(sum, ranges), verbose="yes"))

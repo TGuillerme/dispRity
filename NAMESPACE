@@ -1,30 +1,35 @@
 #Dependencies
 import(ape)
-import(paleotree)
+import(paleotree) #paleotree::timeSliceTree
 
 ##Functions
 export(time.series)
 export(cust.series)
 export(boot.matrix)
 export(dispRity)
-#export(test.diff) - TO DO
+export(test.dispRity)
 export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
-#export(mode.val) #utilities - not done
-#export(cor.diversity) #utilities - not done
-#export(cor.time.pco) #utilities - not done
-export(make.metric) #utilities - not done
-export(make.model) #utilities - not done
-export(make.boot) #utilities - not done
+##Utilities
+export(make.metric)
+export(make.model)
+export(make.boot)
+export(get.dispRity)
+export(extract.dispRity)
+#export(cor.diversity) - TO DO!
+#export(cor.time.pco) - TO DO!
 
 ##disparity metrics
 export(variances)
 export(ranges)
 export(centroids)
 export(mode.val)
+export(ellipse.volume)
 
+##disparity tests
+export(bhatt.coeff)
 
 ##S3 methods
 S3method(plot, dispRity)

@@ -8,25 +8,34 @@
 \alias{variances}
 \title{Disparity metrics}
 \usage{
-class.metric(matrix)
-summary.metric(X)
+level3.fun(matrix)
+level2.fun(matrix)
+level1.fun(X)
 }
 \arguments{
-\item{matrix}{An ordinated matrix.}
+\item{matrix}{A matrix.}
 
-\item{X}{A vector of \code{class.metric} results.}
+\item{X}{A vector.}
 }
 \description{
 Different implemented disparity metrics.
 }
 \details{
-These are inbuilt functions for calculating disparity. The currently implemented class.metric are:
+These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
+The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
+\itemize{
+  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
+     \itemize{
+         \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+     }
+}
+The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 \itemize{
   \item \code{ranges}: calculates the range of each axis of the matrix.
   \item \code{variances}: calculates the variance of each axis of the matrix.
   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
 }
-The currently implemented summary.metric are:
+The currently implemented value aggregate metrics (\code{level1.fun}) are:
 \itemize{
   \item \code{mode.val}: calculates the modal value of a vector.
 }

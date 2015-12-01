@@ -2,59 +2,41 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.31742.svg)](http://dx.doi.org/10.5281/zenodo.31742)
 
-A package for measuring disparity in `R`
-
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 ## Installing dispRity
 ```r
-#install.packages("devtools")
-library(devtools)
+if(!require(devtools)) install.packages("devtools")
 install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
-The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`.
+The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 ##### Patch notes
-* 2015/10/08 - v0.1.1
-  * Fixed many error/warning messages
-  * `plot.dispRity` options improved (rarefaction + default)
-  * `cust.series` can now intake multiple factors columns
-  * Added exampple for ecological data
-  * Changed `taxa` to `elements`
-  * `boot.matrix`, `dispRity`, `summary` and `plot` now also include observed values
-  * `plot` has now a `observed` option to plot the observed disparity
-  * `plot` option `diversity` has been renamed `elements`
+* 2015/12/01 - v0.1.2
+  * new function: `get.dispRity` for subsampling dispRity objects
+  * new function: `extract.dispRity` for extracting disparity results
+  * new function: `test.dispRity` for applying tests to `dispRity` objects
+  * new function: `make.metric` for helping creating your very own disparity metric
+  * new metric: `hyper.volume` for measuring the morphospace hyper-ellipsoid volume
+  * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
+  * many improved functions manuals and examples!
+  * improved vignettes:
+    * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist
+    * *dispRity ecology demo* a quick demo aimed more for ecologists
+    * *dispRity manual* for people that want to know the package in details
+    * *dispRity metrics* for explaining how the disparity metric implementation works
   
-All patch notes can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
+Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
-## Using dispRity
-Here is a really quick go through demo see the detailed vignette below.
-
-````r
-## Loading the package and the demo data
-library(dispRity) ; data(BeckLee_mat99) ; data(BeckLee_tree) ; data(BeckLee_ages)
-
-## Splitting the data
-sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-    model = "acctran", time = 5, FADLAD = BeckLee_ages)
-
-## Bootstrapping the data
-bootstrapped_data <- boot.matrix(sliced_data, 100)
-
-## Calculating disparity
-sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
-
-## Summarising the results
-summary(sum_of_ranges) ; plot(sum_of_ranges)
-````
+#### Vignettes
+*  The package manual [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-manual.pdf).
+*  A tutorial for palaeobiologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.pdf).
+*  A tutorial ecologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-ecology-demo.pdf).
+*  The disparity metrics [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-metrics.pdf).
 
 #### Implemented metric
 A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
-
-#### Demos
-*  A general tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-tutorial.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-tutorial.pdf).
-*  An ecological tutorial [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-ecology-demo.pdf).
 
 Authors
 -------

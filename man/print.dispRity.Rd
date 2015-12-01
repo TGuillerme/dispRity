@@ -4,10 +4,10 @@
 \alias{print.dispRity}
 \title{Prints a \code{dispRity} object.}
 \usage{
-\method{print}{dispRity}(x, all = FALSE, ...)
+\method{print}{dispRity}(data, all = FALSE, ...)
 }
 \arguments{
-\item{x}{A \code{dispRity} object.}
+\item{data}{A \code{dispRity} object.}
 
 \item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).}
 }
