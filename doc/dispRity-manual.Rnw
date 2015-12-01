@@ -497,7 +497,7 @@ plot(disp_time_binsBS, discrete_type = "line", observed = TRUE)
 The \texttt{type = "continuous"} argument plots superimposed continuous (along the x axis) polygons that represent the confidence intervals and a continuous line that represents the central tendency of the data.
 Note that, as a S3 method function, \texttt{plot.dispRity} can take the classic graphical options from the \texttt{plot} function or even to add other plots to the previous ones.
 
-<<plot4, fig.width=5, fig.height=5, out.width='.5\\linewidth'>>=
+<<plot4, fig.width=8, fig.height=8, out.width='.5\\linewidth'>>=
 ## Graphical options
 par(bty = "n")
 
@@ -526,6 +526,54 @@ plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)),
 
 \subsection{\texttt{test.dispRity}}
 
+Finally, the \dispRity package allows to apply some tests to the data in order to properly test hypothesis.
+The function \texttt{test.dispRity} works in a similar way as the \dispRity function: it intakes a \dispRity object (containing disparity measurements), a \texttt{test} and a \texttt{comparison} argument.
+The \texttt{test} argument can be any statistical or non-statistical test to apply to the disparity object.
+It can be common test function (e.g. \texttt{t.test::stats}) or some functions implemented in \dispRity (see \texttt{dispRity.test}) or even user defined functions.
+The \texttt{comparison} argument must indicate the way the test should be applied to the data:
+\begin{itemize}
+\item \texttt{"pairwise"} (default): to compare each series pairwise
+\item \texttt{"referential"}: to compare each series to the first one
+\item \texttt{"sequential"}: to compare each series to the following one
+\item \texttt{"all"}: to compare all the series together (like in analysis of variance)
+\end{itemize}
+It is also possible to input a list of pairs of \texttt{numeric} values or \texttt{characters} matching the series names to create personalised test.
+This function also allows to correct for type I error inflation when using multiple comparisons via the \texttt{correction} argument.
+This argument can be empty (no correction applied) or can contain one of the corrections from the \texttt{p.adjust::stats} function (see \texttt{?p.adjust}).
+
+Note that the \texttt{test.dispRity} algorithm deals with some classic tests outputs (\texttt{h.test}, \texttt{lm} and \texttt{numeric} vector) and summarises the test output.
+It is however possible to get the full detailed output by using the options \texttt{details = TRUE}.
+
+
+<<test.dispRity>>=
+## Performing a pairwise t-test to the test a difference in disparity between
+## crown and stem mammals (note that "pairwise" is default)
+test.dispRity(disp_crown_stemBS, test = t.test)
+
+## The same test but with the detailed output
+test.dispRity(disp_crown_stemBS, test = t.test, details = TRUE)
+
+## A wilcoxon rank test applied to sliced disparity the data sequentially with
+## the Bonferroni correction.
+test.dispRity(disp_time_slicesBS, test = wilcox.test,
+    comparisons = "sequential", correction = "bonferroni")
+
+## An analysis of variance (aov) applied to the same data
+test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
+
+## Note that in this case, the output is the regular aov output:
+slice_aov <- test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
+class(slice_aov) ; summary(slice_aov)
+
+## Measuring the overlap between distributions in the time bins (using the
+## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff) with a
+## personalised series comparisons and some additional arguments to pass to the
+## test function (bw = bw.nrd)
+test.dispRity(disp_time_binsBS, test = bhatt.coeff, bw = bw.nrd,
+    comparisons = list(c(1,2), c(1,3), c(2,1), c(3,1)))
+
+@
+
 \subsection{utilities}
 \subsubsection{\texttt{tree.age}}
 This function allows to calculate the age of each individual nodes and tips in a tree.
@@ -548,15 +596,18 @@ head(tree.age(BeckLee_tree, age = 1, order = "present"), 5)
 \section{Developments}
 \label{developments}
 As stated at the start of the demo, this version \Sexpr{packageVersion("dispRity")} is still in development and many parts are missing.
-Here are the new functionalities that will be implemented before the proper release version (v.1).
+Here are the new functionalities that will be implemented in further versions.
 
-\subsection{More user defined stuff}
+\subsection{More user defined functions}
 I intend also develop functions to help users to develop their own algorithms for the bootstrap method (via \texttt{make.boot}) or the evolutionary models (via \texttt{make.model}).
 Both functions will provide similar testing as the \texttt{make.metric} function.
 
 \subsection{Faster!}
 Finally, for long analysis, I intend to develop a parallel running version of the package.
 In fact, most of the internal functions are base on \texttt{lapply} functions that can be easily passed to \texttt{snow::parLapply} or similar parallel functions.
+
+\subsection{Suggestions?}
+If you have any extra suggestions or comments on what has already been developed or will be developed, please send me an email (\href{mailto:guillert@tcd.ie}{guillert@tcd.ie}) or if you are a GitHub user, directly create an issue on the \href{https://github.com/TGuillerme/dispRity}{GitHub page (github.com/TGuillerme/dispRity)}.
 
 \bibliographystyle{sysbio}
 \bibliography{References}
