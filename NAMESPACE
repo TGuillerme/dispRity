@@ -28,6 +28,8 @@ export(centroids)
 export(mode.val)
 export(ellipse.volume)
 
+##disparity tests
+export(bhatt.coeff)
 
 ##S3 methods
 S3method(plot, dispRity)
