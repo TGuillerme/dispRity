@@ -3,6 +3,7 @@
 #' @description Testing the level of disparity metrics
 #'
 #' @param fun Your very own \code{function}!
+#' @param ... Some arguments to be passed to \code{fun}.
 #' @param silent \code{logical}; if \code{FALSE} (default), the function will be verbose and give no ouput; if \code{TRUE}, the function will only output the function level.
 #'
 #' @details
@@ -43,7 +44,7 @@
 #' @author Thomas Guillerme
 
 
-make.metric<-function(fun, silent=FALSE) {
+make.metric<-function(fun, ..., silent = FALSE) {
     #Sanitizing
     #fun
     check.class(fun, "function")
@@ -57,7 +58,7 @@ make.metric<-function(fun, silent=FALSE) {
 
     #Testing the metric
     test <- NULL
-    try(test <- fun(matrix), silent=TRUE)
+    try(test <- fun(matrix, ...), silent=TRUE)
 
     #Did the test failed?
     if(is.null(test)) {
@@ -116,15 +117,15 @@ make.metric<-function(fun, silent=FALSE) {
     #Checking the disparity.calc function in lapply
 
     if(fun_type == "level3") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean)), silent=TRUE)
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean, ...)), silent=TRUE)
     }
 
     if(fun_type == "level2") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean)), silent=TRUE)
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean, ...)), silent=TRUE)
     }
 
     if(fun_type == "level1") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun)), silent=TRUE)
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ..., ...)), silent=TRUE)
     }
 
     #length of test_lapply must be equal to one

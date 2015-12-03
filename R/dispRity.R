@@ -4,6 +4,7 @@
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.
 #' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
+#' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #'
 #' @return
@@ -51,7 +52,7 @@
 #'
 #' @author Thomas Guillerme
 
-dispRity<-function(data, metric, verbose=FALSE) {
+dispRity<-function(data, metric, ..., verbose=FALSE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -201,11 +202,11 @@ dispRity<-function(data, metric, verbose=FALSE) {
     #verbose
     if(verbose==TRUE) message("Calculating disparity...", appendLF=FALSE)
     #Calculate disparity in all the series
-    results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun)
+    results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
     
     #if data is bootstrapped, also calculate the observed disparity
     if(is.bootstraped == TRUE) {
-        OBSresults<-lapply(data_fetch$data$observed, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun)
+        OBSresults<-lapply(data_fetch$data$observed, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
     }
     #verbose
     if(verbose==TRUE) message("Done.", appendLF=FALSE)
