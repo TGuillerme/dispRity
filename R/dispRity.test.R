@@ -129,3 +129,15 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 #     return(table_out)
 # }
 
+
+# Add a hypervolume::hypervolume_distance test (i.e. is the distance between two groups significantly different than 0?)
+
+# Add the hypervolume::hypervolume_inclusion_test (i.e. is one group par of the other?)
+
+# Add the time-correlated lm test:
+# 1 - apply a logistic regression to the first series
+# 2 - save the slope + the intercept for series 1
+# 3 - estimate the intercept for the 2nd series using slope 1 + intercept 1
+# 4 - save slope for series 2
+# 5 - estimate the intercept for the 3rd series using slope 2 + intercept 2
+# 6 - etc...
