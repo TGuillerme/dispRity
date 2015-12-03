@@ -125,7 +125,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
     }
 
     if(fun_type == "level1") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ..., ...)), silent=TRUE)
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...,)), silent=TRUE)
     }
 
     #length of test_lapply must be equal to one
