@@ -1,16 +1,17 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume
 #'
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
 #'
-#' @usage level3.fun(matrix)
-#' level2.fun(matrix)
-#' level1.fun(X)
+#' @usage level3.fun(matrix, ...)
+#' level2.fun(matrix, ...)
+#' level1.fun(X, ...)
 #'
 #' @param matrix A matrix.
 #' @param X A vector.
+#' @param ... Optional arguments to be passed to the function.
 #'
 #' @details
 #' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
@@ -25,6 +26,16 @@
 #'      \itemize{
 #'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive!
+#'      }
+#'   \item \code{hyper.volume}: calculates the convec hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
+#'   \item \code{convhull.volume}: calculates the convec hull hyper volume of a matrix.
+#'      \itemize{
+#'          \item \code{repsperpoint = 1000}
+#'          \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method="silverman")}}
+#'          \item \code{quantile = 0.95}
+#'          \item \code{verbose = FALSE}
+#'          \item \code{warnings = FALSE}
+#'          \item \code{name = NULL}
 #'      }
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
@@ -96,6 +107,7 @@ ellipse.volume <- function(matrix) {
 
 # Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
+    require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the area
@@ -104,17 +116,51 @@ convhull.surface <- function(matrix) {
 
 # Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
+    require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.volume function is likely to crash!")
     # calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
 
-# Calcualte the hypervolume using hypervolume::hypervolume
-hyper.volume <- function(matrix, ...) {
-    return(hypervolume::hypervolume(matrix, ...)@Volume)
+# Calculate the hypervolume using hypervolume::hypervolume
+hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, warnings, name) {
+    require(hypervolume)
+    # Tolerate missing arguments (set defaults)
+    # repsperpoint
+    if(missing(repsperpoint)) {
+        repsperpoint <- 1000
+    }
+    # bandwith
+    if(missing(bandwidth)) {
+        bandwidth <- estimate_bandwidth(matrix)
+    }
+    # quantile
+    if(missing(quantile)) {
+        quantile <- 0.95
+    }
+    # verbose
+    if(missing(name)) {
+        verbose <- FALSE
+    }
+    # warnings
+    if(missing(warnings)) {
+        warnings <- FALSE
+    }
+    # name
+    if(missing(name)) {
+        name <- NULL
+    }
+
+    return(get_volume(hypervolume::hypervolume(matrix, repsperpoint=repsperpoint, bandwidth=bandwidth, quantile=quantile, verbose=verbose, warnings=warnings, name=name)))
 }
-#
+
+# # Hyper volume testing
+# data <- space.maker(20, 5, rnorm)
+# # estimating the bandwith
+# bw <- estimate_bandwidth(data,method="silverman")
+# # Calculating the hyper.volume (with 1000 replicates)
+# vol <- hypervolume(data, repsperpoint = 1000, bandwidth = bw, quantile = 0.95)
 
 # # Calculate the ellipsoid perimeter of an eigen matrix
 # ellipse.perime <- function(matrix)
@@ -123,6 +169,8 @@ hyper.volume <- function(matrix, ...) {
 # hyper.volume <- function(matrix)
 
 
+# Hypervolume distances
+# hypervolume_distance
 
 # ordihull::vegan
 # convex.hull::igraph
