@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume
 #'
 #' @title Disparity metrics
 #'
@@ -19,6 +19,12 @@
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
 #'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+#'      }
+#'   \item \code{convhull.surface}: calculates the convec hull hyper surface of a matrix.
+#'   \item \code{convhull.volume}: calculates the convec hull hyper volume of a matrix.
+#'      \itemize{
+#'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
+#'          \item WARNING: both \code{convhull} functions can be computationally intensive!
 #'      }
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
@@ -88,15 +94,37 @@ ellipse.volume <- function(matrix) {
     return(volume)
 }
 
+# Calculate the convex hull hyper-surface
+convhull.surface <- function(matrix) {
+    # Algorithm warn
+    if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.surface function is likely to crash!")
+    # calculate the area
+    return(geometry::convhulln(matrix, options = "FA")$area)
+}
+
+# Calculate the convex hull hyper-volume
+convhull.volume <- function(matrix) {
+    # Algorithm warn
+    if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.volume function is likely to crash!")
+    # calculate the volume
+    return(geometry::convhulln(matrix, options = "FA")$vol)
+}
+
+# Calcualte the hypervolume using hypervolume::hypervolume
+hyper.volume <- function(matrix, ...) {
+    return(hypervolume::hypervolume(matrix, ...)@Volume)
+}
+#
+
 # # Calculate the ellipsoid perimeter of an eigen matrix
 # ellipse.perime <- function(matrix)
 
 # # Calculate the volume of an eigen matrix (modified from Blonder et al 2014, Macroecological methods) #http://onlinelibrary.wiley.com/doi/10.1111/geb.12146/pdf
 # hyper.volume <- function(matrix)
 
-# # Calculate the hyper-chull volume
-# chull.volume <- function(matrix)
-# convhulln::geometry
-# # Calculate the hyper-chull perimeter length
-# chull.perime <- function(matrix)
+
+
+# ordihull::vegan
+# convex.hull::igraph
+
 
