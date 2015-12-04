@@ -94,72 +94,102 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 # 5 - estimate the intercept for the 3rd series using slope 2 + intercept 2
 # 6 - etc...
 
-series <- extract.dispRity(data, observed=FALSE)
+#series <- extract.dispRity(data, observed=FALSE)
 
-sequential.test <- function(series, ...) {
-
-    #Get the two first series
-    series_1_2 <- list.to.table(series[1:2], "binomial")
-
-    #Creating the first model
-    #mod1 <- glm(factor ~ data, data=series_1_2, family = "binomial")
-    message("Model is linear but should be logistic!")
-    mod1 <- lm(data ~ factor, data=series_1_2)
-
-    #Save the results
-    mod1_results <- summary(mod1)$coefficients
-    #Allow to save multiple results!
-    #mod1_aic <- summary(mod1)$aic
-
-    #Estimate the intercept for the second model
-    #intercept_1 <- predict(mod, data.frame(factor=1) ,type="response")
-    intercept_1 <- coef(mod1)[1]+coef(mod1)[2]*1
-
-    #Get the second and third series
-    series_2_3 <- list.to.table(series[2:3], "binomial")
-    #Add the intercept
-    series_2_3$intercept <- as.numeric(intercept_1)
-
-    #Create the second model
-    #mod2 <- glm(factor ~ data - 1+offset(intercept), data=series_2_3, family = "binomial")
-    message("Model is linear but should be logistic!")
-    mod2 <- lm(data ~ factor - 1+offset(intercept), data=series_2_3)
-
-    #Save the results
-    mod2_results <- summary(mod2)$coefficients
-
-    #Estimate the intercept for the third model
-    #intercept_1 <- predict(mod, data.frame(factor=1) ,type="response")
-    intercept_2 <- coef(mod1)[1]+coef(mod1)[2]*1+coef(mod2)[1]*1
-
-    #Get the third (and first, for testing) series
-    series_3_1 <- list.to.table(series[c(3,1)], "binomial")
-    #Change 0 to 1 and other way around for the testing
-    series_3_1$factor <- c(rep(0, 100), rep(1, 100))
-    #Add the intercept
-    series_3_1$intercept <- as.numeric(intercept_2)
-
-    #Create the third model
-    #mod3 <- glm(factor ~ data - 1+offset(intercept), data=series_3_1, family = "binomial")
-    message("Model is linear but should be logistic!")
-    mod3 <- lm(data ~ factor - 1+offset(intercept), data=series_3_1)
-
-    #Save the results
-    mod3_results <- summary(mod3)$coefficients
-
-
+sequential.test <- function(series, results="coefficients", ...) {
 
     #FUNCTIONS
 
     #Getting the data function
+    set.pair.series <- function(series_pair, intercept=NULL) {
+        #Getting the series from the list
+        series_pair_out <- list.to.table(series_pair)
+        #Setting the factor as binomial
+        series_pair_out$factor <- c(rep(0, length(series_pair[[1]])), rep(1, length(series_pair[[2]])))
+        #Add intercept (if non-null)
+        if(!is.null(intercept)) {
+            series_pair_out$intercept <- intercept
+        }
+        return(series_pair_out)
+    }
 
     #Estimating intercept function
+    intercept.estimate <- function(intercept0, slopes) {
+        if(length(slopes) > 1) {
+            #First intercept
+            intercept <- intercept0 + slopes[1] * 1
+            for(n in 2:length(slopes)) {
+                intercept <- intercept + slopes[n] *1
+            }
+        } else {
+            intercept <- intercept0 + slopes * 1
+        }
+
+        return(intercept)
+    }
 
     #Creating the model function
+    create.model <- function(data, family=binomial, intercept=NULL, ...) {
+        if(is.null(intercept)) {
+            #Estimating the intercept and the slope in the model
+            model <- glm(data ~ factor, data=data, family=family, ...)
+        } else {
+            #Estimating only the slope in the model in the model
+            model <- glm(data ~ factor - 1+offset(intercept), data=data, family=family, ...)
+        }
+        return(model)
+    }
 
     #Saving results function
+    save.results <- function(model, results) {
+        save_out <- match(results, names(summary(model)))
+        return(summary(model)[save_out])
+    }
+
+    #APPLYING THE SEQUENTIAL TEST
+
+    #Get the two first series
+    series_pair1 <- set.pair.series(extracted_data[1:2])
+
+    #Creating the first model
+    model1 <- create.model(series_pair1, gaussian)
+    message("Model is linear but should be logistic!")
+
+    #Save the results
+    model1_res <- save.results(model1, results)
+
+    #Estimate the intercept for the second model
+    intercept_1 <- intercept.estimate(coef(model1)[1], coef(model1)[2])
 
 
+    #Get the second row of series
+    series_pair2 <- set.pair.series(extracted_data[2:3], intercept=intercept_1)
+
+    #Creating the second model
+    model2 <- create.model(series_pair2, gaussian, intercept=intercept_1)
+    message("Model is linear but should be logistic!")
+
+    #Save the results
+    model2_res <- save.results(model2, results)
+
+    #Estimate the intercept for the third model
+    intercept_2 <- intercept.estimate(coef(model1)[1], c(coef(model1)[2], coef(model2)[1]))
+
+
+    #Get the third row of series
+    series_pair3 <- set.pair.series(extracted_data[c(3,1)], intercept=intercept_2)
+
+    #Creating the second model
+    model3 <- create.model(series_pair3, gaussian, intercept=intercept_2)
+    message("Model is linear but should be logistic!")
+
+    #Save the results
+    model3_res <- save.results(model3, results)
+
+    #Estimate the intercept for the third model
+    intercept_3 <- intercept.estimate(coef(model1)[1], c(coef(model1)[2], coef(model2)[1], coef(model3)[1]))
+
+    # etc ...
 
     #add a securing for estimations (do not estimate if non-signif)
     #Estimating the intercept for the second series (if slope is significant)
