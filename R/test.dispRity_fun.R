@@ -39,7 +39,7 @@ convert.to.character <- function(list, object) {
 
 
 #Convert a list into a table (for aov)
-list.to.table <- function(extracted_data) {
+list.to.table <- function(extracted_data, style = "factor") {
     #function for repeating the extracted_data names
     mapply.rep.names <- function(name, series) {
         return(rep(name, length(series)))
@@ -50,6 +50,12 @@ list.to.table <- function(extracted_data) {
 
     #Create the data.frame
     output <- data.frame("data"=unlist(extracted_data), row.names=NULL, "factor"=unlist(mapply(mapply.rep.names, names_list, extracted_data, SIMPLIFY=FALSE)))
+
+    #Transform factors to numeric
+    if(style == "binomial") {
+        output$factor <- as.numeric(output$factor)-1
+    }
+
     return(output)
 }
 

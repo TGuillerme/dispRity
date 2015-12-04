@@ -19,9 +19,10 @@
 #'   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
 # Change that to allow any comparisons pattern?
-#' \code{Important:} if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
-#' don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
 #' }
+#' IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
+#' don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
+#' NOTE: some specific test like \code{\link[stats]{aov}} or \code{\link[dispRity]{sequential.test}} ignore the comparisons argument.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -86,6 +87,10 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     #must be a single function
     check.class(test, "function", " must be a single function.")
     check.length(test, 1, " must be a single function.")
+    #special tests
+    if(test == aov || test == sequential.test) {
+        comp <- "special"
+    }
 
     #Details
     check.class(details, "logical")
@@ -99,41 +104,43 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     # if(length(test_data_length) == 2) comparisons <- NULL
 
     #Else, check comparisons
-    if(length(test_data_length) >= 2) {
-        all_comparisons <- c("referential", "sequential", "pairwise", "all")
+    if(comp != "special") {
+        if(length(test_data_length) >= 2) {
+            all_comparisons <- c("referential", "sequential", "pairwise", "all")
 
-        #Check if the comparisons is not one of the inbuilt comparisons
-        if(all(is.na(match(comparisons, all_comparisons)))) {
-            #must be a list
-            check.class(comparisons, "list", " must be a list of one or more pairs of series.")
-            #must be pairs
-            if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
-            #If character, input must match the series
-            if(class(unlist(comparisons)) == "character") {
-                if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+            #Check if the comparisons is not one of the inbuilt comparisons
+            if(all(is.na(match(comparisons, all_comparisons)))) {
+                #must be a list
+                check.class(comparisons, "list", " must be a list of one or more pairs of series.")
+                #must be pairs
+                if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
+                #If character, input must match the series
+                if(class(unlist(comparisons)) == "character") {
+                    if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+                }
+                #If numeric, input must match de series numbers
+                if(class(unlist(comparisons)) == "numeric") {
+                    if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+                }
+                #Comparison is "custom"
+                comp <- "custom"
+            } else {
+                #Make sure only one inbuilt comparison is given
+                check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
+                comp <- comparisons
             }
-            #If numeric, input must match de series numbers
-            if(class(unlist(comparisons)) == "numeric") {
-                if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
-            }
-            #Comparison is "custom"
-            comp <- "custom"
-        } else {
-            #Make sure only one inbuilt comparison is given
-            check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
-            comp <- comparisons
         }
-    }
 
-    #correction
-    if(!missing(correction)) {
-        check.class(correction, 'character')
-        p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
-        if(all(is.na(match(correction, p.adjust_list)))) {
-            stop("correction type must be one of the p.adjust function options.")
-        }
-        if(length(data$data$bootstrap) > 2 & correction == "none") {
-            message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
+        #correction
+        if(!missing(correction)) {
+            check.class(correction, 'character')
+            p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+            if(all(is.na(match(correction, p.adjust_list)))) {
+                stop("correction type must be one of the p.adjust function options.")
+            }
+            if(length(data$data$bootstrap) > 2 & correction == "none") {
+                message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
+            }
         }
     }
 
@@ -231,7 +238,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
         #Renaming the detailed results list
         names(details_out) <- comparisons_list
     }
-    
+
     #ANOVA type
     if(comp == "all") {
         #Transform the extracted data into a table
@@ -244,6 +251,30 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
         details_out <- test(data~series, data=data, ...)
         #details_out <- test(data~series, data=data) ; warning("DEBUG")
     }
+
+    #Specific comparisons
+    if(comp == "special") {
+
+        #ANOVA
+        if(test == aov) {
+            #Transform the extracted data into a table
+            data <- list.to.table(extracted_data)
+
+            #Renaming the colnames
+            colnames(data) <- c("data", "series")
+
+            #running the test
+            details_out <- test(data~series, data=data, ...)
+            #details_out <- test(data~series, data=data) ; warning("DEBUG")            
+        }
+
+        #Sequential.test
+        if(test == sequential.test) {
+            #
+        }
+
+    }
+
 
     #Formatting the output (if needed)
     options(warn=-1)

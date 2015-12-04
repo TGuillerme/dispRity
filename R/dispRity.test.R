@@ -86,54 +86,6 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 #End
 }
 
-# t.test.smith<-function(x, y, ...) {
-#     #Disparity T-Test calculation from Anderson and Friedman 2012.
-#     #Code modified from Smith et al. 2014 - Evolution
-
-#     #SANITIZING
-#     #x and y
-#     check.class(x, "numeric")
-#     check.class(y, "numeric")
-
-#     #TESTING
-#     #Mean difference
-#     mean_difference <- abs(mean(x) - mean(y))
-
-#     #Degree of freedom
-#     degree_freedom <- length(x) + length(y) - 2
-
-#     #T statistic
-#     term_A <- ((length(x)-1) * length(x) * var(x) + (length(y)-1) * length(y) * var(y)) / degree_freedom
-#     term_B <- (length(x) + length(y))/(length(x) * length(y))
-#     t_statistic <- mean_difference/sqrt(term_A*term_B)
-
-#     #p value
-#     p_value <- 1-pt(t_statistic, df = degree_freedom)
-
-#     #make test two-tailed
-#     if (p_value > 0.5) {
-#         p_value <- 2*(1-p_value)
-#     } else {
-#         if (p_value < 0.5){
-#             p_value <- 2*(p_value)   
-#         } else {
-#             if (p_value == 0.5){
-#                 p_value <- 1
-#             }
-#         }
-#     }
-
-#     #Output
-#     table_out <- as.data.frame(matrix(c(mean_difference, p_value, degree_freedom, t_statistic), nrow=1, ncol=4))
-#     names(table_out) <- c("diff", "p_value", "df", "T")
-#     return(table_out)
-# }
-
-
-# Add a hypervolume::hypervolume_distance test (i.e. is the distance between two groups significantly different than 0?)
-
-# Add the hypervolume::hypervolume_inclusion_test (i.e. is one group par of the other?)
-
 # Add the time-correlated lm test:
 # 1 - apply a logistic regression to the first series
 # 2 - save the slope + the intercept for series 1
@@ -141,3 +93,102 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 # 4 - save slope for series 2
 # 5 - estimate the intercept for the 3rd series using slope 2 + intercept 2
 # 6 - etc...
+
+series <- extract.dispRity(data, observed=FALSE)
+
+sequential.test <- function(series, ...) {
+
+    #Get the two first series
+    series_1_2 <- list.to.table(series[1:2], "binomial")
+
+    #Creating the first model
+    #mod1 <- glm(factor ~ data, data=series_1_2, family = "binomial")
+    message("Model is linear but should be logistic!")
+    mod1 <- lm(data ~ factor, data=series_1_2)
+
+    #Save the results
+    mod1_results <- summary(mod1)$coefficients
+    #Allow to save multiple results!
+    #mod1_aic <- summary(mod1)$aic
+
+    #Estimate the intercept for the second model
+    #intercept_1 <- predict(mod, data.frame(factor=1) ,type="response")
+    intercept_1 <- coef(mod1)[1]+coef(mod1)[2]*1
+
+    #Get the second and third series
+    series_2_3 <- list.to.table(series[2:3], "binomial")
+    #Add the intercept
+    series_2_3$intercept <- as.numeric(intercept_1)
+
+    #Create the second model
+    #mod2 <- glm(factor ~ data - 1+offset(intercept), data=series_2_3, family = "binomial")
+    message("Model is linear but should be logistic!")
+    mod2 <- lm(data ~ factor - 1+offset(intercept), data=series_2_3)
+
+    #Save the results
+    mod2_results <- summary(mod2)$coefficients
+
+    #Estimate the intercept for the third model
+    #intercept_1 <- predict(mod, data.frame(factor=1) ,type="response")
+    intercept_2 <- coef(mod1)[1]+coef(mod1)[2]*1+coef(mod2)[1]*1
+
+    #Get the third (and first, for testing) series
+    series_3_1 <- list.to.table(series[c(3,1)], "binomial")
+    #Change 0 to 1 and other way around for the testing
+    series_3_1$factor <- c(rep(0, 100), rep(1, 100))
+    #Add the intercept
+    series_3_1$intercept <- as.numeric(intercept_2)
+
+    #Create the third model
+    #mod3 <- glm(factor ~ data - 1+offset(intercept), data=series_3_1, family = "binomial")
+    message("Model is linear but should be logistic!")
+    mod3 <- lm(data ~ factor - 1+offset(intercept), data=series_3_1)
+
+    #Save the results
+    mod3_results <- summary(mod3)$coefficients
+
+
+
+    #FUNCTIONS
+
+    #Getting the data function
+
+    #Estimating intercept function
+
+    #Creating the model function
+
+    #Saving results function
+
+
+
+    #add a securing for estimations (do not estimate if non-signif)
+    #Estimating the intercept for the second series (if slope is significant)
+    if(mod1_results[2,4] < 0.05) {
+
+    } else {
+        # Use the mod1 intercept (if significant)
+        if(mod1_results[1,4] < 0.05) {
+            intercept2 <- mod1_results[1,1]
+        } else {
+            intercept2 <- 0
+        }
+    }
+
+
+
+    #Some ploting
+    # plot(series_1_2[,1:2])
+    # abline(mod)
+    # curve(predict(mod1, data.frame(data=x),type="response"),add=TRUE) 
+    # curve(predict(mod2, data.frame(intercept=intercept, data=x), type="response"), add=TRUE,col="red")
+
+}
+
+
+
+
+
+
+# Add a hypervolume::hypervolume_distance test (i.e. is the distance between two groups significantly different than 0?)
+
+# Add the hypervolume::hypervolume_inclusion_test (i.e. is one group par of the other?)
