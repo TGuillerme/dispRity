@@ -4,10 +4,12 @@
 \alias{make.metric}
 \title{Creating disparity metrics}
 \usage{
-make.metric(fun, silent = FALSE)
+make.metric(fun, ..., silent = FALSE)
 }
 \arguments{
 \item{fun}{Your very own \code{function}!}
+
+\item{...}{Some arguments to be passed to \code{fun}.}
 
 \item{silent}{\code{logical}; if \code{FALSE} (default), the function will be verbose and give no ouput; if \code{TRUE}, the function will only output the function level.}
 }

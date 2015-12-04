@@ -59,6 +59,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
     #Testing the metric
     test <- NULL
     try(test <- fun(matrix, ...), silent=TRUE)
+    #try(test <- fun(matrix), silent=TRUE) ; warning("DEBUG")
 
     #Did the test failed?
     if(is.null(test)) {
@@ -118,14 +119,17 @@ make.metric<-function(fun, ..., silent = FALSE) {
 
     if(fun_type == "level3") {
         try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean, ...)), silent=TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean)), silent=TRUE) ; warning("DEBUG")
     }
 
     if(fun_type == "level2") {
         try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean, ...)), silent=TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean)), silent=TRUE) ; warning("DEBUG")
     }
 
     if(fun_type == "level1") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...,)), silent=TRUE)
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...)), silent=TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...)), silent=TRUE) ; warning("DEBUG")
     }
 
     #length of test_lapply must be equal to one

@@ -2,20 +2,26 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{centroids}
+\alias{convhull.surface}
+\alias{convhull.volume}
 \alias{dispRity.metric}
+\alias{ellipse.volume}
+\alias{hyper.volume}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}
 \title{Disparity metrics}
 \usage{
-level3.fun(matrix)
-level2.fun(matrix)
-level1.fun(X)
+level3.fun(matrix, ...)
+level2.fun(matrix, ...)
+level1.fun(X, ...)
 }
 \arguments{
 \item{matrix}{A matrix.}
 
 \item{X}{A vector.}
+
+\item{...}{Optional arguments to be passed to the function.}
 }
 \description{
 Different implemented disparity metrics.
@@ -27,6 +33,21 @@ The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{
          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+     }
+  \item \code{convhull.surface}: calculates the convex hull hyper surface of a matrix.
+  \item \code{convhull.volume}: calculates the convex hull hyper volume of a matrix.
+     \itemize{
+         \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
+         \item WARNING: both \code{convhull} functions can be computationally intensive!
+     }
+  \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
+     \itemize{
+         \item \code{repsperpoint = 1000}
+         \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method="silverman")}
+         \item \code{quantile = 0.95}
+         \item \code{verbose = FALSE}
+         \item \code{warnings = FALSE}
+         \item \code{name = NULL}
      }
 }
 The currently implemented vector aggregate metrics (\code{level2.fun}) are:
