@@ -21,17 +21,16 @@
 #'      \itemize{
 #'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
 #'      }
-#'   \item \code{convhull.surface}: calculates the convec hull hyper surface of a matrix.
-#'   \item \code{convhull.volume}: calculates the convec hull hyper volume of a matrix.
+#'   \item \code{convhull.surface}: calculates the convex hull hyper surface of a matrix.
+#'   \item \code{convhull.volume}: calculates the convex hull hyper volume of a matrix.
 #'      \itemize{
 #'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive!
 #'      }
-#'   \item \code{hyper.volume}: calculates the convec hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
-#'   \item \code{convhull.volume}: calculates the convec hull hyper volume of a matrix.
+#'   \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
 #'      \itemize{
 #'          \item \code{repsperpoint = 1000}
-#'          \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method="silverman")}}
+#'          \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method="silverman")}
 #'          \item \code{quantile = 0.95}
 #'          \item \code{verbose = FALSE}
 #'          \item \code{warnings = FALSE}
@@ -107,6 +106,9 @@ ellipse.volume <- function(matrix) {
 
 # Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
+
+    message("convhull.surface not tested yet.")
+
     require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.surface function is likely to crash!")
@@ -116,6 +118,9 @@ convhull.surface <- function(matrix) {
 
 # Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
+
+    message("convhull.volume not tested yet.")
+
     require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.volume function is likely to crash!")
@@ -125,6 +130,9 @@ convhull.volume <- function(matrix) {
 
 # Calculate the hypervolume using hypervolume::hypervolume
 hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, warnings, name) {
+
+    message("hyper.volume not tested yet.")
+
     require(hypervolume)
     # Tolerate missing arguments (set defaults)
     # repsperpoint

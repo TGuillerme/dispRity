@@ -27,6 +27,10 @@ export(ranges)
 export(centroids)
 export(mode.val)
 export(ellipse.volume)
+export(hyper.volume)
+export(convhull.volume)
+export(convhull.surface)
+
 
 ##disparity tests
 export(bhatt.coeff)
