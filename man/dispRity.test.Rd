@@ -3,28 +3,58 @@
 \name{dispRity.test}
 \alias{bhatt.coeff}
 \alias{dispRity.test}
+\alias{sequential.test}
 \title{Disparity tests}
 \usage{
-bhatt.coeff(x, y, bw = bw.nrd0, ...)
+bhatt.coeff(x, y, bw=bw.nrd0, ...)
+sequential.test(series, results="coefficients", family, ...)
 }
 \arguments{
 \item{x,y}{two distributions.}
 
 \item{bw}{the bandwith size, either a \code{numeric} or a \code{function} (see \code{\link[stats]{bw.nrd0}}).}
 
-\item{...}{optional arguments to be passed to \code{bw}.}
+\item{...}{optional arguments to be passed to the functions.}
+
+\item{series}{time series of which to estimate the slopes sequentially.}
+
+\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}.}
+
+\item{family}{the family of the \code{\link[stats]{glm}}.}
 }
 \description{
 Different implemented tests for comparing series.
 }
 \details{
-These are inbuilt statistical tests for comparing disparity series.
+These are inbuilt statistical tests for comparing disparity series:
 \itemize{
   \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
+  \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
 }
 }
 \examples{
-##
+## Bhattacharyya Coefficient:
+## Two dummy distributions
+x <- rnorm(1000, 0, 1) ; y <- rnorm(1000, 1, 2)
+## What is the probability of overlap of these distributions?
+bhatt.coeff(x, y)
+
+## Sequential test:
+## Load the Beck & Lee 2014 data
+data(BeckLee_mat50)
+## Calculating the disparity from a customised series
+## Generating the series
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+customised_series <- cust.series(BeckLee_mat50, factors)
+## Bootstrapping the data
+bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+## Caculating the sum of ranges
+sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+## Extracting the row series
+series <- extract.dispRity(sum_of_ranges, observed = FALSE)
+
+## The sequential test
+sequential.test(series, family=gaussian)
 }
 \author{
 Thomas Guillerme

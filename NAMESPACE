@@ -34,6 +34,7 @@ export(convhull.surface)
 
 ##disparity tests
 export(bhatt.coeff)
+export(sequential.test)
 
 ##S3 methods
 S3method(plot, dispRity)

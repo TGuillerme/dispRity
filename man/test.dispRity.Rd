@@ -29,12 +29,17 @@ The \code{comparison} argument can be:
   \item \code{"pairwise"}: pairwise comparisons of all the series (default).
   \item \code{"referential"}: compares the first series to all the others.
   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
-  \item \code{"all"}: compares all the series simultaneously (ANOVA type). The applyied formula will be \code{bootstrapped disparity ~ series names}.
+  \item \code{"all"}: compares all the series simultaneously:
+     \itemize{
+         \item If the test is of type \code{\link[stats]{aov}} or \code{\link[stats]{glm}} the applyied formula will be \code{bootstrapped disparity ~ series names}.
+         \item See the \code{\link[dispRity]{sequential.test}} for a \code{\link[stats]{glm}} correcting for time autocorrelation.
+     }
   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
-\code{Important:} if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
-don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
 }
+IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
+don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
+NOTE: some specific test like \code{\link[stats]{aov}} or \code{\link[dispRity]{sequential.test}} ignore the comparisons argument.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
