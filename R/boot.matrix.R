@@ -8,7 +8,7 @@
 #' @param rm.last.axis Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#'
+#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).#'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the observed and boostraped matrices.}
@@ -52,7 +52,7 @@
 #' 
 #' @author Thomas Guillerme
 
-boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full") {
+boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full", parallel) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -174,6 +174,18 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         }
     }
 
+    #Parallel
+    if(missing(parallel)) {
+        do_parallel <- FALSE
+    } else {
+        require(snow)
+        do_parallel <- TRUE
+        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(parallel[1], "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
+        cluster <- makeCluster(parallel[1], parallel[2])
+    }
+
     #----------------------
     #BOOTSTRAPING THE DATA
     #----------------------
@@ -206,7 +218,12 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     #verbose
     if(verbose==TRUE) message("Bootstraping...", appendLF=FALSE)
     #Bootstrap the data set 
-    BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+    if(do_parallel == FALSE) {
+        BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+    } else {
+        BSresult<-parLapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+        stopCluster(cluster)
+    }
     #Getting the observed results
     OBSresult<-lapply(data, Bootstrap.rarefaction, bootstraps=0, rarefaction=FALSE, boot.type="full")
     #verbose

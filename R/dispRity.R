@@ -6,6 +6,7 @@
 #' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -52,7 +53,7 @@
 #'
 #' @author Thomas Guillerme
 
-dispRity<-function(data, metric, ..., verbose=FALSE) {
+dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -196,13 +197,30 @@ dispRity<-function(data, metric, ..., verbose=FALSE) {
         #}
         #close(pb)
 
+    #Parallel
+    if(missing(parallel)) {
+        do_parallel <- FALSE
+    } else {
+        require(snow)
+        do_parallel <- TRUE
+        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(parallel[1], "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
+        cluster <- makeCluster(parallel[1], parallel[2])
+    }
+
     #----------------------
     #CALCULTING DISPARITY
     #----------------------
     #verbose
     if(verbose==TRUE) message("Calculating disparity...", appendLF=FALSE)
     #Calculate disparity in all the series
-    results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+    if(do_parallel == FALSE) {
+        results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+    } else {
+        results<-parLapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+        stopCluster(cluster)
+    }
     
     #if data is bootstrapped, also calculate the observed disparity
     if(is.bootstraped == TRUE) {

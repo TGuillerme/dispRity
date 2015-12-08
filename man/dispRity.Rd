@@ -4,7 +4,7 @@
 \alias{dispRity}
 \title{Calculates disparity from an ordinated matrix.}
 \usage{
-dispRity(data, metric, ..., verbose = FALSE)
+dispRity(data, metric, ..., verbose = FALSE, parallel)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.}
@@ -14,6 +14,8 @@ dispRity(data, metric, ..., verbose = FALSE)
 \item{...}{Optional arguments to be passed to the metric.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

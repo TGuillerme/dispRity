@@ -5,7 +5,7 @@
 \title{Bootstraps an rarefies ordinated data.}
 \usage{
 boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
-  rm.last.axis = FALSE, verbose = FALSE, boot.type = "full")
+  rm.last.axis = FALSE, verbose = FALSE, boot.type = "full", parallel)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).}
@@ -19,6 +19,8 @@ boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
+
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).#'}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
