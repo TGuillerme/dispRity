@@ -1,7 +1,7 @@
 Patch notes
 ----
 * 201?/??/?? - v0.2.0
-  <!--* all dispRity functions can now run in parallel! -->
+  * all dispRity functions can now run in parallel!
   * new disparity metric: `convhull.surface`, `convhull.volume` and `hyper.volume`
   * new disparity test: `sequential.test`
 * 2015/12/01 - v0.1.2
