@@ -12,6 +12,19 @@ library(dispRity)
 ```
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
+#### WARNING: There might be some conflicting versions with R 3.2.3
+When loading/installing the `paleotree` package that depends on `phytools` and `phangorn` you might get an issue with `Biostrings` dependencies (see [this issue for details](https://github.com/hadley/devtools/issues/700)). This problem can be solved by installing it manually:
+```r
+source("http://bioconductor.org/biocLite.R")
+biocLite("Biostrings")
+```
+Or by using the latest version (`0.1.2B`) of the `dispRity` package:
+```r
+install_github("TGuillerme/dispRity", ref = "master")
+```
+Note however that the new functionalities in this [future version](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) (`0.2`) are not all properly tested yet and may contain errors. All the former functionalities still work fine as in the `0.1.2` release!
+
+
 #### Vignettes
 *  The package manual [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/dispRity-manual.pdf).
 *  A tutorial for palaeobiologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.pdf).
