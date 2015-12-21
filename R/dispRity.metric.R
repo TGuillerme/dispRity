@@ -36,6 +36,10 @@
 #'          \item \code{warnings = FALSE}
 #'          \item \code{name = NULL}
 #'      }
+#'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
+#'      \itemize{
+#'          \item WARNING: This function is the generalisation of Pythagores Theorem and thus @b works only if each dimensions are orthogonal to each other.
+#'      }
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 #' \itemize{
@@ -183,4 +187,11 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
 # ordihull::vegan
 # convex.hull::igraph
 
-
+# Diagonal
+diagonal <- function(matrix) {
+    #If all the dimensions of the space are orthogonal to each other,
+    #then, following Pythagores Theorem, the longest distance in this
+    #space is equal to the square root of sum of the distances of each
+    #dimensions.
+    return(sqrt(sum(ranges(matrix))))
+}
