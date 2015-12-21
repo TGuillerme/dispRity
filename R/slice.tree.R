@@ -22,7 +22,7 @@ slice.tree<-function(tree, age, model, FAD, LAD) {
 
     #Running the timeSliceTree function (remove warning, called as a message in the original function)
     suppressMessages(
-        tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
+        tree_slice<-paleotree::timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
     )
 
     #Error with trees with two taxa
