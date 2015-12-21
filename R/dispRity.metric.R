@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal
 #'
 #' @title Disparity metrics
 #'
@@ -38,7 +38,7 @@
 #'      }
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
-#'          \item WARNING: This function is the generalisation of Pythagores Theorem and thus @b works only if each dimensions are orthogonal to each other.
+#'          \item WARNING: This function is the generalisation of Pythagores Theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
