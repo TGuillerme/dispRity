@@ -48,7 +48,7 @@ test_that("slice.tree_offspring.node picks up the offspring tip.node", {
 #example
 tree<-read.tree(text="(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
 tree$node.label<-as.character(seq(1:5))
-slice_tree<-suppressMessages(tree_slice<-timeSliceTree(tree, 3, drop.extinct=TRUE, plot=FALSE))
+slice_tree<-suppressMessages(tree_slice<-paleotree::timeSliceTree(tree, 3, drop.extinct=TRUE, plot=FALSE))
 test<-slice.tree_DELTRAN(tree, 'A', tree_slice)
 
 #Test
@@ -65,7 +65,7 @@ test_that("DELTRAN picks up the parent node", {
 #example
 tree<-read.tree(text="(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
 tree$node.label<-as.character(seq(1:5))
-slice_tree<-suppressMessages(tree_slice<-timeSliceTree(tree, 3, drop.extinct=TRUE, plot=FALSE))
+slice_tree<-suppressMessages(tree_slice<-paleotree::timeSliceTree(tree, 3, drop.extinct=TRUE, plot=FALSE))
 test<-slice.tree_ACCTRAN(tree, 'A', tree_slice)
 
 #Test

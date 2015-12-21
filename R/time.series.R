@@ -92,7 +92,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         #Make sure the oldest slice has at least 3 taxa:
         #Set the oldest slice at 1% of tree height
         percent<-0.01
-        while(Ntip(timeSliceTree(tree, tree$root.time-percent*tree$root.time, drop.extinct=TRUE, plot=FALSE)) < 3) {
+        while(Ntip(paleotree::timeSliceTree(tree, tree$root.time-percent*tree$root.time, drop.extinct=TRUE, plot=FALSE)) < 3) {
             #Increase percent until slice has 3 elements
             percent <- percent+0.01
         }
