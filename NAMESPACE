@@ -1,6 +1,7 @@
 #Dependencies
 import(ape)
-import(paleotree) #paleotree::timeSliceTree
+#import(paleotree)
+importFrom("paleotree", "timeSliceTree")
 
 ##Functions
 export(time.series)
@@ -40,4 +41,3 @@ export(sequential.test)
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
- 

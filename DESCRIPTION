@@ -4,16 +4,19 @@ Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.1.2
 Date: 2015-12-01
-Description: this is a modulable package for calculating disparity in R. Disparity can be
-	calculated from any ordinated matrix. The package provides a set of implemented metrics
-	to measure the ordinated space and allows users to provide and test their own metrics
-	(please share them!). The package also provides functions for looking at disparity in
-	a serial way (e.g. time series) as well as visualising the results. Finally, this
-	package provides several basic statistical test for disparity analysis.
-Depends: 
+Description: this is a modulable package for calculating disparity in R.
+    Disparity can be calculated from any ordinated matrix. The package provides
+    a set of implemented metrics to measure the ordinated space and allows users
+    to provide and test their own metrics (please share them!). The package also
+    provides functions for looking at disparity in a serial way (e.g. time series)
+    as well as visualising the results. Finally, this package provides several basic
+    statistical test for disparity analysis.
+Depends:
     R (>= 3.0.0),
     ape,
-    paleotree,
 License: GPL (>= 2)
-VignetteBuilder: knitr 
-Suggests: testthat, knitr
+VignetteBuilder: knitr
+Suggests:
+    testthat,
+    knitr
+RoxygenNote: 5.0.1
