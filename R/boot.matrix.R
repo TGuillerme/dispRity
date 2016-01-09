@@ -221,7 +221,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     if(do_parallel == FALSE) {
         BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
     } else {
-        BSresult<-parLapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+        BSresult<-parLapply(cluster, data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
         stopCluster(cluster)
     }
     #Getting the observed results

@@ -218,7 +218,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     if(do_parallel == FALSE) {
         results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
     } else {
-        results<-parLapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+        results<-parLapply(cluster, BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
         stopCluster(cluster)
     }
     
