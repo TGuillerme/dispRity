@@ -1,17 +1,18 @@
 #' @name dispRity.test
-#' @aliases bhatt.coeff sequential.test
+#' @aliases bhatt.coeff sequential.test null.test
 #'
 #' @title Disparity tests
 #'
 #' @usage bhatt.coeff(x, y, bw=bw.nrd0, ...)
 #' sequential.test(series, results="coefficients", family, ...)
+#' null.test(...)
 #'
 #' @description Different implemented tests for comparing series.
 #'
 #' @param x,y two distributions.
 #' @param bw the bandwith size, either a \code{numeric} or a \code{function} (see \code{\link[stats]{bw.nrd0}}).
 #' @param series time series of which to estimate the slopes sequentially.
-#' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}.
+#' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param ... optional arguments to be passed to the functions.
 #'
@@ -20,6 +21,7 @@
 #' \itemize{
 #'   \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
 #'   \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+#'   \item \code{null.test}: soon!
 #' }
 #'
 #' @examples
@@ -53,14 +55,7 @@
 #'
 #' @author Thomas Guillerme
 
-
-
-
-
-# #Calculating each axis variance
-# dispRity.tests <- function(X) return(X)
-
-
+#Calculate the Bhattacharyya Coefficient
 bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
     #SANITIZING
     #x and y
@@ -108,16 +103,14 @@ bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
 #End
 }
 
-# Add the time-correlated lm test:
+# Calculate the time-correlated lm test:
 # 1 - apply a logistic regression to the first series
 # 2 - save the slope + the intercept for series 1
 # 3 - estimate the intercept for the 2nd series using slope 1 + intercept 1
 # 4 - save slope for series 2
 # 5 - estimate the intercept for the 3rd series using slope 2 + intercept 2
 # 6 - etc...
-
-#series <- extract.dispRity(data, observed=FALSE)
-
+# 
 sequential.test <- function(series, results="coefficients", family, ...) {
 
     #SANITIZING
@@ -288,6 +281,20 @@ sequential.test <- function(series, results="coefficients", family, ...) {
 
     #ADD A FUNCTION FOR ADDING THE RESULTS TO A PLOT!
 
+}
+
+#Calculate the null model deviation test
+make.null <- function(...) {
+    # Series can be an observed value or a bootstrapped one
+
+    # null.rule must be the type of null model (or the null model "rule") (can invoke space.maker)
+
+    # replicates (of the null.rule)
+
+    # ... any optionals to be passed to test space.maker
+
+    #Final example (should look like that)
+    #test.dispRity(sum_of_ranges, test = randtest, "null", null = make.null())
 }
 
 

@@ -1,9 +1,10 @@
 Patch notes
 ----
-* 201?/??/?? - v0.2.0
+* 2016/??/?? - v0.2.0
   * all dispRity functions can now run in parallel!
-  * new disparity metric: `convhull.surface`, `convhull.volume` and `hyper.volume`
-  * new disparity test: `sequential.test`
+  * new function: `space.maker` to create some multidimensional spaces!
+  * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
+  * new disparity tests: `sequential.test`, `null.test` (from Diaz et al 2015 Nature).
 * 2015/12/01 - v0.1.2
   * new function: `get.dispRity` for subsampling dispRity objects
   * new function: `extract.dispRity` for extracting disparity results

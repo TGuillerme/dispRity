@@ -3,11 +3,13 @@
 \name{dispRity.test}
 \alias{bhatt.coeff}
 \alias{dispRity.test}
+\alias{null.test}
 \alias{sequential.test}
 \title{Disparity tests}
 \usage{
 bhatt.coeff(x, y, bw=bw.nrd0, ...)
 sequential.test(series, results="coefficients", family, ...)
+null.test(...)
 }
 \arguments{
 \item{x, y}{two distributions.}
@@ -18,7 +20,7 @@ sequential.test(series, results="coefficients", family, ...)
 
 \item{series}{time series of which to estimate the slopes sequentially.}
 
-\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}.}
+\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).}
 
 \item{family}{the family of the \code{\link[stats]{glm}}.}
 }
@@ -30,6 +32,7 @@ These are inbuilt statistical tests for comparing disparity series:
 \itemize{
   \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
   \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+  \item \code{null.test}: soon!
 }
 }
 \examples{
