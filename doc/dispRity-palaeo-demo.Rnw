@@ -86,6 +86,7 @@ Note that you can have an even nicer tree if you use the \texttt{strap} package:
 
 <<strap, eval=FALSE>>=
 if(!require(strap)) install.packages("strap")
+library(strap)
 geoscalePhylo(BeckLee_tree, cex.tip=0.8, cex.ts=0.6)
 @
 
