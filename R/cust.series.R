@@ -9,7 +9,7 @@
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+#' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
 #' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 #' \item{series}{A \code{vector} containing the name of the series.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
@@ -19,10 +19,12 @@
 #'
 #' @examples
 #' ## Generating a dummy ordinated matrix
-#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
+#'      dimnames = list(letters[1:10]))
 #' ## Creating a list of dummy factors (1 or 2)
-#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-#' ## Spliting the dummy ordinated matrix
+#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
+#'      ncol = 1, dimnames = list(letters[1:10])))
+#' ## Splitting the dummy ordinated matrix
 #' cust.series(ordinated_matrix, factors)
 #'
 #' @author Thomas Guillerme

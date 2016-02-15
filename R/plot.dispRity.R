@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object.
 #' @param type Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.
-#' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantile The quantiles to display (default is \code{quantile = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
@@ -17,32 +17,37 @@
 #' \code{type}:
 #' \itemize{
 #'   \item \code{"continuous"}: plots the results in a continuous fashion (e.g. disparity function of time)
-#'   \item \code{"discrete"}:plots the results in a discrete fashion (e.g. disparity function of factors)
+#'   \item \code{"discrete"}: plots the results in a discrete fashion (e.g. disparity function of factors)
 #' }
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+#' data(BeckLee_tree) ; data(BeckLee_mat50)
+#' data(BeckLee_mat99) ; data(BeckLee_ages)
 #'
 #' ## Setting the data
-#' ## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
-#'      model = "acctran", time = 5, FADLAD = BeckLee_ages)
-#' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20, rarefaction = TRUE)
-#' sum_of_ranges <- dispRity(bootstrapped_data, metric = c(sum, ranges))
+#' ## Generate 5 equidistant time slices in the data set assuming gradual
+#' ## evolutionary models
+#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+#'      method = "continuous", model = "acctran", time = 5,
+#'      FADLAD = BeckLee_ages)
+#' bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20,
+#'      rarefaction = TRUE)
+#' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' 
 #' ## Discrete plotting
-#' plot(sum_of_ranges, type = "discrete")
+#' plot(sum_of_variances, type = "discrete")
 #' ## Using different options
-#' plot(sum_of_ranges, type = "discrete", quantile = c(50,75,95), cent.tend = median,
-#'      rarefaction = TRUE, elements = TRUE, ylim = c(10,40), xlab = ("Time (Ma)"), 
-#'      ylab=c("disparity", "taxonomic richness"), col = "red", discrete_type = "line")
+#' plot(sum_of_variances, type = "discrete", quantile = c(50, 75, 95),
+#'      cent.tend = median, rarefaction = TRUE, elements = TRUE,
+#'      ylim = c(10, 40), xlab = ("Time (Ma)"), discrete_type = "line",
+#'      ylab = c("disparity", "taxonomic richness"), col = "red")
 #' 
 #' ## Continuous plotting (all default options)
-#' plot(sum_of_ranges, type = "continuous")
+#' plot(sum_of_variances, type = "continuous")
 #' ## Using different options (with non time.slicing option)
-#' plot(sum_of_ranges, type = "continuous", time.series = FALSE, elements = TRUE,
-#'      col=c("red","orange","yellow"))
+#' plot(sum_of_variances, type = "continuous", time.series = FALSE,
+#'      elements = TRUE, col = c("red", "orange", "yellow"))
 #' 
 #' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
 #'

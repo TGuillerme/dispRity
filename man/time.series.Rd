@@ -25,7 +25,7 @@ time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+\item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
 \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 \item{series}{A \code{vector} containing the name of the series.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
@@ -39,22 +39,28 @@ If \code{method = "continuous"} and when the sampling is done along an edge of t
   \item \code{"acctran"}: always the one of the ancestral node.
   \item \code{"deltran"}: always the one of the offspring node or tip.
   \item \code{"punctuated"}: randomly selected from the ancestral node or the offspring node or tip.
-  \item \code{"gradual"}:either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the offspring node or tip.
+  \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the offspring node or tip.
 }
 }
 \examples{
 ## Load the Beck & Lee 2014 data
-data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+data(BeckLee_tree) ; data(BeckLee_mat50)
+data(BeckLee_mat99) ; data(BeckLee_ages)
 
 ## Time bining (discrete method)
 ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+     time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 ## Generate the same one but including nodes
-time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
+time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
+     time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 
 ## Time slicing (continuous method)
-## Generate 5 equidistant time slices in the data set assuming gradual evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+## Generate 5 equidistant time slices in the data set assuming gradual
+## evolutionary models
+sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+     method = "continuous", model = "acctran", time = 5,
+     FADLAD = BeckLee_ages)
 str(lapply(sliced_data$data, class)) # A list of 5 matrices
 
 }

@@ -14,11 +14,11 @@ test.dispRity(data, test, comparisons = "pairwise", correction, ...,
 
 \item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).}
 
-\item{correction}{which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applyed.}
+\item{correction}{which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
 
 \item{...}{Additional options to pass to the test \code{function}.}
 
-\item{details}{Whether to output the details of each test (non-formated; default = \code{FALSE}).}
+\item{details}{Whether to output the details of each test (non-formatted; default = \code{FALSE}).}
 }
 \description{
 Applying statistical tests to dispRity objects
@@ -31,7 +31,7 @@ The \code{comparison} argument can be:
   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
   \item \code{"all"}: compares all the series simultaneously:
      \itemize{
-         \item If the test is of type \code{\link[stats]{aov}} or \code{\link[stats]{glm}} the applyied formula will be \code{bootstrapped disparity ~ series names}.
+         \item If the test is of type \code{\link[stats]{aov}} or \code{\link[stats]{glm}} the applied formula will be \code{bootstrapped disparity ~ series names}.
          \item See the \code{\link[dispRity]{sequential.test}} for a \code{\link[stats]{glm}} correcting for time autocorrelation.
      }
   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
@@ -47,21 +47,22 @@ data(BeckLee_mat50)
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+      dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
-## Caculating the sum of ranges
-sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+## Calculating the sum of variances
+sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 
 ## Measuring the series overlap
-test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
+test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 
 ## Measuring differences from a reference_series
-test.dispRity(sum_of_ranges, wilcox.test, "referential")
+test.dispRity(sum_of_variances, wilcox.test, "referential")
 
 ## Testing the effect of the factors
-test.dispRity(sum_of_ranges, aov, "all")
+test.dispRity(sum_of_variances, aov, "all")
 ## warning: this violates some aov assumptions!
 
 }

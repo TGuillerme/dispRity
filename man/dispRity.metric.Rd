@@ -44,7 +44,7 @@ The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
   \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
      \itemize{
          \item \code{repsperpoint = 1000}
-         \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method="silverman")}
+         \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method = "silverman")}
          \item \code{quantile = 0.95}
          \item \code{verbose = FALSE}
          \item \code{warnings = FALSE}
@@ -52,7 +52,7 @@ The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
      }
   \item \code{diagonal}: calculates the longest distance in the ordinated space.
      \itemize{
-         \item WARNING: This function is the generalisation of Pythagores Theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
+         \item WARNING: This function is the generalisation of Pythagoras Theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
      }
 }
 The currently implemented vector aggregate metrics (\code{level2.fun}) are:
@@ -68,7 +68,35 @@ The currently implemented value aggregate metrics (\code{level1.fun}) are:
 See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
 }
 \examples{
-## 
+## A dummy matrix
+dummy_matrix <- matrix(rnorm(25), 5, 5)
+
+## variances of a each column in the matrix
+variances(dummy_matrix)
+
+## ranges of each column in a matrix
+ranges(dummy_matrix)
+
+## Distances between each row and centroid of the matrix
+centroids(dummy_matrix)
+
+## Modal value of a vector
+mode.val(rnorm(25))
+
+## Ellipsoid volume of a matrix
+ellipse.volume(dummy_matrix) # WARNING: only valid for MDS/PCO matrices
+
+## Convex hull hyper-surface of a matrix
+convhull.surface(dummy_matrix)
+
+## Convex hull volume of a matrix
+convhull.volume(dummy_matrix)
+
+## Matrix hypervolume
+hyper.volume(dummy_matrix)
+
+## Matrix diagonal
+diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
 
 }
 \author{

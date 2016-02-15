@@ -1,6 +1,6 @@
-#' A package for measuring disparity in R
+#' Measuring disparity in R
 #' 
-#' A modulable package for measuring disparity from ordinated matrices.
+#' A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
 #' 
 #' @name dispRity-package
 #'
@@ -8,7 +8,7 @@
 #'
 #' @author Thomas Guillerme <guillert@@tcd.ie>
 #'
-#' @keywords disparity,ordination,phylogeny,cladistic,morphometric,ecology
+#' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
 NULL
 
@@ -20,7 +20,7 @@ NULL
 #'   \item \code{BeckLee_tree} A phylogenetic tree with 50 living and fossil taxa
 #'   \item \code{BeckLee_mat50} The ordinated matrix based on the 50 taxa cladistic distances
 #'   \item \code{BeckLee_mat99} The ordinated matrix based on the 50 taxa + 49 nodes cladistic distances
-#'   \item \code{BeckLee_ages} A lit of first al last occurence data for fossil taxa
+#'   \item \code{BeckLee_ages} A lit of first al last occurrence data for fossil taxa
 #' }
 #'
 #' @format 3 matrices and one phylogeny.

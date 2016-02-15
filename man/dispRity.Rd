@@ -7,7 +7,7 @@
 dispRity(data, metric, ..., verbose = FALSE, parallel)
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a boostrapped matrix output from \code{\link{boot.matrix}}.}
+\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.}
 
 \item{metric}{A vector containing up to three functions and at least a "level 1" function (see details).}
 
@@ -19,11 +19,11 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{data}{A \code{list} of the observed and boostraped matrices.}
+\item{data}{A \code{list} of the observed and bootstrapped matrices.}
 \item{disparity}{A \code{list} of disparity values.}
 \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
-\item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+\item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
@@ -43,29 +43,30 @@ user specified metrics, please use \code{\link{make.metric}} to ensure if the me
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 
-## Calculating the disparity as the sum of ranges from a single matrix
-sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
-summary(sum_of_ranges)
-## Bootstraping this value
-bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
-dispRity(bootstrapped_data, metric=c(sum, ranges))
+## Calculating the disparity as the sum of variances from a single matrix
+sum_of_variances <- dispRity(BeckLee_mat50, metric = c(sum, variances))
+summary(sum_of_variances)
+## Bootstrapping this value
+bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
+dispRity(bootstrapped_data, metric=c(sum, variances))
 
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)),
-     nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+     dimnames = list(rownames(BeckLee_mat50))))
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
-## Caculating the sum of ranges
-sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
-summary(sum_of_ranges)
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+## Caculating the sum of variances
+sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+summary(sum_of_variances)
 
 }
 \author{
 Thomas Guillerme
 }
 \seealso{
-\code{\link{boot.matrix}} for bootstraping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
+\code{\link{boot.matrix}} for bootstrapping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
 }
 

@@ -23,26 +23,26 @@ Creates a multidimensional space with a given number of elements and dimensions
 }
 \examples{
 ## A square space
-plot(space.maker(5000, 2, runif), pch=20)
+plot(space.maker(5000, 2, runif), pch = 20)
 
 ## A circular space
-plot(space.maker(5000, 2, rnorm), pch=20)
+plot(space.maker(5000, 2, rnorm), pch = 20)
 
 ## A 2D cilindrical space
-plot(space.maker(5000, 2, c(rnorm, runif)), pch=20)
+plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
 
-## Not run:
+\dontrun{
 ## A cube space
 require(scatterplot3d)
-scatterplot3d(space.maker(5000, 3, runif), pch=20)
+scatterplot3d(space.maker(5000, 3, runif), pch = 20)
 
 ## A sphere space
-scatterplot3d(space.maker(5000, 3, rnorm), pch=20)
+scatterplot3d(space.maker(5000, 3, rnorm), pch = 20)
 
-## A 3D cilindrical space
-scatterplot3d(space.maker(5000, 3, c(rnorm, rnorm, runif)), pch=20)
+## A 3D cylindrical space
+scatterplot3d(space.maker(5000, 3, c(rnorm, rnorm, runif)), pch = 20)
 
-## End(Not run)
+}
 
 }
 \author{

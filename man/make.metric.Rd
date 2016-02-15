@@ -11,7 +11,7 @@ make.metric(fun, ..., silent = FALSE)
 
 \item{...}{Some arguments to be passed to \code{fun}.}
 
-\item{silent}{\code{logical}; if \code{FALSE} (default), the function will be verbose and give no ouput; if \code{TRUE}, the function will only output the function level.}
+\item{silent}{\code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function level.}
 }
 \description{
 Testing the level of disparity metrics
@@ -29,10 +29,10 @@ The 3 different metric levels correspond to the dimensions of the output and are
   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
 }
-For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{ranges}} is composed of two metric levels:
+For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{variances}} is composed of two metric levels:
 \itemize{
-  \item The \code{\link[dispRity]{ranges}} (level 2) that calculates the ranges per column in a matrix (aggregates a \code{matrix} into a \code{vector}).
-  \item The \code{\link[base]{sum}} (level 1) that transform the \code{vector} of ranges into a single value.
+  \item The \code{\link[dispRity]{variances}} (level 2) that calculates the variances per column in a matrix (aggregates a \code{matrix} into a \code{vector}).
+  \item The \code{\link[base]{sum}} (level 1) that transform the \code{vector} of variances into a single value.
 }
 See function example for a concrete illustration (three different level of the function \code{\link[base]{sum}}).
 }

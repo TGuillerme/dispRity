@@ -10,7 +10,7 @@
 #' data(BeckLee_mat50)
 #' 
 #' ## Creating a dispRity object
-#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
+#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, variances))
 #' 
 #' ## Displaying the summary of the object content
 #' disparity_object

@@ -3,12 +3,17 @@
 \docType{package}
 \name{dispRity-package}
 \alias{dispRity-package}
-\title{A package for measuring disparity in R}
+\title{Measuring disparity in R}
 \description{
-A modulable package for measuring disparity from ordinated matrices.
+A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
 }
 \author{
 Thomas Guillerme <guillert@tcd.ie>
 }
-\keyword{disparity,ordination,phylogeny,cladistic,morphometric,ecology}
+\keyword{cladistic,}
+\keyword{disparity,}
+\keyword{ecology}
+\keyword{morphometric,}
+\keyword{ordination,}
+\keyword{phylogeny,}
 

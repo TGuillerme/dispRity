@@ -3,8 +3,8 @@
 #'
 #' @title Disparity tests
 #'
-#' @usage bhatt.coeff(x, y, bw=bw.nrd0, ...)
-#' sequential.test(series, results="coefficients", family, ...)
+#' @usage bhatt.coeff(x, y, bw = bw.nrd0, ...)
+#' sequential.test(series, results = "coefficients", family, ...)
 #' null.test(...)
 #'
 #' @description Different implemented tests for comparing series.
@@ -20,7 +20,7 @@
 #' These are inbuilt statistical tests for comparing disparity series:
 #' \itemize{
 #'   \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
-#'   \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+#'   \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
 #'   \item \code{null.test}: soon!
 #' }
 #'
@@ -36,17 +36,18 @@
 #' data(BeckLee_mat50)
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+#'      dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
-#' ## Caculating the sum of ranges
-#' sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+#' ## Calculating the sum of variances
+#' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' ## Extracting the row series
-#' series <- extract.dispRity(sum_of_ranges, observed = FALSE)
+#' series <- extract.dispRity(sum_of_variances, observed = FALSE)
 #'
 #' ## The sequential test
-#' sequential.test(series, family=gaussian)
+#' sequential.test(series, family = gaussian)
 #'
 #' @seealso \code{\link{test.dispRity}}.
 #'

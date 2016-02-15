@@ -32,7 +32,6 @@ export(hyper.volume)
 export(convhull.volume)
 export(convhull.surface)
 
-
 ##disparity tests
 export(bhatt.coeff)
 export(sequential.test)

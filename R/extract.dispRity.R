@@ -12,7 +12,7 @@
 #'
 #' ## Calculating some disparity
 #' series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-#'      time = c(100,80,60), model = "gradual")
+#'      time = c(100, 80, 60), model = "gradual")
 #' bootstraps_dat <- boot.matrix(series, bootstraps = 20, rarefaction = TRUE)
 #' disparity_data <- dispRity(bootstraps_dat, metric = mean)
 #'

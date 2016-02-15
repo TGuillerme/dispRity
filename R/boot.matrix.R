@@ -11,10 +11,10 @@
 #' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).#'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the observed and boostraped matrices.}
+#' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
 #' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 #' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
-#' \item{call}{A \code{vector} containing the arguments used for the bootstraping.}
+#' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
@@ -24,8 +24,8 @@
 #'
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
-#'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
-#'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new radnomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each boostrap).
+#'   \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
+#'   \item \code{"single"}: re-samples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each bootstrap).
 #' }
 #'
 #' @examples
@@ -38,14 +38,16 @@
 #' ## Bootstrapping an ordinated matrix with rarefaction
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 #' ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
-#' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
+#' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 #' ## Bootstrapping an ordinated matrix with only 90% of the first axis
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
 #' 
 #' ## Bootstrapping a series of matrices
 #' ## Generating a dummy series of matrices
-#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
-#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
+#'      dimnames = list(letters[1:10]))
+#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
+#'      ncol = 1, dimnames = list(letters[1:10])))
 #' matrix.list <- cust.series(ordinated_matrix, factors)
 #' ## Bootstrapping the series of matrices 20 times (each)
 #' boot.matrix(matrix.list, bootstraps = 20)

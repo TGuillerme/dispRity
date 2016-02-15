@@ -32,15 +32,16 @@ factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      dimnames = list(rownames(BeckLee_mat50))))
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
-## Caculating the sum of ranges
-sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+## Calculating the sum of variances
+sum_of_sum_of_variances <- dispRity(bootstrapped_data,
+     metric = c(sum, sum_of_variances))
 
 ## Summarising the results
-summary(sum_of_ranges) # default
+summary(sum_of_sum_of_variances) # default
 ## Using different options
-summary(sum_of_ranges, quantile = 75, cent.tend = median,
-     rounding=  0, recall = TRUE)
+summary(sum_of_sum_of_variances, quantile = 75, cent.tend = median,
+     rounding = 0, recall = TRUE)
 
 }
 \author{
