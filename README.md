@@ -18,7 +18,7 @@ When loading/installing the `paleotree` package that depends on `phytools` and `
 source("http://bioconductor.org/biocLite.R")
 biocLite("Biostrings")
 ```
-Or by using the latest version (`0.1.2.1`) of the `dispRity` package:
+Or by using the latest version (`0.2`) of the `dispRity` package:
 ```r
 install_github("TGuillerme/dispRity", ref = "master")
 ```
