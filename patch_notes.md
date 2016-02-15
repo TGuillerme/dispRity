@@ -1,6 +1,7 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
+  * many updates to the functions manual.
   * all dispRity functions can now run in parallel!
   * new function: `space.maker` to create some multidimensional spaces!
   * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
