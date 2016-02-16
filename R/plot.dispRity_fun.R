@@ -265,32 +265,35 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
 plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ...) {
 #plots rarefaction curves (continuous, multiple panels if series > 1)
 
-    plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim, ...)
-    #plot(summarised_data[,3], type="l", xlab=xlab, ylab=ylab[[1]], col=col[[1]], ylim=ylim) ; warning("DEBUG: plot")
+    plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
+    #plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim) ; warning("DEBUG: plot")
 
     #Add the quantiles
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
         #How many quantiles?
-        quantiles_n<-(ncol(summarised_data)-3)/2
+        quantiles_n <- (ncol(summarised_data)-4)/2
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col<-set.default(summarised_data, call=1, "continuous", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
-            poly_col<-col[-1]
-            poly_col<-rev(poly_col)
+            col <- set.default(summarised_data, call = 1, "continuous", elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            poly_col <- col[-1]
+            poly_col <- rev(poly_col)
         } else {
-            poly_col<-col[-1]
-            poly_col<-rev(poly_col)
+            poly_col <- col[-1]
+            poly_col <- rev(poly_col)
         }
 
         #Add the quantile lines (from inner to outer quantiles)
         for (cis in 1:quantiles_n) {
             #lower quantile
-            lines(summarised_data[,(3+quantiles_n-(cis-1))], lty=(1+cis))
+            lines(summarised_data[, 4+cis], lty = (quantiles_n+2-cis))#, col = poly_col[cis])
             #upper quantile
-            lines(summarised_data[,3+quantiles_n+cis], lty=(1+cis))
+            lines(summarised_data[, ncol(summarised_data)-(cis-1)], lty = (quantiles_n+2-cis))#, col = poly_col[cis])
         }
+
+        #Add the central tendency
+        lines(summarised_data[, 4], lty = 1)#, col = col[1])
 
     }
 

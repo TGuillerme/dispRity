@@ -63,18 +63,18 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
-    OBSresults<-data$disparity$observed
+    OBSresults <- data$disparity$observed
     #is the data bootstrapped?   
     if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
         if(length(data$data$bootstrap[[1]][[1]]) > 1) {
-            is.bootstrapped<-TRUE
-            BSresults<-data$disparity$bootstrapped
+            is.bootstrapped <- TRUE
+            BSresults <- data$disparity$bootstrapped
         } else {
-            is.bootstrapped<-FALSE
+            is.bootstrapped <- FALSE
         }
     } else {
-        is.bootstrapped<-FALSE
+        is.bootstrapped <- FALSE
     }
 
     #quantile
@@ -82,21 +82,21 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     if(is.bootstrapped == TRUE) {
         check.class(quantile, "numeric", " must be any value between 1 and 100.")
         #remove warnings
-        options(warn=-1)
+        options(warn = -1)
         if(any(quantile) < 1) {
             stop("Quantile(s) must be any value between 1 and 100.")
         }
         if(any(quantile) > 100) {
             stop("Quantile(s) must be any value between 1 and 100.")
         }
-        options(warn=0)
+        options(warn = 0)
     }
 
     #cent.tend
     #Must be a function
     check.class(cent.tend, "function")
     #The function must work
-    silent<-check.metric(cent.tend)
+    silent <- check.metric(cent.tend)
 
     #type
     if(missing(type)) {
