@@ -118,49 +118,49 @@ plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, .
 }
 
 #discrete plotting
-plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, col, observed, ...) {
+plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...) {
     #How many points?
-    points_n<-length(unique(summarised_data$series))
+    points_n <- length(unique(summarised_data$series))
 
     #dummy matrix (for getting the nice boxplots split + column names)
-    dummy_mat<-matrix(1:points_n, ncol=points_n)
-    colnames(dummy_mat)<-extract.summary(summarised_data, 1)
+    dummy_mat <- matrix(1:points_n, ncol=points_n)
+    colnames(dummy_mat) <- extract.summary(summarised_data, 1)
 
     #Empty plot
-    boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001, ...)
+    boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
     #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001) ; warning("DEBUG: plot")
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
         #How many quantiles?
-        quantiles_n<-(ncol(summarised_data)-4)/2
+        quantiles_n <- (ncol(summarised_data)-4)/2
 
         #Set the width (default)
-        width=points_n/10
+        width = points_n/(points_n*2)
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col_tmp<-set.default(summarised_data, call=1, "discrete", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
-            poly_col<-col_tmp[-1]
-            poly_col<-rev(poly_col)
+            col_tmp <- set.default(summarised_data, call = 1, "discrete", elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            poly_col <- col_tmp[-1]
+            poly_col <- rev(poly_col)
         } else {
-            poly_col<-col[-1]
-            poly_col<-rev(poly_col)
+            poly_col <- col[-1]
+            poly_col <- rev(poly_col)
         }
 
         #Add the quantiles
-        if(type_d == "box") {
+        if(discrete_type == "box") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     #Setting X
-                    x_vals<-c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
+                    x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     #Setting Y
-                    y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare)[point],
+                    y_vals <- c(extract.summary(summarised_data, 4+cis, which.rare)[point],
                               extract.summary(summarised_data, 4+cis, which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
                     #Plotting the box
-                    polygon(x_vals, y_vals, col=poly_col[[cis]], border=col[[1]])
+                    polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]])
 
                 }
             }
@@ -168,35 +168,33 @@ plot.discrete<-function(summarised_data, which.rare, type_d, ylim, xlab, ylab, c
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     #Setting Y
-                    y_vals<-c(extract.summary(summarised_data, 3+cis, which.rare)[point],
-                              extract.summary(summarised_data, 3+cis, which.rare)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point],
+                    y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
                     #Plotting the box
-                    lines(x=c(point, point), y=c(extract.summary(summarised_data, 3+cis, which.rare)[point], extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point]),
-                        lty=(quantiles_n-cis+1), lwd=cis*1.5, col=col[[1]])
+                    lines(x = c(point, point), y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
+
                 }
             }
         }
     }
 
     #Add the points estimates
-    points(1:points_n, extract.summary(summarised_data, 4, which.rare), col=col[[1]], pch=19)
+    points(1:points_n, extract.summary(summarised_data, 4, which.rare), col = col[[1]], pch = 19)
 
 
     if(observed == TRUE) {
         if(any(!is.na(extract.summary(summarised_data, 3, which.rare))))
         #Add the points observed (if existing)
-        if(type_d == "box") {
+        if(discrete_type == "box") {
             for (point in 1:points_n) {
-                x_coord<-c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
-                y_coord<-rep(extract.summary(summarised_data, 3, which.rare)[point], 2)
-                lines(x_coord, y_coord, col=col[[1]], lty=3, lwd=2)
+                x_coord <- c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
+                y_coord <- rep(extract.summary(summarised_data, 3, which.rare)[point], 2)
+                lines(x_coord, y_coord, col = col[[1]], lty = 3, lwd = 2)
             }
         } else {
             for (point in 1:points_n) {
-                y_coord<-extract.summary(summarised_data, 3, which.rare)[point]
-                points(point, y_coord, col=col[[1]], pch=4, cex=1.5)
+                y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                points(point, y_coord, col = col[[1]], pch = 4, cex = 1.5)
             }
         }
     }

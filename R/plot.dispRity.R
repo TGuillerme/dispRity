@@ -124,13 +124,13 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     if(type == "continuous" & time.series == TRUE) {
         #Check if time.slicing was used (saved in call)
         if(any(grep("Data was split using continuous method", data$call))) {
-            time_slicing<-data$series
-            xlab<-"Time (Ma)"
+            time_slicing <- data$series
+            xlab <- "Time (Ma)"
         } else {
-            time_slicing<-FALSE
+            time_slicing <- FALSE
         }
     } else {
-        time_slicing<-FALSE
+        time_slicing <- FALSE
     }
 
     #elements
@@ -148,28 +148,28 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #rarefaction
     #Set to null (default)
-    which.rare<-NULL
+    which.rare <- NULL
     #if rarefaction is "plot", plot the rarefaction curves
     if(rarefaction != "plot") {
     #Else, make sure rarefaction works    
         #must be logical
         if(class(rarefaction) == "logical") {
-            logic.rare<-TRUE
+            logic.rare <- TRUE
             if(rarefaction == TRUE) {
-                which.rare<-"min"
+                which.rare <- "min"
             } else {
-                which.rare<-"max"
+                which.rare <- "max"
             }
         } else {
             check.class(rarefaction, "numeric", " must be either logical or a single numeric value.")
             check.length(rarefaction, 1, " must be either logical or a single numeric value.")
-            which.rare<-rarefaction
+            which.rare <- rarefaction
         }
     } else {
         #Rarefaction plot
-        which.rare<-"plot"
+        which.rare <- "plot"
         #Cancel plot type
-        type<-"rarefaction"
+        type <- "rarefaction"
     }
 
     #Test if rarefaction data exists!
@@ -182,7 +182,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #xlab
     if(missing(xlab)) { 
-        xlab<-"default"
+        xlab <- "default"
     } else {
         #length must be 1
         check.length(xlab, 1, " must be a character string.")
@@ -190,7 +190,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #ylab
     if(missing(ylab)) {
-        ylab<-"default"
+        ylab <- "default"
     } else {
         #length must be 
         if(elements == FALSE) {
@@ -203,14 +203,14 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #col
     #if default, is ok
     if(missing(col)) {
-        col<-"default"
+        col <- "default"
     } else {
         check.class(col, "character", " must be a character string.")
     }
 
     #ylim
     if(missing(ylim)) {
-        ylim<-"default"
+        ylim <- "default"
     } else {
         check.class(ylim, "numeric")
         check.length(ylim, 2, " must be a vector of two elements.")
@@ -227,7 +227,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #PREPARING THE PLOT
 
     #summarising the data
-    summarised_data<-summary.dispRity(data, quantile=quantile, cent.tend=cent.tend, rounding=5)
+    summarised_data <- summary.dispRity(data, quantile = quantile, cent.tend = cent.tend, rounding = 5)
 
     #Check the rarefaction
     if(which.rare != "max") {
@@ -261,11 +261,11 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     }
 
     #Setting the default arguments
-    default_arg<-set.default(summarised_data, data$call, type, elements, ylim, xlab, ylab, col, which.rare)
-    ylim<-default_arg[[1]]
-    xlab<-default_arg[[2]]
-    ylab<-default_arg[[3]]
-    col <-default_arg[[4]]
+    default_arg <- set.default(summarised_data, data$call, type, elements, ylim, xlab, ylab, col, which.rare)
+    ylim <- default_arg[[1]]
+    xlab <- default_arg[[2]]
+    ylab <- default_arg[[3]]
+    col <- default_arg[[4]]
 
     #PLOTTING THE RESULTS
 
@@ -279,8 +279,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
             #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab, ...)
-            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
+            #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
             par(bigger_margin)
         }
     }
@@ -293,10 +293,10 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         } else {
             bigger_margin<-par(mar=c(5,4,4,4))
             saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
-            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, cex.lab=0.1) ; warning("DEBUG: plot")
+            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, cex.lab = 0.1) ; warning("DEBUG: plot")
             par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab, ...)
-            #plot.elements(summarised_data, which.rare, ylab=ylab, col=col, type, div.log, cex.lab=saved_par$cex.lab) ; warning("DEBUG: plot")
+            plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
+            #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
             par(bigger_margin)
         }        
     }
@@ -304,16 +304,16 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     if(which.rare == "plot") {
         #How many rarefaction plots?
-        n_plots<-length(unique(summarised_data[,1]))
+        n_plots <- length(unique(summarised_data[,1]))
 
         #Open the multiple plots
-        op_tmp<-par(mfrow=c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
 
         #Rarefaction plots
         for(nPlot in 1:n_plots) {
-            tmp_summarised_data<-get.series(summarised_data, rare_level=nPlot)
-            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name, ...)
-            #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main=level_name) ; warning("DEBUG: plot")
+            tmp_summarised_data <- get.series(summarised_data, rare_level = nPlot)
+            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
+            #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
         }
 
         #Done!
