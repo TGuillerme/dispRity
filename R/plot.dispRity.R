@@ -218,8 +218,10 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #discrete_type
     if(type == "discrete") {
-        discrete_type_methods<-c("box", "line")
+        discrete_type_methods<-c("box", "b", "line", "l")
         if(all(is.na(match(discrete_type, discrete_type_methods)))) stop('type must be either "box" or "line".')
+        if(discrete_type == "b") discrete_type <- "box"
+        if(discrete_type == "l") discrete_type <- "line"
     }
 
     #PREPARING THE PLOT
