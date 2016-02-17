@@ -17,9 +17,15 @@ test<-summary(data)
 
 #Test
 test_that("Works without bootstraps", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 1)
-    expect_equal(ncol(test), 3)
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 1
+    	)
+    expect_equal(
+    	ncol(test), 3
+    	)
 })
 
 #Case 2, bootstraps
@@ -30,9 +36,15 @@ test<-summary(data)
 
 #Test
 test_that("Works with bootstraps", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 1)
-    expect_equal(ncol(test), 8)
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 1
+    	)
+    expect_equal(
+    	ncol(test), 8
+    	)
 })
 
 #Case 3, bootstraps + rarefaction
@@ -43,10 +55,18 @@ test<-summary(data)
 
 #Test
 test_that("Works with bootstraps and rarefaction", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 2)
-    expect_equal(ncol(test), 8)
-    expect_equal(test$observed, c(NA, 45.36))
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 2
+    	)
+    expect_equal(
+    	ncol(test), 8
+    	)
+    expect_equal(
+    	test$observed, c(NA, 45.36)
+    	)
 })
 
 #Case 4, time series
@@ -59,9 +79,15 @@ test<-summary(data)
 
 #Test
 test_that("Works with series", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 2)
-    expect_equal(ncol(test), 3)
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 2
+    	)
+    expect_equal(
+    	ncol(test), 3
+    	)
 })
 
 #Case 5, time series + bootstraps
@@ -75,9 +101,15 @@ test<-summary(data)
 
 #Test
 test_that("Works with series and bootstraps", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 2)
-    expect_equal(ncol(test), 8)
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 2
+    	)
+    expect_equal(
+    	ncol(test), 8
+    	)
 })
 
 #Case 5, time series + bootstraps + rarefaction
@@ -91,9 +123,15 @@ test<-summary(data)
 
 #Test
 test_that("Works with series, bootstraps and rarefaction", {
-    expect_is(test, "data.frame")
-    expect_equal(nrow(test), 4)
-    expect_equal(ncol(test), 8)
+    expect_is(
+    	test, "data.frame"
+    	)
+    expect_equal(
+    	nrow(test), 4
+    	)
+    expect_equal(
+    	ncol(test), 8
+    	)
 })
 
 #Example
@@ -102,8 +140,16 @@ test_that("Example works", {
     customised_series <- cust.series(BeckLee_mat50, factors)
     bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
-    expect_is(summary(sum_of_ranges), "data.frame")
-    expect_equal(dim(summary(sum_of_ranges)), c(2,8))
-    expect_is(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame")
-    expect_equal(dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,6))
+    expect_is(
+    	summary(sum_of_ranges), "data.frame"
+    	)
+    expect_equal(
+    	dim(summary(sum_of_ranges)), c(2,8)
+    	)
+    expect_is(
+    	summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame"
+    	)
+    expect_equal(
+    	dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,6)
+    	)
 })

@@ -2,18 +2,21 @@
 
 context("dispRity.metric")
 
-
 #Testing the metrics
 test_that("variances metric", {
     #Create a dummy matrix
     matrix <- replicate(50, rnorm(100))
     #Calculate the variances
     vars1 <- variances(matrix)
-    expect_equal(length(vars1), ncol(matrix))
+    expect_equal(
+    	length(vars1), ncol(matrix)
+    	)
     #Calculate the variances "manually"
     vars2 <- apply(matrix, 2, var)
     #test
-    expect_equal(vars1, vars2)
+    expect_equal(
+    	vars1, vars2
+    	)
 })
 
 test_that("ranges metric", {
@@ -21,11 +24,14 @@ test_that("ranges metric", {
     matrix <- replicate(50, rnorm(100))
     #Calculate the ranges
     ran1 <- ranges(matrix)
-    expect_equal(length(ran1), ncol(matrix))
+    expect_equal(
+    	length(ran1), ncol(matrix))
     #Calculate the variances "manually"
     ran2 <- apply(matrix, 2, function(X) abs(min(X)-max(X)))
     #test
-    expect_equal(ran1, ran2)
+    expect_equal(
+    	ran1, ran2
+    	)
 })
 
 test_that("centroids metric", {
@@ -33,7 +39,9 @@ test_that("centroids metric", {
     matrix <- replicate(50, rnorm(100))
     #Calculate the centroids
     cent1 <- centroids(matrix)
-    expect_equal(length(cent1), nrow(matrix))
+    expect_equal(
+    	length(cent1), nrow(matrix)
+    	)
     #Calculate the centroids "manually"
     centroid <- apply(matrix, 2, mean)
     cent2 <- NULL
@@ -41,7 +49,9 @@ test_that("centroids metric", {
         cent2[j] <- dist(rbind(matrix[j,], centroid), method="euclidean")
     }
     #test
-    expect_equal(cent1, cent2)
+    expect_equal(
+    	cent1, cent2
+    	)
 })
 
 test_that("mode.val metric", {
@@ -52,7 +62,9 @@ test_that("mode.val metric", {
     #Calculate the variances "manually"
     mode2 <- as.numeric(names(sort(-table(vector))[1]))
     #test
-    expect_equal(mode1, mode2)
+    expect_equal(
+    	mode1, mode2
+    	)
 })
 
 test_that("ellipse.volume metric", {
@@ -61,14 +73,12 @@ test_that("ellipse.volume metric", {
         #Correct calculation of the volume (using the eigen values)
         #remove the eigen values for the eigen vectors not present in matrix
         eigen.val<-eigen.val[1:ncol(matrix)]
-
         #dimensionality (where k (or n in Donohue et al 2013) is the size of the covariance matrix but if corrected is the size of the covariance matrix - 2 (n=k-2))
         n<-ncol(matrix)
         #volume
         vol<-pi^(n/2)/gamma((n/2)+1)*prod(eigen.val^(0.5))
         return(vol)
-
-        #For volume through time use the eigenvectors??
+		#For volume through time use the eigenvectors??
     }
 
     # Dummy data
@@ -86,7 +96,9 @@ test_that("ellipse.volume metric", {
     # Calculate the volume without the eigen values
     test_vol <- ellipse.volume(dummy_ord)
     # test
-    expect_equal(true_vol, test_vol)
+    expect_equal(
+    	true_vol, test_vol
+    	)
 
     # Now testing for PCOA
     dummy_ord <- pcoa(dummy_dis)
@@ -97,8 +109,9 @@ test_that("ellipse.volume metric", {
     # Calculate the volume without the eigen values
     test_vol <- ellipse.volume(dummy_ord)
     # test
-    expect_equal(true_vol, test_vol)
-
+    expect_equal(
+    	true_vol, test_vol
+    	)
 
     # # Testing with eigen
     # dummy_ord <- eigen(dummy_dis, symmetric=TRUE)
@@ -109,9 +122,9 @@ test_that("ellipse.volume metric", {
     # # Calculate the volume without the eigen values
     # test_vol <- ellipse.volume(dummy_ord)
     # # test
-    # expect_equal(true_vol, test_vol)
-
-
+    # expect_equal(
+    #	true_vol, test_vol
+    #	)
 
     # # Now testing with PCA (from cladistic data)
     # dummy_ord <- prcomp(dummy_cla)
@@ -122,10 +135,11 @@ test_that("ellipse.volume metric", {
     # # Calculate the volume without the eigen values
     # test_vol <- ellipse.volume(dummy_ord)
     # # test
-    # expect_equal(true_vol, test_vol)
+    # expect_equal(
+    #	true_vol, test_vol
+    #	)
 
     # ## DOES NOT WORK FOR PCA!
-
 
     # # Now testing with PCA (from distance data)
     # dummy_ord <- prcomp(dummy_dis)
@@ -136,7 +150,9 @@ test_that("ellipse.volume metric", {
     # # Calculate the volume without the eigen values
     # test_vol <- ellipse.volume(dummy_ord)
     # # test
-    # expect_equal(true_vol, test_vol)
+    # expect_equal(
+    #	true_vol, test_vol
+    #	)
 
     # ## DOES NOT WORK FOR PCA!
 
@@ -148,7 +164,9 @@ test_that("ellipse.volume metric", {
     # # Calculate the volume without the eigen values
     # test_vol <- ellipse.volume(dummy_ord)
     # # test
-    # expect_equal(true_vol, test_vol) ## Getting closer...
+    # expect_equal(
+    #	true_vol, test_vol
+    #) ## Getting closer...
 
     # #And with svd?
 
