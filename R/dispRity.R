@@ -36,7 +36,7 @@
 #' summary(sum_of_variances)
 #' ## Bootstrapping this value
 #' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
-#' dispRity(bootstrapped_data, metric=c(sum, variances))
+#' dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
 #' ## Calculating the disparity from a customised series
 #' ## Generating the series
@@ -46,10 +46,18 @@
 #' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-#' ## Caculating the sum of variances
+#' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' summary(sum_of_variances)
 #'
+#' #' \dontrun{
+#' ## Calculating disparity using one thread
+#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
+#' ## Bootstrapping a series of matrices using 4 threads
+#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances), parallel = c(4, "SOCK")))
+#' # System time is significantly longer! Using parallel is only an improvement for big datasets.
+#' }
+#' 
 #' @seealso \code{\link{boot.matrix}} for bootstrapping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
 #'
 #' @author Thomas Guillerme
@@ -205,9 +213,9 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
         require(snow)
         do_parallel <- TRUE
         check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(parallel[1], "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
         check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-        cluster <- makeCluster(parallel[1], parallel[2])
+        cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
     }
 
     #----------------------

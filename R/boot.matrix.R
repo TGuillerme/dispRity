@@ -8,7 +8,8 @@
 #' @param rm.last.axis Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).#'
+#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
+#' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
@@ -51,6 +52,14 @@
 #' matrix.list <- cust.series(ordinated_matrix, factors)
 #' ## Bootstrapping the series of matrices 20 times (each)
 #' boot.matrix(matrix.list, bootstraps = 20)
+#' 
+#' \dontrun{
+#' ## Bootstrapping a series of matrices using a single thread
+#' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
+#' ## Bootstrapping a series of matrices using 4 threads
+#' system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE, parallel = c(4, "SOCK")))
+#' # System time is three times shorter with parallel but elapsed is > 2 times longer.
+#' }
 #' 
 #' @author Thomas Guillerme
 
@@ -183,9 +192,21 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         require(snow)
         do_parallel <- TRUE
         check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(parallel[1], "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
         check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-        cluster <- makeCluster(parallel[1], parallel[2])
+        #Set up the cluster
+        cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
+        #Set up the bootstrap type function
+        if(class(boot.type) == "function") {
+            boot.type.fun <- boot.type
+        } else {
+            if(boot.type == "full") {
+                boot.type.fun <- boot.full
+            }
+            if(boot.type == "single") {
+                boot.type.fun <- boot.single
+            }
+        }
     }
 
     #----------------------
@@ -223,7 +244,7 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
     if(do_parallel == FALSE) {
         BSresult<-lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
     } else {
-        BSresult<-parLapply(cluster, data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+        BSresult<-parLapply(cluster, data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type.fun)
         stopCluster(cluster)
     }
     #Getting the observed results

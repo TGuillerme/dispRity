@@ -1,6 +1,7 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
+  * parallel options now runs properly in `boot.matrix` and `dispRity`.
   * graphical updates in `plot.dispRity(..., type = "discrete")` (box sizes, lines precision and rarefaction curves)
   * many updates to the functions manual.
   * all dispRity functions can now run in parallel!

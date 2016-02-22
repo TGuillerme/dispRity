@@ -20,7 +20,7 @@ boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
 
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).#'}
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -67,6 +67,14 @@ factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
 matrix.list <- cust.series(ordinated_matrix, factors)
 ## Bootstrapping the series of matrices 20 times (each)
 boot.matrix(matrix.list, bootstraps = 20)
+
+\dontrun{
+## Bootstrapping a series of matrices using a single thread
+system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
+## Bootstrapping a series of matrices using 4 threads
+system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE, parallel = c(4, "SOCK")))
+# System time is three times shorter with parallel but elapsed is > 2 times longer.
+}
 
 }
 \author{

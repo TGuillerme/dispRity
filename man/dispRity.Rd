@@ -48,7 +48,7 @@ sum_of_variances <- dispRity(BeckLee_mat50, metric = c(sum, variances))
 summary(sum_of_variances)
 ## Bootstrapping this value
 bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
-dispRity(bootstrapped_data, metric=c(sum, variances))
+dispRity(bootstrapped_data, metric = c(sum, variances))
 
 ## Calculating the disparity from a customised series
 ## Generating the series
@@ -58,9 +58,17 @@ factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-## Caculating the sum of variances
+## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
+
+#' \dontrun{
+## Calculating disparity using one thread
+system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
+## Bootstrapping a series of matrices using 4 threads
+system.time(dispRity(bootstrapped_data, metric = c(sum, variances), parallel = c(4, "SOCK")))
+# System time is significantly longer! Using parallel is only an improvement for big datasets.
+}
 
 }
 \author{

@@ -52,17 +52,21 @@ Bootstrap.rarefaction<-function(data, bootstraps, rarefaction, boot.type) {
                 output<-data[sample(1:nrow(data),rare,FALSE),]
             } else {
 
-                if(boot.type=="full") {
-                    output<-boot.full(data, rare)
-                }
-                
-                if(boot.type=="single") {
-                    output<-boot.single(data, rare)
-                }
+                if(class(boot.type) == "function") {
+                    output<-boot.type(data, rare)
+                } else {
+                    if(boot.type=="full") {
+                        output<-boot.full(data, rare)
+                    }
+                    
+                    if(boot.type=="single") {
+                        output<-boot.single(data, rare)
+                    }
 
-                if(boot.type=="frac") {
-                    #Or use method in between? 10% of resampling?
-                    stop("Fractional bootstrap under development.\nSee internal function disparity/disparity_fun/Bootstrap.rarefaction.")
+                    if(boot.type=="frac") {
+                        #Or use method in between? 10% of resampling?
+                        stop("Fractional bootstrap under development.\nSee internal function disparity/disparity_fun/Bootstrap.rarefaction.")
+                    }
                 }
 
             }
