@@ -6,12 +6,12 @@
 \usage{
 \method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
-  discrete_type = "box", time.series = TRUE, observed = FALSE, ...)
+  time.series = TRUE, observed = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantile}{The quantiles to display (default is \code{quantile = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -20,8 +20,6 @@
 \item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
 
 \item{elements}{\code{logical} whether to plot the number of elements per series.}
-
-\item{discrete_type}{Either \code{"box"} for boxplots or \code{"line"} for distribution lines.}
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
 
@@ -35,8 +33,10 @@ Plots a \code{dispRity} object.
 \details{
 \code{type}:
 \itemize{
-  \item \code{"continuous"}: plots the results in a continuous fashion (e.g. disparity function of time)
-  \item \code{"discrete"}: plots the results in a discrete fashion (e.g. disparity function of factors)
+  \item \code{"continuous"}: plots the results as a continuous line.
+  \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
+  \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
+  \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
 }
 }
 \examples{
@@ -55,18 +55,26 @@ bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20,
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 
 ## Discrete plotting
-plot(sum_of_variances, type = "discrete")
+plot(sum_of_variances, type = "box")
+
+## Using polygons rather than boxes (quantiles and central tendency can be
+## set by the user)
+plot(sum_of_variances, type = "polygon", quantile = c(10, 50, 95),
+     cent.tend = mode.val)
+
 ## Using different options
-plot(sum_of_variances, type = "discrete", quantile = c(50, 75, 95),
-     cent.tend = median, rarefaction = TRUE, elements = TRUE,
-     ylim = c(10, 40), xlab = ("Time (Ma)"), discrete_type = "line",
-     ylab = c("disparity", "taxonomic richness"), col = "red")
+plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
+     xlab = ("Time (Ma)"), ylab = "disparity", ylim = c(0, 5))
 
 ## Continuous plotting (all default options)
 plot(sum_of_variances, type = "continuous")
+
 ## Using different options (with non time.slicing option)
 plot(sum_of_variances, type = "continuous", time.series = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
+
+## Rarefactions plots
+plot(sum_of_variances, rarefaction = "plot")
 
 }
 \author{

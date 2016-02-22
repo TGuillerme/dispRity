@@ -1,5 +1,5 @@
 #default settings
-set.default<-function(summarised_data, call, type, elements, ylim, xlab, ylab, col, which.rare) {
+set.default<-function(summarised_data, call, elements, ylim, xlab, ylab, col, which.rare) {
 
     #ylim
     if(ylim[[1]] == "default") {
@@ -118,7 +118,8 @@ plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, .
 }
 
 #discrete plotting
-plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...) {
+plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...) {
+
     #How many points?
     points_n <- length(unique(summarised_data$series))
 
@@ -140,7 +141,7 @@ plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col_tmp <- set.default(summarised_data, call = 1, "discrete", elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            col_tmp <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default")[[4]]
             poly_col <- col_tmp[-1]
             poly_col <- rev(poly_col)
         } else {
@@ -149,7 +150,7 @@ plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab
         }
 
         #Add the quantiles
-        if(discrete_type == "box") {
+        if(type == "polygon") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     #Setting X
@@ -164,7 +165,8 @@ plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab
 
                 }
             }
-        } else {
+        }
+        if(type == "lines") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     #Setting Y
@@ -181,11 +183,10 @@ plot.discrete <- function(summarised_data, which.rare, discrete_type, ylim, xlab
     #Add the points estimates
     points(1:points_n, extract.summary(summarised_data, 4, which.rare), col = col[[1]], pch = 19)
 
-
     if(observed == TRUE) {
         if(any(!is.na(extract.summary(summarised_data, 3, which.rare))))
         #Add the points observed (if existing)
-        if(discrete_type == "box") {
+        if(type == "polygon") {
             for (point in 1:points_n) {
                 x_coord <- c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
                 y_coord <- rep(extract.summary(summarised_data, 3, which.rare)[point], 2)
@@ -226,7 +227,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col<-set.default(summarised_data, call=1, "continuous", elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
+            col<-set.default(summarised_data, call=1, elements=1, ylim=1, xlab=1, ylab=1, col="default", which.rare)[[4]]
             poly_col<-col[-1]
             poly_col<-rev(poly_col)
         } else {
@@ -276,7 +277,7 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
 
         #Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col <- set.default(summarised_data, call = 1, "continuous", elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
             poly_col <- col[-1]
             poly_col <- rev(poly_col)
         } else {
@@ -299,4 +300,37 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
 
     # Save parameters
     return(par())
+}
+
+#Transposing data for boxploting (taking functions from summary.dispRity)
+transpose.box <- function(data, which.rare) {
+    #Getting the bootstrapped results
+    BSresults <- data$disparity$bootstrapped
+    #Unlisting the results
+    BSresults_unlist <- unlist(recursive.unlist(BSresults), recursive=FALSE)
+    #Get the rarefaction multiplier
+    multiplier <- unlist(lapply(BSresults, length))
+    #Create the (dummy) table results
+    results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps)), stringsAsFactors=FALSE)
+
+    #Get the vector of list elements to print out
+    if(is.numeric(which.rare)) {
+        list_elements_out <- which(as.numeric(results_table[,2]) == which.rare)
+    } else {
+        if(which.rare == "max") which.rare.fun<-max
+        if(which.rare == "min") which.rare.fun<-min
+        list_elements_out <- NULL
+        for(series in 1:length(multiplier)) {
+            #Selecting the right series
+            right_series <- which(results_table[,1] == names(multiplier)[series])
+            #Selecting the max/min from there
+            list_elements_out[series]<-which.rare.fun(right_series)
+        }
+    }
+
+    #Extract the list
+    list_out <- BSresults_unlist[list_elements_out]
+    #Add the names
+    names(list_out) <- names(multiplier)
+    return(list_out)
 }

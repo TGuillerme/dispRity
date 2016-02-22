@@ -1,10 +1,13 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
-  * parallel options now runs properly in `boot.matrix` and `dispRity`.
-  * graphical updates in `plot.dispRity(..., type = "discrete")` (box sizes, lines precision and rarefaction curves)
+  * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
+  	* `continuous` disparity curves.
+  	* `box` for real boxplots.
+  	* `lines` for the distribution verticale lines.
+  	* `polygon` for the distribution boxes.
   * many updates to the functions manual.
-  * all dispRity functions can now run in parallel!
+  * `boot.matrix` and `dispRity` can now run in parallel!
   * new function: `space.maker` to create some multidimensional spaces!
   * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
   * new disparity tests: `sequential.test`, `null.test` (from Diaz et al 2015 Nature).

@@ -3,12 +3,11 @@
 #' @description Plots a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param type Either \code{"continuous"} or \code{"discrete"}. When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"discrete"}.
+#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantile The quantiles to display (default is \code{quantile = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
-#' @param discrete_type Either \code{"box"} for boxplots or \code{"line"} for distribution lines.
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
 #' @param observed \code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
@@ -16,8 +15,10 @@
 #' @details
 #' \code{type}:
 #' \itemize{
-#'   \item \code{"continuous"}: plots the results in a continuous fashion (e.g. disparity function of time)
-#'   \item \code{"discrete"}: plots the results in a discrete fashion (e.g. disparity function of factors)
+#'   \item \code{"continuous"}: plots the results as a continuous line.
+#'   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
+#'   \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
+#'   \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
 #' }
 #'
 #' @examples
@@ -36,24 +37,32 @@
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' 
 #' ## Discrete plotting
-#' plot(sum_of_variances, type = "discrete")
+#' plot(sum_of_variances, type = "box")
+#' 
+#' ## Using polygons rather than boxes (quantiles and central tendency can be
+#' ## set by the user)
+#' plot(sum_of_variances, type = "polygon", quantile = c(10, 50, 95),
+#'      cent.tend = mode.val)
+#' 
 #' ## Using different options
-#' plot(sum_of_variances, type = "discrete", quantile = c(50, 75, 95),
-#'      cent.tend = median, rarefaction = TRUE, elements = TRUE,
-#'      ylim = c(10, 40), xlab = ("Time (Ma)"), discrete_type = "line",
-#'      ylab = c("disparity", "taxonomic richness"), col = "red")
+#' plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
+#'      xlab = ("Time (Ma)"), ylab = "disparity", ylim = c(0, 5))
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(sum_of_variances, type = "continuous")
+#' 
 #' ## Using different options (with non time.slicing option)
 #' plot(sum_of_variances, type = "continuous", time.series = FALSE,
 #'      elements = TRUE, col = c("red", "orange", "yellow"))
+#' 
+#' ## Rarefactions plots
+#' plot(sum_of_variances, rarefaction = "plot")
 #' 
 #' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
-plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, discrete_type="box", time.series=TRUE, observed=FALSE, ...){
+plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, ...){
 
     #SANITIZING
     #DATA
@@ -104,20 +113,22 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         if(any(grep("continuous method", data$call))) {
             type <- "continuous"
         } else {
-            type <- "discrete"
+            type <- "box"
         }
     } else {
+        #type must be either "discrete", "d", "continuous", or "c"
+        all_types <- c("continuous", "c", "box", "b", "lines", "l", "polygon", "p")
         #type must be a character string
         check.class(type, "character")
         #type must have only one element
-        check.length(type, 1, ' must be either "discrete", "d", "continuous", or "c".')
-        #type must be either "discrete", "d", "continuous", or "c"
-        all_types <- c("discrete", "d", "continuous", "c")
-        if(all(is.na(match(type, all_types)))) stop('type must be either "discrete", "d", "continuous", or "c".')
+        check.length(type, 1, paste(" argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
+        if(all(is.na(match(type, all_types)))) stop(paste("Type argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
         
-        #if type is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
-        if(type == "d") type <- "discrete"
+        #if type is a letter change it to the full word (lazy people...)
         if(type == "c") type <- "continuous"
+        if(type == "b") type <- "box"
+        if(type == "l") type <- "lines"
+        if(type == "p") type <- "polygon"
     }
 
     #If continuous, set time to continuous Ma (default)
@@ -203,7 +214,11 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #col
     #if default, is ok
     if(missing(col)) {
-        col <- "default"
+        if(type == "box") {
+            col <- "white"
+        } else {
+            col <- "default"
+        }
     } else {
         check.class(col, "character", " must be a character string.")
     }
@@ -214,14 +229,6 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     } else {
         check.class(ylim, "numeric")
         check.length(ylim, 2, " must be a vector of two elements.")
-    }
-
-    #discrete_type
-    if(type == "discrete") {
-        discrete_type_methods<-c("box", "b", "line", "l")
-        if(all(is.na(match(discrete_type, discrete_type_methods)))) stop('type must be either "box" or "line".')
-        if(discrete_type == "b") discrete_type <- "box"
-        if(discrete_type == "l") discrete_type <- "line"
     }
 
     #PREPARING THE PLOT
@@ -254,53 +261,20 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     if(which.rare != "plot") {
         if(type == "continuous") {
             if(length(unique(summarised_data$series)) == 1) {
-                type <- "discrete"
-                message('Only one series of data available: type is set to "discrete".')
+                type <- "box"
+                message('Only one series of data available: type is set to "box".')
             }
         }
     }
 
     #Setting the default arguments
-    default_arg <- set.default(summarised_data, data$call, type, elements, ylim, xlab, ylab, col, which.rare)
+    default_arg <- set.default(summarised_data, data$call, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, which.rare = which.rare)
     ylim <- default_arg[[1]]
     xlab <- default_arg[[2]]
     ylab <- default_arg[[3]]
     col <- default_arg[[4]]
 
     #PLOTTING THE RESULTS
-
-    #Continuous plot
-    if(type == "continuous") {
-        if(elements == FALSE) {
-            saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
-            #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
-        } else {
-            bigger_margin<-par(mar=c(5,4,4,4))
-            saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
-            #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
-            par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
-            #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-            par(bigger_margin)
-        }
-    }
-
-    #Discrete plots
-    if(type == "discrete") {
-        if(elements == FALSE) {
-            saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
-            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
-        } else {
-            bigger_margin<-par(mar=c(5,4,4,4))
-            saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, ...)
-            #saved_par <- plot.discrete(summarised_data, which.rare, discrete_type, ylim, xlab, ylab, col, observed, cex.lab = 0.1) ; warning("DEBUG: plot")
-            par(new=TRUE)
-            plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
-            #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-            par(bigger_margin)
-        }        
-    }
-
 
     if(which.rare == "plot") {
         #How many rarefaction plots?
@@ -318,7 +292,62 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
         #Done!
         par(op_tmp)
-    } 
 
+    } else { 
+
+        #Continuous plot
+        if(type == "continuous") {
+            if(elements == FALSE) {
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
+                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+            } else {
+                bigger_margin<-par(mar=c(5,4,4,4))
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
+                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+                par(new=TRUE)
+                plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
+                #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                par(bigger_margin)
+            }
+        } else {
+
+            #Box plot
+            if(type == "box") {
+                #Simple case: boxplot
+                plot_data <- transpose.box(data, which.rare)
+                boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+                #boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col) ; warning("DEBUG: plot")
+
+                if(observed == TRUE) {
+                    if(any(!is.na(extract.summary(summarised_data, 3, which.rare)))){
+                        #Add the points observed (if existing)
+                        for(point in 1:length(plot_data)) {
+                            x_coord <- point
+                            y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                            points(x_coord, y_coord, pch = 4, col = col[length(col)])
+                        }
+                    }
+                }
+                    
+
+            } else {
+
+                #Personalised discrete plots
+                if(elements == FALSE) {
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...) 
+                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
+                } else {
+                    bigger_margin<-par(mar=c(5,4,4,4))
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...)
+                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, cex.lab = 0.1) ; warning("DEBUG: plot")
+                    par(new=TRUE)
+                    plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
+                    #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                    par(bigger_margin)
+                }
+            }   
+        }
+
+    }
     #End
 }
