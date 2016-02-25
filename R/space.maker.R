@@ -59,8 +59,8 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL) {
     # dimensions
     check.class(dimensions, "numeric")
     check.length(dimensions, 1, msg = "'dimensions' must be a single numeric value.")
-    # must be smaller than elements
-    if(dimensions > elements) stop("'dimensions' must be smaller than 'elements'")
+    # must be smaller than elements - No...
+    #if(dimensions > elements) stop("'dimensions' must be smaller than 'elements'")
 
     # distribution
     if(length(distribution) == 1) {
