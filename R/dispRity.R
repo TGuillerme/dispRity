@@ -210,7 +210,6 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     if(missing(parallel)) {
         do_parallel <- FALSE
     } else {
-        require(snow)
         do_parallel <- TRUE
         check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
         check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")

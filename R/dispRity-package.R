@@ -10,6 +10,12 @@
 #'
 #' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
+#' @import ape
+#' @importFrom paleotree timeSliceTree
+#' @importFrom snow makeCluster stopCluster parLapply
+#' @importFrom geometry convhulln
+#' @importFrom hypervolume hypervolume estimate_bandwidth
+
 NULL
 
 #' Beck and Lee 2014 datasets

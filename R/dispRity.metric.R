@@ -141,7 +141,6 @@ convhull.surface <- function(matrix) {
 
     message("convhull.surface not tested yet.")
 
-    require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the area
@@ -153,7 +152,6 @@ convhull.volume <- function(matrix) {
 
     message("convhull.volume not tested yet.")
 
-    require(geometry)
     # Algorithm warn
     if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.volume function is likely to crash!")
     # calculate the volume
@@ -165,7 +163,6 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
 
     message("hyper.volume not tested yet.")
 
-    require(hypervolume)
     # Tolerate missing arguments (set defaults)
     # repsperpoint
     if(missing(repsperpoint)) {
