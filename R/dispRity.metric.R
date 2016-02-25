@@ -138,31 +138,22 @@ ellipse.volume <- function(matrix) {
 
 # Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
-
-    message("convhull.surface not tested yet.")
-
     # Algorithm warn
-    if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.surface function is likely to crash!")
+    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
 
 # Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
-
-    message("convhull.volume not tested yet.")
-
     # Algorithm warn
-    if(any(dim(matrix)) > 100) warning("Big ordinated space: convhull.volume function is likely to crash!")
+    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.volume function is likely to crash!")
     # calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
 
 # Calculate the hypervolume using hypervolume::hypervolume
 hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, warnings, name) {
-
-    message("hyper.volume not tested yet.")
-
     # Tolerate missing arguments (set defaults)
     # repsperpoint
     if(missing(repsperpoint)) {
@@ -170,7 +161,7 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
     }
     # bandwith
     if(missing(bandwidth)) {
-        bandwidth <- estimate_bandwidth(matrix)
+        bandwidth <- hypervolume::estimate_bandwidth(matrix)
     }
     # quantile
     if(missing(quantile)) {

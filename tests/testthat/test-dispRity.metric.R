@@ -172,3 +172,101 @@ test_that("ellipse.volume metric", {
 
     # svd(dummy_dis)
 })
+
+test_that("convhull.surface metric", {
+
+    #Create a small dummy matrix
+    set.seed(1)
+    matrix <- space.maker(5, 3, rnorm)
+
+    #errors
+    expect_error(
+        convhull.surface(1)
+        )
+    expect_warning(
+        expect_error(
+            convhull.surface("a")
+            )
+        )
+    expect_error(
+        convhull.surface(list(matrix))
+        )
+    expect_warning(
+        convhull.surface(space.maker(22, 21, rnorm))
+        ) 
+
+    #Works fine!
+    expect_is(
+        convhull.surface(matrix)
+        ,"numeric")
+    expect_equal(
+        length(convhull.surface(matrix))
+        ,1)
+    expect_equal(
+        round(convhull.surface(matrix), 3)
+        ,10.483)
+})
+
+test_that("convhull.volume metric", {
+
+    #Create a small dummy matrix
+    set.seed(1)
+    matrix <- space.maker(5, 3, rnorm)
+
+    #errors
+    expect_error(
+        convhull.volume(1)
+        )
+    expect_warning(
+        expect_error(
+            convhull.volume("a")
+            )
+        )
+    expect_error(
+        convhull.volume(list(matrix))
+        )
+    expect_warning(
+        convhull.volume(space.maker(22, 21, rnorm))
+        ) 
+
+    #Works fine!
+    expect_is(
+        convhull.volume(matrix)
+        ,"numeric")
+    expect_equal(
+        length(convhull.volume(matrix))
+        ,1)
+    expect_equal(
+        round(convhull.volume(matrix), 3)
+        ,1.25)
+})
+
+
+test_that("hyper.volume metric", {
+
+    #Create a small dummy matrix
+    set.seed(1)
+    matrix <- space.maker(5, 3, rnorm)
+
+    #errors
+    expect_error(
+        hyper.volume(1)
+        )
+    expect_error(
+        hyper.volume("a")
+        )
+    expect_error(
+        hyper.volume(list(matrix))
+        )
+
+    #Works fine!
+    expect_is(
+        hyper.volume(matrix)
+        ,"numeric")
+    expect_equal(
+        length(hyper.volume(matrix))
+        ,1)
+    expect_equal(
+        round(hyper.volume(matrix), 3)
+        ,10.83)
+})
