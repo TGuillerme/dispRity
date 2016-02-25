@@ -4,7 +4,7 @@
 \alias{space.maker}
 \title{Creating some multidimensional spaces}
 \usage{
-space.maker(elements, dimensions, distribution, ...)
+space.maker(elements, dimensions, distribution, arguments = NULL)
 }
 \arguments{
 \item{elements}{An \code{numeric} value.}
@@ -13,13 +13,15 @@ space.maker(elements, dimensions, distribution, ...)
 
 \item{distribution}{One or more \code{function} to determine the distribution of the \code{elements} along each \code{dimensions}. The function must have a single input: \code{elements}.}
 
-\item{...}{Optional arguments to be passed to function.}
+\item{arguments}{Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).}
 }
 \description{
 Creates a multidimensional space with a given number of elements and dimensions
 }
 \details{
-
+For passing some additional arguments to different distributions, they must be given as a \code{list} to each function in the order they appear.
+For example if \code{distribution = c(runif, rnorm, rgamma)} and one wants the distributions to be \code{runif(elements, min = 1, max = 10)}, \code{rnorm(elements, mean = 8)} and \code{rgamma(elements, shape = 1, log = TRUE)}, the additional arguments sould be passed as
+\code{c(list(min = 1, max = 10), list(mean = 8), list(shape = 1, log = TRUE)}. If no arguments have to be passed to a certain function, it can be left as \code{NULL} (e.g. \code{c(list(min = 1, max = 10), list(NULL), list(shape = 1, log = TRUE)}).
 }
 \examples{
 ## A square space
@@ -28,13 +30,20 @@ plot(space.maker(5000, 2, runif), pch = 20)
 ## A circular space
 plot(space.maker(5000, 2, rnorm), pch = 20)
 
+
 ## A 2D cilindrical space
 plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
 
+## A multidimensional space with different distributions
+space.maker(5, 3, c(runif, rnorm, rgamma), arguments = list(list(min = 1, max = 10), list(mean = 8), list(shape = 1)))
+
 \dontrun{
-## A cube space
 require(scatterplot3d)
+## A cube space
 scatterplot3d(space.maker(5000, 3, runif), pch = 20)
+
+## A plane space
+scatterplot3d(space.maker(5000, 3, c(runif, runif, runif), arguments = list(list(min = 0, max = 0), NULL, NULL)), pch = 20)
 
 ## A sphere space
 scatterplot3d(space.maker(5000, 3, rnorm), pch = 20)
