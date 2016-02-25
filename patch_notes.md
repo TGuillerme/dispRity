@@ -1,6 +1,9 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
+  * new function: `space.maker` to create some multidimensional spaces!
+  * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
+  * new disparity tests: `sequential.test` and `null.test`.
   * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
   	* `continuous` disparity curves.
   	* `box` for real boxplots.
@@ -8,9 +11,6 @@ Patch notes
   	* `polygon` for the distribution boxes.
   * many updates to the functions manual.
   * `boot.matrix` and `dispRity` can now run in parallel!
-  * new function: `space.maker` to create some multidimensional spaces!
-  * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
-  * new disparity tests: `sequential.test`, `null.test` (from Diaz et al 2015 Nature).
 * 2015/12/01 - v0.1.2
   * new function: `get.dispRity` for subsampling dispRity objects
   * new function: `extract.dispRity` for extracting disparity results
