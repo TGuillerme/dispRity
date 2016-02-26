@@ -15,18 +15,12 @@
 #'   \item \code{"pairwise"}: pairwise comparisons of all the series (default).
 #'   \item \code{"referential"}: compares the first series to all the others.
 #'   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
-#'   \item \code{"all"}: compares all the series simultaneously:
-#'      \itemize{
-#'          \item If the test is of type \code{\link[stats]{aov}} or \code{\link[stats]{glm}} the applied formula will be \code{bootstrapped disparity ~ series names}.
-#'          \item See the \code{\link[dispRity]{sequential.test}} for a \code{\link[stats]{glm}} correcting for time autocorrelation.
-#'      }
+#'   \item \code{"all"}: compares all the series simultaneously to the data (i.e. \code{bootstrapped disparity ~ series names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
 #'   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
-# Change that to allow any comparisons pattern?
+#'   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
 #' }
-#' IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),
-#' don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
-#' NOTE: some specific test like \code{\link[stats]{aov}} or \code{\link[dispRity]{sequential.test}} ignore the comparisons argument.
+#' IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),  don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -55,6 +49,9 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}.
 #'
 #' @author Thomas Guillerme
+
+#For testing:
+#source("sanitizing.R")
 
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., details=FALSE) { #format: get additional option for input format?
@@ -128,6 +125,17 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
             #Make sure only one inbuilt comparison is given
             check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
             comp <- comparisons
+
+            #Set specific comparisons if needed
+            if(as.character(match_call$test) == "sequential.test") {
+                comp <- "sequential.test"
+                comparisons <- "all"
+            }
+            if(as.character(match_call$test) == "null.test") {
+                comp <- "null.test"
+                comparisons <- "all"
+            }
+
         }
     }
 
@@ -149,15 +157,6 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
 
     #Extracting the data (sends error if data is not bootstrapped)
     extracted_data <- extract.dispRity(data, observed=FALSE)
-
-    # #Apply the test to the two distributions only
-    # if(is.pair == TRUE) {
-    #     #running the test
-    #     output <- test(extracted_data[[1]], extracted_data[[2]])
-    #     #fixing the data name (if hclass)
-    #     if(class(output) == "hclass") output$data.name <- paste(data$series, collapse=" and ")
-    # } 
-
 
     #Referential comparisons (first distribution to all the others)
     if(comp == "referential") {
@@ -197,66 +196,30 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     }
 
     #Sequential comparisons (one to each other)
-    if(comp == "sequential") {
-        #Set the list of sequences
-        seq_series <- set.sequence(length(extracted_data))
-
-        #convert seq series in a list of sequences
-        seq_series <- unlist(apply(seq_series, 2, list), recursive=FALSE)
-
+    if(comp == "sequential.test") {
         #Applying the test to the list of pairwise comparisons
-        details_out <- lapply(seq_series, test.list.lapply, extracted_data, test, ...)
-        #details_out <- lapply(seq_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
-
-        #Saving the list of comparisons
-        comparisons_list <- convert.to.character(seq_series, extracted_data)
-        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
-
-        #Renaming the detailed results list
-        names(details_out) <- comparisons_list
+        details_out <- test(extracted_data, ...)
+        #details_out <- test(extracted_data, family = gaussian)
     }
 
-    # #User defined
-    # if(comp == "all") {
-    #     #Set the list of comparisons
-    #     cust_series <- comparisons
-
-    #     #If the series are characters, convert them into numeric
-    #     if(class(unlist(cust_series)) == "character") {
-    #         cust_series <- convert.to.numeric(cust_series, extracted_data)
-    #     }
-
-    #     #Applying the test to the custom list
-    #     details_out <- lapply(cust_series, test.list.lapply, extracted_data, test, ...)
-    #     #details_out <- lapply(cust_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
-
-    #     #Saving the list of comparisons
-    #     comparisons_list <- convert.to.character(cust_series, extracted_data)
-    #     comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
-
-    #     #Renaming the detailed results list
-    #     names(details_out) <- comparisons_list
-    # }
+    #Null testing
+    if(comp == "null.test") {
+        #Applying the test to the list of pairwise comparisons
+        details_out <- test(data, ...)
+        #details_out <- test(data, replicates=10, null.distrib=rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
+    }
 
     #ANOVA/GLM type
     if(comp == "all") {
+        #Transform the extracted data into a table
+        data <- list.to.table(extracted_data)
 
-        #Specific case if test is sequential.test
-        if(as.character(match_call$test) == "sequential.test") {
-            #run the sequential test
-            details_out <- test(extracted_data, ...)
-        } else {
-            #Transform the extracted data into a table
-            data <- list.to.table(extracted_data)
+        #Renaming the colnames
+        colnames(data) <- c("data", "series")
 
-            #Renaming the colnames
-            colnames(data) <- c("data", "series")
-
-            #running the test
-            details_out <- test(data~series, data=data, ...)
-            #details_out <- test(data~series, data=data) ; warning("DEBUG")
-
-        }
+        #running the test
+        details_out <- test(data~series, data=data, ...)
+        #details_out <- test(data~series, data=data) ; warning("DEBUG")
     }
 
 
