@@ -52,7 +52,7 @@
 #' test.dispRity(sum_of_variances, aov, "all")
 #' ## warning: this violates some aov assumptions!
 #'
-#' @seealso \code{\link{dispRity}}, \code{\link{dispRity.test}}
+#' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}.
 #'
 #' @author Thomas Guillerme
 

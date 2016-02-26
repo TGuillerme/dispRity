@@ -1,37 +1,21 @@
-#' @name dispRity.test
-#' @aliases bhatt.coeff sequential.test null.test
+#' @name sequential.test
 #'
-#' @title Disparity tests
+#' @title Sequential linear regressions
 #'
-#' @usage bhatt.coeff(x, y, bw = bw.nrd0, ...)
-#' sequential.test(series, results = "coefficients", family, ...)
-#' null.test(...)
+#' @usage sequential.test(series, results = "coefficients", family, ...)
 #'
-#' @description Different implemented tests for comparing series.
+#' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
 #'
-#' @param x,y two distributions.
-#' @param bw the bandwith size, either a \code{numeric} or a \code{function} (see \code{\link[stats]{bw.nrd0}}).
 #' @param series time series of which to estimate the slopes sequentially.
 #' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
-#' @param ... optional arguments to be passed to the functions.
+#' @param data a \code{dispRity} object
+#' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
 #'
 #' @details
-#' These are inbuilt statistical tests for comparing disparity series:
-#' \itemize{
-#'   \item \code{bhatt.coeff}: calculates the Bhattacharyya Coefficient (probability of overlap) between two distributions.
-#'   \item \code{sequential.test}: performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. The time autocorrelation is corrected by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
-#'   \item \code{null.test}: soon!
-#' }
+#' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
 #'
 #' @examples
-#' ## Bhattacharyya Coefficient:
-#' ## Two dummy distributions
-#' x <- rnorm(1000, 0, 1) ; y <- rnorm(1000, 1, 2)
-#' ## What is the probability of overlap of these distributions?
-#' bhatt.coeff(x, y)
-#'
-#' ## Sequential test:
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
 #' ## Calculating the disparity from a customised series
@@ -49,69 +33,13 @@
 #' ## The sequential test
 #' sequential.test(series, family = gaussian)
 #'
-#' @seealso \code{\link{test.dispRity}}.
+#' @seealso \code{\link{test.dispRity}}, \code{\link{bhatt.coeff}}, \code{\link{null.test}}.
 #'
-#' @references
-#' Bhattacharyya A. 1943. On a measure of divergence between two statistical populations defined by their probability distributions. Bull. Calcutta Math. Soc., \bold{35}, pp. 99–-109
 #'
 #' @author Thomas Guillerme
+#' @export
 
-#Calculate the Bhattacharyya Coefficient
-bhatt.coeff<-function(x, y, bw=bw.nrd0, ...) {
-    #SANITIZING
-    #x and y
-    check.class(x, "numeric")
-    check.class(y, "numeric")
-    
-    #bw
-    if(class(bw) == "numeric") {
-        check.length(bw, 1, " must be either a single numeric value or a function.")
-         bw<-round(bw)
-    } else {
-        check.class(bw, "function", " must be either a single numeric value or a function.")
-    }
 
-    #BHATTACHARYYA COEFFICIENT
-    #sum(sqrt(x relative counts in bin_i * y relative counts in bin_i))
-
-    #Setting the right number of bins (i)
-    if(class(bw) == 'function') {
-        #Bin width
-        band.width<-bw(c(x,y), ...)
-        #Bin breaks
-        bin.breaks<-seq(from=min(c(x,y)), to=max(c(x,y)+band.width), by=band.width) #adding an extra bandwith to the max to be sure to include all the data
-        #Number of bins
-        bin.n<-length(bin.breaks)-1
-    } else {
-        #Bin breaks
-        bin.breaks<-hist(c(x,y), breaks=bw, plot=F)$breaks
-        #Bin width
-        band.width<-diff(bin.breaks)[1]
-        #Number of bins
-        bin.n<-bw
-    }
-
-    #Counting the number of elements per bin
-    histx<-hist(x, breaks=bin.breaks, plot=FALSE)[[2]]
-    histy<-hist(y, breaks=bin.breaks, plot=FALSE)[[2]]
-    #Relative counts
-    rel.histx<-histx/sum(histx)
-    rel.histy<-histy/sum(histy)
-    
-    #Calculating the Bhattacharyya Coefficient (sum of the square root of the multiple of the relative counts of both distributions)
-    bhatt.coeff<-sum(sqrt(rel.histx*rel.histy))
-    return(bhatt.coeff)
-#End
-}
-
-# Calculate the time-correlated lm test:
-# 1 - apply a logistic regression to the first series
-# 2 - save the slope + the intercept for series 1
-# 3 - estimate the intercept for the 2nd series using slope 1 + intercept 1
-# 4 - save slope for series 2
-# 5 - estimate the intercept for the 3rd series using slope 2 + intercept 2
-# 6 - etc...
-# 
 sequential.test <- function(series, results="coefficients", family, ...) {
 
     #SANITIZING
@@ -126,54 +54,6 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     }
     if(family(link="identity")[[1]] == "gaussian") {
         warning("Model family is set to gaussian, should it not be binomial?")
-    }
-
-    #FUNCTIONS
-
-    #Getting the data function
-    set.pair.series <- function(series_pair, intercept=NULL) {
-        #Getting the series from the list
-        series_pair_out <- list.to.table(series_pair)
-        #Setting the factor as binomial
-        series_pair_out$factor <- c(rep(0, length(series_pair[[1]])), rep(1, length(series_pair[[2]])))
-        #Add intercept (if non-null)
-        if(!is.null(intercept)) {
-            series_pair_out$intercept <- intercept
-        }
-        return(series_pair_out)
-    }
-
-    #Estimating intercept function
-    intercept.estimate <- function(intercept0, slopes) {
-        if(length(slopes) > 1) {
-            #First intercept
-            intercept <- intercept0 + slopes[1] * 1
-            for(n in 2:length(slopes)) {
-                intercept <- intercept + slopes[n] *1
-            }
-        } else {
-            intercept <- intercept0 + slopes * 1
-        }
-
-        return(intercept)
-    }
-
-    #Creating the model function
-    create.model <- function(data, family=binomial, intercept=NULL, ...) {
-        if(is.null(intercept)) {
-            #Estimating the intercept and the slope in the model
-            model <- glm(data ~ factor, data=data, family=family, ...)
-        } else {
-            #Estimating only the slope in the model in the model
-            model <- glm(data ~ factor - 1+offset(intercept), data=data, family=family, ...)
-        }
-        return(model)
-    }
-
-    #Saving results function
-    save.results <- function(model, results) {
-        save_out <- match(results, names(summary(model)))
-        return(summary(model)[save_out])
     }
 
     #APPLYING THE SEQUENTIAL TEST
@@ -283,26 +163,3 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     #ADD A FUNCTION FOR ADDING THE RESULTS TO A PLOT!
 
 }
-
-#Calculate the null model deviation test
-make.null <- function(...) {
-    # Series can be an observed value or a bootstrapped one
-
-    # null.rule must be the type of null model (or the null model "rule") (can invoke space.maker)
-
-    # replicates (of the null.rule)
-
-    # ... any optionals to be passed to test space.maker
-
-    #Final example (should look like that)
-    #test.dispRity(sum_of_ranges, test = randtest, "null", null = make.null())
-}
-
-
-
-
-
-
-# Add a hypervolume::hypervolume_distance test (i.e. is the distance between two groups significantly different than 0?)
-
-# Add the hypervolume::hypervolume_inclusion_test (i.e. is one group par of the other?)
