@@ -11,11 +11,13 @@ null.test(data, replicates, null.distribution, null.arguments = NULL, alter = "t
 
 \item{replicates}{the number of replicates for the test.}
 
-\item{null.distribution}{one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.}
+\item{null.distrib}{one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.}
 
-\item{null.arguments}{any additional arguments to be passed to \code{\link{space.maker}} (\code{default = NULL}).}
+\item{null.args}{any additional arguments to be passed to \code{\link{space.maker}} (\code{default = NULL}).}
 
 \item{alter}{the type of alternative hypothesis (H1) as used in \code{\link[ade4]{randtest}} (\code{default = "two-sided"}).}
+
+\item{scale}{whether to scale the simulated and the observed data.}
 
 \item{...}{optional arguments to be passed to \code{\link[ade4]{as.randtest}}.}
 }
@@ -26,6 +28,14 @@ Testing the difference between the observed disparity and disparity under a null
 
 }
 \examples{
+## Load the Beck & Lee 2014 data
+data(BeckLee_mat50)
+## Calculating the disparity as the ellipsoid volume
+obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+## Testing 
+results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
+results
+plot(results)
 
 }
 \author{
