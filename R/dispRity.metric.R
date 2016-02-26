@@ -180,7 +180,7 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
         name <- NULL
     }
 
-    return(get_volume(hypervolume::hypervolume(matrix, repsperpoint=repsperpoint, bandwidth=bandwidth, quantile=quantile, verbose=verbose, warnings=warnings, name=name)))
+    return(hypervolume::get_volume(hypervolume::hypervolume(matrix, repsperpoint=repsperpoint, bandwidth=bandwidth, quantile=quantile, verbose=verbose, warnings=warnings, name=name)))
 }
 
 # # Hyper volume testing
