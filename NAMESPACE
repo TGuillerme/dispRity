@@ -1,7 +1,15 @@
 #Dependencies
 import(ape)
-#import(paleotree)
 importFrom("paleotree", "timeSliceTree")
+importFrom("snow", "makeCluster")
+importFrom("snow", "stopCluster")
+importFrom("snow", "parLapply")
+importFrom("geometry", "convhulln")
+importFrom("hypervolume", "hypervolume")
+importFrom("hypervolume", "estimate_bandwidth")
+importFrom("hypervolume", "get_volume")
+importFrom("ade4", "randtest")
+importFrom("ade4", "as.randtest")
 
 ##Functions
 export(time.series)
@@ -13,12 +21,14 @@ export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
+
 ##Utilities
 export(make.metric)
 export(make.model)
 export(make.boot)
 export(get.dispRity)
 export(extract.dispRity)
+export(space.maker)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 
@@ -35,6 +45,7 @@ export(convhull.surface)
 ##disparity tests
 export(bhatt.coeff)
 export(sequential.test)
+export(null.test)
 
 ##S3 methods
 S3method(plot, dispRity)
