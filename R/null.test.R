@@ -71,5 +71,5 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
         , metric = get.from.call(data, "metric")))$observed)
     }
     #testing the null hypothesis
-    test_out  <- as.randtest(obs = summary(data)$observed, sim = nulls_models_result, alter = alter, ...)
+    test_out  <- ade4::as.randtest(obs = summary(data)$observed, sim = nulls_models_result, alter = alter, ...)
 }
