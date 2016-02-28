@@ -78,8 +78,8 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
     } else {
         #Extracting the observed data for each series
         summary_observed <- as.list(summary(data)$observed)
-        test_out <- mapply(ade4::as.randtest, summary_observed, null_models_results, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
-        #test_out <- mapply(ade4::as.randtest, summary_observed, null_models_results, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
+        test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
+        #test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
         #Attributing the series names
         names(test_out) <- data$series
     }
