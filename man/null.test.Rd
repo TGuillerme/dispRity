@@ -4,7 +4,8 @@
 \alias{null.test}
 \title{Testing a null hypothesis on multidimensional data.}
 \usage{
-null.test(data, replicates, null.distribution, null.arguments = NULL, alter = "two-sided", ...)
+null.test(data, replicates, null.distrib, null.args = NULL,
+  alter = "two-sided", scale = FALSE, ...)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}

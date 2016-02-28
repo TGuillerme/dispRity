@@ -8,3 +8,17 @@ get.from.call <- function(data, what) {
     }
     return(eval(parse(text = call_out)))
 }
+
+#Generating the null model
+make.null.model <- function(data, replicates, null.distrib, null.args, scale) {
+    if(scale == FALSE) {
+        null_models_result <- replicate(replicates, summary(dispRity(
+            space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args)
+        , metric = get.from.call(data, "metric")))$observed)
+    } else {
+        null_models_result <- replicate(replicates, summary(dispRity(
+            scale(space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args))
+        , metric = get.from.call(data, "metric")))$observed)
+    }
+    return(null_models_result)
+}

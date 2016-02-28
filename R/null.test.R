@@ -2,8 +2,6 @@
 #'
 #' @title Testing a null hypothesis on multidimensional data.
 #'
-#' @usage null.test(data, replicates, null.distribution, null.arguments = NULL, alter = "two-sided", ...)
-#'
 #' @description Testing the difference between the observed disparity and disparity under a null model.
 #'
 #' @param data a \code{dispRity} object.
@@ -34,6 +32,9 @@
 #' @author Thomas Guillerme
 #' @export
 
+#For testing:
+#source("sanitizing.R")
+#source("null.test_fun.R")
 
 null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = "two-sided", scale = FALSE, ...) {
     #Sanitizing
@@ -46,11 +47,9 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
 
     #null.distrib and null.args
     try(test_space_maker <- space.maker(3, as.numeric(length(null.distrib)), null.distrib, null.args), silent = TRUE)
-    #if(exists(test_space_maker)) {
-        if(class(test_space_maker) != "matrix") {
-            stop("Wrong format for null.distrib and/or null.args.\nSee ?space.maker for more information.")
-        }
-    #}
+    if(class(test_space_maker) != "matrix") {
+        stop("Wrong format for null.distrib and/or null.args.\nSee ?space.maker for more information.")
+    }
 
     #alter
     alternative_hypothesis <- c("greater", "less", "two-sided")
@@ -61,15 +60,29 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
     #Null testing
 
     #Generating the null models
-    if(scale == FALSE) {
-        null_models_result <- replicate(replicates, summary(dispRity(
-            space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args)
-        , metric = get.from.call(data, "metric")))$observed)
+    if(length(data$series) == 1) {
+        #Apply the data to one series
+        null_models_results <- make.null.model(data, replicates, null.distrib, null.args, scale)
     } else {
-        null_models_result <- replicate(replicates, summary(dispRity(
-            scale(space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args))
-        , metric = get.from.call(data, "metric")))$observed)
+        #Subdivide the data per series
+        sub_data <- lapply(as.list(data$series), function(X) get.dispRity(data, what = X))
+        #Apply the data to all series
+        null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, scale)
     }
+
     #testing the null hypothesis
-    test_out  <- ade4::as.randtest(obs = summary(data)$observed, sim = nulls_models_result, alter = alter, ...)
+    if(class(null_models_results) != "list") {
+        #Apply the randtest to one series
+        test_out  <- ade4::as.randtest(obs = summary(data)$observed, sim = null_models_results, alter = alter, ...)
+        #test_out  <- ade4::as.randtest(obs = summary(data)$observed, sim = null_models_results, alter = alter)
+    } else {
+        #Extracting the observed data for each series
+        summary_observed <- as.list(summary(data)$observed)
+        test_out <- mapply(ade4::as.randtest, summary_observed, null_models_results, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
+        #test_out <- mapply(ade4::as.randtest, summary_observed, null_models_results, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
+        #Attributing the series names
+        names(test_out) <- data$series
+    }
+
+    return(test_out)
 }
