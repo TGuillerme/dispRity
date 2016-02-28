@@ -52,6 +52,7 @@
 
 #For testing:
 #source("sanitizing.R")
+#source("test.dispRity_fun.R")
 
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., details=FALSE) { #format: get additional option for input format?
@@ -96,47 +97,45 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     #Comparisons
     test_data_length <- extract.dispRity(data)
     #Stop if only one series
-    if(length(test_data_length) == 1) stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
+    if(length(test_data_length) == 1 && as.character(match_call$test) != "null.test") stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
 
     # #Ignore if length data = 2
     # if(length(test_data_length) == 2) comparisons <- NULL
 
     #Else, check comparisons
-    if(length(test_data_length) >= 2) {
-        all_comparisons <- c("referential", "sequential", "pairwise", "all")
+    all_comparisons <- c("referential", "sequential", "pairwise", "all")
 
-        #Check if the comparisons is not one of the inbuilt comparisons
-        if(all(is.na(match(comparisons, all_comparisons)))) {
-            #must be a list
-            check.class(comparisons, "list", " must be a list of one or more pairs of series.")
-            #must be pairs
-            if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
-            #If character, input must match the series
-            if(class(unlist(comparisons)) == "character") {
-                if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
-            }
-            #If numeric, input must match de series numbers
-            if(class(unlist(comparisons)) == "numeric") {
-                if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
-            }
-            #Comparison is "custom"
-            comp <- "custom"
-        } else {
-            #Make sure only one inbuilt comparison is given
-            check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
-            comp <- comparisons
-
-            #Set specific comparisons if needed
-            if(as.character(match_call$test) == "sequential.test") {
-                comp <- "sequential.test"
-                comparisons <- "all"
-            }
-            if(as.character(match_call$test) == "null.test") {
-                comp <- "null.test"
-                comparisons <- "all"
-            }
-
+    #Check if the comparisons is not one of the inbuilt comparisons
+    if(all(is.na(match(comparisons, all_comparisons)))) {
+        #must be a list
+        check.class(comparisons, "list", " must be a list of one or more pairs of series.")
+        #must be pairs
+        if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
+        #If character, input must match the series
+        if(class(unlist(comparisons)) == "character") {
+            if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
         }
+        #If numeric, input must match de series numbers
+        if(class(unlist(comparisons)) == "numeric") {
+            if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+        }
+        #Comparison is "custom"
+        comp <- "custom"
+    } else {
+        #Make sure only one inbuilt comparison is given
+        check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
+        comp <- comparisons
+
+        #Set specific comparisons if needed
+        if(as.character(match_call$test) == "sequential.test") {
+            comp <- "sequential.test"
+            comparisons <- "all"
+        }
+        if(as.character(match_call$test) == "null.test") {
+            comp <- "null.test"
+            comparisons <- "all"
+        }
+
     }
 
     #correction
@@ -156,7 +155,9 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     #----------------------
 
     #Extracting the data (sends error if data is not bootstrapped)
-    extracted_data <- extract.dispRity(data, observed=FALSE)
+    if(comp != "null.test") {
+        extracted_data <- extract.dispRity(data, observed=FALSE)
+    }
 
     #Referential comparisons (first distribution to all the others)
     if(comp == "referential") {
@@ -197,14 +198,14 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
 
     #Sequential comparisons (one to each other)
     if(comp == "sequential.test") {
-        #Applying the test to the list of pairwise comparisons
+        #Applying the test to the list of extracted data
         details_out <- test(extracted_data, ...)
         #details_out <- test(extracted_data, family = gaussian)
     }
 
     #Null testing
     if(comp == "null.test") {
-        #Applying the test to the list of pairwise comparisons
+        #Applying the test to the data
         details_out <- test(data, ...)
         #details_out <- test(data, replicates=10, null.distrib=rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
     }
@@ -225,6 +226,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
 
     #Formatting the output (if needed)
     options(warn=-1)
+
     if(details == FALSE & comparisons != "all") {
         #Getting the output class
         out.class <- unique(unlist(lapply(details_out, class)))
@@ -270,7 +272,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
 
                 #Applying the correction
                 if(!missing(correction)) {
-                    table_out$p.value <- p.adjust(table_out$p.value, method="bonferroni")
+                    table_out$p.value <- p.adjust(table_out$p.value, method = correction)
                 }
 
                 return(table_out)
@@ -284,6 +286,34 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
         }
 
     } else {
+
+        #Sequential test results
+        if(details == FALSE && comp == "sequential.test") {
+            #Sequential test already formated
+            return(details_out)
+        }
+
+        #Null.test results
+        if(details == FALSE && comp == "null.test") {
+            if(length(data$series) == 1) {
+                #Return a single randtest already formatted.
+                return(details_out)
+            } else {
+                #Saving the calling parameters
+                call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.from.call(data, "metric", eval = FALSE), ".\n", sep ="")
+                #Creating the results table
+                table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$series), ncol = 1, dimnames = list(c(data$series)))
+                table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$series), ncol = 4,  dimnames = list(c(data$series)), byrow = TRUE)
+
+                table_out <- cbind(table_obs, table_sta)
+                colnames(table_out) <- c("Obs.", "Std.Obs", "Expect", "Var", "p-value")
+
+                cat(call)
+                return(table_out)
+
+            }
+        }
+
         #returning the detailed output
         return(details_out)
     }
