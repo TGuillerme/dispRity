@@ -3,8 +3,7 @@
 context("boot.dispRity")
 
 #Loading the data
-load("test_data.Rda"
-    	)
+load("test_data.Rda")
 data<-test_data$ord_data_tips
 
 
