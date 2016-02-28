@@ -52,9 +52,9 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     if(missing(family)) {
         stop("glm family type argument is necessary!")
     }
-    if(family(link="identity")[[1]] == "gaussian") {
-        warning("Model family is set to gaussian, should it not be binomial?")
-    }
+    # if(family(link="identity")[[1]] == "gaussian") {
+    #     warning("Model family is set to gaussian, should it not be binomial?")
+    # }
 
     #APPLYING THE SEQUENTIAL TEST
 
