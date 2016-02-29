@@ -9,6 +9,7 @@
 #' @param binary Optional, if the results must be binary, a \code{numeric} value for the threshold of acceptance (values greater will be 1, lower will be 0).
 #' @param diag Optional, can be \code{"max"} or \code{"min"} or a single \code{numeric} value.
 #' @param add Optional, whether to add significance tokens can be \code{numeric} for a point type to print (\code{pch}) or \code{"character"} to print (e.g. \code{"*"}).
+#' @param lower Optional, logical, whether to add tokens for values lower than \code{binary} (default is \code{TRUE}; \code{FALSE} will add tokens for values bigger than \code{binary}).
 #' @param ... Any other options to be passed to \code{\link[graphics]{plot}}.
 #' 
 #' @examples
@@ -29,7 +30,7 @@
 #testing
 #source("sanitizing.R")
 
-pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, binary, diag, add, ...){
+pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, binary, diag, add, lower = TRUE, ...){
     #Sanitizing
     #data
     check.class(data, "data.frame")
@@ -80,6 +81,9 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
         }
     }
 
+    #lower
+    check.class(lower, "logical")
+
     #add
     if(!missing(add)) {
         check.length(add, 1, " must be a single 'numeric' or 'character' string.")
@@ -117,12 +121,21 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
         #Adding the legend
         if(legend == TRUE) {
-            legend(0, 1, pch = 15, col = col, c(paste("min =", min(matrix_plot, na.rm = TRUE)), paste("max =", max(matrix_plot, na.rm = TRUE))), bty="n")
+            if(class(what) == "character") {
+                legend(0, 1, pch = 15, col = col, c(paste("min =", min(matrix_plot, na.rm = TRUE)), paste("max =", max(matrix_plot, na.rm = TRUE))), bty="n", title = what)
+            } else {
+                legend(0, 1, pch = 15, col = col, c(paste("min =", min(matrix_plot, na.rm = TRUE)), paste("max =", max(matrix_plot, na.rm = TRUE))), bty="n")
+            }
         }
     } else {
         #Selecting the 0s coordinates from the binary matrix
-        xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,1]]
-        ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,2]]
+        if(lower == TRUE) {
+            xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,1]]
+            ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,2]]
+        } else {
+            xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,1]]
+            ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,2]]            
+        }
         #Adding the 0s symbols
         if(class(add) == "numeric") {
             #Symbol is a point

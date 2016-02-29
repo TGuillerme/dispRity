@@ -5,7 +5,7 @@
 \title{Plots pairwise comparisons with}
 \usage{
 pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
-  diag, add, ...)
+  diag, add, lower = TRUE, ...)
 }
 \arguments{
 \item{data}{A \code{data.frame} object with comparisons pair names as row names.}
@@ -21,6 +21,8 @@ pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
 \item{diag}{Optional, can be \code{"max"} or \code{"min"} or a single \code{numeric} value.}
 
 \item{add}{Optional, whether to add significance tokens can be \code{numeric} for a point type to print (\code{pch}) or \code{"character"} to print (e.g. \code{"*"}).}
+
+\item{lower}{Optional, logical, whether to add tokens for values lower than \code{binary} (default is \code{TRUE}; \code{FALSE} will add tokens for values bigger than \code{binary}).}
 
 \item{...}{Any other options to be passed to \code{\link[graphics]{plot}}.}
 }
