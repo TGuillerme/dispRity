@@ -10,6 +10,7 @@ importFrom("hypervolume", "estimate_bandwidth")
 importFrom("hypervolume", "get_volume")
 importFrom("ade4", "randtest")
 importFrom("ade4", "as.randtest")
+importFrom("grDevices", "colorRampPalette")
 
 ##Functions
 export(time.series)
@@ -29,6 +30,7 @@ export(make.boot)
 export(get.dispRity)
 export(extract.dispRity)
 export(space.maker)
+export(pair.plot)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 

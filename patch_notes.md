@@ -1,7 +1,8 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
-  * new function: `space.maker` to create some multidimensional spaces!
+  * new utility function: `pair.plot` for plotting pairwise comparisons in a matrix.
+  * new function: `space.maker` for creating some multidimensional spaces!
   * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
   * new disparity tests: `sequential.test` and `null.test`.
   * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
