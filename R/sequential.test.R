@@ -59,6 +59,12 @@ sequential.test <- function(series, results="coefficients", family, ..., add = F
     #     warning("Model family is set to gaussian, should it not be binomial?")
     # }
 
+    #add
+    check.class(add, "logical")
+
+    #lines.args
+    if(!is.null(lines.args)) check.class(lines.args, "list")
+
     #APPLYING THE SEQUENTIAL TEST
 
     #Setting the sequence

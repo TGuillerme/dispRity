@@ -63,6 +63,6 @@ significance.token <- function(xs, ys, p.value) {
         if(p.value < 0.05) token <- "*"
         if(p.value < 0.01) token <- "**"
         if(p.value < 0.001) token <- "***"
-        text(x = sum(xs)/2, y = max(ys)+max(ys)*0.01, token)
+        text(x = sum(xs)/2, y = max(ys)+max(ys)*0.1, token)
     }
 }
