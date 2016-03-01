@@ -52,6 +52,10 @@
 #'
 #' @author Thomas Guillerme
 
+#Testing
+#source("sanitizing.R")
+#source("time.series_discrete.R")
+#source("time.series_continuous.R")
 
 time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
     
@@ -71,14 +75,14 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     if(length(tree$root.time) == 0) stop("Tree must be a dated tree with a $root.time element.")
 
     #METHOD
+    all_methods <- c("discrete", "d", "continuous", "c")
     #method must be a character string
     check.class(method, "character")
     #method must have only one element
-    check.length(method, 1, ' must be either "discrete", "d", "continuous", or "c".')
+    check.length(method, 1, paste(" argument must be one of the following: ", paste(all_methods, collapse=", "), ".", sep=""))
     #method must be either "discrete", "d", "continuous", or "c"
-    all_methods <- c("discrete", "d", "continuous", "c")
-    if(all(is.na(match(method, all_methods)))) stop('method must be either "discrete", "d", "continuous", or "c".')
-    
+    if(all(is.na(match(method, all_methods)))) stop("Method argument must be one of the following: ", paste(all_methods, collapse=", "), ".", sep="")
+
     #if method is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
     if(method == "d") method <- "discrete"
     if(method == "c") method <- "continuous"
@@ -122,10 +126,10 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         }
     } else {
     #else model must be one of the following
-        check.class(model, "character")
-        check.length(model, 1, ' must be either "acctran", "deltran", "punctuated" or "gradual".')
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
-        if(all(is.na(match(model, all_models)))) stop('model must be either "acctran", "deltran", "punctuated" or "gradual".')
+        check.class(model, "character")
+        check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse=", "), ".", sep=""))
+        if(all(is.na(match(model, all_models)))) stop("model argument must be one of the following: ", paste(all_models, collapse=", "), ".", sep="")
             #~~~~~~~~~~~
             # Include the make.model option here?
             # make.model should be tested on slice.tree function
@@ -169,7 +173,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     #FADLAD
     if(missing(FADLAD)) {
         #If missing, create the FADLAD table
-        FADLAD <- data.frame("FAD"=tree.age(tree)[1:Ntip(tree),1], "LAD"=tree.age(tree)[1:Ntip(tree),1], row.names=tree.age(tree)[1:Ntip(tree),2])
+        FADLAD <- data.frame("FAD" = tree.age(tree)[1:Ntip(tree),1], "LAD" = tree.age(tree)[1:Ntip(tree),1], row.names = tree.age(tree)[1:Ntip(tree),2])
         #message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
     } else {
         #Check if FADLAD is a table
@@ -179,14 +183,14 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             #If not generate the FADLAD for the missing taxa
-            missing_FADLAD<-which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
-            add_FADLAD<-data.frame(tree.age(tree)[missing_FADLAD,1], tree.age(tree)[missing_FADLAD,1], row.names=tree.age(tree)[missing_FADLAD,2])
-            colnames(add_FADLAD)<-colnames(FADLAD)
-            FADLAD<-rbind(FADLAD, add_FADLAD)
+            missing_FADLAD <- which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
+            add_FADLAD <- data.frame(tree.age(tree)[missing_FADLAD,1], tree.age(tree)[missing_FADLAD,1], row.names = tree.age(tree)[missing_FADLAD,2])
+            colnames(add_FADLAD) <- colnames(FADLAD)
+            FADLAD <- rbind(FADLAD, add_FADLAD)
         }
         #Remove FADLAD taxa not present in the tree
         if(nrow(FADLAD) != Ntip(tree)) {
-            FADLAD<-FADLAD[-c(which(is.na(match(rownames(FADLAD), tree$tip.label)))),]
+            FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree$tip.label)))),]
         }
     }
 
@@ -199,25 +203,25 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     #----------------------
 
     if(method == "discrete") {
-        time_series<-time.series.discrete(data, tree, time, FADLAD, inc.nodes)
+        time_series <- time.series.discrete(data, tree, time, FADLAD, inc.nodes)
     }
 
     if(method == "continuous") {
-        time_series<-time.series.continuous(data, tree, time, model, FADLAD, verbose)
+        time_series <- time.series.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
     #----------------------
     # OUTPUT OBJECT ("dispRity")
     #----------------------
 
-    taxa_list<-rownames(data)
-    series_list<-names(time_series)
+    taxa_list <- rownames(data)
+    series_list <- names(time_series)
     if(is.null(series_list)) {
-        series_list<-length(data)
+        series_list <- length(data)
     }
 
-    output<-list("data"=time_series, "elements"=taxa_list, "series"=c(method, series_list))
-    class(output)<-c("dispRity")
+    output <- list("data" = time_series, "elements" = taxa_list, "series" = c(method, series_list))
+    class(output) <- c("dispRity")
 
     return(output)
 
