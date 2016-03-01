@@ -324,7 +324,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
                 par(new=TRUE)
                 plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
                 #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                par(bigger_margin)
+                #par(bigger_margin)
             }
         } else {
 
@@ -360,7 +360,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
                     par(new=TRUE)
                     plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
                     #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                    par(bigger_margin)
+                    #par(bigger_margin)
                 }
             }   
         }
