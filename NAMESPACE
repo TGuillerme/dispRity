@@ -31,6 +31,7 @@ export(get.dispRity)
 export(extract.dispRity)
 export(space.maker)
 export(pair.plot)
+export(scale.dispRity)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 
