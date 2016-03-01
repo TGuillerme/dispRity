@@ -118,7 +118,7 @@ plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, .
 }
 
 #discrete plotting
-plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...) {
+plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
     #How many points?
     points_n <- length(unique(summarised_data$series))
@@ -128,8 +128,10 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
     colnames(dummy_mat) <- extract.summary(summarised_data, 1)
 
     #Empty plot
-    boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
-    #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001) ; warning("DEBUG: plot")
+    if(add == FALSE) {
+        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
+        #boxplot(dummy_mat, col="white", border="white", ylim=ylim, ylab=ylab[[1]], xlab=xlab, boxwex=0.001) ; warning("DEBUG: plot")
+    }
 
     #Check if bootstrapped
     if(ncol(summarised_data) > 3) {
@@ -161,7 +163,7 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point],
                               extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
                     #Plotting the box
-                    polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]])
+                    polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
                 }
             }
@@ -205,19 +207,23 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
 }
 
 #continuous plotting
-plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...) {
+plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
     #How many points?
     points_n<-length(unique(summarised_data$series))
 
     #Plot the central tendency
-    if(time_slicing[1] == FALSE) {
-        #Plot with standard xaxis
-        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+    if(add == FALSE) {
+        if(time_slicing[1] == FALSE) {
+            #Plot with standard xaxis
+            plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], ...)
+            #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]]) ; warning("DEBUG: plot")
+        } else {
+            plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
+            #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            axis(1, 1:points_n, time_slicing)
+        }
     } else {
-        plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n", ...)
-        #plot(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), type="l", ylim=ylim, col=col[[1]], xlab=xlab, ylab=ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
-        axis(1, 1:points_n, time_slicing)
+        lines(seq(from=1, to=points_n), extract.summary(summarised_data, 4, which.rare), col=col[[1]])
     }
 
     #Check if bootstrapped
@@ -239,7 +245,7 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
         for (cis in 1:quantiles_n) {
             x_vals<-c(1:points_n, points_n:1)
             y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)))
-            polygon(x_vals, y_vals, col=poly_col[[cis]], border="NA")
+            polygon(x_vals, y_vals, col=poly_col[[cis]], border="NA", density)
             ####
             # ADD A DENSITY OPTION!
             ###

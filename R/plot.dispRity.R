@@ -9,7 +9,9 @@
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
-#' @param observed \code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).
+#' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
+#' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
+#' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
@@ -62,7 +64,11 @@
 #'
 #' @author Thomas Guillerme
 
-plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, ...){
+#Testing
+#source("sanitizing.R")
+#source("plot.dispRity_fun.R")
+
+plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density = NULL, ...){
 
     #SANITIZING
     #DATA
@@ -231,6 +237,17 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         check.length(ylim, 2, " must be a vector of two elements.")
     }
 
+    #add
+    check.class(add, "logical")
+
+    #density
+    if(type == "continuous" || type == "polygon") {
+        if(!is.null(density)) {
+            check.class(density, "numeric")
+            check.length(density, 1, " must be a single numeric value.")
+        }
+    }
+
     #PREPARING THE PLOT
 
     #summarising the data
@@ -298,12 +315,12 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         #Continuous plot
         if(type == "continuous") {
             if(elements == FALSE) {
-                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed,...)
-                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
+                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
             } else {
-                bigger_margin<-par(mar=c(5,4,4,4))
-                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, ...)
-                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed) ; warning("DEBUG: plot")
+                #bigger_margin<-par(mar=c(5,4,4,4))
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
+                #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
                 par(new=TRUE)
                 plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
                 #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
@@ -315,8 +332,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             if(type == "box") {
                 #Simple case: boxplot
                 plot_data <- transpose.box(data, which.rare)
-                boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
-                #boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col) ; warning("DEBUG: plot")
+                boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
+                #boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
 
                 if(observed == TRUE) {
                     if(any(!is.na(extract.summary(summarised_data, 3, which.rare)))){
@@ -334,12 +351,12 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
                 #Personalised discrete plots
                 if(elements == FALSE) {
-                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...) 
-                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed) ; warning("DEBUG: plot")
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) 
+                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
                 } else {
-                    bigger_margin<-par(mar=c(5,4,4,4))
-                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, ...)
-                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, cex.lab = 0.1) ; warning("DEBUG: plot")
+                    #bigger_margin<-par(mar=c(5,4,4,4))
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...)
+                    #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
                     par(new=TRUE)
                     plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
                     #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")

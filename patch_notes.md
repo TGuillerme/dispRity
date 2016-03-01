@@ -5,6 +5,7 @@ Patch notes
   * new function: `space.maker` for creating some multidimensional spaces!
   * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
   * new disparity tests: `sequential.test` and `null.test`.
+  * new `plot.dispRity` arguments: `density` for controlling the polygons density and `add` for adding plots.
   * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
   	* `continuous` disparity curves.
   	* `box` for real boxplots.

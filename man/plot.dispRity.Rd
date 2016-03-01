@@ -4,9 +4,10 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-plot.dispRity(data, type, quantile = c(50, 95), cent.tend = mean,
+\method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
-  time.series = TRUE, observed = FALSE, ...)
+  time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
+  ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -23,7 +24,11 @@ plot.dispRity(data, type, quantile = c(50, 95), cent.tend = mean,
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
 
-\item{observed}{\code{logical} whether to ploty the observed values or not (if existing; default is \code{FALSE}).}
+\item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}
+
+\item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
+
+\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }
