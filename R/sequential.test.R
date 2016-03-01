@@ -9,8 +9,9 @@
 #' @param series time series of which to estimate the slopes sequentially.
 #' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
-#' @param data a \code{dispRity} object
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
+#' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
+#' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL})..
 #'
 #' @details
 #' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
@@ -39,8 +40,10 @@
 #' @author Thomas Guillerme
 #' @export
 
+#Testing
+#source("sequential.test_fun.R")
 
-sequential.test <- function(series, results="coefficients", family, ...) {
+sequential.test <- function(series, results="coefficients", family, ..., add = FALSE, lines.args = NULL) {
 
     #SANITIZING
     #results must be at least coefficients!
@@ -59,8 +62,7 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     #APPLYING THE SEQUENTIAL TEST
 
     #Setting the sequence
-    seq_series <- set.sequence(length(series))
-    seq_series <- unlist(apply(seq_series, 2, list), recursive=FALSE)
+    seq_series <- unlist(apply(set.sequence(length(series)), 2, list), recursive=FALSE)
 
     #Applying the first test to get the intercept origin
     model1 <- create.model(set.pair.series(series[seq_series[[1]]]), family, ...)
@@ -68,36 +70,51 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     
     #Set origin intercept for the following models
     intercept_predict <- NULL
+
+    #If intercept is significant
     if(summary(model1)$coefficients[1,4] < 0.05) {
-        #If intercept is significant
+        #Set intercept0
+        intercept0 <- coef(model1)[1]
+        #If slope is significant
         if(summary(model1)$coefficients[2,4] < 0.05) {
-            #If slope is significant
-            intercept_predict <- intercept.estimate(coef(model1)[1], coef(model1)[2])
+            # Calculate predict intercept for next model
+            intercept_predict <- intercept.estimate(intercept0, coef(model1)[2])
         } else {
-            #intercept 1 is just intercep
-            intercept_predict <- coef(model1)[1]
+            #intercept 1 is just intercept
+            intercept_predict <- intercept0
         }
     } else {
-        #Intercept is just 0
-        #If intercept is significant
+    #Intercept is just 0
+        intercept0 <- 0
+        #If slope is significant
         if(summary(model1)$coefficients[2,4] < 0.05) {
-            #If slope is significant
-            intercept_predict <- intercept.estimate(0, coef(model1)[2])
+            #Caclulate predict intercept for next model
+            intercept_predict <- intercept.estimate(intercept0, coef(model1)[2])
         } else {
             #intercept 1 is just intercep
-            intercept_predict <- 0
+            intercept_predict <- intercept0
         }
     }
 
     #Loop through the other models
     models <- list(NULL)
-    for(model in 2:length(seq_series)) {
+    #Storing the first model
+    models[[1]] <- model1
+    for(model in 2:(length(seq_series))) {
         #Create the new model
-        models[[model-1]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept=intercept_predict[model-1]), family, intercept = intercept_predict[model-1], ...)
-        #models[[model-1]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept=intercept_predict[model-1]), family, intercept = intercept_predict[model-1]) ; warning("DEBUG")
+        models[[model]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[model-1]), family, intercept = intercept_predict[model-1], ...)
+        #models[[model]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[model-1]), family, intercept = intercept_predict[model-1]) ; warning("DEBUG")
 
         #Predict the new intercept
-        intercept_predict <- c(intercept_predict, intercept.estimate(coef(model1)[1], c(coef(model1)[2], unlist(lapply(models, coef)) )))
+        #If slope is significant
+        if(summary(models[[model]])$coefficients[1,4] < 0.05) {
+            #Calculate new intercept for next model by using the current model slope and the previous model intercept
+            new_intercept <- intercept.estimate(intercept0 = intercept0, c(coef(model1)[2], unlist(lapply(models[-1], coef)) ))
+        } else {
+            #Intercept remains the same as previously
+            new_intercept <- intercept_predict[model-1]
+        }
+        intercept_predict <- c(intercept_predict, new_intercept)
     }
 
     #SAVING THE RESULTS
@@ -120,7 +137,7 @@ sequential.test <- function(series, results="coefficients", family, ...) {
         Intercept_results <- cbind(rep(NA, nrow(Intercept_results)), Intercept_results)
         colnames(Intercept_results)[1] <- "Predict"
         #Added predicted intercepts (ignoring the last one that's not used)
-        Intercept_results[,1] <- c(NA, intercept_predict[-1])
+        Intercept_results[,1] <- intercept_predict
     }
 
     #Saving the slopes
@@ -132,12 +149,34 @@ sequential.test <- function(series, results="coefficients", family, ...) {
     if(length(seq_series) > 1) {
         #Adding the slopes
         for(model in 2:length(seq_series)) {
-            Slope_results[model,] <- models_results[[model-1]]$coefficients
+            Slope_results[model,] <- models_results[[model]]$coefficients
         }
     }
 
     #Combining the tables
     results_out <- list("Intercept"=Intercept_results, "Slope"=Slope_results)
+
+    #Plotting
+    if(add == TRUE) {
+        #Getting x,y coordinates for the first model
+        xs <- seq_series[[1]]
+        ys <- c(intercept0, Intercept_results[1,2])
+        #Plotting the line
+        add.line(xs, ys, lines.args)
+        #Add significance (if necessary)
+        significance.token(xs, ys, Slope_results[1,4])
+
+        #Looping through the other models
+        for(series in 2:length(seq_series)) {
+            #Getting x,y coordinates for the first model
+            xs <- seq_series[[series]]
+            ys <- c(Intercept_results[series-1,1], Intercept_results[series,1])
+            #Plotting the line
+            add.line(xs, ys, lines.args)
+            #Add significance (if necessary)
+            significance.token(xs, ys, Slope_results[series,4])
+        }
+    }
 
     #Anything else to save?
     if(any(results != "coefficients")) {
@@ -151,15 +190,5 @@ sequential.test <- function(series, results="coefficients", family, ...) {
         #Just return the coefficients
         return(results_out)
     }
-
-
-    #Some ploting
-    # plot(series_1_2[,1:2])
-    # abline(mod)
-    # curve(predict(mod1, data.frame(data=x),type="response"),add=TRUE) 
-    # curve(predict(mod2, data.frame(intercept=intercept, data=x), type="response"), add=TRUE,col="red")
-
-
-    #ADD A FUNCTION FOR ADDING THE RESULTS TO A PLOT!
 
 }

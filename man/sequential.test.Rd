@@ -15,7 +15,9 @@ sequential.test(series, results = "coefficients", family, ...)
 
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
 
-\item{data}{a \code{dispRity} object}
+\item{add}{whether to add the results of the sequential test to the current plot (default = \code{FALSE}).}
+
+\item{lines.args}{a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL})..}
 }
 \description{
 Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation.
