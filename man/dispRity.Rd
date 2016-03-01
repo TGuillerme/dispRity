@@ -62,7 +62,7 @@ bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
 
-#' \dontrun{
+\dontrun{
 ## Calculating disparity using one thread
 system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
 ## Bootstrapping a series of matrices using 4 threads
