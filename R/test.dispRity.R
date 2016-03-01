@@ -197,17 +197,23 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     }
 
     #Sequential comparisons (one to each other)
-    if(comp == "sequential.test") {
-        #Applying the test to the list of extracted data
-        details_out <- test(extracted_data, ...)
-        #details_out <- test(extracted_data, family = gaussian)
-    }
+    if(comp == "sequential") {
+        #Set the list of sequences
+        seq_series <- set.sequence(length(extracted_data))
 
-    #Null testing
-    if(comp == "null.test") {
-        #Applying the test to the data
-        details_out <- test(data, ...)
-        #details_out <- test(data, replicates=10, null.distrib=rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
+        #convert seq series in a list of sequences
+        seq_series <- unlist(apply(seq_series, 2, list), recursive=FALSE)
+
+        #Applying the test to the list of pairwise comparisons
+        details_out <- lapply(seq_series, test.list.lapply, extracted_data, test, ...)
+        #details_out <- lapply(seq_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
+
+        #Saving the list of comparisons
+        comparisons_list <- convert.to.character(seq_series, extracted_data)
+        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
 
     #ANOVA/GLM type
@@ -222,6 +228,22 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
         details_out <- test(data~series, data=data, ...)
         #details_out <- test(data~series, data=data) ; warning("DEBUG")
     }
+
+    #Sequential.test comparisons (one to each other)
+    if(comp == "sequential.test") {
+        #Applying the test to the list of extracted data
+        details_out <- test(extracted_data, ...)
+        #details_out <- test(extracted_data, family = gaussian)
+    }
+
+    #Null testing
+    if(comp == "null.test") {
+        #Applying the test to the data
+        details_out <- test(data, ...)
+        #details_out <- test(data, replicates=10, null.distrib=rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
+    }
+
+
 
 
     #Formatting the output (if needed)
