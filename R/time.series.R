@@ -170,7 +170,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
     if(missing(FADLAD)) {
         #If missing, create the FADLAD table
         FADLAD <- data.frame("FAD"=tree.age(tree)[1:Ntip(tree),1], "LAD"=tree.age(tree)[1:Ntip(tree),1], row.names=tree.age(tree)[1:Ntip(tree),2])
-        message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
+        #message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
     } else {
         #Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
