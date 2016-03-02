@@ -1,7 +1,7 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.0
-  * new utility functions: `pair.plot` for plotting pairwise comparisons in a matrix and `scale.dispRity` for scaling a `dispRity` object.
+  * new utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * new function: `space.maker` for creating some multidimensional spaces!
   * new disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
   * new disparity tests: `sequential.test` and `null.test`.

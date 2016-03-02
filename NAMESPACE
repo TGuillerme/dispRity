@@ -32,6 +32,7 @@ export(extract.dispRity)
 export(space.maker)
 export(pair.plot)
 export(scale.dispRity)
+export(sort.dispRity)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 
@@ -54,3 +55,4 @@ export(null.test)
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
+S3method(sort, dispRity)
