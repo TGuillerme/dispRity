@@ -4,7 +4,7 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
+plot.dispRity(data, type, quantile = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
   time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
   ...)

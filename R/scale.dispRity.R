@@ -3,7 +3,7 @@
 #' @description Divides calculated disparity by the maximum disparity.
 #'
 #' @param data a \code{dispRity} object.
-#' @param max an optional value for scaling. If missing the maximum disparity from \code{data} is used.
+#' @param max an optional value for scaling. If \code{NULL}, the maximum value of \code{data} is used.
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -29,7 +29,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-scale.dispRity<-function(data, max) {
+scale.dispRity<-function(data, max = NULL) {
 
     #Sanitizing
 
@@ -44,7 +44,7 @@ scale.dispRity<-function(data, max) {
     }
 
     #Extracting all the data
-    if(missing(max)) {
+    if(is.null(max)) {
         ext_data <- unlist(extract.dispRity(data, observed = TRUE))
         if(is.bootstrapped == TRUE) {
             ext_data <- c(ext_data, unlist(extract.dispRity(data, observed = FALSE)))
