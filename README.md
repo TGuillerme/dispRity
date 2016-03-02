@@ -13,6 +13,8 @@ library(dispRity)
 ```
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
+###### **NOTE:** the up coming version (`0.2`) contains many new and updated functionalities and will be released probably this spring. It is however already possible to use it by downloading the package using `ref="master"`.
+
 #### Vignettes
 *  The package manual [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf).
 *  A tutorial for palaeobiologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.pdf).
@@ -36,9 +38,10 @@ The following installs the latest released version (see patch notes below). For 
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
+<!--
 #### Implemented metric
 A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
-
+-->
 Authors
 -------
 [Thomas Guillerme](http://tguillerme.github.io)
