@@ -4,12 +4,12 @@
 \alias{scale.dispRity}
 \title{Scaling disparity results.}
 \usage{
-\method{scale}{dispRity}(data, max = NULL)
+\method{scale}{dispRity}(data, max = TRUE)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}
 
-\item{max}{an optional value for scaling. If \code{NULL}, the maximum value of \code{data} is used.}
+\item{max}{either a \code{logical} value or a single \code{numeric} value for dividing the data. If \code{TRUE}, the data is divided by the maximum value of \code{data} is used.}
 }
 \description{
 Divides calculated disparity by the maximum disparity.
@@ -18,7 +18,7 @@ Divides calculated disparity by the maximum disparity.
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 
-## Calculate disparity as the sum of the centroids
+## Setting up two customised series
 factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
      dimnames = list(rownames(BeckLee_mat50))))
@@ -26,18 +26,19 @@ customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7,
      rarefaction = c(10, 25))
-## Calculating the sum of variances
+## Calculating the sum of centroids
 disparity <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 ## Scaling the data
-summary(disparity)
-summary(scale.dispRity(disparity))
+summary(disparity) # No scaling
+summary(scale(disparity)) # Dividing by the maximum
+summary(scale(disparity, max = 0.1)) # Multiplying by 10 (dividing by 0.1)
 
 }
 \author{
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{test.dispRity}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}} and \code{link[base]{scale}}.
 }
 
