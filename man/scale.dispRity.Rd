@@ -4,10 +4,12 @@
 \alias{scale.dispRity}
 \title{Scaling disparity results.}
 \usage{
-\method{scale}{dispRity}(data)
+\method{scale}{dispRity}(data, max)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{data}{a \code{dispRity} object.}
+
+\item{max}{an optional value for scaling. If missing the maximum disparity from \code{data} is used.}
 }
 \description{
 Divides calculated disparity by the maximum disparity.

@@ -2,7 +2,8 @@
 #'
 #' @description Divides calculated disparity by the maximum disparity.
 #'
-#' @param data A \code{dispRity} object.
+#' @param data a \code{dispRity} object.
+#' @param max an optional value for scaling. If missing the maximum disparity from \code{data} is used.
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -28,7 +29,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-scale.dispRity<-function(data) {
+scale.dispRity<-function(data, max) {
 
     #Sanitizing
 
@@ -43,19 +44,20 @@ scale.dispRity<-function(data) {
     }
 
     #Extracting all the data
-    ext_data <- unlist(extract.dispRity(data, observed = TRUE))
-    if(is.bootstrapped == TRUE) {
-        ext_data <- c(ext_data, unlist(extract.dispRity(data, observed = FALSE)))
+    if(missing(max)) {
+        ext_data <- unlist(extract.dispRity(data, observed = TRUE))
+        if(is.bootstrapped == TRUE) {
+            ext_data <- c(ext_data, unlist(extract.dispRity(data, observed = FALSE)))
+        }
+        max <- max(ext_data)
     }
 
-    #Get the max
-    max_disp <- max(ext_data)
-    lapply.scale <- function(X, max_disp) {return(X/max_disp)}
+    lapply.scale <- function(X, max) {return(X/max)}
 
     #Divide disparity by the max disparity
-    data$disparity$observed <- lapply(data$disparity$observed, lapply, lapply, lapply.scale, max_disp)
+    data$disparity$observed <- lapply(data$disparity$observed, lapply, lapply, lapply.scale, max)
     if(is.bootstrapped == TRUE) {
-        data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, lapply, lapply, lapply.scale, max_disp)
+        data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, lapply, lapply, lapply.scale, max)
     }
 
     return(data)
