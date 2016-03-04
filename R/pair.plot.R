@@ -130,19 +130,31 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     } else {
         #Selecting the 0s coordinates from the binary matrix
         if(lower == TRUE) {
-            xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,1]]
-            ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,2]]
+            if(any(matrix_plot < binary, na.rm = TRUE)) {
+                xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,1]]
+                ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,2]]
+                #Adding the 0s symbols
+                if(class(add) == "numeric") {
+                    #Symbol is a point
+                    points(x = xs, y = ys, col = col[1], pch = add, ...)
+                } else {
+                    #Symbol is a character
+                    text(x = xs, y = ys, add, col = col[1], ...)
+                }
+            }
         } else {
-            xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,1]]
-            ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,2]]            
-        }
-        #Adding the 0s symbols
-        if(class(add) == "numeric") {
-            #Symbol is a point
-            points(x = xs, y = ys, col = col[1], pch = add, ...)
-        } else {
-            #Symbol is a character
-            text(x = xs, y = ys, add, col = col[1], ...)
+            if(any(matrix_plot > binary, na.rm = TRUE)) {
+                xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,1]]
+                ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,2]]
+                #Adding the 0s symbols
+                if(class(add) == "numeric") {
+                    #Symbol is a point
+                    points(x = xs, y = ys, col = col[1], pch = add, ...)
+                } else {
+                    #Symbol is a character
+                    text(x = xs, y = ys, add, col = col[1], ...)
+                }
+            }
         }
     }
     #End
