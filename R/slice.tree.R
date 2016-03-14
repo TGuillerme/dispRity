@@ -1,5 +1,20 @@
+#' @title Slicing a tree.
+#'
+#' @description Slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
+#'
+#' @param tree A \code{phylo} object with a \code{root.time} element.
+#' @param age A single \code{numeric} value where to perform the slice.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
+#' @param FAD,LAD The first and last occurrence data.
+#' 
+#' @seealso \code{\link[paleotree]{timeSliceTree}} and \code{\link{time.series}}.
+#'
+#' @author Thomas Guillerme
+#' @export
+
+
 #Function modified from paleotree::timeSliceTree
-slice.tree<-function(tree, age, model, FAD, LAD) {
+slice.tree <- function(tree, age, model, FAD, LAD) {
 
     #For adding modules (i.e. models) follow the format
     # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
