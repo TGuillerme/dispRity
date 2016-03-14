@@ -181,7 +181,7 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n'FAD' (First Apparition Datum) and 'LAD' (Last Apparition Datum).")
         #Check if the FADLAD contains all taxa
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
-            message("Some tips have no FAD/LAD and are assumed to be single points in time.")
+            # message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             #If not generate the FADLAD for the missing taxa
             missing_FADLAD <- which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD <- data.frame(tree.age(tree)[missing_FADLAD,1], tree.age(tree)[missing_FADLAD,1], row.names = tree.age(tree)[missing_FADLAD,2])
