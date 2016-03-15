@@ -46,8 +46,8 @@ Here is a list of what are the exact meaning of these term:
 \begin{itemize}
 \item \textbf{Ordinated space}: it designates the mathematical multidimensional object studied here. In morphometrics, this one is often referred as being the morphospace. However it can also be the the cladisto-space for cladistic data or the eco-space in ecology, etc. In practice, this term designates an ordinated matrix where the columns represent the dimensions of the ordinated space (often -- but not necessarily -- $>$ 3!) and the rows represent the elements within this space.
 \item \textbf{Elements}: it designates the rows of the ordinated space, elements can be either taxa, field sites, countries, etc...
-\item \textbf{Dimensions}: it designates the columns of the ordinated space. The dimensions can also be referred to as axis.
-\item \textbf{Series}: it designates sub-samples of the ordinated space. Basically a series contain the same number of dimensions as the morphospace but might contain a smaller number of elements. For example, if our ordinated space is composed of birds and mammals (i.e. the elements) and 50 dimensions, we can create two series of just mammals or birds as elements (but the same 50 dimensions) to look at the difference in disparity between both groups.
+\item \textbf{Dimensions}: it designates the columns of the ordinated space. The dimensions can also be referred to as axis or principal components.
+\item \textbf{Series}: it designates sub-samples of the ordinated space. Basically a series contain the same number of dimensions as the morphospace but may contain a smaller number of elements. For example, if our ordinated space is composed of birds and mammals (i.e. the elements) and 50 dimensions, we can create two series of just mammals or birds as elements (but with the same 50 dimensions) to look at the difference in disparity between the two clades.
 \end{itemize}
 
 \subsection{Installation}
@@ -61,7 +61,7 @@ library(dispRity)
 
 \noindent Note that we use the \texttt{release} branch here which is version \Sexpr{packageVersion("dispRity")}.
 For the piping-hot (but potentially full of bugs) version, you can change the argument \texttt{ref = "release"} to \texttt{ref = "master"}.
-This package depends mainly on the \texttt{ape} package and the \texttt{timeSliceTree::paleotree} function.
+This package depends mainly on the \texttt{ape} package and uses functions of several other (\texttt{ade4}, \texttt{geometry}, \texttt{grDevices}, \texttt{hypervolume}, \texttt{paleotree} and \texttt{snow}).
 
 \subsection{Data}
 In this tutorial we are going to use a subset of the ordinated cladistic data from \cite{beckancient2014} that contains 50 taxa (elements) ordinated using their cladistic distance (i.e. the distance between their discrete morphological characters).
@@ -92,7 +92,8 @@ head(BeckLee_ages)
 
 ## Loading the phylogeny
 data(BeckLee_tree)
-plot(BeckLee_tree) ; nodelabels(cex=0.8) ; axisPhylo(root=140)
+plot(BeckLee_tree, cex = 0.8) ; nodelabels(cex = 0.8) ; axisPhylo(root = 140)
+
 @ 
 
 \subsection{A quick go through}
@@ -104,39 +105,45 @@ Note that all these features will be discussed in more details below.
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
     model = "acctran", time = rev(seq(from=0, to=130, by=15)),
     FADLAD = BeckLee_ages)
+
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(sliced_data, 100)
+
 ## Calculating disparity
-sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+median_centroids <- dispRity(bootstrapped_data, metric = c(median, centroids))
+
 ## Summarising the results
-summary(sum_of_variances)
-plot(sum_of_variances)
+summary(median_centroids)
+plot(median_centroids)
+
 ## Testing the effect of time on disparity
-summary(test.dispRity(sum_of_variances, test = aov, comparisons = "all"))
+summary(test.dispRity(median_centroids, test = aov, comparisons = "all"))
 @
 
 \section{Package specificities}
 
 \subsection{The \dispRity objects}
-Disparity analysis can involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be a bit impractical to visualise and quickly jam your \R console.
+Disparity analysis can involve a lot of shuffling around with many matrices (especially when bootstrapping the data) which can be impractical to visualise and will quickly jam your \R console.
 For example, we can have a look at the structure of the object created in the quick example:
 
 <<dispRity class1, eval=FALSE>>=
-str(sum_of_variances)
+str(median_centroids)
 ## That's a more than 4000 lines of output!
 @
 
-\noindent Therefore this package proposes a new class of object called \dispRity objects.
-These objects allow to easily use a S3 method functions such as \texttt{summary.dispRity} (just called as \texttt{summary}; see section \ref{summary}) or \texttt{plot.dispRity} (just called as \texttt{plot}; see section \ref{plot}).
-But also, this allows to use the S3 method for printing \dispRity objects via \texttt{print.dispRity} that allows to summarise the content of the objects similar to the \texttt{phylo} class objects (see \texttt{print.phylo::ape}).
+\noindent Therefore this package proposes a specific class of object called \dispRity objects.
+These objects allow to easily use S3 method functions such as \texttt{summary.dispRity} (just called as \texttt{summary}; see section \ref{summary}) or \texttt{plot.dispRity} (just called as \texttt{plot}; see section \ref{plot}).
+But also, this allows to use the S3 method for printing \dispRity objects via \texttt{print.dispRity} that allows to summarise the content of the objects similar to the \texttt{phylo} class objects (see \texttt{ape::print.phylo}).
 
 <<dispRity class2>>=
-## What is the class of the sum_of_variances object?
-class(sum_of_variances)
+## What is the class of the median_centroids object?
+class(median_centroids)
+
 ## What is in the object?
-names(sum_of_variances)
+names(median_centroids)
+
 ## Summarising it using the S3 method print.dispRity:
-sum_of_variances
+median_centroids
 ## This displays some basic information about the object content
 @ 
 
@@ -144,42 +151,50 @@ sum_of_variances
 
 <<dispRity class3, eval=FALSE>>=
 ## Displaying the full object
-print(sum_of_variances, all = TRUE)
+print(median_centroids, all = TRUE)
+## But that's 155091 lines!
 @ 
 
 \noindent Finally, some utility functions such as \texttt{get.dispRity} or \texttt{extract.dispRity} allows to access to some specific content of the object:
 
 <<dispRity class4>>=
 ## Extracting some specific series from the disparity object
-series_1_and_4 <- get.dispRity(sum_of_variances, what = c(1,4))
+series_1_and_4 <- get.dispRity(median_centroids, what = c(1,4))
 series_1_and_4
+
 ## The observed disparity
-extract.dispRity(sum_of_variances)
-## The list of bootstrapped scores of disparity
-str(extract.dispRity(sum_of_variances, observed = FALSE))
+extract.dispRity(median_centroids)
+
+## The distribution of the bootstrapped disparity scores for the first series
+str(extract.dispRity(get.dispRity(median_centroids, what = 1),
+    observed = FALSE))
 @
 
 \subsection{Modular functions}
 This package aims to be a modular package where users can personalise some aspects of the package fairly easily.
-In this version \Sexpr{packageVersion("dispRity")} only one function is fully modular (\dispRity; see section \ref{disparity}) but more will be hopefully available in the near future (see section \ref{developments}).
-
-The modular idea is that users can use implemented tools to help facilitating their own personalised function.
+The modular aspect allows the package users to use several implemented tools to help them creating personalised functions.
 For example, the \dispRity function intake a \texttt{metric} argument designating how disparity should be calculated.
 This argument can take some already implemented functions such as \texttt{mean} but also some completely new ones such as the sum divided by length:
 
 <<dispRity modular>>=
 ## Disparity measured as the mean value of the ordinated matrix
 summary(dispRity(sliced_data, metric = mean))
+
 ## A function for measuring the sum divided by the length (the mean!)
 sum.divide.by.length <- function(X) sum(X)/length(X)
+
 ## Disparity measured as the mean divided by the length
 summary(dispRity(sliced_data, metric = sum.divide.by.length))
 ## Giving the exact same results!
 @
 
-\noindent For more information concerning this modularity, please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for the vignette about the metric implementation in \dispRity.
+\noindent For more information, please refer to the \href{https://github.com/TGuillerme/dispRity}{GitHub page: github.com/TGuillerme/dispRity} for the vignette about the metric implementation in \dispRity.
 
 \section{Functions}
+In the following section, different functionalities are detailed.
+The functions are presented in a ``classic'' pipelined study fashion for convenience (i.e. splitting the data, bootstrapping it, calculating disparity, testing differences).
+Note however that most of these functions can be used in any order and that some steps can of course be skipped.
+
 One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter \textit{series}).
 These series correspond to regions of the ordinated space that we want to compare to each other.
 
@@ -216,6 +231,20 @@ str(crown_stem$elements)
 crown_stem$series
 @ 
 
+\noindent Note that here we separating the taxa into two exclusive groups (i.e. crown mammals can be crown only, same for stem mammals).
+It is however possible to add more factors with overlapping groups:
+
+<<cust.series3>>=
+## Adding all mammals to the a new series (along with crown and stem as before)
+factors2 <- as.data.frame(
+    matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem)),
+    rep("Mammalia", Ntip(BeckLee_tree))), ncol = 2,
+    dimnames = list(c(crown, stem), c("Group", "Class")), byrow = FALSE))
+
+## Creating the three series: Group.stem/crown and Class.Mammalia
+cust.series(BeckLee_mat50, factors2)
+@ 
+
 \subsection{\texttt{time.series}}
 
 Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
@@ -230,26 +259,28 @@ For the time-slicing method details see \cite{GuillermeSTD}.
 For both methods, the function intakes the \texttt{time} argument which can be a vector of \texttt{numeric} values for:
 \begin{enumerate}
 \item defining the boundaries of the time bins (when \texttt{method = "discrete"});
-\item defining the time slices (when using \texttt{method = "continuous"}).
+\item defining the time slices (when \texttt{method = "continuous"}).
 \end{enumerate}
 Otherwise, the \texttt{time} argument can be set as a single \texttt{numeric} value for automatically generating a given number of equidistant time-bins/slices.
-Additionally, it is also possible to input a data frame containing the First/Last Occurrence Data (\texttt{FAD/LAD}) for taxa that span over a longer time than the tips/nodes age.
+Additionally, it is also possible to input a data frame containing the first and last occurrence data (\texttt{FAD/LAD}) for taxa that span over a longer time than the tips/nodes age.
 
 Here is an example for \texttt{method = "discrete"}:
 
-<<discrete.series>>=
+<<discrete.series1>>=
 ## Generating three time bins containing the data present every 40 Ma
-time_bins <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
-    method = "discrete", time = c(120, 80, 40, 0))
-## Note that the function provides a warning saying that tips where single
-## points in time (no FAD/LAD information). We can fix that by adding the
-## age data for the taxa that have some longer occurrence spans.
+time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+    time = c(120, 80, 40, 0))
+@
+
+\noindent In this example, the taxa where split inside each timebin according to their age.
+Note however that some taxa might span between some time bins and should be included in more than one.
+This is possible by providing a table containing the first and last occurrence data:
+
+<<discrete.series1.1>>=
+## Generating three time bins containing the data present every 40 Ma, including
+## taxa that might span between time bins.
 time_bins <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
     method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages)
-## To entirely avoid the warning we could collect the occurrence span data
-## for all the taxa but that's not necessary. The function automatically
-## assumes no occurrence span time (i.e. single points in time) for all taxa
-## by default.
 time_bins
 @
 
@@ -261,14 +292,15 @@ Note that we can also generate equivalent results by just telling the function t
 time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
     time = 3)
 @
+
 \noindent We now have three time bins of 44.50368 million years each.
 
 When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1\% of the tree length as long as at least three elements are present at that point in time.
 The algorithm adds an extra 1\% tree length until reaching the required minimum of three elements.
-It is also possible to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between tips \textit{AND} nodes.
+It is also possible to include nodes in each bin by using \texttt{inc.nodes = TRUE} and providing a matrix that contains the ordinated distance between tips \textit{and} nodes.
 
 For the time-slicing method (\texttt{method = "continuous"}), the idea is really similar.
-This option intakes a matrix that contains the ordinated distance between taxa \textit{AND} nodes and an assumed evolutionary model via the \texttt{model} argument:
+This option intakes a matrix that contains the ordinated distance between taxa \textit{and} nodes and an assumed evolutionary model via the \texttt{model} argument:
 \begin{enumerate}
 \item \texttt{"acctran"} where the data chosen on each time slice is always the one of the offspring
 \item \texttt{"deltran"} where the data chosen on each time slice is always the one of the descendant
@@ -289,12 +321,11 @@ time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
     model = "gradual", time = 4)
 @
 
-
 \subsection{\texttt{boot.matrix}}
 \label{rare}
 
 Once we obtain our different series, we might want to bootstrap and rarefy it (i.e. pseudo-replicating the data).
-The bootstrap will allow us to make each subsample more robust to outliers and the rarefaction will allow us to compare slices with the same number of elements to get rid of eventual sampling problems.
+The bootstrap will allow us to make each series more robust to outliers and the rarefaction will allow us to compare slices with the same number of elements to get rid of eventual sampling problems.
 The \texttt{boot.matrix} allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
 The default options will bootstrap the matrix 1000 times without rarefaction.
 The number of bootstrap pseudo-replicates can be defined using the \texttt{bootstraps} option (see below).
@@ -306,7 +337,7 @@ boot.matrix(data = BeckLee_mat50)
 ## bootstraps and the bootstraps methods.
 @
 
-Additionally, this function allows to control the bootstrap algorithm through the \texttt{boot.type} argument.
+This function allows to control the bootstrap algorithm through the \texttt{boot.type} argument.
 Currently two algorithms are implemented:
 \begin{enumerate}
 \item \texttt{"full"} where the bootstrapping is entirely stochastic (all the data is bootstrapped)
@@ -315,19 +346,23 @@ Currently two algorithms are implemented:
 
 This function also allows to rarefy the data using the \texttt{rarefaction} argument.
 The default argument is \texttt{FALSE} but it can be set to \texttt{TRUE} to fully rarefy the data (i.e. remove $n$ elements for the number of pseudo-replicates, where $n$ varies from the maximum number of elements present in the dataset to a minimum of 3 elements).
-It can also be set to a fix \texttt{numeric} value (or a set of numeric values).
+It can also be set to a fix \texttt{numeric} value (or a set of \texttt{numeric} values).
 Finally, one last argument, \texttt{rm.last.axis} allows to remove a certain amount of dimensions (or axis) for the ordinated space.
 This can be logical argument where \texttt{FALSE} (default) will not remove any dimension and \texttt{TRUE} will remove the last dimensions that bear up to 5\% of the total ordinated space's variance.
 
 <<boot.matrix2>>=
 ## Bootstrapping with the single bootstrap method
 boot.matrix(BeckLee_mat50, boot.type = "single")
+
 ## Bootstrapping with the full rarefaction
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+
 ## Or with a set number of rarefaction levels
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(6:8,3))
+
 ## And removing the last axis (default)
 boot.matrix(BeckLee_mat50, rm.last.axis = TRUE)
+
 ## Or with a fix value (50%)
 boot.matrix(BeckLee_mat50, rm.last.axis = 0.5)
 @
@@ -338,9 +373,11 @@ In fact, it can also deal with a list of matrices or with a \dispRity object out
 <<boot.matrix3>>=
 ## Bootstrap and full rarefaction on the crown/stem series
 crown_stemBS <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE)
+
 ## Bootstrap on the time binning/slicing series
 time_binsBS <- boot.matrix(time_bins, bootstraps = 100)
 time_slicesBS <- boot.matrix(time_slices, bootstraps = 100)
+
 ## Note that all these objects are of class dispRity
 crown_stemBS
 time_binsBS
@@ -350,7 +387,7 @@ time_slicesBS
 \subsection{\texttt{dispRity}}
 \label{disparity}
 
-This function is a modular function that allow to simply (and quickly!) calculate disparity from a matrix.
+This function is a modular function that allows to simply (and quickly!) calculate disparity from a matrix.
 
 Because disparity can be measured in many ways, this function is a tool to measure disparity \textit{as defined by the user}.
 In fact, the \dispRity function intakes two main arguments: the data and the disparity metric.
@@ -366,34 +403,39 @@ In practice, the use of these metrics in the \dispRity function, is pretty easy:
 
 <<dispRity1>>=
 dispRity(BeckLee_mat50, metric = mean)
-## This defines disparity as the mean value of the morphospace (using
-## mean::base).
+## This defines disparity as the mean value of the morphospace
+## (using base::mean).
 
 ## It is also possible to combine multiple functions:
 dispRity(BeckLee_mat50, metric = c(sum, variances))
-## Defining disparity as the sum (sum::base) of the variances
-## (variances::dispRity) of each dimension of the morphospace.
+## Defining disparity as the sum (base::sum) of the variances
+## (dispRity::variances) of each dimension of the morphospace.
 
 dispRity(BeckLee_mat50, metric = c(prod, centroids))
-## For the product (prod::base) of the distances between each elements and the
-## centroid of the morphospace (centroids::dispRity). 
+## For the product (base::prod) of the distances between each elements and the
+## centroid of the morphospace (dispRIty::centroids). 
 
 ## Or user defined ones:
 total.range <- function(X) abs(range(X)[1]-range(X)[2])
 dispRity(BeckLee_mat50, metric = c(total.range, centroids))
 ## For the range (total.range, user defined) of the distances between each
-## elements and the centroid of the morphospace (centroids::dispRity).
+## elements and the centroid of the morphospace (dispRity::centroids).
 
 ## Or more complex ones:
 vars1 <- dispRity(BeckLee_mat50, metric = c(sd, variances, var))
-## For the standard deviation (sd::stats) of the variance (variances::dispRity)
-## of each column of the variance/covariance matrix (var::stats).
+## For the standard deviation (stats::sd) of the variance (dispRity::variances)
+## of each column of the variance/covariance matrix (stats::var).
 
 ## Note that the order of the function is not important since the levels of
 ## each function are automatically detected by the dispRity algorithm.
 vars2 <- dispRity(BeckLee_mat50, metric = c(variances, var, sd))
 all(summary(vars1) == summary(vars2))
 @
+
+
+%STOPPED HERE
+
+
 
 \noindent Note that these functions do not directly output the disparity values but only the summary of the \dispRity objects.
 To display the results, see the section \ref{summary}.
