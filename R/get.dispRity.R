@@ -127,7 +127,7 @@ get.dispRity<-function(data, what, keep.elements=FALSE) {
         if(!is.null(data$data$bootstraps)) output$data$bootstraps<-data$data$bootstraps[what]
         #disparity
         output$disparity$observed<-data$disparity$observed[what]
-        if(!is.null(data$disparity$bootstraps)) output$disparity$bootstraps<-data$disparity$bootstraps[what]
+        if(!is.null(data$disparity$bootstrapped)) output$disparity$bootstrapped<-data$disparity$bootstrapped[what]
         #elements
         if(keep.elements == TRUE) {
             output$elements<-data$elements
