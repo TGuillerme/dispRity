@@ -331,6 +331,7 @@ The default options will bootstrap the matrix 1000 times without rarefaction.
 The number of bootstrap pseudo-replicates can be defined using the \texttt{bootstraps} option (see below).
 
 <<boot.matrix1>>=
+## Bootstrapping a matrix
 boot.matrix(data = BeckLee_mat50)
 ## As we can see, the output is also a dispRity object that is summarised
 ## automatically, and gives information on the data as well as the number of
@@ -432,21 +433,16 @@ vars2 <- dispRity(BeckLee_mat50, metric = c(variances, var, sd))
 all(summary(vars1) == summary(vars2))
 @
 
-
-%STOPPED HERE
-
-
-
 \noindent Note that these functions do not directly output the disparity values but only the summary of the \dispRity objects.
 To display the results, see the section \ref{summary}.
 
 In these examples we used only simple ordinated matrix but of course, it might be more interesting to directly use the \dispRity objects we generated in the steps above.
 Thus we can calculate the bootstrapped and rarefied disparity in each sub-sample of the morphospace.
-In this example we are going to define disparity as being the sum of the variances in each dimension)=.
+In this example we are going to define disparity as being the median distance between each element and each dimensions centroids.
 
 <<dispRity2>>=
 ## Disparity in crown and stem mammals:
-disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(sum, variances))
+disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(median, centroids))
 
 ## Disparity through time:
 disp_time_binsBS <- dispRity(time_binsBS, metric = c(median, centroids))
@@ -454,8 +450,7 @@ disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(median, centroids))
 @
 
 \noindent Note that the computational time was longer for the rarefied data (\texttt{crown\_stemBS}) since it had to calculate the disparity on all the rarefied matrix, each bootstrapped 100 times.
-A faster parallel version will be implemented in future releases (see section \ref{whatsleft}).
-
+For both the \texttt{boot.matrix} and the \dispRity functions, it is possible to increase computational speed in some cases using the \texttt{parallel} option (see each function's manuals).
 
 \subsection{\texttt{summary}}
 \label{summary}
@@ -478,7 +473,7 @@ summary(disp_time_binsBS, recall = TRUE)
 
 ## Note that the information with each different number of elements is
 ## displayed for rarefied data:
-summary(disp_crown_stemBS)
+tail(summary(disp_crown_stemBS))
 ## The observed disparity is NA for rarefied data.
 @
 
@@ -486,14 +481,19 @@ summary(disp_crown_stemBS)
 \subsection{\texttt{plot}}
 \label{plot}
 
-A nicer way to summarise the data is to plot the results using the S3 method \texttt{plot.dispRity}.
+An alternative way to summarise the data is to plot the results using the S3 method \texttt{plot.dispRity}.
 This function intakes the same options as \texttt{summary.dispRity} along side with various graphical options described in the function manual (see \texttt{?plot.dispRity}).
 
-Two main categories of plots can be displayed: discrete plots with the argument \texttt{type = "discrete"} and continuous plots with the argument \texttt{type = "continuous"} (see below).
+Two main categories of plots can be displayed: continuous plots with the argument \texttt{type = "continuous"} (see below) and discrete plots (default is \texttt{type = "box"}.
 Note that this argument can be left missing.
 In this case, the algorithm will automatically detect the type of series from the \dispRity object.
 
-The \texttt{type = "discrete"} argument plots superimposed boxes that represent the different levels of confidence intervals and a dot representing the central tendency.
+The discrete plot arguments can be either:
+\begin{itemize}
+\item \texttt{type = "box"} for plotting boxplots.
+\item \texttt{type = "polygon"} for plotting boxes that represent the different levels of confidence intervals (with a dot for the central tendency).
+\item \texttt{type = "lines"} which is similar to \texttt{type = "polygon"} but plots lines rather than boxes for the confidence intervals levels.
+\end{itemize}
 It is also possible to display the number of elements per series (has a horizontal doted line) using the option \texttt{elements = TRUE}.
 Additionally, when the data is rarefied (see section \ref{rare}), one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the \texttt{rarefaction} argument. 
 
@@ -502,13 +502,13 @@ Additionally, when the data is rarefied (see section \ref{rare}), one can also i
 quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
 
 ## Plotting the disparity for both groups
-plot(disp_crown_stemBS, type = "discrete")
-## Same plot but with the number of elements on the right. Note that the type 
-## argument is not necessary since the "discrete" type is automatically detected
-## from the input dispRity object.
-plot(disp_crown_stemBS, elements = TRUE)
+plot(disp_crown_stemBS, type = "box")
+
+## Same plot but with the number of elements on the right and using the
+## "polygon" plot type.
+plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
 ## Rarefied version of the same plot (20 elements per series)
-plot(disp_crown_stemBS, elements = TRUE, rarefaction = 20)
+plot(disp_crown_stemBS, type = "polygon", elements = TRUE, rarefaction = 20)
 @
 
 \noindent It is also possible to easily look at the behaviour of the disparity metric with the rarefied data (i.e. how does the disparity score change when the number of elements goes down) by using the \texttt{rarefaction = "plot"} argument:
@@ -523,8 +523,8 @@ plot(disp_crown_stemBS, elements = TRUE, rarefaction = "plot")
 \noindent The different dashed lines represent the different confidence intervals around each rarefaction curve.
 We can see that the disparity metric becomes stable after more than 10 elements.
 
-It is also possible, when using the \texttt{type = "discrete"} argument, to plot lines rather than box by switching the \texttt{discrete\_type} from \texttt{"box"} to \texttt{"line"} to display one dimensional boxplots.
-This option can be useful when displaying many series.
+It is also possible, when using the \texttt{type = "lines"} argument, to plot lines rather than boxes.
+This option can be useful when displaying many series in a same window.
 Additionally, it is possible to plot the observed data when existing (i.e. not when the data is rarefied) by using the option \texttt{observed = TRUE}.
 
 <<plot3, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>=
@@ -532,7 +532,7 @@ Additionally, it is possible to plot the observed data when existing (i.e. not w
 par(bty = "n")
 ## The disparity-through-time data in a time-binned way (with lines rather than
 ## boxes) with the observed data as crosses
-plot(disp_time_binsBS, discrete_type = "line", observed = TRUE)
+plot(disp_time_binsBS, type = "lines", observed = TRUE)
 
 @
 
@@ -544,12 +544,8 @@ Note that, as a S3 method function, \texttt{plot.dispRity} can take the classic 
 par(bty = "n")
 
 ## First, plotting the continuous data with a y axis limit
-plot(disp_time_slicesBS, type = "continuous", ylim = c(0.5,2))
+plot(disp_time_slicesBS, type = "continuous")
 ## Note that the type = "continuous" argument is not mandatory here.
-
-## Second, adding the discrete data
-par(new = TRUE)
-plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
 @
 
 \noindent I encourage you to play with the graphical options to have some prettier results.
@@ -566,13 +562,28 @@ plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)),
     observed = TRUE, main = "Many options...")
 @
 
+\noindent Finally, it is possible to add multiple plots on top of each other:
+
+<<plot5.1, fig.width=8, fig.height=8, out.width='.5\\linewidth'>>=
+## Graphical options
+par(bty = "n")
+
+## First, plotting the continuous data with a y axis limit
+plot(disp_time_slicesBS, ylim = c(0.5,2))
+
+## Second, adding the discrete data
+par(new = TRUE)
+plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
+@
+
+
 \subsection{\texttt{test.dispRity}}
 
 Finally, the \dispRity package allows to apply some tests to the data in order to properly test hypothesis.
-The function \texttt{test.dispRity} works in a similar way as the \dispRity function: it intakes a \dispRity object (containing disparity measurements), a \texttt{test} and a \texttt{comparison} argument.
+The function \texttt{test.dispRity} works in a similar way as the \dispRity function: it intakes a \dispRity object (containing disparity measurements), a \texttt{test} and a \texttt{comparisons} argument.
 The \texttt{test} argument can be any statistical or non-statistical test to apply to the disparity object.
-It can be common test function (e.g. \texttt{t.test::stats}) or some functions implemented in \dispRity (see \texttt{dispRity.test}) or even user defined functions.
-The \texttt{comparison} argument must indicate the way the test should be applied to the data:
+It can be common test function (e.g. \texttt{stats::t.test}) or some functions implemented in \dispRity (see \texttt{dispRity.test}) or even user defined functions.
+The \texttt{comparisons} argument must indicate the way the test should be applied to the data:
 \begin{itemize}
 \item \texttt{"pairwise"} (default): to compare each series pairwise
 \item \texttt{"referential"}: to compare each series to the first one
@@ -580,8 +591,10 @@ The \texttt{comparison} argument must indicate the way the test should be applie
 \item \texttt{"all"}: to compare all the series together (like in analysis of variance)
 \end{itemize}
 It is also possible to input a list of pairs of \texttt{numeric} values or \texttt{characters} matching the series names to create personalised test.
+Some other specific tests implemented in \dispRity such as the \texttt{dispRity::null.test} and the \texttt{dispRity::sequential.test} have a specific way to be applied to the data and therefore ignore the \texttt{comparisons} argument.
+
 This function also allows to correct for type I error inflation when using multiple comparisons via the \texttt{correction} argument.
-This argument can be empty (no correction applied) or can contain one of the corrections from the \texttt{p.adjust::stats} function (see \texttt{?p.adjust}).
+This argument can be empty (no correction applied) or can contain one of the corrections from the \texttt{stats::p.adjust} function (see \texttt{?p.adjust}).
 
 Note that the \texttt{test.dispRity} algorithm deals with some classic tests outputs (\texttt{h.test}, \texttt{lm} and \texttt{numeric} vector) and summarises the test output.
 It is however possible to get the full detailed output by using the options \texttt{details = TRUE}.
@@ -643,10 +656,6 @@ Here are the new functionalities that will be implemented in further versions.
 \subsection{More user defined functions}
 I intend also develop functions to help users to develop their own algorithms for the bootstrap method (via \texttt{make.boot}) or the evolutionary models (via \texttt{make.model}).
 Both functions will provide similar testing as the \texttt{make.metric} function.
-
-\subsection{Faster!}
-Finally, for long analysis, I intend to develop a parallel running version of the package.
-In fact, most of the internal functions are base on \texttt{lapply} functions that can be easily passed to \texttt{snow::parLapply} or similar parallel functions.
 
 \subsection{Suggestions?}
 If you have any extra suggestions or comments on what has already been developed or will be developed, please send me an email (\href{mailto:guillert@tcd.ie}{guillert@tcd.ie}) or if you are a GitHub user, directly create an issue on the \href{https://github.com/TGuillerme/dispRity}{GitHub page (github.com/TGuillerme/dispRity)}.
