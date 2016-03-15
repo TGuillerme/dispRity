@@ -72,18 +72,18 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    OBSresults<-data$disparity$observed
+    OBSresults <- data$disparity$observed
     #is the data bootstrapped? 
     if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
         if(length(data$data$bootstraps[[1]][[1]]) > 1) {
-            is.bootstrapped<-TRUE
-            BSresults<-data$disparity$bootstrapped
+            is.bootstrapped <- TRUE
+            BSresults <- data$disparity$bootstrapped
         } else {
-            is.bootstrapped<-FALSE
+            is.bootstrapped <- FALSE
         }
     } else {
-        is.bootstrapped<-FALSE
+        is.bootstrapped <- FALSE
     }
     
     #Test
@@ -157,6 +157,23 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     #Extracting the data (sends error if data is not bootstrapped)
     if(comp != "null.test") {
         extracted_data <- extract.dispRity(data, observed=FALSE)
+    }
+
+    #Custom comparisons (user)
+    if(comp == "custom") {
+        #getting the list of series to compare
+        comp_series <- comparisons
+
+        #Applying the test to the list of pairwise comparisons
+        details_out <- lapply(comp_series, test.list.lapply, extracted_data, test, ...)
+        #details_out <- lapply(comp_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
+
+        #Saving the list of comparisons
+        comparisons_list <- convert.to.character(comp_series, extracted_data)
+        comparisons_list <- unlist(lapply(comparisons_list, paste, collapse=" - "))
+
+        #Renaming the detailed results list
+        names(details_out) <- comparisons_list
     }
 
     #Referential comparisons (first distribution to all the others)
