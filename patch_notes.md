@@ -11,8 +11,9 @@ Patch notes
   	* `box` for real boxplots.
   	* `lines` for the distribution verticale lines.
   	* `polygon` for the distribution boxes.
-  * many updates to the functions manual.
-  * `boot.matrix` and `dispRity` can now run in parallel!
+  * minor functions corrections for specific optional arguments combinations.
+  * many updates to the functions manual and vignettes.
+  * `boot.matrix` and `dispRity` can now run in parallel.
 * 2015/12/01 - v0.1.2
   * new function: `get.dispRity` for subsampling dispRity objects
   * new function: `extract.dispRity` for extracting disparity results
