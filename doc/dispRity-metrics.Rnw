@@ -43,7 +43,7 @@ Of course, there are many more examples of metrics one can use for describing so
 
 Because of this great diversity of metric, the package \dispRity has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis.
 In fact, the core function of the package, \dispRity, allows the user to define any metric in the \texttt{metric} argument.
-However, because of the infrastructure of the package (especially the one of the \dispRity objects -- see the \href{https://github.com/TGuillerme/dispRity}{the \dispRity manual}), the \texttt{metric} argument has to follow certain rules:
+However, because of the infrastructure of the package (especially the one of the \dispRity objects -- see the \href{https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf}{\dispRity manual}), the \texttt{metric} argument has to follow certain rules:
 \begin{enumerate}
     \item it must be composed of one to three \texttt{function} objects;
     \item these functions can only have as input a \texttt{matrix} or a \texttt{vector};

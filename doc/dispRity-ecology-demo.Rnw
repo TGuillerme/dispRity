@@ -134,7 +134,7 @@ class(customised_series)
 customised_series
 @
 
-For more details on the \dispRity objects, see the \href{https://github.com/TGuillerme/dispRity}{\dispRity manual}.
+For more details on the \dispRity objects, see the \href{https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf}{\dispRity manual}.
 Basically the idea is to avoid jamming the \R console such as when using:
 
 <<dispRity class, eval=FALSE>>=
