@@ -156,7 +156,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
 
     #Extracting the data (sends error if data is not bootstrapped)
     if(comp != "null.test") {
-        extracted_data <- extract.dispRity(data, observed=FALSE)
+        extracted_data <- extract.dispRity(data, observed = FALSE)
     }
 
     #Custom comparisons (user)

@@ -56,13 +56,27 @@ add.line <- function(xs, ys, lines.args) {
 }
 
 #Adding significance tokens
-significance.token <- function(xs, ys, p.value) {
+significance.token <- function(xs, ys, p.value, token.args) {
     if(p.value < 0.1) {
         #Selecting the token
         if(p.value < 0.1) token <- "."
         if(p.value < 0.05) token <- "*"
         if(p.value < 0.01) token <- "**"
         if(p.value < 0.001) token <- "***"
-        text(x = sum(xs)/2, y = max(ys)+max(ys)*0.1, token)
+        #Default plotting
+        if(is.null(token.args)) {
+            text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
+        } else {
+        #Plotting with arguments
+            token.args$labels <- token
+            token.args$x <- sum(xs)/2
+            if(any(names(token.args) == "float")) {
+                token.args$y <- max(ys)+max(ys)*token.args$float
+                token.args$float <- NULL
+            } else {
+                token.args$y <- max(ys)+max(ys)*0.05
+            }
+            do.call(text, token.args)
+        }
     }
 }

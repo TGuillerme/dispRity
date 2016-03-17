@@ -17,13 +17,18 @@ sequential.test(series, results = "coefficients", family, ...)
 
 \item{add}{whether to add the results of the sequential test to the current plot (default = \code{FALSE}).}
 
-\item{lines.args}{a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL})..}
+\item{lines.args}{a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
+
+\item{token.args}{a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
 }
 \description{
 Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation.
 }
 \details{
 This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+the \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+\code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{sequential.test(..., token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30 higher than the slope.
 }
 \examples{
 ## Load the Beck & Lee 2014 data

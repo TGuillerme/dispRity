@@ -11,10 +11,15 @@
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
 #' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
-#' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL})..
+#' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
+#' @param token.args a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
 #'
 #' @details
 #' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+#' the \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+#' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+#' Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{sequential.test(..., token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30 higher than the slope.
+#' 
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -41,9 +46,11 @@
 #' @export
 
 #Testing
+#source("sanitizing.R")
 #source("sequential.test_fun.R")
+#source("test.dispRity_fun.R")
 
-sequential.test <- function(series, results="coefficients", family, ..., add = FALSE, lines.args = NULL) {
+sequential.test <- function(series, results = "coefficients", family, ..., add = FALSE, lines.args = NULL, token.args = NULL) {
 
     #SANITIZING
     #results must be at least coefficients!
@@ -64,6 +71,10 @@ sequential.test <- function(series, results="coefficients", family, ..., add = F
 
     #lines.args
     if(!is.null(lines.args)) check.class(lines.args, "list")
+
+    #token.args
+    if(!is.null(token.args)) check.class(token.args, "list")
+
 
     #APPLYING THE SEQUENTIAL TEST
 
@@ -160,17 +171,17 @@ sequential.test <- function(series, results="coefficients", family, ..., add = F
     }
 
     #Combining the tables
-    results_out <- list("Intercept"=Intercept_results, "Slope"=Slope_results)
+    results_out <- list("Intercept" = Intercept_results, "Slope" = Slope_results)
 
     #Plotting
     if(add == TRUE) {
         #Getting x,y coordinates for the first model
         xs <- seq_series[[1]]
-        ys <- c(intercept0, Intercept_results[1,2])
+        ys <- c(intercept0, Intercept_results[1,1])
         #Plotting the line
         add.line(xs, ys, lines.args)
         #Add significance (if necessary)
-        significance.token(xs, ys, Slope_results[1,4])
+        significance.token(xs, ys, Slope_results[1,4], token.args)
 
         #Looping through the other models
         for(series in 2:length(seq_series)) {
@@ -180,7 +191,7 @@ sequential.test <- function(series, results="coefficients", family, ..., add = F
             #Plotting the line
             add.line(xs, ys, lines.args)
             #Add significance (if necessary)
-            significance.token(xs, ys, Slope_results[series,4])
+            significance.token(xs, ys, Slope_results[series,4], token.args)
         }
     }
 
