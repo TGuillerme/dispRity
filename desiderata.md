@@ -1,4 +1,8 @@
+# Package wish list
+* Allow disparity metrics that work on a full distribution (i.e. for then allowing to compare the observed distributions directly)
+
 # To do list
+* Add integrate the correction option to the sequential.test
 
 ## Literature review
 * Collect more metrics!
