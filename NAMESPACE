@@ -11,6 +11,7 @@ importFrom("hypervolume", "get_volume")
 importFrom("ade4", "randtest")
 importFrom("ade4", "as.randtest")
 importFrom("grDevices", "colorRampPalette")
+importFrom("caper", "comparative.data")
 
 ##Functions
 export(time.series)
@@ -34,6 +35,7 @@ export(pair.plot)
 export(scale.dispRity)
 export(sort.dispRity)
 export(slice.tree)
+export(clean.data)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 
