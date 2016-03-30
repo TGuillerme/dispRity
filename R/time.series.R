@@ -156,17 +156,17 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         #Check if the tree has node labels
         if(length(tree$node.label) != 0) {
             #Check if the tree and the table are the same length
-            if(nrow(data) != (Ntip(tree)+Nnode(tree))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
+            if(nrow(data) != (Ntip(tree)+Nnode(tree))) stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
             #Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
+            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
         } else {
-            stop('The labels in the table and in the tree do not match!\nCheck especially the node labels in the tree and the table.')
+            stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
         }
     } else {
         #else check if the tree and the table are the same length
-        if(nrow(data) != Ntip(tree)) stop('The labels in the table and in the tree do not match!')
+        if(nrow(data) != Ntip(tree)) stop('The labels in the ordinated matrix and in the tree do not match!')
         #Also check if the names are identical
-        if(any(is.na(match(rownames(data), tree$tip.label)))) stop('The labels in the table and in the tree do not match!')
+        if(any(is.na(match(rownames(data), tree$tip.label)))) stop('The labels in the ordinated matrix and in the tree do not match!')
     }
 
 

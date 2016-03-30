@@ -8,7 +8,7 @@ test_that("flip.ref.lapply internal fun", {
     	flip.ref.lapply(1, 2, t.test)
     	)
     expect_is(
-    	flip.ref.lapply(rnorm(15), rnorm(15), t.test
+    	flip.ref.lapply(rnorm(15), rnorm(15), t.test)
         , "htest")
     expect_is(
     	lapply(replicate(3,rnorm(15), simplify=F), flip.ref.lapply, referential=rnorm(15), test=t.test)
