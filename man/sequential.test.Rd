@@ -13,6 +13,8 @@ sequential.test(series, results = "coefficients", family, ...)
 
 \item{family}{the family of the \code{\link[stats]{glm}}.}
 
+\item{correction}{optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
+
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
 
 \item{add}{whether to add the results of the sequential test to the current plot (default = \code{FALSE}).}

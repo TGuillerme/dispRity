@@ -249,8 +249,13 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, ..., det
     #Sequential.test comparisons (one to each other)
     if(comp == "sequential.test") {
         #Applying the test to the list of extracted data
-        details_out <- test(extracted_data, ...)
-        #details_out <- test(extracted_data, family = gaussian)
+        if(!missing(correction)) {
+            details_out <- test(extracted_data, correction, ...)
+            #details_out <- test(extracted_data, correction, family = gaussian)
+        } else {
+            details_out <- test(extracted_data, ...)
+            #details_out <- test(extracted_data, family = gaussian)
+        }
     }
 
     #Null testing

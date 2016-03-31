@@ -9,6 +9,7 @@
 #' @param series time series of which to estimate the slopes sequentially.
 #' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
+#' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
 #' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
 #' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
@@ -50,7 +51,7 @@
 #source("sequential.test_fun.R")
 #source("test.dispRity_fun.R")
 
-sequential.test <- function(series, results = "coefficients", family, ..., add = FALSE, lines.args = NULL, token.args = NULL) {
+sequential.test <- function(series, results = "coefficients", family, correction, ..., add = FALSE, lines.args = NULL, token.args = NULL) {
 
     #SANITIZING
     #results must be at least coefficients!
@@ -74,6 +75,15 @@ sequential.test <- function(series, results = "coefficients", family, ..., add =
 
     #token.args
     if(!is.null(token.args)) check.class(token.args, "list")
+
+    #correction
+    if(!missing(correction)) {
+        check.class(correction, 'character')
+        p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+        if(all(is.na(match(correction, p.adjust_list)))) {
+            stop("correction type must be one of the p.adjust function options.")
+        }
+    }
 
 
     #APPLYING THE SEQUENTIAL TEST
@@ -168,6 +178,11 @@ sequential.test <- function(series, results = "coefficients", family, ..., add =
         for(model in 2:length(seq_series)) {
             Slope_results[model,] <- models_results[[model]]$coefficients
         }
+    }
+
+    #correction of the slopes p-values
+    if(!missing(correction)) {
+        Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
     }
 
     #Combining the tables
