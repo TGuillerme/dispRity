@@ -2,7 +2,8 @@
 * Allow disparity metrics that work on a full distribution (i.e. for then allowing to compare the observed distributions directly)
 
 # To do list
-* Add integrate the correction option to the sequential.test
+* Add `global` and `obs` metrics modifiers: by default disparity metrics are calculated on the `dispRity` object's series. These two modifiers allow the metrics to be calculated on the observed disparity or the global disparity.
+For example `dispRity(data, metric = c(median, obs(centroids)))` allows to calculate the median distance between each series's element and the observed overall centroid of the ordinated space.
 
 ## Literature review
 * Collect more metrics!
