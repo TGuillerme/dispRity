@@ -1,6 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal
-#'
+#' @aliases variances ranges centroids centroids.global centroids.observed mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal metric.modifier
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -8,7 +7,7 @@
 #' @usage level3.fun(matrix, ...)
 #' level2.fun(matrix, ...)
 #' level1.fun(X, ...)
-#'
+#'  
 #' @param matrix A matrix.
 #' @param X A vector.
 #' @param ... Optional arguments to be passed to the function.
@@ -45,7 +44,7 @@
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix.
-#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
+#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used).
 #' }
 #' The currently implemented value aggregate metrics (\code{level1.fun}) are:
 #' \itemize{
@@ -66,6 +65,8 @@
 #' 
 #' ## Distances between each row and centroid of the matrix
 #' centroids(dummy_matrix)
+#' ## Distance between each rows and an arbitrary centroid
+#' centroids(dummy_matrix, centroid = c(0,0,0,0,0))
 #' 
 #' ## Modal value of a vector
 #' mode.val(rnorm(25))
@@ -106,14 +107,25 @@ ranges <- function(matrix) {
 }
 
 #Calculating the distance from centroid
-centroids <- function(matrix) {
-    #Calculating the centroid point
-    centroid <- apply(matrix, 2, mean)
+centroids <- function(matrix, centroid) {
+
+    if(missing(centroid)) {
+        #Calculating the centroid point
+        centroid <- apply(matrix, 2, mean)
+    } else {
+        #Centroid is predetermined
+        if(class(centroid) == "numeric") {
+            #If numeric, must be the same length as matrix
+            if(length(centroid) != ncol(matrix)) stop(paste("The given centroid has ", length(centroid), " coordinates but must have ", ncol(matrix), ".", sep = ""))
+        } else {
+            stop("Centroid coordinates must be given as numeric values.")
+        }
+    }
 
     #Calculating the distance from centroid
     cent.dist <- NULL
     for (j in 1:nrow(matrix)){
-        cent.dist[j] <- dist(rbind(matrix[j,], centroid), method="euclidean")
+        cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
     }
 
     return(cent.dist)

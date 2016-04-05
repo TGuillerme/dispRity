@@ -52,6 +52,24 @@ test_that("centroids metric", {
     expect_equal(
     	cent1, cent2
     	)
+
+    #Checking the centroid argument
+    #Wrong argument
+    expect_error(
+        centroids(matrix, centroid = "a")
+        )
+    #Wrong argument
+    expect_error(
+        centroids(matrix, centroid = 1)
+        )
+    #Using the real centroid
+    expect_equal(
+        cent1, centroids(matrix, centroid = centroid)
+        )
+    #Using a 0 origin centroid
+    expect_less_than(
+        sum(centroids(matrix, centroid = rep(0, ncol(matrix)))), sum(centroids(matrix, centroid = rep(1, ncol(matrix))))
+        )
 })
 
 test_that("mode.val metric", {

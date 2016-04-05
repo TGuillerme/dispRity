@@ -2,12 +2,15 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{centroids}
+\alias{centroids.global}
+\alias{centroids.observed}
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
 \alias{dispRity.metric}
 \alias{ellipse.volume}
 \alias{hyper.volume}
+\alias{metric.modifier}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}
@@ -59,7 +62,7 @@ The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 \itemize{
   \item \code{ranges}: calculates the range of each axis of the matrix.
   \item \code{variances}: calculates the variance of each axis of the matrix.
-  \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix.
+  \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used).
 }
 The currently implemented value aggregate metrics (\code{level1.fun}) are:
 \itemize{
@@ -79,6 +82,8 @@ ranges(dummy_matrix)
 
 ## Distances between each row and centroid of the matrix
 centroids(dummy_matrix)
+## Distance between each rows and an arbitrary centroid
+centroids(dummy_matrix, centroid = c(0,0,0,0,0))
 
 ## Modal value of a vector
 mode.val(rnorm(25))
