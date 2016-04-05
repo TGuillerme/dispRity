@@ -13,6 +13,5 @@ if(!require(devtools)) install.packages("devtools")
 library(devtools)
 install_github("TGuillerme/dispRity", ref = "dev-testing")
 library(dispRity)
-````
+```
 
-https://github.com/TGuillerme/dispRity
