@@ -4,6 +4,9 @@
 # To do list
 * Add `global` and `obs` metrics modifiers: by default disparity metrics are calculated on the `dispRity` object's series. These two modifiers allow the metrics to be calculated on the observed disparity or the global disparity.
 For example `dispRity(data, metric = c(median, obs(centroids)))` allows to calculate the median distance between each series's element and the observed overall centroid of the ordinated space.
+* Add a `k.root` function for scaling at the **k**th root where **k** is the number of ordination axis (useful for scaling product metrics).
+* Allow more level 1 functions for metric (e.g. `metric = c(k.root, prod, variances)`.
+
 
 ## Literature review
 * Collect more metrics!
