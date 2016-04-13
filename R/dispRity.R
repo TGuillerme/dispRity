@@ -3,7 +3,7 @@
 #' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.
-#' @param metric A vector containing up to three functions and at least a level 1 or 2 function (see details).
+#' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
@@ -19,9 +19,9 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' \code{metric} should be input as a vector of functions.
+#' \code{metric} should be input as a vector up to three functions.
 #' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
-#' \code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and outputs a \code{matrix};
+#' \code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
 #' level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
 #' \code{matrix} or a \code{vector} and output a single value.
 #' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
