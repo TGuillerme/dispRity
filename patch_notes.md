@@ -14,7 +14,6 @@ Patch notes
   * minor functions corrections for specific optional arguments combinations.
   * many updates to the functions manual and vignettes.
   * `boot.matrix` and `dispRity` can now run in parallel.
-  * disparity can now be calculated as a distribution (i.e. `dispRity`, `test.dispRity`, `plot.dispRity`, and `summary.dispRity` can now intake one or more distribution rather than just one or more single values of disparity; whether the data is bootstrapped or not).
   * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
 * 2015/12/01 - v0.1.2
   * *new* function: `get.dispRity` for subsampling dispRity objects
