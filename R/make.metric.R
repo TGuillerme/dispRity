@@ -15,7 +15,7 @@
 #' }
 #' The 3 different metric levels correspond to the dimensions of the output and are:
 #' \itemize{
-#'   \item "level 1": for functions that decompose a \code{matrix} or a \code{vector} into a single \code{numeric} value.
+#'   \item "level 1": for functions that decompose a \code{matrix} into a single value.
 #'   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
 #'   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
 #' }
@@ -95,6 +95,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
                     if(silent == FALSE) {
                         cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun),
                             " is detected as being a level 2 function.", sep=""))
+                        cat(paste("\nAdditional level 1 function will be needed.", sep=""))
                     }
                 }
             } else {
@@ -131,11 +132,10 @@ make.metric<-function(fun, ..., silent = FALSE) {
         #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...)), silent=TRUE) ; warning("DEBUG")
     }
 
-    #TG: This bit is no more mandatory in dispRity 
-    # #length of test_lapply must be equal to one
-    # if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
-    #     " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
-    #         as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep=""))
+    #length of test_lapply must be equal to one
+    if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
+        " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
+            as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep=""))
 
     ##########
     #Return the level type for dispRity
