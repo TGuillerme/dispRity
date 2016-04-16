@@ -31,7 +31,7 @@ NULL
 #'   \item \code{BeckLee_ages} A lit of first al last occurrence data for fossil taxa
 #' }
 #'
-#' @format 3 matrices and one phylogeny.
+#' @format 3 matrices and one phylogenetic tree.
 #' @source \url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
 #' @references Beck RMD & Lee MSY. 2014. Ancient dates or accelerated rates?
 #' Morphological clocks and the antiquity of placental mammals.
