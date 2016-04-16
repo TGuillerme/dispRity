@@ -1,10 +1,10 @@
 #' @title Extracting disparity.
 #'
-#' @description Extracts the disparity from a disparity object.
+#' @description Extracts the disparity from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object containing disparity results.
-#' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE}) or the bootstrapped values (\code{FALSE}).
-#' @param rarefaction Either a rarefaction value or "max" or "min" to extract the rarefaction levels (is ignored if \code{observed = TRUE}).
+#' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
+#' @param rarefaction Either a rarefaction value or \code{"max"} or \code{"min"} to extract the rarefaction levels (is ignored if \code{observed = TRUE}).
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -35,6 +35,10 @@
 #'
 #' @author Thomas Guillerme
 
+#For testing
+#source("sanitizing.R")
+#source("extract.dispRity_fun.R")
+
 extract.dispRity<-function(data, observed=TRUE, rarefaction) {
     #----------------------
     # SANITIZING
@@ -46,8 +50,7 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
 
     #observed
     check.class(observed, "logical")
-    if(observed == FALSE &&
-        length(data$disparity$bootstrapped) == 0) {
+    if(observed == FALSE && length(data$disparity$bootstrapped) == 0) {
         stop("No bootstrapped disparity found.")
     }
 
@@ -88,13 +91,28 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
     #----------------------
 
     if(observed == TRUE) {
-        #Just unlist the observed disparity
-        output <- unlist(data$disparity$observed)
+        #Check if disparity is level1 (one disparity value) or level2 (one distribution)
+        if(length(data$disparity$observed[[1]][[1]][[1]]) == 1) {
+            #Simply unlist the observed disparity
+            output <- unlist(data$disparity$observed)
+        } else {
+            #recursively unlist the observed disparity
+            output <- unlist(recursive.unlist(data$disparity$observed), recursive = FALSE)    
+            names(output) <- data$series
+        }
     } else {
-        #make a list of the disparity data
-        output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare=rarefaction), recursive=FALSE)
-        #Adding the series names
-        names(output) <- data$series
+        #Check if disparity is level1 (one disparity value) or level2 (one distribution)
+        if(length(data$disparity$bootstrapped[[1]][[1]][[1]]) == 1) {
+            #make a list of the disparity data
+            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare=rarefaction), recursive=FALSE)
+            #Adding the series names
+            names(output) <- data$series
+        } else {
+            #recursively unlist the data
+            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped, is.distribution = TRUE), extract.rar, which.rare=rarefaction), recursive = FALSE)
+            #Adding the series names
+            names(output) <- data$series
+        }
     }
 
     return(output)

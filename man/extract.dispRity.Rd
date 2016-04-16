@@ -9,12 +9,12 @@ extract.dispRity(data, observed = TRUE, rarefaction)
 \arguments{
 \item{data}{A \code{dispRity} object containing disparity results.}
 
-\item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE}) or the bootstrapped values (\code{FALSE}).}
+\item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
 
-\item{rarefaction}{Either a rarefaction value or "max" or "min" to extract the rarefaction levels (is ignored if \code{observed = TRUE}).}
+\item{rarefaction}{Either a rarefaction value or \code{"max"} or \code{"min"} to extract the rarefaction levels (is ignored if \code{observed = TRUE}).}
 }
 \description{
-Extracts the disparity from a disparity object.
+Extracts the disparity from a \code{dispRity} object.
 }
 \examples{
 ## Load the Beck & Lee 2014 data

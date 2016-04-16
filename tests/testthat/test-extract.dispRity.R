@@ -58,3 +58,31 @@ test_that("Example works", {
     expect_equal(
     	ex4[[1]],unlist(disparity_data$disparity$bootstrapped[[1]][[3]]))    
 })
+
+
+disparity_data <- dispRity(bootstraps_dat, metric = ranges)
+test_that("Works with level2 outputs", {
+    ex1 <- extract.dispRity(disparity_data, observed = TRUE)
+    expect_is(
+        ex1, "list"
+        )
+    expect_equal(
+        names(ex1), c("100","80", "60")
+        )
+    expect_equal(
+        length(ex1[[1]]), ncol(bootstraps_dat$data[[1]][[1]][[1]][[1]])
+        )
+    ex2 <- extract.dispRity(disparity_data, observed = FALSE)
+    expect_is(
+        ex2, "list"
+        )
+    expect_equal(
+        names(ex2), c("100","80", "60")
+        ) 
+    expect_equal(
+        length(ex2[[1]]), 20
+        )
+    expect_equal(
+        length(ex2[[1]][[1]]), ncol(bootstraps_dat$data[[1]][[1]][[1]][[1]])
+        )
+})
