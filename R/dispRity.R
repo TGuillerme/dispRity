@@ -3,7 +3,7 @@
 #' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.
-#' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
+#' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
@@ -19,13 +19,16 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' \code{metric} should be input as a vector up to three functions.
-#' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
-#' \code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
-#' level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
-#' \code{matrix} or a \code{vector} and output a single value.
-#' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
-#' user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
+#' \code{metric} should be input as a vector of functions.
+#' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
+#' Typically "level 3" functions intake a \code{matrix} and output a \code{matrix}; level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a \code{matrix} or a \code{vector} and output a single value.
+#' When more than one function is input, they are treated first by level (i.e. level 3, then level 2 and finally level 1).
+#' Note that the functions can only take one metric of each level and thus can only take a maximum of three arguments!
+#' 
+#' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}
+#' For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
+#' 
+#' \emph{HINT:} for using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows to use two level 3 functions - the correlation of the variance-covariance matrix in this case).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -61,6 +64,10 @@
 #' @seealso \code{\link{boot.matrix}} for bootstrapping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
 #'
 #' @author Thomas Guillerme
+
+#For testing
+#source("sanitizing.R")
+#source("dispRity_fun.R")
 
 dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #----------------------
@@ -140,14 +147,17 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     if(length(metric) < 1) {
         stop("At least one metric must be provided.")
     }
-    #must be maximum 3
-    if(length(metric) > 3) {
-        stop("Only three functions can be used for metric.\nYou can try transforming one of the functions to do more than one operation.")
-    }
     #Making the list of metrics for testing
     if(length(metric) == 1) {
+        #Metric was still fed as a list
+        if(class(metric == "list")) {
+            check.class(metric[[1]], "function")
+            metric <- metric[[1]]
+        }
+        #Metric was fed as a single element
         check.class(metric, "function")
     } else {
+        #Check all the metrics
         for(i in 1:length(metric)) {
             check.class(metric[[i]], "function")
         }
@@ -157,23 +167,33 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     if(length(metric) == 1) {
         #Getting the metric level
         metric_level <- make.metric(metric, silent=TRUE)
-        #Metric must be level1
-        if(metric_level != "level1") {
-            stop(paste(match_call$metric, " must be a 'level1' metric. For more information, use:\nmake.metric(",match_call$metric,")", sep=""))
+        #Metric must not be level 3
+        if(metric_level == "level3") {
+            stop(paste(match_call$metric, " must be a level 1 or a level 2 metric. For more information, use:\nmake.metric(",match_call$metric,")", sep=""))
+        }
+        # Set the metric level
+        if(metric_level == "level2") {
+            level3.fun=NULL; level2.fun=metric; level1.fun=NULL
         } else {
             level3.fun=NULL; level2.fun=NULL; level1.fun=metric
         }
     } else {
+
         #getting the metric levels
         levels <- unlist(lapply(metric, make.metric, silent=TRUE))
         #can only unique levels
-        if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same 'level'. For more information, see:\n?make.metric()")
-        if(is.na(match("level1", levels))) {
+        if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
+        if(is.na(match("level1", levels)) | is.na(match("level2", levels))) {
             #At least one level1 metric is required
-            stop("At least one metric must be 'level1'. For more information, see:\n?make.metric()")
+            stop("At least one metric must be level 1 or level 2\n.For more information, see:\n?make.metric()")
         } else {
-            #Get the level 1 metric (mandatory)
-            level1.fun <- metric[[match("level1", levels)]]
+            #Get the level 1 metric
+            if(!is.na(match("level1", levels))) {
+                level1.fun <- metric[[match("level1", levels)]]
+            } else {
+                #is null if doesn't exist
+                level1.fun <- NULL
+            }
             #Get the level 2 metric
             if(!is.na(match("level2", levels))) {
                 level2.fun <- metric[[match("level2", levels)]]
@@ -196,15 +216,15 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     # ~~~
     # Use progress bars?
     # ~~~
-        #total <- 20
-        ## create progress bar
-        #pb <- txtProgressBar(min = 0, max = total, style = 3)
-        #for(i in 1:total){
-        #Sys.sleep(0.1)
-        ## update progress bar
-        #setTxtProgressBar(pb, i)
-        #}
-        #close(pb)
+        # total <- 20
+        # # create progress bar
+        # pb <- txtProgressBar(min = 0, max = total, style = 3)
+        # for(i in 1:total){
+        # Sys.sleep(0.1)
+        # # update progress bar
+        # setTxtProgressBar(pb, i)
+        # }
+        # close(pb)
 
     #Parallel
     if(missing(parallel)) {
@@ -225,14 +245,17 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #Calculate disparity in all the series
     if(do_parallel == FALSE) {
         results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+        #results<-lapply(BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun); warning("DEBUG")
     } else {
         results<-parLapply(cluster, BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+        #results<-parLapply(cluster, BSresult, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun); warning("DEBUG")
         stopCluster(cluster)
     }
     
     #if data is bootstrapped, also calculate the observed disparity
     if(is.bootstraped == TRUE) {
         OBSresults<-lapply(data_fetch$data$observed, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun, ...)
+        #OBSresults<-lapply(data_fetch$data$observed, disparity.calc, level3.fun=level3.fun, level2.fun=level2.fun, level1.fun=level1.fun); warning("DEBUG")
     }
     #verbose
     if(verbose==TRUE) message("Done.", appendLF=FALSE)

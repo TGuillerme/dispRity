@@ -9,7 +9,7 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.}
 
-\item{metric}{A vector containing up to three functions and at least a "level 1" function (see details).}
+\item{metric}{A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).}
 
 \item{...}{Optional arguments to be passed to the metric.}
 
@@ -31,13 +31,16 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 }
 \details{
-\code{metric} should be input as a vector up to three functions.
-The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
-\code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
-level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
-\code{matrix} or a \code{vector} and output a single value.
-Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
-user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
+\code{metric} should be input as a vector of functions.
+The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
+Typically "level 3" functions intake a \code{matrix} and output a \code{matrix}; level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a \code{matrix} or a \code{vector} and output a single value.
+When more than one function is input, they are treated first by level (i.e. level 3, then level 2 and finally level 1).
+Note that the functions can only take one metric of each level and thus can only take a maximum of three arguments!
+
+Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}
+For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
+
+\emph{HINT:} for using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows to use two level 3 functions - the correlation of the variance-covariance matrix in this case).
 }
 \examples{
 ## Load the Beck & Lee 2014 data
