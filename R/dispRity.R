@@ -76,6 +76,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     
     #Saving the call
     match_call<-match.call()
+    #return(match_call) ; warning("DEBUG")
 
     #DATA
     #Check if the input is a dispRity object
@@ -150,16 +151,17 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #Making the list of metrics for testing
     if(length(metric) == 1) {
         #Metric was still fed as a list
-        if(class(metric == "list")) {
+        if(class(metric) == "list") {
             check.class(metric[[1]], "function")
             metric <- metric[[1]]
+        } else {
+            #Metric was fed as a single element
+            check.class(metric, "function")
         }
-        #Metric was fed as a single element
-        check.class(metric, "function")
     } else {
         #Check all the metrics
         for(i in 1:length(metric)) {
-            check.class(metric[[i]], "function")
+            if(class(metric[[i]]) != "function") stop(paste("Error in metric argument: ",match_call$metric[[i+1]], " is not a function!", sep =""))
         }
     }
 

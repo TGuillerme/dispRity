@@ -3,8 +3,7 @@
 context("dispRity")
 
 #Loading the data
-load("test_data.Rda"
-    	)
+load("test_data.Rda")
 data<-test_data$ord_data_tips
 
 #Sanitizing
@@ -21,14 +20,11 @@ test_that("Sanitizing works", {
     expect_error(
     	dispRity(data, metric=1, FALSE)
     	)
-    #expect_error(
-	#    dispRity(data, metric=sum, FALSE)
-	#) #Is ok since v 0.1.2
     expect_error(
     	dispRity(data, metric=c(1,2), FALSE)
     	)
     expect_error(
-    	dispRity(data, metric=c(sum, 1), FALSE)
+    	dispRity(data, metric=c(sum, data), FALSE)
     	)
     expect_error(
     	dispRity(data, c(sum, ranges), verbose="yes")
@@ -194,3 +190,21 @@ test_that("Example works", {
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
+
+#testing with distributions as output (level2 functions outputs)
+test_that("dispRity works with level2 functions", {
+    data(BeckLee_mat50)
+    ranges_test <- dispRity(BeckLee_mat50, metric = ranges)
+    #Output is a distribution of ncol(data) ranges
+    expect_equal(
+        ncol(ranges_test$data[[1]][[1]]), length(ranges_test$disparity$observed[[1]][[1]][[1]])
+        )
+    #Output is a distribution of ncol(data) ranges (works for bootstraps as well)
+    ranges_test <- dispRity(boot.matrix(BeckLee_mat50, 2), metric = ranges)
+    expect_equal(
+        ncol(ranges_test$data[[1]][[1]][[1]][[1]]), length(ranges_test$disparity$bootstrapped[[1]][[1]][[1]])
+        )
+    expect_equal(
+        ncol(ranges_test$data[[1]][[1]][[1]][[1]]), length(ranges_test$disparity$bootstrapped[[1]][[1]][[2]])
+        )
+})
