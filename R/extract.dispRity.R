@@ -86,13 +86,20 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
         }
     }
 
+    #check if is.distribution
+    if(length(data$disparity$observed[[1]][[1]][[1]]) == 1) {
+        is.distribution <- FALSE
+    } else {
+        is.distribution <- TRUE
+    }
+
     #----------------------
     # EXTRACTING THE DATA
     #----------------------
 
     if(observed == TRUE) {
         #Check if disparity is level1 (one disparity value) or level2 (one distribution)
-        if(length(data$disparity$observed[[1]][[1]][[1]]) == 1) {
+        if(is.distribution == FALSE) {
             #Simply unlist the observed disparity
             output <- unlist(data$disparity$observed)
         } else {
@@ -102,7 +109,7 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
         }
     } else {
         #Check if disparity is level1 (one disparity value) or level2 (one distribution)
-        if(length(data$disparity$bootstrapped[[1]][[1]][[1]]) == 1) {
+        if(is.distribution == FALSE) {
             #make a list of the disparity data
             output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare=rarefaction), recursive=FALSE)
             #Adding the series names
