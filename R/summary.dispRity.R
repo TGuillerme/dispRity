@@ -5,8 +5,8 @@
 #' @param data A \code{dispRity} object.
 #' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
-#' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input.
-#' @param round Optional, a value for rounding the central tendency and the confidence intervals in the output table (default = 2).
+#' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
+#' @param rounding Optional, a value for rounding the values in the output table (default = 2).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -34,6 +34,9 @@
 #'
 #' @author Thomas Guillerme
 
+#testing
+#source("sanitizing.R")
+#source("summary.dispRity_fun.R")
 
 summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
@@ -48,13 +51,13 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    OBSresults<-data$disparity$observed
+    OBSresults <- data$disparity$observed
     #is the data bootstrapped? 
     if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
         if(length(data$data$bootstraps[[1]][[1]]) > 1) {
-            is.bootstrapped<-TRUE
-            BSresults<-data$disparity$bootstrapped
+            is.bootstrapped <- TRUE
+            BSresults <- data$disparity$bootstrapped
         } else {
             is.bootstrapped<-FALSE
         }
@@ -67,21 +70,29 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     if(is.bootstrapped == TRUE) {
         check.class(quantile, "numeric", " must be any value between 1 and 100.")
         #remove warnings
-        options(warn=-1)
+        options(warn = -1)
         if(any(quantile) < 1) {
             stop("Quantile(s) must be any value between 1 and 100.")
         }
         if(any(quantile) > 100) {
             stop("Quantile(s) must be any value between 1 and 100.")
         }
-        options(warn=0)
+        options(warn = 0)
     }
+
+    #check if is.distribution
+    if(length(data$disparity$observed[[1]][[1]][[1]]) == 1) {
+        is.distribution <- FALSE
+    } else {
+        is.distribution <- TRUE
+    }
+
 
     #cent.tend
     #Must be a function
     check.class(cent.tend, "function")
     #The function must work
-    silent<-check.metric(cent.tend)
+    silent <- check.metric(cent.tend)
 
     #recall
     check.class(recall, "logical")
@@ -89,37 +100,57 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     #rounding
     if(missing(rounding)) {
         #Set to default (see below)
-        rounding<-"default"
+        rounding <- "default"
     } else {
         check.class(rounding, "numeric")
     }
 
     #Get call
-    match_call<-match.call()
+    match_call <- match.call()
+    #return(match_call)
 
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
     if(is.bootstrapped == FALSE) {
-        #Extracting the observed disparity
-        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
+        
+        if(is.distribution == FALSE) {
+            #Extracting the observed disparity
+            OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
 
-        #Create the result table
-        results_table<-data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors=FALSE)
+            #Create the result table
+            results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors=FALSE)
 
-        #Add columns names
-        colnames(results_table)<-c("series", "n", "observed")
+            #Add columns names
+            colnames(results_table)<-c("series", "n", "observed")
+        } else {
+            #Extracting the observed disparity
+            OBSresults_unl <- unlist(recursive.unlist(OBSresults, is.distribution = TRUE), recursive = FALSE)
+            #Calculate their central tendencies
+            results_cent <- unlist(lapply(unlist(OBSresults_unl, recursive = FALSE), cent.tend))
+            #Calculate their quantiles
+            results_quantile <- lapply(unlist(OBSresults_unl, recursive = FALSE), quantile, probs = CI.converter(quantile))
+
+            #Create the result table
+            results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), results_cent), stringsAsFactors = FALSE)
+            #Add to the quantiles table
+            results_table <- cbind(results_table, matrix(data = unlist(results_quantile), ncol = length(quantile)*2, byrow = TRUE))
+
+            #Add columns names
+            colnames(results_table)<-c("series", "n", paste("observed", match_call$cent.tend, sep = "-"))
+            #Add the quantile names
+            colnames(results_table)[c(4:(length(quantile)*2+3))] <- names(results_quantile[[1]])
+        }
     
     } else {
         #Extracting the observed disparity
-        OBSresults_unl<-unlist(unlist(recursive.unlist(OBSresults), recursive=FALSE))
-
-        #Unlisting the bootstrap values
-        BSresults_unl<-unlist(recursive.unlist(BSresults), recursive=FALSE)
-        
+        OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
+        #Extrating the BS results 
+        BSresults_unl <- unlist(recursive.unlist(BSresults), recursive = FALSE)
+    
         #Calculating the central tendency
-        results_cent<-unlist(lapply(BSresults_unl, cent.tend))
+        results_cent <- unlist(lapply(BSresults_unl, cent.tend))
 
         #Multiplier (for rep)
         multiplier<-unlist(lapply(BSresults, length))
@@ -142,7 +173,7 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         }
 
         #Calculate the quantiles
-        results_quantile<-lapply(BSresults_unl, quantile, probs=CI.converter(quantile))
+        results_quantile <- lapply(BSresults_unl, quantile, probs=CI.converter(quantile))
 
         #Add to the result table
         results_table<-cbind(results_table, matrix(data=unlist(results_quantile), ncol=length(quantile)*2, byrow=TRUE))
