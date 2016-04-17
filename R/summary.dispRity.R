@@ -8,6 +8,16 @@
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
 #' @param rounding Optional, a value for rounding the values in the output table (default = 2).
 #'
+#' @returns
+#' A \code{data.frame} with:
+#' \begin{itemize}
+#' \item the series names (\code{series})
+#' \item the number of elements per series (\code{n})
+#' \item the observed disparity (\code{observed}) or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>})
+#' \item if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>})
+#' \item if \code{data} is bootstrapped, the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).
+#' \end{itemize}
+#' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
@@ -87,7 +97,6 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         is.distribution <- TRUE
     }
 
-
     #cent.tend
     #Must be a function
     check.class(cent.tend, "function")
@@ -138,14 +147,26 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
             results_table <- cbind(results_table, matrix(data = unlist(results_quantile), ncol = length(quantile)*2, byrow = TRUE))
 
             #Add columns names
-            colnames(results_table)<-c("series", "n", paste("observed", match_call$cent.tend, sep = "-"))
+            if(is.null(match_call$cent.tend)) {
+                colnames(results_table)<-c("series", "n", "obs.mean")
+            } else {
+                colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."))
+            }
             #Add the quantile names
             colnames(results_table)[c(4:(length(quantile)*2+3))] <- names(results_quantile[[1]])
         }
     
     } else {
-        #Extracting the observed disparity
-        OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
+        if(is.distribution == FALSE) {
+            #Extracting the observed disparity
+            OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
+        } else {
+            #Extracting the observed disparity
+            OBSresults_unl <- unlist(recursive.unlist(OBSresults, is.distribution = TRUE), recursive = FALSE)
+            #Calculate their central tendencies
+            OBSresults_cent <- unlist(lapply(unlist(OBSresults_unl, recursive = FALSE), cent.tend))
+        } 
+
         #Extrating the BS results 
         BSresults_unl <- unlist(recursive.unlist(BSresults), recursive = FALSE)
     
@@ -153,63 +174,76 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         results_cent <- unlist(lapply(BSresults_unl, cent.tend))
 
         #Multiplier (for rep)
-        multiplier<-unlist(lapply(BSresults, length))
+        multiplier <- unlist(lapply(BSresults, length))
 
-        #Create the result table
-        results_table<-data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent), stringsAsFactors=FALSE)
+        if(is.distribution == FALSE) {
+            #Create the result table
+            results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent), stringsAsFactors = FALSE)
 
-        #Add columns names
-        if(is.null(match_call$cent.tend)) {
-            colnames(results_table)<-c("series", "n", "observed", "mean")
+            #Add columns names
+            if(is.null(match_call$cent.tend)) {
+                colnames(results_table)<-c("series", "n", "obs.mean", "bs.mean")
+            } else {
+                colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
+            }
         } else {
-            colnames(results_table)<-c("series", "n", "observed", match_call$cent.tend)
+            #Create the result table
+            results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_cent, multiplier), results_cent), stringsAsFactors = FALSE)
+
+            #Add columns names
+            if(is.null(match_call$cent.tend)) {
+                colnames(results_table)<-c("series", "n", "obs.mean", "bs.mean")
+            } else {
+                colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
+            }
         }
 
         #Checking if the observed values match the n_obs (otherwise replace by NA)
-        n_obs<-diversity.count(data$data$observed)
+        n_obs <- diversity.count(data$data$observed)
         for(ser in 1:length(data$series)) {
             to_remove<-which(as.numeric(results_table[which(results_table$series == data$series[ser]), 2]) != n_obs[ser])
             results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA          
         }
 
         #Calculate the quantiles
-        results_quantile <- lapply(BSresults_unl, quantile, probs=CI.converter(quantile))
+        results_quantile <- lapply(BSresults_unl, quantile, probs = CI.converter(quantile))
 
         #Add to the result table
-        results_table<-cbind(results_table, matrix(data=unlist(results_quantile), ncol=length(quantile)*2, byrow=TRUE))
+        results_table <- cbind(results_table, matrix(data = unlist(results_quantile), ncol = length(quantile)*2, byrow = TRUE))
 
         #Add the quantile names
-        colnames(results_table)[c(5:(length(quantile)*2+4))]<-names(results_quantile[[1]])
+        colnames(results_table)[c(5:(length(quantile)*2+4))] <- names(results_quantile[[1]])
     }
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
-                results_table[,column]<-round(as.numeric(results_table[,column]), digit=get.digit(as.numeric(results_table[,column])))
+                results_table[,column] <- round(as.numeric(results_table[,column]), digit = get.digit(as.numeric(results_table[,column])))
             } else {
-                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=get.digit(as.numeric(as.character(results_table[,column]))))
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digit = get.digit(as.numeric(as.character(results_table[,column]))))
             }
         }
     } else {
         for(column in 3:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
-                results_table[,column]<-round(as.numeric(results_table[,column]), digit=rounding)
+                results_table[,column] <- round(as.numeric(results_table[,column]), digit = rounding)
             } else {
-                results_table[,column]<-round(as.numeric(as.character(results_table[,column])), digit=rounding)
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digit = rounding)
             }
         }
     }
 
     #Make the rarefaction column numeric
-    results_table[,2]<-as.numeric(results_table[,2])
+    results_table[,2] <- as.numeric(results_table[,2])
 
     #----------------------
     # OUTPUT
     #----------------------
-    if(recall==TRUE) {
-        cat(data$call, sep="\n")
+    if(recall == TRUE) {
+        cat(data$call, sep = "\n")
     }
+
     return(results_table)
 
 }

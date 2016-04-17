@@ -20,7 +20,7 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 \value{
 This function outputs a \code{dispRity} object containing:
 \item{data}{A \code{list} of the observed and bootstrapped matrices.}
-\item{disparity}{A \code{list} of disparity values.}
+\item{disparity}{A \code{list} of disparity values (containing the observed disparity and the eventual bootstrapped one).}
 \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}

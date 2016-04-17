@@ -14,9 +14,9 @@
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
-\item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input.}
+\item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 
-\item{round}{Optional, a value for rounding the central tendency and the confidence intervals in the output table (default = 2).}
+\item{rounding}{Optional, a value for rounding the values in the output table (default = 2).}
 }
 \description{
 Creates a summary of a \code{dispRity} object.
