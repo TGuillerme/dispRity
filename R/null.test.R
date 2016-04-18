@@ -57,6 +57,7 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
 
     #scaling
     check.class(scale, "logical")
+
     #Null testing
 
     #Generating the null models
@@ -73,11 +74,11 @@ null.test <- function(data, replicates, null.distrib, null.args = NULL, alter = 
     #testing the null hypothesis
     if(class(null_models_results) != "list") {
         #Apply the randtest to one series
-        test_out  <- ade4::as.randtest(obs = summary(data, round = 10)$observed, sim = null_models_results, alter = alter, ...)
-        #test_out  <- ade4::as.randtest(obs = summary(data, round = 10)$observed, sim = null_models_results, alter = alter)
+        test_out  <- ade4::as.randtest(obs = summary(data, round = 10)[,3], sim = null_models_results, alter = alter, ...)
+        #test_out  <- ade4::as.randtest(obs = summary(data, round = 10)[,3], sim = null_models_results, alter = alter)
     } else {
         #Extracting the observed data for each series
-        summary_observed <- as.list(summary(data, round = 10)$observed)
+        summary_observed <- as.list(summary(data, round = 10)[,3])
         test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
         #test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
         #Attributing the series names
