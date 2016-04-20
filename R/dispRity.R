@@ -2,7 +2,7 @@
 #'
 #' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.
+#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
@@ -19,6 +19,8 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
+#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+#' 
 #' \code{metric} should be input as a vector of functions.
 #' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
 #' Typically "level 3" functions intake a \code{matrix} and output a \code{matrix}; level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a \code{matrix} or a \code{vector} and output a single value.
@@ -52,6 +54,17 @@
 #' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' summary(sum_of_variances)
+#' 
+#' ## Calculating disparity with different metrics levels
+#' ## Disparity is calculated as the distribution of the variances in each
+#' ## dimensions (output are distributions)
+#' disparity_level2 <- dispRity(BeckLee_mat50, metric = variances)
+#' ## Disparity is calculated as the mean of the variances in each dimensions 
+#' ## (output are single values)
+#' disparity_level1 <- dispRity(disparity_level2, metric = mean)
+#' ## Both disparity have the same means but level 1 has no quantiles
+#' summary(disparity_level2)
+#' summary(disparity_level1)
 #'
 #' \dontrun{
 #' ## Calculating disparity using one thread
@@ -83,10 +96,12 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     data_fetch <- data
     if(class(data_fetch) == "dispRity") {
 
+        prev_info <- TRUE
+
         #If length is 3, no bootstrap, just time series
         if(length(data_fetch) == 3) {
             #Data is not bootstrapped
-            is.bootstraped <- FALSE
+            is.bootstrapped <- FALSE
             #Extracting the info
             prev_info <- TRUE
             taxa_list <- data_fetch$elements
@@ -98,7 +113,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
         #If length is 4, bootstrap (+ time series?)
         if(length(data_fetch) == 4) {
             #Data is bootstrapped
-            is.bootstraped <- TRUE
+            is.bootstrapped <- TRUE
             #Extracting the info
             BSresult <- data_fetch$data$bootstraps
             data <- data_fetch$data$observed
@@ -107,14 +122,23 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
             series_list <- data_fetch$series
         }
 
+        #Disparity was already calculated
+        if(length(match(names(data_fetch), c("data", "disparity", "elements", "series", "call"))) == 5) {
+            disparity.exists <- TRUE
+            is.bootstrapped <- ifelse(length(data$disparity$bootstrapped) != 0, TRUE, FALSE)
+        } else {
+            disparity.exists <- FALSE
+        }
+
     } else {
         #Data is not bootstrapped
-        is.bootstraped <- FALSE
+        is.bootstrapped <- FALSE
         prev_info <- FALSE
+        disparity.exists <- FALSE
     }
 
     #Checking the matrix list (if bs=F)
-    if(is.bootstraped == FALSE) {
+    if(is.bootstrapped == FALSE && disparity.exists == FALSE) {
 
         #If matrix, transform to list
         if(class(data) == "matrix") {
@@ -168,13 +192,13 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #Sorting the metrics by levels
     if(length(metric) == 1) {
         #Getting the metric level
-        metric_level <- make.metric(metric, silent=TRUE)
+        levels <- make.metric(metric, silent=TRUE)
         #Metric must not be level 3
-        if(metric_level == "level3") {
+        if(levels == "level3") {
             stop(paste(match_call$metric, " must be a level 1 or a level 2 metric. For more information, use:\nmake.metric(",match_call$metric,")", sep = ""))
         }
         # Set the metric level
-        if(metric_level == "level2") {
+        if(levels == "level2") {
             level3.fun = NULL; level2.fun = metric; level1.fun = NULL
         } else {
             level3.fun = NULL; level2.fun = NULL; level1.fun = metric
@@ -185,32 +209,38 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
         levels <- unlist(lapply(metric, make.metric, silent=TRUE))
         #can only unique levels
         if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
-        if(is.na(match("level1", levels)) | is.na(match("level2", levels))) {
-            #At least one level1 metric is required
+
+        #At least one level 1 or level 2 metric is required
+        if(length(levels == 1) && levels == "level3") {
             stop("At least one metric must be level 1 or level 2\n.For more information, see:\n?make.metric()")
-        } else {
-            #Get the level 1 metric
-            if(!is.na(match("level1", levels))) {
-                level1.fun <- metric[[match("level1", levels)]]
-            } else {
-                #is null if doesn't exist
-                level1.fun <- NULL
-            }
-            #Get the level 2 metric
-            if(!is.na(match("level2", levels))) {
-                level2.fun <- metric[[match("level2", levels)]]
-            } else {
-                #is null if doesn't exist
-                level2.fun <- NULL
-            }
-            #Get the level 3 metric
-            if(!is.na(match("level3", levels))) {
-                level3.fun <- metric[[match("level3", levels)]]
-            } else {
-                #is null if doesn't exist
-                level3.fun <- NULL
-            }
         }
+        
+        #Get the level 1 metric
+        if(!is.na(match("level1", levels))) {
+            level1.fun <- metric[[match("level1", levels)]]
+        } else {
+            #is null if doesn't exist
+            level1.fun <- NULL
+        }
+        #Get the level 2 metric
+        if(!is.na(match("level2", levels))) {
+            level2.fun <- metric[[match("level2", levels)]]
+        } else {
+            #is null if doesn't exist
+            level2.fun <- NULL
+        }
+        #Get the level 3 metric
+        if(!is.na(match("level3", levels))) {
+            level3.fun <- metric[[match("level3", levels)]]
+        } else {
+            #is null if doesn't exist
+            level3.fun <- NULL
+        }
+    }
+
+    #Stop if data already contains disparity and metric is not level1
+    if(any(levels == "level3") && disparity.exists == TRUE) {
+        stop("Impossible to apply a level 3 metric on disparity data.")
     }
 
     #VERBOSE
@@ -242,6 +272,33 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #----------------------
     #CALCULTING DISPARITY
     #----------------------
+
+    #If disparity already exists, export the data
+    if(disparity.exists == TRUE) {
+        #Recalculating the observed disparity
+        data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
+        #data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun) ; warning("DEBUG")
+        if(is.bootstrapped) {
+            data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
+            #data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun) ; warning("DEBUG")
+        }
+        #Updating the call
+        #Querying the metrics from former call
+        call_split <- strsplit(strsplit(data$call, split = "Disparity calculated as: ")[[1]][2], split = " for ")[[1]]
+        
+        #Generating the new call
+        if(length(length(match_call$metric)) == 1) {
+            new_call <- paste("c(", match_call$metric, ", ", call_split[1], ")", collapse = "")
+        } else {
+            new_call <- paste("c(", paste(as.character(match_call$metric[-1]), collapse = ", ", sep = ""), ", ", call_split[1], ")", collapse = "", sep = "")
+        }
+
+        #Saving the new call
+        data$call <- paste(c("Disparity calculated as: ", new_call, " for ", call_split[2]), collapse = "")
+        #Returning the results
+        return(data)
+    }
+
     #verbose
     if(verbose == TRUE) message("Calculating disparity...", appendLF = FALSE)
     #Calculate disparity in all the series
@@ -255,7 +312,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     }
     
     #if data is bootstrapped, also calculate the observed disparity
-    if(is.bootstraped == TRUE) {
+    if(is.bootstrapped == TRUE) {
         OBSresults <- lapply(data_fetch$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
         #OBSresults <- lapply(data_fetch$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
     }
@@ -268,7 +325,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #call details
     dispRity.call <- paste("Disparity calculated as: ", as.expression(match_call$metric), " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep = "")
     #Add BS (and series) details
-    if(is.bootstraped == TRUE) {
+    if(is.bootstrapped == TRUE) {
         dispRity.call <- paste(dispRity.call, boot.call, sep = "\n")
     } else {
         if(prev_info == TRUE) {
@@ -278,7 +335,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
 
 
     #Creating the output object
-    if(is.bootstraped == TRUE) {
+    if(is.bootstrapped == TRUE) {
         output <- list("data" = list("bootstraps" = BSresult, "observed" = data) , "disparity" = list("bootstrapped" = results, "observed" = OBSresults), "elements" = taxa_list, "series" = series_list, "call" = dispRity.call)
     } else {
         output <- list("data" = list("observed" = data), "disparity" = list("observed" = results), "elements" = taxa_list, "series" = series_list, "call" = dispRity.call)

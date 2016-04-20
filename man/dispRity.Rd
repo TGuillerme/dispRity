@@ -7,7 +7,7 @@
 dispRity(data, metric, ..., verbose = FALSE, parallel)
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.}
+\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).}
 
 \item{metric}{A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).}
 
@@ -31,6 +31,8 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 }
 \details{
+The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+
 \code{metric} should be input as a vector of functions.
 The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
 Typically "level 3" functions intake a \code{matrix} and output a \code{matrix}; level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a \code{matrix} or a \code{vector} and output a single value.
@@ -64,6 +66,17 @@ bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
+
+## Calculating disparity with different metrics levels
+## Disparity is calculated as the distribution of the variances in each
+## dimensions (output are distributions)
+disparity_level2 <- dispRity(BeckLee_mat50, metric = variances)
+## Disparity is calculated as the mean of the variances in each dimensions 
+## (output are single values)
+disparity_level1 <- dispRity(disparity_level2, metric = mean)
+## Both disparity have the same means but level 1 has no quantiles
+summary(disparity_level2)
+summary(disparity_level1)
 
 \dontrun{
 ## Calculating disparity using one thread

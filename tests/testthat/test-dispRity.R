@@ -5,6 +5,8 @@ context("dispRity")
 #Loading the data
 load("test_data.Rda")
 data<-test_data$ord_data_tips
+factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
+rownames(factor)<-rownames(data)
 
 #Sanitizing
 test_that("Sanitizing works", {
@@ -104,8 +106,6 @@ test <- NULL ; data<-test_data$ord_data_tips
 
 #one matrix with series
 data<-test_data$ord_data_tips
-factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
 data<-cust.series(data, factor)
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with custom series", {
@@ -206,5 +206,44 @@ test_that("dispRity works with level2 functions", {
         )
     expect_equal(
         ncol(ranges_test$data[[1]][[1]][[1]][[1]]), length(ranges_test$disparity$bootstrapped[[1]][[1]][[2]])
+        )
+})
+
+#testing with disparity inputs
+test_that("dispRity works with disparity inputs", {
+    ranges_test <- dispRity(data, metric = ranges)
+    set.seed(1)
+    ranges_test_bs <- dispRity(boot.matrix(data, 10), metric = ranges)
+    ranges_test_series <- dispRity(cust.series(data, factor), metric = ranges)
+    set.seed(1)
+    ranges_test_series_bs <- dispRity(boot.matrix(cust.series(data, factor), 10), metric = ranges)
+
+    mean_ranges_test <- dispRity(ranges_test, metric = mean)
+    set.seed(1)
+    mean_ranges_test_bs <- dispRity(ranges_test_bs, metric = mean)
+    mean_ranges_test_series <- dispRity(ranges_test_series, metric = mean)
+    set.seed(1)
+    mean_ranges_test_series_bs <- dispRity(ranges_test_series_bs, metric = mean)
+
+    #The calculated mean in mean_ranges_test must be equal to the mean in range_test summary
+    expect_equal(
+        summary(ranges_test)[1,3], summary(mean_ranges_test)[1,3]
+        )
+    expect_equal(
+        summary(ranges_test_bs)[1,3], summary(mean_ranges_test_bs)[1,3]
+        )
+    expect_equal(
+        summary(ranges_test_series)[c(1:2),3], summary(mean_ranges_test_series)[c(1:2),3]
+        )
+    expect_equal(
+        summary(ranges_test_series_bs)[c(1:2),3], summary(mean_ranges_test_series_bs)[c(1:2),3]
+        )
+
+    #Same for the bs values
+    expect_equal(
+        summary(ranges_test_bs)[1,4], summary(mean_ranges_test_bs)[1,4]
+        )
+    expect_equal(
+        summary(ranges_test_series_bs)[c(1:2),4], summary(mean_ranges_test_series_bs)[c(1:2),4]
         )
 })
