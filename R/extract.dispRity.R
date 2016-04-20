@@ -87,11 +87,7 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
     }
 
     #check if is.distribution
-    if(length(data$disparity$observed[[1]][[1]][[1]]) == 1) {
-        is.distribution <- FALSE
-    } else {
-        is.distribution <- TRUE
-    }
+    is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
 
     #----------------------
     # EXTRACTING THE DATA
