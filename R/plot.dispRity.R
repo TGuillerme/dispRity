@@ -68,7 +68,7 @@
 #source("sanitizing.R")
 #source("plot.dispRity_fun.R")
 
-plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density = NULL, ...){
+plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, ...){
 
     #SANITIZING
     #DATA
@@ -91,6 +91,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     } else {
         is.bootstrapped <- FALSE
     }
+    #check if is.distribution
+    is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
 
     #quantile
     #Only check if the data is bootstrapped
@@ -142,7 +144,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         #Check if time.slicing was used (saved in call)
         if(any(grep("Data was split using continuous method", data$call))) {
             time_slicing <- data$series
-            xlab <- "Time (Ma)"
+            xlab <- "Time (Mya)"
         } else {
             time_slicing <- FALSE
         }
@@ -195,7 +197,6 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             stop("Data set is not rarefied. Use rarefaction = FALSE.")
         }
     }
-
 
     #xlab
     if(missing(xlab)) { 
@@ -259,8 +260,8 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
             if(which.rare == "plot") {
                 stop("Data is not rarefied!")
             }
-            rarefaction<-FALSE
-            which.rare<-"max"
+            rarefaction <- FALSE
+            which.rare <- "max"
         }
     }
 
@@ -270,7 +271,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         elements_in <- length(which(unlist(summarised_data$n) == which.rare))
         elements_req <- length(unique(unlist(summarised_data[[1]])))
         if(elements_in != elements_req) {
-            stop(paste("Rarefaction: only ", elements_in,"/",elements_req, " series have at least ", which.rare, " elements.", sep=""))
+            stop(paste("Rarefaction: only ", elements_in, "/" ,elements_req, " series have at least ", which.rare, " elements.", sep=""))
         }
     }
 
@@ -326,6 +327,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
                 #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
                 #par(bigger_margin)
             }
+
         } else {
 
             #Box plot
