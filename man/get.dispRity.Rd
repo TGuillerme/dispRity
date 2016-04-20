@@ -24,7 +24,7 @@ This function outputs a \code{dispRity} object containing:
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Extracting sub-samples series and data from a dispRity object.
+Extracting sub-samples series and data from a \code{dispRity} object.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
