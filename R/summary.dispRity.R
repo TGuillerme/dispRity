@@ -215,17 +215,17 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
     if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digit = get.digit(as.numeric(results_table[,column])))
+                results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
             } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digit = get.digit(as.numeric(as.character(results_table[,column]))))
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
             }
         }
     } else {
         for(column in 3:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digit = rounding)
+                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
             } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digit = rounding)
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
             }
         }
     }

@@ -3,7 +3,7 @@
 \docType{package}
 \name{dispRity-package}
 \alias{dispRity-package}
-\title{Measuring disparity in R}
+\title{Measuring Disparity in R}
 \description{
 A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
 }

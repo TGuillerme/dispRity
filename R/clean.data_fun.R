@@ -28,12 +28,12 @@ clean.tree.table <- function(tree, data) {
         #Drop the unmatched rows
         data_tmp <- data[-match(missing$unmatched.rows, dummy_data[,ncol(data)+1]),]
         #save the dropped rows names
-        dropped_rows<-missing$unmatched.rows
+        dropped_rows <- missing$unmatched.rows
     } else {
         #No drop needed!
-        data_tmp<-data
-        dropped_rows<-NA
+        data_tmp <- data
+        dropped_rows <- NA
     }
 
-    return(list("tree"=tree_tmp, "data"=data_tmp, "dropped_tips"=dropped_tips, "dropped_rows"=dropped_rows))
+    return(list("tree" = tree_tmp, "data" = data_tmp, "dropped_tips" = dropped_tips, "dropped_rows" = dropped_rows))
 }

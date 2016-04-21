@@ -82,8 +82,10 @@ summary(disparity_level1)
 ## Calculating disparity using one thread
 system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
 ## Bootstrapping a series of matrices using 4 threads
-system.time(dispRity(bootstrapped_data, metric = c(sum, variances), parallel = c(4, "SOCK")))
-# System time is significantly longer! Using parallel is only an improvement for big datasets.
+system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
+     parallel = c(4, "SOCK")))
+## System time is significantly longer! Using parallel is only an improvement
+## for big datasets.
 }
 
 }

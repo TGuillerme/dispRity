@@ -70,8 +70,10 @@
 #' ## Calculating disparity using one thread
 #' system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
 #' ## Bootstrapping a series of matrices using 4 threads
-#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances), parallel = c(4, "SOCK")))
-#' # System time is significantly longer! Using parallel is only an improvement for big datasets.
+#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
+#'      parallel = c(4, "SOCK")))
+#' ## System time is significantly longer! Using parallel is only an improvement
+#' ## for big datasets.
 #' }
 #' 
 #' @seealso \code{\link{boot.matrix}} for bootstrapping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
