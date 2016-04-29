@@ -181,4 +181,23 @@ object
         \---[[1]] "character" string
   
 ````
+
+Accessing the 3rd bootstrapped matrix of the 2nd rarefaction level in the 1st series
+````r
+series_number = 1
+rarefaction_level = 2
+bootstrap_value = 3
+access <- object$data$bootstrap[[series_number]][[rarefaction_level]][[bootstrap_value]]
+class(access) == "matrix"
+length(access) == 1
+```
   
+Accessing the 3rd bootstrap value/distribution of the 2nd rarefaction level in the 1st series
+````r
+series_number = 1
+rarefaction_level = 2
+bootstrap_value = 3
+access <- object$disparity$bootstrap[[series_number]][[rarefaction_level]][[bootstrap_value]]
+class(access) == "numeric"
+length(access) >= 1
+```
