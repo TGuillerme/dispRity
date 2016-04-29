@@ -10,6 +10,19 @@ test.list.lapply <- function(list_of_comp, data, test, ...) {
     return(output)
 }
 
+#transforming test into a lapply from a given list of comp for multiple distributions
+test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
+    
+    test.mapply <- function(pair_comparison, data, test, ...) {
+        return(mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE))
+    }
+
+    output <- lapply(list_of_comp, test.mapply, data, test, ...)
+    #output <- lapply(list_of_comp, test.mapply, data, test) ; warning("DEBUG")
+    return(output)
+}
+
+
 #Creating a list of sequences
 set.sequence <- function(length) {
     #Sequence of only 2
