@@ -10,6 +10,7 @@ test.list.lapply <- function(list_of_comp, data, test, ...) {
     return(output)
 }
 
+
 #transforming test into a lapply from a given list of comp for multiple distributions
 test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
     
@@ -72,7 +73,6 @@ list.to.table <- function(extracted_data, style = "factor") {
     return(output)
 }
 
-
 htest.to.vector <- function(htest, print) {
     #print is a vector of htest elements to print
     #lapply fun
@@ -89,4 +89,39 @@ get.name <- function(X, htest) {
     } else {
         return(output)
     }
+}
+
+
+##TODO: following functions are not tested yet
+
+
+#Set the list of comparisons
+set.comparisons.list <- function(comp, extracted_data, comparisons) {
+    if(comp == "custom") {
+        #get the lit of series to compare
+        comp_series <- comparisons
+    }
+
+    if(comp == "pairwise") {
+        #Get the pairs of series
+        comp_series <- combn(1:length(extracted_data), 2)
+        #convert pair series table in a list of pairs
+        comp_series <- unlist(apply(comp_series, 2, list), recursive = FALSE)
+    }
+
+    if(comp == "sequential") {
+        #Set the list of sequences
+        comp_series <- set.sequence(length(extracted_data))
+        #convert seq series in a list of sequences
+        comp_series <- unlist(apply(comp_series, 2, list), recursive = FALSE)
+    }
+    return(comp_series)
+}
+
+#Save the comparisons list
+save.comparison.list <- function(comp, comp_series, extract_data) {
+    #Saving the list of comparisons
+    comparisons_list <- convert.to.character(comp_series, extracted_data)
+    comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " - "))
+    return(comparisons_list)
 }
