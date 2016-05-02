@@ -6,7 +6,8 @@
 #' @param test A test \code{function} to apply to the data.
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
 #' @param correction which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
-#' @param concatenate Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}). If \code{concatenate = FALSE} and \code{details = FALSE}, the quantiles of the multiples test are reported and this argument can take the quantile values (as an implied \code{FALSE}).
+#' @param concatenate Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).
+#' @param conc.quantiles If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles.
 #' @param details Whether to output the details of each test (non-formatted; default = \code{FALSE}).
 #' @param ... Additional options to pass to the test \code{function}.
 #'
@@ -63,9 +64,10 @@
 #source("sanitizing.R")
 #source("test.dispRity_fun.R")
 #source("summary.dispRity_fun.R")
+#source("make.metric_fun.R")
 
 
-test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, details=FALSE, ...) { #format: get additional option for input format?
+test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
@@ -149,23 +151,27 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         }
     }
 
-    #concatenate (ignore if data is not bootstrapped)
+    # #concatenate (ignore if data is not bootstrapped)
     if(is.bootstrapped == TRUE && is.distribution == TRUE) { #TG: multiple tests only works if disparity scores are distributions and are bootstrapped!
-        if(concatenate != TRUE) {
-            #if not true (don't concatenate)
-            if(concatenate == FALSE) {
-                #if logical (false), set concat.quantiles to default (95, 50)
-                conc.quantiles <- CI.converter(c(95, 50))
-            } else {
-                #Must be numeric
-                check.class(concatenate, "numeric", " must be either logical or numeric.")
-                #If quantiles are probabilities (i.e. sum > quantiles)
-                if(sum(concatenate) != length(concatenate)) {
-                    conc.quantiles <- CI.converter(concatenate)
-                    concatenate <- FALSE
-                }
-            }
+        #concatenate must be logical
+        check.class(concatenate, "logical")
+        #conc.quantiles must be a list
+        check.class(conc.quantiles, "list", " must be a list of at least one function and one quantile value (in that order).")
+        if(length(conc.quantiles < 2)) stop("Conc.quantiles must be a list of at least one function and one quantile value (in that order).")
+        #first element of conc.quantiles must be a function
+        con.cen.tend <- conc.quantiles[[1]]
+        check.class(con.cen.tend, "function")
+        check.metric(con.cen.tend) -> silent
+        #second and more elements must be numeric
+        quantiles <- unlist(conc.quantiles[-1])
+        if(class(quantiles) != "numeric") stop("Quantiles provided in conc.quantiles must be stated after the function and must be numeric.")
+        if(sum(quantiles) != length(quantiles)) {
+            conc.quantiles <- CI.converter(quantiles)
+        } else {
+            conc.quantiles <- quantiles
         }
+    } else {
+        concatenate <- TRUE
     }
 
     #correction
@@ -190,40 +196,16 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     }
 
     #Custom, pairwise and sequential
-    if(comp == "custom" | comp == "pairwise" | comp == "sequential") {
+    if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         #Get the list of comparisons
         comp_series <- set.comparisons.list(comp, extracted_data, comparisons) 
 
         #Apply the test to the list of pairwise comparisons
-        details_out <- lapply(comp_series, test.list.lapply, extracted_data, test, ...)
-        #details_out <- lapply(comp_series, test.list.lapply, extracted_data, test) ; warning("DEBUG")
-
-
-
-        #TODO: use this version of the code! mapply all over the shope!
-        details_out <- test.list.lapply.distributions(comp_series, extracted_data, test)
-
-
+        details_out <- test.list.lapply.distributions(comp_series, extracted_data, test, ...)
+        #details_out <- test.list.lapply.distributions(comp_series, extracted_data, test) ; warning("DEBUG")
 
         #Saving the list of comparisons
         comparisons_list <- save.comparison.list(comp, comp_series, extract_data)
-
-        #Renaming the detailed results list
-        names(details_out) <- comparisons_list
-    }
-
-    #Referential comparisons (first distribution to all the others) #TG: this chunk could probably be integrated into the "custom/pairwise/sequential" one
-    if(comp == "referential") {
-        #Select the reference series
-        reference_series <- extracted_data[[1]]
-        other_series <- extracted_data[-1]
-
-        #Applying the test to the list of other series
-        details_out <- lapply(other_series, flip.ref.lapply, referential = reference_series, test = test, ...)
-        #details_out <- lapply(other_series, flip.ref.lapply, referential = reference_series, test = test) ; warning("DEBUG")
-
-        #Saving the list of comparisons
-        comparisons_list <- paste(names(extracted_data[1]), names(extracted_data[-1]), sep=" - ")
 
         #Renaming the detailed results list
         names(details_out) <- comparisons_list
@@ -270,61 +252,55 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
 
     if(details == FALSE & comparisons != "all") {
         #Getting the output class
-        out.class <- unique(unlist(lapply(details_out, class)))
+        out_class <- unique(unlist(lapply(details_out, lapply, class)))
 
-        #numeric output
-        if(any(out.class == "numeric")) {
+        #Numeric output
+        if(out_class == "numeric") {
+            if(concatenate == TRUE) {
+                table_out <- output.numeric.results(details_out, match_call, comparisons_list)
+            } else {
+                table_out <- output.numeric.results(details_out, match_call, comparisons_list, conc.quantiles, con.cen.tend)
+            }
+            return(table_out)
+        }
+
+        #htest output
+        if(any(out_class == "htest")) {
+
+            #What's in the test?
+            test_elements <- unique(unlist(lapply(details_out, names)))
+            #Only select the numeric or integer elements
+            test_elements <- test_elements[grep("numeric|integer", unlist(lapply(as.list(details_out[[1]]), class)))]
+            #Remove null.value and conf.int (if present)
+            remove <- match(c("null.value", "conf.int"), test_elements)
+            if(any(is.na(remove))) {
+                remove <- remove[-which(is.na(remove))]
+            }
+            if(length(remove) > 0) {
+                test_elements <- test_elements[-remove]
+            }
+            #Getting the test elements of interest
+            table_out <- lapply(details_out, htest.to.vector, print=as.list(test_elements))
             #Transforming list to table
-            table_out <- do.call(rbind.data.frame, details_out)
+            table_out <- do.call(rbind.data.frame, table_out)
             #Getting col names
-            colnames(table_out) <- as.expression(match_call$test)
+            col_names <- unlist(lapply(as.list(test_elements), get.name, htest=details_out[[1]]))
+            colnames(table_out) <- col_names
             #Getting row names (the comparisons)
             row.names(table_out) <- comparisons_list
 
+
+            #Applying the correction
+            if(!missing(correction)) {
+                table_out$p.value <- p.adjust(table_out$p.value, method = correction)
+            }
+
             return(table_out)
 
-        } else {
-
-            #htest output
-            if(any(out.class == "htest")) {
-
-                #What's in the test?
-                test_elements <- unique(unlist(lapply(details_out, names)))
-                #Only select the numeric or integer elements
-                test_elements <- test_elements[grep("numeric|integer", unlist(lapply(as.list(details_out[[1]]), class)))]
-                #Remove null.value and conf.int (if present)
-                remove <- match(c("null.value", "conf.int"), test_elements)
-                if(any(is.na(remove))) {
-                    remove <- remove[-which(is.na(remove))]
-                }
-                if(length(remove) > 0) {
-                    test_elements <- test_elements[-remove]
-                }
-                #Getting the test elements of interest
-                table_out <- lapply(details_out, htest.to.vector, print=as.list(test_elements))
-                #Transforming list to table
-                table_out <- do.call(rbind.data.frame, table_out)
-                #Getting col names
-                col_names <- unlist(lapply(as.list(test_elements), get.name, htest=details_out[[1]]))
-                colnames(table_out) <- col_names
-                #Getting row names (the comparisons)
-                row.names(table_out) <- comparisons_list
-
-
-                #Applying the correction
-                if(!missing(correction)) {
-                    table_out$p.value <- p.adjust(table_out$p.value, method = correction)
-                }
-
-                return(table_out)
-
-            } else {
-
-                #output class not implemented
-                #warning(paste("Output class not implemented for ", match_call$test, ".\nDetails of each test is returned as a raw list.", sep=""))
-                return(details_out)
-            }
         }
+
+        #no implemented output:
+        return(details_out)
 
     } else {
 

@@ -115,6 +115,15 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
         #convert seq series in a list of sequences
         comp_series <- unlist(apply(comp_series, 2, list), recursive = FALSE)
     }
+
+    if(comp == "referential") {
+        #Set the list of comparisons as a matrix
+        matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
+        comp_series <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
+        #convert pair series table in a list of pairs
+        comp_series <- unlist(apply(comp_series, 2, list), recursive = FALSE)
+    }
+
     return(comp_series)
 }
 
@@ -124,4 +133,24 @@ save.comparison.list <- function(comp, comp_series, extract_data) {
     comparisons_list <- convert.to.character(comp_series, extracted_data)
     comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " - "))
     return(comparisons_list)
+}
+
+#Returning an table of numeric values
+output.numeric.results <- function(details_out, match_call, comparisons_list, conc.quantiles, con.cen.tend) {
+    #Transforming list to table
+    table_temp <- do.call(rbind.data.frame, details_out)
+
+    #Calculate the quantiles and the central tendency
+    if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
+        table_out <- t(rbind(apply(table_temp, 1, con.cen.tend), apply(table_temp, 1, quantile, probs = conc.quantiles)))
+    } else {
+        table_out <- table_temp
+    }
+
+    #Getting col names
+    colnames(table_out)[1] <- as.expression(match_call$test)
+    #Getting row names (the comparisons)
+    row.names(table_out) <- comparisons_list
+
+    return(table_out)            
 }
