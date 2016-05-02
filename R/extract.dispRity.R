@@ -5,6 +5,14 @@
 #' @param data A \code{dispRity} object containing disparity results.
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
 #' @param rarefaction Either a rarefaction value or \code{"max"} or \code{"min"} to extract the rarefaction levels (is ignored if \code{observed = TRUE}).
+#' @param concatenate A \code{logical} value indicating whether to concatenate the results (\code{TRUE} (default)) or to output it as a list of values (\code{FALSE}).
+#' @param keep.structure A \code{logical} value indicating whether to keep the concatenation structure (\code{TRUE}) or not (\code{FALSE}, default, see details).
+#' 
+#' @details
+#' The \code{keep.structure} allows to conserve the output structure to match the non-concatenated one (\code{concatenate = FALSE}).
+#' I.e. a list of lists per series. When \code{concatenate = FALSE}, the output is \code{output[[series]][[bootstrap]] = my_disparity_values_for_that_bootstrap}.
+#' When using \code{concatenate = TRUE}, the output becomes \code{output[[series]] = all_my_disparity_values_for_that_series}.
+#' When using \code{keep.structure = FALSE} and \code{concatenate = TRUE}, the output becomes \code{output[[series]][[1]] = all_my_disparity_values_for_that_series} (i.e. adding a "dummy" list level).
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -39,7 +47,7 @@
 #source("sanitizing.R")
 #source("extract.dispRity_fun.R")
 
-extract.dispRity<-function(data, observed=TRUE, rarefaction) {
+extract.dispRity<-function(data, observed=TRUE, rarefaction, concatenate=TRUE, keep.structure=FALSE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -86,33 +94,34 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction) {
         }
     }
 
-    #check if is.distribution
-    is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
-
     #----------------------
     # EXTRACTING THE DATA
     #----------------------
 
     if(observed == TRUE) {
         #Check if disparity is level1 (one disparity value) or level2 (one distribution)
-        if(is.distribution == FALSE) {
+        if(concatenate == TRUE) {
             #Simply unlist the observed disparity
             output <- unlist(data$disparity$observed)
         } else {
             #recursively unlist the observed disparity
-            output <- unlist(recursive.unlist(data$disparity$observed), recursive = FALSE)    
+            output <- unlist(recursive.unlist(data$disparity$observed), recursive = FALSE)
             names(output) <- data$series
         }
     } else {
         #Check if disparity is level1 (one disparity value) or level2 (one distribution)
-        if(is.distribution == FALSE) {
+        if(concatenate == TRUE) {
             #make a list of the disparity data
-            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare=rarefaction), recursive=FALSE)
+            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare = rarefaction), recursive = FALSE)
+            if(keep.structure == TRUE) {
+                #put each element per series back in a list (of one element)
+                output <- lapply(output, list)
+            }
             #Adding the series names
             names(output) <- data$series
         } else {
             #recursively unlist the data
-            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped, is.distribution = TRUE), extract.rar, which.rare=rarefaction), recursive = FALSE)
+            output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped, is.distribution = TRUE), extract.rar, which.rare = rarefaction), recursive = FALSE)
             #Adding the series names
             names(output) <- data$series
         }
