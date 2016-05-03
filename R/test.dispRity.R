@@ -44,8 +44,8 @@
 # bootstrapped_data <- boot.matrix(customised_series, bootstraps = 10, boot.type = "full")
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)
-# data <- data_single
-# test.dispRity(data, bhatt.coeff, "pairwise", details = TRUE)
+# data <- data_multi
+# test.dispRity(data, t.test, "pairwise", details = FALSE, concatenate = TRUE)
 # 
 # 
 #' 
@@ -65,7 +65,8 @@
 #source("test.dispRity_fun.R")
 #source("summary.dispRity_fun.R")
 #source("make.metric_fun.R")
-
+#source("extract.dispRity.R")
+#source("extract.dispRity_fun.R")
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
@@ -151,13 +152,13 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         }
     }
 
-    # #concatenate (ignore if data is not bootstrapped)
+    #concatenate (ignore if data is not bootstrapped)
     if(is.bootstrapped == TRUE && is.distribution == TRUE) { #TG: multiple tests only works if disparity scores are distributions and are bootstrapped!
         #concatenate must be logical
         check.class(concatenate, "logical")
         #conc.quantiles must be a list
         check.class(conc.quantiles, "list", " must be a list of at least one function and one quantile value (in that order).")
-        if(length(conc.quantiles < 2)) stop("Conc.quantiles must be a list of at least one function and one quantile value (in that order).")
+        if(length(conc.quantiles) < 2) stop("Conc.quantiles must be a list of at least one function and one quantile value (in that order).")
         #first element of conc.quantiles must be a function
         con.cen.tend <- conc.quantiles[[1]]
         check.class(con.cen.tend, "function")
@@ -257,46 +258,21 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         #Numeric output
         if(out_class == "numeric") {
             if(concatenate == TRUE) {
-                table_out <- output.numeric.results(details_out, match_call, comparisons_list)
+                table_out <- output.numeric.results(details_out, as.expression(match_call$test), comparisons_list)
             } else {
-                table_out <- output.numeric.results(details_out, match_call, comparisons_list, conc.quantiles, con.cen.tend)
+                table_out <- output.numeric.results(details_out, as.expression(match_call$test), comparisons_list, conc.quantiles, con.cen.tend)
             }
             return(table_out)
         }
 
         #htest output
-        if(any(out_class == "htest")) {
-
-            #What's in the test?
-            test_elements <- unique(unlist(lapply(details_out, names)))
-            #Only select the numeric or integer elements
-            test_elements <- test_elements[grep("numeric|integer", unlist(lapply(as.list(details_out[[1]]), class)))]
-            #Remove null.value and conf.int (if present)
-            remove <- match(c("null.value", "conf.int"), test_elements)
-            if(any(is.na(remove))) {
-                remove <- remove[-which(is.na(remove))]
+        if(out_class == "htest") {
+            if(concatenate == TRUE) {
+                table_out <- output.htest.results(details_out, comparisons_list)
+            } else {
+                table_out <- output.htest.results(details_out, comparisons_list, conc.quantiles, con.cen.tend)
             }
-            if(length(remove) > 0) {
-                test_elements <- test_elements[-remove]
-            }
-            #Getting the test elements of interest
-            table_out <- lapply(details_out, htest.to.vector, print=as.list(test_elements))
-            #Transforming list to table
-            table_out <- do.call(rbind.data.frame, table_out)
-            #Getting col names
-            col_names <- unlist(lapply(as.list(test_elements), get.name, htest=details_out[[1]]))
-            colnames(table_out) <- col_names
-            #Getting row names (the comparisons)
-            row.names(table_out) <- comparisons_list
-
-
-            #Applying the correction
-            if(!missing(correction)) {
-                table_out$p.value <- p.adjust(table_out$p.value, method = correction)
-            }
-
             return(table_out)
-
         }
 
         #no implemented output:

@@ -135,22 +135,61 @@ save.comparison.list <- function(comp, comp_series, extract_data) {
     return(comparisons_list)
 }
 
-#Returning an table of numeric values
-output.numeric.results <- function(details_out, match_call, comparisons_list, conc.quantiles, con.cen.tend) {
+#Calculate the central tendency and the quantiles from a table of results
+get.quantiles.from.table <- function(table, con.cen.tend, conc.quantiles) {
+    return(t(rbind(apply(table, 1, con.cen.tend), apply(table, 1, quantile, probs = conc.quantiles))))
+}
+
+#Returning a table of numeric values
+output.numeric.results <- function(details_out, name, comparisons_list, conc.quantiles, con.cen.tend) {
     #Transforming list to table
     table_temp <- do.call(rbind.data.frame, details_out)
 
     #Calculate the quantiles and the central tendency
     if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
-        table_out <- t(rbind(apply(table_temp, 1, con.cen.tend), apply(table_temp, 1, quantile, probs = conc.quantiles)))
+        table_out <- get.quantiles.from.table(table_temp, con.cen.tend, conc.quantiles)
     } else {
         table_out <- table_temp
     }
 
     #Getting col names
-    colnames(table_out)[1] <- as.expression(match_call$test)
+    colnames(table_out)[1] <- name
     #Getting row names (the comparisons)
     row.names(table_out) <- comparisons_list
 
-    return(table_out)            
+    return(table_out)
+}
+
+#Returning a table for htests
+output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+    #Getting the test elements
+    test_elements <- unique(unlist(lapply(details_out, lapply, names)))
+    #Selecting the numeric (or) integer elements only
+    test_elements <- test_elements[grep("numeric|integer", unlist(lapply(as.list(details_out[[1]][[1]]), class)))]
+    #Remove null.value and the estimates
+    remove <- match(c("null.value", "conf.int", "estimate"), test_elements)
+    if(any(is.na(remove))) {
+    remove <- remove[-which(is.na(remove))]
+    }
+    if(length(remove) > 0) {
+        test_elements <- test_elements[-remove]
+    }
+
+    #Lapply function for getting the test elements
+    lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+        if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
+            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))
+        } else {
+            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list))
+        }
+    }
+    
+    #Get the results
+    if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
+        table_out <- lapply(as.list(test_elements), lapply.output.test.elements, details_out, comparisons_list, conc.quantiles, con.cen.tend)
+    } else {
+        table_out <- lapply(as.list(test_elements), lapply.output.test.elements, details_out, comparisons_list)
+    }
+
+    return(table_out)
 }
