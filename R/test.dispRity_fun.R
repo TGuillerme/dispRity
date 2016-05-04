@@ -40,15 +40,16 @@ convert.to.character <- function(list, object) {
 #Convert a list into a table (for aov)
 list.to.table <- function(extracted_data, style = "factor") {
     #function for repeating the extracted_data names
-    mapply.rep.names <- function(name, series) {
-        return(rep(name, length(series)))
+    rep.names <- function(name, series) {
+        return(rep(name, series))
     }
 
     #Get the list of names
-    names_list<-as.list(names(extracted_data))
+    names_list <- as.list(names(extracted_data))
+    series_length <- unlist(lapply(extracted_data, length), recursive = FALSE)
 
     #Create the data.frame
-    output <- data.frame("data"=unlist(extracted_data), row.names=NULL, "factor"=unlist(mapply(mapply.rep.names, names_list, extracted_data, SIMPLIFY=FALSE)))
+    output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "series" = unlist(mapply(rep.names, names_list, series_length, SIMPLIFY = FALSE)))
 
     #Transform factors to numeric
     if(style == "binomial") {
@@ -109,9 +110,15 @@ save.comparison.list <- function(comp_series, extracted_data) {
     return(comparisons_list)
 }
 
+#Function for lapplying aov type functions
+lapply.aov.type <- function(data, test, ...) {
+    return(test(data ~ series, data = data, ...))
+}
+
+
 #Calculate the central tendency and the quantiles from a table of results
-get.quantiles.from.table <- function(table, con.cen.tend, conc.quantiles) {
-    return(t(rbind(apply(table, 1, con.cen.tend), apply(table, 1, quantile, probs = conc.quantiles))))
+get.quantiles.from.table <- function(table, con.cen.tend, conc.quantiles, ...) {
+    return(t(rbind(apply(table, 1, con.cen.tend, ...), apply(table, 1, quantile, probs = conc.quantiles, ...))))
 }
 
 #Returning a table of numeric values
@@ -166,4 +173,27 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
     }
 
     return(table_out)
+}
+
+#Handling output for aov multiple tests
+output.aov.results <- function(details_out, conc.quantiles, con.cen.tend) {
+    #Getting the summaries
+    summaries <- lapply(details_out, summary)
+    
+    #Transforming the list 
+    list_of_results <- list()
+    for(element in 1:length(summaries[[1]][[1]])) {
+        list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
+            dimnames = list(c("series", "Residuals")))
+    }
+
+    #Get the quantiles
+    list_of_results <- lapply(list_of_results, get.quantiles.from.table, con.cen.tend, conc.quantiles, na.rm = TRUE)
+
+    #Name the elements
+    for(element in 1:length(summaries[[1]][[1]])) {
+        colnames(list_of_results[[element]])[[1]] <- names(summaries[[1]][[1]])[[element]]
+    }    
+
+    return(list_of_results)
 }

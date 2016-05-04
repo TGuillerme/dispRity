@@ -68,6 +68,15 @@
 # source("make.metric_fun.R")
 # source("extract.dispRity.R")
 # source("extract.dispRity_fun.R")
+# data(BeckLee_mat50)
+# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+# customised_series <- cust.series(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 10)
+# data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
+# data_multi <- dispRity(bootstrapped_data, metric = variances)
+# data <- data_multi
+# test.dispRity(data, test = aov, comparisons = "all")
+# test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
@@ -90,6 +99,9 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     is.bootstrapped <- ifelse(!is.na(match("bootstraps", names(data$data))), TRUE, FALSE)
     #check if is.distribution
     is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
+
+    #Stop if disparity is not a distribution, nor bootstrapped
+    if(is.bootstrapped == FALSE && is.distribution == FALSE) stop("Data is neither a distribution nor bootstrapped: impossible to compare single values.")
     
     #Test
     #must be a single function
@@ -195,15 +207,23 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
 
     #ANOVA/GLM type
     if(comp == "all") {
-        #Transform the extracted data into a table
-        data <- list.to.table(extracted_data)
 
-        #Renaming the colnames
-        colnames(data) <- c("data", "series")
+        #Divide into a list (if concatenate is FALSE)
+        if(concatenate == FALSE) {
+            #Splitting the data per bootstrap
+            list_of_data <- list()
+            for(bootstrap in 1:length(extracted_data[[1]])) {
+                list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
+            }
+            list_of_data <- lapply(list_of_data, list.to.table)
+        } else {
+            #Transform the extracted data into a table
+            list_of_data <- list(list.to.table(extracted_data))
+        }
 
-        #running the test
-        details_out <- test(data ~ series, data = data, ...)
-        #details_out <- test(data ~ series, data = data) ; warning("DEBUG")
+        #running the tests
+        details_out <- lapply(list_of_data, lapply.aov.type, test, ...)
+        #details_out <- lapply(list_of_data, lapply.aov.type, test) ; warning("DEBUG")
     }
 
     #Sequential.test comparisons (one to each other)
@@ -258,8 +278,27 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         #no implemented output:
         return(details_out)
 
-    } 
-    else {
+    } else {
+
+        #Dealing with aov/lm class
+        if(comparisons == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
+            #If concatenate == TRUE
+            if(is.distribution == TRUE && is.bootstrapped == TRUE && concatenate == FALSE) {
+                #Transform results into a list
+                table_out <- output.aov.results(details_out, conc.quantiles, con.cen.tend)
+                return(table_out)
+            } else {
+                #Results should be a single test 
+                if(length(details_out) == 1) {
+                    return(details_out[[1]])
+                } else {
+                    return(details_out)
+                }
+            }
+
+
+            return(table_out)
+        }
 
         #Sequential test results
         if(details == FALSE && comp == "sequential.test") {
@@ -284,7 +323,6 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
 
                 cat(call)
                 return(table_out)
-
             }
         }
 

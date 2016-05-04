@@ -10,10 +10,10 @@
 #'
 #' @return
 #' A \code{data.frame} with:
-#' \item{series} the series names
-#' \item{n} the number of elements per series
-#' \item{observed} the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>})
-#' \item{bootstraps...} if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).
+#' \item{series}{the series names.}
+#' \item{n}{the number of elements per series.}
+#' \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
+#' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).}
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
