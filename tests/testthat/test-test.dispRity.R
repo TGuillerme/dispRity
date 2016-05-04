@@ -2,35 +2,35 @@
 
 context("test.dispRity")
 
-#Testing internal fun
-test_that("flip.ref.lapply internal fun", {
-    expect_error(
-    	flip.ref.lapply(1, 2, t.test)
-    	)
-    expect_is(
-    	flip.ref.lapply(rnorm(15), rnorm(15), t.test)
-        , "htest")
-    expect_is(
-    	lapply(replicate(3,rnorm(15), simplify=F), flip.ref.lapply, referential=rnorm(15), test=t.test)
-        , "list")
-    expect_equal(
-    	length(lapply(replicate(3,rnorm(15), simplify=F), flip.ref.lapply, referential=rnorm(15), test=t.test))
-        , 3)
-})
+test_that("test.list.lapply.distributions internal fun", {
+    my_list_of_comp <- list(c(1,2), c(2,1))
+    my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
+    my_test <- t.test
 
-test_that("test.list.lapply internal fun", {
+    #Errors
     expect_error(
-    	test.list.lapply(1, 2, t.test)
-    	)
+        test.list.lapply.distributions(1, my_data, my_test)
+        )
+    expect_error(
+        test.list.lapply.distributions(my_list_of_comp, 1, my_test)
+        )
+    expect_error(
+        test.list.lapply.distributions(my_list_of_comp, my_data, 1)
+        )
+
+    #Right output
     expect_is(
-    	test.list.lapply(c(1,2), replicate(2,rnorm(15), simplify=F), t.test)
-        , "htest")
-    expect_is(
-    	lapply(list(c(1,2), c(1,3)), test.list.lapply, replicate(3,rnorm(15), simplify=F), t.test)
+        test.list.lapply.distributions(my_list_of_comp, my_data, my_test)
         , "list")
     expect_equal(
-    	length(lapply(list(c(1,2), c(1,3)), test.list.lapply, replicate(3,rnorm(15), simplify=F), t.test))
-        , 2)
+        length(test.list.lapply.distributions(my_list_of_comp, my_data, my_test))
+        ,2)
+    expect_equal(
+        length(test.list.lapply.distributions(my_list_of_comp, my_data, my_test)[[1]])
+        ,2)
+    expect_equal(
+        unique(unlist(lapply(test.list.lapply.distributions(my_list_of_comp, my_data, my_test), lapply, class)))
+        ,"htest")
 })
 
 test_that("set.sequence internal fun", {
@@ -118,6 +118,81 @@ test_that("htest.to.vector internal fun", {
         , c(16.4689565,0.7840382,-0.2785755))
 })
 
+
+test_that("set.comparisons.list internal fun", {
+    my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
+
+    #Errors
+    expect_error(
+        set.comparisons.list("custom", my_data)
+        )
+    expect_error(
+        set.comparisons.list(my_data, "custom")
+        )
+
+    #Custom output
+    expect_equal(
+        set.comparisons.list("custom", 1, c(1,2,2,3))
+        ,c(1,2,2,3))
+    expect_equal(
+        set.comparisons.list("custom", 1, TRUE)
+        ,TRUE)
+    #Pairwise output
+    expect_equal(
+        set.comparisons.list("pairwise", my_data, 1)
+        ,list(c(1,2), c(1,3), c(2,3)))
+    #Sequential output
+    expect_equal(
+        set.comparisons.list("sequential", my_data, 1)
+        ,list(c(1,2), c(2,3)))
+    #Referential output
+    expect_equal(
+        set.comparisons.list("referential", my_data, 1)
+        ,list(c(1,2), c(1,3)))
+})
+
+test_that("save.comparison.list internal fun", {
+    my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
+    names(my_data) <- c("X", "Y")
+    my_comp_series <- list(c(1,2), c(2,1))
+
+    expect_equal(
+        save.comparison.list(list(c(1,2), c(2,1)), my_data)
+        ,c("X - Y", "Y - X"))
+    expect_equal(
+        save.comparison.list(list(c(1,2), c(1,2)), my_data)
+        ,c("X - Y", "X - Y"))
+    expect_equal(
+        save.comparison.list(list(c(1,2)), my_data)
+        ,c("X - Y"))
+    expect_equal(
+        save.comparison.list(1, my_data)
+        ,c("X"))
+})
+
+test_that("get.quantiles.from.table internal fun", {
+    my_table <- matrix(rnorm(50), nrow = 5)
+
+    expect_error(
+        get.quantiles.from.table(1, mean, c(0.45, 0.55))
+        )
+    expect_error(
+        get.quantiles.from.table(my_table, 1, c(0.45, 0.55))
+        )
+    expect_error(
+        get.quantiles.from.table(my_table, mean, 2)
+        )
+
+    expect_is(
+        get.quantiles.from.table(my_table, mean, c(0.45, 0.55))
+        ,"matrix")
+    expect_equal(
+        dim(get.quantiles.from.table(my_table, mean, c(0.45, 0.55)))
+        ,c(5,3))
+})
+
+
+
 test_that("example works fine", {
     set.seed(1)
     ## Load the Beck & Lee 2014 data
@@ -146,25 +221,48 @@ test_that("example works fine", {
     ## Measuring differences from a reference_series
     expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
-        , "data.frame")
+        , "list")
     expect_equal(
-    	dim(test.dispRity(sum_of_ranges, wilcox.test, "referential"))
-        , c(2,2))
+    	length(test.dispRity(sum_of_ranges, wilcox.test, "referential"))
+        , 2)
     expect_equal(
-    	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[,1])
+    	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[1]][,1])
         , 1543)
     expect_equal(
-    	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[,2])
+    	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[2]][,1])
         , 3.025477e-17)
-    
+
+    ## Measuring disparity as a distribution
+    disparity_var <- dispRity(bootstrapped_data, metric = variances)
+    test1 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE)
+    expect_is(
+        test1
+        ,"list")
+    expect_equal(
+        unique(unlist(lapply(test1, class)))
+        ,"data.frame")
+    expect_equal(
+        unique(unlist(lapply(test1, dim)))
+        ,c(3,1))
+    test2 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE)
+    expect_is(
+        test2
+        ,"list")
+    expect_equal(
+        unique(unlist(lapply(test2, class)))
+        ,"matrix")
+    expect_equal(
+        unique(unlist(lapply(test2, dim)))
+        ,c(3,5))
+
     ## Testing the effect of the factors
     expect_is(
-    	test.dispRity(sum_of_ranges, aov, "all")
+        test.dispRity(sum_of_ranges, aov, "all")
         , c("aov", "lm"))
     expect_equal(
-    	test.dispRity(sum_of_ranges, aov, "all")$rank
+        test.dispRity(sum_of_ranges, aov, "all")$rank
         , 3)
     expect_equal(
-    	as.vector(test.dispRity(sum_of_ranges, aov, "all")$coefficients)
+        as.vector(test.dispRity(sum_of_ranges, aov, "all")$coefficients)
         , c(24.048441, 2.053728, 9.798655))
 })

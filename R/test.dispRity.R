@@ -39,15 +39,7 @@
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
 #' ## Measuring the series overlap
-#' test.dispRity(sum_of_variances, bhatt.coeff, "pairwise", details)
-#  
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 10, boot.type = "full")
-# data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
-# data_multi <- dispRity(bootstrapped_data, metric = variances)
-# data <- data_multi
-# test.dispRity(data, t.test, "pairwise", details = FALSE, concatenate = TRUE)
-# 
-# 
+#' test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 #' 
 #' ## Measuring differences from a reference_series
 #' test.dispRity(sum_of_variances, wilcox.test, "referential")
@@ -56,17 +48,26 @@
 #' test.dispRity(sum_of_variances, aov, "all")
 #' ## warning: this violates some aov assumptions!
 #'
+#' ## Measuring disparity as a distribution
+#' disparity_var <- dispRity(bootstrapped_data, metric = variances)
+#' ## Differences between the concatenated bootstrapped values of the series
+#' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
+#'      concatenate = TRUE)
+#' ## Differences between the series bootstrapped
+#' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
+#'      concatenate = FALSE)
+#' 
 #' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}.
 #'
 #' @author Thomas Guillerme
 
 #For testing:
-#source("sanitizing.R")
-#source("test.dispRity_fun.R")
-#source("summary.dispRity_fun.R")
-#source("make.metric_fun.R")
-#source("extract.dispRity.R")
-#source("extract.dispRity_fun.R")
+# source("sanitizing.R")
+# source("test.dispRity_fun.R")
+# source("summary.dispRity_fun.R")
+# source("make.metric_fun.R")
+# source("extract.dispRity.R")
+# source("extract.dispRity_fun.R")
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
@@ -85,19 +86,8 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    OBSresults <- data$disparity$observed
     #is the data bootstrapped? 
-    if(!is.na(match("bootstraps", names(data$data)))) {
-        #must have more than one bootstrap!
-        if(length(data$data$bootstraps[[1]][[1]]) > 1) {
-            is.bootstrapped <- TRUE
-            BSresults <- data$disparity$bootstrapped
-        } else {
-            is.bootstrapped <- FALSE
-        }
-    } else {
-        is.bootstrapped <- FALSE
-    }
+    is.bootstrapped <- ifelse(!is.na(match("bootstraps", names(data$data))), TRUE, FALSE)
     #check if is.distribution
     is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
     
@@ -109,13 +99,8 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #Details
     check.class(details, "logical")
 
-    #Comparisons
-    test_data_length <- extract.dispRity(data)
     #Stop if only one series
-    if(length(test_data_length) == 1 && as.character(match_call$test) != "null.test") stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
-
-    # #Ignore if length data = 2
-    # if(length(test_data_length) == 2) comparisons <- NULL
+    if(length(extract.dispRity(data)) == 1 && as.character(match_call$test) != "null.test") stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
 
     #Else, check comparisons
     all_comparisons <- c("referential", "sequential", "pairwise", "all")
@@ -152,13 +137,13 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         }
     }
 
+    #concatenate
+    check.class(concatenate, "logical")
     #concatenate (ignore if data is not bootstrapped)
-    if(is.bootstrapped == TRUE && is.distribution == TRUE) { #TG: multiple tests only works if disparity scores are distributions and are bootstrapped!
-        #concatenate must be logical
-        check.class(concatenate, "logical")
+    if(is.bootstrapped == TRUE && is.distribution == TRUE && concatenate == FALSE) {
         #conc.quantiles must be a list
         check.class(conc.quantiles, "list", " must be a list of at least one function and one quantile value (in that order).")
-        if(length(conc.quantiles) < 2) stop("Conc.quantiles must be a list of at least one function and one quantile value (in that order).")
+        if(length(conc.quantiles) < 2) stop("conc.quantiles must be a list of at least one function and one quantile value (in that order).")
         #first element of conc.quantiles must be a function
         con.cen.tend <- conc.quantiles[[1]]
         check.class(con.cen.tend, "function")
@@ -171,8 +156,6 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         } else {
             conc.quantiles <- quantiles
         }
-    } else {
-        concatenate <- TRUE
     }
 
     #correction
@@ -192,21 +175,19 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #----------------------
 
     #Extracting the data (sends error if data is not bootstrapped)
-    if(comp != "null.test") {
-        extracted_data <- extract.dispRity(data, observed = FALSE, concatenate = concatenate, keep.structure = TRUE)
-    }
+    extracted_data <- extract.dispRity(data, observed = FALSE, concatenate = concatenate, keep.structure = TRUE)
 
     #Custom, pairwise and sequential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         #Get the list of comparisons
-        comp_series <- set.comparisons.list(comp, extracted_data, comparisons) 
+        comp_series <- set.comparisons.list(comp, extracted_data, comparisons)
 
         #Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_series, extracted_data, test, ...)
         #details_out <- test.list.lapply.distributions(comp_series, extracted_data, test) ; warning("DEBUG")
 
         #Saving the list of comparisons
-        comparisons_list <- save.comparison.list(comp, comp_series, extract_data)
+        comparisons_list <- save.comparison.list(comp_series, extracted_data)
 
         #Renaming the detailed results list
         names(details_out) <- comparisons_list
@@ -249,7 +230,6 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #----------------------
 
     #Formatting the output (if needed)
-    options(warn=-1)
 
     if(details == FALSE & comparisons != "all") {
         #Getting the output class
@@ -278,7 +258,8 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         #no implemented output:
         return(details_out)
 
-    } else {
+    } 
+    else {
 
         #Sequential test results
         if(details == FALSE && comp == "sequential.test") {
@@ -310,5 +291,4 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
         #returning the detailed output
         return(details_out)
     }
-    options(warn=0)
 }

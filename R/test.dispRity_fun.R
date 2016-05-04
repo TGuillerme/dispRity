@@ -1,16 +1,3 @@
-#flip tests for referential lapply (x becomes fix variable and y becomes list)
-flip.ref.lapply <- function(series, referential, test, ...) {
-    output <- test(referential, series, ...)
-    return(output)
-}
-
-#transforming test into a lapply from a given list of comp
-test.list.lapply <- function(list_of_comp, data, test, ...) {
-    output <- test(data[[list_of_comp[[1]]]], data[[list_of_comp[[2]]]], ...)
-    return(output)
-}
-
-
 #transforming test into a lapply from a given list of comp for multiple distributions
 test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
     
@@ -19,10 +6,8 @@ test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
     }
 
     output <- lapply(list_of_comp, test.mapply, data, test, ...)
-    #output <- lapply(list_of_comp, test.mapply, data, test) ; warning("DEBUG")
     return(output)
 }
-
 
 #Creating a list of sequences
 set.sequence <- function(length) {
@@ -82,19 +67,6 @@ htest.to.vector <- function(htest, print) {
     return(unlist(lapply(print, get.element, htest)))
 }
 
-get.name <- function(X, htest) {
-    output <- names(htest[[match(X, names(htest))]])
-    if(is.null(output)) {
-        return(X)
-    } else {
-        return(output)
-    }
-}
-
-
-##TODO: following functions are not tested yet
-
-
 #Set the list of comparisons
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
     if(comp == "custom") {
@@ -128,7 +100,7 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
 }
 
 #Save the comparisons list
-save.comparison.list <- function(comp, comp_series, extract_data) {
+save.comparison.list <- function(comp_series, extracted_data) {
     #Saving the list of comparisons
     comparisons_list <- convert.to.character(comp_series, extracted_data)
     comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " - "))

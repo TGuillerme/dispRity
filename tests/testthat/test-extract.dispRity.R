@@ -9,7 +9,7 @@ bootstraps_dat <- boot.matrix(series, bootstraps = 20, rarefaction = TRUE)
 disparity_data <- dispRity(bootstraps_dat, metric = mean)
 
 test_that("Example works", {
-    ex1 <- round(extract.dispRity(disparity_data), digit=5)
+    ex1 <- lapply(extract.dispRity(disparity_data), round, digit=5)
     expect_equal(
     	length(ex1), 3
     	)
@@ -17,7 +17,7 @@ test_that("Example works", {
     	names(ex1), c("100","80", "60")
     	)
     expect_equal(
-    	as.vector(ex1), c(-0.01373,-0.00340,0.00453)
+    	as.vector(unlist(ex1)), c(-0.01373,-0.00340,0.00453)
     	)
     ex2 <- extract.dispRity(disparity_data, observed = FALSE)
     expect_is(
@@ -56,7 +56,8 @@ test_that("Example works", {
     	names(ex4), c("100","80", "60")
     	)
     expect_equal(
-    	ex4[[1]],unlist(disparity_data$disparity$bootstrapped[[1]][[3]]))    
+    	ex4[[1]],unlist(disparity_data$disparity$bootstrapped[[1]][[3]])
+        )    
 })
 
 
@@ -80,9 +81,19 @@ test_that("Works with level2 outputs", {
         names(ex2), c("100","80", "60")
         ) 
     expect_equal(
-        length(ex2[[1]]), 20
+        length(ex2[[1]]), 1940
+        )
+    ex3 <- extract.dispRity(disparity_data, observed = FALSE, concatenate = FALSE)
+    expect_is(
+        ex3, "list"
         )
     expect_equal(
-        length(ex2[[1]][[1]]), ncol(bootstraps_dat$data[[1]][[1]][[1]][[1]])
+        names(ex3), c("100","80", "60")
+        ) 
+    expect_equal(
+        length(ex3[[1]]), 20
         )
+    expect_equal(
+        length(ex3[[1]][[1]]), 97
+        )  
 })

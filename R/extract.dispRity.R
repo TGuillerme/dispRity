@@ -21,7 +21,7 @@
 #' ## Calculating some disparity
 #' series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
 #'      time = c(100, 80, 60), model = "gradual")
-#' bootstraps_dat <- boot.matrix(series, bootstraps = 20, rarefaction = TRUE)
+#' bootstraps_dat <- boot.matrix(series, bootstraps = 10, rarefaction = TRUE)
 #' disparity_data <- dispRity(bootstraps_dat, metric = mean)
 #'
 #' ## Extracting the observed disparity
@@ -38,7 +38,13 @@
 #' boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
 #'      rarefaction = 5)
 #' str(boot_disp_rare)
-#'
+#' 
+#' ## Extracting bootstrapped distributions of disparity
+#' disparity_distr <- dispRity(bootstraps_dat, metric = variances)
+#' boot_disp <- extract.dispRity(disparity_distr, observed = FALSE,
+#'      concatenate = FALSE, keep.structure = TRUE)
+#' str(boot_disp) # A list of three lists of 10 elements
+#' 
 #' @seealso \code{\link{dispRity}}; \code{\link{get.dispRity}}.
 #'
 #' @author Thomas Guillerme
@@ -94,22 +100,19 @@ extract.dispRity<-function(data, observed=TRUE, rarefaction, concatenate=TRUE, k
         }
     }
 
+    #concatenate
+    check.class(concatenate, "logical")
+
+    #keep.structure
+    check.class(keep.structure, "logical")
     #----------------------
     # EXTRACTING THE DATA
     #----------------------
 
     if(observed == TRUE) {
-        #Check if disparity is level1 (one disparity value) or level2 (one distribution)
-        if(concatenate == TRUE) {
-            #Simply unlist the observed disparity
-            output <- unlist(data$disparity$observed)
-        } else {
-            #recursively unlist the observed disparity
-            output <- unlist(recursive.unlist(data$disparity$observed), recursive = FALSE)
-            names(output) <- data$series
-        }
+        #Simply unlist the observed disparity
+        output <- lapply(data$disparity$observed, unlist)
     } else {
-        #Check if disparity is level1 (one disparity value) or level2 (one distribution)
         if(concatenate == TRUE) {
             #make a list of the disparity data
             output <- unlist(lapply(recursive.unlist(data$disparity$bootstrapped), extract.rar, which.rare = rarefaction), recursive = FALSE)

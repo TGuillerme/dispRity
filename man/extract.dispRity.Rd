@@ -4,7 +4,8 @@
 \alias{extract.dispRity}
 \title{Extracting disparity.}
 \usage{
-extract.dispRity(data, observed = TRUE, rarefaction)
+extract.dispRity(data, observed = TRUE, rarefaction, concatenate = TRUE,
+  keep.structure = FALSE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object containing disparity results.}
@@ -12,9 +13,19 @@ extract.dispRity(data, observed = TRUE, rarefaction)
 \item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
 
 \item{rarefaction}{Either a rarefaction value or \code{"max"} or \code{"min"} to extract the rarefaction levels (is ignored if \code{observed = TRUE}).}
+
+\item{concatenate}{A \code{logical} value indicating whether to concatenate the results (\code{TRUE} (default)) or to output it as a list of values (\code{FALSE}).}
+
+\item{keep.structure}{A \code{logical} value indicating whether to keep the concatenation structure (\code{TRUE}) or not (\code{FALSE}, default, see details).}
 }
 \description{
 Extracts the disparity from a \code{dispRity} object.
+}
+\details{
+The \code{keep.structure} allows to conserve the output structure to match the non-concatenated one (\code{concatenate = FALSE}).
+I.e. a list of lists per series. When \code{concatenate = FALSE}, the output is \code{output[[series]][[bootstrap]] = my_disparity_values_for_that_bootstrap}.
+When using \code{concatenate = TRUE}, the output becomes \code{output[[series]] = all_my_disparity_values_for_that_series}.
+When using \code{keep.structure = FALSE} and \code{concatenate = TRUE}, the output becomes \code{output[[series]][[1]] = all_my_disparity_values_for_that_series} (i.e. adding a "dummy" list level).
 }
 \examples{
 ## Load the Beck & Lee 2014 data
@@ -23,7 +34,7 @@ data(BeckLee_mat99) ; data(BeckLee_tree)
 ## Calculating some disparity
 series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
      time = c(100, 80, 60), model = "gradual")
-bootstraps_dat <- boot.matrix(series, bootstraps = 20, rarefaction = TRUE)
+bootstraps_dat <- boot.matrix(series, bootstraps = 10, rarefaction = TRUE)
 disparity_data <- dispRity(bootstraps_dat, metric = mean)
 
 ## Extracting the observed disparity
@@ -40,6 +51,12 @@ str(boot_disp_rare)
 boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
      rarefaction = 5)
 str(boot_disp_rare)
+
+## Extracting bootstrapped distributions of disparity
+disparity_distr <- dispRity(bootstraps_dat, metric = variances)
+boot_disp <- extract.dispRity(disparity_distr, observed = FALSE,
+     concatenate = FALSE, keep.structure = TRUE)
+str(boot_disp) # A list of three lists of 10 elements
 
 }
 \author{
