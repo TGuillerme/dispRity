@@ -177,7 +177,7 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #Extracting the data (sends error if data is not bootstrapped)
     extracted_data <- extract.dispRity(data, observed = FALSE, concatenate = concatenate, keep.structure = TRUE)
 
-    #Custom, pairwise and sequential
+    #Custom, pairwise, sequential and referential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         #Get the list of comparisons
         comp_series <- set.comparisons.list(comp, extracted_data, comparisons)

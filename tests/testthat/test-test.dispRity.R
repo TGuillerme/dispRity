@@ -264,5 +264,5 @@ test_that("example works fine", {
         , 3)
     expect_equal(
         as.vector(test.dispRity(sum_of_ranges, aov, "all")$coefficients)
-        , c(24.048441, 2.053728, 9.798655))
+        , c(27.99772811, -0.03648708, 0.04100832))
 })

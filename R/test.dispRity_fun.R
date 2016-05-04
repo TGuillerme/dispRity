@@ -69,6 +69,7 @@ htest.to.vector <- function(htest, print) {
 
 #Set the list of comparisons
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
+    options(warn = -1)
     if(comp == "custom") {
         #get the lit of series to compare
         comp_series <- comparisons
@@ -95,6 +96,7 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
         #convert pair series table in a list of pairs
         comp_series <- unlist(apply(comp_series, 2, list), recursive = FALSE)
     }
+    options(warn = 0)
 
     return(comp_series)
 }
