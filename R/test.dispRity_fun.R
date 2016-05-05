@@ -46,6 +46,10 @@ list.to.table <- function(extracted_data, style = "factor") {
 
     #Get the list of names
     names_list <- as.list(names(extracted_data))
+    #If no names, just get list numbers
+    if(length(names_list) == 0) {
+        names_list <- as.list(seq(from = 1, to = length(extracted_data)))
+    }
     series_length <- unlist(lapply(extracted_data, length), recursive = FALSE)
 
     #Create the data.frame
