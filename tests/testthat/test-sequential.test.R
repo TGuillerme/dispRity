@@ -8,24 +8,46 @@ sum_of_variances <- dispRity(boot.matrix(cust.series(BeckLee_mat50, factors), bo
 series <- extract.dispRity(sum_of_variances, observed = FALSE)
 seq_series <- list(c(1,2), c(2,3))
 
-test_that("set.pair.series works", {
+
+test_that("set.pair.series internal", {
+    set.seed(1)
+    series_pair <- list(replicate(3,rnorm(10), simplify = FALSE), replicate(3,rnorm(10, 100), simplify = FALSE))
     #Errors
     expect_error(
-        set.pair.series(series["a"], intercept = NULL)
+        set.pair.series("a", NULL)
         )
     expect_error(
-        set.pair.series("a", intercept = NULL)
+        set.pair.series(list(), NULL)
         )
+
     #Normal results
     expect_is(
-        set.pair.series(series[seq_series[[1]]], intercept = NULL)
-        , "data.frame")
+        set.pair.series(series_pair, intercept = NULL)
+        ,"list")
     expect_equal(
-        dim(set.pair.series(series[seq_series[[1]]], intercept = NULL))
-        , c(200, 2))
+        unique(unlist(lapply(set.pair.series(series_pair, intercept = NULL), class)))
+        ,"data.frame")
     expect_equal(
-        dim(set.pair.series(series[seq_series[[1]]], intercept = "a"))
-        , c(200, 3))
+        unique(unlist(lapply(set.pair.series(series_pair, intercept = NULL), dim)))
+        ,c(20, 2))
+    expect_equal(
+        unique(unlist(lapply(set.pair.series(series_pair, intercept = "a"), dim)))
+        ,c(20, 3))
+    expect_less_than(
+        max(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][1:10])
+        ,50)
+    expect_more_than(
+        min(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][11:20])
+        ,50)
+    expect_equal(
+        unique(set.pair.series(series_pair, intercept = NULL)[[1]][[2]][1:10])
+        ,0)
+    expect_equal(
+        unique(set.pair.series(series_pair, intercept = NULL)[[1]][[2]][11:20])
+        ,1)
+    expect_false(
+        set.pair.series(series_pair, intercept = NULL)[[1]][[1]][1] == set.pair.series(series_pair, intercept = NULL)[[2]][[1]][1]
+        )
 })
 
 test_that("intercept.estimate works", {
@@ -46,6 +68,26 @@ test_that("intercept.estimate works", {
     expect_equal(
         intercept.estimate(intercept0 = 2, slopes = c(3,3))
         , 8)
+})
+
+test_that("set.intercept internal", {
+    #glm example
+    counts <- c(18,17,15,20,10,20,25,13,12) ; outcome <- gl(3,1,9) ; treatment <- gl(3,3)
+    d.AD <- data.frame(treatment, outcome, counts)
+    glm.D93 <- glm(counts ~ outcome, family = poisson())
+    
+    #Errors
+    expect_error(
+        set.intercept(d.AD)
+        )
+    
+    #Calcualte the right intercept
+    expect_equal(
+        set.intercept(glm.D93)[2]
+        ,coef(glm.D93)[1])
+    expect_equal(
+        set.intercept(glm.D93)[1]
+        ,coef(glm.D93)[1] + coef(glm.D93)[2] * 1)
 })
 
 test_that("create.model works", {

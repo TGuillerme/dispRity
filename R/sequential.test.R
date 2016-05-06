@@ -47,9 +47,20 @@
 #' @export
 
 #Testing
-#source("sanitizing.R")
-#source("sequential.test_fun.R")
-#source("test.dispRity_fun.R")
+source("sanitizing.R")
+source("sequential.test_fun.R")
+source("test.dispRity_fun.R")
+data(BeckLee_mat50)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+customised_series <- cust.series(BeckLee_mat50, factors)
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
+data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
+data_multi <- dispRity(bootstrapped_data, metric = variances)
+series_single <- extract.dispRity(data_single, observed = FALSE)
+series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
+results = "coefficients"
+family = gaussian
+sequential.test(series_multi, family = gaussian)
 
 sequential.test <- function(series, results = "coefficients", family, correction, ..., add = FALSE, lines.args = NULL, token.args = NULL) {
 
@@ -85,78 +96,77 @@ sequential.test <- function(series, results = "coefficients", family, correction
         }
     }
 
+    #Testing whether the results are distributions (BSed) or not.
+    is.distribution <- ifelse(unique(unlist(lapply(series, class))) == "numeric", FALSE, TRUE)
+
+    #If is not a distribution, reformat the list to be a list of MethodsListSelect
+    if(is.distribution == FALSE) {
+        series <- lapply(series, list)
+    } 
 
     #APPLYING THE SEQUENTIAL TEST
 
     #Setting the sequence
-    seq_series <- unlist(apply(set.sequence(length(series)), 2, list), recursive=FALSE)
+    seq_series <- set.comparisons.list("sequential", series, 1)
 
     #Applying the first test to get the intercept origin
-    model1 <- create.model(set.pair.series(series[seq_series[[1]]]), family, ...)
-    #model1 <- create.model(set.pair.series(series[seq_series[[1]]]), family) ; warning("DEBUG")
+    first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family, ...)
+    #first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family) ; warning("DEBUG")
     
-    #Set origin intercept for the following models
-    intercept_predict <- NULL
+    #Calculate the intercepts for each first models
+    intercept_predict <- list()
+    intercept_predict[[1]] <- lapply(first_model, set.intercept)
 
-    #If intercept is significant
-    if(summary(model1)$coefficients[1,4] < 0.05) {
-        #Set intercept0
-        intercept0 <- coef(model1)[1]
-        #If slope is significant
-        if(summary(model1)$coefficients[2,4] < 0.05) {
-            # Calculate predict intercept for next model
-            intercept_predict <- intercept.estimate(intercept0, coef(model1)[2])
-        } else {
-            #intercept 1 is just intercept
-            intercept_predict <- intercept0
-        }
-    } else {
-    #Intercept is just 0
-        intercept0 <- 0
-        #If slope is significant
-        if(summary(model1)$coefficients[2,4] < 0.05) {
-            #Caclulate predict intercept for next model
-            intercept_predict <- intercept.estimate(intercept0, coef(model1)[2])
-        } else {
-            #intercept 1 is just intercep
-            intercept_predict <- intercept0
-        }
-    }
+    #Storing the first model
+    models <- list()
+    models[[1]] <- first_model
 
     #Loop through the other models
-    models <- list(NULL)
-    #Storing the first model
-    models[[1]] <- model1
     for(model in 2:(length(seq_series))) {
-        #Create the new model
-        models[[model]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[model-1]), family, intercept = intercept_predict[model-1], ...)
-        #models[[model]] <- create.model(data = set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[model-1]), family, intercept = intercept_predict[model-1]) ; warning("DEBUG")
+        #Create the new model 
+        models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
+        #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
 
         #Predict the new intercept
+        intercept_predict[[model]] <- lapply(models[[model]], set.intercept)
+
+
+        # #Predict the new intercept
+        # intercept_predict <- predict.new.intercept(models, model, intercept_predict, intercept0 = )
+
+        # #Predict the new intercept
+        # predict.new.intercept <- function(models, model, intercept_predict, intercept0) {
+        #     #If slope is significant...
+        #     if(summary(models[[model]]$coefficients))
+        # }
+
         #If slope is significant
-        if(summary(models[[model]])$coefficients[1,4] < 0.05) {
-            #Calculate new intercept for next model by using the current model slope and the previous model intercept
-            new_intercept <- intercept.estimate(intercept0 = intercept0, c(coef(model1)[2], unlist(lapply(models[-1], coef)) ))
-        } else {
-            #Intercept remains the same as previously
-            new_intercept <- intercept_predict[model-1]
+        predict.new.intercept <- function(one_model, intercept0, model) {
+            if(summary(models[[model]])$coefficients[1,4] < 0.05) {
+                #Calculate new intercept for next model by using the current model slope and the previous model intercept
+                new_intercept <- intercept.estimate(intercept0 = intercept0, c(coef(first_model)[2], unlist(lapply(models[-1], coef)) ))
+            } else {
+                #Intercept remains the same as previously
+                new_intercept <- intercept_predict[model-1]
+            }
         }
+
         intercept_predict <- c(intercept_predict, new_intercept)
     }
 
     #SAVING THE RESULTS
     #Saving the results for the first model
-    model1_results <- save.results(model1, results)
+    first_model_results <- save.results(first_model, results)
     models_results <- lapply(models, save.results, results)
 
     #Creating the saving table template
-    Matrix_template <- matrix(NA, nrow=length(seq_series), ncol=length(model1_results$coefficients[1,]))
+    Matrix_template <- matrix(NA, nrow=length(seq_series), ncol=length(first_model_results$coefficients[1,]))
     rownames(Matrix_template) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
 
     #Saving the first intercept
     Intercept_results <- Matrix_template
-    Intercept_results[1,] <- model1_results$coefficients[1,]
-    colnames(Intercept_results) <- names(model1_results$coefficients[1,])
+    Intercept_results[1,] <- first_model_results$coefficients[1,]
+    colnames(Intercept_results) <- names(first_model_results$coefficients[1,])
 
     #Adding the predict column
     if(length(seq_series) > 1) {
@@ -169,8 +179,8 @@ sequential.test <- function(series, results = "coefficients", family, correction
 
     #Saving the slopes
     Slope_results <- Matrix_template
-    Slope_results[1,] <- model1_results$coefficients[2,]
-    colnames(Slope_results) <- names(model1_results$coefficients[2,])
+    Slope_results[1,] <- first_model_results$coefficients[2,]
+    colnames(Slope_results) <- names(first_model_results$coefficients[2,])
 
     #Adding the other slopes
     if(length(seq_series) > 1) {
@@ -213,7 +223,7 @@ sequential.test <- function(series, results = "coefficients", family, correction
     #Anything else to save?
     if(any(results != "coefficients")) {
         details <- results[which(results != "coefficients")]
-        results_details <- list(model1[c(match(details, names(model1)))])
+        results_details <- list(first_model[c(match(details, names(first_model)))])
         results_details <- c(results_details, lapply(models, function(X) return(X[c(match(details, names(X)))])))
         names(results_details) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
         #return the coefficients and the details
