@@ -23,15 +23,15 @@ set.pair.series <- function(series_pair, intercept=NULL) {
 }
 
 #Estimating intercept function
-intercept.estimate <- function(intercept0, slopes) {
-    if(length(slopes) > 1) {
+intercept.estimate <- function(intercept0, slope) {
+    if(length(slope) > 1) {
         #First intercept
         intercept <- intercept0 + slopes[1] * 1
-        for(n in 2:length(slopes)) {
-            intercept <- intercept + slopes[n] * 1
+        for(n in 2:length(slope)) {
+            intercept <- intercept + slope[n] * 1
         }
     } else {
-        intercept <- intercept0 + slopes * 1
+        intercept <- intercept0 + slope * 1
     }
 
     return(intercept)
@@ -56,34 +56,37 @@ create.model <- function(data, family, intercept = NULL, ...) {
     return(model)
 }
 
-#Get the intercepts for a model (intercept0 and intercept_predict)
-set.intercept <- function(one_model) {
+
+#Sets the intercept0 for a model
+set.intercept0 <- function(first_model) {
     #If intercept is significant
-    if(summary(one_model)$coefficients[1,4] < 0.05) {
+    if(summary(first_model)$coefficients[1,4] < 0.05) {
         #Set intercept0
-        intercept0 <- coef(one_model)[1]
-        #If slope is significant
-        if(summary(one_model)$coefficients[2,4] < 0.05) {
-            # Calculate predict intercept for next model
-            intercept_predict <- intercept.estimate(intercept0, coef(one_model)[2])
-        } else {
-            #intercept 1 is just intercept
-            intercept_predict <- intercept0
-        }
+        intercept0 <- coef(first_model)[1]
     } else {
-    #Intercept is just 0
+        #Else intercept0 is just 0
         intercept0 <- 0
-        #If slope is significant
-        if(summary(one_model)$coefficients[2,4] < 0.05) {
-            #Caclulate predict intercept for next model
-            intercept_predict <- intercept.estimate(intercept0, coef(one_model)[2])
-        } else {
-            #intercept 1 is just intercep
-            intercept_predict <- intercept0
-        }
     }
-    return(c(intercept_predict, intercept0))
+    return(intercept0)
 }
+
+#Setting the predicted intercept for the next model
+set.intercept.next <- function(one_model, intercept0) {
+
+    if(summary(one_model)$coefficients[4] < 0.05) {
+        #Set slope to 0 if intercept is not significant
+        slope <- 0
+    } else {
+        #Set slope to model's estimate if significant
+        slope <- summary(one_model)$coefficients[1]
+    }
+
+    #Calculate the next models intercept
+    intercept_next <- intercept.estimate(intercept0, slope)
+
+    return(intercept_next)
+}
+
 
 #Saving results function
 save.results <- function(model, results) {

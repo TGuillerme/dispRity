@@ -11,15 +11,15 @@
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
-#' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
-#' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-#' @param token.args a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
+# ' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
+# ' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
+# ' @param token.args a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
 #'
 #' @details
 #' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
-#' the \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-#' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-#' Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{sequential.test(..., token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30 higher than the slope.
+# ' the \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+# ' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+# ' Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{sequential.test(..., token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30 higher than the slope.
 #' 
 #'
 #' @examples
@@ -62,9 +62,10 @@
 # family = gaussian
 # sequential.test(series_multi, family = gaussian)
 
-sequential.test <- function(series, results = "coefficients", family, correction, ..., add = FALSE, lines.args = NULL, token.args = NULL) {
+sequential.test <- function(series, results = "coefficients", family, correction, ...){#, add = FALSE, lines.args = NULL, token.args = NULL) {
 
     #SANITIZING
+    
     #results must be at least coefficients!
     if(is.na(match("coefficients", results))) {
         results <- c(results, "coefficients")
@@ -77,15 +78,6 @@ sequential.test <- function(series, results = "coefficients", family, correction
     # if(family(link="identity")[[1]] == "gaussian") {
     #     warning("Model family is set to gaussian, should it not be binomial?")
     # }
-
-    #add
-    check.class(add, "logical")
-
-    #lines.args
-    if(!is.null(lines.args)) check.class(lines.args, "list")
-
-    #token.args
-    if(!is.null(token.args)) check.class(token.args, "list")
 
     #correction
     if(!missing(correction)) {
@@ -115,7 +107,7 @@ sequential.test <- function(series, results = "coefficients", family, correction
     
     #Calculate the intercepts for each first models
     intercept_predict <- list()
-    intercept_predict[[1]] <- lapply(first_model, set.intercept)
+    intercept_predict[[1]] <- lapply(first_model, set.intercept0)
 
     #Storing the first model
     models <- list()
@@ -123,114 +115,17 @@ sequential.test <- function(series, results = "coefficients", family, correction
 
     #Loop through the other models
     for(model in 2:(length(seq_series))) {
+        #Calculate the new intercept from the previous model
+        intercept_predict[[model]] <- mapply(set.intercept.next, models[[model-1]], intercept_predict[[model-1]], SIMPLIFY = FALSE)
+
         #Create the new model 
         models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
         #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
-
-        #Predict the new intercept
-        intercept_predict[[model]] <- lapply(models[[model]], set.intercept)
-
-
-        # #Predict the new intercept
-        # intercept_predict <- predict.new.intercept(models, model, intercept_predict, intercept0 = )
-
-        # #Predict the new intercept
-        # predict.new.intercept <- function(models, model, intercept_predict, intercept0) {
-        #     #If slope is significant...
-        #     if(summary(models[[model]]$coefficients))
-        # }
-
-        #If slope is significant
-        predict.new.intercept <- function(one_model, intercept0, model) {
-            if(summary(models[[model]])$coefficients[1,4] < 0.05) {
-                #Calculate new intercept for next model by using the current model slope and the previous model intercept
-                new_intercept <- intercept.estimate(intercept0 = intercept0, c(coef(first_model)[2], unlist(lapply(models[-1], coef)) ))
-            } else {
-                #Intercept remains the same as previously
-                new_intercept <- intercept_predict[model-1]
-            }
-        }
-
-        intercept_predict <- c(intercept_predict, new_intercept)
     }
 
-    #SAVING THE RESULTS
-    #Saving the results for the first model
-    first_model_results <- save.results(first_model, results)
-    models_results <- lapply(models, save.results, results)
+    #OUTPUT
 
-    #Creating the saving table template
-    Matrix_template <- matrix(NA, nrow=length(seq_series), ncol=length(first_model_results$coefficients[1,]))
-    rownames(Matrix_template) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
-
-    #Saving the first intercept
-    Intercept_results <- Matrix_template
-    Intercept_results[1,] <- first_model_results$coefficients[1,]
-    colnames(Intercept_results) <- names(first_model_results$coefficients[1,])
-
-    #Adding the predict column
-    if(length(seq_series) > 1) {
-        #Empty Predict column
-        Intercept_results <- cbind(rep(NA, nrow(Intercept_results)), Intercept_results)
-        colnames(Intercept_results)[1] <- "Predict"
-        #Added predicted intercepts (ignoring the last one that's not used)
-        Intercept_results[,1] <- intercept_predict
-    }
-
-    #Saving the slopes
-    Slope_results <- Matrix_template
-    Slope_results[1,] <- first_model_results$coefficients[2,]
-    colnames(Slope_results) <- names(first_model_results$coefficients[2,])
-
-    #Adding the other slopes
-    if(length(seq_series) > 1) {
-        #Adding the slopes
-        for(model in 2:length(seq_series)) {
-            Slope_results[model,] <- models_results[[model]]$coefficients
-        }
-    }
-
-    #correction of the slopes p-values
-    if(!missing(correction)) {
-        Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
-    }
-
-    #Combining the tables
-    results_out <- list("Intercept" = Intercept_results, "Slope" = Slope_results)
-
-    #Plotting
-    if(add == TRUE) {
-        #Getting x,y coordinates for the first model
-        xs <- seq_series[[1]]
-        ys <- c(intercept0, Intercept_results[1,1])
-        #Plotting the line
-        add.line(xs, ys, lines.args)
-        #Add significance (if necessary)
-        significance.token(xs, ys, Slope_results[1,4], token.args)
-
-        #Looping through the other models
-        for(series in 2:length(seq_series)) {
-            #Getting x,y coordinates for the first model
-            xs <- seq_series[[series]]
-            ys <- c(Intercept_results[series-1,1], Intercept_results[series,1])
-            #Plotting the line
-            add.line(xs, ys, lines.args)
-            #Add significance (if necessary)
-            significance.token(xs, ys, Slope_results[series,4], token.args)
-        }
-    }
-
-    #Anything else to save?
-    if(any(results != "coefficients")) {
-        details <- results[which(results != "coefficients")]
-        results_details <- list(first_model[c(match(details, names(first_model)))])
-        results_details <- c(results_details, lapply(models, function(X) return(X[c(match(details, names(X)))])))
-        names(results_details) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
-        #return the coefficients and the details
-        return(list("Results"=results_out, "Details"=results_details))
-    } else {
-        #Just return the coefficients
-        return(results_out)
-    }
-
+    output_raw <- list(models)#, intercept_predict)
+    class(output_raw) <- c("dispRity", "seq.test")
+    return(output_raw)
 }
