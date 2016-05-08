@@ -47,20 +47,20 @@
 #' @export
 
 #Testing
-# source("sanitizing.R")
-# source("sequential.test_fun.R")
-# source("test.dispRity_fun.R")
-# data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
-# data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
-# data_multi <- dispRity(bootstrapped_data, metric = variances)
-# series_single <- extract.dispRity(data_single, observed = FALSE)
-# series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
-# results = "coefficients"
-# family = gaussian
-# sequential.test(series_multi, family = gaussian)
+source("sanitizing.R")
+source("sequential.test_fun.R")
+source("test.dispRity_fun.R")
+data(BeckLee_mat50)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+customised_series <- cust.series(BeckLee_mat50, factors)
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
+data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
+data_multi <- dispRity(bootstrapped_data, metric = variances)
+series_single <- extract.dispRity(data_single, observed = FALSE)
+series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
+results = "coefficients"
+family = gaussian
+sequential.test(series_single, family = gaussian)
 
 sequential.test <- function(series, results = "coefficients", family, correction, ...){#, add = FALSE, lines.args = NULL, token.args = NULL) {
 
@@ -126,6 +126,6 @@ sequential.test <- function(series, results = "coefficients", family, correction
     #OUTPUT
 
     output_raw <- list(models)#, intercept_predict)
-    class(output_raw) <- c("dispRity", "seq.test")
+#    class(output_raw) <- c("dispRity", "seq.test")
     return(output_raw)
 }

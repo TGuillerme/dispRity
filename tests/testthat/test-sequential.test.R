@@ -53,42 +53,42 @@ test_that("set.pair.series internal", {
 test_that("intercept.estimate works", {
     #Errors
     expect_error(
-        intercept.estimate(intercept0 = "a", slopes = 2)
+        intercept.estimate(intercept0 = "a", slope = 2)
         )
     expect_error(
-        intercept.estimate(intercept0 = 1, slopes = "a")
+        intercept.estimate(intercept0 = 1, slope = "a")
         )
     #Normal results
     expect_is(
-        intercept.estimate(intercept0 = 1, slopes = 2)
+        intercept.estimate(intercept0 = 1, slope = 2)
         , "numeric")
     expect_equal(
-        intercept.estimate(intercept0 = 2, slopes = 3)
+        intercept.estimate(intercept0 = 2, slope = 3)
         , 2 + 3 * 1)
     expect_equal(
-        intercept.estimate(intercept0 = 2, slopes = c(3,3))
+        intercept.estimate(intercept0 = 2, slope = c(3,3))
         , 8)
 })
 
-test_that("set.intercept internal", {
-    #glm example
-    counts <- c(18,17,15,20,10,20,25,13,12) ; outcome <- gl(3,1,9) ; treatment <- gl(3,3)
-    d.AD <- data.frame(treatment, outcome, counts)
-    glm.D93 <- glm(counts ~ outcome, family = poisson())
+# test_that("set.intercept.next internal", {
+#     #glm example
+#     counts <- c(18,17,15,20,10,20,25,13,12) ; outcome <- gl(3,1,9) ; treatment <- gl(3,3)
+#     d.AD <- data.frame(treatment, outcome, counts)
+#     glm.D93 <- glm(counts ~ outcome, family = poisson())
     
-    #Errors
-    expect_error(
-        set.intercept(d.AD)
-        )
+#     #Errors
+#     expect_error(
+#         set.intercept.next(d.AD)
+#         )
     
-    #Calcualte the right intercept
-    expect_equal(
-        set.intercept(glm.D93)[2]
-        ,coef(glm.D93)[1])
-    expect_equal(
-        set.intercept(glm.D93)[1]
-        ,coef(glm.D93)[1] + coef(glm.D93)[2] * 1)
-})
+#     #Calcualte the right intercept
+#     expect_equal(
+#         set.intercept0(glm.D93)[2]
+#         ,coef(glm.D93)[1])
+#     expect_equal(
+#         set.intercept.next(glm.D93)[1]
+#         ,coef(glm.D93)[1] + coef(glm.D93)[2] * 1)
+# })
 
 # test_that("create.model works", {
 #     #Errors

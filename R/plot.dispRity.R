@@ -74,7 +74,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
     #DATA
 
 
-    if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+    # if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
         # if(add == TRUE) {
         #     #Getting x,y coordinates for the first model
         #     xs <- seq_series[[1]]
@@ -108,7 +108,7 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
         #     #Just return the coefficients
         #     return(results_out)
         # }
-    }
+    # }
 
     #must be class dispRity
     check.class(data, "dispRity")

@@ -21,12 +21,11 @@ set.pair.series <- function(series_pair, intercept=NULL) {
     }
     return(series_pair_out)
 }
-
 #Estimating intercept function
 intercept.estimate <- function(intercept0, slope) {
     if(length(slope) > 1) {
         #First intercept
-        intercept <- intercept0 + slopes[1] * 1
+        intercept <- intercept0 + slope[1] * 1
         for(n in 2:length(slope)) {
             intercept <- intercept + slope[n] * 1
         }
@@ -35,25 +34,6 @@ intercept.estimate <- function(intercept0, slope) {
     }
 
     return(intercept)
-}
-
-#Creating the model function
-create.model <- function(data, family, intercept = NULL, ...) {
-    if(is.null(intercept)) {
-        #Estimating the intercept and the slope in the model
-        model <- glm(data ~ factor, data = data, family = family, ...)
-    } else {
-        #Estimating only the slope in the model in the model
-        if(intercept == "in.data") {
-            #Intercept is present in the data
-            intercept <- unique(data$intercept)
-            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
-        } else {
-            #Intercept is given as a value
-            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
-        }
-    }
-    return(model)
 }
 
 
@@ -86,6 +66,26 @@ set.intercept.next <- function(one_model, intercept0) {
 
     return(intercept_next)
 }
+
+#Creating the model function
+create.model <- function(data, family, intercept = NULL, ...) {
+    if(is.null(intercept)) {
+        #Estimating the intercept and the slope in the model
+        model <- glm(data ~ factor, data = data, family = family, ...)
+    } else {
+        #Estimating only the slope in the model in the model
+        if(intercept == "in.data") {
+            #Intercept is present in the data
+            intercept <- unique(data$intercept)
+            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
+        } else {
+            #Intercept is given as a value
+            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
+        }
+    }
+    return(model)
+}
+
 
 
 #Saving results function

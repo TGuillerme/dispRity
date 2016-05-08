@@ -53,7 +53,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
 
     
     #Sequential tests
-    if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+    # if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
         # #SAVING THE RESULTS
         # #Saving the results for the first model
         # models_results <- lapply(models, lapply, save.results, results)
@@ -96,7 +96,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
 
         # #Combining the tables
         # results_out <- list("Intercept" = Intercept_results, "Slope" = Slope_results)
-    }
+    # }
 
 
 
