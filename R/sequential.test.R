@@ -10,6 +10,7 @@
 #' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
+#' @param call optional, a call from a \code{dispRity} object.
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
 # ' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
 # ' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
@@ -60,11 +61,12 @@
 # series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
 # results = "coefficients"
 # family = gaussian
-# sequential.test(series_single, family = gaussian)
+# sequential.test(series_multi, family = gaussian)
 
-sequential.test <- function(series, results = "coefficients", family, correction, ...){#, add = FALSE, lines.args = NULL, token.args = NULL) {
+sequential.test <- function(series, results = "coefficients", family, correction, call = NULL, ...){
 
     #SANITIZING
+    match_call <- match.call()
     
     #results must be at least coefficients!
     if(is.na(match("coefficients", results))) {
@@ -124,8 +126,19 @@ sequential.test <- function(series, results = "coefficients", family, correction
     }
 
     #OUTPUT
-
-    output_raw <- list(models)#, intercept_predict)
-#    class(output_raw) <- c("dispRity", "seq.test")
+    #Naming the models
+    names(models) <- save.comparison.list(seq_series, series)
+    #Adding the call (if exists)
+    if(!is.null(call)) {
+        if(!missing(correction)) {
+            new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series with ", as.character(correction), " correction.\n@", call, sep="")
+        } else {
+            new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series.\n@", call, sep="")
+        }
+        output_raw <- list("models" = models, "call" = new_call)
+    } else {
+        output_raw <- list("models" = models)
+    }
+    class(output_raw) <- c("dispRity", "seq.test")
     return(output_raw)
 }

@@ -68,6 +68,8 @@
 # source("make.metric_fun.R")
 # source("extract.dispRity.R")
 # source("extract.dispRity_fun.R")
+# source("sequential.test.R")
+# source("sequential.test_fun.R")
 # data(BeckLee_mat50)
 # factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
 # customised_series <- cust.series(BeckLee_mat50, factors)
@@ -77,6 +79,7 @@
 # data <- data_multi
 # test.dispRity(data, test = aov, comparisons = "all")
 # test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
+# data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
 test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
@@ -230,11 +233,11 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     if(comp == "sequential.test") {
         #Applying the test to the list of extracted data
         if(!missing(correction)) {
-            details_out <- test(extracted_data, correction, ...)
-            #details_out <- test(extracted_data, correction, family = gaussian)
+            details_out <- test(extracted_data, correction, call = data$call, ...)
+            #details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
         } else {
-            details_out <- test(extracted_data, ...)
-            #details_out <- test(extracted_data, family = gaussian)
+            details_out <- test(extracted_data, call = data$call, ...)
+            #details_out <- test(extracted_data, call = data$call, family = gaussian)
         }
     }
 
