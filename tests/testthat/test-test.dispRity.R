@@ -82,9 +82,9 @@ test_that("convert.to.character internal fun", {
 })
 
 test_that("list.to.table internal fun", {
-    expect_error(
-    	is.na(list.to.table(1))
-    	)
+    # expect_error(
+    # 	is.na(list.to.table(1))
+    # 	)
     expect_is(
     	list.to.table(list("a"=rnorm(5),"b"=rnorm(5),"c"=rnorm(5)))
         , "data.frame")

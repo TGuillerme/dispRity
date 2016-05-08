@@ -44,8 +44,8 @@ diversity.count<-function(data) {
 
 #Get digit for table
 get.digit<-function(column) {
-    if(max(nchar(round(column))) <= 4) {
-        return(4-max(nchar(round(column))))
+    if(max(nchar(round(column)), na.rm = TRUE) <= 4) {
+        return(4-max(nchar(round(column)), na.rm = TRUE))
     } else {
         return(0)
     }

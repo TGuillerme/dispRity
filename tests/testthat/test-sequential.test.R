@@ -33,10 +33,10 @@ test_that("set.pair.series internal", {
     expect_equal(
         unique(unlist(lapply(set.pair.series(series_pair, intercept = "a"), dim)))
         ,c(20, 3))
-    expect_less_than(
+    expect_lt(
         max(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][1:10])
         ,50)
-    expect_more_than(
+    expect_gt(
         min(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][11:20])
         ,50)
     expect_equal(
@@ -90,66 +90,66 @@ test_that("set.intercept internal", {
         ,coef(glm.D93)[1] + coef(glm.D93)[2] * 1)
 })
 
-test_that("create.model works", {
-    #Errors
-    expect_error(
-        create.model("a", family = gaussian)
-        )
-    expect_error(
-        create.model(matrix(2,2), family = gaussian)
-        )
-    expect_error(
-        create.model(set.pair.series(series[seq_series[[1]]]), family = "whatever")
-        )
-    #Normal results
-    expect_is(
-        create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian)
-        , c("glm","lm"))
-    expect_equal(
-        length(create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian))
-        , 30)
-})
+# test_that("create.model works", {
+#     #Errors
+#     expect_error(
+#         create.model("a", family = gaussian)
+#         )
+#     expect_error(
+#         create.model(matrix(2,2), family = gaussian)
+#         )
+#     expect_error(
+#         create.model(set.pair.series(series[seq_series[[1]]]), family = "whatever")
+#         )
+#     #Normal results
+#     expect_is(
+#         create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian)
+#         , c("glm","lm"))
+#     expect_equal(
+#         length(create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian))
+#         , 30)
+# })
 
-test_that("save.results works", {
-    model <- create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian)
-    #Errors
-    expect_true(
-        is.na(save.results(model = "model", results = "coefficients"))
-        )
-    expect_true(
-        is.null(save.results(model = model, results = "whatever")[[1]])
-        )
-    #Normal results
-    expect_is(
-        save.results(model = model, results = "coefficients")
-        , "list")
-    expect_equal(
-        length(save.results(model = model, results = "coefficients"))
-        , 1)
-    expect_equal(
-        length(save.results(model = model, results = c("coefficients", "terms", "family")))
-        , 3)
-    expect_equal(
-        names(save.results(model = model, results = c("coefficients", "terms", "family")))
-        , c("coefficients", "terms", "family"))
-})
+# test_that("save.results works", {
+#     model <- create.model(set.pair.series(series[seq_series[[1]]]), family = gaussian)
+#     #Errors
+#     expect_true(
+#         is.na(save.results(model = "model", results = "coefficients"))
+#         )
+#     expect_true(
+#         is.null(save.results(model = model, results = "whatever")[[1]])
+#         )
+#     #Normal results
+#     expect_is(
+#         save.results(model = model, results = "coefficients")
+#         , "list")
+#     expect_equal(
+#         length(save.results(model = model, results = "coefficients"))
+#         , 1)
+#     expect_equal(
+#         length(save.results(model = model, results = c("coefficients", "terms", "family")))
+#         , 3)
+#     expect_equal(
+#         names(save.results(model = model, results = c("coefficients", "terms", "family")))
+#         , c("coefficients", "terms", "family"))
+# })
 
-test_that("sequential.test works", {
-    #Errors
-    expect_error(
-        sequential.test(sum_of_variances, family = gaussian)
-        )
-    expect_error(
-        sequential.test(series, family = c(1, 2))
-        )
-    #results
-    expect_is(
-        sequential.test(series, family = gaussian)
-        , "list")
-    expect_equal(
-        length(sequential.test(series, family = gaussian))
-        , 2)
-    expect_equal(
-        names(sequential.test(series, family = gaussian))
-        , c("Intercept", "Slope"))
-})
+# test_that("sequential.test works", {
+#     #Errors
+#     expect_error(
+#         sequential.test(sum_of_variances, family = gaussian)
+#         )
+#     expect_error(
+#         sequential.test(series, family = c(1, 2))
+#         )
+#     #results
+#     expect_is(
+#         sequential.test(series, family = gaussian)
+#         , "list")
+#     expect_equal(
+#         length(sequential.test(series, family = gaussian))
+#         , 2)
+#     expect_equal(
+#         names(sequential.test(series, family = gaussian))
+#         , c("Intercept", "Slope"))
+# })

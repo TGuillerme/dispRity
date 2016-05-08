@@ -181,12 +181,13 @@ test_that("Example works", {
     bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     ex3<-summary(sum_of_ranges)
+
     expect_is(
-    	ex3, "data.frame"
-    	)
+    	ex3
+        , "data.frame")
     expect_equal(
-    	ex3[,4], c(32.67,33.85)
-    	)
+    	sum(ex3[,4])
+        , sum(c(32.67,33.85)))
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips

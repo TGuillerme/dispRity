@@ -3,7 +3,7 @@
 #' @description Creates a summary of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param quantile The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantiles The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
 #' @param rounding Optional, a value for rounding the values in the output table (default = 2).
@@ -13,7 +13,7 @@
 #' \item{series}{the series names.}
 #' \item{n}{the number of elements per series.}
 #' \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
-#' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).}
+#' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiless of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiless of the observed disparity is displayed).}
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -34,7 +34,7 @@
 #' ## Summarising the results
 #' summary(sum_of_sum_of_variances) # default
 #' ## Using different options
-#' summary(sum_of_sum_of_variances, quantile = 75, cent.tend = median,
+#' summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
 #'      rounding = 0, recall = TRUE)
 #' 
 #' @seealso \code{\link{dispRity}}
@@ -45,7 +45,7 @@
 #source("sanitizing.R")
 #source("summary.dispRity_fun.R")
 
-summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
+summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -72,17 +72,17 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
         is.bootstrapped<-FALSE
     }
     
-    #quantile
+    #quantiles
     #Only check if the data is bootstrapped
     if(is.bootstrapped == TRUE) {
-        check.class(quantile, "numeric", " must be any value between 1 and 100.")
+        check.class(quantiles, "numeric", " must be any value between 1 and 100.")
         #remove warnings
         options(warn = -1)
-        if(any(quantile) < 1) {
-            stop("Quantile(s) must be any value between 1 and 100.")
+        if(any(quantiles) < 1) {
+            stop("quantiles(s) must be any value between 1 and 100.")
         }
-        if(any(quantile) > 100) {
-            stop("Quantile(s) must be any value between 1 and 100.")
+        if(any(quantiles) > 100) {
+            stop("quantiles(s) must be any value between 1 and 100.")
         }
         options(warn = 0)
     }
@@ -131,13 +131,13 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
             OBSresults_unl <- unlist(recursive.unlist(OBSresults, is.distribution = TRUE), recursive = FALSE)
             #Calculate their central tendencies
             results_cent <- unlist(lapply(unlist(OBSresults_unl, recursive = FALSE), cent.tend))
-            #Calculate their quantiles
-            results_quantile <- lapply(unlist(OBSresults_unl, recursive = FALSE), quantile, probs = CI.converter(quantile))
+            #Calculate their quantiless
+            results_quantiles <- lapply(unlist(OBSresults_unl, recursive = FALSE), quantile, probs = CI.converter(quantiles))
 
             #Create the result table
             results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), results_cent), stringsAsFactors = FALSE)
-            #Add to the quantiles table
-            results_table <- cbind(results_table, matrix(data = unlist(results_quantile), ncol = length(quantile)*2, byrow = TRUE))
+            #Add to the quantiless table
+            results_table <- cbind(results_table, matrix(data = unlist(results_quantiles), ncol = length(quantiles)*2, byrow = TRUE))
 
             #Add columns names
             if(is.null(match_call$cent.tend)) {
@@ -145,8 +145,8 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
             } else {
                 colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."))
             }
-            #Add the quantile names
-            colnames(results_table)[c(4:(length(quantile)*2+3))] <- names(results_quantile[[1]])
+            #Add the quantiles names
+            colnames(results_table)[c(4:(length(quantiles)*2+3))] <- names(results_quantiles[[1]])
         }
     
     } else {
@@ -198,23 +198,27 @@ summary.dispRity<-function(data, quantile=c(50,95), cent.tend=mean, recall=FALSE
             results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA          
         }
 
-        #Calculate the quantiles
-        results_quantile <- lapply(BSresults_unl, quantile, probs = CI.converter(quantile))
+        #Calculate the quantiless
+        results_quantiles <- lapply(BSresults_unl, quantile, probs = CI.converter(quantiles))
 
         #Add to the result table
-        results_table <- cbind(results_table, matrix(data = unlist(results_quantile), ncol = length(quantile)*2, byrow = TRUE))
+        results_table <- cbind(results_table, matrix(data = unlist(results_quantiles), ncol = length(quantiles)*2, byrow = TRUE))
 
-        #Add the quantile names
-        colnames(results_table)[c(5:(length(quantile)*2+4))] <- names(results_quantile[[1]])
+        #Add the quantiles names
+        colnames(results_table)[c(5:(length(quantiles)*2+4))] <- names(results_quantiles[[1]])
     }
 
     #Round the results (number of decimals = maximum number of digits in the entire)
     if(rounding == "default") {
         for(column in 3:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
+                if(any(!is.na(results_table[,column]))) {
+                    results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
+                }
             } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
+                if(any(!is.na(results_table[,column]))) {
+                    results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
+                }
             }
         }
     } else {

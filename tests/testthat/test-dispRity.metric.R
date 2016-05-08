@@ -67,7 +67,7 @@ test_that("centroids metric", {
         cent1, centroids(matrix, centroid = centroid)
         )
     #Using a 0 origin centroid
-    expect_less_than(
+    expect_lt(
         sum(centroids(matrix, centroid = rep(0, ncol(matrix)))), sum(centroids(matrix, centroid = rep(1, ncol(matrix))))
         )
 })

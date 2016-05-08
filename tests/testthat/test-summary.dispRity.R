@@ -1,4 +1,4 @@
-#TESTING summary.dispRity
+# TESTING summary.dispRity
 
 context("summary.dispRity")
  
@@ -65,8 +65,8 @@ test_that("Works with bootstraps and rarefaction", {
     	ncol(test), 8
     	)
     expect_equal(
-    	test$obs.mean, c(NA, 45.36)
-    	)
+    	test$obs.mean
+        , c(NA, 45.36))
 })
 
 #Case 4, time series

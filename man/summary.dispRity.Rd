@@ -4,13 +4,13 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, quantile = c(50, 95), cent.tend = mean,
+\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = mean,
   recall = FALSE, rounding)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{quantile}{The quantiles to display (default is \code{quantile = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantiles}{The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
@@ -23,7 +23,7 @@ A \code{data.frame} with:
 \item{series}{the series names.}
 \item{n}{the number of elements per series.}
 \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
-\item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).}
+\item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiless of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiless of the observed disparity is displayed).}
 }
 \description{
 Creates a summary of a \code{dispRity} object.
@@ -47,7 +47,7 @@ sum_of_sum_of_variances <- dispRity(bootstrapped_data,
 ## Summarising the results
 summary(sum_of_sum_of_variances) # default
 ## Using different options
-summary(sum_of_sum_of_variances, quantile = 75, cent.tend = median,
+summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
      rounding = 0, recall = TRUE)
 
 }
