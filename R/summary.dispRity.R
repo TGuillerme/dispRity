@@ -50,6 +50,56 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     # SANITIZING
     #----------------------
     #DATA
+
+    
+    #Sequential tests
+    if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+        # #SAVING THE RESULTS
+        # #Saving the results for the first model
+        # models_results <- lapply(models, lapply, save.results, results)
+
+        # #Creating the saving table template
+        # Matrix_template <- matrix(NA, nrow=length(seq_series), ncol=length(first_model_results$coefficients[1,]))
+        # rownames(Matrix_template) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
+
+        # #Saving the first intercept
+        # Intercept_results <- Matrix_template
+        # Intercept_results[1,] <- first_model_results$coefficients[1,]
+        # colnames(Intercept_results) <- names(first_model_results$coefficients[1,])
+
+        # #Adding the predict column
+        # if(length(seq_series) > 1) {
+        #     #Empty Predict column
+        #     Intercept_results <- cbind(rep(NA, nrow(Intercept_results)), Intercept_results)
+        #     colnames(Intercept_results)[1] <- "Predict"
+        #     #Added predicted intercepts (ignoring the last one that's not used)
+        #     Intercept_results[,1] <- intercept_predict
+        # }
+
+        # #Saving the slopes
+        # Slope_results <- Matrix_template
+        # Slope_results[1,] <- first_model_results$coefficients[2,]
+        # colnames(Slope_results) <- names(first_model_results$coefficients[2,])
+
+        # #Adding the other slopes
+        # if(length(seq_series) > 1) {
+        #     #Adding the slopes
+        #     for(model in 2:length(seq_series)) {
+        #         Slope_results[model,] <- models_results[[model]]$coefficients
+        #     }
+        # }
+
+        # #correction of the slopes p-values
+        # if(!missing(correction)) {
+        #     Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
+        # }
+
+        # #Combining the tables
+        # results_out <- list("Intercept" = Intercept_results, "Slope" = Slope_results)
+    }
+
+
+
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it's a bootstrapped dispRity object

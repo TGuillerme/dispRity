@@ -72,6 +72,44 @@ plot.dispRity<-function(data, type, quantile=c(50,95), cent.tend=mean, rarefacti
 
     #SANITIZING
     #DATA
+
+
+    if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+        # if(add == TRUE) {
+        #     #Getting x,y coordinates for the first model
+        #     xs <- seq_series[[1]]
+        #     ys <- c(intercept0, Intercept_results[1,1])
+        #     #Plotting the line
+        #     add.line(xs, ys, lines.args)
+        #     #Add significance (if necessary)
+        #     significance.token(xs, ys, Slope_results[1,4], token.args)
+
+        #     #Looping through the other models
+        #     for(series in 2:length(seq_series)) {
+        #         #Getting x,y coordinates for the first model
+        #         xs <- seq_series[[series]]
+        #         ys <- c(Intercept_results[series-1,1], Intercept_results[series,1])
+        #         #Plotting the line
+        #         add.line(xs, ys, lines.args)
+        #         #Add significance (if necessary)
+        #         significance.token(xs, ys, Slope_results[series,4], token.args)
+        #     }
+        # }
+
+        # #Anything else to save?
+        # if(any(results != "coefficients")) {
+        #     details <- results[which(results != "coefficients")]
+        #     results_details <- list(first_model[c(match(details, names(first_model)))])
+        #     results_details <- c(results_details, lapply(models, function(X) return(X[c(match(details, names(X)))])))
+        #     names(results_details) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
+        #     #return the coefficients and the details
+        #     return(list("Results"=results_out, "Details"=results_details))
+        # } else {
+        #     #Just return the coefficients
+        #     return(results_out)
+        # }
+    }
+
     #must be class dispRity
     check.class(data, "dispRity")
     #must have 5 elements

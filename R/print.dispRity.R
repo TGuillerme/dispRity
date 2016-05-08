@@ -24,6 +24,13 @@
 
 print.dispRity<-function(data, all=FALSE, ...) {
 
+
+    #Sequential tests
+    if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+        #Print sequential.tests
+    }
+
+
     #If all = TRUE, return the whole data (no summary)
     if(all == TRUE) {
         y <- data
