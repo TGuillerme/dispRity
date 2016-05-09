@@ -49,7 +49,7 @@ cust.series<-function(data, factor) {
     #must have the same number of rows than data
     if(nrow(factor) != nrow(data)) stop('"factor" must have the same number of rows than "data".')
     #must have the same labels as data
-    if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' do not match.")
+    if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' arguments do not match.")
     #must have at least 3 elements per levels
     check.elements <- function(factor) {
         any(table(as.factor(factor)) < 3)

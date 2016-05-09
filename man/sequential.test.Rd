@@ -15,6 +15,8 @@ sequential.test(series, results = "coefficients", family, ...)
 
 \item{correction}{optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
 
+\item{call}{optional, a call from a \code{dispRity} object.}
+
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
 }
 \description{
