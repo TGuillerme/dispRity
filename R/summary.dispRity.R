@@ -7,6 +7,7 @@
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
 #' @param rounding Optional, a value for rounding the values in the output table (default = 2).
+#' @param results Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")
 #'
 #' @return
 #' A \code{data.frame} with:
@@ -44,62 +45,61 @@
 #testing
 #source("sanitizing.R")
 #source("summary.dispRity_fun.R")
+# data(BeckLee_mat50)
+# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+# customised_series <- cust.series(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+# sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+# series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE)
+# data <- sequential.test(series, family = gaussian)
 
-summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALSE, rounding) {
+# quantiles=c(50,95)
+# cent.tend=mean
+# recall=FALSE
+# results="coefficients"
+
+# summary(results)
+
+
+summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALSE, rounding, results="coefficients") {
+
     #----------------------
     # SANITIZING
     #----------------------
+
+    #Get call
+    match_call <- match.call()
+    #return(match_call)
+
+    #cent.tend
+    #Must be a function
+    check.class(cent.tend, "function")
+    #The function must work
+    silent <- check.metric(cent.tend)
+
+    #recall
+    check.class(recall, "logical")
+
+    #rounding
+    if(missing(rounding)) {
+        #Set to default (see below)
+        rounding <- "default"
+    } else {
+        check.class(rounding, "numeric")
+    }
+
+    #Summary sequential.test shortcut
+    if(length(class(data)) == 2) {
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
+            #Results must be at least coefficients
+            if(is.na(match("coefficients", results))) {
+                results <- c(results, "coefficients")
+            }
+            return(summary.seq.test(data, quantiles, cent.tend, rounding, results))
+        }
+    }
+
     #DATA
-
-    
-    #Sequential tests
-    # if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
-        # #SAVING THE RESULTS
-        # #Saving the results for the first model
-        # models_results <- lapply(models, lapply, save.results, results)
-
-        # #Creating the saving table template
-        # Matrix_template <- matrix(NA, nrow=length(seq_series), ncol=length(first_model_results$coefficients[1,]))
-        # rownames(Matrix_template) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
-
-        # #Saving the first intercept
-        # Intercept_results <- Matrix_template
-        # Intercept_results[1,] <- first_model_results$coefficients[1,]
-        # colnames(Intercept_results) <- names(first_model_results$coefficients[1,])
-
-        # #Adding the predict column
-        # if(length(seq_series) > 1) {
-        #     #Empty Predict column
-        #     Intercept_results <- cbind(rep(NA, nrow(Intercept_results)), Intercept_results)
-        #     colnames(Intercept_results)[1] <- "Predict"
-        #     #Added predicted intercepts (ignoring the last one that's not used)
-        #     Intercept_results[,1] <- intercept_predict
-        # }
-
-        # #Saving the slopes
-        # Slope_results <- Matrix_template
-        # Slope_results[1,] <- first_model_results$coefficients[2,]
-        # colnames(Slope_results) <- names(first_model_results$coefficients[2,])
-
-        # #Adding the other slopes
-        # if(length(seq_series) > 1) {
-        #     #Adding the slopes
-        #     for(model in 2:length(seq_series)) {
-        #         Slope_results[model,] <- models_results[[model]]$coefficients
-        #     }
-        # }
-
-        # #correction of the slopes p-values
-        # if(!missing(correction)) {
-        #     Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
-        # }
-
-        # #Combining the tables
-        # results_out <- list("Intercept" = Intercept_results, "Slope" = Slope_results)
-    # }
-
-
-
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it's a bootstrapped dispRity object
@@ -139,27 +139,6 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
 
     #check if is.distribution
     is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
-
-    #cent.tend
-    #Must be a function
-    check.class(cent.tend, "function")
-    #The function must work
-    silent <- check.metric(cent.tend)
-
-    #recall
-    check.class(recall, "logical")
-
-    #rounding
-    if(missing(rounding)) {
-        #Set to default (see below)
-        rounding <- "default"
-    } else {
-        check.class(rounding, "numeric")
-    }
-
-    #Get call
-    match_call <- match.call()
-    #return(match_call)
 
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE

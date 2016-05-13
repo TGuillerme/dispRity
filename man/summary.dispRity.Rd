@@ -5,7 +5,7 @@
 \title{dispRity object summary}
 \usage{
 \method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = mean,
-  recall = FALSE, rounding)
+  recall = FALSE, rounding, results = "coefficients")
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -17,6 +17,8 @@
 \item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 
 \item{rounding}{Optional, a value for rounding the values in the output table (default = 2).}
+
+\item{results}{Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")}
 }
 \value{
 A \code{data.frame} with:
