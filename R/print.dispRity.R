@@ -44,7 +44,11 @@ print.dispRity<-function(data, all=FALSE, ...) {
             }
 
             #call
-            cat(paste("\n",call_split[[1]][2], sep = ""))
+            if(!is.na(call_split[[1]][2])) {
+                cat(paste("\n",call_split[[1]][2], sep = ""))
+            } else {
+                cat("\nNo previous call found.\n")
+            }
         }
     } else {
         #If all = TRUE, return the whole data (no summary)
