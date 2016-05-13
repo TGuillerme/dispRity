@@ -2,12 +2,10 @@
 #'
 #' @title Sequential linear regressions
 #'
-#' @usage sequential.test(series, results = "coefficients", family, ...)
-#'
 #' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
 #'
 #' @param series time series of which to estimate the slopes sequentially.
-#' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
+##' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param call optional, a call from a \code{dispRity} object.
@@ -36,10 +34,12 @@
 #' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' ## Extracting the row series
-#' series <- extract.dispRity(sum_of_variances, observed = FALSE)
+#' series <- extract.dispRity(sum_of_variances, observed = FALSE,
+#'      keep.structure = TRUE)
 #'
 #' ## The sequential test
-#' sequential.test(series, family = gaussian)
+#' results <- sequential.test(series, family = gaussian)
+#' summary(results)
 #'
 #' @seealso \code{\link{test.dispRity}}, \code{\link{bhatt.coeff}}, \code{\link{null.test}}.
 #'
@@ -61,18 +61,13 @@
 # series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
 # results = "coefficients"
 # family = gaussian
-# sequential.test(series_multi, family = gaussian)
+# data <- sequential.test(series_multi, family = gaussian)
 
-sequential.test <- function(series, results = "coefficients", family, correction, call = NULL, ...){
+sequential.test <- function(series, family, correction, call = NULL, ...){
 
     #SANITIZING
     match_call <- match.call()
     
-    #results must be at least coefficients!
-    if(is.na(match("coefficients", results))) {
-        results <- c(results, "coefficients")
-    }
-
     #Family
     if(missing(family)) {
         stop("glm family type argument is necessary!")
@@ -128,17 +123,20 @@ sequential.test <- function(series, results = "coefficients", family, correction
     #OUTPUT
     #Naming the models
     names(models) <- save.comparison.list(seq_series, series)
-    #Adding the call (if exists)
-    if(!is.null(call)) {
-        if(!missing(correction)) {
-            new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series with ", as.character(correction), " correction.\n@", call, sep="")
-        } else {
-            new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series.\n@", call, sep="")
-        }
-        output_raw <- list("models" = models, "call" = new_call)
+    #Creating the new call
+    if(!missing(correction)) {
+        new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
     } else {
-        output_raw <- list("models" = models)
+        new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series.\n@", sep="")
     }
+
+    #Adding previous call (if exists)
+    if(!is.null(call)) {
+        new_call <- paste(new_call, call, sep = "")
+    }
+
+    #output
+    output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call)
     class(output_raw) <- c("dispRity", "seq.test")
     return(output_raw)
 }

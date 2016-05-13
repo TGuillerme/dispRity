@@ -86,14 +86,6 @@ create.model <- function(data, family, intercept = NULL, ...) {
     return(model)
 }
 
-
-
-#Saving results function
-save.results <- function(model, results) {
-    save_out <- match(results, names(summary(model)))
-    return(summary(model)[save_out])
-}
-
 #Adding a line
 add.line <- function(xs, ys, lines.args) {
     if(!is.null(lines.args)) {

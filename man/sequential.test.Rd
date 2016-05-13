@@ -4,12 +4,10 @@
 \alias{sequential.test}
 \title{Sequential linear regressions}
 \usage{
-sequential.test(series, results = "coefficients", family, ...)
+sequential.test(series, family, correction, call = NULL, ...)
 }
 \arguments{
 \item{series}{time series of which to estimate the slopes sequentially.}
-
-\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).}
 
 \item{family}{the family of the \code{\link[stats]{glm}}.}
 
@@ -18,6 +16,8 @@ sequential.test(series, results = "coefficients", family, ...)
 \item{call}{optional, a call from a \code{dispRity} object.}
 
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
+
+\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).}
 }
 \description{
 Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation.
@@ -38,10 +38,12 @@ bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 ## Extracting the row series
-series <- extract.dispRity(sum_of_variances, observed = FALSE)
+series <- extract.dispRity(sum_of_variances, observed = FALSE,
+     keep.structure = TRUE)
 
 ## The sequential test
-sequential.test(series, family = gaussian)
+results <- sequential.test(series, family = gaussian)
+summary(results)
 
 }
 \author{
