@@ -180,11 +180,15 @@ test_that("Example works", {
     set.seed(1)
     bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
-    ex3<-summary(sum_of_ranges)
+    double(2L)
+    ex3<-summary(sum_of_ranges, rounding = 2)
 
     expect_is(
     	ex3
         , "data.frame")
+    expect_equal(
+        dim(ex3)
+        , c(2,8))
     expect_equal(
     	sum(ex3[,4])
         , sum(c(32.67,33.85)))
