@@ -42,15 +42,15 @@
 #'
 #' @author Thomas Guillerme
 
-#testing
+# #testing
 # source("sanitizing.R")
 # source("summary.dispRity_fun.R")
 # data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
 # customised_series <- cust.series(BeckLee_mat50, factors)
 # bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
 # sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
-# series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE)
+# series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
 # data <- sequential.test(series, family = gaussian)
 
 # quantiles=c(50,95)

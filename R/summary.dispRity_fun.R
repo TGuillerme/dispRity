@@ -86,6 +86,9 @@ relist.names <- function(element, elements_names) {
 #Gets results table from results elements
 get.results.table <- function(element, results_elements, cent.tend, quantiles, comparisons, match_call, is.distribution) {
     #Get the data
+    if(is.null(element)) {
+        element = 1
+    }
     data <- lapply(lapply(results_elements, lapply, `[[`, element), unlist)
     #Central tendency
     results_table <- matrix(data = lapply(data, cent.tend), ncol = 1, dimnames = list(comparisons))
@@ -131,12 +134,11 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
     intercepts_results <- lapply(data$intercepts, unlist)
     comparisons <- unique(unlist(names(data$models)))
 
-
     #Getting the slopes
     if(is.distribution == TRUE) {
         #Getting the coefficients
         #Transforming the coefficients into a list
-        results_coefficients <- lapply(lapply(models_results, lapply, `[[`, any_matrix), lapply, matrix.to.list, no.intercept = TRUE)
+        results_coefficients <- lapply(lapply(models_results, lapply, `[[`, 1), lapply, matrix.to.list, no.intercept = TRUE)
 
         #Creating the tables for each element in the matrices
         elements_list_matrix <- as.list(names(results_coefficients[[1]][[1]]))
@@ -183,35 +185,36 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
         }
     }
 
-    #Getting the intercepts
+    #Getting the initial intercepts
+    if(is.distribution == TRUE) {
+        #Get the first intercept
+        initial_intercept <- lapply(lapply(models_results, lapply, `[[`, 1), lapply, matrix.to.list, no.intercept = FALSE)[1]
+        #Creating the tables for each element in the matrices
+        elements_list_matrix <- as.list(names(initial_intercept[[1]][[1]]))
+        #Remove the NAs (i.e. slopes)
+        elements_list_matrix <- elements_list_matrix[-which(is.na(elements_list_matrix))]
+        initial_intercept <- lapply(elements_list_matrix, get.results.table, initial_intercept, cent.tend = cent.tend, quantiles = quantiles, comparisons = comparisons[1], match_call = match_call, is.distribution = is.distribution)
+        names(initial_intercept) <- elements_list_matrix
 
-   
-    #Creating the saving table template
-    matrix_template <- matrix(NA, nrow = length(seq_series), ncol = length(first_model_results$coefficients[1,]))
-    rownames(Matrix_template) <- unlist(lapply(convert.to.character(seq_series, series), paste, collapse=" - "))
-
-    #Saving the first intercept
-    Intercept_results <- Matrix_template
-    Intercept_results[1,] <- first_model_results$coefficients[1,]
-    colnames(Intercept_results) <- names(first_model_results$coefficients[1,])
-
-    #Adding the predict column
-    if(length(seq_series) > 1) {
-        #Empty Predict column
-        Intercept_results <- cbind(rep(NA, nrow(Intercept_results)), Intercept_results)
-        colnames(Intercept_results)[1] <- "Predict"
-        #Added predicted intercepts (ignoring the last one that's not used)
-        Intercept_results[,1] <- intercept_predict
-    }
-    
-    #correction of the slopes p-values
-    if(!missing(correction)) {
-        Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
+        #Add the predicted
+        predicted_intercept <- get.results.table(NULL, intercepts_results[-1], cent.tend = cent.tend, quantiles = quantiles, comparisons = comparisons[-1], match_call = match_call, is.distribution = is.distribution)
+        intercept_matrix <- list("Initial" = initial_intercept, "Predicted" = predicted_intercept)
+    } else {
+        #Get the first intercept
+        initial_intercept <- models_results[[1]][[1]][[1]]
+        #Add the other intercepts (estimated)
+        intercept_matrix <- matrix(NA, nrow = (length(intercepts_results)-1), ncol = ncol(initial_intercept))
+        intercept_matrix[,1] <- unlist(intercepts_results[[-1]])
+        #Bind the two tables
+        intercept_matrix <- rbind(initial_intercept, intercept_matrix)
+        #Remove the slope
+        intercept_matrix <- intercept_matrix[-2,]
+        #Add rownmaes
+        rownames(intercept_matrix) <- comparisons
     }
 
     #Combining the tables
-    results_out <- list("Intercept" = Intercept_results, "Slope" = table_matrix)
+    results_out <- list("Slopes" = table_matrix, "Intercepts" = intercept_matrix)
 
-
-
+    return(results_out)
 }
