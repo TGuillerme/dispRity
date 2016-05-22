@@ -120,14 +120,6 @@ sequential.test <- function(series, family, correction, call = NULL, ...){
         #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
     }
 
-
-    # #correction of the slopes p-values
-    # if(!missing(correction)) {
-    #     Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")] <- p.adjust(Slope_results[,which(colnames(Slope_results) == "Pr(>|t|)")], correction)
-    # }
-    warning("Corrections not yet implemented in sequential.test")
-
-
     #OUTPUT
     #Naming the models
     names(models) <- save.comparison.list(seq_series, series)
@@ -144,7 +136,12 @@ sequential.test <- function(series, family, correction, call = NULL, ...){
     }
 
     #output
-    output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call)
+    if(!missing(correction)) {
+        output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call, "correction" = correction)
+    } else {
+        output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call)
+    }
+
     class(output_raw) <- c("dispRity", "seq.test")
     return(output_raw)
 }

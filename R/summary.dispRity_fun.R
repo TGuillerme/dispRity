@@ -156,6 +156,12 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
 
             table_matrix <- append(table_matrix, table_list)
         }
+
+        #Apply p-adjust (if necessary)
+        if(!is.null(data$correction)) {
+            table_matrix$`Pr(>|t|)` <- apply(table_matrix$`Pr(>|t|)`, 2, p.adjust, method = data$correction)
+        }
+
     } else {
         #Creating the table for the first model
         table_matrix <- models_results[[1]][[1]][[1]]
@@ -176,6 +182,11 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
             colnames(results_list) <- results[-which(results == "coefficients")]
             #Combing it to the table
             table_matrix <- cbind(table_matrix, results_list)
+        }
+
+        #Apply p-adjust (if necessary)
+        if(!is.null(data$correction)) {
+            table_matrix[,which(colnames(table_matrix) == "Pr(>|t|)")] <- p.adjust(table_matrix[,which(colnames(table_matrix) == "Pr(>|t|)")], method = data$correction)
         }
     }
 
