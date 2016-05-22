@@ -133,14 +133,12 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     if(is.bootstrapped == TRUE) {
         check.class(quantiles, "numeric", " must be any value between 1 and 100.")
         #remove warnings
-        options(warn = -1)
-        if(any(quantiles) < 1) {
+        if(any(quantiles < 1)) {
             stop("quantiles(s) must be any value between 1 and 100.")
         }
-        if(any(quantiles) > 100) {
+        if(any(quantiles > 100)) {
             stop("quantiles(s) must be any value between 1 and 100.")
         }
-        options(warn = 0)
     }
 
     #check if is.distribution

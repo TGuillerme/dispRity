@@ -113,14 +113,12 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
     #quantiles
     check.class(quantiles, "numeric", " must be any value between 1 and 100.")
     #remove warnings
-    options(warn = -1)
-    if(any(quantiles) < 1) {
+    if(any(quantiles < 1)) {
         stop("quantiles(s) must be any value between 1 and 100.")
     }
-    if(any(quantiles) > 100) {
+    if(any(quantiles > 100)) {
         stop("quantiles(s) must be any value between 1 and 100.")
     }
-    options(warn = 0)
 
     #Check if is distribution
     is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)

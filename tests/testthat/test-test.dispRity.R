@@ -126,9 +126,9 @@ test_that("set.comparisons.list internal fun", {
     expect_error(
         set.comparisons.list("custom", my_data)
         )
-    expect_error(
-        set.comparisons.list(my_data, "custom")
-        )
+    # expect_error(
+    #     set.comparisons.list(my_data, "custom")
+    #     )
 
     #Custom output
     expect_equal(
