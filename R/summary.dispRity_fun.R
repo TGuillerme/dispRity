@@ -92,8 +92,11 @@ get.results.table <- function(element, results_elements, cent.tend, quantiles, c
     data <- lapply(lapply(results_elements, lapply, `[[`, element), unlist)
     #Central tendency
     results_table <- matrix(data = lapply(data, cent.tend), ncol = 1, dimnames = list(comparisons))
-    #colnames(results_table) <- paste(match_call$cent.tend)
-    colnames(results_table) <- "mean" ; warning("DEBUG")
+    if(!is.null(match_call$cent.tend)) {
+        colnames(results_table) <- paste(match_call$cent.tend)
+    } else {
+        colnames(results_table) <- "mean"
+    }
 
     if(is.distribution == TRUE) {
         #Quantiles
@@ -121,13 +124,6 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
 
     #Check if is distribution
     is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
-
-    #Results
-    check.class(results, "character") 
-    #At least one must be "coefficients"
-    if(is.na(match("coefficients", results))) {
-        stop("At least one of the returned results must be 'coefficients'.")
-    }
 
     #SAVING THE RESULTS
     models_results <- lapply(data$models, lapply, save.results.seq.test, results)
@@ -193,8 +189,10 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
         elements_list_matrix <- as.list(names(initial_intercept[[1]][[1]]))
         #Remove the NAs (i.e. slopes)
         elements_list_matrix <- elements_list_matrix[-which(is.na(elements_list_matrix))]
-        initial_intercept <- lapply(elements_list_matrix, get.results.table, initial_intercept, cent.tend = cent.tend, quantiles = quantiles, comparisons = comparisons[1], match_call = match_call, is.distribution = is.distribution)
-        names(initial_intercept) <- elements_list_matrix
+        intercept_list <- lapply(elements_list_matrix, get.results.table, initial_intercept, cent.tend = cent.tend, quantiles = quantiles, comparisons = comparisons[1], match_call = match_call, is.distribution = is.distribution)
+        #Convert list into a matrix
+        initial_intercept <- matrix(unlist(intercept_list), ncol = ncol(intercept_list[[1]]), nrow = length(elements_list_matrix), byrow = TRUE,
+            dimnames = list(c(elements_list_matrix), c(colnames(intercept_list[[1]]))))
 
         #Add the predicted
         predicted_intercept <- get.results.table(NULL, intercepts_results[-1], cent.tend = cent.tend, quantiles = quantiles, comparisons = comparisons[-1], match_call = match_call, is.distribution = is.distribution)
@@ -204,7 +202,7 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
         initial_intercept <- models_results[[1]][[1]][[1]]
         #Add the other intercepts (estimated)
         intercept_matrix <- matrix(NA, nrow = (length(intercepts_results)-1), ncol = ncol(initial_intercept))
-        intercept_matrix[,1] <- unlist(intercepts_results[[-1]])
+        intercept_matrix[,1] <- unlist(intercepts_results[-1])
         #Bind the two tables
         intercept_matrix <- rbind(initial_intercept, intercept_matrix)
         #Remove the slope
@@ -217,4 +215,38 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
     results_out <- list("Slopes" = table_matrix, "Intercepts" = intercept_matrix)
 
     return(results_out)
+}
+
+#Function for rounding the results
+rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
+
+    #seq.test
+    if(seq.test == TRUE) {
+        start_column <- 1
+    } else {
+        start_column <- 3
+    }
+
+    if(rounding == "default") {
+        for(column in start_column:ncol(results_table)) {
+            if(class(results_table[,column]) != "factor") {
+                if(any(!is.na(results_table[,column]))) {
+                    results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
+                }
+            } else {
+                if(any(!is.na(results_table[,column]))) {
+                    results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
+                }
+            }
+        }
+    } else {
+        for(column in start_column:ncol(results_table)) {
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
+            } else {
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
+            }
+        }
+    }
+    return(results_table)
 }

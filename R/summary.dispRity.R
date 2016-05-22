@@ -42,23 +42,9 @@
 #'
 #' @author Thomas Guillerme
 
-# #testing
+#testing
 # source("sanitizing.R")
 # source("summary.dispRity_fun.R")
-# data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
-# sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
-# series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
-# data <- sequential.test(series, family = gaussian)
-
-# quantiles=c(50,95)
-# cent.tend=mean
-# recall=FALSE
-# results=c("coefficients", "aic")
-
-# summary(results)
 
 
 summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALSE, rounding, results="coefficients") {
@@ -91,11 +77,31 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     #Summary sequential.test shortcut
     if(length(class(data)) == 2) {
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
+            #Results sanitizing
+            check.class(results, "character") 
+            #At least one must be "coefficients"
+            if(is.na(match("coefficients", results))) {
+                stop("At least one of the returned results must be 'coefficients'.")
+            }
             #Results must be at least coefficients
             if(is.na(match("coefficients", results))) {
                 results <- c(results, "coefficients")
             }
-            return(summary.seq.test(data, quantiles, cent.tend, rounding, results))
+
+            #Creating the table results
+            results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding, results, match_call)
+
+            #Checking if distribution
+            is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
+
+            #Rounding the results
+            if(is.distribution == FALSE) {
+                results_out <- lapply(results_out, rounding.fun, rounding, seq.test = TRUE)
+            } else {
+                results_out <- lapply(results_out, lapply, rounding.fun, rounding, seq.test = TRUE)
+            }
+
+            return(results_out)
         }
     }
 
@@ -238,27 +244,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     }
 
     #Round the results (number of decimals = maximum number of digits in the entire)
-    if(rounding == "default") {
-        for(column in 3:ncol(results_table)) {
-            if(class(results_table[,column]) != "factor") {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
-                }
-            } else {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
-                }
-            }
-        }
-    } else {
-        for(column in 3:ncol(results_table)) {
-            if(class(results_table[,column]) != "factor") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
-            } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
-            }
-        }
-    }
+    results_table <- rounding.fun(results_table, rounding)
 
     #Make the rarefaction column numeric
     results_table[,2] <- as.numeric(results_table[,2])
