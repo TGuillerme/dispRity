@@ -53,12 +53,20 @@ set.intercept0 <- function(first_model) {
 #Setting the predicted intercept for the next model
 set.intercept.next <- function(one_model, intercept0) {
 
-    if(summary(one_model)$coefficients[4] < 0.05) {
+    model_summary <- summary(one_model)$coefficients
+
+    #Check if the model contains an intercept
+    if(dim(model_summary)[1] != 1) {
+        p_value <- model_summary[2,4]
+        slope <- model_summary[2,1]
+    } else {
+        p_value <- model_summary[4]
+        slope <- model_summary[1]
+    }
+
+    if(p_value > 0.05) {
         #Set slope to 0 if intercept is not significant
         slope <- 0
-    } else {
-        #Set slope to model's estimate if significant
-        slope <- summary(one_model)$coefficients[1]
     }
 
     #Calculate the next models intercept
@@ -84,41 +92,4 @@ create.model <- function(data, family, intercept = NULL, ...) {
         }
     }
     return(model)
-}
-
-#Adding a line
-add.line <- function(xs, ys, lines.args) {
-    if(!is.null(lines.args)) {
-        #Adding the x,y coordinates
-        lines.args$x <- xs ; lines.args$y <- ys
-        do.call(lines, lines.args)
-    } else {
-        lines(xs, ys)
-    }
-}
-
-#Adding significance tokens
-significance.token <- function(xs, ys, p.value, token.args) {
-    if(p.value < 0.1) {
-        #Selecting the token
-        if(p.value < 0.1) token <- "."
-        if(p.value < 0.05) token <- "*"
-        if(p.value < 0.01) token <- "**"
-        if(p.value < 0.001) token <- "***"
-        #Default plotting
-        if(is.null(token.args)) {
-            text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
-        } else {
-        #Plotting with arguments
-            token.args$labels <- token
-            token.args$x <- sum(xs)/2
-            if(any(names(token.args) == "float")) {
-                token.args$y <- max(ys)+max(ys)*token.args$float
-                token.args$float <- NULL
-            } else {
-                token.args$y <- max(ys)+max(ys)*0.05
-            }
-            do.call(text, token.args)
-        }
-    }
 }
