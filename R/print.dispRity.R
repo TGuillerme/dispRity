@@ -23,40 +23,41 @@
 #' @author Thomas Guillerme
 
 print.dispRity<-function(data, all=FALSE, ...) {
-    #Sequential tests
-    if(length(class(data)) == 2){
-        if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
-            #Sequential test
-            call_split <- strsplit(data$call, split = "@")
-            cat(call_split[[1]][1])
-        
-            #Series
-            series_names <- unique(unlist(strsplit(names(data$models), split = " - ")))
-            if(length(series_names) == 1) {
-                cat(paste(series_names))
-            } else {
-                cat("Series:\n")
-                if(length(series_names) > 5) {
-                    cat(paste(series_names[1:5], collapse=", "),"...")
+
+
+    if(all == TRUE) {
+        temp <- data
+        class(tmp) <- "list"
+        print(tmp)
+    } else {
+
+        #Sequential tests
+        if(length(class(data)) == 2){
+            if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+                #Sequential test
+                call_split <- strsplit(data$call, split = "@")
+                cat(call_split[[1]][1])
+            
+                #Series
+                series_names <- unique(unlist(strsplit(names(data$models), split = " - ")))
+                if(length(series_names) == 1) {
+                    cat(paste(series_names))
                 } else {
-                    cat(paste(series_names, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(series_names) > 5) {
+                        cat(paste(series_names[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(series_names, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                if(!is.na(call_split[[1]][2])) {
+                    cat(paste("\n",call_split[[1]][2], sep = ""))
+                } else {
+                    cat("\nNo previous call found.\n")
                 }
             }
-
-            #call
-            if(!is.na(call_split[[1]][2])) {
-                cat(paste("\n",call_split[[1]][2], sep = ""))
-            } else {
-                cat("\nNo previous call found.\n")
-            }
-        }
-    } else {
-        #If all = TRUE, return the whole data (no summary)
-        if(all == TRUE) {
-            y <- data
-            class(y)<-"list"
-            print(y)
-            
         } else {
             #Series
             if(length(data) == 3) {
