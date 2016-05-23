@@ -24,74 +24,103 @@
 
 print.dispRity<-function(data, all=FALSE, ...) {
 
-    #If all = TRUE, return the whole data (no summary)
+
     if(all == TRUE) {
-        y <- data
-        class(y)<-"list"
-        print(y)
-        
+        temp <- data
+        class(tmp) <- "list"
+        print(tmp)
     } else {
-        #Series
-        if(length(data) == 3) {
-            #head
-            cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
+
+        #Sequential tests
+        if(length(class(data)) == 2){
+            if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+                #Sequential test
+                call_split <- strsplit(data$call, split = "@")
+                cat(call_split[[1]][1])
             
-            #series
-            #remove the method time
-            data$series<-data$series[-1]
-            
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
+                #Series
+                series_names <- unique(unlist(strsplit(names(data$models), split = " - ")))
+                if(length(series_names) == 1) {
+                    cat(paste(series_names))
                 } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(series_names) > 5) {
+                        cat(paste(series_names[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(series_names, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                if(!is.na(call_split[[1]][2])) {
+                    cat(paste("\n",call_split[[1]][2], sep = ""))
+                } else {
+                    cat("\nNo previous call found.\n")
                 }
             }
-        }
-
-        #Bootstraps
-        if(length(data) == 4) {
-            #head
-            cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
-
-            #series
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
+        } else {
+            #Series
+            if(length(data) == 3) {
+                #head
+                cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
+                
+                #series
+                #remove the method time
+                data$series<-data$series[-1]
+                
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
                 } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
-                }
-            }
-
-            #call
-            cat("\n", data$call, sep="")
-        }
-
-        #Disparity
-        if(length(data) == 5) {
-            #head
-            cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
-
-            #series
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
-                } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
                 }
             }
 
-            #call
-            cat("\n", data$call, sep="")
+            #Bootstraps
+            if(length(data) == 4) {
+                #head
+                cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
+
+                #series
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
+                } else {
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                cat("\n", data$call, sep="")
+            }
+
+            #Disparity
+            if(length(data) == 5) {
+                #head
+                cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
+
+                #series
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
+                } else {
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                cat("\n", data$call, sep="")
+            }
         }
     }
 }

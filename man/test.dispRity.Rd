@@ -4,8 +4,9 @@
 \alias{test.dispRity}
 \title{Disparity statistics}
 \usage{
-test.dispRity(data, test, comparisons = "pairwise", correction, ...,
-  details = FALSE)
+test.dispRity(data, test, comparisons = "pairwise", correction,
+  concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)),
+  details = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -16,9 +17,13 @@ test.dispRity(data, test, comparisons = "pairwise", correction, ...,
 
 \item{correction}{which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
 
-\item{...}{Additional options to pass to the test \code{function}.}
+\item{concatenate}{Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).}
+
+\item{conc.quantiles}{If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles.}
 
 \item{details}{Whether to output the details of each test (non-formatted; default = \code{FALSE}).}
+
+\item{...}{Additional options to pass to the test \code{function}.}
 }
 \description{
 Applying statistical tests to dispRity objects
@@ -59,6 +64,15 @@ test.dispRity(sum_of_variances, wilcox.test, "referential")
 ## Testing the effect of the factors
 test.dispRity(sum_of_variances, aov, "all")
 ## warning: this violates some aov assumptions!
+
+## Measuring disparity as a distribution
+disparity_var <- dispRity(bootstrapped_data, metric = variances)
+## Differences between the concatenated bootstrapped values of the series
+test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
+     concatenate = TRUE)
+## Differences between the series bootstrapped
+test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
+     concatenate = FALSE)
 
 }
 \author{

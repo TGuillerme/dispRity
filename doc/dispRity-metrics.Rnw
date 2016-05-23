@@ -1,4 +1,8 @@
 \documentclass{article}
+
+% \VignetteIndexEntry{dispRity-metrics}
+% \VignetteEngine{knitr::knitr}
+
 \usepackage[sc]{mathpazo}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
