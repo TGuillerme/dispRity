@@ -30,20 +30,38 @@ This test allows to correct for time autocorrelation by estimating the intercept
 data(BeckLee_mat50)
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
-     dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+     rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-## Calculating the sum of variances
-sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
-## Extracting the row series
-series <- extract.dispRity(sum_of_variances, observed = FALSE,
-     keep.structure = TRUE)
+## Calculating variances of each dimension
+dim_variances <- dispRity(bootstrapped_data, metric = variances)
+## Extracting the disparity values of each series
+series <- extract.dispRity(dim_variances, observed = FALSE,
+     keep.structure = TRUE, concatenate = TRUE)
 
-## The sequential test
+## Running a gaussian sequential test on the series
 results <- sequential.test(series, family = gaussian)
-summary(results)
+## Summarising the results
+summary(results, rounding = 5)
+## Simple plotting the results
+plot(results)
+
+## Running a gaussian sequential test on multiple series
+## (i.e. non- concatenated)
+series <- extract.dispRity(dim_variances, observed = FALSE,
+     keep.structure = TRUE, concatenate = FALSE)
+results <- sequential.test(series, family = gaussian)
+## Summarising
+summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
+## Plotting the disparity first (as the me)
+plot(dim_variances, type = "c", cent.tend = median)
+## Adding the sequential model (using the first quantile (12.55\%) for our 
+## the significance level to consider).
+plot(results, add = TRUE, significance = 1,
+     token.args = list(float = 0.3, col = "blue", cex = 2),
+     lines.args = list(col = "red", lty = 3))
 
 }
 \author{
