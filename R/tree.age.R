@@ -41,18 +41,18 @@ tree.age <- function(tree, age, order='past'){
 
 #CALCULATE THE EDGES AGE
 
-    if(age == 0) {
-        ages.table <- tree.age_table(tree)
-    } else {
+    if(age != 0) {
         ages.table <- tree.age_scale(tree.age_table(tree), age)
+    } else {
+        ages.table <- tree.age_table(tree)
     }
 
     #Type
-    if(order == 'past'){
+    if(order != 'past') {
+        ages.table$ages <- round(ages.table$ages, digits = 7)
+    } else {
         tree.height <- max(ages.table$ages)
         ages.table$ages <- round(abs(ages.table$ages-tree.height), digits = 3)
-    } else {
-        ages.table$ages <- round(ages.table$ages, digits = 7)
     }
 
     #Output
