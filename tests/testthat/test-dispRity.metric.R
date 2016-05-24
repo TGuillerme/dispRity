@@ -209,9 +209,9 @@ test_that("convhull.surface metric", {
     expect_error(
         convhull.surface(list(matrix))
         )
-    expect_warning(
-        convhull.surface(space.maker(22, 21, rnorm))
-        ) 
+    # expect_warning(
+    #     convhull.surface(space.maker(22, 21, rnorm))
+    #     ) 
 
     #Works fine!
     expect_is(
@@ -243,9 +243,9 @@ test_that("convhull.volume metric", {
     expect_error(
         convhull.volume(list(matrix))
         )
-    expect_warning(
-        convhull.volume(space.maker(22, 21, rnorm))
-        ) 
+    # expect_warning(
+    #     convhull.volume(space.maker(22, 21, rnorm))
+    #     ) 
 
     #Works fine!
     expect_is(
