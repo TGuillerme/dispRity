@@ -12,9 +12,11 @@
 #' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
-#' @param significance when plotting a \link{\code{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
-#' @param lines.args when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-#' @param token.args when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
+#' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
+#' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
+#' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
+#' @param nclass when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).
+#' @param coeff when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
@@ -86,7 +88,7 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, significance="cent.tend", lines.args=NULL, token.args=NULL, ...){
+plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, significance="cent.tend", lines.args=NULL, token.args=NULL, nclass=10, coeff=1, ...){
 
     #SANITIZING
     #DATA
@@ -130,7 +132,7 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
                 series <- unique(unlist(strsplit(names(data$models), split = " - ")))
                 #Get the all the intercepts estimate
                 if(is.distribution == TRUE) {
-
+                    all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(series)-2),significance]), unlist(results_out$Slopes$Estimate[(length(series)-1),significance]))))
                 } else {
                     all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(series)-1),1], results_out$Slopes[(length(series)-1),1]))
                 }
@@ -152,6 +154,35 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
             plot.seq.test(results_out, is.distribution, significance, lines.args, token.args)
 
         }
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
+            #sanitising
+            check.class(nclass, "numeric")
+            check.class(coeff, "numeric")
+            check.length(nclass, 1, " must be a single numeric value.")
+            check.length(coeff, 1, " must be a single numeric value.")
+
+
+            #length_data variable initialisation
+            length_data <- length(data)
+            
+            #Set up the plotting window
+            #Open the multiple plots
+            if(length_data != 1) {
+                op_tmp <- par(mfrow = c(ceiling(sqrt(length_data)), round(sqrt(length_data))))
+
+                #Rarefaction plots
+                for(model in 1:length_data) {
+                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = ""), ...)
+                    #plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                }
+                par(op_tmp)
+            } else {
+                plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
+                #plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
+            }
+        }
+
+
     } else {
 
         #must be class dispRity

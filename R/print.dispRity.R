@@ -24,7 +24,6 @@
 
 print.dispRity<-function(data, all=FALSE, ...) {
 
-
     if(all == TRUE) {
         temp <- data
         class(tmp) <- "list"
@@ -56,6 +55,27 @@ print.dispRity<-function(data, all=FALSE, ...) {
                     cat(paste("\n",call_split[[1]][2], sep = ""))
                 } else {
                     cat("\nNo previous call found.\n")
+                }
+            }
+            if(class(data)[1] == "dispRity" & class(data)[2] == "randtest") {
+                #length_data variable initialisation
+                length_data <- length(data)
+
+                for(model in 1:length_data) {
+                    #The following is a modified version of print.randtest from ade4 v1.4-3
+                    if(length_data != 1) {
+                        cat(paste("Monte-Carlo test on series", names(data)[[model]], "\n"))
+                    } else {
+                        cat("Monte-Carlo test\n")
+                    }
+                    #cat("Call: ")
+                    #print(data[[model]]$call)
+                    cat("Observation:", data[[model]]$obs, "\n")
+                    cat("Based on", data[[model]]$rep, "replicates\n")
+                    cat("Simulated p-value:", data[[model]]$pvalue, "\n")
+                    cat("Alternative hypothesis:", data[[model]]$alter, "\n\n")
+                    print(data[[model]]$expvar)
+                    cat("\n")
                 }
             }
         } else {

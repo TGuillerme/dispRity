@@ -139,7 +139,6 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         if(!is.null(arguments)) {
             #Mapply the distribution with the arguments
             space <- mapply(do.call, distribution, arguments)
-
         } else {
             #Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))

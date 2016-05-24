@@ -111,6 +111,10 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
 
             return(results_out)
         }
+        if(class(data)[1] == "dispRity" & class(data)[2] == "randtest") {
+            #No summary
+            return(data)
+        }
     }
 
     #DATA
