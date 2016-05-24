@@ -6,7 +6,7 @@ Date: 2016-12-01
 Author: Thomas Guillerme
 Depends:
     R (>= 3.0.0),
-    ape,
+    ape
 Imports:
     paleotree,
     snow,
