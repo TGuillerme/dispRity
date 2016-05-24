@@ -114,11 +114,11 @@ centroids <- function(matrix, centroid) {
         centroid <- apply(matrix, 2, mean)
     } else {
         #Centroid is predetermined
-        if(class(centroid) == "numeric") {
+        if(class(centroid) != "numeric") {
+            stop("Centroid coordinates must be given as numeric values.")
+        } else {
             #If numeric, must be the same length as matrix
             if(length(centroid) != ncol(matrix)) stop(paste("The given centroid has ", length(centroid), " coordinates but must have ", ncol(matrix), ".", sep = ""))
-        } else {
-            stop("Centroid coordinates must be given as numeric values.")
         }
     }
 
@@ -140,10 +140,10 @@ mode.val <- function(X){
 ellipse.volume <- function(matrix) {
     # The eigen value is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
-    eigen.value<-abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
+    eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
 
     #volume (from Donohue et al 2013, Ecology Letters)
-    volume<-pi^(ncol(matrix)/2)/gamma((ncol(matrix)/2)+1)*prod(eigen.value^(0.5))
+    volume <- pi^(ncol(matrix)/2)/gamma((ncol(matrix)/2)+1)*prod(eigen.value^(0.5))
 
     return(volume)
 }
@@ -151,7 +151,7 @@ ellipse.volume <- function(matrix) {
 # Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
     # Algorithm warn
-    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.surface function is likely to crash!")
+    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
@@ -159,7 +159,7 @@ convhull.surface <- function(matrix) {
 # Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
     # Algorithm warn
-    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.volume function is likely to crash!")
+    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
