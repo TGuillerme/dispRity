@@ -5,14 +5,10 @@
 #' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
 #'
 #' @param series time series of which to estimate the slopes sequentially.
-##' @param results which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).
 #' @param family the family of the \code{\link[stats]{glm}}.
 #' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param call optional, a call from a \code{dispRity} object.
 #' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
-# ' @param add whether to add the results of the sequential test to the current plot (default = \code{FALSE}).
-# ' @param lines.args a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-# ' @param token.args a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
 #'
 #' @details
 #' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.

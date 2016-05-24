@@ -7,7 +7,8 @@
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
   time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  significance = "cent.tend", lines.args = NULL, token.args = NULL, ...)
+  significance = "cent.tend", lines.args = NULL, token.args = NULL,
+  nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -30,11 +31,15 @@
 
 \item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
 
-\item{significance}{when plotting a \link{\code{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).}
+\item{significance}{when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).}
 
-\item{lines.args}{when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
+\item{lines.args}{when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
 
-\item{token.args}{when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
+\item{token.args}{when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
+
+\item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
+
+\item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }

@@ -16,8 +16,6 @@ sequential.test(series, family, correction, call = NULL, ...)
 \item{call}{optional, a call from a \code{dispRity} object.}
 
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
-
-\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).}
 }
 \description{
 Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation.
