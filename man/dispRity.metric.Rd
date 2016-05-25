@@ -32,7 +32,8 @@ Different implemented disparity metrics.
 }
 \details{
 These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
-The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
+
+The currently implemented \code{level3} metrics are:
 \itemize{
   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{

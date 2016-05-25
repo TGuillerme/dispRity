@@ -48,6 +48,7 @@ export(ellipse.volume)
 export(hyper.volume)
 export(convhull.volume)
 export(convhull.surface)
+export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)
