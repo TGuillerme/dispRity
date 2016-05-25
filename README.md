@@ -19,7 +19,7 @@ The following installs the latest released version (see patch notes below). For 
 *  The package manual [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf).
 *  A tutorial for palaeobiologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.pdf).
 *  A tutorial ecologists [here (in .Rnw)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rnw) or [here (in .pdf)](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.pdf).
-*  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd)
+*  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
 
 ##### Patch notes
 * 2015/12/01 - v0.1.2
