@@ -175,4 +175,133 @@ sum_variances2 <- summary(dispRity(BeckLee_mat50, metric = sum))
 sum_variances1$observed == sum_variances2$observed
 ```
 
+Metrics implemented in `dispRity`
+===========================================
+
+Several disparity metrics are directly implemented in the `dispRity` package.
+The detailed list can be found in `?dispRity.metric` along with some explanations on each metric.
+
+Level | Name | Description | Source | 
+------|------|---------------------------------------------------|--------|
+3 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | [@DonohueDim] |
+3 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+3 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+3 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |
+3 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
+2 | `ranges` | The range of each dimension | `dispRity` |
+2 | `variances` | The variance of each dimension | `dispRity` |
+2 | `centroids`<sup>2</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
+1 | `mode.val` | The modal value | `dispRity` |
+
+
+1: The functions estimation of the eigen value only works for MDS or PCoA ordinations (not PCA).
+
+2: Note that by default, the centroid is the centroid of the elements.
+It can however be fixed to an arbitrary value by using the `centroid` argument `centroids(space, centroid = rep(0, ncol(space)))`, for example the origin of the ordinated space.
+
+## Equations and implementations:
+Some of the functions described below are directly implemented in the `dispRity` package and do not require any dependencies.
+
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+With *k* being the number of dimensions, $\lambda_i$ is the eigen value of each dimension [R implementation line 140](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+With *k* being the dimensions [R implementation line 220](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+With *k* being the dimensions [R implementation line 100](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+With *k* being the dimensions and $\sigma^{2}$ their variance [R implementation line 95](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+\end{equation}
+With *n* being each element in the ordinated space, *k* being its dimensions and $Centroid_{k}$ their mean (or can be set to an arbitrary value) and  [R implementation line 111](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+
+### Volumes and surface metrics
+```{r}
+# First lets create a small dummy ordinate matrix
+set.seed(1)
+dummy_space <- space.maker(10, 5, rnorm)
+
+# Let's then calculate disparity as the ellipsoid volume:
+summary(dispRity(dummy_space, metric = ellipse.volume))
+
+# Which is the equivalent of doing (with some rounding):
+ellipse.volume(dummy_space)
+
+# Now for the convex hull surface:
+summary(dispRity(dummy_space, metric = convhull.surface))
+
+# And for it's volume:
+summary(dispRity(dummy_space, metric = convhull.volume))
+
+# Note that the more the dimensions, the more the volume tends towards 0!
+summary(dispRity(space.maker(10,9, rnorm), metric = convhull.volume))
+
+# The estimation of the hypervolume is a bit slower:
+summary(dispRity(dummy_space, metric = hyper.volume))
+
+# Note that the hypervolume is different of the convex hull volume!
+# This function also intakes more arguments that can be fed to dispRity
+summary(dispRity(dummy_space, metric = hyper.volume,
+                 repsperpoint = 100, quantile = 0.5))
+# Which gives quiet different results!
+```
+
+### Diagonal, ranges and variances
+```{r}
+# Or we can use other more straightforward metrics such as the diagonal of our
+# dummy space (i.e. the longest euclidean distance in our 5 dimensional space)
+summary(dispRity(dummy_space, metric = diagonal))
+
+# Another type of metrics, based on the range are used a lot in palaeobiology.
+summary(dispRity(dummy_space, metric = ranges))
+# Note that this gives a distribution of metrics now (i.e. the range for our 5
+# dimensions).
+# This distribution can be summarised using metrics such as the sum or product
+# of ranges:
+summary(dispRity(dummy_space, metric = c(sum, ranges)))
+summary(dispRity(dummy_space, metric = c(prod, ranges)))
+
+# The same can be done with the variances
+summary(dispRity(dummy_space, metric = variances))
+summary(dispRity(dummy_space, metric = c(sum, variances)))
+summary(dispRity(dummy_space, metric = c(prod, variances)))
+# Note that neither the sum nor the product of the variances are really
+# representative of the variances distribution!
+```
+
+### Centroids metrics
+```{r}
+# The centroid metric allows to calculate the distances between each elements
+# and their centroids:
+summary(dispRity(dummy_space, metric = centroids))
+# Note that this also gives a distribution 
+
+# Another interesting use of this function is for looking at both the average
+# spread of the elements (or the entire distribution!) and their position within
+# the dummy space by looking at the distances between the elements and the
+# center of the dummy space (or an arbitrary point)
+
+centroids_to_group <- dispRity(dummy_space, metric = centroids)
+centroids_to_space <- dispRity(dummy_space, metric = centroids,
+                               centroid = c(rep(0, 5)))
+
+# Average spread
+summary(dispRity(centroids_to_group, metric = median))
+# Average position within de dummy space
+summary(dispRity(centroids_to_space, metric = median))
+```
+
 # References

@@ -102,9 +102,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 <span class="co"># Any summary metric such as mean or median are good examples of level 1</span>
 <span class="co"># functions as they reduce the matrix to a single dimension (i.e. one value):</span>
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.1272415</code></pre>
+<pre><code>## [1] -0.20224</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] 0.09394229</code></pre>
+<pre><code>## [1] -0.4178669</code></pre>
 </div>
 <div id="a-level-2-function" class="section level2">
 <h2>A level 2 function</h2>
@@ -115,7 +115,7 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <span class="co"># This function is a level 2 function as it reduces the matrix into a two</span>
 <span class="co"># dimensional element (a vector of values):</span>
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1]  0.2009913843 -0.0154228912 -0.0009333428 -0.4196857529</code></pre>
+<pre><code>## [1] -0.3122697 -0.6819324 -0.1271872 -1.5650448</code></pre>
 </div>
 <div id="a-level-3-function" class="section level2">
 <h2>A level 3 function</h2>
@@ -123,10 +123,10 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The var functions computes the variance/covariance matrix which will be a</span>
 <span class="co"># three by three matrix</span>
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##            [,1]        [,2]        [,3]
-## [1,]  1.1867789 -0.30150194 -0.28415419
-## [2,] -0.3015019  0.09716922 -0.06139023
-## [3,] -0.2841542 -0.06139023  1.02714355</code></pre>
+<pre><code>##            [,1]       [,2]      [,3]
+## [1,]  0.9517359 -0.1826716 0.6213371
+## [2,] -0.1826716  0.7500605 0.1934303
+## [3,]  0.6213371  0.1934303 1.3987027</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level1">
@@ -205,6 +205,206 @@ sum_variances2 &lt;-<span class="st"> </span><span class="kw">summary</span>(<sp
 <span class="co"># Both ways output the same disparity values:</span>
 sum_variances1$observed ==<span class="st"> </span>sum_variances2$observed</code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
+</div>
+</div>
+<div id="metrics-implemented-in-disprity" class="section level1">
+<h1>Metrics implemented in <code>dispRity</code></h1>
+<p>Several disparity metrics are directly implemented in the <code>dispRity</code> package. The detailed list can be found in <code>?dispRity.metric</code> along with some explanations on each metric.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="69%"></col>
+<col width="12%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Level</th>
+<th align="left">Name</th>
+<th align="left">Description</th>
+<th align="left">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>ellipse.volume</code><sup>1</sup></td>
+<td align="left">The volume of the ellipsoid of the space</td>
+<td align="left"><span class="citation">(Donohue et al. 2013)</span></td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left"><code>convhull.surface</code></td>
+<td align="left">The surface of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>convhull.volume</code></td>
+<td align="left">The volume of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left"><code>hypervolume</code></td>
+<td align="left">The volume of the ordinated space</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/hypervolume/index.html"><code>hypervolume</code></a><code>::hypervolume</code></td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>diagonal</code></td>
+<td align="left">The longest distance in the ordinated space (like the diagonal in two dimensions)</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><code>ranges</code></td>
+<td align="left">The range of each dimension</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left"><code>variances</code></td>
+<td align="left">The variance of each dimension</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><code>centroids</code><sup>2</sup></td>
+<td align="left">The distance between each element and the centroid of the ordinated space</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left"><code>mode.val</code></td>
+<td align="left">The modal value</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+</tbody>
+</table>
+<p>1: The functions estimation of the eigen value only works for MDS or PCoA ordinations (not PCA).</p>
+<p>2: Note that by default, the centroid is the centroid of the elements. It can however be fixed to an arbitrary value by using the <code>centroid</code> argument <code>centroids(space, centroid = rep(0, ncol(space)))</code>, for example the origin of the ordinated space.</p>
+<div id="equations-and-implementations" class="section level2">
+<h2>Equations and implementations:</h2>
+<p>Some of the functions described below are directly implemented in the <code>dispRity</code> package and do not require any dependencies.</p>
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+<p>With <em>k</em> being the number of dimensions, <span class="math inline">\(\lambda_i\)</span> is the eigen value of each dimension <a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">R implementation line 140</a>.</p>
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+<p>With <em>k</em> being the dimensions <a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">R implementation line 220</a>.</p>
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+<p>With <em>k</em> being the dimensions <a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">R implementation line 100</a>.</p>
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+<p>With <em>k</em> being the dimensions and <span class="math inline">\(\sigma^{2}\)</span> their variance <a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">R implementation line 95</a>.</p>
+\begin{equation}
+    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+\end{equation}
+<p>With <em>n</em> being each element in the ordinated space, <em>k</em> being its dimensions and <span class="math inline">\(Centroid_{k}\)</span> their mean (or can be set to an arbitrary value) and <a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">R implementation line 111</a>.</p>
+<div id="volumes-and-surface-metrics" class="section level3">
+<h3>Volumes and surface metrics</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># First lets create a small dummy ordinate matrix</span>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">10</span>, <span class="dv">5</span>, rnorm)
+
+<span class="co"># Let's then calculate disparity as the ellipsoid volume:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ellipse.volume))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    257.8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Which is the equivalent of doing (with some rounding):</span>
+<span class="kw">ellipse.volume</span>(dummy_space)</code></pre></div>
+<pre><code>## [1] 257.774</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Now for the convex hull surface:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.surface))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    11.91</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># And for it's volume:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.volume))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    1.031</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that the more the dimensions, the more the volume tends towards 0!</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(<span class="kw">space.maker</span>(<span class="dv">10</span>,<span class="dv">9</span>, rnorm), <span class="dt">metric =</span> convhull.volume))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    0.013</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The estimation of the hypervolume is a bit slower:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    24.06</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that the hypervolume is different of the convex hull volume!</span>
+<span class="co"># This function also intakes more arguments that can be fed to dispRity</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume,
+                 <span class="dt">repsperpoint =</span> <span class="dv">100</span>, <span class="dt">quantile =</span> <span class="fl">0.5</span>))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    408.6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Which gives quiet different results!</span></code></pre></div>
+</div>
+<div id="diagonal-ranges-and-variances" class="section level3">
+<h3>Diagonal, ranges and variances</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Or we can use other more straightforward metrics such as the diagonal of our</span>
+<span class="co"># dummy space (i.e. the longest euclidean distance in our 5 dimensional space)</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> diagonal))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    3.659</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Another type of metrics, based on the range are used a lot in palaeobiology.</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ranges))</code></pre></div>
+<pre><code>##   series  n obs.mean  2.5%   25%   75% 97.5%
+## 1      1 10    2.678 1.673 2.431 2.908 3.645</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that this gives a distribution of metrics now (i.e. the range for our 5</span>
+<span class="co"># dimensions).</span>
+<span class="co"># This distribution can be summarised using metrics such as the sum or product</span>
+<span class="co"># of ranges:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, ranges)))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    13.39</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(prod, ranges)))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    114.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The same can be done with the variances</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> variances))</code></pre></div>
+<pre><code>##   series  n obs.mean 2.5%   25%   75% 97.5%
+## 1      1 10    0.735 0.38 0.609 0.913 1.121</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    3.675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(prod, variances)))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    0.148</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that neither the sum nor the product of the variances are really</span>
+<span class="co"># representative of the variances distribution!</span></code></pre></div>
+</div>
+<div id="centroids-metrics" class="section level3">
+<h3>Centroids metrics</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The centroid metric allows to calculate the distances between each elements</span>
+<span class="co"># and their centroids:</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids))</code></pre></div>
+<pre><code>##   series  n obs.mean  2.5%   25%   75% 97.5%
+## 1      1 10    1.665 0.788 1.267 1.993 3.167</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that this also gives a distribution </span>
+
+<span class="co"># Another interesting use of this function is for looking at both the average</span>
+<span class="co"># spread of the elements (or the entire distribution!) and their position within</span>
+<span class="co"># the dummy space by looking at the distances between the elements and the</span>
+<span class="co"># center of the dummy space (or an arbitrary point)</span>
+
+centroids_to_group &lt;-<span class="st"> </span><span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids)
+centroids_to_space &lt;-<span class="st"> </span><span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids,
+                               <span class="dt">centroid =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">5</span>)))
+
+<span class="co"># Average spread</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(centroids_to_group, <span class="dt">metric =</span> median))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    1.435</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Average position within de dummy space</span>
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(centroids_to_space, <span class="dt">metric =</span> median))</code></pre></div>
+<pre><code>##   series  n observed
+## 1      1 10    1.487</code></pre>
+</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
