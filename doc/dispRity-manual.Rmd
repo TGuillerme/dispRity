@@ -1,0 +1,1063 @@
+---
+title: "dispRity manual"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: References.bib
+bst: sysbio.bst
+vignette: >
+  %\VignetteIndexEntry{dispRity manual}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+`dispRity` is a package for calculating disparity in `R`.
+It allows to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA)
+into single values.
+
+Before starting
+===============
+
+Glossary
+--------
+
+Because this package is aimed to be multidisciplinary, many names or
+terms used in this tutorial might be non-familiar to certain fields.
+Here is a list of what are the exact meaning of these term:
+
+-   **Ordinated space**: it designates the mathematical multidimensional
+    object studied here. In morphometrics, this one is often referred as
+    being the morphospace. However it can also be the the cladisto-space
+    for cladistic data or the eco-space in ecology, etc. In practice,
+    this term designates an ordinated matrix where the columns represent
+    the dimensions of the ordinated space (often – but not necessarily –
+    $>$ 3!) and the rows represent the elements within this space.
+
+-   **Elements**: it designates the rows of the ordinated space,
+    elements can be either taxa, field sites, countries, etc...
+
+-   **Dimensions**: it designates the columns of the ordinated space.
+    The dimensions can also be referred to as axis or
+    principal components.
+
+-   **Series**: it designates sub-samples of the ordinated space.
+    Basically a series contain the same number of dimensions as the
+    morphospace but may contain a smaller number of elements. For
+    example, if our ordinated space is composed of birds and
+    mammals (i.e. the elements) and 50 dimensions, we can create two
+    series of just mammals or birds as elements (but with the same
+    50 dimensions) to look at the difference in disparity between the
+    two clades.
+
+Installation
+------------
+
+You can install this package easily if you use the latest version of
+<span>`R` </span>and `devtools`.
+
+` `\
+`   `\
+
+Note that we use the `release` branch here which is version 0.2. For the
+piping-hot (but potentially full of bugs) version, you can change the
+argument `ref = release` to `ref = master`. This package depends mainly
+on the `ape` package and uses functions of several other (`ade4`,
+`geometry`, `grDevices`, `hypervolume`, `paleotree` and `snow`).
+
+Data
+----
+
+In this tutorial we are going to use a subset of the ordinated cladistic
+data from @beckancient2014 that contains 50 taxa (elements) ordinated
+using their cladistic distance (i.e. the distance between their discrete
+morphological characters). Note that this data is more oriented towards
+palaebiology analysis but that it can apply to other disciplines. Please
+refer to the [GitHub page:
+github.com/TGuillerme/dispRity](https://github.com/TGuillerme/dispRity)
+for other vignettes covering some specific example.
+
+\
+
+\
+\
+\
+\
+\
+
+    ## [1] 50 48
+
+    ##                    [,1]          [,2]        [,3]       [,4]      [,5]
+    ## Cimolestes   -0.5319679  0.1117759259  0.09865194 -0.1933148 0.2035833
+    ## Maelestes    -0.4087147  0.0139690317  0.26268300  0.2297096 0.1310953
+    ## Batodon      -0.6923194  0.3308625215 -0.10175223 -0.1899656 0.1003108
+    ## Bulaklestes  -0.6802291 -0.0134872777  0.11018009 -0.4103588 0.4326298
+    ## Daulestes    -0.7386111  0.0009001369  0.12006449 -0.4978191 0.4741342
+    ## Uchkudukodon -0.5105254 -0.2420633915  0.44170317 -0.1172972 0.3602273
+
+\
+\
+
+    ## [1] 99 97
+
+` `
+
+    ##                  [,1]       [,2]       [,3]       [,4]        [,5]
+    ## Cimolestes -0.6082437 -0.0323683 0.08458885 -0.4338448 -0.30536875
+    ## Maelestes  -0.5730206 -0.2840361 0.01308847 -0.1258848  0.06123611
+
+` `
+
+    ##            [,1]      [,2]       [,3]       [,4]       [,5]
+    ## n48 -0.05529018 0.4799330 0.04118477 0.04944912 -0.3558830
+    ## n49 -0.13067785 0.4478168 0.11956268 0.13800340 -0.3222785
+
+\
+\
+
+    ##             FAD  LAD
+    ## Adapis     37.2 36.8
+    ## Asioryctes 83.6 72.1
+    ## Leptictis  33.9 33.3
+    ## Miacis     49.0 46.7
+    ## Mimotona   61.6 59.2
+    ## Notharctus 50.2 47.0
+
+\
+\
+`         `
+
+![image](figure/minimal-data-1){width=".8\linewidth"}
+
+A quick go through
+------------------
+
+Here is a really crude and quick analysis to go through the package,
+showing some of its features. Note that all these features will be
+discussed in more details below.
+
+\
+`     `\
+`           `\
+`     `\
+\
+\
+`   `\
+\
+\
+`     `\
+\
+\
+
+    ##   series  n observed  mean  2.5%   25%   75% 97.5%
+    ## 1    120  5    1.494 1.200 0.756 0.854 1.484 1.550
+    ## 2    105 11    1.725 1.646 1.481 1.614 1.686 1.770
+    ## 3     90 18    1.820 1.775 1.681 1.747 1.806 1.849
+    ## 4     75 19    1.923 1.814 1.681 1.778 1.865 1.901
+    ## 5     60 20    1.946 1.859 1.751 1.833 1.894 1.925
+    ## 6     45 14    1.930 1.849 1.742 1.827 1.883 1.951
+    ## 7     30 10    1.910 1.796 1.570 1.774 1.866 1.935
+    ## 8     15 10    1.910 1.801 1.594 1.782 1.853 1.914
+    ## 9      0 10    1.910 1.815 1.588 1.788 1.865 1.929
+
+\
+\
+\
+`     `
+
+    ##              Df Sum Sq Mean Sq F value Pr(>F)    
+    ## series        8  34.47   4.309   279.5 <2e-16 ***
+    ## Residuals   891  13.74   0.015                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+![image](figure/minimal-Quick_go-1){width=".5\linewidth"}
+
+Package specificities
+=====================
+
+The `dispRity` objects
+-----------------------------------
+
+Disparity analysis can involve a lot of shuffling around with many
+matrices (especially when bootstrapping the data) which can be
+impractical to visualise and will quickly jam your <span>`R`
+</span>console. For example, we can have a look at the structure of the
+object created in the quick example:
+
+\
+
+Therefore this package proposes a specific class of object called
+`dispRity` objects. These objects allow to easily use S3
+method functions such as `summary.dispRity` (just called as `summary`;
+see section \[summary\]) or `plot.dispRity` (just called as `plot`; see
+section \[plot\]). But also, this allows to use the S3 method for
+printing `dispRity` objects via `print.dispRity` that
+allows to summarise the content of the objects similar to the `phylo`
+class objects (see `ape::print.phylo`).
+
+\
+
+    ## [1] "dispRity"
+
+\
+
+    ## [1] "data"      "disparity" "elements"  "series"    "call"
+
+\
+
+    ## Disparity measurements across 9 series for 99 elements 
+    ## Series:
+    ## 120, 105, 90, 75, 60, 45 ...
+    ## Disparity calculated as: c(median, centroids) for 97 dimensions.
+    ## Data was split using continuous method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+
+Note however, that it is always possible to recall the full object using
+the argument `all=TRUE`:
+
+\
+`   `\
+
+Finally, some utility functions such as `get.dispRity` or
+`extract.dispRity` allows to access to some specific content of the
+object:
+
+\
+`     `\
+
+    ## Disparity measurements across 2 series for 24 elements 
+    ## Series:
+    ## 120, 75.
+    ## Disparity calculated as: c(median, centroids) for 97 dimensions.
+    ## Data was split using continuous method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+
+\
+
+    ##      120      105       90       75       60       45       30       15        0 
+    ## 1.493570 1.725280 1.820292 1.922531 1.945952 1.930306 1.910203 1.910203 1.910203
+
+\
+`   `\
+`      `
+
+    ## List of 1
+    ##  $ 120: num [1:100] 1.52 0.786 1.555 1.288 0.891 ...
+
+Modular functions
+-----------------
+
+This package aims to be a modular package where users can personalise
+some aspects of the package fairly easily. The modular aspect allows the
+package users to use several implemented tools to help them creating
+personalised functions. For example, the <span>`dispRity`
+</span>function intake a `metric` argument designating how disparity
+should be calculated. This argument can take some already implemented
+functions such as `mean` but also some completely new ones such as the
+sum divided by length:
+
+\
+`  `
+
+    ##   series  n observed
+    ## 1    120  5   -0.005
+    ## 2    105 11   -0.010
+    ## 3     90 18   -0.010
+    ## 4     75 19   -0.001
+    ## 5     60 20    0.005
+    ## 6     45 14    0.013
+    ## 7     30 10    0.017
+    ## 8     15 10    0.017
+    ## 9      0 10    0.017
+
+\
+`   `\
+\
+\
+`  `
+
+    ##   series  n observed
+    ## 1    120  5   -0.005
+    ## 2    105 11   -0.010
+    ## 3     90 18   -0.010
+    ## 4     75 19   -0.001
+    ## 5     60 20    0.005
+    ## 6     45 14    0.013
+    ## 7     30 10    0.017
+    ## 8     15 10    0.017
+    ## 9      0 10    0.017
+
+For more information, please refer to the [GitHub page:
+github.com/TGuillerme/dispRity](https://github.com/TGuillerme/dispRity)
+for the vignette about the metric implementation in <span>`dispRity`
+</span>.
+
+Functions
+=========
+
+In the following section, different functionalities are detailed. The
+functions are presented in a “classic” pipelined study fashion for
+convenience (i.e. splitting the data, bootstrapping it, calculating
+disparity, testing differences). Note however that most of these
+functions can be used in any order and that some steps can of course be
+skipped.
+
+One of the first steps in disparity analysis is to split the ordinated
+space into sub-samples of this space (hereafter *series*). These series
+correspond to regions of the ordinated space that we want to compare to
+each other.
+
+`cust.series`
+-------------
+
+The `cust.series` function allows to create these series according to
+factors determined by the user. In this example, we can split the matrix
+based on the phylogeny and separate to different groups of taxa: the
+crown mammals (all the living mammals and their direct ancestor) and the
+stem mammals (all the mammals that have no direct offspring).
+
+\
+\
+`     `\
+`    `\
+\
+`  `\
+`         `\
+`          `\
+\
+\
+\
+`  `\
+\
+\
+
+    ## [1] "dispRity"
+
+    ## 2 custom series for 50 elements 
+    ## Series:
+    ## Group.crown, Group.stem.
+
+\
+
+    ## [1] "data"     "elements" "series"
+
+\
+
+    ## List of 2
+    ##  $ Group.crown: num [1:30, 1:48] 0.3079 0.6531 0.5089 -0.1652 -0.0419 ...
+    ##   ..- attr(*, "dimnames")=List of 2
+    ##   .. ..$ : chr [1:30] "Dasypodidae" "Bradypus" "Myrmecophagidae" "Todralestes" ...
+    ##   .. ..$ : NULL
+    ##  $ Group.stem : num [1:20, 1:48] -0.739 -0.68 -0.511 -0.477 -0.473 ...
+    ##   ..- attr(*, "dimnames")=List of 2
+    ##   .. ..$ : chr [1:20] "Daulestes" "Bulaklestes" "Uchkudukodon" "Kennalestes" ...
+    ##   .. ..$ : NULL
+
+\
+
+    ##  chr [1:50] "Cimolestes" "Maelestes" "Batodon" "Bulaklestes" "Daulestes" ...
+
+\
+\
+
+    ## [1] "custom"      "Group.crown" "Group.stem"
+
+Note that here we separating the taxa into two exclusive groups (i.e.
+crown mammals can be crown only, same for stem mammals). It is however
+possible to add more factors with overlapping groups:
+
+\
+`  `\
+`         `\
+`        `\
+`           `\
+\
+\
+
+    ## 3 custom series for 50 elements 
+    ## Series:
+    ## Group.crown, Group.stem, Class.Mammalia.
+
+`time.series`
+-------------
+
+Another way to split the ordinated space (maybe more relevant to
+palaeobiologists) is to do it according to time. The `time.series`
+function allows to create series that contain all the elements present
+at specific points or during specific periods in time. This functions
+needs as input an ordinated space and a matching phylogenetic tree. Two
+types of time series can be performed by using the `method` option:
+
+1.  discrete time series (or time-binning) using `method = discrete`;
+
+2.  continuous time series (or time-slicing) using
+    `method = continuous`.
+
+For the time-slicing method details see @GuillermeSTD. For both methods,
+the function intakes the `time` argument which can be a vector of
+`numeric` values for:
+
+1.  defining the boundaries of the time bins (when `method = discrete`);
+
+2.  defining the time slices (when `method = continuous`).
+
+Otherwise, the `time` argument can be set as a single `numeric` value
+for automatically generating a given number of equidistant
+time-bins/slices. Additionally, it is also possible to input a data
+frame containing the first and last occurrence data (`FAD/LAD`) for taxa
+that span over a longer time than the tips/nodes age.
+
+Here is an example for `method = discrete`:
+
+\
+`      `\
+`         `
+
+    ## 3 discrete series for 50 elements 
+    ## Series:
+    ## 120-80, 80-40, 40-0.
+
+In this example, the taxa where split inside each timebin according to
+their age. Note however that some taxa might span between some time bins
+and should be included in more than one. This is possible by providing a
+table containing the first and last occurrence data:
+
+\
+\
+`     `\
+`              `\
+
+    ## 3 discrete series for 50 elements 
+    ## Series:
+    ## 120-80, 80-40, 40-0.
+
+This generated indeed a list of 3 sub matrices. Note that we can also
+generate equivalent results by just telling the function that we want
+three time-bins (series) as follow:
+
+\
+`      `\
+`      `
+
+    ## 3 discrete series for 50 elements 
+    ## Series:
+    ## 133.51104-89.00736, 89.00736-44.50368, 44.50368-0.
+
+We now have three time bins of 44.50368 million years each.
+
+When using this method, the oldest boundary of the first bin (or the
+first slice, see below) is automatically generated as being the root age
++ 1% of the tree length as long as at least three elements are present
+at that point in time. The algorithm adds an extra 1% tree length until
+reaching the required minimum of three elements. It is also possible to
+include nodes in each bin by using `inc.nodes = TRUE` and providing a
+matrix that contains the ordinated distance between tips *and* nodes.
+
+For the time-slicing method (`method = continuous`), the idea is really
+similar. This option intakes a matrix that contains the ordinated
+distance between taxa *and* nodes and an assumed evolutionary model via
+the `model` argument:
+
+1.  `acctran` where the data chosen on each time slice is always the one
+    of the offspring
+
+2.  `deltran` where the data chosen on each time slice is always the one
+    of the descendant
+
+3.  `punctuated` where the data chosen on each time slice is randomly
+    chosen between the offspring or the descendant
+
+4.  `gradual` where the data chosen on each time slice is either the
+    offspring or the descendant depending on branch length
+
+\
+\
+`     `\
+`               `\
+`     `\
+
+    ## 4 continuous series for 99 elements 
+    ## Series:
+    ## 120, 80, 40, 0.
+
+\
+\
+`      `\
+`         `
+
+    ## 4 continuous series for 99 elements 
+    ## Series:
+    ## 133.51104, 89.00736, 44.50368, 0.
+
+`boot.matrix` {#rare}
+-------------
+
+Once we obtain our different series, we might want to bootstrap and
+rarefy it (i.e. pseudo-replicating the data). The bootstrap will allow
+us to make each series more robust to outliers and the rarefaction will
+allow us to compare slices with the same number of elements to get rid
+of eventual sampling problems. The `boot.matrix` allows to bootstraps
+and rarefy ordinated matrices in a fast and easy way. The default
+options will bootstrap the matrix 1000 times without rarefaction. The
+number of bootstrap pseudo-replicates can be defined using the
+`bootstraps` option (see below).
+
+\
+` `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 1000 times, using the full bootstrap method.
+
+\
+\
+
+This function allows to control the bootstrap algorithm through the
+`boot.type` argument. Currently two algorithms are implemented:
+
+1.  `full` where the bootstrapping is entirely stochastic (all the data
+    is bootstrapped)
+
+2.  `single` where only one random elements is replaced by one other
+    random elements each pseudo-replication
+
+This function also allows to rarefy the data using the `rarefaction`
+argument. The default argument is `FALSE` but it can be set to `TRUE` to
+fully rarefy the data (i.e. remove $n$ elements for the number of
+pseudo-replicates, where $n$ varies from the maximum number of elements
+present in the dataset to a minimum of 3 elements). It can also be set
+to a fix `numeric` value (or a set of `numeric` values). Finally, one
+last argument, `rm.last.axis` allows to remove a certain amount of
+dimensions (or axis) for the ordinated space. This can be logical
+argument where `FALSE` (default) will not remove any dimension and
+`TRUE` will remove the last dimensions that bear up to 5% of the total
+ordinated space’s variance.
+
+\
+`   `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 1000 times, using the single bootstrap method.
+
+\
+`      `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 20 times, using the full bootstrap method.
+    ## Data was fully rarefied (down to 3 elements).
+
+\
+`      `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 20 times, using the full bootstrap method.
+    ## Data was rarefied with a maximum of 6, 7, 8 and 3 elements
+
+\
+`   `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 1000 times, using the full bootstrap method. 
+    ## The 6 last axis were removed from the original ordinated data.
+
+<span>`## Or with a fix value (50%)`</span>\
+`   `
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## 1
+    ## Data was bootstrapped 1000 times, using the full bootstrap method. 
+    ## The 35 last axis were removed from the original ordinated data.
+
+Of course, one could be interested in directly supplying the sub-sampled
+matrices generated above directly to this function. In fact, it can also
+deal with a list of matrices or with a `dispRity` object
+output from the `cust.series` or `time.series` functions.
+
+\
+`        `\
+\
+\
+`     `\
+`     `\
+\
+\
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## Series:
+    ## Group.crown, Group.stem.
+    ## Data was split using custom method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+    ## Data was fully rarefied (down to 3 elements).
+
+    ## Bootstrapped ordinated matrix with 50 elements 
+    ## Series:
+    ## 120-80, 80-40, 40-0.
+    ## Data was split using discrete method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+
+    ## Bootstrapped ordinated matrix with 99 elements 
+    ## Series:
+    ## 120, 80, 40, 0.
+    ## Data was split using continuous method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+
+`dispRity` {#disparity}
+----------
+
+This function is a modular function that allows to simply (and quickly!)
+calculate disparity from a matrix.
+
+Because disparity can be measured in many ways, this function is a tool
+to measure disparity *as defined by the user*. In fact, the
+`dispRity` function intakes two main arguments: the data
+and the disparity metric. The disparity metric is a function or a set of
+functions that summarises the ordinated matrix to a single value that
+represents, in our example, the diversity of morphologies.
+
+The `dispRity` algorithm decomposes the metrics functions
+into three levels that correspond to the dimensions of the output of
+each metric function. For more details on this algorithm please refer to
+the [metric vignette](https://github.com/TGuillerme/dispRity).
+
+In practice, the `dispRity` function intakes one or more
+functions as a definition of disparity. Several of these functions will
+be already implemented in other packages (such as `stats::median`,
+`base::sum`, etc.); some others are implemented in this package (listed
+in `?dispRity.metric`) and finally some others will be defined by the
+users. The `make.metric` function is designed to help users create and
+test their own disparity metric functions. In practice, the use of these
+metrics in the `dispRity` function, is pretty easy:
+
+`  `
+
+    ## Disparity measurements across 1 series for 50 elements 
+    ## 1
+    ## Disparity calculated as: mean for 48 dimensions.
+
+\
+\
+\
+\
+`   `
+
+    ## Disparity measurements across 1 series for 50 elements 
+    ## 1
+    ## Disparity calculated as: c(sum, variances) for 48 dimensions.
+
+\
+\
+\
+`   `
+
+    ## Disparity measurements across 1 series for 50 elements 
+    ## 1
+    ## Disparity calculated as: c(prod, centroids) for 48 dimensions.
+
+\
+\
+\
+\
+`   `\
+`   `
+
+    ## Disparity measurements across 1 series for 50 elements 
+    ## 1
+    ## Disparity calculated as: c(total.range, centroids) for 48 dimensions.
+
+\
+\
+\
+\
+`     `\
+\
+\
+\
+\
+\
+`     `\
+`  `
+
+    ## [1] TRUE
+
+Note that these functions do not directly output the disparity values
+but only the summary of the `dispRity` objects. To display
+the results, see the section \[summary\].
+
+In these examples we used only simple ordinated matrix but of course, it
+might be more interesting to directly use the <span>`dispRity`
+</span>objects we generated in the steps above. Thus we can calculate
+the bootstrapped and rarefied disparity in each sub-sample of the
+morphospace. In this example we are going to define disparity as being
+the median distance between each element and each dimensions centroids.
+
+\
+`     `\
+\
+\
+`     `\
+`     `
+
+Note that the computational time was longer for the rarefied data
+(`crown_stemBS`) since it had to calculate the disparity on all the
+rarefied matrix, each bootstrapped 100 times. For both the `boot.matrix`
+and the `dispRity` functions, it is possible to increase
+computational speed in some cases using the `parallel` option (see each
+function’s manuals).
+
+`summary`
+---------
+
+This function is a S3 function (`summary.dispRity`) allowing to
+summarize the content of `dispRity` objects that contain
+disparity calculations. This function intakes a <span>`dispRity`
+</span>object plus various options namely the `quantile` values for the
+confidence intervals levels; the `cent.tend` for the central tendency to
+use for summarising the results and two *visual* options which are
+whether to recall the `dispRity` options and how much
+digits are wanted in the results.
+
+    ##   series  n observed  mean  2.5%   25%   75% 97.5%
+    ## 1 120-80  8    1.203 1.103 0.895 1.057 1.178 1.236
+    ## 2  80-40 27    1.344 1.322 1.275 1.306 1.339 1.366
+    ## 3   40-0 16    1.353 1.323 1.265 1.304 1.346 1.368
+
+\
+\
+\
+\
+\
+`        `
+
+    ##   series  n observed  sd  6% 94%
+    ## 1 120-80  8      1.2 0.1 1.0 1.2
+    ## 2  80-40 27      1.3 0.0 1.3 1.4
+    ## 3   40-0 16      1.4 0.0 1.3 1.4
+
+\
+\
+`   `
+
+    ## Disparity calculated as: c(median, centroids) for 48 dimensions.
+    ## Data was split using discrete method.
+    ## Data was bootstrapped 100 times, using the full bootstrap method.
+    ##   series  n observed  mean  2.5%   25%   75% 97.5%
+    ## 1 120-80  8    1.203 1.103 0.895 1.057 1.178 1.236
+    ## 2  80-40 27    1.344 1.322 1.275 1.306 1.339 1.366
+    ## 3   40-0 16    1.353 1.323 1.265 1.304 1.346 1.368
+
+\
+\
+
+    ##        series  n observed  mean  2.5%   25%   75% 97.5%
+    ## 41 Group.stem 15       NA 1.229 1.146 1.210 1.253 1.282
+    ## 42 Group.stem 16       NA 1.232 1.154 1.217 1.250 1.279
+    ## 43 Group.stem 17       NA 1.233 1.174 1.218 1.251 1.281
+    ## 44 Group.stem 18       NA 1.236 1.175 1.219 1.255 1.282
+    ## 45 Group.stem 19       NA 1.239 1.173 1.226 1.256 1.286
+    ## 46 Group.stem 20     1.27 1.240 1.185 1.225 1.258 1.280
+
+`plot`
+------
+
+An alternative way to summarise the data is to plot the results using
+the S3 method `plot.dispRity`. This function intakes the same options as
+`summary.dispRity` along side with various graphical options described
+in the function manual (see `?plot.dispRity`).
+
+Two main categories of plots can be displayed: continuous plots with the
+argument `type = continuous` (see below) and discrete plots (default is
+`type = box`. Note that this argument can be left missing. In this case,
+the algorithm will automatically detect the type of series from the
+`dispRity` object.
+
+The discrete plot arguments can be either:
+
+-   `type = box` for plotting boxplots.
+
+-   `type = polygon` for plotting boxes that represent the different
+    levels of confidence intervals (with a dot for the
+    central tendency).
+
+-   `type = lines` which is similar to `type = polygon` but plots lines
+    rather than boxes for the confidence intervals levels.
+
+It is also possible to display the number of elements per series (has a
+horizontal doted line) using the option `elements = TRUE`. Additionally,
+when the data is rarefied (see section \[rare\]), one can also indicate
+which level of rarefaction to display (i.e. display the results for a
+certain number of elements) by using the `rarefaction` argument.
+
+\
+`          `\
+\
+\
+`   `\
+\
+\
+\
+`      `\
+\
+`         `
+
+![image](figure/minimal-plot1-1){width="1\linewidth"}
+
+It is also possible to easily look at the behaviour of the disparity
+metric with the rarefied data (i.e. how does the disparity score change
+when the number of elements goes down) by using the `rarefaction = plot`
+argument:
+
+\
+`  `\
+\
+`      `
+
+![image](figure/minimal-plot2-1){width="0.5\linewidth"}
+
+The different dashed lines represent the different confidence intervals
+around each rarefaction curve. We can see that the disparity metric
+becomes stable after more than 10 elements.
+
+It is also possible, when using the `type = lines` argument, to plot
+lines rather than boxes. This option can be useful when displaying many
+series in a same window. Additionally, it is possible to plot the
+observed data when existing (i.e. not when the data is rarefied) by
+using the option `observed = TRUE`.
+
+\
+`  `\
+\
+\
+`      `
+
+![image](figure/minimal-plot3-1){width=".8\linewidth"}
+
+The `type = continuous` argument plots superimposed continuous (along
+the x axis) polygons that represent the confidence intervals and a
+continuous line that represents the central tendency of the data. Note
+that, as a S3 method function, `plot.dispRity` can take the classic
+graphical options from the `plot` function or even to add other plots to
+the previous ones.
+
+\
+`  `\
+\
+\
+`   `\
+
+![image](figure/minimal-plot4-1){width=".5\linewidth"}
+
+I encourage you to play with the graphical options to have some prettier
+results. Note that most of the options from `plot` can be passed to
+`plot.dispRity` via `...`.
+
+\
+`  `\
+\
+`     `\
+`           `\
+`           `\
+`         `\
+`         `
+
+![image](figure/minimal-plot5-1){width=".8\linewidth"}
+
+Finally, it is possible to add multiple plots on top of each other:
+
+\
+`  `\
+\
+\
+`   `\
+\
+\
+`  `\
+`      `
+
+![image](figure/minimal-plot5_1-1){width=".5\linewidth"}
+
+`test.dispRity`
+---------------
+
+Finally, the `dispRity` package allows to apply some tests
+to the data in order to properly test hypothesis. The function
+`test.dispRity` works in a similar way as the <span>`dispRity`
+</span>function: it intakes a `dispRity` object (containing
+disparity measurements), a `test` and a `comparisons` argument. The
+`test` argument can be any statistical or non-statistical test to apply
+to the disparity object. It can be common test function (e.g.
+`stats::t.test`) or some functions implemented in <span>`dispRity`
+</span>(see `dispRity.test`) or even user defined functions. The
+`comparisons` argument must indicate the way the test should be applied
+to the data:
+
+-   `pairwise` (default): to compare each series pairwise
+
+-   `referential`: to compare each series to the first one
+
+-   `sequential`: to compare each series to the following one
+
+-   `all`: to compare all the series together (like in analysis
+    of variance)
+
+It is also possible to input a list of pairs of `numeric` values or
+`characters` matching the series names to create personalised test. Some
+other specific tests implemented in `dispRity` such as the
+`dispRity::null.test` and the `dispRity::sequential.test` have a
+specific way to be applied to the data and therefore ignore the
+`comparisons` argument.
+
+This function also allows to correct for type I error inflation when
+using multiple comparisons via the `correction` argument. This argument
+can be empty (no correction applied) or can contain one of the
+corrections from the `stats::p.adjust` function (see `?p.adjust`).
+
+Note that the `test.dispRity` algorithm deals with some classic tests
+outputs (`h.test`, `lm` and `numeric` vector) and summarises the test
+output. It is however possible to get the full detailed output by using
+the options `details = TRUE`.
+
+\
+\
+`  `
+
+    ##                                 t       df      p.value mean of x mean of y
+    ## Group.crown - Group.stem 42.25372 164.8723 2.303646e-90   1.36798  1.239652
+
+\
+`     `
+
+    ## $`Group.crown - Group.stem`
+    ## 
+    ##  Welch Two Sample t-test
+    ## 
+    ## data:  data[[list_of_comp[[1]]]] and data[[list_of_comp[[2]]]]
+    ## t = 42.254, df = 164.87, p-value < 2.2e-16
+    ## alternative hypothesis: true difference in means is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.1223319 0.1343251
+    ## sample estimates:
+    ## mean of x mean of y 
+    ##  1.367980  1.239652
+
+\
+\
+`  `\
+`         `
+
+    ##             W      p.value
+    ## 120 - 80    0 7.457311e-34
+    ## 80 - 40  4448 5.334298e-01
+    ## 40 - 0   1600 2.961960e-16
+
+\
+`     `
+
+    ## Call:
+    ##    test(formula = data ~ series, data = data)
+    ## 
+    ## Terms:
+    ##                   series Residuals
+    ## Sum of Squares  33.50243  10.79609
+    ## Deg. of Freedom        3       396
+    ## 
+    ## Residual standard error: 0.1651147
+    ## Estimated effects may be unbalanced
+
+\
+`       `\
+` `
+
+    ## [1] "aov" "lm"
+    ##              Df Sum Sq Mean Sq F value Pr(>F)    
+    ## series        3   33.5  11.167   409.6 <2e-16 ***
+    ## Residuals   396   10.8   0.027                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+\
+\
+\
+\
+`    `\
+`         `
+
+    ##                bhatt.coeff
+    ## 120-80 - 80-40  0.04472136
+    ## 120-80 - 40-0   0.03741657
+    ## 80-40 - 120-80  0.04472136
+    ## 40-0 - 120-80   0.03741657
+
+utilities
+---------
+
+### `tree.age`
+
+This function allows to calculate the age of each individual nodes and
+tips in a tree. It can either use the root age of the tree (if present
+as `$root.time`) or else calculate the age using a user defined root age
+via the `age` argument. Also, it is possible to decide whether the time
+is calculated towards the past (e.g. million years ago) or towards the
+present (e.g. in time since the origin).
+
+\
+
+    ## [1] 139.074
+
+\
+` `
+
+    ##    ages     elements
+    ## 1 90.00    Daulestes
+    ## 2 90.00  Bulaklestes
+    ## 3 90.00 Uchkudukodon
+    ## 4 77.85  Kennalestes
+    ## 5 77.85   Asioryctes
+
+\
+`    `
+
+    ##    ages     elements
+    ## 1 0.647    Daulestes
+    ## 2 0.647  Bulaklestes
+    ## 3 0.647 Uchkudukodon
+    ## 4 0.560  Kennalestes
+    ## 5 0.560   Asioryctes
+
+\
+\
+`       `
+
+    ##        ages     elements
+    ## 1 0.3528637    Daulestes
+    ## 2 0.3528637  Bulaklestes
+    ## 3 0.3528637 Uchkudukodon
+    ## 4 0.4402271  Kennalestes
+    ## 5 0.4402271   Asioryctes
+
+Developments
+============
+
+As stated at the start of the demo, this version 0.2 is still in
+development and many parts are missing. Here are the new functionalities
+that will be implemented in further versions.
+
+More user defined functions
+---------------------------
+
+I intend also develop functions to help users to develop their own
+algorithms for the bootstrap method (via `make.boot`) or the
+evolutionary models (via `make.model`). Both functions will provide
+similar testing as the `make.metric` function.
+
+Suggestions?
+------------
+
+If you have any extra suggestions or comments on what has already been
+developed or will be developed, please send me an email
+(<guillert@tcd.ie>) or if you are a GitHub user, directly create an
+issue on the [GitHub page
+(github.com/TGuillerme/dispRity)](https://github.com/TGuillerme/dispRity).
