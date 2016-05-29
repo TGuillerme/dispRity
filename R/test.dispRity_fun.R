@@ -1,10 +1,19 @@
+#Mapply function for applying the tests to distribution data
+test.mapply <- function(pair_comparison, data, test, ...) {
+    #Check if any is constant
+    # uniques1 <- which(unlist(lapply(data[[pair_comparison[[1]]]], function(X) return(length(unique(X))))) == 1)
+    # uniques2 <- which(unlist(lapply(data[[pair_comparison[[2]]]], function(X) return(length(unique(X))))) == 1)
+
+    # if(is.na(any(match(uniques1, uniques2)))) {
+        tests <- mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE)
+        return(tests)
+    # } else {
+    #     warning("Pair of series ", paste(pair_comparison, collapse = " and "), " contains not enough unique values.")
+    # }
+}
+
 #transforming test into a lapply from a given list of comp for multiple distributions
 test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
-    
-    test.mapply <- function(pair_comparison, data, test, ...) {
-        return(mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE))
-    }
-
     output <- lapply(list_of_comp, test.mapply, data, test, ...)
     return(output)
 }
@@ -154,7 +163,7 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
     #Remove null.value and the estimates
     remove <- match(c("null.value", "conf.int", "estimate"), test_elements)
     if(any(is.na(remove))) {
-    remove <- remove[-which(is.na(remove))]
+        remove <- remove[-which(is.na(remove))]
     }
     if(length(remove) > 0) {
         test_elements <- test_elements[-remove]

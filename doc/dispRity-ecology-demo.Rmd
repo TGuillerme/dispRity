@@ -62,9 +62,7 @@ A classical two dimensional approach
 
 A classical way to represent this ordinated data will be to use two dimensional plots.
 
-
 ```{r}
-##<!--, fig.width=8, fig.height=8, out.width='.8\\linewidth'>>= -->
 ## The x and y axis represent the two first dimensions (i.e. principal
 ## components) of the ordination
 x <- ord_matrix[, 1]
