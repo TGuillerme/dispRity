@@ -12,26 +12,14 @@ vignette: >
 ---
 
 
-This demo aims to give quick overview of the <span>`dispRity`
-</span>package (v.0.2) for palaeobiology analysis. Please refer to
-[GitHub page:
-github.com/TGuillerme/dispRity](https://github.com/TGuillerme/dispRity)
-for other vignettes, namely the [<span>`dispRity`
-</span>manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf)
-that explains the functions in more detail.
+This demo aims to give quick overview of the `dispRity` package (v.0.2) for palaeobiology analysis. Please refer to [GitHub page](https://github.com/TGuillerme/dispRity) for other vignettes, namely the [`dispRity` manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd) that explains the functions in more detail.
 
-To keep it short, this package allows to easily perform
-**disparity-through-time** analysis. This type of analysis often starts
-by ordinating **morphometric** or **cladistic** data into a
-multidimensional object hereafter called the **morphospace**. One might
-be interested in studying how the occupancy of the morphospace changed
-through time by measuring a summary metric of this morphospace through
-time, called **disparity**. Disparity can then be seen as a value
-summarising the diversity of morphologies.
+To keep it short, this package allows to easily perform **disparity-through-time** analysis.
+This type of analysis often starts by ordinating **morphometric** or **cladistic** data into a multidimensional object hereafter called the **morphospace**.
+One might be interested in studying how the occupancy of the morphospace changed through time by measuring a summary metric of this morphospace through time, called **disparity**.
+Disparity can then be seen as a value summarising the diversity of morphologies.
 
-This demo showcases a typical disparity-through-time analyse: we are
-going to test whether the disparity changed through time in a subset of
-Eutheria (Mammalia) since the last 100 million years.
+This demo showcases a typical disparity-through-time analyse: we are going to test whether the disparity changed through time in a subset of Eutheria (Mammalia) since the last 100 million years.
 
 Before starting
 ===============
@@ -39,8 +27,7 @@ Before starting
 Installing `dispRity` 
 -----------------------------------
 
-You can install this package easily if you are using the latest version
-of <span>`R` </span>and `devtools`.
+You can install this package easily if you are using the latest version of `R` and `devtools`.
 
 ```{r, eval = FALSE}
 if(!require(devtools)) install.packages("devtools")
@@ -51,12 +38,9 @@ library(dispRity)
 The morphospace
 ---------------
 
-In this example, we are going to use a subset of the data from
-@beckancient2014 that contains an ordinated cladistic matrix and a
-phylogenetic tree containing 50 taxa along side with a table containing
-some first and last occurence data for several taxa. The ordinated
-matrix will represent our full morphospace, i.e. all the morphologies
-that ever existed through time (for this dataset).
+In this example, we are going to use a subset of the data from @beckancient2014 that contains an ordinated cladistic matrix and a
+phylogenetic tree containing 50 taxa along side with a table containing some first and last occurence data for several taxa.
+The ordinated matrix will represent our full morphospace, i.e. all the morphologies that ever existed through time (for this dataset).
 
 ```{r}
 ## Loading demo and the package data
@@ -83,8 +67,7 @@ plot(BeckLee_tree, cex=0.7); axisPhylo(root=140)
 
 ![image](figure/minimal-data-1){width=".8\linewidth"}
 
-Note that you can have an even nicer tree if you use the `strap`
-package:
+Note that you can have an even nicer tree if you use the `strap` package:
 
 ```{r, eval = FALSE}
 if(!require(strap)) install.packages("strap")
@@ -98,23 +81,12 @@ A disparity-through-time analysis
 Splitting the morphospace through time
 --------------------------------------
 
-One of the crucial steps in disparity-through-time analysis is to split
-the full morphospace into smaller time seriess that contain the total
-amount of morphologies at certain points in time (time-slicing) or
-during certain periods in time (time-binning). Basically, the full
-morphospace in the previous step represents the total amount of
-morphologies in all time and is likely to be greater than any time
-series of the morphospace.
+One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time seriess that contain the total amount of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning).
+Basically, the full morphospace in the previous step represents the total amount of morphologies in all time and is likely to be greater than any time series of the morphospace.
 
-The `dispRity` package provides a `time.series` function
-that allows to split the morphospace time slices (using
-`method = continuous`) or into time bins (using `method = discrete`). In
-this example, we are going to split the morphospace into 5 equal time
-bins of 20 million years long from 100 million years ago (Mya) to the
-present. Note that we will also provide to the function the table
-containing the first and last occurrences data for some fossils to take
-into account the fact that some fossils might span between our different
-time bins.
+The `dispRity` package provides a `time.series` function that allows to split the morphospace time slices (using `method = continuous`) or into time bins (using `method = discrete`).
+In this example, we are going to split the morphospace into 5 equal time bins of 20 million years long from 100 million years ago (Mya) to the present.
+Note that we will also provide to the function the table containing the first and last occurrences data for some fossils to take into account the fact that some fossils might span between our different time bins.
 
 ```{r}
 ## Creating the vector of time bins ages
@@ -126,13 +98,9 @@ binned_morphospace <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
     FADLAD = BeckLee_ages)
 ```
 
-The output object is a `dispRity` object. For details about
-this object class, please refer to the [<span>`dispRity`
-</span>manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf).
-In brief, `dispRity` objects are lists of different
-elements (i.e. disparity results, morphospace time seriess, etc...) that
-display only a summary of the object when calling the object for
-avoiding jamming the <span>`R` </span>console.
+The output object is a `dispRity` object.
+For details about this object class, please refer to the [`dispRity` manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd).
+In brief, `dispRity` objects are lists of different elements (i.e. disparity results, morphospace time seriess, etc...) that display only a summary of the object when calling the object for avoiding jamming the `R` console.
 
 ```{r}
 ## The object class
@@ -146,19 +114,13 @@ names(binned_morphospace)
 binned_morphospace
 ```
 
-Note that these objects will gradually contain more information when
-reaching the following steps in the disparity-through-time analysis.
+Note that these objects will gradually contain more information when reaching the following steps in the disparity-through-time analysis.
 
 Bootstrapping the data
 ----------------------
 
-Once we obtain our different time series, we can bootstrap and rarefy
-them (i.e. pseudo-replicating the data). The bootstrapping will allow to
-make each series more robust to outliers and the rarefaction will allow
-us to compare slices with the same number of taxa to get rid of eventual
-sampling problems (i.e. more taxa in one bin than the other). The
-`boot.matrix` function that allows to bootstrap the <span>`dispRity`
-</span>object and the `rarefaction` option within allows to rarefy it.
+Once we obtain our different time series, we can bootstrap and rarefy them (i.e. pseudo-replicating the data). The bootstrapping will allow to make each series more robust to outliers and the rarefaction will allow us to compare slices with the same number of taxa to get rid of eventual sampling problems (i.e. more taxa in one bin than the other).
+The `boot.matrix` function that allows to bootstrap the `dispRity` object and the `rarefaction` option within allows to rarefy it.
 
 ```{r}
 ## Bootstrapping each time series 100 times
@@ -181,22 +143,13 @@ rare_bin_morphospace
 Calculating disparity
 ---------------------
 
-We can now calculate the disparity within each time series along side
-with some confidence intervals generated by the pseudo-replication step
-above (bootstraps/rarefaction). Disparity can be calculated in many ways
-and this package allows user to come up with their own disparity
-metrics. For more info, please refer to the [<span>`dispRity`
-</span>manual and the metric
-vignette](https://github.com/TGuillerme/dispRity).
+We can now calculate the disparity within each time series along side with some confidence intervals generated by the pseudo-replication step above (bootstraps/rarefaction).
+Disparity can be calculated in many ways and this package allows user to come up with their own disparity metrics.
+For more info, please refer to the [`dispRity` metric vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
 
-In this example, we are going to calculate the spread of the data in
-each time series by calculating the disparity as the sum of the variance
-of each dimension of the morphospace in each time series using the
-`dispRity` function. Thus, in this example, the disparity
-is defined by the multi-dimensional variance of each time series (i.e.
-the spread of the taxa within the morphospace). Note that this metric
-comes with a caveat not solved here since it ignores the covariance
-among the dimensions of the morphospace.
+In this example, we are going to calculate the spread of the data in each time series by calculating the disparity as the sum of the variance of each dimension of the morphospace in each time series using the `dispRity` function.
+Thus, in this example, the disparity is defined by the multi-dimensional variance of each time series (i.e. the spread of the taxa within the morphospace).
+Note that this metric comes with a caveat not solved here since it ignores the covariance among the dimensions of the morphospace.
 
 ```{r}
 ## Disparity for the bootstrapped data
@@ -215,8 +168,7 @@ summary(boot_disparity)
 summary(rare_disparity)
 ```
 
-As for any <span>`R` </span>package, you can refer yourself to each
-individual function for more details.
+As for any `R` package, you can refer yourself to each individual function for more details.
 
 ```{r}
 ## See more options on the summary function:
@@ -226,9 +178,8 @@ individual function for more details.
 Plotting the results
 --------------------
 
-It is sometimes easier to visualise the results in a plot than in a
-table. For that we can use the `plot` function to plot the
-`dispRity` objects.
+It is sometimes easier to visualise the results in a plot than in a table.
+For that we can use the `plot` function to plot the `dispRity` objects.
 
 ```{r}
 ## Graphical options
@@ -241,26 +192,16 @@ plot(rare_disparity, type = "continuous", main = "rarefied results")
 
 ![image](figure/minimal-plot-1){width="1\linewidth"}
 
-As we can see in this case, the rarefaction tends to increase the
-confidence intervals around the mean.
+As we can see in this case, the rarefaction tends to increase the confidence intervals around the mean.
 
 Testing differences
 -------------------
 
-Finally, to draw some conclusions from these results, we need to apply
-some statistical testing. As stated before, we wanted to test whether
-the disparity changed through time in this dataset since the last 100
-million years. To do so, we can apply some comparisons of the means
-between each time-bins in a sequential manner to see whether the
-disparity in bin X is equal to the disparity in bin Y which is in turn
-equal to the disparity in bin Z, etc. Because our data is temporally
-auto-correlated (i.e. what happens in bin Y depends on what happened in
-bin X) and was pseudo-replicated (i.e. each bootstrap draw creates
-non-independent time seriess because they are all based on the same time
-series), we are going to apply a non-parametric mean comparison: the
-`wilcox.test`. Also, we are going to apply a p-value correction to avoid
-type I error inflation due to performing multiple test for the same
-hypothesis (see `?p.adjust` for more details).
+Finally, to draw some conclusions from these results, we need to apply some statistical testing.
+As stated before, we wanted to test whether the disparity changed through time in this dataset since the last 100 million years.
+To do so, we can apply some comparisons of the means between each time-bins in a sequential manner to see whether the disparity in bin X is equal to the disparity in bin Y which is in turn equal to the disparity in bin Z, etc.
+Because our data is temporally auto-correlated (i.e. what happens in bin Y depends on what happened in bin X) and was pseudo-replicated (i.e. each bootstrap draw creates non-independent time seriess because they are all based on the same time series), we are going to apply a non-parametric mean comparison: the `wilcox.test`.
+Also, we are going to apply a p-value correction to avoid type I error inflation due to performing multiple test for the same hypothesis (see `?p.adjust` for more details).
 
 ```{r}
 ## testing the differences between bins in the bootstrapped dataset.
@@ -272,10 +213,4 @@ test.dispRity(rare_disparity, test = wilcox.test, comparison = "sequential",
     correction = "bonferroni")
 ```
 
-Here our results show significant changes in disparity through time
-between all time bins during the last 100 million years. However, when
-looking at the rarefied results, there is no significant difference
-between the time bins in the Cenozoic (60-40, 40-20 and 20-0 Mya),
-suggesting that the differences detected in the first test might just be
-due to the differences in number of taxa sample (respectively 13, 6 and
-10 in each time bin).
+Here our results show significant changes in disparity through time between all time bins during the last 100 million years. However, when looking at the rarefied results, there is no significant difference between the time bins in the Cenozoic (60-40, 40-20 and 20-0 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sample (respectively 13, 6 and 10 in each time bin).

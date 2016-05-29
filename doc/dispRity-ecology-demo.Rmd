@@ -11,18 +11,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-This demo aims to give quick overview of the <span>`dispRity`
-</span> package (v.0.2) for ecological analysis. Please refer to [GitHub
-page:
-github.com/TGuillerme/dispRity](https://github.com/TGuillerme/dispRity)
-for other vignettes, namely the `dispRity` tutorial that
-explains the functions in more detail.
+This demo aims to give quick overview of the `dispRity` package (v.0.2) for ecological analysis.
+Please refer to [GitHub page](https://github.com/TGuillerme/dispRity) for other vignettes, namely the `dispRity` manual that explains the functions in more details.
 
-To keep it short, this package allows the use of all of the dimensions
-of ordinated matrices (i.e. PCA, MDS, PCO) for statistical analysis
-rather than just a sub-set of dimensions. For example, one might want to
-know whether a specific kind of water treatment at certain water depth
-alters invertebrate communities and composition in natural habitats.
+To keep it short, this package allows the use of all of the dimensions of ordinated matrices (i.e. PCA, MDS, PCO) for statistical analysis rather than just a sub-set of dimensions.
+For example, one might want to know whether a specific kind of water treatment at certain water depth alters invertebrate communities and composition in natural habitats.
 
 Before starting
 ===============
@@ -30,8 +23,7 @@ Before starting
 Installing `dispRity` 
 -----------------------------------
 
-You can install this package easily if you are using the latest version
-of <span>`R` </span>and `devtools`.
+You can install this package easily if you are using the latest version of `R` (> 3.0.0) and `devtools`.
 
 ```{r, eval = FALSE}
 if(!require(devtools)) install.packages("devtools")
@@ -42,10 +34,8 @@ library(dispRity)
 Data
 ----
 
-For this example with ecological data we are going to use data from
-McClean (unpubl.). This data is the ordination of a distance matrix
-based on nutrient enrichment and depth and freshwater benthic
-invertebrates.
+For this example with ecological data we are going to use data from McClean (unpubl.).
+This data is the ordination of a distance matrix based on nutrient enrichment and depth and freshwater benthic invertebrates.
 
 ```{r}
 ## Loading demo and the package data
@@ -70,8 +60,7 @@ depth <- McClean_data$depth
 A classical two dimensional approach
 ====================================
 
-A classical way to represent this ordinated data will be to use two
-dimensional plots.
+A classical way to represent this ordinated data will be to use two dimensional plots.
 
 
 ```{r}
@@ -96,21 +85,12 @@ plot(x, y, col = cols, pch = pchs, xlab = "PC 1", ylab = "PC 2",
 
 ![image](figure/minimal-PCAplot-1){width=".8\linewidth"}
 
-This shows the distribution of the experimental plots along the two
-first axis of variance of the ordinated distance matrix (i.e. the first
-two dimensions). At a first glance, it seems difficult to see a clear
-effect from the treatments (blue or red) or the depth (rounds or
-triangles) since the different experimental plots with the same
-parameters don’t seem to cluster. However, the problem, is that this
-plot ignores the 18 other dimensions of the ordination! Additionally,
-these two represented dimensions do not represent a biological reality
-*per se*; i.e. the values on the first dimension do not represent some
-continuous traits (e.g. depth) but just the ordinations of correlations
-between the data and some factors.
+This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix (i.e. the first two dimensions).
+At a first glance, it seems difficult to see a clear effect from the treatments (blue or red) or the depth (rounds or triangles) since the different experimental plots with the same parameters don’t seem to cluster.
+However, the problem, is that this plot ignores the 18 other dimensions of the ordination!
+Additionally, these two represented dimensions do not represent a biological reality *per se*; i.e. the values on the first dimension do not represent some continuous traits (e.g. depth) but just the ordinations of correlations between the data and some factors.
 
-Therefore, one might want to approach this problem without getting stuck
-in only two dimensions and consider the whole dataset as a
-*n*-dimensional object.
+Therefore, one might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a *n*-dimensional object.
 
 A multidimensional approach with `dispRity` 
 =========================================================
@@ -118,12 +98,9 @@ A multidimensional approach with `dispRity`
 Splitting the data
 ------------------
 
-The first step in such analysis will be to create different series that
-are two sub-samples of the ordinated space (i.e. the *n*-dimensional
-object). Each of these series contain a certain number of elements (i.e.
-the 40 experimental field plots) that have some attributes in common. In
-our example, we are going to group the elements according to their depth
-and treatment.
+The first step in such analysis will be to create different series that are two sub-samples of the ordinated space (i.e. the *n*-dimensional object).
+Each of these series contain a certain number of elements (i.e. the 40 experimental field plots) that have some attributes in common.
+In our example, we are going to group the elements according to their depth and treatment.
 
 ```{r}
 ## Creating the table that contain the elements and their attributes
@@ -133,8 +110,7 @@ names(factors) <- c("Treat", "Depth")
 head(factors)
 ```
 
-Second, let’s split the data according to these factors to create the
-series of the ordinated space by using the `cust.series` function:
+Second, let’s split the data according to these factors to create the series of the ordinated space by using the `cust.series` function:
 
 ```{r}
 ## Splitting the ordinated space into four subsamples
@@ -147,11 +123,8 @@ class(customised_series)
 customised_series
 ```
 
-For more details on the `dispRity` objects, see the
-[<span>`dispRity`
-</span>manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf).
-Basically the idea is to avoid jamming the <span>`R` </span>console such
-as when using:
+For more details on the `dispRity` objects, see the [`dispRity` manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf).
+Basically the idea is to avoid jamming the `R` console such as when using:
 
 ```{r}
 ## Summarising the object
@@ -164,19 +137,13 @@ print(customised_series, all = TRUE)
 Calculating disparity
 ---------------------
 
-Disparity can be calculated in many ways, and therefore, the
-`dispRity` function allows to measure disparity *as defined
-by the user*. For more details on disparity, see the [other
-vignettes](https://github.com/TGuillerme/dispRity).
+Disparity can be calculated in many ways, and therefore, the `dispRity` function allows to measure disparity *as defined by the user*.
+For more details on measuring disparity, see the [`dispRity` metric vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
 
-In this example, we are going to define disparity as the median distance
-between the different experimental plots and the centroid of the
-ordinated space. High values of disparity will indicate a general high
-dispersal from this centroid (i.e. on average, the experimental plots
-are far apart in the ordinated space). We can define the metrics easily
-in the `dispRity` function by feeding them to the `metric`
-argument. Here we are going to feed the functions `stats::median` and
-`dispRity::centroids` which calculates distances between elements and
+In this example, we are going to define disparity as the median distance between the different experimental plots and the centroid of the ordinated space.
+High values of disparity will indicate a general high dispersal from this centroid (i.e. on average, the experimental plots are far apart in the ordinated space).
+We can define the metrics easily in the `dispRity` function by feeding them to the `metric` argument.
+Here we are going to feed the functions `stats::median` and `dispRity::centroids` which calculates distances between elements and
 centroid.
 
 ```{r}
@@ -193,11 +160,10 @@ summary(disparity)
 Bootstrapping the data
 ----------------------
 
-One might also want to bootstrap the data to test the robustness of the
-measured disparity to outliers. Also, as we can see, each series has
-different numbers of elements. It might be interesting to rarefy the
-data as well to have only series with the same number of elements. Both
-steps are easily doable through the `boot.matrix` function.
+One might also want to bootstrap the data to test the robustness of the measured disparity to outliers.
+Also, as we can see, each series has different numbers of elements.
+It might be interesting to rarefy the data as well to have only series with the same number of elements.
+Both steps are easily doable through the `boot.matrix` function.
 
 ```{r}
 ## Simple bootstrapping (100 times)
@@ -213,8 +179,7 @@ bootstrapped_data
 rarefied_data
 ```
 
-We can now rerun a more robust disparity analysis using the bootstrapped
-data:
+We can now rerun a more robust disparity analysis using the bootstrapped data:
 
 ```{r}
 ## Bootstrapped disparity
@@ -227,8 +192,7 @@ disparity_rare <- dispRity(rarefied_data, metric = c(median, centroids))
 Summarising the data
 --------------------
 
-We can now summarise the data using various options such as the
-confidence intervals levels and the central tendency.
+We can now summarise the data using various options such as the confidence intervals levels and the central tendency.
 
 ```{r}
 ## Summarising disparity (default)
@@ -245,8 +209,7 @@ summary(disparity_rare)
 ## the data was rarefied for these series.
 ```
 
-We can also plot the results and have a look at the effect of the number
-of experimental plots:
+We can also plot the results and have a look at the effect of the number of experimental plots:
 
 ```{r}
 ## Graphical options
@@ -261,16 +224,12 @@ plot(disparity_rare, main = "Rarefied data")
 
 ![image](figure/minimal-rare_plots-1){width="1\linewidth"}
 
-As we can see, there seems to be no strong effect of the number of
-experimental plots in each series (i.e. the rarefied plot is really
-similar to the bootstrapped plot) which is a good thing!
+As we can see, there seems to be no strong effect of the number of experimental plots in each series (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
 
 Testing the hypothesis
 ----------------------
 
-Finally, we can test our hypothesis (whether the sort of water treatment
-at certain depth alters invertebrate communities and composition in
-natural habitats) by using the `test.dispRity` function.
+Finally, we can test our hypothesis (whether the sort of water treatment at certain depth alters invertebrate communities and composition in natural habitats) by using the `test.dispRity` function.
 
 ```{r}
 ## Testing the effect of our factors on the bootstrapped data
@@ -289,10 +248,5 @@ test.dispRity(disparity_rare, test = wilcox.test,
     comparisons = list(c(1,2), c(3,4)))
 ```
 
-As we can see, there is strong support for an effect of the treatment
-and the depth on the median distance between each experimental plots and
-the centroid of the ordinated space. In other words, it seems that with
-the second treatment and the second level of depth, the invertebrate
-communities and composition were further apart (i.e. more dispersed in
-the ordinated space) than with the first treatment and the first level
-of depth.
+As we can see, there is strong support for an effect of the treatment and the depth on the median distance between each experimental plots and the centroid of the ordinated space.
+In other words, it seems that with the second treatment and the second level of depth, the invertebrate communities and composition were further apart (i.e. more dispersed in the ordinated space) than with the first treatment and the first level of depth.
