@@ -1,4 +1,4 @@
-#' Measuring disparity in R
+#' Measuring Disparity in R
 #' 
 #' A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
 #' 
@@ -31,7 +31,7 @@ NULL
 #'   \item \code{BeckLee_ages} A lit of first al last occurrence data for fossil taxa
 #' }
 #'
-#' @format 3 matrices and one phylogeny.
+#' @format 3 matrices and one phylogenetic tree.
 #' @source \url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
 #' @references Beck RMD & Lee MSY. 2014. Ancient dates or accelerated rates?
 #' Morphological clocks and the antiquity of placental mammals.

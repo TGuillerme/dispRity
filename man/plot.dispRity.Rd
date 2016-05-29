@@ -4,17 +4,18 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, quantile = c(50, 95), cent.tend = mean,
+\method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
   time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  ...)
+  significance = "cent.tend", lines.args = NULL, token.args = NULL,
+  nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
 \item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
-\item{quantile}{The quantiles to display (default is \code{quantile = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
@@ -30,19 +31,32 @@
 
 \item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
 
+\item{significance}{when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).}
+
+\item{lines.args}{when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
+
+\item{token.args}{when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
+
+\item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
+
+\item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
+
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }
 \description{
 Plots a \code{dispRity} object.
 }
 \details{
-\code{type}:
+The different \code{type} arguments are:
 \itemize{
   \item \code{"continuous"}: plots the results as a continuous line.
   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
   \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
   \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
 }
+The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+\code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
@@ -64,7 +78,7 @@ plot(sum_of_variances, type = "box")
 
 ## Using polygons rather than boxes (quantiles and central tendency can be
 ## set by the user)
-plot(sum_of_variances, type = "polygon", quantile = c(10, 50, 95),
+plot(sum_of_variances, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mode.val)
 
 ## Using different options

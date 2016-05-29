@@ -72,8 +72,10 @@ boot.matrix(matrix.list, bootstraps = 20)
 ## Bootstrapping a series of matrices using a single thread
 system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
 ## Bootstrapping a series of matrices using 4 threads
-system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE, parallel = c(4, "SOCK")))
-# System time is three times shorter with parallel but elapsed is > 2 times longer.
+system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
+     parallel = c(4, "SOCK")))
+## System time is three times shorter with parallel but elapsed is > 2 times
+## longer.
 }
 
 }

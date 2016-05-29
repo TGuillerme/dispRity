@@ -36,6 +36,29 @@ test_that("check.class works", {
     	)
 })
 
+#Check class function
+test_that("check.class works with functions", {
+    object_fun <- function(x) return(x+1)
+    object_std <- mean
+
+    #Normal behavior
+    expect_is(
+        object_fun
+        ,"function")
+    expect_null(
+        check.class(object_fun, "function")
+    )
+    expect_null(
+        check.class(object_std, "function")
+    )
+    expect_error(
+        check.class(object_std, "numeric")
+    )
+    expect_error(
+        check.class(object_fun, "standardGeneric")
+    )
+})
+
 #Testing check.length
 #examples
 length_1<-1

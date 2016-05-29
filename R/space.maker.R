@@ -8,11 +8,15 @@
 #' @param dimensions An \code{numeric} value smaller than \code{elements}.
 #' @param distribution One or more \code{function} to determine the distribution of the \code{elements} along each \code{dimensions}. The function must have a single input: \code{elements}.
 #' @param arguments Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).
+#' @param cor.matrix An optional correlation \code{matrix} of size \code{dimensions * dimensions} (\code{default = NULL}, see details).
 #'
 #' @details
 #' For passing some additional arguments to different distributions, they must be given as a \code{list} to each function in the order they appear.
 #' For example if \code{distribution = c(runif, rnorm, rgamma)} and one wants the distributions to be \code{runif(elements, min = 1, max = 10)}, \code{rnorm(elements, mean = 8)} and \code{rgamma(elements, shape = 1, log = TRUE)}, the additional arguments sould be passed as
 #' \code{c(list(min = 1, max = 10), list(mean = 8), list(shape = 1, log = TRUE)}. If no arguments have to be passed to a certain function, it can be left as \code{NULL} (e.g. \code{c(list(min = 1, max = 10), list(NULL), list(shape = 1, log = TRUE)}).
+#'
+#' The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
+#' If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
 #' 
 #'
 #' @examples
@@ -26,8 +30,15 @@
 #' ## A 2D cilindrical space
 #' plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
 #'
-#' ## A multidimensional space with different distributions
-#' space.maker(5, 3, c(runif, rnorm, rgamma), arguments = list(list(min = 1, max = 10), list(mean = 8), list(shape = 1)))
+#' ## A 4-dimensional space with different distributions
+#' space.maker(5, 4, c(runif, runif, rnorm, rgamma),
+#'             arguments = list(list(min = 1, max = 10), list(min = 1, max = 2),
+#'             list(mean = 8), list(shape = 1)))
+#' 
+#' ## A 3 dimensional correlated space
+#' cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+#' space <- space.maker(10000, 3, rnorm, cor.matrix = cor_pre)
+#' round(cor(space), 1) ; cor_matrix ## Both should be really similar matrices
 #' 
 #' \dontrun{
 #' require(scatterplot3d)
@@ -35,7 +46,8 @@
 #' scatterplot3d(space.maker(5000, 3, runif), pch = 20)
 #' 
 #' ## A plane space
-#' scatterplot3d(space.maker(5000, 3, c(runif, runif, runif), arguments = list(list(min = 0, max = 0), NULL, NULL)), pch = 20)
+#' scatterplot3d(space.maker(5000, 3, c(runif, runif, runif),
+#'      arguments = list(list(min = 0, max = 0), NULL, NULL)), pch = 20)
 #'
 #' ## A sphere space
 #' scatterplot3d(space.maker(5000, 3, rnorm), pch = 20)
@@ -49,7 +61,22 @@
 #'
 #' @author Thomas Guillerme
 
-space.maker <- function(elements, dimensions, distribution, arguments = NULL) {
+# #testing
+# source("sanitizing.R")
+# source("space.maker_fun.R")
+# elements = 100
+# dimensions = 3
+# distribution = rnorm
+# arguments = NULL
+# cor_matrix = matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+
+# space <- space.maker(1000, 3, rnorm, cor.matrix = cor_matrix)
+# space2 <- space.maker(1000, 3, rnorm, cor.matrix = NULL)
+
+# scatterplot3d(space, pch = 20)
+
+
+space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL) {
     # SANITZING
 
     # elements
@@ -85,6 +112,14 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL) {
         }
     }
 
+    #cor.matrix
+    if(!is.null(cor.matrix)) {
+        check.class(cor.matrix, "matrix")
+        if(any(dim(cor.matrix) != dimensions)) {
+            stop("cor.matrix must be a square matrix of size 'dimensions' * 'dimensions'.")
+        }
+    }
+
     # CREATE THE SPACE
     # with only one distribution
     if(uni_distribution == TRUE) {
@@ -104,7 +139,6 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL) {
         if(!is.null(arguments)) {
             #Mapply the distribution with the arguments
             space <- mapply(do.call, distribution, arguments)
-
         } else {
             #Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))
@@ -112,7 +146,15 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL) {
         }
     }
 
-    # Also introduce variance/covariance decrease?
+    #Apply the correlation matrix to the space (if !NULL)
+    if(!is.null(cor.matrix)) {
+        #Choleski decomposition
+        choleski_decomposition <- t(chol(cor.matrix))
+        #Multiply the matrices (transpose space)
+        space <- choleski_decomposition %*% t(space)
+        #Transpose space again
+        space <- t(space)
+    }
 
     #output
     return(space)

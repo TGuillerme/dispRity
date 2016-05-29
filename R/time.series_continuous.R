@@ -24,7 +24,7 @@ time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
     slice_list <- list()
 
     #verbose
-    if(verbose == TRUE) {
+    if(verbose != FALSE) {
         message("Creating ", n_slices, " time samples through the tree:", appendLF = FALSE)
     }
 
@@ -46,16 +46,15 @@ time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
         #storing the results
         slice_list[[slice]] <- sub_data
         #verbose
-        if(verbose == TRUE) {
-            message(".",appendLF = FALSE)
+        if(verbose != FALSE) {
+            message(".", appendLF = FALSE)
         }
     }
 
     #verbose
-    if(verbose == TRUE) {
-        message("Done.\n",appendLF = FALSE)
+    if(verbose != FALSE) {
+        message("Done.\n", appendLF = FALSE)
     }
-
 
     #naming the slices
     names(slice_list) <- time

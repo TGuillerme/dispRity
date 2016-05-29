@@ -7,9 +7,9 @@
 dispRity(data, metric, ..., verbose = FALSE, parallel)
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.}
+\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).}
 
-\item{metric}{A vector containing up to three functions and at least a "level 1" function (see details).}
+\item{metric}{A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).}
 
 \item{...}{Optional arguments to be passed to the metric.}
 
@@ -20,7 +20,7 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 \value{
 This function outputs a \code{dispRity} object containing:
 \item{data}{A \code{list} of the observed and bootstrapped matrices.}
-\item{disparity}{A \code{list} of disparity values.}
+\item{disparity}{A \code{list} of disparity values (containing the observed disparity and the eventual bootstrapped one).}
 \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
@@ -31,13 +31,18 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 }
 \details{
-\code{metric} should be input as a vector up to three functions.
-The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
-\code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
-level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
-\code{matrix} or a \code{vector} and output a single value.
-Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
-user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
+The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+
+\code{metric} should be input as a vector of functions.
+The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
+Typically "level 3" functions intake a \code{matrix} and output a \code{matrix}; level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a \code{matrix} or a \code{vector} and output a single value.
+When more than one function is input, they are treated first by level (i.e. level 3, then level 2 and finally level 1).
+Note that the functions can only take one metric of each level and thus can only take a maximum of three arguments!
+
+Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}
+For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
+
+\emph{HINT:} for using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows to use two level 3 functions - the correlation of the variance-covariance matrix in this case).
 }
 \examples{
 ## Load the Beck & Lee 2014 data
@@ -62,12 +67,25 @@ bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
 
+## Calculating disparity with different metrics levels
+## Disparity is calculated as the distribution of the variances in each
+## dimensions (output are distributions)
+disparity_level2 <- dispRity(BeckLee_mat50, metric = variances)
+## Disparity is calculated as the mean of the variances in each dimensions 
+## (output are single values)
+disparity_level1 <- dispRity(disparity_level2, metric = mean)
+## Both disparity have the same means but level 1 has no quantiles
+summary(disparity_level2)
+summary(disparity_level1)
+
 \dontrun{
 ## Calculating disparity using one thread
 system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
 ## Bootstrapping a series of matrices using 4 threads
-system.time(dispRity(bootstrapped_data, metric = c(sum, variances), parallel = c(4, "SOCK")))
-# System time is significantly longer! Using parallel is only an improvement for big datasets.
+system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
+     parallel = c(4, "SOCK")))
+## System time is significantly longer! Using parallel is only an improvement
+## for big datasets.
 }
 
 }

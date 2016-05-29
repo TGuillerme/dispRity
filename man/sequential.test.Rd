@@ -4,51 +4,62 @@
 \alias{sequential.test}
 \title{Sequential linear regressions}
 \usage{
-sequential.test(series, results = "coefficients", family, ...)
+sequential.test(series, family, correction, call = NULL, ...)
 }
 \arguments{
 \item{series}{time series of which to estimate the slopes sequentially.}
-
-\item{results}{which results from the \code{\link[stats]{glm}} to display (default = \code{"coefficients"}).}
 
 \item{family}{the family of the \code{\link[stats]{glm}}.}
 
 \item{correction}{optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
 
+\item{call}{optional, a call from a \code{dispRity} object.}
+
 \item{...}{optional arguments to be passed to the \code{\link[stats]{glm}}.}
-
-\item{add}{whether to add the results of the sequential test to the current plot (default = \code{FALSE}).}
-
-\item{lines.args}{a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
-
-\item{token.args}{a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
 }
 \description{
 Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation.
 }
 \details{
 This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
-the \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-\code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{sequential.test(..., token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30 higher than the slope.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 ## Calculating the disparity from a customised series
 ## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
-     dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+     rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
 customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-## Calculating the sum of variances
-sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
-## Extracting the row series
-series <- extract.dispRity(sum_of_variances, observed = FALSE)
+## Calculating variances of each dimension
+dim_variances <- dispRity(bootstrapped_data, metric = variances)
+## Extracting the disparity values of each series
+series <- extract.dispRity(dim_variances, observed = FALSE,
+     keep.structure = TRUE, concatenate = TRUE)
 
-## The sequential test
-sequential.test(series, family = gaussian)
+## Running a gaussian sequential test on the series
+results <- sequential.test(series, family = gaussian)
+## Summarising the results
+summary(results, rounding = 5)
+## Simple plotting the results
+plot(results)
+
+## Running a gaussian sequential test on multiple series
+## (i.e. non- concatenated)
+series <- extract.dispRity(dim_variances, observed = FALSE,
+     keep.structure = TRUE, concatenate = FALSE)
+results <- sequential.test(series, family = gaussian)
+## Summarising
+summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
+## Plotting the disparity first (as the me)
+plot(dim_variances, type = "c", cent.tend = median)
+## Adding the sequential model (using the first quantile (12.55\%) for our 
+## the significance level to consider).
+plot(results, add = TRUE, significance = 1,
+     token.args = list(float = 0.3, col = "blue", cex = 2),
+     lines.args = list(col = "red", lty = 3))
 
 }
 \author{

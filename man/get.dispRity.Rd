@@ -24,7 +24,7 @@ This function outputs a \code{dispRity} object containing:
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Extracting sub-samples series and data from a dispRity object.
+Extracting sub-samples series and data from a \code{dispRity} object.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
@@ -43,7 +43,7 @@ bootstrapped_data # 5 series for 99 elements
 get.dispRity(bootstrapped_data, what = "66.75552") # 1 series for 23 elements
 
 ## Disparity data sub-samples
-disparity_data <- dispRity(bootstrapped_data, c(sum, variances))
+disparity_data <- dispRity(bootstrapped_data, variances)
 disparity_data # 5 series for 99 elements
 get.dispRity(disparity_data, what = c(1,5)) # 2 series for 13 elements
 

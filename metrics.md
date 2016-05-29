@@ -14,6 +14,20 @@ ID | Name | Category | Description | CiteKey | Function | Comment |
 10 | Mean/median inter-taxa distance | distance | | | | |
 
 Note that some metrics can be combined (in a more or less silly way). For example, the Ellipsoid Volume/Convex Hull can be a good way to measure the relative volume occupancy (i.e. the "average" volume / by the total volume); or the sum of distance from centroid (illustrating the spread of the data from the mean?).
+
+
+Metrics from Anderson et al 2012 (Nature):
+ * (1) sum of univariate ranges;
+ * (2) root product of univariate ranges;
+ * (3) range as maximum euclidean distance;
+ * (4) area of the convex hull (coordinate axes 1 and 2 only);
+ * (5) volume;
+ * (6) sum of variances;
+ * (7) root product of variances;
+ * (8) mean pairwise distance;
+ * (9) median pairwise distance;
+ * (10) mean distance to the centroid (Navarro, 2001)
+
 <!--
    |      |          |             |         |          |         |
 ID: arbitrary number of the metric
