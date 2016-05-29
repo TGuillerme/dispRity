@@ -2,13 +2,8 @@
 #'
 #' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
-<<<<<<< HEAD
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}) or a bootstrapped matrix output from \code{\link{boot.matrix}}.
-#' @param metric A vector containing up to three functions and at least a "level 1" function (see details).
-=======
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
->>>>>>> origin/master
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
@@ -24,15 +19,6 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-<<<<<<< HEAD
-#' \code{metric} should be input as a vector up to three functions.
-#' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and
-#' \code{\link{make.metric}}). Typically "level 3" functions intake a \code{matrix} and output a \code{matrix};
-#' level2 functions intake a \code{matrix} and output a \code{vector} and "level 1" functions intake a
-#' \code{matrix} or a \code{vector} and output a single value.
-#' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}. For
-#' user specified metrics, please use \code{\link{make.metric}} to ensure if the metric works.
-=======
 #' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
 #' 
 #' \code{metric} should be input as a vector of functions.
@@ -45,7 +31,6 @@
 #' For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
 #' 
 #' \emph{HINT:} for using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows to use two level 3 functions - the correlation of the variance-covariance matrix in this case).
->>>>>>> origin/master
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
