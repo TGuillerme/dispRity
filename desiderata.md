@@ -1,7 +1,7 @@
 # Package wish list
-* Allow disparity metrics that work on a full distribution (i.e. for then allowing to compare the observed distributions directly)
 * Add a `k.root` function for scaling at the **k**th root where **k** is the number of ordination axis (useful for scaling product metrics).
 * Allow more level 1 functions for metric (e.g. `metric = c(k.root, prod, variances)`).
+* Add the possibility to use a `multiPhylo` object in `time.series`.
 
 * From Anderson et al 2012 Nature: implement the following in Claddis? :"strength of association between the the 11 coordinate axes (CA) of the NMDS and the biomechanical characters using Spearman rank-order (for continuous characters) and Mann- Whitney U (for the discrete characters) tests".
 * Add correlation with sample size for disparity metrics (calculate Spearman’s rho for the correlation between the metric and the sample size)
