@@ -82,4 +82,7 @@ system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
 \author{
 Thomas Guillerme
 }
+\seealso{
+\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
+}
 

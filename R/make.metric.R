@@ -39,7 +39,7 @@
 #' my_fun <- function(x) (x + sum(x))
 #' make.metric(my_fun)
 #'
-#' @seealso \code{\link{dispRity}} and \code{\link{dispRity.metric}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 #'
 #' @author Thomas Guillerme
 

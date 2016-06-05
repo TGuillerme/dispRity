@@ -68,7 +68,7 @@
 #' ## Rarefactions plots
 #' plot(sum_of_variances, rarefaction = "plot")
 #' 
-#' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 #'
 #' @author Thomas Guillerme
 

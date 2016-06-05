@@ -57,7 +57,7 @@
 #'
 #' }
 #'
-#' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
+#' @seealso \code{\link{null.test}}, \code{\link{test.dispRity}}.
 #'
 #' @author Thomas Guillerme
 

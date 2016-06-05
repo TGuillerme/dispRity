@@ -52,6 +52,6 @@ get.dispRity(disparity_data, what = c(1,5)) # 2 series for 13 elements
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}} and \code{\link{dispRity}}.
+\code{\link{dispRity}}, \code{\link{extract.dispRity}}.
 }
 

@@ -29,6 +29,8 @@
 #'   \item \code{"single"}: re-samples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each bootstrap).
 #' }
 #'
+#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
+#'
 #' @examples
 #' ## Load the Beck & Lee 2014 matrix
 #' data(BeckLee_mat50)
@@ -273,10 +275,10 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         }
     } else {
         if(rare.list == FALSE) {
-            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " elements", sep = "")
+            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " elements per series.", sep = "")
         } else {
             rare.elements <- paste(paste(rarefaction[-length_rarefaction], collapse = ", "), rarefaction[length_rarefaction], sep = " and ")
-            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " elements", sep = "")
+            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " elements per series.", sep = "")
         }
     }
 

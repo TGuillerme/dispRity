@@ -7,7 +7,7 @@
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
-#' @seealso \code{\link[paleotree]{timeSliceTree}} and \code{\link{time.series}}.
+#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.series}}.
 #'
 #' @author Thomas Guillerme
 #' @export

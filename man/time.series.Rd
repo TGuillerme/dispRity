@@ -67,4 +67,7 @@ str(lapply(sliced_data$data, class)) # A list of 5 matrices
 \author{
 Thomas Guillerme
 }
+\seealso{
+\code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+}
 

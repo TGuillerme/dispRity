@@ -57,6 +57,6 @@ summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}
+\code{\link{dispRity}}, \code{\link{plot.dispRity}}.
 }
 

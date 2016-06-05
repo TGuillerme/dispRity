@@ -37,6 +37,6 @@ summary(sort(disparity, sort = c(1,3,4,5,2)))
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{test.dispRity}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
 }
 

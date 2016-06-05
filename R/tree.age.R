@@ -12,6 +12,8 @@
 #' ## A random tree with the distance since the root.
 #' tree.age(rtree(10), order='present')
 #'
+#' @seealso \code{\link{slice.tree}}, \code{\link{time.series}}.
+#'
 #' @author Thomas Guillerme
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it

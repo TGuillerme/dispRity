@@ -45,7 +45,7 @@
 #'      concatenate = FALSE, keep.structure = TRUE)
 #' str(boot_disp) # A list of three lists of 10 elements
 #' 
-#' @seealso \code{\link{dispRity}}; \code{\link{get.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{get.dispRity}}.
 #'
 #' @author Thomas Guillerme
 

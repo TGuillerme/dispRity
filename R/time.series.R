@@ -50,6 +50,7 @@
 #'      FADLAD = BeckLee_ages)
 #' str(lapply(sliced_data$data, class)) # A list of 5 matrices
 #'
+#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
 #Testing

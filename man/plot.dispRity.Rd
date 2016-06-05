@@ -100,6 +100,6 @@ plot(sum_of_variances, rarefaction = "plot")
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{summary.dispRity}}.
+\code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 }
 

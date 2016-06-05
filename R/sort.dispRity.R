@@ -22,7 +22,7 @@
 #' summary(sort(disparity, decreasing = TRUE))
 #' summary(sort(disparity, sort = c(1,3,4,5,2)))
 #'
-#' @seealso \code{\link{dispRity}} and \code{\link{test.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
 #' @export

@@ -22,6 +22,6 @@ Slicing through a phylogenetic tree (function modified from paleotree::timeSlice
 Thomas Guillerme
 }
 \seealso{
-\code{\link[paleotree]{timeSliceTree}} and \code{\link{time.series}}.
+\code{\link[paleotree]{timeSliceTree}}, \code{\link{time.series}}.
 }
 

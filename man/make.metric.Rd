@@ -54,6 +54,6 @@ make.metric(my_fun)
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{dispRity.metric}}.
+\code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 }
 

@@ -38,7 +38,7 @@
 #' summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
 #'      rounding = 0, recall = TRUE)
 #' 
-#' @seealso \code{\link{dispRity}}
+#' @seealso \code{\link{dispRity}}, \code{\link{plot.dispRity}}.
 #'
 #' @author Thomas Guillerme
 

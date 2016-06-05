@@ -2,15 +2,12 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{centroids}
-\alias{centroids.global}
-\alias{centroids.observed}
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
 \alias{dispRity.metric}
 \alias{ellipse.volume}
 \alias{hyper.volume}
-\alias{metric.modifier}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}
