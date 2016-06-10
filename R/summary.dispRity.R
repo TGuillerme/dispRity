@@ -121,36 +121,31 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it's a bootstrapped dispRity object
-    if(class(data) == "dispRity" & length(data) == 4) stop("No disparity calculated yet.\nUse the dispRity() function to calculate disparity.\n", "So far:\n", paste(data$call), sep="")
-    #must have 5 elements
-    check.length(data, 5, " must be a 'dispRity' object.")
+    if(class(data) == "dispRity" && length(data) != 5) stop("No disparity calculated yet.\nUse the dispRity() function to calculate disparity.\n", "So far:\n", paste(data$call), sep = "")
     #must have one element called dispRity
     if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
+    #Extract he observed results
     OBSresults <- data$disparity$observed
-    #is the data bootstrapped? 
+    #Is the data bootstrapped? 
     if(!is.na(match("bootstraps", names(data$data)))) {
         #must have more than one bootstrap!
         if(length(data$data$bootstraps[[1]][[1]]) > 1) {
             is.bootstrapped <- TRUE
             BSresults <- data$disparity$bootstrapped
         } else {
-            is.bootstrapped<-FALSE
+            is.bootstrapped <- FALSE
         }
     } else {
-        is.bootstrapped<-FALSE
+        is.bootstrapped <- FALSE
     }
     
-    #quantiles
-    #Only check if the data is bootstrapped
-    if(is.bootstrapped == TRUE) {
-        check.class(quantiles, "numeric", " must be any value between 1 and 100.")
-        #remove warnings
-        if(any(quantiles < 1)) {
-            stop("quantiles(s) must be any value between 1 and 100.")
-        }
-        if(any(quantiles > 100)) {
-            stop("quantiles(s) must be any value between 1 and 100.")
-        }
+    #Check quantiles
+    check.class(quantiles, "numeric", " must be any value between 1 and 100.")
+    if(any(quantiles < 1)) {
+        stop("quantiles(s) must be any value between 1 and 100.")
+    }
+    if(any(quantiles > 100)) {
+        stop("quantiles(s) must be any value between 1 and 100.")
     }
 
     #check if is.distribution
@@ -160,18 +155,20 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
-    if(is.bootstrapped == FALSE) {
+    if(is.bootstrapped != TRUE) {
         
-        if(is.distribution == FALSE) {
+        if(is.distribution != TRUE) {
             #Extracting the observed disparity
             OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
 
             #Create the result table
-            results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors=FALSE)
+            results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), as.numeric(OBSresults_unl)), stringsAsFactors = FALSE)
 
             #Add columns names
-            colnames(results_table)<-c("series", "n", "observed")
+            colnames(results_table) <- c("series", "n", "observed")
+
         } else {
+
             #Extracting the observed disparity
             OBSresults_unl <- unlist(recursive.unlist(OBSresults, is.distribution = TRUE), recursive = FALSE)
             #Calculate their central tendencies
@@ -180,7 +177,8 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
             results_quantiles <- lapply(unlist(OBSresults_unl, recursive = FALSE), quantile, probs = CI.converter(quantiles))
 
             #Create the result table
-            results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), results_cent), stringsAsFactors = FALSE)
+            #results_table <- data.frame(cbind(rep(data$series, unlist(lapply(OBSresults_unl, length))), diversity.count(data$data$observed), results_cent), stringsAsFactors = FALSE)
+            results_table <- data.frame(cbind(data$series, diversity.count(data$data$observed), results_cent), stringsAsFactors = FALSE)
             #Add to the quantiless table
             results_table <- cbind(results_table, matrix(data = unlist(results_quantiles), ncol = length(quantiles)*2, byrow = TRUE))
 
@@ -195,7 +193,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
         }
     
     } else {
-        if(is.distribution == FALSE) {
+        if(is.distribution != TRUE) {
             #Extracting the observed disparity
             OBSresults_unl <- unlist(unlist(recursive.unlist(OBSresults), recursive = FALSE))
         } else {
@@ -214,15 +212,15 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
         #Multiplier (for rep)
         multiplier <- unlist(lapply(BSresults, length))
 
-        if(is.distribution == FALSE) {
+        if(is.distribution != TRUE) {
             #Create the result table
             results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps), rep(OBSresults_unl, multiplier), results_cent), stringsAsFactors = FALSE)
 
             #Add columns names
             if(is.null(match_call$cent.tend)) {
-                colnames(results_table)<-c("series", "n", "obs.mean", "bs.mean")
+                colnames(results_table) <- c("series", "n", "obs.mean", "bs.mean")
             } else {
-                colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
+                colnames(results_table) <- c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
             }
         } else {
             #Create the result table
@@ -230,17 +228,17 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
 
             #Add columns names
             if(is.null(match_call$cent.tend)) {
-                colnames(results_table)<-c("series", "n", "obs.mean", "bs.mean")
+                colnames(results_table) <- c("series", "n", "obs.mean", "bs.mean")
             } else {
-                colnames(results_table)<-c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
+                colnames(results_table) <- c("series", "n", paste("obs", match_call$cent.tend, sep = "."), paste("bs", match_call$cent.tend, sep = "."))
             }
         }
 
         #Checking if the observed values match the n_obs (otherwise replace by NA)
         n_obs <- diversity.count(data$data$observed)
         for(ser in 1:length(data$series)) {
-            to_remove<-which(as.numeric(results_table[which(results_table$series == data$series[ser]), 2]) != n_obs[ser])
-            results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA          
+            to_remove <- which(as.numeric(results_table[which(results_table$series == data$series[ser]), 2]) != n_obs[ser])
+            results_table[which(results_table$series == data$series[ser]), 3][to_remove] <- NA
         }
 
         #Calculate the quantiless
@@ -262,7 +260,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     #----------------------
     # OUTPUT
     #----------------------
-    if(recall == TRUE) {
+    if(recall != FALSE) {
         cat(data$call, sep = "\n")
     }
 
