@@ -170,8 +170,8 @@ test_that("Test with disparity as a distribution", {
         )
 
     expect_equal(
-        dim(summary(sum_of_ranges1)), c(2,7)
-        )
+        dim(summary(sum_of_ranges1))
+        , c(2,7))
     expect_equal(
         dim(summary(sum_of_ranges2)), c(2,8)
         )
