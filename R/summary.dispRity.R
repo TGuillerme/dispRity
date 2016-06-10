@@ -121,7 +121,7 @@ summary.dispRity<-function(data, quantiles=c(50,95), cent.tend=mean, recall=FALS
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it's a bootstrapped dispRity object
-    if(class(data) == "dispRity" & length(data) == 4) stop(paste(data$call), "\nUse the dispRity function to calculate disparity.", sep="")
+    if(class(data) == "dispRity" & length(data) == 4) stop("No disparity calculated yet.\nUse the dispRity() function to calculate disparity.\n", "So far:\n", paste(data$call), sep="")
     #must have 5 elements
     check.length(data, 5, " must be a 'dispRity' object.")
     #must have one element called dispRity
