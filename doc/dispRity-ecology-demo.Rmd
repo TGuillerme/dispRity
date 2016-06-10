@@ -62,7 +62,7 @@ A classical two dimensional approach
 
 A classical way to represent this ordinated data will be to use two dimensional plots.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## The x and y axis represent the two first dimensions (i.e. principal
 ## components) of the ordination
 x <- ord_matrix[, 1]
@@ -81,7 +81,6 @@ plot(x, y, col = cols, pch = pchs, xlab = "PC 1", ylab = "PC 2",
     xlim = range(x) + c(0, 100))
 ```
 
-![image](figure/minimal-PCAplot-1){width=".8\linewidth"}
 
 This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix (i.e. the first two dimensions).
 At a first glance, it seems difficult to see a clear effect from the treatments (blue or red) or the depth (rounds or triangles) since the different experimental plots with the same parameters don’t seem to cluster.
@@ -209,7 +208,7 @@ summary(disparity_rare)
 
 We can also plot the results and have a look at the effect of the number of experimental plots:
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 
@@ -219,8 +218,6 @@ plot(disparity_BS, main = "Bootstrapped data")
 ## Plotting the rarefied disparity
 plot(disparity_rare, main = "Rarefied data")
 ```
-
-![image](figure/minimal-rare_plots-1){width="1\linewidth"}
 
 As we can see, there seems to be no strong effect of the number of experimental plots in each series (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
 

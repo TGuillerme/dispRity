@@ -57,7 +57,7 @@ In this tutorial we are going to use a subset of the ordinated cladistic data fr
 Note that this data is more oriented towards palaebiology analysis but that it can apply to other disciplines.
 Please refer to the [GitHub page](https://github.com/TGuillerme/dispRity) for other vignettes covering some specific example.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Loading the package
 library(dispRity)
 
@@ -84,14 +84,12 @@ data(BeckLee_tree)
 plot(BeckLee_tree, cex = 0.8) ; nodelabels(cex = 0.8) ; axisPhylo(root = 140)
 ```
 
-![image](figure/minimal-data-1){width=".8\linewidth"}
-
 A quick go through
 ------------------
 
 Here is a really crude and quick analysis to go through the package, showing some of its features. Note that all these features will be discussed in more details below.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Splitting the data
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
     model = "acctran", time = rev(seq(from=0, to=130, by=15)),
@@ -110,8 +108,6 @@ plot(median_centroids)
 ## Testing the effect of time on disparity
 summary(test.dispRity(median_centroids, test = aov, comparisons = "all"))
 ```
-
-![image](figure/minimal-Quick_go-1){width=".5\linewidth"}
 
 Package specificities
 =====================
@@ -502,7 +498,7 @@ The discrete plot arguments can be either:
 It is also possible to display the number of elements per series (has a horizontal doted line) using the option `elements = TRUE`.
 Additionally, when the data is rarefied (see section \[rare\]), one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the `rarefaction` argument.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 quartz(width = 15, height = 5) ; par(mfrow = (c(1,3)), bty = "n")
 
@@ -516,11 +512,9 @@ plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
 plot(disp_crown_stemBS, type = "polygon", elements = TRUE, rarefaction = 20)
 ```
 
-![image](figure/minimal-plot1-1){width="1\linewidth"}
-
 It is also possible to easily look at the behaviour of the disparity metric with the rarefied data (i.e. how does the disparity score change when the number of elements goes down) by using the `rarefaction = plot` argument:
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
 ## The rarefaction curves
@@ -528,7 +522,6 @@ plot(disp_crown_stemBS, elements = TRUE, rarefaction = "plot")
 
 ```
 
-![image](figure/minimal-plot2-1){width="0.5\linewidth"}
 
 The different dashed lines represent the different confidence intervals around each rarefaction curve. We can see that the disparity metric becomes stable after more than 10 elements.
 
@@ -543,12 +536,10 @@ par(bty = "n")
 plot(disp_time_binsBS, type = "lines", observed = TRUE)
 ```
 
-![image](figure/minimal-plot3-1){width=".8\linewidth"}
-
 The `type = continuous` argument plots superimposed continuous (along the x axis) polygons that represent the confidence intervals and a continuous line that represents the central tendency of the data.
 Note that, as a S3 method function, `plot.dispRity` can take the classic graphical options from the `plot` function or even to add other plots to the previous ones.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
 
@@ -557,12 +548,10 @@ plot(disp_time_slicesBS, type = "continuous")
 ## Note that the type = "continuous" argument is not mandatory here.
 ```
 
-![image](figure/minimal-plot4-1){width=".5\linewidth"}
-
 I encourage you to play with the graphical options to have some prettier results.
 Note that most of the options from `plot` can be passed to `plot.dispRity` via `...`.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
 ## A plot with many options!
@@ -573,11 +562,10 @@ plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)),
     observed = TRUE, main = "Many options...")
 ```
 
-![image](figure/minimal-plot5-1){width=".8\linewidth"}
 
 Finally, it is possible to add multiple plots on top of each other:
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
 
@@ -588,8 +576,6 @@ plot(disp_time_slicesBS, ylim = c(0.5,2))
 par(new = TRUE)
 plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
 ```
-
-![image](figure/minimal-plot5_1-1){width=".5\linewidth"}
 
 `test.dispRity`
 ---------------
@@ -635,11 +621,8 @@ slice_aov <- test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
 class(slice_aov) ; summary(slice_aov)
 
 ## Measuring the overlap between distributions in the time bins (using the
-## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff) with a
-## personalised series comparisons and some additional arguments to pass to the
-## test function (bw = bw.nrd)
-test.dispRity(disp_time_binsBS, test = bhatt.coeff, bw = bw.nrd,
-    comparisons = list(c(1,2), c(1,3), c(2,1), c(3,1)))
+## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
+test.dispRity(disp_time_binsBS, test = bhatt.coeff)
 
 ```
 

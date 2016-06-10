@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2016-05-25" />
+<meta name="date" content="2016-06-10" />
 
 <title>dispRity metrics</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity metrics</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2016-05-25</em></h4>
+<h4 class="date"><em>2016-06-10</em></h4>
 
 
 
@@ -78,7 +78,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="disparity-metrics" class="section level1">
 <h1>Disparity metrics</h1>
 <p>There are many ways for measuring disparity. In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. MDS, PCA, PCO, PCoA). For example, one can look at ellipsoid hyper-volume of the ordinated space <span class="citation">(Donohue et al. 2013)</span>, the sum and the product of the ranges and variances of the ordinated space dimensions <span class="citation">(Wills, Briggs, and Fortey 1994–4AD)</span> or the median position of the elements in the ordinated space relative to its centroid <span class="citation">(Guillerme and Cooper in prep.)</span>. Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.</p>
-<p>Because of this great diversity of metric, the package <code>dispRity</code> has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis. In fact, the core function of the package, <code>dispRity</code>, allows the user to define any metric in the <code>metric</code> argument. However, because of the infrastructure of the package (especially the one of the <code>dispRity</code> objects <U+2013> see the <a href="https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf"><code>dispRity</code> manual</a>), the <code>metric</code> argument has to follow certain rules:</p>
+<p>Because of this great diversity of metric, the package <code>dispRity</code> has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis. In fact, the core function of the package, <code>dispRity</code>, allows the user to define any metric in the <code>metric</code> argument. However, because of the infrastructure of the package (especially the one of the <code>dispRity</code> objects – see the <a href="https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf"><code>dispRity</code> manual</a>), the <code>metric</code> argument has to follow certain rules:</p>
 <ol style="list-style-type: decimal">
 <li><p>it must be composed of one to three <code>function</code> objects;</p></li>
 <li><p>these functions can only have as input a <code>matrix</code> or a <code>vector</code>;</p></li>
@@ -102,9 +102,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 <span class="co"># Any summary metric such as mean or median are good examples of level 1</span>
 <span class="co"># functions as they reduce the matrix to a single dimension (i.e. one value):</span>
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.20224</code></pre>
+<pre><code>## [1] 0.239541</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.4178669</code></pre>
+<pre><code>## [1] 0.6040276</code></pre>
 </div>
 <div id="a-level-2-function" class="section level2">
 <h2>A level 2 function</h2>
@@ -115,7 +115,7 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <span class="co"># This function is a level 2 function as it reduces the matrix into a two</span>
 <span class="co"># dimensional element (a vector of values):</span>
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.3122697 -0.6819324 -0.1271872 -1.5650448</code></pre>
+<pre><code>## [1] -0.07300211 -1.05922060 -0.70421358  0.43670759</code></pre>
 </div>
 <div id="a-level-3-function" class="section level2">
 <h2>A level 3 function</h2>
@@ -123,10 +123,10 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The var functions computes the variance/covariance matrix which will be a</span>
 <span class="co"># three by three matrix</span>
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##            [,1]       [,2]      [,3]
-## [1,]  0.9517359 -0.1826716 0.6213371
-## [2,] -0.1826716  0.7500605 0.1934303
-## [3,]  0.6213371  0.1934303 1.3987027</code></pre>
+<pre><code>##            [,1]       [,2]       [,3]
+## [1,]  0.7826658 -0.6934248 -0.4121056
+## [2,] -0.6934248  0.8143668  0.1496200
+## [3,] -0.4121056  0.1496200  0.5333730</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level1">
@@ -331,17 +331,17 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that the more the dimensions, the more the volume tends towards 0!</span>
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(<span class="kw">space.maker</span>(<span class="dv">10</span>,<span class="dv">9</span>, rnorm), <span class="dt">metric =</span> convhull.volume))</code></pre></div>
 <pre><code>##   series  n observed
-## 1      1 10    0.013</code></pre>
+## 1      1 10    0.002</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The estimation of the hypervolume is a bit slower:</span>
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume))</code></pre></div>
 <pre><code>##   series  n observed
-## 1      1 10    24.06</code></pre>
+## 1      1 10    23.78</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note that the hypervolume is different of the convex hull volume!</span>
 <span class="co"># This function also intakes more arguments that can be fed to dispRity</span>
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume,
                  <span class="dt">repsperpoint =</span> <span class="dv">100</span>, <span class="dt">quantile =</span> <span class="fl">0.5</span>))</code></pre></div>
 <pre><code>##   series  n observed
-## 1      1 10    408.6</code></pre>
+## 1      1 10    405.4</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Which gives quiet different results!</span></code></pre></div>
 </div>
 <div id="diagonal-ranges-and-variances" class="section level3">

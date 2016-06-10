@@ -42,7 +42,7 @@ In this example, we are going to use a subset of the data from @beckancient2014 
 phylogenetic tree containing 50 taxa along side with a table containing some first and last occurence data for several taxa.
 The ordinated matrix will represent our full morphospace, i.e. all the morphologies that ever existed through time (for this dataset).
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Loading demo and the package data
 library(dispRity)
 
@@ -64,8 +64,6 @@ head(BeckLee_ages)
 data(BeckLee_tree)
 plot(BeckLee_tree, cex=0.7); axisPhylo(root=140)
 ```
-
-![image](figure/minimal-data-1){width=".8\linewidth"}
 
 Note that you can have an even nicer tree if you use the `strap` package:
 
@@ -181,7 +179,7 @@ Plotting the results
 It is sometimes easier to visualise the results in a plot than in a table.
 For that we can use the `plot` function to plot the `dispRity` objects.
 
-```{r}
+```{r, fig.width=6, fig.height=6}
 ## Graphical options
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 
@@ -189,8 +187,6 @@ quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 plot(boot_disparity, type = "continuous", main = "bootstrapped results")
 plot(rare_disparity, type = "continuous", main = "rarefied results")
 ```
-
-![image](figure/minimal-plot-1){width="1\linewidth"}
 
 As we can see in this case, the rarefaction tends to increase the confidence intervals around the mean.
 
