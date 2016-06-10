@@ -42,12 +42,12 @@ plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
 
 ## A 4-dimensional space with different distributions
 space.maker(5, 4, c(runif, runif, rnorm, rgamma),
-            arguments = list(list(min = 1, max = 10), list(min = 1, max = 2),
-            list(mean = 8), list(shape = 1)))
+     arguments = list(list(min = 1, max = 10), list(min = 1, max = 2),
+     list(mean = 8), list(shape = 1)))
 
 ## A 3 dimensional correlated space
 cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
-space <- space.maker(10000, 3, rnorm, cor.matrix = cor_pre)
+space <- space.maker(10000, 3, rnorm, cor.matrix = cor_matrix)
 round(cor(space), 1) ; cor_matrix ## Both should be really similar matrices
 
 \dontrun{

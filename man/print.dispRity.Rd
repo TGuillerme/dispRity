@@ -33,4 +33,7 @@ print.dispRity(disparity_object, all = TRUE)
 \author{
 Thomas Guillerme
 }
+\seealso{
+\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+}
 

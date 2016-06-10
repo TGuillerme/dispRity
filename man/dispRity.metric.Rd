@@ -70,7 +70,7 @@ See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base
 }
 \examples{
 ## A dummy matrix
-dummy_matrix <- matrix(rnorm(25), 5, 5)
+dummy_matrix <- matrix(rnorm(90), 10, 9)
 
 ## variances of a each column in the matrix
 variances(dummy_matrix)
@@ -81,7 +81,7 @@ ranges(dummy_matrix)
 ## Distances between each row and centroid of the matrix
 centroids(dummy_matrix)
 ## Distance between each rows and an arbitrary centroid
-centroids(dummy_matrix, centroid = c(0,0,0,0,0))
+centroids(dummy_matrix, centroid = c(rep(0, ncol(dummy_matrix))))
 
 ## Modal value of a vector
 mode.val(rnorm(25))

@@ -25,7 +25,8 @@
 #' ## Scaling the data
 #' summary(disparity) # No scaling
 #' summary(scale(disparity)) # Dividing by the maximum
-#' summary(scale(disparity, max = 0.1)) # Multiplying by 10 (dividing by 0.1)
+#' ## Multiplying by 10 (dividing by 0.1)
+#' summary(scale.dispRity(disparity, max = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 #'
@@ -40,11 +41,7 @@ scale.dispRity<-function(data, max = TRUE) {#, center = FALSE, scale = FALSE) {
     check.class(data, "dispRity")
 
     #is bootstrapped?
-    if(any(names(data$disparity) == "bootstrapped")) {
-        is.bootstrapped <- TRUE
-    } else {
-        is.bootstrapped <- FALSE
-    }
+    is.bootstrapped <- ifelse(any(names(data$disparity) == "bootstrapped"), TRUE, FALSE)
 
     #Extracting all the data
     if(max == TRUE) {

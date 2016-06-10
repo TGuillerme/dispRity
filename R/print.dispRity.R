@@ -20,12 +20,14 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity_object, all = TRUE)
 #'
+#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
 #' @author Thomas Guillerme
 
 print.dispRity<-function(data, all=FALSE, ...) {
 
     if(all == TRUE) {
-        temp <- data
+        tmp <- data
         class(tmp) <- "list"
         print(tmp)
     } else {

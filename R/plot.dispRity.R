@@ -56,7 +56,7 @@
 #' 
 #' ## Using different options
 #' plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
-#'      xlab = ("Time (Ma)"), ylab = "disparity", ylim = c(0, 5))
+#'      xlab = ("Time (Ma)"), ylab = "disparity")
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(sum_of_variances, type = "continuous")
