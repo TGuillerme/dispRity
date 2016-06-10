@@ -93,82 +93,9 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     match_call <- match.call()
     #return(match_call) ; warning("DEBUG")
 
-    #DATA
-    #Check if the input is a dispRity object
-    data_fetch <- data
-    if(class(data_fetch) != "dispRity") {
-        #Data is not bootstrapped
-        is.bootstrapped <- FALSE
-        prev_info <- FALSE
-        disparity.exists <- FALSE
-    } else {
-        prev_info <- TRUE
-
-        #length_data_fetch variable initialisation
-        length_data_fetch <- length(data_fetch)
-
-        #If length is 3, no bootstrap, just time series
-        if(length_data_fetch == 3) {
-            #Data is not bootstrapped
-            is.bootstrapped <- FALSE
-            #Extracting the info
-            prev_info <- TRUE
-            taxa_list <- data_fetch$elements
-            series_list <- data_fetch$series[-1]
-            series_type <- data_fetch$series[1]
-            data <- data_fetch$data
-        }
-
-        #If length is 4, bootstrap (+ time series?)
-        if(length_data_fetch == 4) {
-            #Data is bootstrapped
-            is.bootstrapped <- TRUE
-            #Extracting the info
-            BSresult <- data_fetch$data$bootstraps
-            data <- data_fetch$data$observed
-            boot.call <- data_fetch$call
-            taxa_list <- data_fetch$elements
-            series_list <- data_fetch$series
-        }
-
-        #Disparity was already calculated
-        if(length(match(names(data_fetch), c("data", "disparity", "elements", "series", "call"))) == 5) {
-            disparity.exists <- TRUE
-            is.bootstrapped <- ifelse(length(data$disparity$bootstrapped) != 0, TRUE, FALSE)
-        } else {
-            disparity.exists <- FALSE
-        }
-    }
-
-    #Checking the matrix list (if bs=F)
-    if(is.bootstrapped == FALSE && disparity.exists == FALSE) {
-
-        #If matrix, transform to list
-        if(class(data) == "matrix") {
-            data <- list(data)
-        }
-
-        #Must be a list
-        check.class(data, "list", " must be a matrix or a list of matrices.")
-        #Each matrix must have the same number of columns
-        mat_columns <- unique(unlist(lapply(data, ncol)))
-        if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
-        #Making sure there is at least 3 rows per element
-        if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
-
-        #Setting the info
-        if(prev_info == FALSE) {
-            taxa_list <- unlist(lapply(data, rownames))
-            names(taxa_list) <- NULL
-            series_list <- names(data)
-            if(is.null(series_list)) {
-                series_list <- length(data)
-            }            
-        }
-
-        #Make the data bootstrap results format (0 bootstrap)
-        BSresult <- boot.matrix(data, bootstraps = 0, rarefaction = FALSE, rm.last.axis = FALSE, verbose = FALSE, boot.type = "full")$data$bootstraps
-    }
+    #data
+    #Get the data handle
+    data_handle <- get.dispRity.data.handle(data)
 
     #METRIC
     #length_metric variable initialisation
@@ -246,7 +173,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     }
 
     #Stop if data already contains disparity and metric is not level1
-    if(any(levels == "level3") && disparity.exists == TRUE) {
+    if(any(levels == "level3") && data_handle$disparity.exists == TRUE) {
         stop("Impossible to apply a level 3 metric on disparity data.")
     }
 
@@ -281,11 +208,11 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #----------------------
 
     #If disparity already exists, export the data
-    if(disparity.exists == TRUE) {
+    if(data_handle$disparity.exists == TRUE) {
         #Recalculating the observed disparity
         data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
         #data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun) ; warning("DEBUG")
-        if(is.bootstrapped) {
+        if(data_handle$is.bootstrapped != FALSE) {
             data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
             #data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun) ; warning("DEBUG")
         }
@@ -310,18 +237,18 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     if(verbose != FALSE) message("Calculating disparity...", appendLF = FALSE)
     #Calculate disparity in all the series
     if(do_parallel != TRUE) {
-        results <- lapply(BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
-        #results <- lapply(BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
+        results <- lapply(data_handle$BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
+        #results <- lapply(data_handle$BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
     } else {
-        results <- parLapply(cluster, BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
-        #results <- parLapply(cluster, BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
+        results <- parLapply(cluster, data_handle$BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
+        #results <- parLapply(cluster, data_handle$BSresult, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
         stopCluster(cluster)
     }
     
     #if data is bootstrapped, also calculate the observed disparity
-    if(is.bootstrapped != FALSE) {
-        OBSresults <- lapply(data_fetch$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
-        #OBSresults <- lapply(data_fetch$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
+    if(data_handle$is.bootstrapped != FALSE) {
+        OBSresults <- lapply(data$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun, ...)
+        #OBSresults <- lapply(data$data$observed, disparity.calc, level3.fun = level3.fun, level2.fun = level2.fun, level1.fun = level1.fun); warning("DEBUG")
     }
     #verbose
     if(verbose != FALSE) message("Done.", appendLF = FALSE)
@@ -330,22 +257,22 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     #OUTPUT
     #----------------------
     #call details
-    dispRity.call <- paste("Disparity calculated as: ", as.expression(match_call$metric), " for ", ncol(BSresult[[1]][[1]][[1]]) ," dimensions.", sep = "")
+    dispRity.call <- paste("Disparity calculated as: ", as.expression(match_call$metric), " for ", ncol(data_handle$BSresult[[1]][[1]][[1]]) ," dimensions.", sep = "")
     #Add BS (and series) details
-    if(is.bootstrapped != FALSE) {
-        dispRity.call <- paste(dispRity.call, boot.call, sep = "\n")
+    if(data_handle$is.bootstrapped != FALSE) {
+        dispRity.call <- paste(dispRity.call, data_handle$boot.call, sep = "\n")
     } else {
-        if(prev_info != FALSE) {
-            dispRity.call <- paste(dispRity.call, "\nData was split using ", series_type, " method.", sep = "")
+        if(data_handle$prev_info != FALSE) {
+            dispRity.call <- paste(dispRity.call, "\ndata was split using ", data_handle$series_type, " method.", sep = "")
         }
     }
 
 
     #Creating the output object
-    if(is.bootstrapped != FALSE) {
-        output <- list("data" = list("bootstraps" = BSresult, "observed" = data) , "disparity" = list("bootstrapped" = results, "observed" = OBSresults), "elements" = taxa_list, "series" = series_list, "call" = dispRity.call)
+    if(data_handle$is.bootstrapped != FALSE) {
+        output <- list("data" = list("bootstraps" = data_handle$BSresult, "observed" = data_handle$data) , "disparity" = list("bootstrapped" = results, "observed" = OBSresults), "elements" = data_handle$taxa_list, "series" = data_handle$series_list, "call" = dispRity.call)
     } else {
-        output <- list("data" = list("observed" = data), "disparity" = list("observed" = results), "elements" = taxa_list, "series" = series_list, "call" = dispRity.call)
+        output <- list("data" = list("observed" = data_handle$data), "disparity" = list("observed" = results), "elements" = data_handle$taxa_list, "series" = data_handle$series_list, "call" = dispRity.call)
     }
     #Output object is a dispRity object
     class(output) <- "dispRity"
