@@ -94,7 +94,7 @@ get.dispRity.data.handle<-function(data_fetch) {
 }
 
 
-get.dispRity.metric.handle<-function(metric) {
+get.dispRity.metric.handle<-function(metric, match_call) {
     level3.fun <- NULL
     level2.fun <- NULL
     level1.fun <- NULL

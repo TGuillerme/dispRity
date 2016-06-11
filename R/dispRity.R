@@ -97,7 +97,7 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     data_handle <- get.dispRity.data.handle(data)
 
     #Get the metric handle
-    metric_handle <- get.dispRity.metric.handle(metric)
+    metric_handle <- get.dispRity.metric.handle(metric, match_call)
 
     #Stop if data already contains disparity and metric is not level1
     if(!is.null(metric_handle$level3.fun) && data_handle$disparity.exists != FALSE) {
