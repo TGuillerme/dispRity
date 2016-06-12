@@ -16,10 +16,12 @@ The following installs the latest released version (see patch notes below). For 
 ###### **NOTE:** the up coming version (`0.2`) contains many new and updated functionalities (see [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md)) and will be released probably this summer. It is however already possible to use it by downloading the package using `ref="master"`.
 
 #### Vignettes
-*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd)
-*  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd)
-*  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd)
+*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd).
+*  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd).
+*  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd).
 *  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
+
+Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
 * 2015/12/01 - v0.1.2
@@ -38,10 +40,10 @@ The following installs the latest released version (see patch notes below). For 
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
-<!--
+
 #### Implemented metric
-A list of implemented metrics (or soon to be implemented) is available [here](https://github.com/TGuillerme/dispRity/blob/master/metrics.md).
--->
+A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
+
 Authors
 -------
 [Thomas Guillerme](http://tguillerme.github.io)
