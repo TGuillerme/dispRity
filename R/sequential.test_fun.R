@@ -87,10 +87,12 @@ create.model <- function(data, family, intercept = NULL, ...) {
             intercept <- unique(data$intercept)
         } 
         #Estimate the model using the intercept
-        model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
+        #model <- glm(factor ~ data - 1+offset(intercept), data = data, family = family, ...) # For binomial
+        model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...) 
     } else {
         #Estimating the intercept and the slope in the model
-        model <- glm(data ~ factor, data = data, family = family, ...)        
+        #model <- glm(factor ~ data, data = data, family = family, ...) # For binomial
+        model <- glm(data ~ factor, data = data, family = family, ...)
     }
 
     return(model)

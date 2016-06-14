@@ -2,55 +2,56 @@
 #'
 #' @title Sequential linear regressions
 #'
-#' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
+#' @description Function still in development.
+# ' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
 #'
-#' @param series time series of which to estimate the slopes sequentially.
-#' @param family the family of the \code{\link[stats]{glm}}.
-#' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
-#' @param call optional, a call from a \code{dispRity} object.
-#' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
-#'
-#' @details
-#' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
-#'
-#' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat50)
-#' ## Calculating the disparity from a customised series
-#' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
-#'      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-#' customised_series <- cust.series(BeckLee_mat50, factors)
-#' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-#' ## Calculating variances of each dimension
-#' dim_variances <- dispRity(bootstrapped_data, metric = variances)
-#' ## Extracting the disparity values of each series
-#' series <- extract.dispRity(dim_variances, observed = FALSE,
-#'      keep.structure = TRUE, concatenate = TRUE)
-#'
-#' ## Running a gaussian sequential test on the series
-#' results <- sequential.test(series, family = gaussian)
-#' ## Summarising the results
-#' summary(results, rounding = 5)
-#' ## Simple plotting the results
-#' plot(results)
-#' 
-#' ## Running a gaussian sequential test on multiple series
-#' ## (i.e. non- concatenated)
-#' series <- extract.dispRity(dim_variances, observed = FALSE,
-#'      keep.structure = TRUE, concatenate = FALSE)
-#' results <- sequential.test(series, family = gaussian)
-#' ## Summarising
-#' summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
-#' ## Plotting the disparity first (as the me)
-#' plot(dim_variances, type = "c", cent.tend = median)
-#' ## Adding the sequential model (using the first quantile (12.55%) for our 
-#' ## the significance level to consider).
-#' plot(results, add = TRUE, significance = 1,
-#'      token.args = list(float = 0.3, col = "blue", cex = 2),
-#'      lines.args = list(col = "red", lty = 3))
-#' 
+# ' @param series time series of which to estimate the slopes sequentially.
+# ' @param family the family of the \code{\link[stats]{glm}}.
+# ' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
+# ' @param call optional, a call from a \code{dispRity} object.
+# ' @param ... optional arguments to be passed to the \code{\link[stats]{glm}}.
+# '
+# ' @details
+# ' This test allows to correct for time autocorrelation by estimating the intercept of the \code{\link[stats]{glm}} using a predicted intercept using the preceding \code{\link[stats]{glm}}.
+# '
+# ' @examples
+# ' ## Load the Beck & Lee 2014 data
+# ' data(BeckLee_mat50)
+# ' ## Calculating the disparity from a customised series
+# ' ## Generating the series
+# ' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+# '      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+# ' customised_series <- cust.series(BeckLee_mat50, factors)
+# ' ## Bootstrapping the data
+# ' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+# ' ## Calculating variances of each dimension
+# ' dim_variances <- dispRity(bootstrapped_data, metric = variances)
+# ' ## Extracting the disparity values of each series
+# ' series <- extract.dispRity(dim_variances, observed = FALSE,
+# '      keep.structure = TRUE, concatenate = TRUE)
+# '
+# ' ## Running a gaussian sequential test on the series
+# ' results <- sequential.test(series, family = gaussian)
+# ' ## Summarising the results
+# ' summary(results, rounding = 5)
+# ' ## Simple plotting the results
+# ' plot(results)
+# ' 
+# ' ## Running a gaussian sequential test on multiple series
+# ' ## (i.e. non- concatenated)
+# ' series <- extract.dispRity(dim_variances, observed = FALSE,
+# '      keep.structure = TRUE, concatenate = FALSE)
+# ' results <- sequential.test(series, family = gaussian)
+# ' ## Summarising
+# ' summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
+# ' ## Plotting the disparity first (as the me)
+# ' plot(dim_variances, type = "c", cent.tend = median)
+# ' ## Adding the sequential model (using the first quantile (12.55%) for our 
+# ' ## the significance level to consider).
+# ' plot(results, add = TRUE, significance = 1,
+# '      token.args = list(float = 0.3, col = "blue", cex = 2),
+# '      lines.args = list(col = "red", lty = 3))
+# ' 
 #' @seealso \code{\link{test.dispRity}}, \code{\link{bhatt.coeff}}, \code{\link{null.test}}.
 #'
 #' @author Thomas Guillerme
@@ -74,8 +75,12 @@
 
 sequential.test <- function(series, family, correction, call = NULL, ...){
 
+    #Warning
+    stop("The sequential.test function is still under development!")
+
     #SANITIZING
     match_call <- match.call()
+    #warning("DEBUG") ; return(match_call)
     
     #Family
     if(missing(family)) {
@@ -95,7 +100,7 @@ sequential.test <- function(series, family, correction, call = NULL, ...){
     is.distribution <- ifelse(unique(unlist(lapply(series, class))) == "numeric", FALSE, TRUE)
 
     #If is not a distribution, reformat the list to be a list of MethodsListSelect
-    if(is.distribution == FALSE) {
+    if(is.distribution != TRUE) {
         series <- lapply(series, list)
     } 
 
@@ -131,9 +136,9 @@ sequential.test <- function(series, family, correction, call = NULL, ...){
     names(models) <- save.comparison.list(seq_series, series)
     #Creating the new call
     if(!missing(correction)) {
-        new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
+        new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
     } else {
-        new_call <- paste("Sequential test (", as.character(expression(gaussian)), ") accross ", length(models)+1, " series.\n@", sep="")
+        new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series.\n@", sep="")
     }
 
     #Adding previous call (if exists)

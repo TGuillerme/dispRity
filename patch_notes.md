@@ -1,10 +1,12 @@
 Patch notes
 ----
-* 2016/??/?? - v0.2.0
+* 2016/??/?? - v0.3.0
+  * *new* disparity test `sequential.test`
+* 2016/06/14 - v0.2.0
   * *new* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * *new* function: `space.maker` for creating some multidimensional spaces!
   * *new* disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
-  * *new* disparity tests: `sequential.test` and `null.test`.
+  * *new* disparity test `null.test`.
   * *new* `plot.dispRity` arguments: `density` for controlling the polygons density and `add` for adding plots.
   * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
   	* `continuous` disparity curves.
@@ -18,6 +20,7 @@ Patch notes
   * `dispRity` can now intake `dispaRity` objects with level 2 disparity metrics.
   * `boot.matrix` and `dispRity` can now run in parallel.
   * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
+  * `variances` and `ranges` disparity metrics can now intake a `k.root` argument for scaling the results.
 * 2015/12/01 - v0.1.2
   * *new* function: `get.dispRity` for subsampling dispRity objects
   * *new* function: `extract.dispRity` for extracting disparity results
