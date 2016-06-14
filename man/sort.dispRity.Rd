@@ -25,12 +25,12 @@ series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
       method = "continuous", time = 5, model = "acctran")
 
 ## Calculating the sum of centroids
-disparity <- dispRity(series, metric = c(sum, centroids))
+disparity <- dispRity(series, metric = mean)
 
 ## Sorting the data
 summary(disparity)
-#summary(sort.dispRity(disparity, decreasing = TRUE))
-#summary(sort(disparity, sort = c(1,3,4,5,2)))
+summary(sort(disparity, decreasing = TRUE))
+summary(sort(disparity, sort = c(1,3,4,5,2)))
 
 }
 \author{
