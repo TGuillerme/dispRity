@@ -161,7 +161,10 @@ centroids <- function(matrix, centroid) {
     #     cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
     # }
 
-    return(apply(matrix, 1, fun.dist, centroid = centroid))
+    cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
+    names(cent.dist) <- NULL
+
+    return(cent.dist)
 }
 
 # Calculate the mode of a vector

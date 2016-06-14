@@ -211,18 +211,12 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #ANOVA/GLM type
     if(comp == "all") {
 
-        #Divide into a list (if concatenate is FALSE)
-        if(concatenate == FALSE) {
-            #Splitting the data per bootstrap
-            list_of_data <- list()
-            for(bootstrap in 1:length(extracted_data[[1]])) {
-                list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
-            }
-            list_of_data <- lapply(list_of_data, list.to.table)
-        } else {
-            #Transform the extracted data into a table
-            list_of_data <- list(list.to.table(extracted_data))
+        #Splitting the data per bootstrap
+        list_of_data <- list()
+        for(bootstrap in 1:length(extracted_data[[1]])) {
+            list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
         }
+        list_of_data <- lapply(list_of_data, list.to.table)
 
         #running the tests
         details_out <- lapply(list_of_data, lapply.aov.type, test, ...)
