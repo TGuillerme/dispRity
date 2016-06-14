@@ -53,6 +53,34 @@ test_that("Sanitizing works", {
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
+#Testing metric argument
+test_that("metric argument works", {
+    expect_error(
+        dispRity(BeckLee_mat50, metric = var)
+    )
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(var))
+    )
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(var, sd))
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(var, variances, sd))
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = sd)
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(sd))
+        , "dispRity")
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(sd, sd))
+        )
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(var, sd, sd))
+        )
+})
+
 #one matrix
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with a single matrix", {

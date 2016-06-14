@@ -91,7 +91,8 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
     
     #Saving the call
     match_call <- match.call()
-    #return(match_call) ; warning("DEBUG")
+
+    #warning("DEBUG") ; return(match_call)
 
     #Get the data handle
     data_handle <- get.dispRity.data.handle(data)

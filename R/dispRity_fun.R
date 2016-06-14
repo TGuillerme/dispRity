@@ -111,7 +111,7 @@ get.dispRity.metric.handle<-function(metric, match_call) {
 
         #Check all the metrics
         for(i in 1:length_metric) {
-            if(class(metric[[i]]) != "function") stop(paste("Error in metric argument: ",match_call$metric[[i+1]], " is not a function!", sep = ""))
+            if(class(metric[[i]]) != "function") stop(paste("in metric argument: ",match_call$metric[[i+1]], " is not a function!", sep = ""))
         }
 
         #Sorting the metrics by levels
@@ -121,54 +121,48 @@ get.dispRity.metric.handle<-function(metric, match_call) {
         if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 
         #At least one level 1 or level 2 metric is required
-        if(length(levels == 1) && levels == "level3") {
+        if(length(levels) == 1 && levels[[1]] == "level3") {
             stop("At least one metric must be level 1 or level 2\n.For more information, see:\n?make.metric()")
         }
         
         #Get the level 1 metric
         if(!is.na(match("level1", levels))) {
             level1.fun <- metric[[match("level1", levels)]]
-        } else {
-            #is null if doesn't exist
-            level1.fun <- NULL
         }
+
         #Get the level 2 metric
         if(!is.na(match("level2", levels))) {
             level2.fun <- metric[[match("level2", levels)]]
-        } else {
-            #is null if doesn't exist
-            level2.fun <- NULL
         }
+
         #Get the level 3 metric
         if(!is.na(match("level3", levels))) {
             level3.fun <- metric[[match("level3", levels)]]
-        } else {
-            #is null if doesn't exist
-            level3.fun <- NULL
         }
 
     } else {
 
         #Metric was still fed as a list
-        if(class(metric) == "list") {
-            check.class(metric[[1]], "function")
-            metric <- metric[[1]]
-        } else {
+        if(class(metric) != "list") {
             #Metric was fed as a single element
             check.class(metric, "function")
+        } else {
+            check.class(metric[[1]], "function")
+            metric <- metric[[1]]
         }
 
         #Getting the metric level
-        levels <- make.metric(metric, silent=TRUE)
+        levels <- make.metric(metric, silent = TRUE)
         #Metric must not be level 3
         if(levels == "level3") {
-            stop(paste(match_call$metric, " must contain at least a level 1 or a level 2 metric. For more information, use:\nmake.metric(",match_call$metric,")", sep = ""))
-        }
-        # Set the metric level
-        if(levels == "level2") {
-            level3.fun = NULL; level2.fun = metric; level1.fun = NULL
+            stop(paste(as.expression(match_call$metric), " must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
         } else {
-            level3.fun = NULL; level2.fun = NULL; level1.fun = metric
+            # Set the metric level
+            if(levels == "level2") {
+                level2.fun = metric
+            } else {
+                level1.fun = metric
+            }
         }
     }
 
