@@ -1,6 +1,4 @@
 # Package wish list
-* Add a `k.root` function for scaling at the **k**th root where **k** is the number of ordination axis (useful for scaling product metrics).
-* Allow more level 1 functions for metric (e.g. `metric = c(k.root, prod, variances)`).
 * Add the possibility to use a `multiPhylo` object in `time.series`.
 * A `jackknife.ordination` function for jackknifing the pre-ordination matrix and feed an ordination pipeline (paralel-able and out-of-R-able)
 

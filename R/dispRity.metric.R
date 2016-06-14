@@ -43,8 +43,8 @@
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 #' \itemize{
-#'   \item \code{ranges}: calculates the range of each axis of the matrix.
-#'   \item \code{variances}: calculates the variance of each axis of the matrix.
+#'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
+#'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
 #'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a series of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
 #' }
 #' The currently implemented value aggregate metrics (\code{level1.fun}) are:
@@ -60,14 +60,20 @@
 #' 
 #' ## variances of a each column in the matrix
 #' variances(dummy_matrix)
+#' ## variances of a each column in the matrix corrected using the kth root
+#' variances(dummy_matrix, k.root = TRUE)
 #' 
 #' ## ranges of each column in a matrix
 #' ranges(dummy_matrix)
+#' ## ranges of a each column in the matrix corrected using the kth root
+#' ranges(dummy_matrix, k.root = TRUE)
 #' 
 #' ## Distances between each row and centroid of the matrix
 #' centroids(dummy_matrix)
-#' ## Distance between each rows and an arbitrary centroid
-#' centroids(dummy_matrix, centroid = c(rep(0, ncol(dummy_matrix))))
+#' ## Distance between each rows and an arbitrary point
+#' centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9))
+#' ## Distance between each rows and the origin
+#' centroids(dummy_matrix, centroid = 0)
 #' 
 #' ## Modal value of a vector
 #' mode.val(rnorm(25))
@@ -91,20 +97,35 @@
 #'
 #' @author Thomas Guillerme
 
+#kth root scaling
+k.root <- function(data, dimensions){
+    data^(1/dimensions)
+}
+
 #Calculating each axis variance
-variances <- function(matrix) {
-    return(apply(matrix, 2, var))
+variances <- function(matrix, k.root) {
+    if(missing(k.root)) {
+        return(apply(matrix, 2, var))
+    } else {
+        return(k.root(apply(matrix, 2, var), ncol(matrix)))
+    }
 }
 
 #Calculating each axis ranges
-ranges <- function(matrix) {
+ranges <- function(matrix, k.root) {
     #Max values
     max_values <- apply(matrix, 2, max)
     #Min values
     min_values <- apply(matrix, 2, min)
     #Ranges values
     ranges <- abs(max_values-min_values)
-    return(ranges)
+    if(missing(k.root)) {
+        return(ranges)
+    } else {
+        if(k.root == TRUE) {
+            return(k.root(ranges, ncol(matrix)))
+        }
+    }
 }
 
 #Calculating the distance from centroid

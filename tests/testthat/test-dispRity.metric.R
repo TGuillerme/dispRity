@@ -17,6 +17,12 @@ test_that("variances metric", {
     expect_equal(
     	vars1, vars2
     	)
+    #Applying the k.root
+    vars3 <- variances(matrix, k.root = TRUE)
+    vars4 <- variances(matrix)^(1/ncol(matrix))
+    expect_equal(
+        vars3, vars4
+        )
 })
 
 test_that("ranges metric", {
@@ -32,6 +38,12 @@ test_that("ranges metric", {
     expect_equal(
     	ran1, ran2
     	)
+    #Applying the k.root
+    ran3 <- ranges(matrix, k.root = TRUE)
+    ran4 <- ranges(matrix)^(1/ncol(matrix))
+    expect_equal(
+        ran3, ran4
+        )
 })
 
 test_that("centroids metric", {
