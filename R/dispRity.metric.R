@@ -45,7 +45,7 @@
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix.
-#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used).
+#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a series of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
 #' }
 #' The currently implemented value aggregate metrics (\code{level1.fun}) are:
 #' \itemize{
@@ -118,18 +118,29 @@ centroids <- function(matrix, centroid) {
         if(class(centroid) != "numeric") {
             stop("Centroid coordinates must be given as numeric values.")
         } else {
-            #If numeric, must be the same length as matrix
-            if(length(centroid) != ncol(matrix)) stop(paste("The given centroid has ", length(centroid), " coordinates but must have ", ncol(matrix), ".", sep = ""))
+            #Initialising the variables
+            length_centroid <- length(centroid)
+            ncol_matrix <- ncol(matrix)
+            if(length_centroid != 1) {
+                #If numeric, must be the same length as matrix
+                if(length_centroid != ncol_matrix) stop(paste("The given centroid has ", length_centroid, " coordinates but must have ", ncol_matrix, ".", sep = ""))
+            } else {
+                centroid <- rep(centroid, ncol_matrix)
+            }
         }
     }
 
     #Calculating the distance from centroid
-    cent.dist <- NULL
-    for (j in 1:nrow(matrix)){
-        cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
+    fun.dist <- function(row, centroid) {
+        return(dist(rbind(row, centroid), method = "euclidean"))
     }
 
-    return(cent.dist)
+    # cent.dist <- NULL
+    # for (j in 1:nrow(matrix)){
+    #     cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
+    # }
+
+    return(apply(matrix, 1, fun.dist, centroid = centroid))
 }
 
 # Calculate the mode of a vector
@@ -139,12 +150,15 @@ mode.val <- function(X){
 
 # Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
+    #Initialising the variables
+    ncol_matrix <- ncol(matrix)
+
     # The eigen value is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
     eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
 
     #volume (from Donohue et al 2013, Ecology Letters)
-    volume <- pi^(ncol(matrix)/2)/gamma((ncol(matrix)/2)+1)*prod(eigen.value^(0.5))
+    volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))
 
     return(volume)
 }
@@ -218,9 +232,6 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
 
 # Diagonal
 diagonal <- function(matrix) {
-    #If all the dimensions of the space are orthogonal to each other,
-    #then, following Pythagoras Theorem, the longest distance in this
-    #space is equal to the square root of sum of the distances of each
-    #dimensions.
+    #If all the dimensions of the space are orthogonal to each other, then, following Pythagoras Theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimensions.
     return(sqrt(sum(ranges(matrix))))
 }

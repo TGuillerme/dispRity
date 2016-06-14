@@ -58,17 +58,21 @@ test_that("centroids metric", {
     expect_error(
         centroids(matrix, centroid = "a")
         )
-    #Wrong argument
-    expect_error(
-        centroids(matrix, centroid = 1)
-        )
     #Using the real centroid
     expect_equal(
         cent1, centroids(matrix, centroid = centroid)
         )
+    expect_equal(
+        sum(centroids(matrix, centroid = 0))
+        , sum(centroids(matrix, centroid = rep(0, ncol(matrix)) ))
+        )
     #Using a 0 origin centroid
     expect_lt(
         sum(centroids(matrix, centroid = rep(0, ncol(matrix)))), sum(centroids(matrix, centroid = rep(1, ncol(matrix))))
+        )
+    #Using a 0 origin centroid
+    expect_lt(
+        sum(centroids(matrix, centroid = 0)), sum(centroids(matrix, centroid = 1))
         )
 })
 
