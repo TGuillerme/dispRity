@@ -4,7 +4,7 @@
 \alias{print.dispRity}
 \title{Prints a \code{dispRity} object.}
 \usage{
-\method{print}{dispRity}(data, all = FALSE, ...)
+\method{print}{dispRity}(data, all = FALSE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}

@@ -16,7 +16,10 @@
 #' @importFrom geometry convhulln
 #' @importFrom hypervolume hypervolume estimate_bandwidth get_volume
 #' @importFrom ade4 randtest as.randtest
-#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices colorRampPalette grey
+#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text
+#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var
+#' @importFrom utils combn
 
 NULL
 

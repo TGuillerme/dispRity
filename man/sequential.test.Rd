@@ -4,7 +4,7 @@
 \alias{sequential.test}
 \title{Sequential linear regressions}
 \usage{
-sequential.test(series, family, correction, call = NULL, ...)
+sequential.test()
 }
 \description{
 Function still in development.

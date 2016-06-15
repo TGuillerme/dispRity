@@ -23,6 +23,14 @@
 
 \item{elements}{\code{logical} whether to plot the number of elements per series.}
 
+\item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
+
+\item{xlab}{Optional, a \code{character} string for the caption of the x axis.}
+
+\item{ylab}{Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.}
+
+\item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
+
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
 
 \item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}

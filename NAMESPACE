@@ -10,8 +10,12 @@ importFrom("hypervolume", "estimate_bandwidth")
 importFrom("hypervolume", "get_volume")
 importFrom("ade4", "randtest")
 importFrom("ade4", "as.randtest")
-importFrom("grDevices", "colorRampPalette")
+importFrom("grDevices", "colorRampPalette", "grey")
 importFrom("caper", "comparative.data")
+importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
+importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
+importFrom("util", "combn")
+
 
 ##Functions
 export(time.series)

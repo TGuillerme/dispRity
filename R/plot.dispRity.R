@@ -420,7 +420,9 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
 
             #Rarefaction plots
             for(nPlot in 1:n_plots) {
-                tmp_summarised_data <- get.series(summarised_data, rare_level = nPlot)
+                get_series <- get.series(summarised_data, rare_level = nPlot)
+                tmp_summarised_data <- get_series[[1]]
+                level_name <- get_series[[2]]
                 plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
                 #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
             }

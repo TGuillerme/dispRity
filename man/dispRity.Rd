@@ -15,7 +15,7 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).}
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

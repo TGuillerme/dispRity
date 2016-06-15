@@ -80,8 +80,8 @@ extract.summary<-function(summarised_data, what, which.rare="max") {
 #Extracting summary values for a specific series
 get.series<-function(summarised_data, rare_level) {
     output <- summarised_data[which(as.factor(unlist(summarised_data[,1])) == unique(unlist(summarised_data[,1]))[rare_level]),]
-    level_name <<- unique(unlist(summarised_data[,1]))[rare_level]
-    return(output)
+    level_name <- unique(unlist(summarised_data[,1]))[rare_level]
+    return(list(output, level_name))
 }
 
 #Plotting elements
