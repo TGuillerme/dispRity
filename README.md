@@ -3,6 +3,9 @@
 
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
+<a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
+Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) of some of the novelties.
+
 ## Installing dispRity
 ```r
 if(!require(devtools)) install.packages("devtools")
@@ -53,7 +56,6 @@ Authors
 -------
 [Thomas Guillerme](http://tguillerme.github.io)
 
-
 Citation
 -------
 If you are using this package, please cite the following Zenodo DOI (an associated paper will be added soon):
@@ -61,3 +63,7 @@ If you are using this package, please cite the following Zenodo DOI (an associat
 * Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
 
  [BibTeX](https://zenodo.org/record/31742/export/hx), [EndNote](https://zenodo.org/record/31742/export/xe), [DataCite](https://zenodo.org/record/31742/export/dcite3), [RefWorks](https://zenodo.org/record/31742/export/xw)
+
+Acknowledgments
+-------
+Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](http://webpages.sdsmt.edu/~dbapst/) and [Andrew Jackson](http://www.tcd.ie/Zoology/research/research/theoretical/andrewjackson.php).
