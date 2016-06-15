@@ -26,8 +26,8 @@ export(print.dispRity)
 
 ##Utilities
 export(make.metric)
-export(make.model)
-export(make.boot)
+#export(make.model) - TO DO!
+#export(make.boot) - TO DO!
 export(get.dispRity)
 export(extract.dispRity)
 export(space.maker)

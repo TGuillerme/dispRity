@@ -39,3 +39,17 @@ NULL
 #' @name BeckLee
 #' @aliases BeckLee_tree BeckLee_mat50 BeckLee_mat99 BeckLee_ages
 NULL
+
+#' McClean dataset
+#'
+#' Example datasets from McClean (unpublished).
+#'
+#' \itemize{
+#'   \item \code{ordination} The ordinated matrix based on the 40 sites and 20 dimensions
+#'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
+#'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
+#' }
+#'
+#' @format one matrix and two vectors.
+#' @name McClean_data
+NULL

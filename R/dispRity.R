@@ -6,7 +6,7 @@
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
-#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
+#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:

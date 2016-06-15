@@ -2,8 +2,6 @@
 #'
 #' @description Splits the ordinated data into a time series list.
 #'
-#' @usage time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-#'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
 #' @param method The time series method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).

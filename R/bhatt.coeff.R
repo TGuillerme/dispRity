@@ -2,8 +2,6 @@
 #'
 #' @title Bhattacharrya Coefficient
 #'
-#' @usage bhatt.coeff(x, y, bw = bw.nrd0, ...)
-
 #' @description Calculates the probability of overlap between to distributions.
 #'
 #' @param x,y two distributions.

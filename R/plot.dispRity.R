@@ -8,6 +8,10 @@
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
+#' @param ylim Optional, two \code{numeric} values for the range of the y axis.
+#' @param xlab Optional, a \code{character} string for the caption of the x axis.
+#' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
+#' @param col Optional, some \code{character} string(s) for the colour of the graph.
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
 #' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).

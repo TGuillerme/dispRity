@@ -8,7 +8,7 @@
 #' @param rm.last.axis Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).
+#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:

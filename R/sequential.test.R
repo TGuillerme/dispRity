@@ -73,7 +73,7 @@
 # family = gaussian
 # data <- sequential.test(series_multi, family = gaussian)
 
-sequential.test <- function(series, family, correction, call = NULL, ...){
+sequential.test <- function(){ #function(series, family, correction, call = NULL, ...)
 
     #Warning
     stop("The sequential.test function is still under development!")

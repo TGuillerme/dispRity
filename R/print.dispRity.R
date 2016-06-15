@@ -24,7 +24,7 @@
 #'
 #' @author Thomas Guillerme
 
-print.dispRity<-function(data, all=FALSE, ...) {
+print.dispRity<-function(data, all=FALSE) {
 
     if(all == TRUE) {
         tmp <- data
