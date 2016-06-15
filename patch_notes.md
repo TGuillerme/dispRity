@@ -1,8 +1,8 @@
 Patch notes
 ----
-* 2016/??/?? - v0.3.0
+* 2016/??/?? - v0.2.1
   * *new* disparity test `sequential.test`
-* 2016/06/14 - v0.2.0
+* 2016/06/15 - v0.2.0
   * *new* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * *new* function: `space.maker` for creating some multidimensional spaces!
   * *new* disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
