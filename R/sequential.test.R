@@ -78,81 +78,81 @@ sequential.test <- function(){ #function(series, family, correction, call = NULL
     #Warning
     stop("The sequential.test function is still under development!")
 
-    #SANITIZING
-    match_call <- match.call()
-    #warning("DEBUG") ; return(match_call)
+    # #SANITIZING
+    # match_call <- match.call()
+    # #warning("DEBUG") ; return(match_call)
     
-    #Family
-    if(missing(family)) {
-        stop("glm family type argument is necessary!")
-    }
+    # #Family
+    # if(missing(family)) {
+    #     stop("glm family type argument is necessary!")
+    # }
 
-    #correction
-    if(!missing(correction)) {
-        check.class(correction, 'character')
-        p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
-        if(all(is.na(match(correction, p.adjust_list)))) {
-            stop("correction type must be one of the p.adjust function options.")
-        }
-    }
+    # #correction
+    # if(!missing(correction)) {
+    #     check.class(correction, 'character')
+    #     p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+    #     if(all(is.na(match(correction, p.adjust_list)))) {
+    #         stop("correction type must be one of the p.adjust function options.")
+    #     }
+    # }
 
-    #Testing whether the results are distributions (BSed) or not.
-    is.distribution <- ifelse(unique(unlist(lapply(series, class))) == "numeric", FALSE, TRUE)
+    # #Testing whether the results are distributions (BSed) or not.
+    # is.distribution <- ifelse(unique(unlist(lapply(series, class))) == "numeric", FALSE, TRUE)
 
-    #If is not a distribution, reformat the list to be a list of MethodsListSelect
-    if(is.distribution != TRUE) {
-        series <- lapply(series, list)
-    } 
+    # #If is not a distribution, reformat the list to be a list of MethodsListSelect
+    # if(is.distribution != TRUE) {
+    #     series <- lapply(series, list)
+    # } 
 
-    #APPLYING THE SEQUENTIAL TEST
+    # #APPLYING THE SEQUENTIAL TEST
 
-    #Setting the sequence
-    seq_series <- set.comparisons.list("sequential", series, 1)
+    # #Setting the sequence
+    # seq_series <- set.comparisons.list("sequential", series, 1)
 
-    #Applying the first test to get the intercept origin
-    first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family, ...)
-    #first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family) ; warning("DEBUG")
+    # #Applying the first test to get the intercept origin
+    # first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family, ...)
+    # #first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family) ; warning("DEBUG")
     
-    #Calculate the intercepts for each first models
-    intercept_predict <- list()
-    intercept_predict[[1]] <- lapply(first_model, set.intercept0)
+    # #Calculate the intercepts for each first models
+    # intercept_predict <- list()
+    # intercept_predict[[1]] <- lapply(first_model, set.intercept0)
 
-    #Storing the first model
-    models <- list()
-    models[[1]] <- first_model
+    # #Storing the first model
+    # models <- list()
+    # models[[1]] <- first_model
 
-    #Loop through the other models
-    for(model in 2:(length(seq_series))) {
-        #Calculate the new intercept from the previous model
-        intercept_predict[[model]] <- mapply(set.intercept.next, models[[model-1]], intercept_predict[[model-1]], SIMPLIFY = FALSE)
+    # #Loop through the other models
+    # for(model in 2:(length(seq_series))) {
+    #     #Calculate the new intercept from the previous model
+    #     intercept_predict[[model]] <- mapply(set.intercept.next, models[[model-1]], intercept_predict[[model-1]], SIMPLIFY = FALSE)
 
-        #Create the new model 
-        models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
-        #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
-    }
+    #     #Create the new model 
+    #     models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
+    #     #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
+    # }
 
-    #OUTPUT
-    #Naming the models
-    names(models) <- save.comparison.list(seq_series, series)
-    #Creating the new call
-    if(!missing(correction)) {
-        new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
-    } else {
-        new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series.\n@", sep="")
-    }
+    # #OUTPUT
+    # #Naming the models
+    # names(models) <- save.comparison.list(seq_series, series)
+    # #Creating the new call
+    # if(!missing(correction)) {
+    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
+    # } else {
+    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series.\n@", sep="")
+    # }
 
-    #Adding previous call (if exists)
-    if(!is.null(call)) {
-        new_call <- paste(new_call, call, sep = "")
-    }
+    # #Adding previous call (if exists)
+    # if(!is.null(call)) {
+    #     new_call <- paste(new_call, call, sep = "")
+    # }
 
-    #output
-    if(!missing(correction)) {
-        output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call, "correction" = correction)
-    } else {
-        output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call)
-    }
+    # #output
+    # if(!missing(correction)) {
+    #     output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call, "correction" = correction)
+    # } else {
+    #     output_raw <- list("models" = models, "intercepts" = intercept_predict, "call" = new_call)
+    # }
 
-    class(output_raw) <- c("dispRity", "seq.test")
-    return(output_raw)
+    # class(output_raw) <- c("dispRity", "seq.test")
+    # return(output_raw)
 }
