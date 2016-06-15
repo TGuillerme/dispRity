@@ -14,7 +14,7 @@ importFrom("grDevices", "colorRampPalette", "grey")
 importFrom("caper", "comparative.data")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
 importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
-importFrom("util", "combn")
+importFrom("utils", "combn")
 
 
 ##Functions
