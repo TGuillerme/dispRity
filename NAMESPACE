@@ -1,6 +1,21 @@
 #Dependencies
 import(ape)
-import(paleotree) #paleotree::timeSliceTree
+importFrom("paleotree", "timeSliceTree")
+importFrom("snow", "makeCluster")
+importFrom("snow", "stopCluster")
+importFrom("snow", "parLapply")
+importFrom("geometry", "convhulln")
+importFrom("hypervolume", "hypervolume")
+importFrom("hypervolume", "estimate_bandwidth")
+importFrom("hypervolume", "get_volume")
+importFrom("ade4", "randtest")
+importFrom("ade4", "as.randtest")
+importFrom("grDevices", "colorRampPalette", "grey")
+importFrom("caper", "comparative.data")
+importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
+importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
+importFrom("utils", "combn")
+
 
 ##Functions
 export(time.series)
@@ -12,12 +27,19 @@ export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
+
 ##Utilities
 export(make.metric)
-export(make.model)
-export(make.boot)
+#export(make.model) - TO DO!
+#export(make.boot) - TO DO!
 export(get.dispRity)
 export(extract.dispRity)
+export(space.maker)
+export(pair.plot)
+export(scale.dispRity)
+export(sort.dispRity)
+export(slice.tree)
+export(clean.data)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 
@@ -27,12 +49,18 @@ export(ranges)
 export(centroids)
 export(mode.val)
 export(ellipse.volume)
+export(hyper.volume)
+export(convhull.volume)
+export(convhull.surface)
+export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)
+export(sequential.test)
+export(null.test)
 
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
- 
+S3method(sort, dispRity)

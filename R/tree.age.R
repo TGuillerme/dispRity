@@ -12,11 +12,13 @@
 #' ## A random tree with the distance since the root.
 #' tree.age(rtree(10), order='present')
 #'
+#' @seealso \code{\link{slice.tree}}, \code{\link{time.series}}.
+#'
 #' @author Thomas Guillerme
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it
 
-tree.age<-function(tree, age, order='past'){
+tree.age <- function(tree, age, order='past'){
 
 #SANITYZING
 
@@ -26,7 +28,7 @@ tree.age<-function(tree, age, order='past'){
     #age
     if(missing(age)) {
     	#Using the tree height as age if age is missing
-        age=max(dist.nodes(tree)[, Ntip(tree)+1])
+        age <- max(dist.nodes(tree)[, Ntip(tree)+1])
     }
     check.class(age, 'numeric', ' must be a numerical value.')
     check.length(age, '1', ' must a a single value.')
@@ -41,21 +43,21 @@ tree.age<-function(tree, age, order='past'){
 
 #CALCULATE THE EDGES AGE
 
-    if(age == 0) {
-        ages.table<-tree.age_table(tree)
+    if(age != 0) {
+        ages.table <- tree.age_scale(tree.age_table(tree), age)
     } else {
-        ages.table<-tree.age_scale(tree.age_table(tree), age)
+        ages.table <- tree.age_table(tree)
     }
 
     #Type
-    if(order == 'past'){
-        tree.height<-max(ages.table$ages)
-        ages.table$ages<-round(abs(ages.table$ages-tree.height), digit=3)
+    if(order != 'past') {
+        ages.table$ages <- round(ages.table$ages, digits = 7)
     } else {
-        ages.table$ages<-round(ages.table$ages, digit=7)
+        tree.height <- max(ages.table$ages)
+        ages.table$ages <- round(abs(ages.table$ages-tree.height), digits = 3)
     }
 
     #Output
-    #ages.table<-round(ages.table[1,], digit=3)
+    #ages.table <- round(ages.table[1,], digits = 3)
     return(ages.table)
 }

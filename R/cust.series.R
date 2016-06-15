@@ -2,14 +2,12 @@
 #'
 #' @description Splits the ordinated data into a customized series list.
 #'
-#' @usage cust.series(data, series)
-#'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
-#' @param series A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
+#' @param factor A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the splitted ordinated data (each element is a \code{matrix}).}
+#' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
 #' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
 #' \item{series}{A \code{vector} containing the name of the series.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
@@ -19,11 +17,15 @@
 #'
 #' @examples
 #' ## Generating a dummy ordinated matrix
-#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
+#'      dimnames = list(letters[1:10]))
 #' ## Creating a list of dummy factors (1 or 2)
-#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-#' ## Spliting the dummy ordinated matrix
+#' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
+#'      ncol = 1, dimnames = list(letters[1:10])))
+#' ## Splitting the dummy ordinated matrix
 #' cust.series(ordinated_matrix, factors)
+#'
+#' @seealso \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -47,7 +49,7 @@ cust.series<-function(data, factor) {
     #must have the same number of rows than data
     if(nrow(factor) != nrow(data)) stop('"factor" must have the same number of rows than "data".')
     #must have the same labels as data
-    if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' do not match.")
+    if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' arguments do not match.")
     #must have at least 3 elements per levels
     check.elements <- function(factor) {
         any(table(as.factor(factor)) < 3)
@@ -57,18 +59,6 @@ cust.series<-function(data, factor) {
     #----------------------
     # SPLITING THE DATA INTO A LIST
     #----------------------
-
-    split.elements <- function(X, Y, data) {
-        series_list<-list()
-        for(series in 1:length(levels(as.factor(X)))) {
-            selected_elements<-rownames(Y)[which(as.character(X) == as.character(levels(as.factor(X))[[series]]))]
-            series_list[[series]]<-data[selected_elements,]
-        }
-        ## Adding names to the list (the levels of the custom series)
-        names(series_list)<-levels(as.factor(X))
-        ## Output
-        return(series_list)
-    }
 
     tmp_series<-apply(factor, 2, split.elements, Y=factor, data=data)
     series_list<-unlist(tmp_series, recursive=FALSE)

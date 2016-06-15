@@ -10,7 +10,7 @@
 #' data(BeckLee_mat50)
 #' 
 #' ## Creating a dispRity object
-#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
+#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, variances))
 #' 
 #' ## Displaying the summary of the object content
 #' disparity_object
@@ -20,78 +20,129 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity_object, all = TRUE)
 #'
+#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
 #' @author Thomas Guillerme
 
-print.dispRity<-function(data, all=FALSE, ...) {
+print.dispRity<-function(data, all=FALSE) {
 
-    #If all = TRUE, return the whole data (no summary)
     if(all == TRUE) {
-        y <- data
-        class(y)<-"list"
-        print(y)
-        
+        tmp <- data
+        class(tmp) <- "list"
+        print(tmp)
     } else {
-        #Series
-        if(length(data) == 3) {
-            #head
-            cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
+
+        #Sequential tests
+        if(length(class(data)) == 2){
+            if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
+                #Sequential test
+                call_split <- strsplit(data$call, split = "@")
+                cat(call_split[[1]][1])
             
-            #series
-            #remove the method time
-            data$series<-data$series[-1]
-            
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
+                #Series
+                series_names <- unique(unlist(strsplit(names(data$models), split = " - ")))
+                if(length(series_names) == 1) {
+                    cat(paste(series_names))
                 } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(series_names) > 5) {
+                        cat(paste(series_names[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(series_names, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                if(!is.na(call_split[[1]][2])) {
+                    cat(paste("\n",call_split[[1]][2], sep = ""))
+                } else {
+                    cat("\nNo previous call found.\n")
                 }
             }
-        }
+            if(class(data)[1] == "dispRity" & class(data)[2] == "randtest") {
+                #length_data variable initialisation
+                length_data <- length(data)
 
-        #Bootstraps
-        if(length(data) == 4) {
-            #head
-            cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
-
-            #series
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
+                for(model in 1:length_data) {
+                    #The following is a modified version of print.randtest from ade4 v1.4-3
+                    if(length_data != 1) {
+                        cat(paste("Monte-Carlo test on series", names(data)[[model]], "\n"))
+                    } else {
+                        cat("Monte-Carlo test\n")
+                    }
+                    #cat("Call: ")
+                    #print(data[[model]]$call)
+                    cat("Observation:", data[[model]]$obs, "\n")
+                    cat("Based on", data[[model]]$rep, "replicates\n")
+                    cat("Simulated p-value:", data[[model]]$pvalue, "\n")
+                    cat("Alternative hypothesis:", data[[model]]$alter, "\n\n")
+                    print(data[[model]]$expvar)
+                    cat("\n")
+                }
+            }
+        } else {
+            #Series
+            if(length(data) == 3) {
+                #head
+                cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
+                
+                #series
+                #remove the method time
+                data$series<-data$series[-1]
+                
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
                 } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
                 }
             }
 
-            #call
-            cat("\n", data$call, sep="")
-        }
+            #Bootstraps
+            if(length(data) == 4) {
+                #head
+                cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
 
-        #Disparity
-        if(length(data) == 5) {
-            #head
-            cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
-
-            #series
-            if(length(data$series) == 1) {
-                cat(paste(data$series))
-            } else {
-                cat("Series:\n")
-                if(length(data$series) > 6) {
-                    cat(paste(data$series[1:6], collapse=", "),"...")
+                #series
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
                 } else {
-                    cat(paste(data$series, collapse=", "), ".", sep="")
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
                 }
+
+                #call
+                cat("\n", data$call, sep="")
             }
 
-            #call
-            cat("\n", data$call, sep="")
+            #Disparity
+            if(length(data) == 5) {
+                #head
+                cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
+
+                #series
+                if(length(data$series) == 1) {
+                    cat(paste(data$series))
+                } else {
+                    cat("Series:\n")
+                    if(length(data$series) > 5) {
+                        cat(paste(data$series[1:5], collapse=", "),"...")
+                    } else {
+                        cat(paste(data$series, collapse=", "), ".", sep="")
+                    }
+                }
+
+                #call
+                cat("\n", data$call, sep="")
+            }
         }
     }
 }

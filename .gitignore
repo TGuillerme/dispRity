@@ -5,3 +5,8 @@
 # tex files in the doc (use just Rnw)
 doc/*.tex
 doc/*.fls
+
+#Null test draft
+null.test/*
+#Other drafts
+drafts/*
