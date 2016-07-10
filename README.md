@@ -4,7 +4,7 @@
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 <a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
-Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) of some of the novelties.
+Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the novelties.
 
 ## Installing dispRity
 ```r
