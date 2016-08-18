@@ -81,7 +81,7 @@
 # test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
-test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
+test.dispRity <- function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
