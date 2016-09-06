@@ -16,6 +16,7 @@ importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "pa
 importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
 importFrom("utils", "combn")
 importFrom("phyclust", "gen.seq.HKY")
+importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
 
 ##Functions
 export(time.series)
@@ -30,6 +31,9 @@ export(print.dispRity)
 
 ##Generate morphological data
 export(sim.morpho)
+export(check.morpho)
+##Morpho utilities
+export(get.contrast.matrix)
 
 ##Utilities
 export(make.metric)

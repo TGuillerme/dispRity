@@ -20,6 +20,7 @@ Imports:
   grDevices,
   hypervolume,
   paleotree,
+  phangorn,
   phyclust,
   snow
 License: GPL (>= 2)
