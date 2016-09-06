@@ -1,7 +1,7 @@
 Patch notes
 ----
 * 2016/??/?? - v0.2.1
-  * *new* disparity test `sequential.test`
+  * *new* function: `sim.morpho` generates morphological matrices 
 * 2016/06/15 - v0.2.0
   * *new* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * *new* function: `space.maker` for creating some multidimensional spaces!

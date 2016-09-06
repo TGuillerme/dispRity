@@ -15,7 +15,7 @@ importFrom("caper", "comparative.data")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
 importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
 importFrom("utils", "combn")
-
+importFrom("phyclust", "gen.seq.HKY")
 
 ##Functions
 export(time.series)
@@ -28,10 +28,11 @@ export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
 
+##Generate morphological data
+export(sim.morpho)
+
 ##Utilities
 export(make.metric)
-#export(make.model) - TO DO!
-#export(make.boot) - TO DO!
 export(get.dispRity)
 export(extract.dispRity)
 export(space.maker)
@@ -42,6 +43,9 @@ export(slice.tree)
 export(clean.data)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
+#export(make.model) - TO DO!
+#export(make.boot) - TO DO!
+
 
 ##disparity metrics
 export(variances)

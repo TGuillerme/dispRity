@@ -13,14 +13,15 @@ Description: this is a modular package for calculating disparity in R. Disparity
 Depends:
     R (>= 3.0.0),
     ape,
-Imports: 
-  paleotree,
-  snow,
-  geometry,
-  hypervolume,
+Imports:
   ade4,
+  caper,
+  geometry,
   grDevices,
-  caper
+  hypervolume,
+  paleotree,
+  phyclust,
+  snow
 License: GPL (>= 2)
 VignetteBuilder: knitr
 Suggests:
