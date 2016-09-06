@@ -46,6 +46,8 @@
 #' matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
 #'      invariant = FALSE)
 #' 
+#' @seealso \code{\link{check.morpho}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
+#' 
 #' @author Thomas Guillerme
 
 
