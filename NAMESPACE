@@ -34,6 +34,7 @@ export(sim.morpho)
 export(check.morpho)
 ##Morpho utilities
 export(get.contrast.matrix)
+export(apply.inapplicable)
 
 ##Utilities
 export(make.metric)
