@@ -1,0 +1,83 @@
+---
+title: "dispRity simulate data"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: References.bib
+bst: sysbio.bst
+vignette: >
+  %\VignetteIndexEntry{dispRity metric}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+This vignette details how to simulate morphological data in `dispRity` (v.0.2.1).
+
+Simulating morphological data in `dispRity`
+=================
+
+Before starting
+===============
+
+Installing `dispRity` 
+-----------------------------------
+
+You can install this package easily if you are using the latest version of `R` and `devtools`.
+
+```{r, eval = FALSE}
+if(!require(devtools)) install.packages("devtools")
+install_github("TGuillerme/dispRity", ref = "release")
+library(dispRity)
+```
+
+Quick go through
+=================================
+This is a quick example on how it works
+
+```{r}
+library(dispRity)
+set.seed(123)
+## Setting the starting tree with 15 taxa as a random coalescent tree
+my_tree <- rcoal(15)
+
+## Generating a matrix with 100 characters (85% binary and 15% three states) and
+## an equal rates model with a gamma rates distribution (0.5, 1) with no 
+## invariant characters.
+my_matrix <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
+    0.15), rates = c(rgamma, 0.5, 1), invariant = FALSE)
+
+## The head of the matrix
+my_matrix[1:5, 1:10]
+
+## Checking the matrix properties with a quick Maximum Parsimony tree search
+check.morpho(my_matrix, my_tree)
+```
+
+In details
+=================================
+Basically, `sim.morpho` is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix.
+It has two implemented models: `"ER"` for Equal Rates (M*k* model) or the `"HKY"` one which is the molecular HKY model but transforms pyrines in 0's and purimidines in 1's.
+It can also intake some specific distribution for the rates or the substitutions, allowing to modify these basic models.
+
+The `check.morpho` runs a quick MP tree using the `phangorn` parsimony algorithm.
+It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the MP tree and the provided tree.
+
+Good parameters for a good matrix
+-----------------------------------
+
+I was testing the effect of different parameters on the ability to generate a ``realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature).
+The matrix seems the most ``realistic'' with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter ($\alpha$) of 0.5 and no scaling ($\beta$ = 1).
+
+Something like that should give a decent matrix:
+
+```{r}
+set.seed(1)
+## tree
+my_tree <- rcoal(15)
+## matrix
+morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
+    rates = c(rgamma, 0.5, 1), invariant = TRUE)
+check.morpho(morpho_mat, my_tree)
+```
+
