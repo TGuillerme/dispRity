@@ -90,34 +90,19 @@ merge.time.series <- function(data1, data2, after = TRUE) {
     # CLEANING SERIES
     #----------------------       
     if(!merge_function_mode) {
-        # Looping through each element (iterative process!)
-        interval <- 1
-        while(interval <= length(data1$data)) {
-            # Check if there are enough elements
-            if(nrow(data1$data[[interval]]) < 3) {
-                # Merge with the next series
-                if(after) {
-                    # Check if the next series is not last!
-                    if(interval != length(data1$data)) {
-                        warn.merge(data1, interval, interval+1)
-                        data1 <- merge.series(data1, interval, interval+1)
-                    } else {
-                        warn.merge(data1, interval, interval-1)
-                        data1 <- merge.series(data1, interval, interval-1)
-                    }
-                } else {
-                    #Check if the series is not first!
-                    if(interval != 1) {
-                        warn.merge(data1, interval, interval-1)
-                        data1 <- merge.series(data1, interval, interval-1)
-                    } else {
-                        warn.merge(data1, interval, interval+1)
-                        data1 <- merge.series(data1, interval, interval+1)
-                    }
-                }
+
+        # Set up an iterative counter for safety (avoid infinite loop!)
+        itterative_counter <- 1
+        max_itteration <- length(data1$data) - 1
+
+        while(any(unlist(lapply(data1$data, nrow)) < 3)) {
+            # Clean the series
+            data1 <- clean.series(data1, after)
+            # Update the counter
+            itterative_counter <- itterative_counter + 1
+            if(itterative_counter == max_itteration) {
+                stop("Impossible to clean the series. It seems there is not enough data!")
             }
-            #Increment interval
-            interval <- interval + 1
         }
         return(data1)
     }
