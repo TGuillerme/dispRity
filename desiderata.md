@@ -11,3 +11,5 @@
 * We also calculated marginal likelihoods for variance as an alternative test for differences in functional disparity between stages. where L is the likelihood, n is sample size, σ2 is the estimated variance parameter, and s2 is the variance
 * Changes in disparity between stage bins follows the procedure outlined in Finarelli and Flynn (2007).
 
+# To do!
+* Drastically improve `time.series` and `boot.matrix` speed! 
