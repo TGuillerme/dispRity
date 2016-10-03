@@ -6,6 +6,7 @@ Patch notes
   * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are
   * *new* function: `sim.morpho` generates morphological matrices 
   * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
+  * minor graphical functions updates
 * 2016/06/15 - v0.2.0
   * *new* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * *new* function: `space.maker` for creating some multidimensional spaces!
