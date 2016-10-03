@@ -31,7 +31,7 @@
 
 \item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
 
-\item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
+\item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.}
 
 \item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}
 

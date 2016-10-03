@@ -12,7 +12,7 @@
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the graph.
-#' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
+#' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.
 #' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
@@ -261,12 +261,12 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
             #Check if time.slicing was used (saved in call)
             if(any(grep("Data was split using continuous method", data$call))) {
                 time_slicing <- data$series
-                xlab <- "Time (Mya)"
-            } else {
-                time_slicing <- FALSE
             }
-        } else {
+        } 
+        if(time.series != TRUE) {
             time_slicing <- FALSE
+        } else {
+            time_slicing <- data$series
         }
 
         #elements
@@ -318,6 +318,9 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
         #xlab
         if(missing(xlab)) { 
             xlab <- "default"
+            if(time.series != FALSE) {
+                xlab <- "Time (Mya)"
+            }
         } else {
             #length must be 1
             check.length(xlab, 1, " must be a character string.")
