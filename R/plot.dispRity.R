@@ -184,10 +184,7 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
                 plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
                 #plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
-        }
-
-
-    } else {
+        } else {
 
         #must be class dispRity
         check.class(data, "dispRity")
