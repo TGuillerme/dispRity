@@ -48,8 +48,8 @@ For example \code{states = c(0.7, 0.2, 0.1)} will generate 70% of characters wit
 ## A random tree with 10 tips
 tree <- rcoal(10)
 ## setting up the parameters
-## A gamma rate distribution with of shape alpha = 0.5
-my_rates = c(rgamma, 1, 1)
+## A gamma rate distribution with of alpha = 0.5
+my_rates = c(rgamma, rate = 10, shape = 5)
 ## A fixed substitution rate of 2 (T/T ratio in HKY)
 my_substitutions = c(runif, 2, 2)
 
