@@ -34,7 +34,7 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * *new* disparity test `null.test`.
   * *new* `plot.dispRity` arguments: `density` for controlling the polygons density and `add` for adding plots.
   * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
-  	* `continuous` disparity curves.
+  	* `continuous` for disparity curves.
   	* `box` for real boxplots.
   	* `lines` for the distribution verticale lines.
   	* `polygon` for the distribution boxes.
@@ -42,7 +42,7 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * many updates to the functions manual and vignettes.
   * some algorithm are now improved for speed
   * disparity can now be calculated as a distribution (i.e. `dispRity`, `test.dispRity`, `plot.dispRity`, and `summary.dispRity` can now intake one or more distribution rather than just one or more single values of disparity; whether the data is bootstrapped or not).
-  * `dispRity` can now intake `dispaRity` objects with level 2 disparity metrics.
+  * `dispRity` can now intake `dispRity` objects with level 2 disparity metrics.
   * `boot.matrix` and `dispRity` can now run in parallel.
   * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
   * `variances` and `ranges` disparity metrics can now intake a `k.root` argument for scaling the results.
