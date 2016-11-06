@@ -166,10 +166,10 @@ However, it might be interesting to look directly at the distribution of the var
 sum_variances1 <- summary(dispRity(BeckLee_mat50, metric = c(sum, variances)))
 
 # A two dimensional disparity
-all_variances <- summary(dispRity(BeckLee_mat50, metric = variances))
+all_variances <- dispRity(BeckLee_mat50, metric = variances)
 
 # Transforming the two dimensional one in a one dimensional one
-sum_variances2 <- summary(dispRity(BeckLee_mat50, metric = sum))
+sum_variances2 <- summary(dispRity(all_variances, metric = sum))
 
 # Both ways output the same disparity values:
 sum_variances1$observed == sum_variances2$observed
