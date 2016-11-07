@@ -35,7 +35,7 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
   * minor graphical functions updates
   
-Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md). Check it out for the cool new functionalities of version `2.1`, especially if you like morphological characters simulation!
+Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 #### Implemented metric
 A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd). Note that the whole idea of `dispRity`'s architecture is to allow users to implement their own metrics though!
