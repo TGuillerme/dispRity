@@ -32,11 +32,12 @@
 #' @param matrix a discrete morphological character matrix.
 #' 
 #' @examples
+# \dontrun{
 #' ## Create a random matrix
 #' tree <- rcoal(10)
 #' ## setting up the parameters
 #' ## A gamma rate distribution with of shape alpha = 0.5
-#' my_rates = c(rgamma, 1, 1)
+#' my_rates = c(rgamma, 2, 1)
 #' ## A fixed substitution rate of 2 (T/T ratio in HKY)
 #' my_substitutions = c(runif, 2, 2)
 #' ## Mk matrix (10*50) (for Mkv models)
@@ -44,6 +45,7 @@
 #' 
 #' ## Get the matrix's contrast matrix
 #' get.contrast.matrix(matrixMk)
+# }
 #' 
 #' @seealso \code{\link{check.morpho}}
 #' 
@@ -100,11 +102,12 @@ get.contrast.matrix <- function(matrix) {
 #' }
 #' 
 #' @examples
+# \dontrun{
 #' set.seed(4)
 #' ## A random tree with 15 tips
 #' tree <- rcoal(15)
 #' ## setting up the parameters
-#' my_rates = c(rgamma, 1, 1) # A gamma rate distribution with of shape alpha = 0.5
+#' my_rates = c(rgamma, 2, 0.5) # A gamma rate distribution with of shape alpha = 0.5
 #' my_substitutions = c(runif, 2, 2) # A fixed substitution rate of 2 (T/T ratio in HKY)
 #'
 #' ## A Mk matrix (10*50)
@@ -116,7 +119,7 @@ get.contrast.matrix <- function(matrix) {
 #' 
 #' ## Apply some inapplicable characters to the matrix
 #' matrix <- apply.inapplicable(matrixMk, my_inapplicables, tree)
-#' 
+# }
 #' @seealso \code{\link{sim.morpho}}
 #' 
 #' @author Thomas Guillerme

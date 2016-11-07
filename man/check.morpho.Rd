@@ -42,14 +42,12 @@ For example the default \code{c(\link[phangorn]{dist.hamming}, \link[phangorn]{N
 ## Generating a random tree
 random.tree <- rcoal(10)
 
-\dontrun{
 ## Generating a random matrix
 random.matrix <- sim.morpho(random.tree, characters = 50, model = "ER",
      rates = c(rgamma, 1, 1))
 
 ## Checking the matrix scores
 check.morpho(random.matrix, orig.tree = random.tree)
-}
 
 }
 \author{
