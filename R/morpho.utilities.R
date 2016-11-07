@@ -108,7 +108,8 @@ get.contrast.matrix <- function(matrix) {
 #' my_substitutions = c(runif, 2, 2) # A fixed substitution rate of 2 (T/T ratio in HKY)
 #'
 #' ## A Mk matrix (10*50)
-#' matrixMk <- sim.morpho(tree, characters = 100, model = "ER", states = c(0.85, 0.15), rates = my_rates)
+#' matrixMk <- sim.morpho(tree, characters = 100, model = "ER", states = c(0.85, 0.15),
+#'      rates = my_rates)
 #' 
 #' ## Setting the number and source of inapplicable characters
 #' my_inapplicables <- c(rep("character", 5), rep("clade", 5))

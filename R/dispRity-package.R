@@ -18,8 +18,8 @@
 #' @importFrom ade4 randtest as.randtest
 #' @importFrom grDevices colorRampPalette grey
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text
-#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var
-#' @importFrom utils combn
+#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var runif
+#' @importFrom utils combn capture.output tail
 
 NULL
 

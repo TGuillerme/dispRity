@@ -51,7 +51,7 @@
 #' @author Thomas Guillerme
 
 
-sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substitution = c(runif, 2, 2), invariant = TRUE, verbose = FALSE)
+sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substitution = c(stats::runif, 2, 2), invariant = TRUE, verbose = FALSE)
 {
 
     #SANITIZNG
@@ -82,7 +82,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
         if(class(model) != "function" && model == "ER") {
             model <- rTraitDisc.mk
             #Warning on the substitutions:
-            substitution <- c(runif, 1, 1)
+            substitution <- c(stats::runif, 1, 1)
             #message("Substitution parameter is ignored for the ER model.")
         }
         if(class(model) != "function" && model == "HKY") {

@@ -9,6 +9,9 @@
 \alias{ellipse.volume}
 \alias{hyper.volume}
 \alias{k.root}
+\alias{level1.fun}
+\alias{level2.fun}
+\alias{level3.fun}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}
