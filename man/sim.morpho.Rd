@@ -53,7 +53,6 @@ my_rates = c(rgamma, rate = 10, shape = 5)
 ## A fixed substitution rate of 2 (T/T ratio in HKY)
 my_substitutions = c(runif, 2, 2)
 
-\dontrun{
 ## HKY binary (10*50)
 matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY",
      rates = my_rates, substitution = my_substitutions)
@@ -62,7 +61,6 @@ matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates)
 ## Mk invariant matrix (10*50) (for Mk models)
 matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
      invariant = FALSE)
-}
 
 }
 \author{

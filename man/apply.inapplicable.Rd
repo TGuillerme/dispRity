@@ -39,7 +39,7 @@ set.seed(4)
 ## A random tree with 15 tips
 tree <- rcoal(15)
 ## setting up the parameters
-my_rates = c(rgamma, 1, 1) # A gamma rate distribution with of shape alpha = 0.5
+my_rates = c(rgamma, 2, 0.5) # A gamma rate distribution with of shape alpha = 0.5
 my_substitutions = c(runif, 2, 2) # A fixed substitution rate of 2 (T/T ratio in HKY)
 
 ## A Mk matrix (10*50)
@@ -51,7 +51,6 @@ my_inapplicables <- c(rep("character", 5), rep("clade", 5))
 
 ## Apply some inapplicable characters to the matrix
 matrix <- apply.inapplicable(matrixMk, my_inapplicables, tree)
-
 }
 \author{
 Thomas Guillerme
