@@ -2,9 +2,9 @@ Patch notes
 ----
 * 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
   * *new* utility function: `merge.time.series` for cleaning or merging time series
-  * *new* vignette: `dispRity-simulate_data` on how to simulate morphological data in `dispRity`
-  * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are
+  * *new* vignette: `dispRity-simulate_data` on how to simulate morphological characters in `dispRity`
   * *new* function: `sim.morpho` generates morphological matrices 
+  * *new* function: `check.morpho` for checking how "realistic" the simulate morphological matrices are
   * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
   * minor graphical functions updates
 * 2016/06/15 - v0.2.0
@@ -22,7 +22,7 @@ Patch notes
   * many updates to the functions manual and vignettes.
   * some algorithm are now improved for speed
   * disparity can now be calculated as a distribution (i.e. `dispRity`, `test.dispRity`, `plot.dispRity`, and `summary.dispRity` can now intake one or more distribution rather than just one or more single values of disparity; whether the data is bootstrapped or not).
-  * `dispRity` can now intake `dispaRity` objects with level 2 disparity metrics.
+  * `dispRity` can now intake `dispRity` objects with level 2 disparity metrics.
   * `boot.matrix` and `dispRity` can now run in parallel.
   * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
   * `variances` and `ranges` disparity metrics can now intake a `k.root` argument for scaling the results.
