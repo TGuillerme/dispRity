@@ -33,16 +33,16 @@ gen.seq.HKY.binary <- function(tree, substitution, rates, states = 1, ...) {
     
     #The character generator function
     HKY.seq.generator <- function(tree, substitution, rate, ...) {
-        return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, runif, pass.to.gen.seq.HKY = TRUE), kappa = sample.distribution(1, substitution), L = 1, rate.scale = sample.distribution(1, rates), ...))
+        return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, stats::runif, pass.to.gen.seq.HKY = TRUE), kappa = sample.distribution(1, substitution), L = 1, rate.scale = sample.distribution(1, rates), ...))
     }
 
     #The character selector (isolating the characters) function
     character.selector <- function(generated_character) {
-        return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1,]), 1, strsplit, split = " "), recursive = FALSE), function(x) tail(x, 1)))
+        return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1,]), 1, strsplit, split = " "), recursive = FALSE), function(x) utils::tail(x, 1)))
     }
 
     #Generating the matrix (with a different parameter for each character)
-    character <- character.selector(HKY.seq.generator(tree, substitution, rate, ...))
+    character <- character.selector(HKY.seq.generator(tree, substitution, rates, ...))
 
     #Transforming the base pairs
     character <- gsub("A", "0", character)

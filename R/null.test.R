@@ -13,7 +13,7 @@
 #' @param scale whether to scale the simulated and the observed data.
 #' @param ... optional arguments to be passed to \code{\link[ade4]{as.randtest}}.
 #'
-#' @details
+##' @details
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data

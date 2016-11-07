@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal level3.fun level2.fun level1.fun
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
