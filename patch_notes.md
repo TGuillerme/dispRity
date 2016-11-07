@@ -1,6 +1,6 @@
 Patch notes
 ----
-* 2016/??/?? - v0.2.1
+* 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
   * *new* utility function: `merge.time.series` for cleaning or merging time series
   * *new* vignette: `dispRity-simulate_data` on how to simulate morphological data in `dispRity`
   * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are

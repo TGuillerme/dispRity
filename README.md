@@ -26,28 +26,15 @@ Note that some of the vignettes do not contain all the details of the improvemen
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
-* 2016/06/15 - v0.2.0
-  * *new* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
-  * *new* function: `space.maker` for creating some multidimensional spaces!
-  * *new* disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
-  * *new* disparity test `null.test`.
-  * *new* `plot.dispRity` arguments: `density` for controlling the polygons density and `add` for adding plots.
-  * **removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
-  	* `continuous` disparity curves.
-  	* `box` for real boxplots.
-  	* `lines` for the distribution verticale lines.
-  	* `polygon` for the distribution boxes.
-  * minor functions corrections for specific optional arguments combinations.
-  * many updates to the functions manual and vignettes.
-  * some algorithm are now improved for speed
-  * disparity can now be calculated as a distribution (i.e. `dispRity`, `test.dispRity`, `plot.dispRity`, and `summary.dispRity` can now intake one or more distribution rather than just one or more single values of disparity; whether the data is bootstrapped or not).
-  * `dispRity` can now intake `dispaRity` objects with level 2 disparity metrics.
-  * `boot.matrix` and `dispRity` can now run in parallel.
-  * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
-  * `variances` and `ranges` disparity metrics can now intake a `k.root` argument for scaling the results.
+* 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
+  * *new* utility function: `merge.time.series` for cleaning or merging time series
+  * *new* vignette: `dispRity-simulate_data` on how to simulate morphological data in `dispRity`
+  * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are
+  * *new* function: `sim.morpho` generates morphological matrices 
+  * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
+  * minor graphical functions updates
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
-
 
 #### Implemented metric
 A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
