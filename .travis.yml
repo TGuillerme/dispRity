@@ -11,3 +11,10 @@ branches:
 branches:
   only:
     - release
+
+# Code coverage
+r_packages:
+  - covr
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
