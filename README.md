@@ -4,7 +4,7 @@
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 <a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
-Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the novelties.
+Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the package's novelties.
 
 ## Installing dispRity
 ```r
@@ -22,6 +22,7 @@ Note that some of the vignettes do not contain all the details of the improvemen
 *  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd).
 *  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd).
 *  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
+*  Simulating morphological characters [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
@@ -34,10 +35,10 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
   * minor graphical functions updates
   
-Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
+Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md). Check it out for the cool new functionalities of version `2.1`, especially if you like morphological characters simulation!
 
 #### Implemented metric
-A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
+A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd). Note that the whole idea of `dispRity`'s architecture is to allow users to implement their own metrics though!
 
 Authors
 -------
