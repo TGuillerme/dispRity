@@ -77,3 +77,27 @@ is.invariant <- function(character) {
         return(FALSE)
     }
 }
+
+
+## Mixed model sampler
+mixed.model <- function(tree, substitution, rates, states, ...) {
+
+    ## Get the number of states
+    n_states <- k.sampler(states)
+
+    ## Run Mk if n_states > 2
+    if(n_states != 2) {
+        #cat("Mk(", n_states, "), ", sep = "")
+        return(rTraitDisc.mk(tree, substitution, rates, states = c(rep(0, n_states-2), 1), ...))
+    } else {
+        ## Sampling the model (0 = Mk, 1 = HKY)
+        model <- sample(c(0, 1), 1)
+        if(model != 0) {
+            #cat("HKY(2), ")
+            return(gen.seq.HKY.binary(tree, substitution, rates, states = 1, ...))
+        } else {
+            #cat("Mk(2), ")
+            return(rTraitDisc.mk(tree, substitution, rates, states = 1, ...))
+        }
+    }
+}
