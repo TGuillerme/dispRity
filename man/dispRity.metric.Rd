@@ -2,15 +2,16 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{centroids}
-\alias{centroids.global}
-\alias{centroids.observed}
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
 \alias{dispRity.metric}
 \alias{ellipse.volume}
 \alias{hyper.volume}
-\alias{metric.modifier}
+\alias{k.root}
+\alias{level1.fun}
+\alias{level2.fun}
+\alias{level3.fun}
 \alias{mode.val}
 \alias{ranges}
 \alias{variances}
@@ -32,7 +33,8 @@ Different implemented disparity metrics.
 }
 \details{
 These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
-The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
+
+The currently implemented \code{level3} metrics are:
 \itemize{
   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{
@@ -60,9 +62,9 @@ The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
 }
 The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 \itemize{
-  \item \code{ranges}: calculates the range of each axis of the matrix.
-  \item \code{variances}: calculates the variance of each axis of the matrix.
-  \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used).
+  \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
+  \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
+  \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a series of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
 }
 The currently implemented value aggregate metrics (\code{level1.fun}) are:
 \itemize{
@@ -72,18 +74,24 @@ See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base
 }
 \examples{
 ## A dummy matrix
-dummy_matrix <- matrix(rnorm(25), 5, 5)
+dummy_matrix <- matrix(rnorm(90), 10, 9)
 
 ## variances of a each column in the matrix
 variances(dummy_matrix)
+## variances of a each column in the matrix corrected using the kth root
+variances(dummy_matrix, k.root = TRUE)
 
 ## ranges of each column in a matrix
 ranges(dummy_matrix)
+## ranges of a each column in the matrix corrected using the kth root
+ranges(dummy_matrix, k.root = TRUE)
 
 ## Distances between each row and centroid of the matrix
 centroids(dummy_matrix)
-## Distance between each rows and an arbitrary centroid
-centroids(dummy_matrix, centroid = c(0,0,0,0,0))
+## Distance between each rows and an arbitrary point
+centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9))
+## Distance between each rows and the origin
+centroids(dummy_matrix, centroid = 0)
 
 ## Modal value of a vector
 mode.val(rnorm(25))

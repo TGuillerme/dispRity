@@ -2,8 +2,6 @@
 #'
 #' @description Splits the ordinated data into a customized series list.
 #'
-#' @usage cust.series(data, series)
-#'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param factor A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
 #'
@@ -26,6 +24,8 @@
 #'      ncol = 1, dimnames = list(letters[1:10])))
 #' ## Splitting the dummy ordinated matrix
 #' cust.series(ordinated_matrix, factors)
+#'
+#' @seealso \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 

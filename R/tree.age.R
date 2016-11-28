@@ -12,6 +12,8 @@
 #' ## A random tree with the distance since the root.
 #' tree.age(rtree(10), order='present')
 #'
+#' @seealso \code{\link{slice.tree}}, \code{\link{time.series}}.
+#'
 #' @author Thomas Guillerme
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it
@@ -41,18 +43,18 @@ tree.age <- function(tree, age, order='past'){
 
 #CALCULATE THE EDGES AGE
 
-    if(age == 0) {
-        ages.table <- tree.age_table(tree)
-    } else {
+    if(age != 0) {
         ages.table <- tree.age_scale(tree.age_table(tree), age)
+    } else {
+        ages.table <- tree.age_table(tree)
     }
 
     #Type
-    if(order == 'past'){
+    if(order != 'past') {
+        ages.table$ages <- round(ages.table$ages, digits = 7)
+    } else {
         tree.height <- max(ages.table$ages)
         ages.table$ages <- round(abs(ages.table$ages-tree.height), digits = 3)
-    } else {
-        ages.table$ages <- round(ages.table$ages, digits = 7)
     }
 
     #Output

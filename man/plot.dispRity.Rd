@@ -7,7 +7,7 @@
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
   rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
   time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  significance = "cent.tend", lines.args = NULL, token.args = NULL, ...)
+  nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -22,7 +22,15 @@
 
 \item{elements}{\code{logical} whether to plot the number of elements per series.}
 
-\item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).}
+\item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
+
+\item{xlab}{Optional, a \code{character} string for the caption of the x axis.}
+
+\item{ylab}{Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.}
+
+\item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
+
+\item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.}
 
 \item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}
 
@@ -30,11 +38,9 @@
 
 \item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
 
-\item{significance}{when plotting a \link{\code{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).}
+\item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
-\item{lines.args}{when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).}
-
-\item{token.args}{when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).}
+\item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }
@@ -78,7 +84,7 @@ plot(sum_of_variances, type = "polygon", quantiles = c(10, 50, 95),
 
 ## Using different options
 plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
-     xlab = ("Time (Ma)"), ylab = "disparity", ylim = c(0, 5))
+     xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)
 plot(sum_of_variances, type = "continuous")
@@ -95,6 +101,6 @@ plot(sum_of_variances, rarefaction = "plot")
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{summary.dispRity}}.
+\code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 }
 

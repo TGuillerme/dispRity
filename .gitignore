@@ -8,3 +8,5 @@ doc/*.fls
 
 #Null test draft
 null.test/*
+#Other drafts
+drafts/*

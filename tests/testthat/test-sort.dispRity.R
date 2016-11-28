@@ -45,4 +45,17 @@ test_that("sort.dispRity works", {
     expect_equal(
         sort.dispRity(disparity2, sort = c(2,1))$series
         , c("V1.2", "V1.1"))
+
+    #Summary works
+    sum2 <- summary(disparity2)
+    sum3 <- summary(disparity3)
+    sum2_sort <- summary(sort(disparity2, decreasing = TRUE))
+    sum3_sort <- summary(sort(disparity3, decreasing = TRUE))
+
+    expect_true(
+        all(sum2[c(1,2),] == sum2_sort[c(2,1),])
+        )
+    expect_true(
+        all(sum3[c(2,4),] == sum3_sort[c(4,2),])
+        )
 })

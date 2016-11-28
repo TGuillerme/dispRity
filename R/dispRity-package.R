@@ -16,7 +16,10 @@
 #' @importFrom geometry convhulln
 #' @importFrom hypervolume hypervolume estimate_bandwidth get_volume
 #' @importFrom ade4 randtest as.randtest
-#' @importFrom grDevices colorRampPalette
+#' @importFrom grDevices colorRampPalette grey
+#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text
+#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var runif
+#' @importFrom utils combn capture.output tail
 
 NULL
 
@@ -38,4 +41,18 @@ NULL
 #' Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 #' @name BeckLee
 #' @aliases BeckLee_tree BeckLee_mat50 BeckLee_mat99 BeckLee_ages
+NULL
+
+#' McClean dataset
+#'
+#' Example datasets from McClean (unpublished).
+#'
+#' \itemize{
+#'   \item \code{ordination} The ordinated matrix based on the 40 sites and 20 dimensions
+#'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
+#'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
+#' }
+#'
+#' @format one matrix and two vectors.
+#' @name McClean_data
 NULL

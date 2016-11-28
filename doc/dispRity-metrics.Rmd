@@ -1,0 +1,307 @@
+---
+title: "dispRity metrics"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: References.bib
+bst: sysbio.bst
+vignette: >
+  %\VignetteIndexEntry{dispRity metric}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+This vignette details how the disparity metrics are implemented in the `dispRity` package (v.0.2).
+
+Disparity metrics
+=================
+
+There are many ways for measuring disparity. In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. MDS, PCA, PCO, PCoA).
+For example, one can look at ellipsoid hyper-volume of the ordinated space [@DonohueDim], the sum and the product of the ranges and variances of the ordinated space dimensions [@Wills1994] or the median position of the elements in the ordinated space relative to its centroid [@GuillermeSTD].
+Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.
+
+Because of this great diversity of metric, the package `dispRity` has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis.
+In fact, the core function of the package, `dispRity`, allows the user to define any metric in the `metric` argument.
+However, because of the infrastructure of the package (especially the one of the `dispRity` objects – see the [`dispRity` manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.pdf)), the `metric` argument has to follow certain rules:
+
+1.  it must be composed of one to three `function` objects;
+
+2.  these functions can only have as input a `matrix` or a `vector`;
+
+3.  each of these functions must be of one of the three levels described below;
+
+4.  at least one of the functions must be a level 1 function (see below).
+
+The function levels
+===================
+
+The metric functions levels determine the dimensional level of decomposition of the input `matrix`.
+In other words, each level designate the dimensions of the output: either three (a `matrix`); two (a `vector`); or one (a single `numeric` value) dimensions.
+
+![Illustration of the different levels of output of a function with an input `matrix`](dispRity_fun.pdf)
+
+A level 1 function
+------------------
+
+A level 1 function for example, will decompose a `matrix` or a `vector` into a single value:
+
+```{r}
+# First, let's create a dummy matrix
+dummy_matrix <- matrix(rnorm(12), 4, 3)
+
+# Any summary metric such as mean or median are good examples of level 1
+# functions as they reduce the matrix to a single dimension (i.e. one value):
+mean(dummy_matrix)
+median(dummy_matrix)
+```
+
+A level 2 function
+------------------
+
+A level 2 function will decompose a `matrix` into a `vector`.
+Several level 2 functions are implemented in `dispRity`(see `?dispRity.metric`) such as the `variances` function that calculates the variance of each dimension of the ordinated matrix.
+
+```{r}
+# We can define a function that outputs the products of each row of the matrix:
+prod.rows <- function(matrix) apply(matrix, 1, prod)
+
+# This function is a level 2 function as it reduces the matrix into a two
+# dimensional element (a vector of values):
+prod.rows(dummy_matrix)
+```
+
+A level 3 function
+------------------
+
+Finally a level 3 function will transform the `matrix` into another `matrix`.
+Note that the dimension of the output `matrix` don't need to match the the input `matrix`:
+
+```{r}
+# The var functions computes the variance/covariance matrix which will be a
+# three by three matrix
+var(dummy_matrix)
+```
+
+`make.metric`
+=============
+
+Of course, functions can be more complex and involve multiple operations such as the `centroids` function (see `?dispRity.metric`) that calculates the euclidean distance between each elements and the ordinated space centroid.
+The `make.metric` function implemented in `dispRity`is designed to help testing and finding the level of the functions.
+This function tests:
+
+1.  if your function can deal with a `matrix` or a `vector` as an input;
+
+2.  which is your function's level according to it's output (level 1, 2 or 3, see above);
+
+3.  whether the function can properly be implemented in the `dispRity` function (the function is fed into a `lapply` loop).
+
+For example, let's see if the functions described above are the right levels:
+
+```{r}
+# First we need to load the package
+library(dispRity)
+
+# Which level is the mean function? And is able to be used in the dispRity?
+make.metric(mean)
+
+# Same questions from the prod.rows function:
+make.metric(prod.rows)
+
+# Same questions for the var function:
+make.metric(var)
+```
+
+metric argument in `dispRity`
+===========================================
+
+Using this metric structure, on can easily use any disparity metric in the `dispRity`function as follows:
+
+```{r}
+# First we need to load the data
+data(BeckLee_mat50)
+
+# Measuring disparity as the standard deviation of all the value of the
+# ordinated matrix (level 1 function).
+summary(dispRity(BeckLee_mat50, metric = sd))
+
+# Measuring disparity as the standard deviation of the variance of each axis of
+# the ordinated matrix (level 1 and level 2 functions).
+summary(dispRity(BeckLee_mat50, metric = c(sd, variances)))
+
+# Measuring disparity as the standard deviation of the variance of each axis of
+# the variance covariance matrix (level 1, level 2 and level 3 functions).
+summary(dispRity(BeckLee_mat50, metric = c(sd, variances, var)), round = 10)
+```
+
+Note that the order of each function in the metric argument does not matter, the `dispRity`function will automatically detect the function levels (using `make.metric`) and apply them to the data in decreasing order (level 3 > level 2 > level 1).
+
+```{r}
+# Disparity as the standard deviation of the variance of each axis of the
+# variance covariance matrix:
+disparity1 <- summary(dispRity(BeckLee_mat50, metric = c(sd, variances, var)),
+                      round = 10)
+
+# Same but using a different functions order for the metric argument
+disparity2 <- summary(dispRity(BeckLee_mat50, metric = c(variances, sd, var)),
+                      round = 10)
+
+# Both ways output the same disparity values:
+disparity1$observed == disparity2$observed # is TRUE
+```
+
+What level is the disparity?
+------------------
+
+In these examples, we considered disparity to be a single value.
+For example, in the previous one, we defined disparity as the standard deviation of the variances of each column of the variance/covariance matrix (`metric = c(variances, sd, var)`).
+This results in single value to be calculated.
+
+In some cases however, it might also be possible to calculate disparity as a distribution.
+For example, one of the metrics commonly used in palaeobiology is the sum of variances of each dimensions (`metric = c(sum, variances)`) [@Wills1994].
+However, it might be interesting to look directly at the distribution of the variances itself.
+
+```{r}
+# A one dimensional disparity
+sum_variances1 <- summary(dispRity(BeckLee_mat50, metric = c(sum, variances)))
+
+# A two dimensional disparity
+all_variances <- dispRity(BeckLee_mat50, metric = variances)
+
+# Transforming the two dimensional one in a one dimensional one
+sum_variances2 <- summary(dispRity(all_variances, metric = sum))
+
+# Both ways output the same disparity values:
+sum_variances1$observed == sum_variances2$observed
+```
+
+Metrics implemented in `dispRity`
+===========================================
+
+Several disparity metrics are directly implemented in the `dispRity` package.
+The detailed list can be found in `?dispRity.metric` along with some explanations on each metric.
+
+Level | Name | Description | Source | 
+------|------|---------------------------------------------------|--------|
+3 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | [@DonohueDim] |
+3 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+3 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+3 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |
+3 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
+2 | `ranges` | The range of each dimension | `dispRity` |
+2 | `variances` | The variance of each dimension | `dispRity` |
+2 | `centroids`<sup>2</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
+1 | `mode.val` | The modal value | `dispRity` |
+
+
+1: The functions estimation of the eigen value only works for MDS or PCoA ordinations (not PCA).
+
+2: Note that by default, the centroid is the centroid of the elements.
+It can however be fixed to an arbitrary value by using the `centroid` argument `centroids(space, centroid = rep(0, ncol(space)))`, for example the origin of the ordinated space.
+
+## Equations and implementations:
+Some of the functions described below are directly implemented in the `dispRity` package and do not require any dependencies.
+
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+With *k* being the number of dimensions, $\lambda_i$ is the eigen value of each dimension [R implementation line 140](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+With *k* being the dimensions [R implementation line 220](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+With *k* being the dimensions [R implementation line 100](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+With *k* being the dimensions and $\sigma^{2}$ their variance [R implementation line 95](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+\begin{equation}
+    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+\end{equation}
+With *n* being each element in the ordinated space, *k* being its dimensions and $Centroid_{k}$ their mean (or can be set to an arbitrary value) and  [R implementation line 111](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R).
+
+
+### Volumes and surface metrics
+```{r}
+# First lets create a small dummy ordinate matrix
+set.seed(1)
+dummy_space <- space.maker(10, 5, rnorm)
+
+# Let's then calculate disparity as the ellipsoid volume:
+summary(dispRity(dummy_space, metric = ellipse.volume))
+
+# Which is the equivalent of doing (with some rounding):
+ellipse.volume(dummy_space)
+
+# Now for the convex hull surface:
+summary(dispRity(dummy_space, metric = convhull.surface))
+
+# And for it's volume:
+summary(dispRity(dummy_space, metric = convhull.volume))
+
+# Note that the more the dimensions, the more the volume tends towards 0!
+summary(dispRity(space.maker(10,9, rnorm), metric = convhull.volume))
+
+# The estimation of the hypervolume is a bit slower:
+summary(dispRity(dummy_space, metric = hyper.volume))
+
+# Note that the hypervolume is different of the convex hull volume!
+# This function also intakes more arguments that can be fed to dispRity
+summary(dispRity(dummy_space, metric = hyper.volume,
+                 repsperpoint = 100, quantile = 0.5))
+# Which gives quiet different results!
+```
+
+### Diagonal, ranges and variances
+```{r}
+# Or we can use other more straightforward metrics such as the diagonal of our
+# dummy space (i.e. the longest euclidean distance in our 5 dimensional space)
+summary(dispRity(dummy_space, metric = diagonal))
+
+# Another type of metrics, based on the range are used a lot in palaeobiology.
+summary(dispRity(dummy_space, metric = ranges))
+# Note that this gives a distribution of metrics now (i.e. the range for our 5
+# dimensions).
+# This distribution can be summarised using metrics such as the sum or product
+# of ranges:
+summary(dispRity(dummy_space, metric = c(sum, ranges)))
+summary(dispRity(dummy_space, metric = c(prod, ranges)))
+
+# The same can be done with the variances
+summary(dispRity(dummy_space, metric = variances))
+summary(dispRity(dummy_space, metric = c(sum, variances)))
+summary(dispRity(dummy_space, metric = c(prod, variances)))
+# Note that neither the sum nor the product of the variances are really
+# representative of the variances distribution!
+```
+
+### Centroids metrics
+```{r}
+# The centroid metric allows to calculate the distances between each elements
+# and their centroids:
+summary(dispRity(dummy_space, metric = centroids))
+# Note that this also gives a distribution 
+
+# Another interesting use of this function is for looking at both the average
+# spread of the elements (or the entire distribution!) and their position within
+# the dummy space by looking at the distances between the elements and the
+# center of the dummy space (or an arbitrary point)
+
+centroids_to_group <- dispRity(dummy_space, metric = centroids)
+centroids_to_space <- dispRity(dummy_space, metric = centroids,
+                               centroid = c(rep(0, 5)))
+
+# Average spread
+summary(dispRity(centroids_to_group, metric = median))
+# Average position within de dummy space
+summary(dispRity(centroids_to_space, metric = median))
+```
+
+# References

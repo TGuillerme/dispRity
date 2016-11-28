@@ -15,7 +15,7 @@
 #' }
 #' The 3 different metric levels correspond to the dimensions of the output and are:
 #' \itemize{
-#'   \item "level 1": for functions that decompose a \code{matrix} or a \code{vector} into a single \code{numeric} value.
+#'   \item "level 1": for functions that decompose a \code{matrix} into a single value.
 #'   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
 #'   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
 #' }
@@ -39,7 +39,7 @@
 #' my_fun <- function(x) (x + sum(x))
 #' make.metric(my_fun)
 #'
-#' @seealso \code{\link{dispRity}} and \code{\link{dispRity.metric}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 #'
 #' @author Thomas Guillerme
 
@@ -58,13 +58,12 @@ make.metric<-function(fun, ..., silent = FALSE) {
 
     #Testing the metric
     test <- NULL
-    try(test <- fun(matrix, ...), silent=TRUE)
-    #try(test <- fun(matrix), silent=TRUE) ; warning("DEBUG")
+    try(test <- fun(matrix, ...), silent = TRUE)
+    #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
 
     #Did the test failed?
     if(is.null(test)) {
-        if(silent == FALSE) stop(paste("The provided function did not output anything!\nDoes the following works?\n",
-            as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep=""))
+        if(silent != TRUE) stop(paste("The provided function did not output anything!\nDoes the following works?\n", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep = ""))
     } else {
 
         ##########
@@ -74,10 +73,9 @@ make.metric<-function(fun, ..., silent = FALSE) {
         #If class is matrix -> level3.fun
         if(class(test) == "matrix") {
             fun_type <- "level3"
-            if(silent == FALSE) {
-                cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n",
-                    as.expression(match_call$fun), " is detected as being a level 3 function.", sep=""))
-                cat(paste("\nAdditional level 2 and/or level 1 function(s) will be needed.", sep=""))
+            if(silent != TRUE) {
+                cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun), " is detected as being a level 3 function.", sep = ""))
+                cat(paste("\nAdditional level 2 and/or level 1 function(s) will be needed.", sep = ""))
             }
         } else {
             #If class is numeric
@@ -85,23 +83,20 @@ make.metric<-function(fun, ..., silent = FALSE) {
                 #If only one value -> level1.fun
                 if(length(test) == 1) {
                     fun_type <- "level1"
-                    if(silent == FALSE) {
-                        cat(paste(as.expression(match_call$fun)," outputs a single value.\n", as.expression(match_call$fun),
-                            " is detected as being a level 1 function.", sep=""))
+                    if(silent != TRUE) {
+                        cat(paste(as.expression(match_call$fun)," outputs a single value.\n", as.expression(match_call$fun), " is detected as being a level 1 function.", sep = ""))
                     }
                 #If more than one value -> level1.fun
                 } else {
                     fun_type <- "level2"
-                    if(silent == FALSE) {
-                        cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun),
-                            " is detected as being a level 2 function.", sep=""))
+                    if(silent != TRUE) {
+                        cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun), " is detected as being a level 2 function.", sep = ""))
                     }
                 }
             } else {
                 #Function provides a wrong output
-                if(silent == FALSE) {
-                    stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following outputs a matrix or a numeric vector?\n",
-                    as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep=""))
+                if(silent != TRUE) {
+                    stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following outputs a matrix or a numeric vector?\n", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep = ""))
                 }
             }
         }
@@ -111,31 +106,30 @@ make.metric<-function(fun, ..., silent = FALSE) {
     #Does fun works in the dispRity apply?
     ##########
     #Making the data similar to the dispRity internal input
-    matrix<-list(matrix)
-    BSresult<-boot.matrix(matrix, bootstraps=0, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full")$data$bootstraps
+    matrix <- list(matrix)
+    BSresult <- boot.matrix(matrix, bootstraps = 0, rarefaction = FALSE, rm.last.axis = FALSE, verbose = FALSE, boot.type = "full")$data$bootstraps
 
     #Checking the disparity.calc function in lapply
 
     if(fun_type == "level3") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean, ...)), silent=TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=fun, level2.fun=NULL, level1.fun=mean)), silent=TRUE) ; warning("DEBUG")
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = fun, level2.fun = NULL, level1.fun = mean, ...)), silent = TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = fun, level2.fun = NULL, level1.fun = mean)), silent = TRUE) ; warning("DEBUG")
     }
 
     if(fun_type == "level2") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean, ...)), silent=TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=fun, level1.fun=mean)), silent=TRUE) ; warning("DEBUG")
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = fun, level1.fun = mean, ...)), silent = TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = fun, level1.fun = mean)), silent = TRUE) ; warning("DEBUG")
     }
 
     if(fun_type == "level1") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...)), silent=TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun=NULL, level2.fun=NULL, level1.fun=fun, ...)), silent=TRUE) ; warning("DEBUG")
+        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = NULL, level1.fun = fun, ...)), silent = TRUE)
+        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = NULL, level1.fun = fun, ...)), silent = TRUE) ; warning("DEBUG")
     }
 
-    #TG: This bit is no more mandatory in dispRity 
-    # #length of test_lapply must be equal to one
-    # if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
-    #     " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
-    #         as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep=""))
+    #length of test_lapply must be equal to one
+    if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
+        " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
+            as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep = ""))
 
     ##########
     #Return the level type for dispRity

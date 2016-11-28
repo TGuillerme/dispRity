@@ -4,17 +4,19 @@
 \alias{null.test}
 \title{Testing a null hypothesis on multidimensional data.}
 \usage{
-null.test(data, replicates, null.distrib, null.args = NULL,
-  alter = "two-sided", scale = FALSE, ...)
+null.test(data, replicates = 100, null.distrib, null.args = NULL,
+  null.cor = NULL, alter = "two-sided", scale = FALSE, ...)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}
 
-\item{replicates}{the number of replicates for the test.}
+\item{replicates}{the number of replicates for the test (default = \code{100}).}
 
 \item{null.distrib}{one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.}
 
-\item{null.args}{any additional arguments to be passed to \code{\link{space.maker}} (\code{default = NULL}).}
+\item{null.args}{any additional distributions arguments to be passed to \code{\link{space.maker}} (see \code{arguments} within; \code{default = NULL}).}
+
+\item{null.cor}{an additional correlation matrix to be passed to \code{\link{space.maker}} (see \code{cor.matrix} within; \code{default = NULL}).}
 
 \item{alter}{the type of alternative hypothesis (H1) as used in \code{\link[ade4]{randtest}} (\code{default = "two-sided"}).}
 
@@ -33,19 +35,33 @@ Testing the difference between the observed disparity and disparity under a null
 data(BeckLee_mat50)
 ## Calculating the disparity as the ellipsoid volume
 obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
-## Testing 
+## Testing against normal distribution
 results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
-results
-plot(results)
+results ; plot(results)
+
+\dontrun{
+## Running the test on multiple series
+## Generating the series
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+     rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+customised_series <- cust.series(BeckLee_mat50, factors)
+## Bootstrapping the data
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+## Calculating variances of each dimension
+sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+## Testing against normal distribution
+results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
+results ; plot(results)
+}
 
 }
 \author{
 Thomas Guillerme
 }
 \references{
-Díaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
+Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
 }
 \seealso{
-\code{\link{space.maker}}, \code{\link{test.dispRity}}, \code{\link{sequential.test}}, \code{\link{sequential.test}}.
+\code{\link{space.maker}}, \code{\link{test.dispRity}}, \code{\link{sequential.test}}.
 }
 

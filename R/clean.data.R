@@ -25,6 +25,8 @@
 #' cleaned$tree
 #' ##The cleaned data set:
 #' cleaned$data
+#'
+#' @seealso \code{\link{tree.age}}.
 #' 
 #' @author Thomas Guillerme
 #' @export

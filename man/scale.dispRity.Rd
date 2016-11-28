@@ -32,13 +32,14 @@ disparity <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 ## Scaling the data
 summary(disparity) # No scaling
 summary(scale(disparity)) # Dividing by the maximum
-summary(scale(disparity, max = 0.1)) # Multiplying by 10 (dividing by 0.1)
+## Multiplying by 10 (dividing by 0.1)
+summary(scale.dispRity(disparity, max = 0.1))
 
 }
 \author{
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{test.dispRity}} and \code{link[base]{scale}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 }
 

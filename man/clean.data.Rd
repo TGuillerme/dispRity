@@ -39,4 +39,7 @@ cleaned$data
 \author{
 Thomas Guillerme
 }
+\seealso{
+\code{\link{tree.age}}.
+}
 

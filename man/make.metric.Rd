@@ -25,7 +25,7 @@ This function tests:
 }
 The 3 different metric levels correspond to the dimensions of the output and are:
 \itemize{
-  \item "level 1": for functions that decompose a \code{matrix} or a \code{vector} into a single \code{numeric} value.
+  \item "level 1": for functions that decompose a \code{matrix} into a single value.
   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
 }
@@ -54,6 +54,6 @@ make.metric(my_fun)
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{dispRity.metric}}.
+\code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 }
 

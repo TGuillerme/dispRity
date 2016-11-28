@@ -10,8 +10,13 @@ importFrom("hypervolume", "estimate_bandwidth")
 importFrom("hypervolume", "get_volume")
 importFrom("ade4", "randtest")
 importFrom("ade4", "as.randtest")
-importFrom("grDevices", "colorRampPalette")
+importFrom("grDevices", "colorRampPalette", "grey")
 importFrom("caper", "comparative.data")
+importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
+importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var")
+importFrom("utils", "combn")
+importFrom("phyclust", "gen.seq.HKY")
+importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
 
 ##Functions
 export(time.series)
@@ -24,10 +29,15 @@ export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
 
+##Generate morphological data
+export(sim.morpho)
+export(check.morpho)
+##Morpho utilities
+export(get.contrast.matrix)
+export(apply.inapplicable)
+
 ##Utilities
 export(make.metric)
-export(make.model)
-export(make.boot)
 export(get.dispRity)
 export(extract.dispRity)
 export(space.maker)
@@ -36,8 +46,12 @@ export(scale.dispRity)
 export(sort.dispRity)
 export(slice.tree)
 export(clean.data)
+export(merge.time.series)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
+#export(make.model) - TO DO!
+#export(make.boot) - TO DO!
+
 
 ##disparity metrics
 export(variances)
@@ -48,6 +62,7 @@ export(ellipse.volume)
 export(hyper.volume)
 export(convhull.volume)
 export(convhull.surface)
+export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)

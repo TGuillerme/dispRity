@@ -8,13 +8,19 @@
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
 #' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
-#' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma).
+#' @param ylim Optional, two \code{numeric} values for the range of the y axis.
+#' @param xlab Optional, a \code{character} string for the caption of the x axis.
+#' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
+#' @param col Optional, some \code{character} string(s) for the colour of the graph.
+#' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.
 #' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
-#' @param significance when plotting a \link{\code{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
-#' @param lines.args when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-#' @param token.args when plotting a \link{\code{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
+# ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
+# ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
+# ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
+#' @param nclass when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).
+#' @param coeff when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
@@ -54,7 +60,7 @@
 #' 
 #' ## Using different options
 #' plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
-#'      xlab = ("Time (Ma)"), ylab = "disparity", ylim = c(0, 5))
+#'      xlab = ("Time (Ma)"), ylab = "disparity")
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(sum_of_variances, type = "continuous")
@@ -66,7 +72,7 @@
 #' ## Rarefactions plots
 #' plot(sum_of_variances, rarefaction = "plot")
 #' 
-#' @seealso \code{\link{dispRity}} and \code{\link{summary.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 #'
 #' @author Thomas Guillerme
 
@@ -86,71 +92,100 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, significance="cent.tend", lines.args=NULL, token.args=NULL, ...){
+plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, nclass=10, coeff=1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
 
     #Plot sequential.test shortcut
-    if(length(class(data)) == 2) {
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
+    # if(length(class(data)) == 2) {
+    #     if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
 
-            #lines.args sanitizing
-            if(!is.null(lines.args)) check.class(lines.args, "list")
+    #         #lines.args sanitizing
+    #         if(!is.null(lines.args)) check.class(lines.args, "list")
 
-            #token.args sanitizing
-            if(!is.null(token.args)) check.class(token.args, "list")
+    #         #token.args sanitizing
+    #         if(!is.null(token.args)) check.class(token.args, "list")
 
-            #Creating the table results
-            results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
+    #         #Creating the table results
+    #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
 
-            #Checking if distribution
-            is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
+    #         #Checking if distribution
+    #         is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
 
-            #significance sanitizing
-            if(is.distribution == TRUE) {
-                if(class(significance) == "character") {
-                    if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
-                    significance = 1
-                } else {
-                    check.class(significance, "numeric", " must be either 'cent.tend' or a single 'numeric' value.")
-                    check.length(significance, 1, " must be either 'cent.tend' or a single 'numeric' value.")
-                    if(is.na(match(significance, seq(from = 1, to = length(quantiles)*2)))) {
-                        stop("significance argument must be the number of the quantile (e.g. 1 for the first quantile).")
-                    } else {
-                        significance = significance + 1
-                    }
-                }
-            }
+    #         #significance sanitizing
+    #         if(is.distribution == TRUE) {
+    #             if(class(significance) == "character") {
+    #                 if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
+    #                 significance = 1
+    #             } else {
+    #                 check.class(significance, "numeric", " must be either 'cent.tend' or a single 'numeric' value.")
+    #                 check.length(significance, 1, " must be either 'cent.tend' or a single 'numeric' value.")
+    #                 if(is.na(match(significance, seq(from = 1, to = length(quantiles)*2)))) {
+    #                     stop("significance argument must be the number of the quantile (e.g. 1 for the first quantile).")
+    #                 } else {
+    #                     significance = significance + 1
+    #                 }
+    #             }
+    #         }
 
 
-            #Plotting the results
-            if(add != TRUE) {
-                #series
-                series <- unique(unlist(strsplit(names(data$models), split = " - ")))
-                #Get the all the intercepts estimate
-                if(is.distribution == TRUE) {
-
-                } else {
-                    all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(series)-1),1], results_out$Slopes[(length(series)-1),1]))
-                }
+    #         #Plotting the results
+    #         if(add != TRUE) {
+    #             #series
+    #             series <- unique(unlist(strsplit(names(data$models), split = " - ")))
+    #             #Get the all the intercepts estimate
+    #             if(is.distribution == TRUE) {
+    #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(series)-2),significance]), unlist(results_out$Slopes$Estimate[(length(series)-1),significance]))))
+    #             } else {
+    #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(series)-1),1], results_out$Slopes[(length(series)-1),1]))
+    #             }
                 
-                if(missing(xlab)) {
-                    xlab <- "Series"
-                }
-                if(missing(ylab)) {
-                    ylab <- "Estimated disparity"
-                }
+    #             if(missing(xlab)) {
+    #                 xlab <- "Series"
+    #             }
+    #             if(missing(ylab)) {
+    #                 ylab <- "Estimated disparity"
+    #             }
 
-                #Empty plot
-                series_length <- length(series)
-                plot(seq(from = 1, to = series_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
-                #plot(seq(from = 1, to = series_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
-                axis(1, at = 1:series_length, labels = series)
+    #             #Empty plot
+    #             series_length <- length(series)
+    #             plot(seq(from = 1, to = series_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
+    #             #plot(seq(from = 1, to = series_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
+    #             axis(1, at = 1:series_length, labels = series)
+    #         }
+
+    #         plot.seq.test(results_out, is.distribution, significance, lines.args, token.args)
+
+    #     }
+
+    if(length(class(data)) > 1) {
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
+            #sanitising
+            check.class(nclass, "numeric")
+            check.class(coeff, "numeric")
+            check.length(nclass, 1, " must be a single numeric value.")
+            check.length(coeff, 1, " must be a single numeric value.")
+
+
+            #length_data variable initialisation
+            length_data <- length(data)
+            
+            #Set up the plotting window
+            #Open the multiple plots
+            if(length_data != 1) {
+                op_tmp <- par(mfrow = c(ceiling(sqrt(length_data)), round(sqrt(length_data))))
+
+                #Rarefaction plots
+                for(model in 1:length_data) {
+                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = ""), ...)
+                    #plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                }
+                par(op_tmp)
+            } else {
+                plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
+                #plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
-
-            plot.seq.test(results_out, is.distribution, significance, lines.args, token.args)
-
         }
     } else {
 
@@ -226,12 +261,12 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
             #Check if time.slicing was used (saved in call)
             if(any(grep("Data was split using continuous method", data$call))) {
                 time_slicing <- data$series
-                xlab <- "Time (Mya)"
-            } else {
-                time_slicing <- FALSE
             }
-        } else {
+        } 
+        if(time.series != TRUE) {
             time_slicing <- FALSE
+        } else {
+            time_slicing <- data$series
         }
 
         #elements
@@ -283,6 +318,9 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
         #xlab
         if(missing(xlab)) { 
             xlab <- "default"
+            if(time.series != FALSE) {
+                xlab <- "Time (Mya)"
+            }
         } else {
             #length must be 1
             check.length(xlab, 1, " must be a character string.")
@@ -385,7 +423,9 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
 
             #Rarefaction plots
             for(nPlot in 1:n_plots) {
-                tmp_summarised_data <- get.series(summarised_data, rare_level = nPlot)
+                get_series <- get.series(summarised_data, rare_level = nPlot)
+                tmp_summarised_data <- get_series[[1]]
+                level_name <- get_series[[2]]
                 plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
                 #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
             }
@@ -438,7 +478,7 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
                         saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) 
                         #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
                     } else {
-                        #bigger_margin<-par(mar=c(5,4,4,4))
+                        #bigger_margin <- par(mar=c(5,4,4,4))
                         saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...)
                         #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
                         par(new = TRUE)
@@ -449,7 +489,8 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
                 }   
             }
 
+
+        #End dispRity plot
         }
-    #End dispRity plot
     }
 }

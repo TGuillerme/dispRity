@@ -20,7 +20,7 @@ boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
 
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).}
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -81,5 +81,8 @@ system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
 }
 \author{
 Thomas Guillerme
+}
+\seealso{
+\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
 }
 

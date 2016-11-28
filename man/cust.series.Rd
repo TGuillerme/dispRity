@@ -4,7 +4,7 @@
 \alias{cust.series}
 \title{Separating ordinated data in custom series.}
 \usage{
-cust.series(data, series)
+cust.series(data, factor)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
@@ -37,5 +37,8 @@ cust.series(ordinated_matrix, factors)
 }
 \author{
 Thomas Guillerme
+}
+\seealso{
+\code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 

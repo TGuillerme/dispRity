@@ -8,7 +8,7 @@ pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
   diag, add, lower = TRUE, ...)
 }
 \arguments{
-\item{data}{A \code{data.frame} object with comparisons pair names as row names.}
+\item{data}{A \code{matrix} or a \code{data.frame} object with comparisons pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).}
 
 \item{what}{A \code{numeric} or \code{character} value designating which column to plot.}
 
@@ -29,9 +29,13 @@ pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
 \description{
 Plots pairwise comparisons from a data frame (typically output from \code{link{test.dispRity}}).
 }
+\details{
+The number of rows (i.e. comparisons) in \code{matrix} must be equal to the results of a pairwise combination.
+In general, the number of rows \code{x} must satisfy the equation: \eqn{x  = n^2 / 2 - n / 2} where \code{n} must be an entire greater or equal than 2.
+}
 \examples{
-## A small data.frame
-data <- data.frame(matrix(data = runif(40), ncol = 2))
+## A small matrix of 2 pairwise comparisons of 7 elements (2*21 comparisons)
+data <- matrix(data = runif(42), ncol = 2)
 
 ## Plotting the first column as a pairwise comparisons
 pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)

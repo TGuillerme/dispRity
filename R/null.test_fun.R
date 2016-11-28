@@ -14,14 +14,24 @@ get.from.call <- function(data, what, eval = TRUE) {
 }
 
 #Generating the null model
-make.null.model <- function(data, replicates, null.distrib, null.args, scale) {
+make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, scale) {
     if(scale == FALSE) {
         null_models_result <- replicate(replicates, summary(dispRity(
-            space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args)
+            space.maker(as.numeric(length(data$elements)),
+                        dimensions = get.from.call(data, "dimensions"),
+                        distribution = null.distrib,
+                        arguments = null.args,
+                        cor.matrix = null.cor)
         , metric = get.from.call(data, "metric")))$observed)
     } else {
         null_models_result <- replicate(replicates, summary(dispRity(
-            scale(space.maker(as.numeric(length(data$elements)), dimensions = get.from.call(data, "dimensions"), null.distrib, null.args))
+            scale(
+            space.maker(as.numeric(length(data$elements)),
+                        dimensions = get.from.call(data, "dimensions"),
+                        distribution = null.distrib,
+                        arguments = null.args,
+                        cor.matrix = null.cor)
+                )
         , metric = get.from.call(data, "metric")))$observed)
     }
     return(null_models_result)

@@ -23,10 +23,14 @@ set.pair.series <- function(series_pair, intercept=NULL) {
 }
 #Estimating intercept function
 intercept.estimate <- function(intercept0, slope) {
-    if(length(slope) > 1) {
+
+    #Initialising slope variable
+    slope_length <- length(slope)
+    
+    if(slope_length > 1) {
         #First intercept
         intercept <- intercept0 + slope[1] * 1
-        for(n in 2:length(slope)) {
+        for(n in 2:slope_length) {
             intercept <- intercept + slope[n] * 1
         }
     } else {
@@ -52,7 +56,6 @@ set.intercept0 <- function(first_model) {
 
 #Setting the predicted intercept for the next model
 set.intercept.next <- function(one_model, intercept0) {
-
     model_summary <- summary(one_model)$coefficients
 
     #Check if the model contains an intercept
@@ -77,19 +80,20 @@ set.intercept.next <- function(one_model, intercept0) {
 
 #Creating the model function
 create.model <- function(data, family, intercept = NULL, ...) {
-    if(is.null(intercept)) {
-        #Estimating the intercept and the slope in the model
-        model <- glm(data ~ factor, data = data, family = family, ...)
-    } else {
+    if(!is.null(intercept)) {
         #Estimating only the slope in the model in the model
         if(intercept == "in.data") {
             #Intercept is present in the data
             intercept <- unique(data$intercept)
-            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
-        } else {
-            #Intercept is given as a value
-            model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...)
-        }
+        } 
+        #Estimate the model using the intercept
+        #model <- glm(factor ~ data - 1+offset(intercept), data = data, family = family, ...) # For binomial
+        model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...) 
+    } else {
+        #Estimating the intercept and the slope in the model
+        #model <- glm(factor ~ data, data = data, family = family, ...) # For binomial
+        model <- glm(data ~ factor, data = data, family = family, ...)
     }
+
     return(model)
 }

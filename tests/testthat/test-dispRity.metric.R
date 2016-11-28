@@ -17,6 +17,12 @@ test_that("variances metric", {
     expect_equal(
     	vars1, vars2
     	)
+    #Applying the k.root
+    vars3 <- variances(matrix, k.root = TRUE)
+    vars4 <- variances(matrix)^(1/ncol(matrix))
+    expect_equal(
+        vars3, vars4
+        )
 })
 
 test_that("ranges metric", {
@@ -32,6 +38,12 @@ test_that("ranges metric", {
     expect_equal(
     	ran1, ran2
     	)
+    #Applying the k.root
+    ran3 <- ranges(matrix, k.root = TRUE)
+    ran4 <- ranges(matrix)^(1/ncol(matrix))
+    expect_equal(
+        ran3, ran4
+        )
 })
 
 test_that("centroids metric", {
@@ -58,17 +70,21 @@ test_that("centroids metric", {
     expect_error(
         centroids(matrix, centroid = "a")
         )
-    #Wrong argument
-    expect_error(
-        centroids(matrix, centroid = 1)
-        )
     #Using the real centroid
     expect_equal(
         cent1, centroids(matrix, centroid = centroid)
         )
+    expect_equal(
+        sum(centroids(matrix, centroid = 0))
+        , sum(centroids(matrix, centroid = rep(0, ncol(matrix)) ))
+        )
     #Using a 0 origin centroid
     expect_lt(
         sum(centroids(matrix, centroid = rep(0, ncol(matrix)))), sum(centroids(matrix, centroid = rep(1, ncol(matrix))))
+        )
+    #Using a 0 origin centroid
+    expect_lt(
+        sum(centroids(matrix, centroid = 0)), sum(centroids(matrix, centroid = 1))
         )
 })
 
@@ -209,7 +225,7 @@ test_that("convhull.surface metric", {
     expect_error(
         convhull.surface(list(matrix))
         )
-    expect_warning(
+    expect_message(
         convhull.surface(space.maker(22, 21, rnorm))
         ) 
 
@@ -243,7 +259,7 @@ test_that("convhull.volume metric", {
     expect_error(
         convhull.volume(list(matrix))
         )
-    expect_warning(
+    expect_message(
         convhull.volume(space.maker(22, 21, rnorm))
         ) 
 

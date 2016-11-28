@@ -43,13 +43,13 @@ customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 ## Calculating the sum of variances
-sum_of_sum_of_variances <- dispRity(bootstrapped_data,
-     metric = c(sum, sum_of_variances))
+sum_of_variances <- dispRity(bootstrapped_data,
+     metric = c(sum, variances))
 
 ## Summarising the results
-summary(sum_of_sum_of_variances) # default
+summary(sum_of_variances) # default
 ## Using different options
-summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
+summary(sum_of_variances, quantiles = 75, cent.tend = median,
      rounding = 0, recall = TRUE)
 
 }
@@ -57,6 +57,6 @@ summary(sum_of_sum_of_variances, quantiles = 75, cent.tend = median,
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}
+\code{\link{dispRity}}, \code{\link{plot.dispRity}}.
 }
 

@@ -15,7 +15,7 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{\link[snow]{snow}} package; see \code{\link[snow]{makeCluster}} function).}
+\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -93,6 +93,6 @@ system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 Thomas Guillerme
 }
 \seealso{
-\code{\link{boot.matrix}} for bootstrapping the data; \code{\link{dispRity.metric}} for details on the implemented metrics and \code{\link{summary.dispRity}} for summarising \code{dispRity} objects.
+\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 

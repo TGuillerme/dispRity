@@ -37,7 +37,7 @@
 #' disparity_data # 5 series for 99 elements
 #' get.dispRity(disparity_data, what = c(1,5)) # 2 series for 13 elements
 #'
-#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}} and \code{\link{dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
 

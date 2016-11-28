@@ -75,3 +75,24 @@ test_that("space.maker works", {
         dim(space.maker(5, 3, c(rnorm, runif, rgamma), list(list(mean = 30, sd = 50), NULL, list(shape = 0.25))))
         , c(5,3)) 
 })
+
+
+#Testing space.maker
+test_that("correlation works", {
+    #Cor matrix
+    set.seed(1)
+    cor_pre <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+    space_cor <- space.maker(1000, 3, rnorm, cor.matrix = cor_pre)
+    cor_post <- cor(space_cor)
+
+    #dim
+    expect_equal(
+        ncol(space_cor)
+        , 3)
+    expect_equal(
+        nrow(space_cor)
+        , 1000)
+    expect_equal(
+        round(cor_post, digit = 1)
+        ,cor_pre)
+})

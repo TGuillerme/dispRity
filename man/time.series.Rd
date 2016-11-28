@@ -4,7 +4,8 @@
 \alias{time.series}
 \title{Separating ordinated data in time series.}
 \usage{
-time.series(data, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+\method{time}{series}(data, tree, method, time, model, inc.nodes = FALSE,
+  FADLAD, verbose = FALSE)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
@@ -66,5 +67,8 @@ str(lapply(sliced_data$data, class)) # A list of 5 matrices
 }
 \author{
 Thomas Guillerme
+}
+\seealso{
+\code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 

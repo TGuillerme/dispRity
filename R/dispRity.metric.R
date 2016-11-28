@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids centroids.global centroids.observed mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal metric.modifier
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal level3.fun level2.fun level1.fun
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -14,7 +14,8 @@
 #'
 #' @details
 #' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
-#' The currently implemented matrix aggregate metrics (\code{level3.fun}) are:
+#' 
+#' The currently implemented \code{level3} metrics are:
 #' \itemize{
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
@@ -42,9 +43,9 @@
 #' }
 #' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
 #' \itemize{
-#'   \item \code{ranges}: calculates the range of each axis of the matrix.
-#'   \item \code{variances}: calculates the variance of each axis of the matrix.
-#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used).
+#'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
+#'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
+#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a series of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
 #' }
 #' The currently implemented value aggregate metrics (\code{level1.fun}) are:
 #' \itemize{
@@ -55,18 +56,24 @@
 #'
 #' @examples
 #' ## A dummy matrix
-#' dummy_matrix <- matrix(rnorm(25), 5, 5)
+#' dummy_matrix <- matrix(rnorm(90), 10, 9)
 #' 
 #' ## variances of a each column in the matrix
 #' variances(dummy_matrix)
+#' ## variances of a each column in the matrix corrected using the kth root
+#' variances(dummy_matrix, k.root = TRUE)
 #' 
 #' ## ranges of each column in a matrix
 #' ranges(dummy_matrix)
+#' ## ranges of a each column in the matrix corrected using the kth root
+#' ranges(dummy_matrix, k.root = TRUE)
 #' 
 #' ## Distances between each row and centroid of the matrix
 #' centroids(dummy_matrix)
-#' ## Distance between each rows and an arbitrary centroid
-#' centroids(dummy_matrix, centroid = c(0,0,0,0,0))
+#' ## Distance between each rows and an arbitrary point
+#' centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9))
+#' ## Distance between each rows and the origin
+#' centroids(dummy_matrix, centroid = 0)
 #' 
 #' ## Modal value of a vector
 #' mode.val(rnorm(25))
@@ -90,20 +97,35 @@
 #'
 #' @author Thomas Guillerme
 
+#kth root scaling
+k.root <- function(data, dimensions){
+    data^(1/dimensions)
+}
+
 #Calculating each axis variance
-variances <- function(matrix) {
-    return(apply(matrix, 2, var))
+variances <- function(matrix, k.root) {
+    if(missing(k.root)) {
+        return(apply(matrix, 2, var))
+    } else {
+        return(k.root(apply(matrix, 2, var), ncol(matrix)))
+    }
 }
 
 #Calculating each axis ranges
-ranges <- function(matrix) {
+ranges <- function(matrix, k.root) {
     #Max values
     max_values <- apply(matrix, 2, max)
     #Min values
     min_values <- apply(matrix, 2, min)
     #Ranges values
     ranges <- abs(max_values-min_values)
-    return(ranges)
+    if(missing(k.root)) {
+        return(ranges)
+    } else {
+        if(k.root == TRUE) {
+            return(k.root(ranges, ncol(matrix)))
+        }
+    }
 }
 
 #Calculating the distance from centroid
@@ -114,19 +136,33 @@ centroids <- function(matrix, centroid) {
         centroid <- apply(matrix, 2, mean)
     } else {
         #Centroid is predetermined
-        if(class(centroid) == "numeric") {
-            #If numeric, must be the same length as matrix
-            if(length(centroid) != ncol(matrix)) stop(paste("The given centroid has ", length(centroid), " coordinates but must have ", ncol(matrix), ".", sep = ""))
-        } else {
+        if(class(centroid) != "numeric") {
             stop("Centroid coordinates must be given as numeric values.")
+        } else {
+            #Initialising the variables
+            length_centroid <- length(centroid)
+            ncol_matrix <- ncol(matrix)
+            if(length_centroid != 1) {
+                #If numeric, must be the same length as matrix
+                if(length_centroid != ncol_matrix) stop(paste("The given centroid has ", length_centroid, " coordinates but must have ", ncol_matrix, ".", sep = ""))
+            } else {
+                centroid <- rep(centroid, ncol_matrix)
+            }
         }
     }
 
     #Calculating the distance from centroid
-    cent.dist <- NULL
-    for (j in 1:nrow(matrix)){
-        cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
+    fun.dist <- function(row, centroid) {
+        return(dist(rbind(row, centroid), method = "euclidean"))
     }
+
+    # cent.dist <- NULL
+    # for (j in 1:nrow(matrix)){
+    #     cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
+    # }
+
+    cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
+    names(cent.dist) <- NULL
 
     return(cent.dist)
 }
@@ -138,12 +174,15 @@ mode.val <- function(X){
 
 # Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
+    #Initialising the variables
+    ncol_matrix <- ncol(matrix)
+
     # The eigen value is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
-    eigen.value<-abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
+    eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
 
     #volume (from Donohue et al 2013, Ecology Letters)
-    volume<-pi^(ncol(matrix)/2)/gamma((ncol(matrix)/2)+1)*prod(eigen.value^(0.5))
+    volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))
 
     return(volume)
 }
@@ -151,7 +190,7 @@ ellipse.volume <- function(matrix) {
 # Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
     # Algorithm warn
-    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.surface function is likely to crash!")
+    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
@@ -159,7 +198,7 @@ convhull.surface <- function(matrix) {
 # Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
     # Algorithm warn
-    if(any(dim(matrix) > 20)) warning("Big ordinated space: convhull.volume function is likely to crash!")
+    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
     # calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
@@ -217,9 +256,6 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
 
 # Diagonal
 diagonal <- function(matrix) {
-    #If all the dimensions of the space are orthogonal to each other,
-    #then, following Pythagoras Theorem, the longest distance in this
-    #space is equal to the square root of sum of the distances of each
-    #dimensions.
+    #If all the dimensions of the space are orthogonal to each other, then, following Pythagoras Theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimensions.
     return(sqrt(sum(ranges(matrix))))
 }

@@ -2,6 +2,24 @@
 
 context("dispRity")
 
+
+test_that("disparity.calc internal works", {
+    set.seed(1)
+    BSresult <- list(list(list(matrix(rnorm(20), 5, 4))))
+
+    lvl3_result <- unlist(disparity.calc(BSresult[[1]], level3.fun = var, level2.fun = NULL, level1.fun = NULL))
+    lvl3_expect <- as.vector(var(BSresult[[1]][[1]][[1]]))
+    expect_equal(lvl3_result, lvl3_expect)
+
+    lvl2_result <- unlist(disparity.calc(BSresult[[1]], level3.fun = NULL, level2.fun = variances, level1.fun = NULL))
+    lvl2_expect <- as.vector(variances(BSresult[[1]][[1]][[1]]))
+    expect_equal(lvl2_result, lvl2_expect)
+
+    lvl1_result <- unlist(disparity.calc(BSresult[[1]], level3.fun = NULL, level2.fun = NULL, level1.fun = sd))
+    lvl1_expect <- as.vector(sd(BSresult[[1]][[1]][[1]]))
+    expect_equal(lvl1_result, lvl1_expect)
+})
+
 #Loading the data
 load("test_data.Rda")
 data<-test_data$ord_data_tips
@@ -34,6 +52,34 @@ test_that("Sanitizing works", {
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
+
+#Testing metric argument
+test_that("metric argument works", {
+    expect_error(
+        dispRity(BeckLee_mat50, metric = var)
+    )
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(var))
+    )
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(var, sd))
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(var, variances, sd))
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = sd)
+        , "dispRity")
+    expect_is(
+        dispRity(BeckLee_mat50, metric = c(sd))
+        , "dispRity")
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(sd, sd))
+        )
+    expect_error(
+        dispRity(BeckLee_mat50, metric = c(var, sd, sd))
+        )
+})
 
 #one matrix
 test<-dispRity(data, metric=c(sum, ranges))

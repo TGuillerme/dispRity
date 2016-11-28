@@ -8,7 +8,7 @@ recursive.unlist<-function(results, is.distribution = FALSE) {
     for(series in 1:n_series) {
         rare_boot <- list()
         for (rare in 1:n_rare[series]) {
-            if(is.distribution == FALSE) {
+            if(is.distribution != TRUE) {
                 rare_boot[[rare]] <- unlist(results[[series]][[rare]])
             } else {
                 rare_boot[[rare]] <- results[[series]][[rare]]
@@ -32,13 +32,13 @@ diversity.count<-function(data) {
     } else {
         if(class(data[[1]]) == "matrix") {
             #Get the number of rows per matrices
-            output<-unlist(lapply(data, nrow))
+            output <- unlist(lapply(data, nrow))
             #Remove matrices names
             names(output) <- NULL
             return(output)
         }
         #lapply frenzy!
-        return(unlist(lapply(lapply(data, lapply, lapply, nrow), lapply, unique), use.names=FALSE))
+        return(unlist(lapply(lapply(data, lapply, lapply, nrow), lapply, unique), use.names = FALSE))
     }
 }
 
@@ -61,7 +61,7 @@ save.results.seq.test <- function(model, results) {
 #Transform a matrix (usually the coefficient results) into a list
 matrix.to.list <- function(matrix, no.intercept = TRUE) {
     #Remove the intercept column (if needed)
-    if(no.intercept == TRUE) {
+    if(no.intercept != FALSE) {
         if(any(rownames(matrix) == "(Intercept)")) {
             matrix <- matrix[-which(rownames(matrix) == "(Intercept)"),]
         }
@@ -90,6 +90,7 @@ get.results.table <- function(element, results_elements, cent.tend, quantiles, c
         element = 1
     }
     data <- lapply(lapply(results_elements, lapply, `[[`, element), unlist)
+    
     #Central tendency
     results_table <- matrix(data = lapply(data, cent.tend), ncol = 1, dimnames = list(comparisons))
     if(!is.null(match_call$cent.tend)) {
@@ -98,7 +99,7 @@ get.results.table <- function(element, results_elements, cent.tend, quantiles, c
         colnames(results_table) <- "mean"
     }
 
-    if(is.distribution == TRUE) {
+    if(is.distribution != FALSE) {
         #Quantiles
         results_quantiles <- lapply(data, quantile, probs = CI.converter(quantiles))
         #Create table
@@ -129,7 +130,7 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
     comparisons <- unique(unlist(names(data$models)))
 
     #Getting the slopes
-    if(is.distribution == TRUE) {
+    if(is.distribution != FALSE) {
         #Getting the coefficients
         #Transforming the coefficients into a list
         results_coefficients <- lapply(lapply(models_results, lapply, `[[`, 1), lapply, matrix.to.list, no.intercept = TRUE)
@@ -230,13 +231,22 @@ summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, resul
 rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     #seq.test
-    if(seq.test == TRUE) {
+    if(seq.test != FALSE) {
         start_column <- 1
     } else {
         start_column <- 3
     }
 
-    if(rounding == "default") {
+    if(rounding != "default") {
+        for(column in start_column:ncol(results_table)) {
+            if(class(results_table[,column]) != "factor") {
+                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
+            } else {
+                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
+            }
+        }
+
+    } else {
         for(column in start_column:ncol(results_table)) {
             if(class(results_table[,column]) != "factor") {
                 if(any(!is.na(results_table[,column]))) {
@@ -246,14 +256,6 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
                 if(any(!is.na(results_table[,column]))) {
                     results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
                 }
-            }
-        }
-    } else {
-        for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "factor") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
-            } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
             }
         }
     }

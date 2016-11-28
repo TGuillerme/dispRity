@@ -57,7 +57,7 @@
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
 #'      concatenate = FALSE)
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
 #'
 #' @author Thomas Guillerme
 
@@ -81,7 +81,7 @@
 # test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
-test.dispRity<-function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
+test.dispRity <- function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
 
     #get call
     match_call<-match.call()
@@ -211,18 +211,12 @@ test.dispRity<-function(data, test, comparisons="pairwise", correction, concaten
     #ANOVA/GLM type
     if(comp == "all") {
 
-        #Divide into a list (if concatenate is FALSE)
-        if(concatenate == FALSE) {
-            #Splitting the data per bootstrap
-            list_of_data <- list()
-            for(bootstrap in 1:length(extracted_data[[1]])) {
-                list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
-            }
-            list_of_data <- lapply(list_of_data, list.to.table)
-        } else {
-            #Transform the extracted data into a table
-            list_of_data <- list(list.to.table(extracted_data))
+        #Splitting the data per bootstrap
+        list_of_data <- list()
+        for(bootstrap in 1:length(extracted_data[[1]])) {
+            list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
         }
+        list_of_data <- lapply(list_of_data, list.to.table)
 
         #running the tests
         details_out <- lapply(list_of_data, lapply.aov.type, test, ...)

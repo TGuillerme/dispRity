@@ -25,7 +25,7 @@ series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
       method = "continuous", time = 5, model = "acctran")
 
 ## Calculating the sum of centroids
-disparity <- dispRity(series, metric = c(sum, centroids))
+disparity <- dispRity(series, metric = mean)
 
 ## Sorting the data
 summary(disparity)
@@ -37,6 +37,6 @@ summary(sort(disparity, sort = c(1,3,4,5,2)))
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}} and \code{\link{test.dispRity}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
 }
 

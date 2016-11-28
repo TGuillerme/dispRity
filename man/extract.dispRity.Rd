@@ -63,6 +63,6 @@ str(boot_disp) # A list of three lists of 10 elements
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}; \code{\link{get.dispRity}}.
+\code{\link{dispRity}}, \code{\link{get.dispRity}}.
 }
 
