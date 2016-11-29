@@ -43,27 +43,26 @@
 #' ## Time slicing (continuous method)
 #' ## Generate 5 equidistant time slices in the data set assuming gradual
 #' ## evolutionary models
-#' sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+#' time.series(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
-#' str(lapply(sliced_data$data, class)) # A list of 5 matrices
 #'
 #' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
 ##Testing
-warning("DEBUG time.series")
-source("sanitizing.R")
-source("time.series_fun.R")
-data(BeckLee_tree) ; data(BeckLee_mat50)
-data(BeckLee_mat99) ; data(BeckLee_ages)
-data = BeckLee_mat99
-tree = BeckLee_tree
-method = "continuous"
-model = "acctran"
-time = 5
-inc.nodes = TRUE
-FADLAD = BeckLee_ages
+# warning("DEBUG time.series")
+# source("sanitizing.R")
+# source("time.series_fun.R")
+# data(BeckLee_tree) ; data(BeckLee_mat50)
+# data(BeckLee_mat99) ; data(BeckLee_ages)
+# data = BeckLee_mat99
+# tree = BeckLee_tree
+# method = "continuous"
+# model = "acctran"
+# time = 5
+# inc.nodes = TRUE
+# FADLAD = BeckLee_ages
 
 time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
     
@@ -174,7 +173,6 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
             stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
         }        
     }
-
 
     ## FADLAD
     ## tree.age_tree variable declaration

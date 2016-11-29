@@ -74,7 +74,7 @@ time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
 }
 
 ## Continuous time series
-time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
+time.series.continuous <- function(data, tree, time, model, FADLAD, verbose) {
     ## lapply fun gor getting the slices
     get.slice <- function(slice, time, ages_tree, data, verbose) {
         ## Get the subtree
@@ -106,7 +106,7 @@ time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
     }
 
     ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice,    time, ages_tree, data, verbose)
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, ages_tree, data, verbose)
 
     ## verbose
     if(verbose != FALSE) {
