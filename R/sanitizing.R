@@ -24,19 +24,18 @@ check.class <- function(object, class, msg, errorif = FALSE) {
     if(length_class != 1) {
     ## check if object is class in a cascade (class[1] else class[2] else class[3], etc..)
     ## returns error only if object is not of any class
-        counter = 1
-        class_test = NULL
-        while(counter > length_class) {
-            if(erroif != TRUE) {
+
+        for(counter in 1:length_class) {
+            if(errorif != TRUE) {
                 if(class_object != class[counter]) {
                     return(class_object)
                 }
             } else {
                 if(class_object == class[counter]) {
                     return(class_object)
+
                 }
             }
-            counter <- counter + 1
         }
         ## If function did not returned, class is not matching
         stop(match_call$object, msg, call. = FALSE)
