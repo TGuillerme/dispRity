@@ -1,0 +1,135 @@
+## Get adjusted FADLAD
+## FAD argument is whether to adjust FAD (TRUE) or LAD (FALSE)
+adjust.FADLAD <- function(FADLAD, tree, data) {
+
+    adjust.age.up <- function(FADLAD, ages_tree) {
+        return(ifelse(FADLAD > ages_tree, FADLAD, ages_tree))
+    }
+
+    adjust.age.down <- function(FADLAD, ages_tree) {
+        return(ifelse(FADLAD < ages_tree, FADLAD, ages_tree))
+    }
+
+    ## Get the tree ages
+    ages_tree <- tree.age(tree)
+
+    ## Match the ages_tree_FAD/LAD with the FADLAD table
+    names_match <- match(rownames(FADLAD), ages_tree[,2])
+    ages_tree_tmp <- ages_tree[names_match,]
+
+    ## Adjust the FAD/LAD
+    ages_tree_FAD <- ages_tree_LAD <- ages_tree_tmp
+    ages_tree_FAD[,1] <- mapply(adjust.age.up,   as.list(FADLAD[,1]), as.list(ages_tree_tmp[,1]))
+    ages_tree_LAD[,1] <- mapply(adjust.age.down, as.list(FADLAD[,2]), as.list(ages_tree_tmp[,1]))
+
+    ## Combine all ages
+    ages_tree_FAD <- rbind(ages_tree_FAD, ages_tree[-names_match,])
+    ages_tree_LAD <- rbind(ages_tree_LAD, ages_tree[-names_match,])
+
+    ## Match the ages with the data
+    row_order <- match(rownames(data), ages_tree_FAD$elements)
+
+    return(list("FAD" = ages_tree_FAD[row_order,], "LAD" = ages_tree_FAD[row_order,]))
+}
+
+
+## Discrete time series
+time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
+    ## lapply fun for getting the interval
+    get.interval <- function(interval, time, ages_tree, inc.nodes) {
+        if(inc.nodes != FALSE) {
+            return( list("elements" = which(ages_tree$FAD$ages <= time[interval] & ages_tree$LAD$ages >= time[interval+1]) ))
+        } else {
+            one_interval <- which(ages_tree$FAD$ages <= time[interval] & ages_tree$LAD$ages >= time[interval+1])
+            matching <- match(tree$tip.label, rownames(data[one_interval,]))
+            return( list("elements" = one_interval[matching[-which(is.na(matching))]]) )
+        }
+        
+    }
+
+    ## lapply fun for detecting empty intervals
+    empty.interval <- function(one_interval_elements, name) {
+        if(length(one_interval_elements) == 0) {
+            message("The following interval is empty: ", name, ".")
+        }
+    }
+
+    ## ages of tips/nodes + FAD/LAD
+    ages_tree <- adjust.FADLAD(FADLAD, tree, data)
+
+    ## Attribute each taxa/node to it's interval
+    interval_elements <- lapply(as.list(seq(1:(length(time)-1))), get.interval, time, ages_tree, inc.nodes)
+
+    ## Get the names of the intervals
+    names(interval_elements) <- paste(time[-length(time)], time[-1], sep = " - ")
+
+    ## If interval is empty, send warning and delete the interval
+    for (interval in 1:length(interval_elements)) {
+        if(length(interval_elements[[interval]]) == 0) {
+            message("The following interval is empty: ", names(interval_elements)[interval], ".")
+        }
+    }
+
+    return(interval_elements)
+}
+
+## Continuous time series
+time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
+
+    ## SLICING THE TREE
+    ## Number of slices
+    n_slices <- length(time)
+
+    ## ages of tips/nodes + FAD/LAD
+    ages_tree <- adjust.FADLAD(FADLAD, tree)
+    
+    ## Slicing the tree
+    slice_list <- NULL
+    slice_list <- list()
+
+    ## verbose
+    if(verbose != FALSE) {
+        message("Creating ", n_slices, " time samples through the tree:", appendLF = FALSE)
+    }
+
+    for (slice in 1:n_slices) {
+        ## Don't slice the tree if slice=0, simply drop tips
+        if(time[slice] == 0) {
+            ## Select the tips to drop
+            taxa_to_drop <- ages_tree$LAD[which(ages_tree$LAD[1:Ntip(tree),1]!=0),2]
+            ## drop the tips
+            sub_tree <- drop.tip(tree, tip = as.character(taxa_to_drop))
+        }  else {
+            ## subtree
+            sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
+        }
+        ## subtaxa list
+        sub_taxa <- sub_tree$tip.label
+        ## subpco scores
+        sub_data <- data[unique(sub_taxa),]
+        ## storing the results
+        slice_list[[slice]] <- sub_data
+        ## verbose
+        if(verbose != FALSE) {
+            message(".", appendLF = FALSE)
+        }
+    }
+
+    ## verbose
+    if(verbose != FALSE) {
+        message("Done.\n", appendLF = FALSE)
+    }
+
+    ## naming the slices
+    names(slice_list) <- time
+
+    return(slice_list)
+## End   
+}
+
+## Making the origin series for a disparity_object
+make.origin.series <- function(data) {
+    origin <- list("elements" = seq(1:nrow(data)))
+    origin_series <- list("origin" = origin)
+    return(origin_series)
+}
