@@ -47,6 +47,9 @@ export(sort.dispRity)
 export(slice.tree)
 export(clean.data)
 export(merge.time.series)
+export(fetch.matrix)
+export(fetch.elements)
+export(fetch.series)
 #export(cor.diversity) - TO DO!
 #export(cor.time.pco) - TO DO!
 #export(make.model) - TO DO!
