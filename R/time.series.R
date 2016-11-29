@@ -51,157 +51,163 @@
 #' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
-#Testing
-#source("sanitizing.R")
-#source("time.series_discrete.R")
-#source("time.series_continuous.R")
+##Testing
+warning("DEBUG time.series")
+source("sanitizing.R")
+source("time.series_fun.R")
+data(BeckLee_tree) ; data(BeckLee_mat50)
+data(BeckLee_mat99) ; data(BeckLee_ages)
+data = BeckLee_mat99
+tree = BeckLee_tree
+method = "continuous"
+model = "acctran"
+time = 5
+inc.nodes = TRUE
+FADLAD = BeckLee_ages
 
-time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
+time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
     
-    #----------------------
-    # SANITIZING
-    #----------------------
-    #DATA
-    #data must be a matrix
-    check.class(data, 'matrix')
-    #nrow_data variable declaration
+    ## ----------------------
+    ##  SANITIZING
+    ## ----------------------
+    ## DATA
+    ## data must be a matrix
+    check.class(data, "matrix")
+    ## nrow_data variable declaration
     nrow_data <- nrow(data)
-    #data must be of size k*<=k-1
-    if(ncol(data) > (nrow_data - 1)) stop("Input data must have at maximum k-1 columns")
+    ## data must be of size k*<=k-1
+    if(ncol(data) > (nrow_data - 1)) stop("Input data must have at maximum rows-1 columns")
 
-    #TREE (1)
-    #tree must be a phylo object
-    check.class(tree, 'phylo')
-    #Ntip_tree variable declaration
+    ## TREE (1)
+    ## tree must be a phylo object
+    check.class(tree, "phylo")
+    ## Ntip_tree variable declaration
     Ntip_tree <- Ntip(tree)
-    #tree must be dated
+    ## tree must be dated
     if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
 
-    #METHOD
+    ## METHOD
     all_methods <- c("discrete", "d", "continuous", "c")
-    #method must be a character string
+    ## method must be a character string
     check.class(method, "character")
-    #method must have only one element
+    ## method must have only one element
     check.length(method, 1, paste(" argument must be one of the following: ", paste(all_methods, collapse = ", "), ".", sep = ""))
-    #method must be either "discrete", "d", "continuous", or "c"
-    if(all(is.na(match(method, all_methods)))) stop("Method argument must be one of the following: ", paste(all_methods, collapse = ", "), ".", sep = "")
+    ## method must be either "discrete", "d", "continuous", or "c"
+    check.method(method, all_methods, "method argument")
 
-    #if method is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
+    ## if method is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
     if(method == "d") method <- "discrete"
     if(method == "c") method <- "continuous"
 
-    #TIME
-    #time must be numeric of integer
-    if(class(time) != 'numeric') {
-        if(class(time) != 'integer') stop("time must be numeric.")
-    }
-    #If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
+    ## TIME
+    ## time must be numeric of integer
+    silent <- check.class(time, c("numeric", "integer"))
+    ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
-        #time must be at least 3 if discrete
+        ## time must be at least 3 if discrete
         if(method == "discrete" & time < 3) stop("If method is discrete, time must have at least 3 elements.")
-        #or at least time 2 if continuous
+        ## or at least time 2 if continuous
         if(method == "continuous" & time < 2) stop("If method is discrete, time must have at least 2 elements.")
-        #Create the time vector
-        #Make sure the oldest slice has at least 3 taxa:
-        #Set the oldest slice at 1% of tree height
-        percent<-0.01
+        ## Create the time vector
+        ## Make sure the oldest slice has at least 3 taxa:
+        ## Set the oldest slice at 1% of tree height
+        percent <- 0.01
         while(Ntip(paleotree::timeSliceTree(tree, tree$root.time-percent*tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
-            #Increase percent until slice has 3 elements
-            percent <- percent+0.01
+            ## Increase percent until slice has 3 elements
+            percent <- percent + 0.01
         }
-        #Set up time
+        ## Set up time
         if(method == "discrete") time <- seq(from = 0, to = tree$root.time-percent*tree$root.time, length.out = time+1)
         if(method == "continuous") time <- seq(from = 0, to = tree$root.time-percent*tree$root.time, length.out = time)    
     }
 
-    #time cannot be older than the root age
+    ## time cannot be older than the root age
     if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")
-    #time vector must go from past to present
+    ## time vector must go from past to present
     if(time[1] < time[2]) time <- rev(time)
 
-    #MODEL
-    #if method is discrete ignore model
+    ## MODEL
+    ## if method is discrete ignore model
     if(method == "discrete") {
-        # if(missing(model)) {
-        #     model <- NULL
-        # } else {
-            #warning("model is ignored if method is 'discrete'.")
+        ##  if(missing(model)) {
+        ##      model <- NULL
+        ##  } else {
+            ## warning("model is ignored if method is "discrete".")
             model <- NULL
-        # }
+        ##  }
     } else {
-    #else model must be one of the following
+    ## else model must be one of the following
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
-        if(all(is.na(match(model, all_models)))) stop("model argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = "")
-            #~~~~~~~~~~~
-            # Include the make.model option here?
-            # make.model should be tested on slice.tree function
-            #~~~~~~~~~~~
+        check.method(model, all_models, "model argument")
+            ## ~~~~~~~~~~~
+            ##  Include the make.model option here?
+            ##  make.model should be tested on slice.tree function
+            ## ~~~~~~~~~~~
     }
 
-    #INC.NODES
+    ## INC.NODES
     if(method != "continuous") {
-        #else inc.nodes must be logical
-        check.class(inc.nodes, 'logical')
+        ## else inc.nodes must be logical
+        check.class(inc.nodes, "logical")
     } else {
-        #Include nodes is mandatory
+        ## Include nodes is mandatory
         inc.nodes <- TRUE
     }
 
-    #TREE (2)
-    #If inc.nodes is not TRUE
+    ## TREE (2)
+    ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
-        #check if the tree and the table are the same length
-        if(nrow_data != Ntip_tree) stop('The labels in the ordinated matrix and in the tree do not match!')
-        #Also check if the names are identical
-        if(any(is.na(match(rownames(data), tree$tip.label)))) stop('The labels in the ordinated matrix and in the tree do not match!')        
+        ## check if the tree and the table are the same length
+        if(nrow_data != Ntip_tree) stop("The labels in the ordinated matrix and in the tree do not match!")
+        ## Also check if the names are identical
+        if(any(is.na(match(rownames(data), tree$tip.label)))) stop("The labels in the ordinated matrix and in the tree do not match!")        
     } else {
-        #Check if the tree has node labels
+        ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
-            #Check if the tree and the table are the same length
-            if(nrow_data != (Ntip_tree+Nnode(tree))) stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
-            #Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
+            ## Check if the tree and the table are the same length
+            if(nrow_data != (Ntip_tree+Nnode(tree))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
+            ## Check if both nodes and tip labels match with the data rownames
+            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
         } else {
-            stop('The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.')
+            stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
         }        
     }
 
 
-    #FADLAD
-    #tree.age_tree variable declaration
+    ## FADLAD
+    ## tree.age_tree variable declaration
     tree.age_tree <- tree.age(tree)
     if(missing(FADLAD)) {
-        #If missing, create the FADLAD table
+        ## If missing, create the FADLAD table
         FADLAD <- data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2])
-        #message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
+        ## message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
     } else {
-        #Check if FADLAD is a table
+        ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
-        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n'FAD' (First Apparition Datum) and 'LAD' (Last Apparition Datum).")
-        #Check if the FADLAD contains all taxa
+        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+        ## Check if the FADLAD contains all taxa
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
-            # message("Some tips have no FAD/LAD and are assumed to be single points in time.")
-            #If not generate the FADLAD for the missing taxa
+            ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
+            ## If not generate the FADLAD for the missing taxa
             missing_FADLAD <- which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD <- data.frame(tree.age_tree[missing_FADLAD,1], tree.age_tree[missing_FADLAD,1], row.names = tree.age_tree[missing_FADLAD,2])
             colnames(add_FADLAD) <- colnames(FADLAD)
             FADLAD <- rbind(FADLAD, add_FADLAD)
         }
-        #Remove FADLAD taxa not present in the tree
+        ## Remove FADLAD taxa not present in the tree
         if(nrow(FADLAD) != Ntip_tree) {
             FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree$tip.label)))),]
         }
     }
 
+    ## VERBOSE
+    check.class(verbose, "logical")
 
-    #VERBOSE
-    check.class(verbose, 'logical')
-
-    #----------------------
-    # GENRATING THE TIME SERIES
-    #----------------------
+    ## ----------------------
+    ##  GENRATING THE TIME SERIES
+    ## ----------------------
 
     if(method == "discrete") {
         time_series <- time.series.discrete(data, tree, time, FADLAD, inc.nodes)
@@ -211,19 +217,12 @@ time.series<-function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, 
         time_series <- time.series.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
-    #----------------------
-    # OUTPUT OBJECT ("dispRity")
-    #----------------------
+    ## Adding the original series
+    time_series <- c(make.origin.series(data), time_series)
 
-    taxa_list <- rownames(data)
-    series_list <- names(time_series)
-    if(is.null(series_list)) {
-        series_list <- length(data)
-    }
+    ## Output as a dispRity object
+    dispRity_object <- list("matrix" = data, "call" = list("series"=c(method, model)), "series" = time_series)
+    class(dispRity_object) <- c("dispRity")
 
-    output <- list("data" = time_series, "elements" = taxa_list, "series" = c(method, series_list))
-    class(output) <- c("dispRity")
-
-    return(output)
-
+    return(dispRity_object)
 }
