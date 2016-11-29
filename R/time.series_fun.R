@@ -75,45 +75,38 @@ time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
 
 ## Continuous time series
 time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
-
-    ## SLICING THE TREE
-    ## Number of slices
-    n_slices <- length(time)
-
-    ## ages of tips/nodes + FAD/LAD
-    ages_tree <- adjust.FADLAD(FADLAD, tree)
-    
-    ## Slicing the tree
-    slice_list <- NULL
-    slice_list <- list()
-
-    ## verbose
-    if(verbose != FALSE) {
-        message("Creating ", n_slices, " time samples through the tree:", appendLF = FALSE)
-    }
-
-    for (slice in 1:n_slices) {
-        ## Don't slice the tree if slice=0, simply drop tips
+    ## lapply fun gor getting the slices
+    get.slice <- function(slice, time, ages_tree, data, verbose) {
+        ## Get the subtree
         if(time[slice] == 0) {
             ## Select the tips to drop
-            taxa_to_drop <- ages_tree$LAD[which(ages_tree$LAD[1:Ntip(tree),1]!=0),2]
+            taxa_to_drop <- ages_tree$LAD[which(ages_tree$LAD[1:Ntip(tree),1] != 0),2]
             ## drop the tips
             sub_tree <- drop.tip(tree, tip = as.character(taxa_to_drop))
-        }  else {
-            ## subtree
+        } else {
+            ## Subtree
             sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
         }
-        ## subtaxa list
-        sub_taxa <- sub_tree$tip.label
-        ## subpco scores
-        sub_data <- data[unique(sub_taxa),]
-        ## storing the results
-        slice_list[[slice]] <- sub_data
-        ## verbose
-        if(verbose != FALSE) {
+
+        ## Verbose
+        if(verbose) {
             message(".", appendLF = FALSE)
         }
+
+        ## Getting the list of elements
+        return( list("elements" = match(sub_tree$tip.label, rownames(data))) )
     }
+
+    ## ages of tips/nodes + FAD/LAD
+    ages_tree <- adjust.FADLAD(FADLAD, tree, data)
+    
+    ## verbose
+    if(verbose != FALSE) {
+        message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
+    }
+
+    ## Get the slices elements
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice,    time, ages_tree, data, verbose)
 
     ## verbose
     if(verbose != FALSE) {
@@ -121,10 +114,9 @@ time.series.continuous<-function(data, tree, time, model, FADLAD, verbose) {
     }
 
     ## naming the slices
-    names(slice_list) <- time
+    names(slices_elements) <- time
 
-    return(slice_list)
-## End   
+    return(slices_elements)
 }
 
 ## Making the origin series for a disparity_object
