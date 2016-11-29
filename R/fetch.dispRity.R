@@ -25,14 +25,14 @@
 #' dispRity_object <- boot.matrix(customised_series, bootstraps = 100,
 #'      rarefaction = c(15, 10))
 #' 
-#' ## Getting the original matrix
+#' ## To get the original matrix
 #' fetch.matrix(dispRity_object, 0,0,0)
 #' # or simply fetch.matrix(dispRity_object)
-#' ## Getting the matrix of the second series, first rarefaction, 58th bootstrap
+#' ## To get the matrix of the second series, first rarefaction, 58th bootstrap
 #' fetch.matrix(dispRity_object, 2,1,58)
-#' ## Getting the elements in the first series
+#' ## To get the elements in the first series
 #' fetch.elements(dispRity_object, 1)
-#' ## Getting the series
+#' ## To get the series
 #' fetch.series(dispRity_object)
 #' 
 #' @author Thomas Guillerme
