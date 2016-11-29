@@ -19,9 +19,9 @@ object
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]]* = class:"list" (the first rarefaction=n containing the bootstraps)
+	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
 	|	|	|	|
-	|	|	|	\---[[1]]* = class:"numeric" (the vector containing the unbootstrapped row numbers)
+	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
 	|	|	|	|
 	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
 	|	|	|	|
@@ -47,9 +47,9 @@ object
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]]* = class:"list" (the first rarefaction=n containing the bootstraps)
+	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
 	|	|	|	|
-	|	|	|	\---[[1]]* = class:"numeric" (the vector containing the unbootstrapped row numbers)
+	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
 	|	|	|	|
 	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
 	|	|	|	|
@@ -75,9 +75,9 @@ object
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]]* = class:"list" (the first rarefaction=n containing the bootstraps)
+	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
 	|	|	|	|
-	|	|	|	\---[[1]]* = class:"numeric" (the vector containing the unbootstrapped row numbers)
+	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
 	|	|	|	|
 	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
 	|	|	|	|
@@ -151,6 +151,7 @@ object
 					\---[[...]] = class:"numeric" class (the ... bootstrap)			
 
 ```
+The elements marked with an asterisk (*) are mandatory.
 
 ### Using `fetch.dispRity` functions for accessing specific data elements (matrix, etc.)
 
