@@ -1,4 +1,6 @@
+#' @name fetch.dispRity
 #' @title Fetching elements of a \code{dispRity} object.
+#' @aliases fetch.matrix fetch.elements fetch.series
 #'
 #' @description Fetching the matrix, elements or series of a \code{dispRity} object.
 #'
@@ -42,7 +44,7 @@ fetch.matrix <- function(dispRity, series = 0, rarefaction = 0, bootstrap = 0){
 }
 
 fetch.elements <- function(dispRity, series = 0){
-    return(dispRity$series[[series+1]]$elements))
+    return(dispRity$series[[series+1]]$elements)
 }
 
 fetch.series <- function(dispRity){
