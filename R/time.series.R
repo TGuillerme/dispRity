@@ -219,8 +219,5 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
     time_series <- c(make.origin.series(data), time_series)
 
     ## Output as a dispRity object
-    dispRity_object <- list("matrix" = data, "call" = list("series"=c(method, model)), "series" = time_series)
-    class(dispRity_object) <- c("dispRity")
-
-    return(dispRity_object)
+    return(make.dispRity(data = data, call = list("series" = c(method, model)), series = time_series))
 }

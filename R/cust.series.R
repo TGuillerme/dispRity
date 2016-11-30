@@ -74,7 +74,5 @@ cust.series <- function(data, factor) {
     series_list <- c(make.origin.series(data), series_list)
 
     ## Output as a dispRity object
-    dispRity_object <- list("matrix" = data, "call" = list("series"="customized"), "series" = series_list)
-    class(dispRity_object) <- c("dispRity")
-    return(dispRity_object)
+    return(make.dispRity(data = data, call = list("series" = "customised"), series = series_list))
 }
