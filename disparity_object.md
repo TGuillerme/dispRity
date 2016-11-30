@@ -11,6 +11,8 @@ object
 	|	|
 	|	\---$bootstrap = class:"character"
 	|	|
+	|	\---$dimensions = class:"numeric"
+	|	|
 	|	\---$metric = class:"character"
 	|
 	\---$series* = class:"list" (the list of series)
@@ -19,81 +21,31 @@ object
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)
+	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
-	|	|	\---[[3]] = class:"list" (the second rarefaction=n-m containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped and rarefied row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)			
+	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
 	|	|	|
-	|	|	\---[[...]] = class:"list" (the following rarefactions)
-	|	|		|
-	|	|		\---[[...]] = class:"numeric" (the bootstraps)
+	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)
 	|	|
 	|	\---[[2]] = class:"list" (the first series the )
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)
+	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
-	|	|	\---[[3]] = class:"list" (the second rarefaction=n-m containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped and rarefied row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)			
+	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
 	|	|	|
-	|	|	\---[[...]] = class:"list" (the following rarefactions)
-	|	|	|	|
-	|	|		\---[[...]] = class:"numeric" (the bootstraps)
+	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)
 	|	|
 	|	\---[[2]] = class:"list" (the first series)
 	|	|	|
 	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|	|	|
-	|	|	\---[[2]] = class:"list" (the first rarefaction=n containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)
+	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
-	|	|	\---[[3]] = class:"list" (the second rarefaction=n-m containing the bootstraps)
-	|	|	|	|
-	|	|	|	\---[[1]] = class:"numeric" (the vector containing the unbootstrapped row numbers)
-	|	|	|	|
-	|	|	|	\---[[2]] = class:"numeric" (a vector containing bootstrapped and rarefied row numbers)
-	|	|	|	|
-	|	|	|	\---[[...]] = class:"numeric" 
-	|	|	|	|
-	|	|	|	\---[[n]] = class:"numeric" (the nth bootstrap row numbers draw)			
+	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+	|	|	|
+	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)			
 	|	|	|
 	|	|	\---[[...]] = class:"list" (the following rarefactions)
 	|	|	|	|
@@ -103,9 +55,7 @@ object
 	|		|
 	|		\---$elements* = class:"numeric" (the vector contianing the elements within this series)
 	|		|
-	|		\---[[...]] = class:"list" (the rarefactions)
-	|			|
-	|			\---[[...]] = class:"numeric" (the bootstraps)
+	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
 	\---$disparity
 		|
