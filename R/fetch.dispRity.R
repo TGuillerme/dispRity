@@ -40,7 +40,11 @@
 #' @author Thomas Guillerme
 
 fetch.matrix <- function(dispRity, series = 0, rarefaction = 0, bootstrap = 0){
-    return(dispRity$matrix[dispRity$series[[series+1]][[rarefaction+1]][[bootstrap+1]],])
+    if(bootstrap == 0) {
+        return(dispRity$matrix[dispRity$series[[series+1]]$elements, 1:dispRity$call$dimensions])
+    } else {
+        return(dispRity$matrix[dispRity$series[[series+1]][[rarefaction+2]][,bootstrap],])
+    }
 }
 
 fetch.elements <- function(dispRity, series = 0){
@@ -48,5 +52,5 @@ fetch.elements <- function(dispRity, series = 0){
 }
 
 fetch.series <- function(dispRity){
-    return(names(dispRity$series))
+    return(names(dispRity$series)[-1])
 }
