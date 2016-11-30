@@ -37,6 +37,11 @@ print.dispRity <- function(x, all = FALSE) {
         ## Head
         #cat("Disparity object with:")
 
+        if(length(x$call) == 0) {
+            cat("Empty dispRity object.\n")
+            return()
+        }
+
         ## Print series
         if(any(names(x$call) == "series")) {
             ## Get the number of series (minus origin)
