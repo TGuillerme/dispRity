@@ -1,12 +1,17 @@
-#Spliting element function
-split.elements <- function(X, Y, data) {
-    series_list<-list()
-    for(series in 1:length(levels(as.factor(X)))) {
-        selected_elements<-rownames(Y)[which(as.character(X) == as.character(levels(as.factor(X))[[series]]))]
-        series_list[[series]]<-data[selected_elements,]
+## Splitting element function
+split.elements <- function(one_factor, data) {
+
+    ## lapply fun for selecting the elements
+    select.elements <- function(series, one_factor) {
+        return(list("elements" = which(as.character(one_factor) == as.character(levels(as.factor(one_factor))[[series]]))))
     }
-    ## Adding names to the list (the levels of the custom series)
-    names(series_list)<-levels(as.factor(X))
+
+    ## Select the elements per series
+    selected_elements <- lapply(as.list(1:length(levels(as.factor(one_factor)))), select.elements, one_factor)
+
+    ## Adding the names to the series
+    names(selected_elements) <- levels(as.factor(one_factor))
+
     ## Output
-    return(series_list)
+    return(selected_elements)
 }

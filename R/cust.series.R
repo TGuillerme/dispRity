@@ -29,52 +29,52 @@
 #'
 #' @author Thomas Guillerme
 
-cust.series<-function(data, factor) {
-    #----------------------
-    # SANITIZING
-    #----------------------
-    #DATA
-    #data must be a matrix
+## DEBUG
+# warning("DEBUG cust.series")
+# source("sanitizing.R")
+# source("cust.series_fun.R")
+# source("time.series_fun.R")
+# data <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+# factor <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+
+cust.series <- function(data, factor) {
+    ## ----------------------
+    ##  SANITIZING
+    ## ----------------------
+    ## DATA
+    ## data must be a matrix
     check.class(data, 'matrix')
-    #data must be of size k*<=k-1
+    ## data must be of size k*<=k-1
     if(ncol(data) > (nrow(data) - 1)) stop("Input data must have at maximum (rows-1) columns")
 
-    #FACTOR
-    #must be matrix or data.frame
+    ## FACTOR
+    ## must be matrix or data.frame
     if(class(factor) != "matrix") {
         if(class(factor) != "data.frame") {
             stop("factor must be either a 'matrix' or a 'data.frame'.")
         }
     }
-    #must have the same number of rows than data
+    ## must have the same number of rows than data
     if(nrow(factor) != nrow(data)) stop('"factor" must have the same number of rows than "data".')
-    #must have the same labels as data
+    ## must have the same labels as data
     if(!all(sort(as.character(rownames(factor))) == sort(as.character(rownames(data))))) stop("'data' and 'factor' arguments do not match.")
-    #must have at least 3 elements per levels
+    ## must have at least 3 elements per levels
     check.elements <- function(factor) {
         any(table(as.factor(factor)) < 3)
     }
     if(any(apply(factor, 2, check.elements))) stop("There must be at least three elements per series.")
 
-    #----------------------
-    # SPLITING THE DATA INTO A LIST
-    #----------------------
+    ## ----------------------
+    ##  SPLITING THE DATA INTO A LIST
+    ## ----------------------
 
-    tmp_series<-apply(factor, 2, split.elements, Y=factor, data=data)
-    series_list<-unlist(tmp_series, recursive=FALSE)
+    ## Creating the series
+    series_list <- unlist(apply(factor, 2, split.elements, data), recursive = FALSE)
+    ## Adding the original series
+    series_list <- c(make.origin.series(data), series_list)
 
-    #----------------------
-    # OUTPUT OBJECT ("dispRity")
-    #----------------------
-
-    taxa_list<-rownames(data)
-    series_names<-names(series_list)
-    if(is.null(series_names)) {
-        series_names<-length(data)
-    }
-
-    output<-list("data"=series_list, "elements"=taxa_list, "series"=c("custom", series_names))
-    class(output)<-c("dispRity")
-
-    return(output)
+    ## Output as a dispRity object
+    dispRity_object <- list("matrix" = data, "call" = list("series"="customized"), "series" = series_list)
+    class(dispRity_object) <- c("dispRity")
+    return(dispRity_object)
 }
