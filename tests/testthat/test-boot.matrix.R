@@ -1,224 +1,184 @@
-#TESTING boot.matrix
+## TESTING boot.matrix
 
 context("boot.dispRity")
 
-#Loading the data
+## Loading the data
 load("test_data.Rda")
-data<-test_data$ord_data_tips
+data <- test_data$ord_data_tips
 
 
-#Testing boot.matrix with a single matrix input
-bootstraps=5
-rarefaction=FALSE
-boot.type="full"
-#Sanitizing
+## Testing boot.matrix with a single matrix input
+bootstraps = 5
+rarefaction = FALSE
+boot.type = "full"
+## Sanitizing
 test_that("Sanitizing works correctly", {
     expect_error(
-    	boot.matrix(data="a", bootstraps, rarefaction)
-    	)
+        boot.matrix(data = "a", bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        )
     expect_error(
-    	boot.matrix(data, bootstraps=FALSE, rarefaction)
-    	)
+        boot.matrix(data, bootstraps = FALSE, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        )
     expect_error(
-    	boot.matrix(data, bootstraps="a", rarefaction)
-    	)
+        boot.matrix(data, bootstraps = "a", rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        )
     expect_error(
-    	boot.matrix(data, bootstraps, rarefaction="a")
-    	)
+        boot.matrix(data, bootstraps, rarefaction = "a", dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = -1, verbose = FALSE, boot.type = "full")
+        )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = 8, boot.type = "full")
+        )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "rangers")
+        )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = 2)
+        )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
+        )
 })
 
-#No bootstrap (is equal to the matrix)
+## No bootstrap (is equal to the matrix)
 test_that("No bootstraps", {
-    expect_equal(
-    	sort(boot.matrix(data, bootstraps=0)[[1]][[1]][[1]][[1]][[1]]), sort(data)
-    	)
-})
-
-#Rarefaction = 1, bootstraps = 5
-test_that("Rarefaction is 1 + bootstraps", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps)[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps)[[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = TRUE, bootstraps = 5
-test_that("Rarefaction is TRUE + bootstraps", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]][[1]]), nrow(data)-2
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = 5, bootstraps = 5
-test_that("Rarefaction is 5 + bootstraps", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]][[1]]), 5
-    	)
-    expect_equal(
-    	nrow(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = 5, bootstraps = 5, boot.type
-test_that("Rarefaction is 5 + bootstraps + single boot.type", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]][[1]]), 5
-    	)
-    expect_equal(
-    	nrow(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Remove last axis
-test_that("Removing the last axis works", {
-    expect_equal(
-    	ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=TRUE)[[1]][[1]][[1]][[1]][[1]]), ncol(data)-6
-    	)
-    expect_equal(
-    	ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.5)[[1]][[1]][[1]][[1]][[1]]), ncol(data)-35
-    	)
-})
-
-#Input is a time.series
-factor<-as.data.frame(matrix(data=c(rep("series1", nrow(data)/2),rep("series2", nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
-data<-cust.series(data, factor)
-
-#Rarefaction = 1, bootstraps = 5
-test_that("Rarefaction is 1 + bootstraps + series", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps)[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps)[[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = TRUE, bootstraps = 5
-test_that("Rarefaction is TRUE + bootstraps + series", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]][[1]]), nrow(data[[1]][[1]])-2
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=TRUE)[[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = 5, bootstraps = 5
-test_that("Rarefaction is 5 + bootstraps + series", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]][[1]]), 5
-    	)
-    expect_equal(
-    	nrow(boot.matrix(data, bootstraps, rarefaction=5)[[1]][[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Rarefaction = 5, bootstraps = 5, boot.type
-test_that("Rarefaction is 1 + bootstraps + series + single boot.type", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]]), 1
-    	)
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]][[1]]), 5
-    	)
-    expect_equal(
-    	nrow(boot.matrix(data, bootstraps, rarefaction=5, boot.type="single")[[1]][[1]][[1]][[1]][[1]]), 5
-    	)
-})
-
-#Remove last axis
-test_that("Rarefaction is 1 + bootstraps + series + single boot.type + rm.last axis", {
-    expect_equal(
-    	ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=TRUE)[[1]][[1]][[1]][[1]][[1]]), ncol(data[[1]][[1]])-6
-    	)
-    expect_equal(
-    	ncol(boot.matrix(data, bootstraps=5, rarefaction=5, rm.last.axis=0.5)[[1]][[1]][[1]][[1]][[1]]), ncol(data[[1]][[1]])-35
-    	)
-})
-
-#Rarefaction = c(5, 8:10)
-test_that("Multiple rarefaction works", {
-    expect_equal(
-    	length(boot.matrix(data, bootstraps, rarefaction=c(5, 8:10))), 4
-    	)
-})
-
-#Examples
-test_that("Example works", {
-    data(BeckLee_mat50)
-    ex1<-boot.matrix(BeckLee_mat50, bootstraps = 20)
+    test <- boot.matrix(data, bootstraps = 0)
     expect_is(
-    	ex1, "dispRity"
-    	)
+        test
+        , "dispRity")
     expect_equal(
-    	length(ex1), 4
-    	)
+        length(test)
+        , 3)
     expect_equal(
-    	dim(ex1[[1]][[1]][[1]][[1]][[1]]), c(50,48)
-    	)
+        test$series$origin$elements
+        , seq(1:nrow(test$matrix)))
+    expect_equal(
+        test$call$dimensions
+        , ncol(test$matrix))
+    expect_equal(
+        length(test$series[[1]][[2]])
+        ,0)
+})
 
-    ex2<-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+## No bootstrap but remove dimensions
+test_that("Remove dimensions", {
+    expect_equal(
+        boot.matrix(data, bootstraps = 0, dimensions = 0.5)$call$dimensions
+        ,24)
+    expect_equal(
+        boot.matrix(data, bootstraps = 0, dimensions = 24)$call$dimensions
+        ,24)
+})
+
+
+## Bootstraps = 5
+test_that("5 bootstraps", {
+    test <- boot.matrix(data, bootstraps = 5)
     expect_is(
-    	ex2, "dispRity"
-    	)
+        test
+        , "dispRity")
     expect_equal(
-    	length(ex2), 4
-    	)
+        length(test)
+        , 3)
     expect_equal(
-    	dim(ex2[[1]][[1]][[1]][[1]][[1]]), c(3,48)
-    	)
+        test$series$origin$elements
+        , seq(1:nrow(test$matrix)))
+    expect_equal(
+        test$call$dimensions
+        , ncol(test$matrix))
+    expect_equal(
+        dim(test$series[[1]][[2]])
+        ,c(50,5))
+    expect_equal(
+        length(test$series[[1]])
+        ,2)
+})
 
-    ex3<-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7,10,11))
+## Bootstraps = 5 + Rarefaction = 5
+test_that("5 bootstraps, rarefaction = 5", {
+    test <- boot.matrix(data, bootstraps = 5, rarefaction = 5)
     expect_is(
-    	ex3, "dispRity"
-    	)
+        test
+        , "dispRity")
     expect_equal(
-    	length(ex3), 4
-    	)
+        length(test)
+        , 3)
     expect_equal(
-    	dim(ex3[[1]][[1]][[1]][[1]][[1]]), c(7,48)
-    	)
+        test$series$origin$elements
+        , seq(1:nrow(test$matrix)))
+    expect_equal(
+        test$call$dimensions
+        , ncol(test$matrix))
+    expect_equal(
+        dim(test$series[[1]][[2]])
+        ,c(50,5))
+    expect_equal(
+        dim(test$series[[1]][[3]])
+        ,c(5,5))
+})
 
-    ex4<-boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
-    expect_is(
-    	ex4, "dispRity"
-    	)
+## Bootstraps = 5 + Rarefaction = TRUE
+test_that("5 bootstraps, rarefaction = TRUE", {
+    test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
-    	length(ex4), 4
-    	)
-    expect_equal(
-    	dim(ex4[[1]][[1]][[1]][[1]][[1]]), c(50,37)
-    	)
+        length(test$series[[1]])
+        , 50)
+    for(rare in 3:50) {
+        expect_equal(
+            dim(test$series[[1]][[rare]])
+            ,c(50-(rare-3),5))
+    }
+})
 
+## Bootstraps = 5 + Rarefaction = c(5,6) + boot.type
+test_that("5 bootstraps, rarefaction = 5,6, boot type", {
+    test <- boot.matrix(data, bootstraps = 5, rarefaction = c(5,6), boot.type = "single")
+    expect_equal(
+        test$call$bootstrap[[1]]
+        , 5)
+    expect_equal(
+        test$call$bootstrap[[2]]
+        , "single")
+    expect_equal(
+        test$call$bootstrap[[3]]
+        , c(5,6))
+})
+
+
+## Bootstraps = 5 + Rarefaction = c(5,6) + series
+test_that("5 bootstraps, rarefaction = 5,6, series", {
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
     factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-    matrix.list <- cust.series(ordinated_matrix, factors)
-    ex5<-boot.matrix(matrix.list, bootstraps = 20)
+    matrix_list <- cust.series(ordinated_matrix, factors)
+    test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(6,7))
     expect_is(
-    	ex5, "dispRity"
-    	)
+        test
+        , "dispRity")
     expect_equal(
-    	length(ex5), 4
-    	)
+        length(test)
+        , 3)
     expect_equal(
-    	dim(ex5[[1]][[1]][[1]][[1]][[1]]), c(5,9)
-    	)
+        test$series$origin$elements
+        , seq(1:nrow(test$matrix)))
     expect_equal(
-    	length(ex5[[1]][[1]]), 2
-    	)
+        test$call$dimensions
+        , ncol(test$matrix))
+    expect_equal(
+        length(test$series)
+        ,3)
+    expect_equal(
+        length(test$series[[1]])
+        ,4)
+    expect_equal(
+        length(test$series[[2]])
+        ,4)
+    expect_equal(
+        length(test$series[[3]])
+        ,4)
+    expect_equal(
+        dim(test$series[[3]][[2]])
+        ,c(length(test$series[[3]]$elements), 2))
 })
+
