@@ -42,6 +42,10 @@ print.dispRity <- function(x, all = FALSE) {
             return()
         }
 
+        ## Print disparity
+        if(any(names(x$call) == "disparity")) {
+        }
+
         ## Print series
         if(any(names(x$call) == "series")) {
             ## Get the number of series (minus origin)
@@ -66,10 +70,21 @@ print.dispRity <- function(x, all = FALSE) {
 
         ## Print bootstrap
         if(any(names(x$call) == "bootstrap")) {
-        }
 
-        ## Print bootstrap
-        if(any(names(x$call) == "disparity")) {
+            message <- paste("\nOrdinated matrix with ", x$call$dimensions, " dimensions.", sep = "")
+            if(length(x$call$bootstrap[[1]] > 0)) {
+                message <- paste(message, "\nBootstrapped ", x$call$bootstrap[[1]], " times (\"", x$call$bootstrap[[2]], "\" method)", sep = "")
+                if(length(x$call$bootstrap[[3]] > 0)) {
+                    if(length(x$call$bootstrap[[3]] == (nrow(x$matrix)-3))) {
+                        message <- paste(message, " fully rarefied.\n", sep = "")
+                    } else {
+                        message <- paste(message, " and rarefied to ", paste(x$call$bootstrap[[3]], collapse = ", "), "elements.\n", sep = "")
+                    }
+                } else {
+                    message <- paste(message, ".\n", sep = "")
+                }
+            }
+            cat(message)
         }
 
     }
