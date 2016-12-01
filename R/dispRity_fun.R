@@ -1,188 +1,127 @@
 #FUNCTIONS FOR DISPRITY
-
-
-get.dispRity.data.handle<-function(data_fetch) {
-    is.bootstrapped <- NULL
-    prev_info <- NULL
-    disparity.exists <- NULL
-    taxa_list <- NULL
-    series_list <- NULL
-    series_type <- NULL
-    data <- NULL
-    boot.call <- NULL
-    BSresult <- NULL
-
-    if(class(data_fetch) != "dispRity") {
-        #Data is not bootstrapped
-        is.bootstrapped <- FALSE
-        prev_info <- FALSE
-        disparity.exists <- FALSE
-        data <- data
-
-    } else {
-        prev_info <- TRUE
-
-        #length_data_fetch variable initialisation
-        length_data_fetch <- length(data_fetch)
-
-        #If length is 3, no bootstrap, just time series
-        if(length_data_fetch == 3) {
-            #Data is not bootstrapped
-            is.bootstrapped <- FALSE
-            #Extracting the info
-            prev_info <- TRUE
-            taxa_list <- data_fetch$elements
-            series_list <- data_fetch$series[-1]
-            series_type <- data_fetch$series[1]
-            data <- data_fetch$data
-        }
-
-        #If length is 4, bootstrap (+ time series?)
-        if(length_data_fetch == 4) {
-            #Data is bootstrapped
-            is.bootstrapped <- TRUE
-            #Extracting the info
-            BSresult <- data_fetch$data$bootstraps
-            data <- data_fetch$data$observed
-            boot.call <- data_fetch$call
-            taxa_list <- data_fetch$elements
-            series_list <- data_fetch$series
-        }
-
-        #Disparity was already calculated
-        if(length(match(names(data_fetch), c("data", "disparity", "elements", "series", "call"))) == 5) {
-            disparity.exists <- TRUE
-            is.bootstrapped <- ifelse(length(data$disparity$bootstrapped) != 0, TRUE, FALSE)
-        } else {
-            disparity.exists <- FALSE
-        }
-    }
-
-
-    #Checking the matrix list (if bs=F)
-    if(is.bootstrapped != TRUE && disparity.exists != TRUE) {
-
-        #If matrix, transform to list
-        if(class(data_fetch) == "matrix") {
-            data <- list(data_fetch)
-        }
-
-        #Must be a list
-        check.class(data, "list", " must be a matrix or a list of matrices.")
-        #Each matrix must have the same number of columns
-        mat_columns <- unique(unlist(lapply(data, ncol)))
-        if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
-        #Making sure there is at least 3 rows per element
-        if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
-
-        #Setting the info
-        if(prev_info == FALSE) {
-            taxa_list <- unlist(lapply(data, rownames))
-            names(taxa_list) <- NULL
-            series_list <- names(data)
-            if(is.null(series_list)) {
-                series_list <- length(data)
-            }            
-        }
-
-        #Make the data bootstrap results format (0 bootstrap)
-        BSresult <- list(list(data))
-        #BSresult <- boot.matrix(data, bootstraps = 0, rarefaction = FALSE, rm.last.axis = FALSE, verbose = FALSE, boot.type = "full")$data$bootstraps
-    }
-
-    return(list("is.bootstrapped" = is.bootstrapped, "prev_info" = prev_info, "disparity.exists" = disparity.exists, "taxa_list" = taxa_list, "series_list" = series_list, "series_type" = series_type, "data" = data, "boot.call" = boot.call, "BSresult" = BSresult))
-}
-
-
-get.dispRity.metric.handle<-function(metric, match_call) {
+get.dispRity.metric.handle <- function(metric, match_call) {
     level3.fun <- NULL
     level2.fun <- NULL
     level1.fun <- NULL
 
-    #length_metric variable initialisation
-    length_metric <- length(metric)  
+    length_metric <- length(metric)
 
-    #must be at least one metric
-    if(length_metric < 1) {
-        stop("At least one metric must be provided.")
-    }
-    
-    if(length_metric != 1) {
-
-        #Check all the metrics
+    ## Get the metric handle
+    if(length_metric == 1) {
+        if(class(metric) != "list") {
+            ## Metric was fed as a single element
+            check.class(metric, "function")
+        } else {
+            ## Metric was still fed as a list
+            check.class(metric[[1]], "function")
+            metric <- metric[[1]]
+        }
+        ## Which level is the metric?
+        level <- make.metric(metric, silent = TRUE)
+        if(level == "level3") {
+            stop(paste(as.expression(match_call$metric), " must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
+        } else {
+            level3.fun <- NULL
+            if(level == "level2") {
+                level2.fun <- metric
+                level1.fun <- NULL
+            } else {
+                level2.fun <- NULL
+                level1.fun <- metric
+            }
+        }
+    } else {
+        ## Check all the metrics
         for(i in 1:length_metric) {
             if(class(metric[[i]]) != "function") stop(paste("in metric argument: ",match_call$metric[[i+1]], " is not a function!", sep = ""))
         }
-
-        #Sorting the metrics by levels
-        #getting the metric levels
+        ## Sorting the metrics by levels
+        ## getting the metric levels
         levels <- unlist(lapply(metric, make.metric, silent=TRUE))
-        #can only unique levels
+        ## can only unique levels
         if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 
-        #At least one level 1 or level 2 metric is required
+        ## At least one level 1 or level 2 metric is required
         if(length(levels) == 1 && levels[[1]] == "level3") {
             stop("At least one metric must be level 1 or level 2\n.For more information, see:\n?make.metric()")
         }
         
-        #Get the level 1 metric
+        ## Get the level 1 metric
         if(!is.na(match("level1", levels))) {
             level1.fun <- metric[[match("level1", levels)]]
         }
 
-        #Get the level 2 metric
+        ## Get the level 2 metric
         if(!is.na(match("level2", levels))) {
             level2.fun <- metric[[match("level2", levels)]]
         }
 
-        #Get the level 3 metric
+        ## Get the level 3 metric
         if(!is.na(match("level3", levels))) {
             level3.fun <- metric[[match("level3", levels)]]
-        }
-
-    } else {
-
-        #Metric was still fed as a list
-        if(class(metric) != "list") {
-            #Metric was fed as a single element
-            check.class(metric, "function")
-        } else {
-            check.class(metric[[1]], "function")
-            metric <- metric[[1]]
-        }
-
-        #Getting the metric level
-        levels <- make.metric(metric, silent = TRUE)
-        #Metric must not be level 3
-        if(levels == "level3") {
-            stop(paste(as.expression(match_call$metric), " must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
-        } else {
-            # Set the metric level
-            if(levels == "level2") {
-                level2.fun = metric
-            } else {
-                level1.fun = metric
-            }
         }
     }
 
     return(list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun))
 }
 
-disparity.calc<-function(BSresult, level3.fun, level2.fun, level1.fun, ...) {
 
-    lapply_fun<-function(data, fun, ...) {
-        return(lapply(data, fun, ...))
+
+## Calculating the disparity for a bootstrap matrix
+disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decomposition, ...){ # matrix_decomposition argument is for recalculating disparity
+
+    ## Calculates disparity from a bootstrap table
+    decompose.matrix <- function(one_bootstrap, fun, data, ...) {
+        return(fun( data$matrix[one_bootstrap, 1:data$call$dimensions], ...))
     }
 
-    matrix_decomposition <- ifelse(!is.null(level3.fun), list(lapply(BSresult, lapply_fun, level3.fun, ...)), list(BSresult))
-    #matrix_decomposition <- ifelse(!is.null(level3.fun), list(lapply(BSresult, lapply_fun, level3.fun)), list(BSresult)) ; warning("DEBUG")
+    if(matrix_decomposition != FALSE) {
+        decompose_matrix <- FALSE
+    } else {
+        decompose_matrix <- TRUE
+    }
 
-    matrix_decomposition <- ifelse(!is.null(level2.fun), list(lapply(matrix_decomposition[[1]], lapply_fun, level2.fun, ...)), matrix_decomposition)
-    #matrix_decomposition <- ifelse(!is.null(level2.fun), list(lapply(matrix_decomposition[[1]], lapply_fun, level2.fun)), matrix_decomposition) ; warning("DEBUG")
+    ## Level 3 metric decomposition
+    ## do the decomposition in the matrix or return FALSE
+    ## level 3 decomposition
+    if(!is.null(metrics_list$level3.fun)) {
+        if(decompose_matrix) {
+            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...)
+            decompose_matrix <- FALSE
+        } else {
+            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level3.fun, ...)
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
 
-    matrix_decomposition <- ifelse(!is.null(level1.fun), list(lapply(matrix_decomposition[[1]], lapply_fun, level1.fun, ...)), matrix_decomposition)
-    #matrix_decomposition <- ifelse(!is.null(level1.fun), list(lapply(matrix_decomposition[[1]], lapply_fun, level1.fun)), matrix_decomposition) ; warning("DEBUG")
 
-    return(matrix_decomposition[[1]])
+    ## level 2 decomposition
+    if(!is.null(metrics_list$level2.fun)) {
+        if(decompose_matrix) {
+            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level2.fun, data = data, ...)
+            decompose_matrix <- FALSE
+        } else {
+            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level2.fun, ...)
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
+
+
+    ## level 1 metric decomposition
+    if(!is.null(metrics_list$level1.fun)) {
+        if(decompose_matrix) {
+            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level1.fun, data = data, ...)
+            decompose_matrix <- FALSE
+        } else {
+            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level1.fun, ...)
+            ## Transform the vector back into a matrix
+            matrix_decomposition <- t(as.matrix(matrix_decomposition))
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
+
+    return(matrix_decomposition)
+}
+
+## Lapply wrapper for disparity.bootstraps function
+lapply.wrapper <- function(series, metrics_list, data, matrix_decomposition, verbose, ...) {
+    if(verbose) message(".", appendLF = FALSE)
+    return(lapply(series[-1], disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
