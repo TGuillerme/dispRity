@@ -182,16 +182,15 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(verbose) message("Bootstrapping", appendLF=FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
-        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     } else {
-        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- parLapply(cluster, data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
     if(verbose) message("Done.", appendLF=FALSE)
     
-
     ## Combining and storing the results back in the dispRity object
-    data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
+    data$series <- c(data$series[1], mapply(combine.bootstraps, bootstrap_results, data$series[-1], SIMPLIFY = FALSE))
 
     ## Adding the call information about the bootstrap
     data$call$bootstrap <- c(bootstraps, boot.type, list(rarefaction))

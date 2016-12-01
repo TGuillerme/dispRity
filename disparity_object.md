@@ -19,17 +19,11 @@ object
 	|	|
 	|	\---$origin* = class:"list" (the original series containing the original dataset)
 	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
-	|	|	|
-	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
-	|	|	|
-	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
-	|	|	|
-	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)
+	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
 	|	|
 	|	\---[[2]] = class:"list" (the first series the )
 	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
+	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
@@ -39,7 +33,7 @@ object
 	|	|
 	|	\---[[2]] = class:"list" (the first series)
 	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector contianing the elements within this series)
+	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
@@ -53,53 +47,45 @@ object
 	|	|
 	|	\---[[...]] = class:"list" (the followng series)
 	|		|
-	|		\---$elements* = class:"numeric" (the vector contianing the elements within this series)
+	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
 	\---$disparity
 		|
-		\---$observed
-		|	\---[[1]] = class:"list" (the first series disparity values)
-		|	|	|
-		|	|	\---[[1]] = class:"list" (the first rarefaction containing a single element)
-		|	|		|
-		|	|		\---[[1]] = class:"list" (the first bootstrap containing a single element)
-		|	|			|
-		|	|			\---[[1]] = class:"numeric" (the disparity value)
+		\---$origin* = class:"list" (the original series containing the original dataset)
 		|	|
-		|	\---[[...]] = class:"list" (the other series disparity values)
+		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+		|
+		\---[[2]] = class:"list" (the first series the )
+		|	|
+		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+		|	|
+		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+		|	|
+		|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+		|	|
+		|	\---[[...]] = class:"matrix" (second rarefaction level...)
+		|
+		\---[[2]] = class:"list" (the first series)
+		|	|
+		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+		|	|
+		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+		|	|
+		|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+		|	|
+		|	\---[[...]] = class:"matrix" (second rarefaction level...)			
+		|	|
+		|	\---[[...]] = class:"list" (the following rarefactions)
 		|		|
-		|		\---[[1]] = class:"list" (the first rarefaction containing a single element)
-		|			|
-		|			\---[[1]] = class:"list" (the first bootstrap containing a single element)
-		|				|
-		|				\---[[1]] = class:"numeric" (the disparity value)
-		|	
-		\---$bootstrapped (is NULL if data is data is not bootstrapped)
+		|		\---[[...]] = class:"numeric" (the bootstraps)
+		|
+		\---[[...]] = class:"list" (the followng series)
 			|
-			\---[[1]] = class:"list" (the first series)
-			|	|
-			|	\---[[1]] = class:"list" (the first rarefaction level)
-			|	|	|	
-			|	|	\---[[1]] = class:"numeric" class (the first bootstrap)
-			|	|	|
-			|	|	\---[[...]] = class:"numeric" class (the ... bootstrap)
-			|	|
-			|	\---[[...]]	 = class:"list" (the ... rarefaction level)
-			|		|	
-			|		\---[[1]] = class:"numeric" class (the first bootstrap)
-			|		|
-			|		\---[[...]] = class:"numeric" class (the ... bootstrap)
+			\---$elements* = class:"numeric" (the vector containing the elements within this series)
 			|
-			\---[[...]] = class:"list" (the ... series)
-				|
-				\---[[...]]	 = class:"list" (the ... rarefaction level)
-					|	
-					\---[[1]] = class:"numeric" class (the first bootstrap)
-					|
-					\---[[...]] = class:"numeric" class (the ... bootstrap)			
-
+			\---[[...]] = class:"matrix" (the rarefactions)
 ```
 The elements marked with an asterisk (*) are mandatory.
 

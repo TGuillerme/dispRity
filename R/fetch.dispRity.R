@@ -43,7 +43,7 @@ fetch.matrix <- function(dispRity, series = 0, rarefaction = 0, bootstrap = 0){
     if(bootstrap == 0) {
         return(dispRity$matrix[dispRity$series[[series+1]]$elements, 1:dispRity$call$dimensions])
     } else {
-        return(dispRity$matrix[dispRity$series[[series+1]][[rarefaction+2]][,bootstrap],])
+        return(dispRity$matrix[dispRity$series[[series+1]][[rarefaction+2]][,bootstrap], 1:dispRity$call$dimensions])
     }
 }
 
