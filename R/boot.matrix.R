@@ -179,7 +179,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     }
 
     ## BOOTSRAPING THE DATA
-    if(verbose) message("Bootstrapping", appendLF=FALSE)
+    if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
         bootstrap_results <- lapply(data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
@@ -187,7 +187,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         bootstrap_results <- parLapply(cluster, data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
-    if(verbose) message("Done.", appendLF=FALSE)
+    if(verbose) message("Done.", appendLF = FALSE)
     
     ## Combining and storing the results back in the dispRity object
     data$series <- c(data$series[1], mapply(combine.bootstraps, bootstrap_results, data$series[-1], SIMPLIFY = FALSE))
