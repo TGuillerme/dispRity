@@ -38,3 +38,28 @@ make.dispRity <- function(data, call, series) {
 
     return(dispRity_object)
 }
+
+fill.dispRity <- function(data) {
+
+    ## Elements
+    if(length(data$series$origin$elements) == 0) {
+        data$series$origin$elements <- 1:nrow(data$matrix)
+    }
+
+    ## Dimensions
+    if(length(data$call$dimensions) == 0) {
+        data$call$dimensions <- ncol(data$matrix)
+    }
+
+    ## Fill empty series
+    if(length(data$series) == 1) {
+        data$series <- c(data$series, list(list("elements" = 1:nrow(data$matrix))))
+        data$series[[2]][[2]] <- matrix(1:nrow(data$matrix))
+    } else {
+        for(series in 2:length(data$series)) {
+            data$series[[series]] <- list("elements" = data$series[[series]]$elements, matrix(data$series[[series]]$elements))
+        }
+    }
+
+    return(data)
+}
