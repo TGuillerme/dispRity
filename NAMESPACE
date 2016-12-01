@@ -17,6 +17,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
+importFrom("RCurl", "getURL")
 
 ##Functions
 export(time.series)
@@ -35,6 +36,22 @@ export(check.morpho)
 ##Morpho utilities
 export(get.contrast.matrix)
 export(apply.inapplicable)
+
+##disparity metrics
+export(variances)
+export(ranges)
+export(centroids)
+export(mode.val)
+export(ellipse.volume)
+export(hyper.volume)
+export(convhull.volume)
+export(convhull.surface)
+export(diagonal)
+
+##disparity tests
+export(bhatt.coeff)
+export(sequential.test)
+export(null.test)
 
 ##Utilities
 export(make.metric)
@@ -55,25 +72,11 @@ export(fetch.series)
 #export(make.model) - TO DO!
 #export(make.boot) - TO DO!
 
-
-##disparity metrics
-export(variances)
-export(ranges)
-export(centroids)
-export(mode.val)
-export(ellipse.volume)
-export(hyper.volume)
-export(convhull.volume)
-export(convhull.surface)
-export(diagonal)
-
-##disparity tests
-export(bhatt.coeff)
-export(sequential.test)
-export(null.test)
-
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
 S3method(sort, dispRity)
+
+##Loading
+.onLoad()
