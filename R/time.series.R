@@ -104,9 +104,9 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
     ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
         ## time must be at least 3 if discrete
-        if(method == "discrete" & time < 3) stop("If method is discrete, time must have at least 3 elements.")
+        if(method == "discrete" && time < 3) stop("If method is discrete, time must have at least 3 elements.")
         ## or at least time 2 if continuous
-        if(method == "continuous" & time < 2) stop("If method is discrete, time must have at least 2 elements.")
+        if(method == "continuous" && time < 2) stop("If method is discrete, time must have at least 2 elements.")
         ## Create the time vector
         ## Make sure the oldest slice has at least 3 taxa:
         ## Set the oldest slice at 1% of tree height

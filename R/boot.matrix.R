@@ -67,6 +67,7 @@
 ## DEBUG
 # warning("DEBUG boot.matrix")
 # source("sanitizing.R")
+# source("boot.matrix_fun.R")
 # data(BeckLee_mat50)
 # bootstraps = 7
 # rarefaction = FALSE
@@ -74,10 +75,6 @@
 # verbose = FALSE
 # boot.type = "full"
 # data <- BeckLee_mat50
-
-
-##TODO: rarefy and bootstrap an unseried dispRity_object
-##TODO: bootstrap a serried dispRity_object
 
 boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
     
