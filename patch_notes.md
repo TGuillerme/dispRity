@@ -1,7 +1,11 @@
 Patch notes
 ----
-* 2016/??/?? - v0.2.2
-  * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation
+* 2016/??/?? - v0.3.0 *dispRity lite!*
+  * Complete change of the `dispRity` object architecture. `dispRity` objects are now a list of "*pointers*" rather than matrices, thus highly reducing calculation speed and object size! (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * **removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
+  * Important speed improvement for the `time.series` function.	
+  * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
+  * The package now checks whether the latest released version is used upon loading.
 * 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
   * *new* utility function: `merge.time.series` for cleaning or merging time series
   * *new* vignette: `dispRity-simulate_data` on how to simulate morphological characters in `dispRity`
