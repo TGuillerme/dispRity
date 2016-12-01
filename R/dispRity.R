@@ -81,24 +81,24 @@
 #' @author Thomas Guillerme
 
 ## DEBUG
-warning("DEBUG dispRity.R")
-library(dispRity)
-source("sanitizing.R")
-source("dispRity_fun.R")
-source("dispRity.metric.R")
-source("make.dispRity.R")
-source("fetch.dispRity.R")
-source("boot.matrix.R") ; source("boot.matrix_fun.R")
-source("time.series.R") ; source("time.series_fun.R")
-data(BeckLee_mat50)
-data(BeckLee_tree)
-data_simple <- BeckLee_mat50
-data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
-metric = c(sum, variances)
-verbose = TRUE
-data <- data_series_boot
+# warning("DEBUG dispRity.R")
+# library(dispRity)
+# source("sanitizing.R")
+# source("dispRity_fun.R")
+# source("dispRity.metric.R")
+# source("make.dispRity.R")
+# source("fetch.dispRity.R")
+# source("boot.matrix.R") ; source("boot.matrix_fun.R")
+# source("time.series.R") ; source("time.series_fun.R")
+# data(BeckLee_mat50)
+# data(BeckLee_tree)
+# data_simple <- BeckLee_mat50
+# data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
+# data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
+# metric = c(sum, variances)
+# verbose = TRUE
+# data <- data_series_boot
 
 dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## ----------------------
