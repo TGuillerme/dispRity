@@ -290,5 +290,6 @@ test_that("Example works", {
         ,15)
     expect_equal(
         length(ex3$series[[4]]$elements)
-        ,23)    
+        ,23)
+    
 })

@@ -128,14 +128,9 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
     ## MODEL
     ## if method is discrete ignore model
     if(method == "discrete") {
-        ##  if(missing(model)) {
-        ##      model <- NULL
-        ##  } else {
-            ## warning("model is ignored if method is "discrete".")
-            model <- NULL
-        ##  }
+        model <- NULL
     } else {
-    ## else model must be one of the following
+        ## else model must be one of the following
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
@@ -171,7 +166,7 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
             if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
         } else {
             stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
-        }        
+        }
     }
 
     ## FADLAD
