@@ -116,12 +116,9 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
-        if(is.null(data$call$bootstraps) & is.null(data$call$series)) {
+        ## Data is not bootstrapped
+        if(is.null(data$call$bootstrap)) {
             data <- fill.dispRity(data)
-        } else {
-            if(is.null(data$call$bootstraps)) {
-                data <- fill.dispRity(data)
-            }
         }
     }
 
@@ -151,15 +148,31 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## CALCULTING DISPARITY
     ## ----------------------
 
+    ## Set matrix decomposition
+    if(length(data$call$disparity$metrics) == 0) {
+        ## Data call had no metric calculated yet
+        matrix_decomposition <- TRUE
+        ## Lapply through the series
+        lapply_loop <- data$series[-1]
+    } else {
+        ## Data has already been decomposed
+        matrix_decomposition <- FALSE
+        ## Lapply through the disparity scores (serried)
+        lapply_loop <- data$disparity
+    }
+
     if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
-        disparity <- lapply(data$series[-1], lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        #disparity <- lapply(data$series[-1], lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        #disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
         if(verbose) message("Done.", appendLF = FALSE)
     } else {
-        disparity <- parLapply(clust, data$series[-1], lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
         stopCluster(cluster)
     }
+
+    ## Add elements to the disparity object
+    disparity <- mapply(combine.disparity, disparity, data$series[-1], SIMPLIFY = FALSE)
 
     ## Update the disparity
     data$disparity <- disparity

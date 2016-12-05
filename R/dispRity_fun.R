@@ -75,10 +75,13 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
         return(fun( data$matrix[one_bootstrap, 1:data$call$dimensions], ...))
     }
 
-    if(matrix_decomposition != FALSE) {
-        decompose_matrix <- FALSE
-    } else {
+    if(matrix_decomposition) {
+        ## Decompose the matrix using the bootstraps
         decompose_matrix <- TRUE
+    } else {
+        ## Matrix already decomposed, used the decomposition
+        decompose_matrix <- FALSE
+        matrix_decomposition <- one_bs_matrix
     }
 
     ## Level 3 metric decomposition
@@ -124,4 +127,9 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
 lapply.wrapper <- function(series, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) message(".", appendLF = FALSE)
     return(lapply(series[-1], disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+}
+
+## Combining the disparity results with the elements
+combine.disparity <- function(one_disparity_series, one_bootstrap_series) {
+    return(c(one_bootstrap_series[1], one_disparity_series))
 }
