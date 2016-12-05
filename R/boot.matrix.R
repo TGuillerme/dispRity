@@ -75,6 +75,8 @@
 # verbose = FALSE
 # boot.type = "full"
 # data <- BeckLee_mat50
+# bootstraps = 11
+# rarefaction = c(5,6)
 
 boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
     
@@ -110,6 +112,14 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
                 stop(paste("The following series have less than 3 elements: ", paste( unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
             }
         }
+    }
+
+    ## Data must contain a first "bootstrap" (empty list)
+    if(length(data$series[-1]) == 0) {
+        data <- fill.dispRity(data)
+        data_empty <- TRUE
+    } else {
+        data_empty <- FALSE
     }
 
     ## BOOTSTRAP
@@ -189,6 +199,9 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     }
     if(verbose) message("Done.", appendLF = FALSE)
     
+    ## Remove the "dummy" bootstrap
+    if(data_empty) data$series[[2]][[2]] <- NULL
+
     ## Combining and storing the results back in the dispRity object
     data$series <- c(data$series[1], mapply(combine.bootstraps, bootstrap_results, data$series[-1], SIMPLIFY = FALSE))
 
