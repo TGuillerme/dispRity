@@ -58,8 +58,17 @@ test_that("No bootstraps", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        length(test$series[[1]][[2]])
-        ,0)
+        length(test$series[[1]])
+        ,1)
+    expect_equal(
+        length(test$series)
+        ,2)
+    expect_equal(
+        length(test$series[[2]])
+        ,2)
+    expect_is(
+        test$series[[2]][[2]]
+        ,"matrix")
 })
 
 ## No bootstrap but remove dimensions
@@ -75,6 +84,7 @@ test_that("Remove dimensions", {
 
 ## Bootstraps = 5
 test_that("5 bootstraps", {
+    data <- test_data$ord_data_tips
     test <- boot.matrix(data, bootstraps = 5)
     expect_is(
         test
@@ -89,10 +99,10 @@ test_that("5 bootstraps", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[1]][[2]])
+        dim(test$series[[2]][[2]])
         ,c(50,5))
     expect_equal(
-        length(test$series[[1]])
+        length(test$series[[2]])
         ,2)
 })
 
@@ -112,10 +122,10 @@ test_that("5 bootstraps, rarefaction = 5", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[1]][[2]])
+        dim(test$series[[2]][[2]])
         ,c(50,5))
     expect_equal(
-        dim(test$series[[1]][[3]])
+        dim(test$series[[2]][[3]])
         ,c(5,5))
 })
 
@@ -123,11 +133,11 @@ test_that("5 bootstraps, rarefaction = 5", {
 test_that("5 bootstraps, rarefaction = TRUE", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
-        length(test$series[[1]])
+        length(test$series[[2]])
         , 50)
     for(rare in 3:50) {
         expect_equal(
-            dim(test$series[[1]][[rare]])
+            dim(test$series[[2]][[rare]])
             ,c(50-(rare-3),5))
     }
 })
@@ -170,7 +180,7 @@ test_that("5 bootstraps, rarefaction = 5,6, series", {
         ,3)
     expect_equal(
         length(test$series[[1]])
-        ,4)
+        ,1)
     expect_equal(
         length(test$series[[2]])
         ,4)

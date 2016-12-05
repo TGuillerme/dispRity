@@ -128,6 +128,10 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     check.length(bootstraps, 1, " must be a single (entire) numerical value.")
     ## Make sure the bootstrap is a whole number
     bootstraps <- round(abs(bootstraps))
+    ## Return object if BS = 0
+    if(bootstraps == 0) {
+        return(data)
+    }
 
     ## RAREFACTION
     ## Is it not logical?
