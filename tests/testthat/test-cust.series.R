@@ -2,7 +2,7 @@
 
 context("cust.series")
 
-data <- matrix(data = NA, nrow = 10, ncol = 9)
+data <- matrix(data = rnorm(10*9), nrow = 10, ncol = 9)
 rownames(data) <- letters[1:10]
 
 ## Sanitizing
