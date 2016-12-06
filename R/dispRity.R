@@ -90,6 +90,7 @@
 # source("fetch.dispRity.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
 # source("time.series.R") ; source("time.series_fun.R")
+# source("cust.series.R") ; source("cust.series_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50

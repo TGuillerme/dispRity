@@ -89,12 +89,14 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
     ## level 3 decomposition
     if(!is.null(metrics_list$level3.fun)) {
         if(decompose_matrix) {
-            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...)
+            #matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...)
+            matrix_decomposition <- array(apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_bs_matrix)))
             decompose_matrix <- FALSE
         } else {
             matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level3.fun, ...)
         }
     }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a list of matrices for each bootstraps
 
 
     ## level 2 decomposition
@@ -103,9 +105,10 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level2.fun, data = data, ...)
             decompose_matrix <- FALSE
         } else {
-            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level2.fun, ...)
+            matrix_decomposition <- apply(matrix_decomposition, 3, metrics_list$level2.fun, ...)
         }
     }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a matrix with n-bootstraps columns and n-dimensions rows
 
 
     ## level 1 metric decomposition
@@ -114,11 +117,17 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level1.fun, data = data, ...)
             decompose_matrix <- FALSE
         } else {
-            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level1.fun, ...)
+            if(class(matrix_decomposition) != "array") {
+                matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level1.fun, ...)
+            } else {
+                matrix_decomposition <- apply(matrix_decomposition, 3, metrics_list$level1.fun, ...)
+            }
+
             ## Transform the vector back into a matrix
             matrix_decomposition <- t(as.matrix(matrix_decomposition))
         }
     }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a matrix with n-bootstraps columns and 1 row
 
     return(matrix_decomposition)
 }
