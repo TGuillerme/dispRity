@@ -17,13 +17,9 @@ object
 	|
 	\---$series* = class:"list" (the list of series)
 	|	|
-	|	\---$origin* = class:"list" (the original series containing the original dataset)
+	|	\---[[1]]* = class:"list" (the first series the )
 	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
-	|	|
-	|	\---[[2]] = class:"list" (the first series the )
-	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+	|	|	\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
@@ -33,7 +29,7 @@ object
 	|	|
 	|	\---[[2]] = class:"list" (the first series)
 	|	|	|
-	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+	|	|	\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 	|	|	|
@@ -47,19 +43,15 @@ object
 	|	|
 	|	\---[[...]] = class:"list" (the followng series)
 	|		|
-	|	|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
 	\---$disparity
 		|
-		\---$origin* = class:"list" (the original series containing the original dataset)
-		|	|
-		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
-		|
 		\---[[2]] = class:"list" (the first series the )
 		|	|
-		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+		|	\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
 		|	|
 		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 		|	|
@@ -69,7 +61,7 @@ object
 		|
 		\---[[2]] = class:"list" (the first series)
 		|	|
-		|	\---$elements* = class:"numeric" (the vector containing the elements within this series)
+		|	\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
 		|	|
 		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
 		|	|
@@ -83,7 +75,7 @@ object
 		|
 		\---[[...]] = class:"list" (the followng series)
 			|
-			\---$elements* = class:"numeric" (the vector containing the elements within this series)
+			\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
 			|
 			\---[[...]] = class:"matrix" (the rarefactions)
 ```
