@@ -71,7 +71,7 @@ cust.series <- function(data, factor) {
     ## Creating the series
     series_list <- unlist(apply(factor, 2, split.elements, data), recursive = FALSE)
     ## Adding the original series
-    series_list <- c(make.origin.series(data), series_list)
+    #series_list <- c(make.origin.series(data), series_list)
 
     ## Output as a dispRity object
     return(make.dispRity(data = data, call = list("series" = "customised"), series = series_list))

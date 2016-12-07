@@ -3,7 +3,7 @@ split.elements <- function(one_factor, data) {
 
     ## lapply fun for selecting the elements
     select.elements <- function(series, one_factor) {
-        return(list("elements" = which(as.character(one_factor) == as.character(levels(as.factor(one_factor))[[series]]))))
+        return(list("elements" = as.matrix(which(as.character(one_factor) == as.character(levels(as.factor(one_factor))[[series]])))))
     }
 
     ## Select the elements per series

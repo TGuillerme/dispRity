@@ -53,13 +53,10 @@ test_that("cust.series works", {
         dim(test$matrix)
         , c(10,9))
     expect_equal(
-        rownames(test$matrix[test$series$origin$elements,])
-        , rownames(data))
-    expect_equal(
-        length(test$series[[2]]$elements)
+        length(test$series[[1]]$elements)
         ,5)
     expect_equal(
-        length(test$series[[3]]$elements)
+        length(test$series[[2]]$elements)
         ,5)
 })
 
