@@ -77,6 +77,3 @@ S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
 S3method(sort, dispRity)
-
-##Loading
-.onLoad()

@@ -1,5 +1,5 @@
 ## Package version checking
-.onLoad <- function() {
+.onLoad <- function(libname = find.package("dispRity"), pkgname = "dispRity") {
     last_release <- strsplit(strsplit(RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/release/DESCRIPTION", followlocation = TRUE), split = "\nVersion: ")[[1]][2], split = "\nDate:")[[1]][1]
     current_version <- packageVersion("dispRity")
     if(current_version < last_release) {
