@@ -8,7 +8,6 @@ tree <- test_data$tree_data
 data <- test_data$ord_data_tips
 FADLAD <- test_data$FADLAD_data
 
-
 test_that("adjust.FADLAD works", {
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
 
@@ -143,7 +142,6 @@ test_that("time.series.continuous works properly with acctran model", {
 })
 
 ## time.series
-
 data = test_data$ord_data_tips_nodes
 tree = test_data$tree_data
 method = "continuous"

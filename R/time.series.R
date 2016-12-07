@@ -51,20 +51,20 @@
 #' @author Thomas Guillerme
 
 ##Testing
-# warning("DEBUG time.series")
-# source("sanitizing.R")
-# source("time.series_fun.R")
-# data(BeckLee_tree) ; data(BeckLee_mat50)
-# data(BeckLee_mat99) ; data(BeckLee_ages)
-# data = BeckLee_mat99
-# tree = BeckLee_tree
-# method = "continuous"
-# model = "acctran"
-# time = 5
-# inc.nodes = TRUE
-# FADLAD = BeckLee_ages
+warning("DEBUG time.series")
+source("sanitizing.R")
+source("time.series_fun.R")
+data(BeckLee_tree) ; data(BeckLee_mat50)
+data(BeckLee_mat99) ; data(BeckLee_ages)
+data = BeckLee_mat99
+tree = BeckLee_tree
+method = "continuous"
+model = "acctran"
+time = 5
+inc.nodes = TRUE
+FADLAD = BeckLee_ages
 
-time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD, verbose=FALSE) {
+time.series <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -211,7 +211,7 @@ time.series <- function(data, tree, method, time, model, inc.nodes=FALSE, FADLAD
     }
 
     ## Adding the original series
-    time_series <- c(make.origin.series(data), time_series)
+    #time_series <- c(make.origin.series(data), time_series)
 
     ## Output as a dispRity object
     return(make.dispRity(data = data, call = list("series" = c(method, model)), series = time_series))

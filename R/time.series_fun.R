@@ -38,7 +38,7 @@ time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
         } else {
             one_interval <- which(ages_tree$FAD$ages > time[interval+1] & ages_tree$LAD$ages < time[interval])
             matching <- match(tree$tip.label, rownames(data[one_interval,]))
-            return( list("elements" = one_interval[matching[-which(is.na(matching))]]) )
+            return( list("elements" = as.matrix(one_interval[matching[-which(is.na(matching))]]) ))
         }
         
     }
@@ -89,7 +89,7 @@ time.series.continuous <- function(data, tree, time, model, FADLAD, verbose) {
         }
 
         ## Getting the list of elements
-        return( list("elements" = match(unique(c(tips, taxa)), rownames(data))) )
+        return( list("elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ))
     }
 
     ## ages of tips/nodes + FAD/LAD
@@ -116,7 +116,7 @@ time.series.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
 ## Making the origin series for a disparity_object
 make.origin.series <- function(data) {
-    origin <- list("elements" = seq(1:nrow(data)))
+    origin <- list("elements" = as.matrix(seq(1:nrow(data))))
     origin_series <- list("origin" = origin)
     return(origin_series)
 }
