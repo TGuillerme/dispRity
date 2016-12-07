@@ -101,36 +101,6 @@ make.metric<-function(fun, ..., silent = FALSE) {
             }
         }
     }
-
-    ##########
-    #Does fun works in the dispRity apply?
-    ##########
-    #Making the data similar to the dispRity internal input
-    matrix <- list(matrix)
-    BSresult <- boot.matrix(matrix, bootstraps = 0, rarefaction = FALSE, rm.last.axis = FALSE, verbose = FALSE, boot.type = "full")$data$bootstraps
-
-    #Checking the disparity.calc function in lapply
-
-    if(fun_type == "level3") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = fun, level2.fun = NULL, level1.fun = mean, ...)), silent = TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = fun, level2.fun = NULL, level1.fun = mean)), silent = TRUE) ; warning("DEBUG")
-    }
-
-    if(fun_type == "level2") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = fun, level1.fun = mean, ...)), silent = TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = fun, level1.fun = mean)), silent = TRUE) ; warning("DEBUG")
-    }
-
-    if(fun_type == "level1") {
-        try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = NULL, level1.fun = fun, ...)), silent = TRUE)
-        #try(test_lapply <- unlist(lapply(BSresult, disparity.calc, level3.fun = NULL, level2.fun = NULL, level1.fun = fun, ...)), silent = TRUE) ; warning("DEBUG")
-    }
-
-    #length of test_lapply must be equal to one
-    if(length(test_lapply) != 1) stop(paste(as.expression(match_call$fun),
-        " failed at the dispRity function level.\nDoes the following outputs a single value (the disparity)?\nmean(",
-            as.expression(match_call$fun),"(matrix(rnorm(9),3,3)))", sep = ""))
-
     ##########
     #Return the level type for dispRity
     ##########

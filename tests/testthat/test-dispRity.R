@@ -3,6 +3,7 @@
 context("dispRity")
 
 data(BeckLee_mat50)
+data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
 data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
 data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
