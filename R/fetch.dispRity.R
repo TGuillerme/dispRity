@@ -39,18 +39,18 @@
 #' 
 #' @author Thomas Guillerme
 
-fetch.matrix <- function(dispRity, series = 0, rarefaction = 0, bootstrap = 0){
+fetch.matrix <- function(dispRity, series = 1, rarefaction = 1, bootstrap = 1){
     if(bootstrap == 0) {
-        return(dispRity$matrix[dispRity$series[[series+1]]$elements, 1:dispRity$call$dimensions])
+        return(dispRity$matrix[dispRity$series[[series]]$elements, 1:dispRity$call$dimensions])
     } else {
-        return(dispRity$matrix[dispRity$series[[series+1]][[rarefaction+2]][,bootstrap], 1:dispRity$call$dimensions])
+        return(dispRity$matrix[dispRity$series[[series]][[rarefaction+1]][,bootstrap], 1:dispRity$call$dimensions])
     }
 }
 
-fetch.elements <- function(dispRity, series = 0){
-    return(dispRity$series[[series+1]]$elements)
+fetch.elements <- function(dispRity, series = 1){
+    return(dispRity$series[[series]]$elements)
 }
 
 fetch.series <- function(dispRity){
-    return(names(dispRity$series)[-1])
+    return(names(dispRity$series))
 }

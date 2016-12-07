@@ -62,7 +62,7 @@ print.dispRity <- function(x, all = FALSE) {
             return()
         }
 
-        cat("dispRity object with ")
+        cat("dispRity object:\n")
 
         ## Print the matrix informations
         if(any(names(x$call) == "series")) {
@@ -77,7 +77,7 @@ print.dispRity <- function(x, all = FALSE) {
                 if(length(method) != 1) {
                     method <- paste(method[1], " (", method[2],")", sep = "")
                 }
-                cat(paste(length(series), method, "series for", length(x$series$origin$elements), "elements"))
+                cat(paste(length(series), method, "series for", nrow(x$matrix), "elements"))
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
                 if(length(series) > 5) {
@@ -87,7 +87,7 @@ print.dispRity <- function(x, all = FALSE) {
                 }
             }
         } else {
-            cat(paste(length(x$series$origin$elements), "elements"))
+            cat(paste(nrow(x$matrix), "elements"))
             if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
             cat(".\n")
         }
@@ -97,8 +97,8 @@ print.dispRity <- function(x, all = FALSE) {
             if(x$call$bootstrap[[1]] != 0) {
                 cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
             }
-            if(length(x$call$bootstrap) == 3) {
-                if(length(x$call$bootstrap[[3]]) != (length(x$series$origin$elements)-3)) {
+            if(!is.null(x$call$bootstrap[[3]])) {
+                if(length(x$call$bootstrap[[3]]) != (nrow(x$matrix)-3)) {
                     cat(paste(" and rarefied to ", paste(x$call$bootstrap[[3]], collapse = ", "), " elements", sep = ""))
                 } else {
                     cat(" and fully rarefied")
