@@ -52,7 +52,7 @@ test_that("No bootstraps", {
         length(test)
         , 3)
     expect_equal(
-        test$series$origin$elements
+        as.vector(test$series[[1]][[1]])
         , seq(1:nrow(test$matrix)))
     expect_equal(
         test$call$dimensions
@@ -62,12 +62,9 @@ test_that("No bootstraps", {
         ,1)
     expect_equal(
         length(test$series)
-        ,2)
-    expect_equal(
-        length(test$series[[2]])
-        ,2)
+        ,1)
     expect_is(
-        test$series[[2]][[2]]
+        test$series[[1]][[1]]
         ,"matrix")
 })
 
@@ -93,16 +90,16 @@ test_that("5 bootstraps", {
         length(test)
         , 3)
     expect_equal(
-        test$series$origin$elements
-        , seq(1:nrow(test$matrix)))
-    expect_equal(
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[2]][[2]])
+        dim(test$series[[1]][[1]])
+        ,c(50,1))
+    expect_equal(
+        dim(test$series[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        length(test$series[[2]])
+        length(test$series[[1]])
         ,2)
 })
 
@@ -116,16 +113,13 @@ test_that("5 bootstraps, rarefaction = 5", {
         length(test)
         , 3)
     expect_equal(
-        test$series$origin$elements
-        , seq(1:nrow(test$matrix)))
-    expect_equal(
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[2]][[2]])
+        dim(test$series[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        dim(test$series[[2]][[3]])
+        dim(test$series[[1]][[3]])
         ,c(5,5))
 })
 
@@ -133,11 +127,11 @@ test_that("5 bootstraps, rarefaction = 5", {
 test_that("5 bootstraps, rarefaction = TRUE", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
-        length(test$series[[2]])
+        length(test$series[[1]])
         , 50)
     for(rare in 3:50) {
         expect_equal(
-            dim(test$series[[2]][[rare]])
+            dim(test$series[[1]][[rare]])
             ,c(50-(rare-3),5))
     }
 })
@@ -170,25 +164,19 @@ test_that("5 bootstraps, rarefaction = 5,6, series", {
         length(test)
         , 3)
     expect_equal(
-        test$series$origin$elements
-        , seq(1:nrow(test$matrix)))
-    expect_equal(
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
         length(test$series)
-        ,3)
+        ,2)
     expect_equal(
         length(test$series[[1]])
-        ,1)
+        ,4)
     expect_equal(
         length(test$series[[2]])
         ,4)
     expect_equal(
-        length(test$series[[3]])
-        ,4)
-    expect_equal(
-        dim(test$series[[3]][[2]])
-        ,c(length(test$series[[3]]$elements), 2))
+        dim(test$series[[2]][[2]])
+        ,c(nrow(test$series[[2]]$elements), 2))
 })
 

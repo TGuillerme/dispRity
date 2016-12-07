@@ -92,7 +92,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
 
         ## Creating the dispRity object
         dispRity_object <- make.dispRity(data = data)
-        dispRity_object$series$origin$elements <- seq(1:nrow(data))
+        #dispRity_object$series$origin$elements <- seq(1:nrow(data))
         data <- dispRity_object
 
     } else {
@@ -115,12 +115,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     }
 
     ## Data must contain a first "bootstrap" (empty list)
-    if(length(data$series[-1]) == 0) {
-        data <- fill.dispRity(data)
-        data_empty <- TRUE
-    } else {
-        data_empty <- FALSE
-    }
+    if(length(data$series) == 0) data <- fill.dispRity(data)
 
     ## BOOTSTRAP
     ## Must be a numeric value
@@ -138,7 +133,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         #rarefaction <- unique(c(length(data$series$origin$elements), rarefaction))
     } else {
         if(rarefaction) {
-            rarefaction <- seq(from = length(data$series$origin$elements), to = 3)
+            rarefaction <- seq(from = nrow(data$matrix), to = 3)
         } else {
             rarefaction <- NULL
         }
@@ -192,23 +187,20 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(bootstraps == 0) {
         return(data)
     }
-    
+
     ## BOOTSRAPING THE DATA
     if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
-        bootstrap_results <- lapply(data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     } else {
-        bootstrap_results <- parLapply(cluster, data$series[-1], bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
     if(verbose) message("Done.", appendLF = FALSE)
-    
-    ## Remove the "dummy" bootstrap
-    if(data_empty) data$series[[2]][[2]] <- NULL
 
     ## Combining and storing the results back in the dispRity object
-    data$series <- c(data$series[1], mapply(combine.bootstraps, bootstrap_results, data$series[-1], SIMPLIFY = FALSE))
+    data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
 
     ## Adding the call information about the bootstrap
     data$call$bootstrap <- c(bootstraps, boot.type, list(rarefaction))
