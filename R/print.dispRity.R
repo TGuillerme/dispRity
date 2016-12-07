@@ -62,12 +62,12 @@ print.dispRity <- function(x, all = FALSE) {
             return()
         }
 
-        cat("dispRity object:\n")
+        cat(" ---- dispRity object ---- \n")
 
         ## Print the matrix informations
-        if(any(names(x$call) == "series")) {
+        if(any(names(x$call) == "series") && length(x$series) != 1) {
             ## Get the number of series (minus origin)
-            series <- names(x$series)[-1]
+            series <- names(x$series)
 
             ## Check if there are more than one series
             if(length(series) != 1) {

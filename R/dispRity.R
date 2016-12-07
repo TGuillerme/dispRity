@@ -154,7 +154,7 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         ## Data call had no metric calculated yet
         matrix_decomposition <- TRUE
         ## Lapply through the series
-        lapply_loop <- data$series[-1]
+        lapply_loop <- data$series
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
@@ -171,9 +171,6 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
         stopCluster(cluster)
     }
-
-    ## Add elements to the disparity object
-    disparity <- mapply(combine.disparity, disparity, data$series[-1], SIMPLIFY = FALSE)
 
     ## Update the disparity
     data$disparity <- disparity

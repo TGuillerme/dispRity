@@ -17,7 +17,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps(data$series[[2]][[2]], metrics_list, data, matrix_decomposition)
+    test0 <- disparity.bootstraps(data$series[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a array
     expect_is(
@@ -36,7 +36,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps(data$series[[2]][[2]], metrics_list, data, matrix_decomposition)
+    test1 <- disparity.bootstraps(data$series[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -141,14 +141,14 @@ test_that("dispRity works with a single matrix", {
         , 1)
     expect_equal(
         length(test$disparity[[1]])
-        , 2)
-    expect_is(
-        test$disparity[[1]][[2]]
-        , "matrix")
-    expect_length(
-        test$disparity[[1]][[2]]
         , 1)
+    expect_is(
+        test$disparity[[1]][[1]]
+        , "matrix")
 })
+
+
+
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
@@ -174,7 +174,6 @@ test_that("dispRity works with a bootstrapped matrix", {
     expect_length(
         test$disparity[[1]][[2]]
         , test$call$bootstrap[[1]])
-
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
@@ -219,13 +218,10 @@ test_that("dispRity works with custom series", {
         , 2)
     expect_equal(
         length(test$disparity[[1]])
-        , 2)
-    expect_is(
-        test$disparity[[1]][[2]]
-        , "matrix")
-    expect_length(
-        test$disparity[[1]][[2]]
         , 1)
+    expect_is(
+        test$disparity[[1]][[1]]
+        , "matrix")
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
@@ -236,6 +232,7 @@ rownames(factor)<-rownames(data)
 data<-cust.series(data, factor)
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
+
 test_that("dispRity works with a bootstrapped, rarefied, custom series", {
     expect_is(
         test, "dispRity"
@@ -255,12 +252,6 @@ test_that("dispRity works with a bootstrapped, rarefied, custom series", {
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
-
-
-
-
-
-
 
 
 

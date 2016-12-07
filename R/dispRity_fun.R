@@ -135,8 +135,25 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
 ## Lapply wrapper for disparity.bootstraps function
 lapply.wrapper <- function(series, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) message(".", appendLF = FALSE)
-    return(lapply(series[-1], disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+    return(lapply(series, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
+
+one_series <- data$series[[2]]
+
+
+
+one_bs_matrix <- as.matrix(one_series$elements)
+
+
+
+
+## Lapply wrapper for getting the observed data
+lapply.wrapper.observed <- function(series, metrics_list, data, matrix_decomposition, verbose, ...) {
+    if(verbose) message(".", appendLF = FALSE)
+    return(lapply(series, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+}
+
+
 
 ## Combining the disparity results with the elements
 combine.disparity <- function(one_disparity_series, one_bootstrap_series) {
