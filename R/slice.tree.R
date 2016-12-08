@@ -1,5 +1,7 @@
 #' @title Slicing a tree.
 #'
+#' @usage slice.tree(tree, age, model, FAD, LAD)
+#' 
 #' @description Slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
