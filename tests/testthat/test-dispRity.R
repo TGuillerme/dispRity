@@ -147,8 +147,6 @@ test_that("dispRity works with a single matrix", {
         , "matrix")
 })
 
-
-
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
@@ -191,8 +189,8 @@ test_that("dispRity works with a bootstrapped and rarefied matrix", {
         , 1)
     expect_equal(
         length(test$disparity[[1]])
-        , 50)
-    for(rare in 2:50) {
+        , 49)
+    for(rare in 2:49) {
         expect_is(
             test$disparity[[1]][[rare]]
             , "matrix")

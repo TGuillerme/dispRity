@@ -81,9 +81,9 @@ print.dispRity <- function(x, all = FALSE) {
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
                 if(length(series) > 5) {
-                    cat(paste(series[1:5], collapse=", "),"...\n")
+                    cat("    ",paste(series[1:5], collapse=", "),"...\n")
                 } else {
-                    cat(paste(series, collapse=", "), ".\n", sep="")
+                    cat("    ",paste(series, collapse=", "), ".\n", sep="")
                 }
             }
         } else {
