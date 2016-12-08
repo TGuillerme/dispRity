@@ -49,11 +49,16 @@
 # data(BeckLee_mat50)
 # factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
 # customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
-# sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3, rarefaction = TRUE)
 # series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE)
 # data <- sequential.test(series, family = gaussian, correction = "hommel")
-# data <- sum_of_variances
+
+# data <- dispRity(bootstrapped_data, metric = variances)
+
+# quantiles <- c(50, 95)
+# cent.tend <- median
+# recall <- FALSE
+# match_call <- list() ; match_call$cent.tend <- "median"
 
 summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
 
@@ -100,28 +105,53 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
         stop("quantiles(s) must be any value between 1 and 100.")
     }
 
-    # #check if is.distribution
-    # is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
-
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE
     #----------------------
 
+    ## Check if disparity is a value or a distribution
+    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
+
+    ## Get the elements per series
+    elements <- lapply(data$series, lapply.get.elements)
+    if(is.null(elements[[1]])) {
+        elements <- list(nrow(data$series[[1]]$elements))
+    }
+
+    ## Get the names of the series
+    names <- names(data$series)
+    if(is.null(names)) {
+        names <- seq(1:length(data$series))
+    }
+
+    ## Get the disparity values
+    disparity_values <- lapply(data$disparity, lapply.observed)
+    names(disparity_values) <- NULL
+
     ## Initialise the results
-    summary_results <- data.frame(row.names = NULL,
-            ## Get the series names
-            "series" = names(data$series),
-            ## Get the number of elements per series
-            "n" = unlist(lapply(as.list(1:length(data$series)), lapply.fetch.elements, data)),
-            ## Get the observed values
-            "obs" = unlist(lapply(data$disparity, lapply.observed))
-        )
+    summary_results <- data.frame(row.names = NULL, "series" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
+
+    ## Add the observed values
+    if(is_distribution) {
+        summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend), elements))), row.names = NULL)
+        names(summary_results)[3] <- paste("obs", match_call$cent.tend, sep=".")
+    } else {
+        summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, disparity_values, elements))), row.names = NULL)
+        names(summary_results)[3] <- "obs"
+    }
 
     if(!is.null(data$call$bootstrap)) {
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
-        names(summary_results)[(length(summary_results)-(length(quantiles)*2)):length(summary_results)] <- c(paste("bs", match_call$cent.tend, sep="."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+        names(summary_results)[4:length(summary_results)] <- c(paste("bs", match_call$cent.tend, sep="."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+    } else {
+        if(is_distribution) {
+            ## Calculate the quantiles
+            summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply, get.summary, quantiles = quantiles)), byrow = TRUE, ncol = (length(quantiles)*2)))
+            ## Adding the labels
+            names(summary_results)[4:length(summary_results)] <- c(names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+        }
     }
 
     #Round the results (number of decimals = maximum number of digits in the entire)

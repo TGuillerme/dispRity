@@ -4,21 +4,19 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = mean,
-  recall = FALSE, rounding, results = "coefficients")
+\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = median,
+  recall = FALSE, rounding)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
 \item{quantiles}{The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).}
 
 \item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 
 \item{rounding}{Optional, a value for rounding the values in the output table (default = 2).}
-
-\item{results}{Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")}
 }
 \value{
 A \code{data.frame} with:
