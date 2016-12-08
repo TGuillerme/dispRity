@@ -2,6 +2,8 @@
 #'
 #' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 #'
+#' @usage boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
+#' 
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
 #' @param bootstraps The number of bootstrap pseudo-replicates (\code{default = 1000}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).

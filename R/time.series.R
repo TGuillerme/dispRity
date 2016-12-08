@@ -1,6 +1,8 @@
 #' @title Separating ordinated data in time series.
 #'
 #' @description Splits the ordinated data into a time series list.
+#' 
+#' @usage time.series(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
