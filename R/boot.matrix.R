@@ -4,7 +4,7 @@
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
 #' @param bootstraps The number of bootstrap pseudo-replicates (\code{default = 1000}).
-#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data.
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
@@ -19,7 +19,7 @@
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
-#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap.
+#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have less elements than the rarefaction value, the series is not rarefied!
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
 #'   \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
@@ -77,6 +77,9 @@
 # data <- BeckLee_mat50
 # bootstraps = 11
 # rarefaction = c(5,6)
+# data <- cust.series(BeckLee_mat50, factors)
+# bootstraps <- 3
+# rarefaction <- TRUE
 
 boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
     
@@ -133,6 +136,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         #rarefaction <- unique(c(length(data$series$origin$elements), rarefaction))
     } else {
         if(rarefaction) {
+            #rarefaction <- lapply(unlist(lapply(data$series, lapply, nrow), recursive = FALSE), seq, to = 3)
             rarefaction <- seq(from = nrow(data$matrix), to = 3)
         } else {
             rarefaction <- NULL
@@ -202,8 +206,12 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     ## Combining and storing the results back in the dispRity object
     data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
 
+    ## Select the effective rarefaction levels
+    rare_levels <- unique(unlist(lapply(data$series, lapply, nrow)))
+    rare_levels <- rare_levels[-which(rare_levels == max(rare_levels))]
+
     ## Adding the call information about the bootstrap
-    data$call$bootstrap <- c(bootstraps, boot.type, list(rarefaction))
+    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_levels))
 
     return(data)
 }

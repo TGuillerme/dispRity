@@ -98,7 +98,7 @@ print.dispRity <- function(x, all = FALSE) {
                 cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
             }
             if(!is.null(x$call$bootstrap[[3]])) {
-                if(length(x$call$bootstrap[[3]]) != (nrow(x$matrix)-3)) {
+                if(!all(x$call$bootstrap[[3]] == (max(unlist(lapply(x$series, lapply, nrow)))-1):3)) {
                     cat(paste(" and rarefied to ", paste(x$call$bootstrap[[3]], collapse = ", "), " elements", sep = ""))
                 } else {
                     cat(" and fully rarefied")

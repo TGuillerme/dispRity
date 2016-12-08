@@ -128,11 +128,11 @@ test_that("5 bootstraps, rarefaction = TRUE", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
         length(test$series[[1]])
-        , 50)
-    for(rare in 3:50) {
+        , 49)
+    for(rare in 2:49) {
         expect_equal(
             dim(test$series[[1]][[rare]])
-            ,c(50-(rare-3),5))
+            ,c(50-(rare-2),5))
     }
 })
 
@@ -156,7 +156,7 @@ test_that("5 bootstraps, rarefaction = 5,6, series", {
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
     factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
     matrix_list <- cust.series(ordinated_matrix, factors)
-    test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(6,7))
+    test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(4,3))
     expect_is(
         test
         , "dispRity")
