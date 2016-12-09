@@ -31,10 +31,11 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 ## Discrete time series
 time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
+    
     ## lapply fun for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes) {
         if(inc.nodes != FALSE) {
-            return( list("elements" = which(ages_tree$FAD$ages > time[interval+1] & ages_tree$LAD$ages < time[interval]) ))
+            return( list("elements" = as.matrix(which(ages_tree$FAD$ages > time[interval+1] & ages_tree$LAD$ages < time[interval]) )))
         } else {
             one_interval <- which(ages_tree$FAD$ages > time[interval+1] & ages_tree$LAD$ages < time[interval])
             matching <- match(tree$tip.label, rownames(data[one_interval,]))

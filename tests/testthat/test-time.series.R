@@ -238,13 +238,10 @@ test_that("Example works", {
         dim(ex1$matrix)
         ,c(50,48))
     expect_equal(
-        rownames(ex1$matrix)[ex1$series$origin$elements]
-        ,rownames(BeckLee_mat50))
-    expect_equal(
-        length(ex1$series[[2]]$elements)
+        nrow(ex1$series[[1]]$elements)
         ,8)
     expect_equal(
-        length(ex1$series[[3]]$elements)
+        nrow(ex1$series[[2]]$elements)
         ,27)
 
     ex2 <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
@@ -258,13 +255,10 @@ test_that("Example works", {
         dim(ex2$matrix)
         ,c(99,97))
     expect_equal(
-        rownames(ex2$matrix)[ex2$series$origin$elements]
-        ,rownames(BeckLee_mat99))
-    expect_equal(
-        length(ex2$series[[2]]$elements)
+        nrow(ex2$series[[1]]$elements)
         ,32)
     expect_equal(
-        length(ex2$series[[3]]$elements)
+        nrow(ex2$series[[2]]$elements)
         ,47)
 
     ex3 <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
@@ -278,16 +272,12 @@ test_that("Example works", {
         dim(ex3$matrix)
         ,c(99,97))
     expect_equal(
-        rownames(ex3$matrix)[ex3$series$origin$elements]
-        ,rownames(BeckLee_mat99))
-    expect_equal(
-        length(ex3$series[[2]]$elements)
+        nrow(ex3$series[[1]]$elements)
         ,3)
     expect_equal(
-        length(ex3$series[[3]]$elements)
+        nrow(ex3$series[[2]]$elements)
         ,15)
     expect_equal(
-        length(ex3$series[[4]]$elements)
+        nrow(ex3$series[[3]]$elements)
         ,23)
-    
 })
