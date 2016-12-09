@@ -23,8 +23,12 @@ lapply.summary <- function(disparity_series, cent.tend, quantiles) {
 }
 
 ## Lapply wrapper for getting elements
-lapply.get.elements <- function(series) {
-    return(unlist(lapply(series[-1], nrow)))
+lapply.get.elements <- function(series, bootstrapped = TRUE) {
+    if(bootstrapped){
+        return(unlist(lapply(series[-1], nrow)))
+    } else {
+        return(unlist(lapply(series, nrow)))
+    }
 }
 
 ## Lapply wrapper for getting the disparity observed values

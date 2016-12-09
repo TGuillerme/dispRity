@@ -112,8 +112,11 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
 
+    ## Check the bootstraps
+    bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+
     ## Get the elements per series
-    elements <- lapply(data$series, lapply.get.elements)
+    elements <- lapply(data$series, lapply.get.elements, bootstrapped)
     if(is.null(elements[[1]])) {
         elements <- list(nrow(data$series[[1]]$elements))
     }
