@@ -61,7 +61,7 @@ make.dispRity <- function(data, call, series) {
 #' 
 #' @author Thomas Guillerme
 #' 
-#' 
+
 fill.dispRity <- function(data) {
 
     ## Data have a matrix
@@ -142,3 +142,87 @@ matrix.dispRity <- function(data, series, rarefaction, bootstrap){
         }
     }
 }
+
+#' @title Extracts series from a dispRity object.
+#' @aliases get.dispRity
+#'
+#' @description Extracting some series and data from a \code{dispRity} object.
+#'
+#' @param data A \code{dispRity} object.
+#' @param series A list of series names or series numbers to be extracted.
+#'
+#' @return
+#' This function outputs a \code{dispRity} object.
+#' 
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat99) ; data(BeckLee_tree) 
+#'
+#' ## Series sub-samples
+#' series_full <- time.series(BeckLee_mat99, BeckLee_tree,
+#'      method = "continuous",time = 5, model = "acctran")
+#' series_full # 5 series for 99 elements
+#' 
+#' get.series.dispRity(series_full, 1) # 1 series for 3 elements
+#'
+#' ## Bootstrapped data sub-samples
+#' bootstrapped_data <- boot.matrix(series_full, bootstraps = 10,
+#'      rarefaction = c(3, 5))
+#' bootstrapped_data # 5 series for 99 elements
+#' get.series.dispRity(bootstrapped_data, "66.75552") # 1 series for 23 elements
+#'
+#' ## Disparity data sub-samples
+#' disparity_data <- dispRity(bootstrapped_data, variances)
+#' disparity_data # 5 series for 99 elements
+#' get.series.dispRity(disparity_data, c(1,5)) # 2 series for 13 elements
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat99) ; data(BeckLee_tree) 
+# series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
+# disparity_data <- dispRity(bootstrapped_data, variances)
+# get.series.dispRity(bootstrapped_data, series = "66.75552") # 1 series for 23 elements
+# get.series.dispRity(series_full, series = 1) # 1 series for 3 elements
+# get.series.dispRity(disparity_data, series = c(1,5)) # 2 series for 13 elements
+
+get.series.dispRity <- function(data, series) {
+    ## data
+    check.class(data, "dispRity")
+
+    ## series
+    if(length(series) > length(data$series)) {
+        stop("Not enough series in the original data.")
+    } else {
+        if(class(series) == "numeric" | class(series) == "integer") {
+            if(any(is.na(match(series, 1:length(data$series))))) {
+                stop("Series not found.")
+            }
+        } else {
+            if(class(series) == "character") {
+                series <- match(series, names(data$series))
+                if(any(is.na(series))) {
+                    stop("Series not found.")
+                }
+            } else {
+                stop("Series argument must be of class \"numeric\" or \"character\".")
+            }
+        }
+    }
+
+    ## create the new data set
+    data_out <- list("matrix" = data$matrix, "call" = data$call, "series" = data$series[series])
+
+    ## Add the disparity (if available)
+    if(!is.null(data$call$disparity)) {
+        data_out$disparity <- data$disparity[series]
+    }
+
+    class(data_out) <- "dispRity"
+    return(data_out)
+}
+

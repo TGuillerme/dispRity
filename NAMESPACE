@@ -61,18 +61,21 @@ export(slice.tree)
 export(clean.data)
 export(merge.time.series)
 
-##S3 methods
-S3method(plot, dispRity)
-S3method(summary, dispRity)
-S3method(print, dispRity)
-S3method(sort, dispRity)
-
 ##dispRity object utilities
 export(make.dispRity)
 export(fill.dispRity)
 export(matrix.dispRity)
-export(get.dispRity)
+export(get.series.dispRity)
 export(extract.dispRity)
 export(scale.dispRity)
 export(sort.dispRity)
 
+##S3 methods
+S3method(plot, dispRity)
+S3method(summary, dispRity)
+S3method(print, dispRity)
+#S3method(fill, dispRity)
+S3method(matrix, dispRity)
+S3method(get.series, dispRity)
+
+S3method(sort, dispRity)

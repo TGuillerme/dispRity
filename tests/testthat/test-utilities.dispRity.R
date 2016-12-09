@@ -45,7 +45,7 @@ test_that("fill.dispRity", {
     test <- fill.dispRity(make.dispRity(data = matrix(rnorm(12), ncol = 3)))
 
     expect_is(
-        test1
+        test
         ,"dispRity")
     expect_is(
         test$matrix
@@ -102,4 +102,70 @@ test_that("matrix.dispRity", {
     expect_equal(
         rownames(matrix.dispRity(dispRity_data, series = 2, rarefaction = 2, bootstrap = 52))
         , c("Patriomanis","Patriomanis","Procavia","Oxyclaenus","Pezosiren","Solenodon","Potamogalinae","Procavia","Gomphos","Cynocephalus","Solenodon","Todralestes","Gomphos","Widanelfarasia","Pezosiren"))
+})
+
+
+## get.series.dispRity
+test_that("get.series.dispRity", {
+    series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
+    disparity_data <- dispRity(bootstrapped_data, variances)
+
+    expect_error(
+        get.series.dispRity(disparity_data)
+        )
+    expect_error(
+        get.series.dispRity(disparity_data, matrix(1))
+        )
+    expect_error(
+        get.series.dispRity(disparity_data, "blabalbal")
+        )
+    expect_error(
+        get.series.dispRity(disparity_data, 1:10)
+        )
+
+    test <- get.series.dispRity(series_full, series = c(1,2))
+    expect_is(
+        test
+        ,"dispRity")
+    expect_equal(
+        length(test)
+        ,3)
+    expect_equal(
+        length(test$series)
+        ,2)
+    expect_equal(
+        names(test$series)
+        ,names(series_full$series)[1:2])
+
+    test <- get.series.dispRity(bootstrapped_data, series = "66.75552")
+    expect_is(
+        test
+        ,"dispRity")
+    expect_equal(
+        length(test)
+        ,3)
+    expect_equal(
+        length(test$series)
+        ,1)
+    expect_equal(
+        test$call$bootstrap[[1]]
+        ,10)
+
+    test <- get.series.dispRity(disparity_data, series = c(1:3))
+    expect_is(
+        test
+        ,"dispRity")
+    expect_equal(
+        length(test)
+        ,4)
+    expect_equal(
+        length(test$series)
+        ,3)
+    expect_equal(
+        length(test$disparity)
+        ,3)
+    expect_equal(
+        as.character(test$call$disparity$metric[[1]])
+        ,"variances")
 })
