@@ -19,6 +19,7 @@
 #'
 #' 
 #' @author Thomas Guillerme
+
 make.dispRity <- function(data, call, series) {
     ## Make the empty object
     dispRity_object <- list("matrix" = NULL , "call" = list(), "series" = list())
@@ -212,7 +213,8 @@ get.series.dispRity <- function(data, series) {
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
 #' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
 #' @param series Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).
-#'  
+#' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.
+#' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
@@ -239,7 +241,7 @@ get.series.dispRity <- function(data, series) {
 # data <- dispRity(bootstrapped_data, c(sum,variances))
 # extract.dispRity(data, observed = FALSE, rarefaction = 5,series = 2)
 
-extract.dispRity <- function(data, observed = TRUE, rarefaction, series) {
+extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, series, concatenate = TRUE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -280,22 +282,20 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction, series) {
 
     ## Rarefaction
     if(!observed) {
-        if(!missing(rarefaction)) {
+        if(rarefaction != FALSE) {
             check.class(rarefaction, c("numeric", "integer"))
             check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
             if(any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
                 stop("Rarefaction level not found.")
             }
-        } else {
-            rarefaction <- FALSE
-        }
+        } 
     }
 
     ## Get the disparity values
     if(observed) {
         return(lapply(data$disparity[series], lapply.observed)) ## lapply observed lives in summary.dispRity_fun.R
     } else {
-        output <- lapply(as.list(series), extract.disparity.values, data, rarefaction)
+        output <- lapply(as.list(series), extract.disparity.values, data, rarefaction, concatenate)
         names(output) <- names(data$series[series])
         return(output)
     }

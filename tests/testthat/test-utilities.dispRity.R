@@ -207,7 +207,7 @@ test_that("extract.dispRity", {
         names(test)
         ,names(data$series))
     expect_equal(
-        length(test[[5]])
+        length(test[[5]][[1]])
         ,data$call$bootstrap[[1]])
 
     test <- extract.dispRity(data, observed = FALSE, rarefaction = 5)

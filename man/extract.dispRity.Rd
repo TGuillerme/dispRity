@@ -4,7 +4,8 @@
 \alias{extract.dispRity}
 \title{Extracting disparity values.}
 \usage{
-extract.dispRity(data, observed = TRUE, rarefaction, series)
+extract.dispRity(data, observed = TRUE, rarefaction = FALSE, series,
+  concatenate = TRUE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object containing disparity results.}
@@ -14,6 +15,8 @@ extract.dispRity(data, observed = TRUE, rarefaction, series)
 \item{rarefaction}{Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).}
 
 \item{series}{Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).}
+
+\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.}
 }
 \description{
 Extracts the disparity from a \code{dispRity} object.
