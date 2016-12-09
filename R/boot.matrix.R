@@ -134,14 +134,15 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(class(rarefaction) != "logical") {
         ## Is it numeric?
         check.class(rarefaction, "numeric", " must be either numeric or logical.")
-        ## Make the first level of rarefaction to be full
-        #rarefaction <- unique(c(length(data$series$origin$elements), rarefaction))
+        rare_out <- rarefaction
     } else {
         if(rarefaction) {
             #rarefaction <- lapply(unlist(lapply(data$series, lapply, nrow), recursive = FALSE), seq, to = 3)
             rarefaction <- seq(from = nrow(data$matrix), to = 3)
+            rare_out <- "full"
         } else {
             rarefaction <- NULL
+            rare_out <- NULL
         }
     }
 
@@ -208,12 +209,8 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     ## Combining and storing the results back in the dispRity object
     data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
 
-    ## Select the effective rarefaction levels
-    rare_levels <- unique(unlist(lapply(data$series, lapply, nrow)))
-    rare_levels <- rare_levels[-which(rare_levels == max(rare_levels))]
-
     ## Adding the call information about the bootstrap
-    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_levels))
+    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out))
 
     return(data)
 }
