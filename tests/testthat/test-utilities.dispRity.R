@@ -169,3 +169,68 @@ test_that("get.series.dispRity", {
         as.character(test$call$disparity$metric[[1]])
         ,"variances")
 })
+
+
+
+## extract.dispRity
+test_that("extract.dispRity", {
+    data(BeckLee_mat99) ; data(BeckLee_tree) 
+    series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
+    data <- dispRity(bootstrapped_data, c(sum,variances))
+
+    expect_error(
+        extract.dispRity(series_full)
+        )
+    test <- extract.dispRity(data)
+    expect_is(
+        test
+        ,"list")
+    expect_equal(
+        length(test)
+        ,length(data$series))
+    expect_equal(
+        names(test)
+        ,names(data$series))
+    expect_equal(
+        round(test[[5]], digit = 5)
+        ,4.05457)
+
+    test <- extract.dispRity(data, observed = FALSE)
+    expect_is(
+        test
+        ,"list")
+    expect_equal(
+        length(test)
+        ,length(data$series))
+    expect_equal(
+        names(test)
+        ,names(data$series))
+    expect_equal(
+        length(test[[5]])
+        ,data$call$bootstrap[[1]])
+
+    test <- extract.dispRity(data, observed = FALSE, rarefaction = 5)
+    expect_is(
+        test
+        ,"list")
+    expect_equal(
+        length(test)
+        ,length(data$series))
+    expect_equal(
+        names(test)
+        ,names(data$series))
+    expect_null(
+        test[[1]])
+
+    test <- extract.dispRity(data, observed = FALSE, series = c(1,5))
+    expect_is(
+        test
+        ,"list")
+    expect_equal(
+        length(test)
+        ,2)
+    expect_equal(
+        names(test)
+        ,names(data$series)[c(1,5)])
+})

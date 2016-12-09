@@ -226,3 +226,116 @@ get.series.dispRity <- function(data, series) {
     return(data_out)
 }
 
+#' @title Extracting disparity values.
+#'
+#' @description Extracts the disparity from a \code{dispRity} object.
+#'
+#' @param data A \code{dispRity} object containing disparity results.
+#' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
+#' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
+#' @param series Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).
+#'  
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat99) ; data(BeckLee_tree)
+#'
+#' ## Calculating some disparity
+#' series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
+#'      time = c(100, 80, 60), model = "gradual")
+#' bootstraps_dat <- boot.matrix(series, bootstraps = 10, rarefaction = TRUE)
+#' disparity_data <- dispRity(bootstraps_dat, metric = mean)
+#'
+#' ## Extracting the observed disparity
+#' extract.dispRity(disparity_data)
+#'
+#' ## Extracting the bootstrapped disparity
+#' boot_disp <- extract.dispRity(disparity_data, observed = FALSE)
+#' str(boot_disp)
+#' ## Or with the minimum rarefaction
+#' boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
+#'      rarefaction = "min")
+#' str(boot_disp_rare)
+#' ## Or a certain level of rarefaction
+#' boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
+#'      rarefaction = 5)
+#' str(boot_disp_rare)
+#' 
+#' ## Extracting bootstrapped distributions of disparity
+#' disparity_distr <- dispRity(bootstraps_dat, metric = variances)
+#' boot_disp <- extract.dispRity(disparity_distr, observed = FALSE,
+#'      concatenate = FALSE, keep.structure = TRUE)
+#' str(boot_disp) # A list of three lists of 10 elements
+#' 
+#' @seealso \code{\link{dispRity}}, \code{\link{get.dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat99) ; data(BeckLee_tree) 
+# series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
+# data <- dispRity(bootstrapped_data, c(sum,variances))
+# extract.dispRity(data, observed = FALSE, rarefaction = 5,series = 2)
+
+extract.dispRity <- function(data, observed = TRUE, rarefaction, series) {
+    #----------------------
+    # SANITIZING
+    #----------------------
+    
+    ## Data
+    check.class(data, "dispRity")
+    ## Data must have disparity values
+    if(is.null(data$call$disparity)) {
+        stop("dispRity object does not contain disparity values.")
+    }
+
+    ## Observed
+    check.class(observed, "logical")
+
+    ## Series
+    if(missing(series)) {
+        series <- seq(1:length(data$series))
+    } else {
+        if(length(series) > length(data$series)) {
+            stop("Not enough series in the original data.")
+        } else {
+            if(class(series) == "numeric" | class(series) == "integer") {
+                if(any(is.na(match(series, 1:length(data$series))))) {
+                    stop("Series not found.")
+                }
+            } else {
+                if(class(series) == "character") {
+                    series <- match(series, names(data$series))
+                    if(any(is.na(series))) {
+                        stop("Series not found.")
+                    }
+                } else {
+                    stop("Series argument must be of class \"numeric\" or \"character\".")
+                }
+            }
+        }
+    }
+
+    ## Rarefaction
+    if(!observed) {
+        if(!missing(rarefaction)) {
+            check.class(rarefaction, c("numeric", "integer"))
+            check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
+            if(any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
+                stop("Rarefaction level not found.")
+            }
+        } else {
+            rarefaction <- FALSE
+        }
+    }
+
+    ## Get the disparity values
+    if(observed) {
+        return(lapply(data$disparity[series], lapply.observed)) ## lapply observed lives in summary.dispRity_fun.R
+    } else {
+        output <- lapply(as.list(series), extract.disparity.values, data, rarefaction)
+        names(output) <- names(data$series[series])
+        return(output)
+    }
+}
