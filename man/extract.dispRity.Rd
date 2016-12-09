@@ -19,35 +19,18 @@ extract.dispRity(data, observed = TRUE, rarefaction, series)
 Extracts the disparity from a \code{dispRity} object.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_mat99) ; data(BeckLee_tree)
-
-## Calculating some disparity
-series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-     time = c(100, 80, 60), model = "gradual")
-bootstraps_dat <- boot.matrix(series, bootstraps = 10, rarefaction = TRUE)
-disparity_data <- dispRity(bootstraps_dat, metric = mean)
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Extracting the observed disparity
-extract.dispRity(disparity_data)
+extract.dispRity(disparity)
 
 ## Extracting the bootstrapped disparity
-boot_disp <- extract.dispRity(disparity_data, observed = FALSE)
+boot_disp <- extract.dispRity(disparity, observed = FALSE)
 str(boot_disp)
-## Or with the minimum rarefaction
-boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
-     rarefaction = "min")
-str(boot_disp_rare)
-## Or a certain level of rarefaction
-boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
+## Or only the rarefied (5) data
+boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
      rarefaction = 5)
-str(boot_disp_rare)
-
-## Extracting bootstrapped distributions of disparity
-disparity_distr <- dispRity(bootstraps_dat, metric = variances)
-boot_disp <- extract.dispRity(disparity_distr, observed = FALSE,
-     concatenate = FALSE, keep.structure = TRUE)
-str(boot_disp) # A list of three lists of 10 elements
 
 }
 \author{

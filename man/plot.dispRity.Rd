@@ -60,41 +60,30 @@ The \code{token.args} argument intakes a list of arguments to be passed to \code
 Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_tree) ; data(BeckLee_mat50)
-data(BeckLee_mat99) ; data(BeckLee_ages)
-
-## Setting the data
-## Generate 5 equidistant time slices in the data set assuming gradual
-## evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
-     method = "continuous", model = "acctran", time = 5,
-     FADLAD = BeckLee_ages)
-bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20,
-     rarefaction = TRUE)
-sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Discrete plotting
-plot(sum_of_variances, type = "box")
+plot(disparity, type = "box")
 
 ## Using polygons rather than boxes (quantiles and central tendency can be
 ## set by the user)
-plot(sum_of_variances, type = "polygon", quantiles = c(10, 50, 95),
+plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mode.val)
 
 ## Using different options
-plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
+plot(disparity, type = "lines", elements = TRUE, ylim = c(0, 5),
      xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)
-plot(sum_of_variances, type = "continuous")
+plot(disparity, type = "continuous")
 
 ## Using different options (with non time.slicing option)
-plot(sum_of_variances, type = "continuous", time.series = FALSE,
+plot(disparity, type = "continuous", time.series = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots
-plot(sum_of_variances, rarefaction = "plot")
+plot(disparity, rarefaction = "plot")
 
 }
 \author{

@@ -104,28 +104,18 @@ fill.dispRity <- function(data) {
 #' @param bootstrap A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).
 #' 
 #' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat50)
-#' 
-#' ## Calculating the disparity from a customised series
-#' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-#'      dimnames = list(rownames(BeckLee_mat50))))
-#' customised_series <- cust.series(BeckLee_mat50, factors)
-#' ## Bootstrapping and rarefying the data
-#' dispRity_data <- boot.matrix(customised_series, bootstraps = 100,
-#'      rarefaction = c(15, 10))
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #' 
 #' ## To get the original matrix
-#' matrix.dispRity(dispRity_data)
+#' matrix.dispRity(disparity)
 #' 
 #' ## To get the un-bootstrapped matrix from the second series
-#' matrix.dispRity(dispRity_data, series = 2)
+#' matrix.dispRity(disparity, series = 2)
 #' 
 #' ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
 #' ## same series
-#' matrix.dispRity(dispRity_data, series = 2, rarefaction = 2, bootstrap = 52)
+#' matrix.dispRity(disparity, series = 2, rarefaction = 2, bootstrap = 52)
 #' 
 #' @author Thomas Guillerme
 matrix.dispRity <- function(data, series, rarefaction, bootstrap){
@@ -155,26 +145,14 @@ matrix.dispRity <- function(data, series, rarefaction, bootstrap){
 #' This function outputs a \code{dispRity} object.
 #' 
 #' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat99) ; data(BeckLee_tree) 
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #'
-#' ## Series sub-samples
-#' series_full <- time.series(BeckLee_mat99, BeckLee_tree,
-#'      method = "continuous",time = 5, model = "acctran")
-#' series_full # 5 series for 99 elements
-#' 
-#' get.series.dispRity(series_full, 1) # 1 series for 3 elements
+#' ## Get one series
+#' get.series.dispRity(disparity, "60")
 #'
-#' ## Bootstrapped data sub-samples
-#' bootstrapped_data <- boot.matrix(series_full, bootstraps = 10,
-#'      rarefaction = c(3, 5))
-#' bootstrapped_data # 5 series for 99 elements
-#' get.series.dispRity(bootstrapped_data, "66.75552") # 1 series for 23 elements
-#'
-#' ## Disparity data sub-samples
-#' disparity_data <- dispRity(bootstrapped_data, variances)
-#' disparity_data # 5 series for 99 elements
-#' get.series.dispRity(disparity_data, c(1,5)) # 2 series for 13 elements
+#' ## Get two series
+#' get.series.dispRity(disparity, c(1,5))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
 #'
@@ -236,35 +214,18 @@ get.series.dispRity <- function(data, series) {
 #' @param series Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).
 #'  
 #' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat99) ; data(BeckLee_tree)
-#'
-#' ## Calculating some disparity
-#' series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
-#'      time = c(100, 80, 60), model = "gradual")
-#' bootstraps_dat <- boot.matrix(series, bootstraps = 10, rarefaction = TRUE)
-#' disparity_data <- dispRity(bootstraps_dat, metric = mean)
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #'
 #' ## Extracting the observed disparity
-#' extract.dispRity(disparity_data)
+#' extract.dispRity(disparity)
 #'
 #' ## Extracting the bootstrapped disparity
-#' boot_disp <- extract.dispRity(disparity_data, observed = FALSE)
+#' boot_disp <- extract.dispRity(disparity, observed = FALSE)
 #' str(boot_disp)
-#' ## Or with the minimum rarefaction
-#' boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
-#'      rarefaction = "min")
-#' str(boot_disp_rare)
-#' ## Or a certain level of rarefaction
-#' boot_disp_rare <- extract.dispRity(disparity_data, observed = FALSE,
+#' ## Or only the rarefied (5) data
+#' boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
 #'      rarefaction = 5)
-#' str(boot_disp_rare)
-#' 
-#' ## Extracting bootstrapped distributions of disparity
-#' disparity_distr <- dispRity(bootstraps_dat, metric = variances)
-#' boot_disp <- extract.dispRity(disparity_distr, observed = FALSE,
-#'      concatenate = FALSE, keep.structure = TRUE)
-#' str(boot_disp) # A list of three lists of 10 elements
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{get.dispRity}}.
 #'
@@ -350,19 +311,8 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction, series) {
 #' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each series of bootstraps (default is \code{TRUE}).
 #' 
 #' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat50)
-#'
-#' ## Setting up two customised series
-#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-#'      dimnames = list(rownames(BeckLee_mat50))))
-#' customised_series <- cust.series(BeckLee_mat50, factors)
-#' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7,
-#'      rarefaction = c(10, 25))
-#' ## Calculating the sum of centroids
-#' disparity <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #' 
 #' ## Scaling the data
 #' summary(disparity) # No scaling
@@ -439,15 +389,8 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) 
 #' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the series.
 #' 
 #' @examples
-#' ## Load the Beck & Lee 2014 data
-#' data(BeckLee_mat99) ; data(BeckLee_tree) 
-#'
-#' ## Split the data
-#' series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
-#'       method = "continuous", time = 5, model = "acctran")
-#'
-#' ## Calculating the sum of centroids
-#' disparity <- dispRity(series, metric = mean)
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #' 
 #' ## Sorting the data
 #' summary(disparity)

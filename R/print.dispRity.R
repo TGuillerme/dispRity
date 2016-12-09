@@ -6,19 +6,16 @@
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).
 #'
 #' @examples
-#' ## Load the Beck & Lee 2014 matrix
-#' data(BeckLee_mat50)
-#' 
-#' ## Creating a dispRity object
-#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, variances))
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #' 
 #' ## Displaying the summary of the object content
-#' disparity_object
-#' print(disparity_object)
-#' print.dispRity(disparity_object)
+#' disparity
+#' print(disparity) # the same
+#' print.dispRity(disparity) # the same
 #'
 #' ## Displaying the full object
-#' print.dispRity(disparity_object, all = TRUE)
+#' print.dispRity(disparity, all = TRUE)
 #'
 #' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'

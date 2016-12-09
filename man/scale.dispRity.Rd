@@ -20,19 +20,8 @@
 Scales or/and centers the disparity measurements.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_mat50)
-
-## Setting up two customised series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-     dimnames = list(rownames(BeckLee_mat50))))
-customised_series <- cust.series(BeckLee_mat50, factors)
-## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7,
-     rarefaction = c(10, 25))
-## Calculating the sum of centroids
-disparity <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Scaling the data
 summary(disparity) # No scaling

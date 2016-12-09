@@ -40,7 +40,11 @@ check.class <- function(object, class, msg, errorif = FALSE) {
             }
         }
         ## If function did not returned, class is not matching
-        if(!any(!error)) stop(match_call$object, msg, call. = FALSE)
+        if(!any(!error)) {
+            stop(match_call$object, msg, call. = FALSE)
+        } else {
+            return(class_object)
+        }
 
     } else {
         if(errorif != TRUE) {

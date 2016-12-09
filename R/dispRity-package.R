@@ -56,3 +56,15 @@ NULL
 #' @format one matrix and two vectors.
 #' @name McClean_data
 NULL
+
+#' disparity
+#'
+#' And example of \code{dispRity} object.
+#'
+#' This matrix is based on \code{\link{BeckLee}} dataset and split into 7 continuous series (\code{\link{time.series}}).
+#' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
+#' Disparity was calculated as the \code{\link[base]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
+#'
+#' @format one \code{dispRity} object.
+#' @name disparity
+NULL

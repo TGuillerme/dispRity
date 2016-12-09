@@ -20,28 +20,18 @@ matrix.dispRity(data, series, rarefaction, bootstrap)
 Fetching a specific matrix from a \code{dispRity} object.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_mat50)
-
-## Calculating the disparity from a customised series
-## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-     dimnames = list(rownames(BeckLee_mat50))))
-customised_series <- cust.series(BeckLee_mat50, factors)
-## Bootstrapping and rarefying the data
-dispRity_data <- boot.matrix(customised_series, bootstraps = 100,
-     rarefaction = c(15, 10))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## To get the original matrix
-matrix.dispRity(dispRity_data)
+matrix.dispRity(disparity)
 
 ## To get the un-bootstrapped matrix from the second series
-matrix.dispRity(dispRity_data, series = 2)
+matrix.dispRity(disparity, series = 2)
 
 ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
 ## same series
-matrix.dispRity(dispRity_data, series = 2, rarefaction = 2, bootstrap = 52)
+matrix.dispRity(disparity, series = 2, rarefaction = 2, bootstrap = 52)
 
 }
 \author{

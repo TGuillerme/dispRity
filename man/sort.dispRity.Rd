@@ -17,15 +17,8 @@
 Sort (or order) the series of a \code{dispRity} object.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_mat99) ; data(BeckLee_tree) 
-
-## Split the data
-series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
-      method = "continuous", time = 5, model = "acctran")
-
-## Calculating the sum of centroids
-disparity <- dispRity(series, metric = mean)
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Sorting the data
 summary(disparity)
