@@ -429,3 +429,80 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) 
     return(data)
 }
 
+
+#' @title Sorting or ordering a \code{dispRity} object.
+#'
+#' @description Sort (or order) the series of a \code{dispRity} object.
+#'
+#' @param data A \code{dispRity} object.
+#' @param decreasing \code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.
+#' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the series.
+#' 
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat99) ; data(BeckLee_tree) 
+#'
+#' ## Split the data
+#' series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+#'       method = "continuous", time = 5, model = "acctran")
+#'
+#' ## Calculating the sum of centroids
+#' disparity <- dispRity(series, metric = mean)
+#' 
+#' ## Sorting the data
+#' summary(disparity)
+#' summary(sort(disparity, decreasing = TRUE))
+#' summary(sort(disparity, sort = c(1,3,4,5,2)))
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
+#'
+#' @author Thomas Guillerme
+#' @export
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat99) ; data(BeckLee_tree) 
+# series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+# data <- dispRity(series, metric = mean)
+# summary(data)
+# summary(sort(data, decreasing = TRUE))
+# summary(sort(data, sort = c(1,3,4,5,2)))
+
+sort.dispRity <- function(data, decreasing = FALSE, sort) {
+
+    ## Sanitizing
+
+    ## data
+    check.class(data, "dispRity")
+    ## Initialising series length variable
+    length_series <- length(data$series)
+    if(length_series == 1) stop("Data contains only one series.")
+
+    ## decreasing
+    check.class(decreasing, "logical")
+
+    ## sort
+    if(!missing(sort)) {
+        check.class(sort, "numeric")
+        check.length(sort, length_series, " must be the same length as the number of series in data.")
+        if(all.equal(sort(sort), seq(from = 1, to = length_series)) != TRUE) {
+            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_series, ".", sep = ""))
+        }
+    } else {
+        if(decreasing == FALSE) sort <- seq(from = 1, to = length_series)
+        if(decreasing == TRUE) sort <- rev(seq(from = 1, to = length_series))
+    }
+
+
+    ## Sorting the series
+    data$series <- data$series[sort]
+
+    ## Sorting the disparity
+    if(!is.null(data$call$disparity)) {
+        data$disparity <- data$disparity[sort]
+    }
+
+    return(data)
+}
+
+

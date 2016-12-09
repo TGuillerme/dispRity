@@ -267,6 +267,24 @@ test_that("scale.dispRity", {
     expect_gt(
         scaled_up[1,3]
         ,base[1,3])
+})
 
+test_that("sort.dispRity", {
+    data(BeckLee_mat99) ; data(BeckLee_tree) 
+    series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+    data <- dispRity(series, metric = mean)
 
+    expect_error(
+        sort.dispRity("yes")
+        )
+
+    sorted <- sort(data, decreasing = TRUE)
+    expect_true(
+        all(summary(sorted) == summary(data)[5:1,])
+        )
+
+    sorted <- sort(data, sort = c(1,3,4,5,2))
+    expect_true(
+        all(summary(sorted) == summary(data)[c(1,3,4,5,2),])
+        )
 })
