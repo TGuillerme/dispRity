@@ -339,3 +339,93 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction, series) {
         return(output)
     }
 }
+
+#' @title Scaling and centering disparity results.
+#'
+#' @description Scales or/and centers the disparity measurements.
+#'
+#' @param data a \code{dispRity} object.
+#' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
+#' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
+#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each series of bootstraps (default is \code{TRUE}).
+#' 
+#' @examples
+#' ## Load the Beck & Lee 2014 data
+#' data(BeckLee_mat50)
+#'
+#' ## Setting up two customised series
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+#'      dimnames = list(rownames(BeckLee_mat50))))
+#' customised_series <- cust.series(BeckLee_mat50, factors)
+#' ## Bootstrapping the data
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7,
+#'      rarefaction = c(10, 25))
+#' ## Calculating the sum of centroids
+#' disparity <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+#' 
+#' ## Scaling the data
+#' summary(disparity) # No scaling
+#' summary(scale(disparity)) # Dividing by the maximum
+#' ## Multiplying by 10 (dividing by 0.1)
+#' summary(scale.dispRity(disparity, max = 0.1))
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
+#'
+#' @author Thomas Guillerme
+#' @export
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat50)
+# factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+# customised_series <- cust.series(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7, rarefaction = c(10, 25))
+# data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+
+# summary(data) # No scaling
+# summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+
+scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) {
+    ## data
+    check.class(data, "dispRity")
+    if(is.null(data$call$disparity)) {
+        stop("dispRity object does not contain disparity values.")
+    }
+
+    ## Get the whole distribution
+    all_data <- unlist(extract.dispRity(data))
+    if(!is.null(data$call$bootstrap)) {
+        all_data <- c(all_data, unlist(extract.dispRity(data, observed = FALSE)))
+    }
+
+    ## Getting the center value
+    if(class(center) == "logical") {
+        if(center & use.all) {
+            center <- mean(all_data)
+        }
+    } else {
+        check.class(center, c("numeric", "integer", "logical"))
+        check.length(center, 1, " must be either logical or a single numeric value.")
+    }
+
+    ## Getting the scale value
+    if(class(scale) == "logical") {
+        if(scale & use.all) {
+            scale <- max(all_data)
+        }
+    } else {
+        check.class(scale, c("numeric", "integer", "logical"))
+        check.length(scale, 1, " must be either logical or a single numeric value.")
+    }
+
+    ## Lapply functions
+    lapply.scale <- function(X, center, scale) {return(t(scale(t(X), center, scale)))}
+
+    data$disparity <- lapply(data$disparity, lapply, lapply.scale, center, scale)
+
+    return(data)
+}
+

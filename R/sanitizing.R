@@ -1,6 +1,4 @@
 ## SANITYZING FUNCTIONS
-
-
 ## Checking the class of an object and returning an error message if != class
 check.class <- function(object, class, msg, errorif = FALSE) {
     ## Get call
@@ -14,9 +12,9 @@ check.class <- function(object, class, msg, errorif = FALSE) {
     ## Set msg if missing
     if(missing(msg)) {
         if(length_class != 1) {
-            msg <- paste(" must be of class: ", paste(class, collapse = " or "), ".", sep = "")
+            msg <- paste(" must be of class ", paste(class, collapse = " or "), ".", sep = "")
         } else {
-            msg <- paste(" must be of class: ", class, ".", sep = "")
+            msg <- paste(" must be of class ", class, ".", sep = "")
         }
     }
 
@@ -25,20 +23,24 @@ check.class <- function(object, class, msg, errorif = FALSE) {
     ## check if object is class in a cascade (class[1] else class[2] else class[3], etc..)
     ## returns error only if object is not of any class
 
+        error <- NULL
         for(counter in 1:length_class) {
             if(errorif != TRUE) {
                 if(class_object != class[counter]) {
-                    return(class_object)
+                    error <- c(error, TRUE)
+                } else {
+                    error <- c(error, FALSE)
                 }
             } else {
                 if(class_object == class[counter]) {
-                    return(class_object)
-
+                    error <- c(error, TRUE)
+                } else {
+                    error <- c(error, FALSE)
                 }
             }
         }
         ## If function did not returned, class is not matching
-        stop(match_call$object, msg, call. = FALSE)
+        if(!any(!error)) stop(match_call$object, msg, call. = FALSE)
 
     } else {
         if(errorif != TRUE) {

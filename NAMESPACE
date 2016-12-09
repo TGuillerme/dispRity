@@ -76,5 +76,5 @@ S3method(summary, dispRity)
 S3method(print, dispRity)
 S3method(matrix, dispRity)
 S3method(get.series, dispRity)
-
+S3method(scale, dispRity)
 S3method(sort, dispRity)

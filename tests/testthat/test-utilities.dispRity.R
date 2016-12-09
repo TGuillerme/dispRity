@@ -234,3 +234,39 @@ test_that("extract.dispRity", {
         names(test)
         ,names(data$series)[c(1,5)])
 })
+
+test_that("scale.dispRity", {
+    data(BeckLee_mat50)
+    factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_series <- cust.series(BeckLee_mat50, factors)
+    bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7, rarefaction = c(10, 25))
+    data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+
+    expect_error(
+        scale.dispRity(data, scale = "yes")
+        )
+    expect_error(
+        scale.dispRity(data, center = "yes")
+        )
+    expect_is(
+        scale.dispRity(data, scale = TRUE)
+        ,"dispRity")
+    expect_is(
+        scale.dispRity(data, scale = FALSE)
+        ,"dispRity")
+    expect_is(
+        scale.dispRity(data, scale = TRUE, center = TRUE)
+        ,"dispRity")
+
+    base <- summary(data)
+    scaled_down <- summary(scale.dispRity(data, scale = TRUE))
+    scaled_up <- summary(scale.dispRity(data, scale = 0.1))
+    expect_lt(
+        scaled_down[1,3]
+        ,base[1,3])
+    expect_gt(
+        scaled_up[1,3]
+        ,base[1,3])
+
+
+})
