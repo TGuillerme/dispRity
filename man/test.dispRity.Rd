@@ -71,10 +71,10 @@ test.dispRity(sum_of_variances, aov, "all")
 disparity_var <- dispRity(bootstrapped_data, metric = variances)
 ## Differences between the concatenated bootstrapped values of the series
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-     concatenate = TRUE)
+     concatenate = TRUE, correction = "bonferroni")
 ## Differences between the series bootstrapped
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-     concatenate = FALSE)
+     concatenate = FALSE, correction = "bonferroni")
 
 }
 \author{

@@ -12,4 +12,4 @@
 * Changes in disparity between stage bins follows the procedure outlined in Finarelli and Flynn (2007).
 
 # To do!
-* Drastically improve `time.series` and `boot.matrix` speed! 
+* Improve `test.dispRity` architecture
