@@ -2,6 +2,7 @@ Patch notes
 ----
 * 2016/??/?? - v0.3.0 *dispRity lite!*
   * Complete change of the `dispRity` object architecture! Calculation speed reduced up to 1000 times and object size up to 500 times (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.
   * **removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
   * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
   * `.onLoad`: the package now checks whether the latest released version is used upon loading.
