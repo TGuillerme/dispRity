@@ -16,6 +16,8 @@ library(dispRity)
 
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
+> A brand new version, v0.3 (*dispRity lite*), is in preparation and should be released early 2017. This version **highly** improves calculation speed and memory footprints of `dispRity` objects! Stay tuned! Check the [dev-testing branch](https://github.com/TGuillerme/dispRity/tree/dev-testing) for more info.
+
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
 *  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd).
