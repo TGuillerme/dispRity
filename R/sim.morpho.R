@@ -1,10 +1,10 @@
 #' @title Simulates morphological data.
 #'
-#' @description Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} function.
+#' @description Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} or \code{\link[phyclust]{gen.seq.HKY}} functions.
 #'
 #' @param tree A phylogenetic tree to use for generating the characters.
 #' @param characters The number of morphological characters to generate.
-#' @param model Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"mixed"}; see details) or user defined model (see details).
+#' @param model Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"mixed"}) or user defined model (see details).
 #' @param states A \code{numeric} string of probabilities for the number of states for each characters (\code{default = 1}; i.e. 100\% binary state characters; see details).
 #' @param rates A function an it's parameters for the rates distribution (see details).
 #' @param substitution A function an it's parameters for the substitutions distribution (see details; \code{default = c(runif, 2, 2)}).
@@ -57,6 +57,10 @@
 #' 
 #' @author Thomas Guillerme
 
+## DEBUG
+# warning("DEBUG sim.morpho")
+# source("sanitizing.R")
+# source("sim.morpho_fun.R")
 
 sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substitution = c(stats::runif, 2, 2), invariant = TRUE, verbose = FALSE)
 {
@@ -84,7 +88,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
     if(class(model) != "function") {
         #model is not a sure function
         implemented_models <- c("ER", "HKY", "mixed")
-        if(all(is.na(match(model, implemented_models)))) stop("The model must be either a user's function or one of the following: ", paste(implemented_models, collapse = ", "), sep = "")
+        check.method(model, implemented_models, "The model")
         model_name <- model
         #Setting up the model
         if(class(model) != "function" && model_name == "ER") {
@@ -142,8 +146,8 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
     #GENERATING THE CHARACTERS
 
     #Creating the matrix
-    if(verbose == TRUE) cat(paste("Generating a matrix of ", characters, " characters for ", Ntip(tree), " taxa:...", sep=""))
-        matrix <- replicate(characters, model(tree = tree, states = states, rates = rates, substitution = substitution))
+    if(verbose == TRUE) cat(paste("Generating a matrix of ", characters, " characters for ", Ntip(tree), " taxa:", sep=""))
+        matrix <- replicate(characters, model(tree = tree, states = states, rates = rates, substitution = substitution, verbose = verbose))
     if(verbose == TRUE) cat("Done.\n")
 
 
@@ -152,7 +156,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
             if(verbose == TRUE) cat("Re-simulating ", length(which(apply(matrix, 2, is.invariant)) == TRUE), " invariant characters:", sep="") 
             #Repeat the invariant characters sampling
             while(any(apply(matrix, 2, is.invariant))) {
-                matrix[, which(apply(matrix, 2, is.invariant) == TRUE)] <- replicate(length(which(apply(matrix, 2, is.invariant) == TRUE)), model(tree = tree, states = states, rates = rates, substitution = substitution))
+                matrix[, which(apply(matrix, 2, is.invariant) == TRUE)] <- replicate(length(which(apply(matrix, 2, is.invariant) == TRUE)), model(tree = tree, states = states, rates = rates, substitution = substitution, verbose = verbose))
                 if(verbose == TRUE) cat(".")
             }
             if(verbose == TRUE) cat("Done.\n")
