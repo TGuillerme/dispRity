@@ -77,11 +77,11 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     #Sanitizing
     check.class(data, "dispRity")
-    check.length(data, 5, " must be a dispRity object with calculated observed disparity.")
+    if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
 
-    #Is distribution?
-    is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
-    if(is.distribution != FALSE) {
+    #is_distribution?
+    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
+    if(is_distribution) {
         stop(paste("null.test cannot intake disparity distributions yet. Try averaging disparity to a level 1 using:\n",
             paste("  ", match_call$data, " <- dispRity(", match_call$data, ", metric = median)\n", sep = "")))
     }
@@ -92,7 +92,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     #alter
     alternative_hypothesis <- c("greater", "less", "two-sided")
-    if(all(is.na(match(alter, alternative_hypothesis)))) stop("Alternative hypothesis must be one of the following: ", paste(alternative_hypothesis, collapse=", "), sep="")
+    check.method(alter, alternative_hypothesis, "Alternative hypothesis")
 
     #scaling
     check.class(scale, "logical")
@@ -102,7 +102,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
     #Generating the null models
     if(length(data$series) != 1) {
         #Subdivide the data per series
-        sub_data <- lapply(as.list(data$series), function(X) get.dispRity(data, what = X))
+        sub_data <- lapply(as.list(seq(1:length(data$series))), function(X) get.series.dispRity(data, X))
         #Apply the data to all series
         null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, scale)
     } else {

@@ -51,8 +51,19 @@ print.dispRity <- function(x, all = FALSE) {
 
     } else {
 
-        ## Head
-        #cat("Disparity object with:")
+        if(length(class(x)) > 1) {
+            ## randtest
+            if(class(x)[2] == "randtest") {
+                if(length(x) == 1) {
+                    print(x[[1]])
+                } else {
+                    tmp <- x
+                    class(tmp) <- "list"
+                    print(tmp) 
+                }
+                return()
+            }
+        }
 
         if(length(x$call) == 0) {
             cat("Empty dispRity object.\n")

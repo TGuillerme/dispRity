@@ -1,38 +1,32 @@
 #Get specific elements from call
-get.from.call <- function(data, what, eval = TRUE) {
-    if(what == "metric") {
-        call_out <- strsplit(strsplit(data$call, split = "Disparity calculated as: ")[[1]][[2]], split = " for ")[[1]][[1]]
-    }
-    if(what == "dimensions") {
-        call_out <- strsplit(strsplit(data$call, split = " for ")[[1]][[2]], split = " dimensions")[[1]][[1]]
-    }
-    if(eval == TRUE) {
-        return(eval(parse(text = call_out)))
+get.metric.from.call <- function(data) {
+    if(length(data$call$disparity$metric[[1]]) > 1) {
+        return(lapply(as.list(data$call$disparity$metric[[1]]), function(metric) eval(parse(text = metric)))[-1])
     } else {
-        return(call_out)
+         return(eval(parse(text = data$call$disparity$metric[[1]])))
     }
 }
 
 #Generating the null model
 make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, scale) {
-    if(scale == FALSE) {
+    if(!scale) {
         null_models_result <- replicate(replicates, summary(dispRity(
-            space.maker(as.numeric(length(data$elements)),
-                        dimensions = get.from.call(data, "dimensions"),
+            space.maker(nrow(data$matrix),
+                        dimensions = data$call$dimensions,
                         distribution = null.distrib,
                         arguments = null.args,
                         cor.matrix = null.cor)
-        , metric = get.from.call(data, "metric")))$observed)
+            , metric = get.metric.from.call(data)), cent.tend = mean, quantiles = 1)$obs )
     } else {
         null_models_result <- replicate(replicates, summary(dispRity(
             scale(
-            space.maker(as.numeric(length(data$elements)),
-                        dimensions = get.from.call(data, "dimensions"),
+            space.maker(nrow(data$matrix),
+                        dimensions = data$call$dimensions,
                         distribution = null.distrib,
                         arguments = null.args,
                         cor.matrix = null.cor)
                 )
-        , metric = get.from.call(data, "metric")))$observed)
+        , metric = get.metric.from.call(data)), cent.tend = mean, quantiles = 1)$obs )
     }
     return(null_models_result)
 }
