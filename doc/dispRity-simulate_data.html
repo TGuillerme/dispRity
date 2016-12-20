@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2016-09-06" />
+<meta name="date" content="2016-12-20" />
 
 <title>dispRity simulate data</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity simulate data</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2016-09-06</em></h4>
+<h4 class="date"><em>2016-12-20</em></h4>
 
 
 
@@ -131,13 +131,13 @@ my_matrix[<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">
 my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
 ## matrix
 morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>,
-    <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">TRUE</span>)
+    <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">5</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
 <span class="kw">check.morpho</span>(morpho_mat, my_tree)</code></pre></div>
-<pre><code>##                                    
-## Maximum parsimony        74.0000000
-## Consistency index         0.6621622
-## Retention index           0.8387097
-## Robinson-Foulds distance  6.0000000</code></pre>
+<pre><code>##                                     
+## Maximum parsimony        103.0000000
+## Consistency index          0.9708738
+## Retention index            0.9903846
+## Robinson-Foulds distance   4.0000000</code></pre>
 <div id="refs" class="references">
 
 </div>
