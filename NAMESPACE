@@ -17,7 +17,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
-importFrom("RCurl", "getURL")
+importFrom("RCurl", "getURL", "url.exists")
 
 ##Functions
 export(time.series)
