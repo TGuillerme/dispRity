@@ -482,4 +482,8 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
         ...)
     lines(c(obs, obs), c(y0/2, 0))
     points(obs, y0/2, pch = 18, cex = 2)
+
+#    hist(sim, plot = TRUE, nclass = nclass, xlim = xlim0, col = grey(0.8)) ; warning("DEBUG plot.randtest")
+    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
+
 }

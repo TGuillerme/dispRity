@@ -167,8 +167,8 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
 
                 #Rarefaction plots
                 for(model in 1:length_data) {
-                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = ""), ...)
-                    #plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for seris", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for series ", names(data)[[model]], sep = ""), ...)
+                    #plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for series ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
                 }
                 par(op_tmp)
             } else {

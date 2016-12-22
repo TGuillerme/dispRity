@@ -54,6 +54,15 @@ print.dispRity <- function(x, all = FALSE) {
         if(length(class(x)) > 1) {
             ## randtest
             if(class(x)[2] == "randtest") {
+
+                ## Remove the call (messy)
+                remove.call <- function(element) {
+                    element$call <- "dispRity::null.test"
+                    return(element)
+                }
+                x <- lapply(x, remove.call)
+
+
                 if(length(x) == 1) {
                     print(x[[1]])
                 } else {

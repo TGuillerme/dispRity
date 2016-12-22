@@ -57,7 +57,7 @@
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)
 # single <- dispRity(boot.matrix(BeckLee_mat50, bootstraps = 10), metric = c(sum, variances))
-# data <- data_single
+# data <- data_multi
 
 # data <- null.test(data_single, replicates = 100, null.distrib = rnorm, null.args = NULL, null.cor = NULL, alter = "two-sided", scale = FALSE)
 
@@ -123,7 +123,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
         #test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
         #Attributing the series names
-        names(test_out) <- data$series
+        names(test_out) <- names(data$series)
     }
 
     class(test_out) <- c("dispRity", "randtest")
