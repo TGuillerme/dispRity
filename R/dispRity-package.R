@@ -11,15 +11,19 @@
 #' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
 #' @import ape
-#' @importFrom paleotree timeSliceTree
-#' @importFrom snow makeCluster stopCluster parLapply
-#' @importFrom geometry convhulln
-#' @importFrom hypervolume hypervolume estimate_bandwidth get_volume
-#' @importFrom ade4 randtest as.randtest
-#' @importFrom grDevices colorRampPalette grey
-#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text
-#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var runif
-#' @importFrom utils combn capture.output tail
+#' @importFrom paleotree timeSliceTree 
+#' @importFrom snow makeCluster stopCluster parLapply 
+#' @importFrom geometry convhulln 
+#' @importFrom hypervolume hypervolume estimate_bandwidth get_volume 
+#' @importFrom ade4 randtest as.randtest 
+#' @importFrom grDevices colorRampPalette grey 
+#' @importFrom caper comparative.data 
+#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text 
+#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var 
+#' @importFrom utils combn 
+#' @importFrom phyclust gen.seq.HKY 
+#' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony 
+#' @importFrom RCurl getURL url.exists 
 
 NULL
 
@@ -41,6 +45,7 @@ NULL
 #' Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 #' @name BeckLee
 #' @aliases BeckLee_tree BeckLee_mat50 BeckLee_mat99 BeckLee_ages
+#' @seealso McClean_data disparity
 NULL
 
 #' McClean dataset
@@ -55,6 +60,7 @@ NULL
 #'
 #' @format one matrix and two vectors.
 #' @name McClean_data
+#' @seealso BeckLee_data disparity
 NULL
 
 #' disparity
@@ -67,4 +73,5 @@ NULL
 #'
 #' @format one \code{dispRity} object.
 #' @name disparity
+#' @seealso McClean_data BeckLee_data
 NULL

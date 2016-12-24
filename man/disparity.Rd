@@ -12,4 +12,7 @@ This matrix is based on \code{\link{BeckLee}} dataset and split into 7 continuou
 It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 Disparity was calculated as the \code{\link[base]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 }
+\seealso{
+McClean_data BeckLee_data
+}
 
