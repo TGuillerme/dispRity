@@ -39,26 +39,24 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
 }
 
 ## Extract specific summary values
-extract.summary <- function(summarised_data, what, rarefaction = TRUE) {
-    ## Extracting the minimum or maximum rarefaction
-    if(rare.fun == TRUE) {
-        ## Get the different levels
-        series_levels <- unique(summarised_data$series)
-        ## Get the right rarefaction value
-        which_rows <- NULL
-        for(series in 1:length(series_levels)) {
-            ## Selecting the right series
-            right_series <- which(unlist(summarised_data$series) == series_levels[series])
-            ## Selecting the max/min from there
-            which_rows[series] <- rarefaction.fun(right_series)
+### summarised_data is a summary data table
+### what is the column of the table (or, if "rows", the rows numbers)
+### rarefaction is the rarefaction value (FALSE == none)
+extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
+    ## No rarefaction level
+    if(rarefaction == FALSE) {
+        if(what != "rows") {
+            return(summarised_data[which(!is.na(summarised_data$obs)), what])
+        } else {
+            return(which(!is.na(summarised_data$obs)))
         }
-    }
-
-    ## Return the right values
-    if(what == "rows") {
-        return(unlist(which_rows))
     } else {
-        return(unlist(summarised_data[which_rows, what]))
+        ## Rarefaction level
+        if(what != "rows") {
+            return(summarised_data[which(summarised_data$n == rarefaction), what])
+        } else {
+            return(which(summarised_data$n == rarefaction))
+        }
     }
 }
 
@@ -80,15 +78,15 @@ plot.elements<-function(summarised_data, rarefaction, type, ylab, col, div.log, 
     if(type == "continuous") {
         ## Continuous (straightforward)
         if(div.log == FALSE) {
-            plot(extract.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
+            plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
         } else {
-            plot(log(extract.summary(summarised_data, 2, rarefaction)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
+            plot(log(extract.from.summary(summarised_data, 2, rarefaction)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
         }
     } else {
         ## Creating the dummy data table
         points_n <- length(unique(summarised_data$series))
-        dummy_mat <- matrix(extract.summary(summarised_data, 2, rarefaction), ncol = points_n)
-        colnames(dummy_mat) <- extract.summary(summarised_data, 1)
+        dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
+        colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
         if(div.log == FALSE) {
             boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2)
         } else {
@@ -96,7 +94,7 @@ plot.elements<-function(summarised_data, rarefaction, type, ylab, col, div.log, 
         }
 
     }
-    ## lines(extract.summary(summarised_data, 2, rarefaction), lty=2)
+    ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)
     axis(4, lty = 2)
     mtext(ylab[[2]], side = 4, line = 2)
 }
@@ -109,7 +107,7 @@ plot.discrete <- function(summarised_data, rarefaction, type, ylim, xlab, ylab, 
 
     ## dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat <- matrix(1:points_n, ncol = points_n)
-    colnames(dummy_mat) <- extract.summary(summarised_data, 1)
+    colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
 
     ## Empty plot
     if(add == FALSE) {
@@ -142,10 +140,10 @@ plot.discrete <- function(summarised_data, rarefaction, type, ylim, xlab, ylab, 
                     ## Setting X
                     x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
                     ## Setting Y
-                    y_vals <- c(extract.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    y_vals <- c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
                     ## Plotting the box
                     polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
@@ -156,8 +154,8 @@ plot.discrete <- function(summarised_data, rarefaction, type, ylim, xlab, ylab, 
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting Y
-                    y_vals<-c(extract.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    y_vals<-c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
                     ## Plotting the box
                     lines(x = c(point, point), y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
 
@@ -167,20 +165,20 @@ plot.discrete <- function(summarised_data, rarefaction, type, ylim, xlab, ylab, 
     }
 
     ## Add the points estimates
-    points(1:points_n, extract.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
+    points(1:points_n, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
 
     if(observed == TRUE) {
-        if(any(!is.na(extract.summary(summarised_data, 3, rarefaction))))
+        if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction))))
         ## Add the points observed (if existing)
         if(type == "polygon") {
             for (point in 1:points_n) {
                 x_coord <- c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
-                y_coord <- rep(extract.summary(summarised_data, 3, rarefaction)[point], 2)
+                y_coord <- rep(extract.from.summary(summarised_data, 3, rarefaction)[point], 2)
                 lines(x_coord, y_coord, col = col[[1]], lty = 3, lwd = 2)
             }
         } else {
             for (point in 1:points_n) {
-                y_coord <- extract.summary(summarised_data, 3, rarefaction)[point]
+                y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
                 points(point, y_coord, col = col[[1]], pch = 4, cex = 1.5)
             }
         }
@@ -199,15 +197,15 @@ plot.continuous<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, t
     if(add == FALSE) {
         if(time_slicing[1] == FALSE) {
             ## Plot with standard xaxis
-            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
-            ## plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
+            plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+            ## plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            ## plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+            ## plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
     } else {
-        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]])
     }
 
     ## Check if bootstrapped
@@ -228,7 +226,7 @@ plot.continuous<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, t
         ## Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
-            y_vals <- c(extract.summary(summarised_data, 4+cis, rarefaction), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
+            y_vals <- c(extract.from.summary(summarised_data, 4+cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
             polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
             ## ## ## ## 
             ##  ADD A DENSITY OPTION!
@@ -236,12 +234,12 @@ plot.continuous<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, t
         }
 
         ## Add the central tendency on top
-        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), lty = 1, col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), lty = 1, col = col[[1]])
 
         ## Add the observed values on top
         if(observed == TRUE) {
             for (point in 1:points_n) {
-                y_coord <- extract.summary(summarised_data, 3, rarefaction)[point]
+                y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
                 points(point, y_coord, col = col[[1]], pch = 4, cex = 1.5)
             }
         }

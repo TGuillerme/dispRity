@@ -47,7 +47,33 @@ test_that("set.default works", {
         , c("pink", "knip"))
 })
 
-function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction)
+test_that("extract.from.summary works", {
+    sum_data <- summary(disparity)
+    expect_error(
+        extract.from.summary("sum_data", what = 4, rarefaction = FALSE)
+        )
+    expect_null(
+        extract.from.summary(sum_data, what = "4", rarefaction = FALSE)
+        )
+    expect_equal(
+        length(extract.from.summary(sum_data, what = 4, rarefaction = 99))
+        , 0)
+    expect_equal(
+        length(extract.from.summary(sum_data, what = 4, rarefaction = FALSE))
+        , length(extract.from.summary(sum_data, what = "rows", rarefaction = FALSE)))
+    expect_equal(
+        extract.from.summary(sum_data, what = 1, rarefaction = FALSE)
+        , as.factor(c(90,80,70,60,50,40,30)))
+    expect_equal(
+        extract.from.summary(sum_data, what = 2, rarefaction = 10)
+        ,rep(10, 7))
+    expect_equal(
+        extract.from.summary(sum_data, what = 3, rarefaction = 5)
+        ,as.numeric(rep(NA, 7)))
+    expect_equal(
+        extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
+        ,c(1.780,1.812,1.874,1.877,1.907,1.878,1.818))
+})
 
 
 #Extract summary

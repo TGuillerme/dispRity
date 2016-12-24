@@ -407,11 +407,11 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
                 ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
 
                 if(observed == TRUE) {
-                    if(any(!is.na(extract.summary(summarised_data, 3, which.rare)))){
+                    if(any(!is.na(extract.from.summary(summarised_data, 3, which.rare)))){
                         ## Add the points observed (if existing)
                         for(point in 1:length(plot_data)) {
                             x_coord <- point
-                            y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                            y_coord <- extract.from.summary(summarised_data, 3, which.rare)[point]
                             points(x_coord, y_coord, pch = 4, col = col[length(col)])
                         }
                     }
