@@ -345,59 +345,21 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
 
     ## PREPARING THE PLOT
 
-
-
-
-
-
-########
-    ## STOPPED HERE
-########
-
-
-
-
-
-
-
-    ## summarising the data
-    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
-
-
-
-
-
-    ## Get the summarised data to plot
-    # if(rarefaction == TRUE | class(rarefaction) == "numeric") {
-    #     if(rarefaction == TRUE) {
-    #         summarised_data <- summarised_data[-which(is.na(summarised_data$obs)),]
-    #     } else {
-    #         summarised_data <- summarised_data[which(summarised_data$n == rarefaction),]
-    #     }
-    # }
-
-
-
-    ## Check continuous (set to discrete if only one series)
-    if(rarefaction != "plot") {
-        if(type == "continuous") {
-            if(length(unique(summarised_data$series)) == 1) {
-                type <- "box"
-                message('Only one series of data available: type is set to "box".')
-            }
-        }
-    }
-
     ## Setting the default arguments
-    default_arg <- set.default(summarised_data, data$call, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, which.rare = which.rare)
+    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction)
     ylim <- default_arg[[1]]
     xlab <- default_arg[[2]]
     ylab <- default_arg[[3]]
     col <- default_arg[[4]]
 
+    ## summarising the data
+    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
+
     ## PLOTTING THE RESULTS
 
-    if(which.rare == "plot") {
+    warning("In plot.dispRity, sort out rarefaction plots")
+
+    if(rarefaction == "plot") {
         ## How many rarefaction plots?
         n_plots <- length(unique(summarised_data[,1]))
 
@@ -405,12 +367,14 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
         op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
 
         ## Rarefaction plots
+
+        ## TO LAPPLY!
         for(nPlot in 1:n_plots) {
             get_series <- get.series(summarised_data, rare_level = nPlot)
             tmp_summarised_data <- get_series[[1]]
             level_name <- get_series[[2]]
-            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
-            ## plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
+            plot.rarefaction(tmp_summarised_data, rarefaction, ylim, xlab, ylab, col, main = level_name, ...)
+            ## plot.rarefaction(tmp_summarised_data, rarefaction, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
         }
 
         ## Done!

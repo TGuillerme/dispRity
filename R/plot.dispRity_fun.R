@@ -1,34 +1,33 @@
-#default settings
-set.default<-function(summarised_data, call, elements, ylim, xlab, ylab, col, which.rare) {
+## default settings
+set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction) {
 
-    #ylim
+    ## ylim
     if(ylim[[1]] == "default") {
-        #Setting the ylim to min/max -/+ 5%.
+        ## Setting the ylim to min/max -/+ 5%.
         ylim = c(min(summarised_data[,-c(1:2)], na.rm = TRUE) - min(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[,-c(1:2)], na.rm = TRUE) + max(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02)
     }
 
-    #xlab
+    ## xlab
     if(xlab == "default") {
-        if(which.rare == "plot") {
+        if(rarefaction == "plot") {
             xlab <- "Elements"
         } else {
             xlab <- "Series"
         }
     }
     
-    #ylab
+    ## ylab
     if(ylab[[1]] == "default") {
-        #Set to call label
-        ylab <- strsplit(strsplit(call, split = "as: ")[[1]][2], split = " for")[[1]][1]
+        ylab <- as.character(data$call$disparity$metrics)
         if(elements == TRUE) {
             ylab[2] <- "Elements"
         }
     }
 
-    #col
+    ## col
     if(col[[1]] == "default") {
         col <- "black"
-        #If any quantiles add, grey colours
+        ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
             n_quantiles <- (ncol(summarised_data)-4)/2
             colfun <- colorRampPalette(c("grey", "lightgrey"))
@@ -39,37 +38,23 @@ set.default<-function(summarised_data, call, elements, ylim, xlab, ylab, col, wh
     return(list(ylim, xlab, ylab, col))
 }
 
-#Extract summary values
-extract.summary<-function(summarised_data, what, which.rare="max") {
-    #Set up which rarefaction function
-    if(is.numeric(which.rare)) {
-        rare.fun <- FALSE
-    } else {
-        rare.fun <- TRUE
-        if(which.rare == "max") which.rare.fun <- max
-        if(which.rare == "min") which.rare.fun <- min
-    }
-
-    #Extracting specific a level of rarefaction
-    if(rare.fun == FALSE) {
-        which_rows <- which(unlist(summarised_data$n) == which.rare)
-    }
-
-    #Extracting the minimum or maximum rarefaction
+## Extract specific summary values
+extract.summary <- function(summarised_data, what, rarefaction = TRUE) {
+    ## Extracting the minimum or maximum rarefaction
     if(rare.fun == TRUE) {
-        #Get the different levels
+        ## Get the different levels
         series_levels <- unique(summarised_data$series)
-        #Get the right rarefaction value
+        ## Get the right rarefaction value
         which_rows <- NULL
         for(series in 1:length(series_levels)) {
-            #Selecting the right series
+            ## Selecting the right series
             right_series <- which(unlist(summarised_data$series) == series_levels[series])
-            #Selecting the max/min from there
-            which_rows[series] <- which.rare.fun(right_series)
+            ## Selecting the max/min from there
+            which_rows[series] <- rarefaction.fun(right_series)
         }
     }
 
-    #Return the right values
+    ## Return the right values
     if(what == "rows") {
         return(unlist(which_rows))
     } else {
@@ -77,32 +62,32 @@ extract.summary<-function(summarised_data, what, which.rare="max") {
     }
 }
 
-#Extracting summary values for a specific series
+## Extracting summary values for a specific series
 get.series<-function(summarised_data, rare_level) {
     output <- summarised_data[which(as.factor(unlist(summarised_data[,1])) == unique(unlist(summarised_data[,1]))[rare_level]),]
     level_name <- unique(unlist(summarised_data[,1]))[rare_level]
     return(list(output, level_name))
 }
 
-#Plotting elements
-plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, ...) {
-    #Check if ylab2 exists
+## Plotting elements
+plot.elements<-function(summarised_data, rarefaction, type, ylab, col, div.log, ...) {
+    ## Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]] <- "Elements"
     }
 
-    #Add the lines
+    ## Add the lines
     if(type == "continuous") {
-        #Continuous (straightforward)
+        ## Continuous (straightforward)
         if(div.log == FALSE) {
-            plot(extract.summary(summarised_data, 2, which.rare), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
+            plot(extract.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
         } else {
-            plot(log(extract.summary(summarised_data, 2, which.rare)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
+            plot(log(extract.summary(summarised_data, 2, rarefaction)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
         }
     } else {
-        #Creating the dummy data table
+        ## Creating the dummy data table
         points_n <- length(unique(summarised_data$series))
-        dummy_mat <- matrix(extract.summary(summarised_data, 2, which.rare), ncol = points_n)
+        dummy_mat <- matrix(extract.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.summary(summarised_data, 1)
         if(div.log == FALSE) {
             boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2)
@@ -111,36 +96,36 @@ plot.elements<-function(summarised_data, which.rare, type, ylab, col, div.log, .
         }
 
     }
-    #lines(extract.summary(summarised_data, 2, which.rare), lty=2)
+    ## lines(extract.summary(summarised_data, 2, rarefaction), lty=2)
     axis(4, lty = 2)
     mtext(ylab[[2]], side = 4, line = 2)
 }
 
-#discrete plotting
-plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) {
+## discrete plotting
+plot.discrete <- function(summarised_data, rarefaction, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
-    #How many points?
+    ## How many points?
     points_n <- length(unique(summarised_data$series))
 
-    #dummy matrix (for getting the nice boxplots split + column names)
+    ## dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat <- matrix(1:points_n, ncol = points_n)
     colnames(dummy_mat) <- extract.summary(summarised_data, 1)
 
-    #Empty plot
+    ## Empty plot
     if(add == FALSE) {
         boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001) ; warning("DEBUG: plot")
+        ## boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001) ; warning("DEBUG: plot")
     }
 
-    #Check if bootstrapped
+    ## Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many quantiles?
+        ## How many quantiles?
         quantiles_n <- (ncol(summarised_data)-4)/2
 
-        #Set the width (default)
+        ## Set the width (default)
         width = points_n/(points_n*2)
 
-        #Set the colours
+        ## Set the colours
         if(length(col[-1]) < quantiles_n) {
             col_tmp <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default")[[4]]
             poly_col <- col_tmp[-1]
@@ -150,18 +135,18 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
             poly_col <- rev(poly_col)
         }
 
-        #Add the quantiles
+        ## Add the quantiles
         if(type == "polygon") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
-                    #Setting X
+                    ## Setting X
                     x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
-                    #Setting Y
-                    y_vals <- c(extract.summary(summarised_data, 4+cis, which.rare)[point],
-                              extract.summary(summarised_data, 4+cis, which.rare)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
-                    #Plotting the box
+                    ## Setting Y
+                    y_vals <- c(extract.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point],
+                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    ## Plotting the box
                     polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
                 }
@@ -170,10 +155,10 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
         if(type == "lines") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
-                    #Setting Y
-                    y_vals<-c(extract.summary(summarised_data, 4+cis, which.rare)[point],
-                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)[point])
-                    #Plotting the box
+                    ## Setting Y
+                    y_vals<-c(extract.summary(summarised_data, 4+cis, rarefaction)[point],
+                              extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    ## Plotting the box
                     lines(x = c(point, point), y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
 
                 }
@@ -181,58 +166,58 @@ plot.discrete <- function(summarised_data, which.rare, type, ylim, xlab, ylab, c
         }
     }
 
-    #Add the points estimates
-    points(1:points_n, extract.summary(summarised_data, 4, which.rare), col = col[[1]], pch = 19)
+    ## Add the points estimates
+    points(1:points_n, extract.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
 
     if(observed == TRUE) {
-        if(any(!is.na(extract.summary(summarised_data, 3, which.rare))))
-        #Add the points observed (if existing)
+        if(any(!is.na(extract.summary(summarised_data, 3, rarefaction))))
+        ## Add the points observed (if existing)
         if(type == "polygon") {
             for (point in 1:points_n) {
                 x_coord <- c(point-width/(quantiles_n-2+1.5), point+width/(quantiles_n-2+1.5))
-                y_coord <- rep(extract.summary(summarised_data, 3, which.rare)[point], 2)
+                y_coord <- rep(extract.summary(summarised_data, 3, rarefaction)[point], 2)
                 lines(x_coord, y_coord, col = col[[1]], lty = 3, lwd = 2)
             }
         } else {
             for (point in 1:points_n) {
-                y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                y_coord <- extract.summary(summarised_data, 3, rarefaction)[point]
                 points(point, y_coord, col = col[[1]], pch = 4, cex = 1.5)
             }
         }
     }
 
-    # Save parameters
+    ##  Save parameters
     return(par())
 }
 
-#continuous plotting
-plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
-    #How many points?
+## continuous plotting
+plot.continuous<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
+    ## How many points?
     points_n <- length(unique(summarised_data$series))
 
-    #Plot the central tendency
+    ## Plot the central tendency
     if(add == FALSE) {
         if(time_slicing[1] == FALSE) {
-            #Plot with standard xaxis
-            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
-            #plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
+            ## Plot with standard xaxis
+            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+            ## plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            #plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+            ## plot(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
     } else {
-        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), col = col[[1]])
     }
 
-    #Check if bootstrapped
+    ## Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many quantiles?
+        ## How many quantiles?
         quantiles_n <- (ncol(summarised_data)-4)/2
 
-        #Set the colours
+        ## Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", rarefaction)[[4]]
             poly_col <- col[-1]
             poly_col <- rev(poly_col)
         } else {
@@ -240,49 +225,49 @@ plot.continuous<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ti
             poly_col <- rev(poly_col)
         }
 
-        #Add the polygons
+        ## Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
-            y_vals <- c(extract.summary(summarised_data, 4+cis, which.rare), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), which.rare)))
+            y_vals <- c(extract.summary(summarised_data, 4+cis, rarefaction), rev(extract.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
             polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
-            ####
-            # ADD A DENSITY OPTION!
-            ###
+            ## ## ## ## 
+            ##  ADD A DENSITY OPTION!
+            ## ## ## 
         }
 
-        #Add the central tendency on top
-        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, which.rare), lty = 1, col = col[[1]])
+        ## Add the central tendency on top
+        lines(seq(from = 1, to = points_n), extract.summary(summarised_data, 4, rarefaction), lty = 1, col = col[[1]])
 
-        #Add the observed values on top
+        ## Add the observed values on top
         if(observed == TRUE) {
             for (point in 1:points_n) {
-                y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                y_coord <- extract.summary(summarised_data, 3, rarefaction)[point]
                 points(point, y_coord, col = col[[1]], pch = 4, cex = 1.5)
             }
         }
     }
 
-    # Save parameters
+    ##  Save parameters
     return(par())
 }
 
 
-#rarefaction plottings
-plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, ...) {
-#plots rarefaction curves (continuous, multiple panels if series > 1)
+## rarefaction plottings
+plot.rarefaction<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, ...) {
+## plots rarefaction curves (continuous, multiple panels if series > 1)
 
     plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
-    #plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim) ; warning("DEBUG: plot")
+    ## plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim) ; warning("DEBUG: plot")
 
-    #Add the quantiles
-    #Check if bootstrapped
+    ## Add the quantiles
+    ## Check if bootstrapped
     if(ncol(summarised_data) > 3) {
-        #How many quantiles?
+        ## How many quantiles?
         quantiles_n <- (ncol(summarised_data)-4)/2
 
-        #Set the colours
+        ## Set the colours
         if(length(col[-1]) < quantiles_n) {
-            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", which.rare)[[4]]
+            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", rarefaction)[[4]]
             poly_col <- col[-1]
             poly_col <- rev(poly_col)
         } else {
@@ -290,60 +275,60 @@ plot.rarefaction<-function(summarised_data, which.rare, ylim, xlab, ylab, col, .
             poly_col <- rev(poly_col)
         }
 
-        #Add the quantile lines (from inner to outer quantiles)
+        ## Add the quantile lines (from inner to outer quantiles)
         for (cis in 1:quantiles_n) {
-            #lower quantile
-            lines(summarised_data[, 4+cis], lty = (quantiles_n+2-cis))#, col = poly_col[cis])
-            #upper quantile
-            lines(summarised_data[, ncol(summarised_data) - (cis-1)], lty = (quantiles_n+2-cis))#, col = poly_col[cis])
+            ## lower quantile
+            lines(summarised_data[, 4+cis], lty = (quantiles_n+2-cis))## , col = poly_col[cis])
+            ## upper quantile
+            lines(summarised_data[, ncol(summarised_data) - (cis-1)], lty = (quantiles_n+2-cis))## , col = poly_col[cis])
         }
 
-        #Add the central tendency
-        lines(summarised_data[, 4], lty = 1)#, col = col[1])
+        ## Add the central tendency
+        lines(summarised_data[, 4], lty = 1)## , col = col[1])
 
     }
 
-    # Save parameters
+    ##  Save parameters
     return(par())
 }
 
-#Transposing data for boxploting (taking functions from summary.dispRity)
-transpose.box <- function(data, which.rare) {
-    #Getting the bootstrapped results
+## Transposing data for boxploting (taking functions from summary.dispRity)
+transpose.box <- function(data, rarefaction) {
+    ## Getting the bootstrapped results
     BSresults <- data$disparity$bootstrapped
-    #Unlisting the results
+    ## Unlisting the results
     BSresults_unlist <- unlist(recursive.unlist(BSresults), recursive=FALSE)
-    #Get the rarefaction multiplier
+    ## Get the rarefaction multiplier
     multiplier <- unlist(lapply(BSresults, length))
-    #Create the (dummy) table results
+    ## Create the (dummy) table results
     results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps)), stringsAsFactors=FALSE)
 
-    #Get the vector of list elements to print out
-    if(is.numeric(which.rare)) {
-        list_elements_out <- which(as.numeric(results_table[,2]) == which.rare)
+    ## Get the vector of list elements to print out
+    if(is.numeric(rarefaction)) {
+        list_elements_out <- which(as.numeric(results_table[,2]) == rarefaction)
     } else {
-        if(which.rare == "max") which.rare.fun <- max
-        if(which.rare == "min") which.rare.fun <- min
+        if(rarefaction == "max") rarefaction.fun <- max
+        if(rarefaction == "min") rarefaction.fun <- min
         list_elements_out <- NULL
         for(series in 1:length(multiplier)) {
-            #Selecting the right series
+            ## Selecting the right series
             right_series <- which(results_table[,1] == names(multiplier)[series])
-            #Selecting the max/min from there
-            list_elements_out[series] <- which.rare.fun(right_series)
+            ## Selecting the max/min from there
+            list_elements_out[series] <- rarefaction.fun(right_series)
         }
     }
 
-    #Extract the list
+    ## Extract the list
     list_out <- BSresults_unlist[list_elements_out]
-    #Add the names
+    ## Add the names
     names(list_out) <- names(multiplier)
     return(list_out)
 }
 
-#Adding a line
+## Adding a line
 add.line <- function(xs, ys, lines.args) {
     if(!is.null(lines.args)) {
-        #Adding the x,y coordinates
+        ## Adding the x,y coordinates
         lines.args$x <- xs ; lines.args$y <- ys
         do.call(lines, lines.args)
     } else {
@@ -351,19 +336,19 @@ add.line <- function(xs, ys, lines.args) {
     }
 }
 
-#Adding significance tokens
+## Adding significance tokens
 significance.token <- function(xs, ys, p.value, token.args) {
     if(p.value < 0.1) {
-        #Selecting the token
+        ## Selecting the token
         if(p.value < 0.1) token <- "."
         if(p.value < 0.05) token <- "*"
         if(p.value < 0.01) token <- "**"
         if(p.value < 0.001) token <- "***"
-        #Default plotting
+        ## Default plotting
         if(is.null(token.args)) {
             text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
         } else {
-        #Plotting with arguments
+        ## Plotting with arguments
             token.args$labels <- token
             token.args$x <- sum(xs)/2
             if(any(names(token.args) == "float")) {
@@ -377,24 +362,24 @@ significance.token <- function(xs, ys, p.value, token.args) {
     }
 }
 
-#Getting the two coordinates of the intercepts (intercept0 and intercept predicted)
+## Getting the two coordinates of the intercepts (intercept0 and intercept predicted)
 get.intercept.coords <- function(results_out, model_number, is.distribution, significance) {
     if(is.distribution != TRUE) {
-        #Get the first y coordinate (first intercept)
+        ## Get the first y coordinate (first intercept)
         y1 <- results_out$Intercept[model_number, 1]
-        #Test if intercept0 is significant
+        ## Test if intercept0 is significant
         if(model_number == 1) {
             if(results_out$Intercept[model_number, 4] > 0.05) {
                 y1 <- 0
             }
         }
 
-        #Get the second y coordinate (second intercept)
+        ## Get the second y coordinate (second intercept)
         if(model_number < nrow(results_out$Intercept)) {
-            #Intercept already estimated
+            ## Intercept already estimated
             y2 <- results_out$Intercept[model_number+1, 1]
         } else {
-            #Estimate the intercept
+            ## Estimate the intercept
             if(results_out$Slopes[model_number, 4] < 0.05) {
                 slope <- results_out$Slopes[model_number, 1]
             } else {
@@ -403,25 +388,25 @@ get.intercept.coords <- function(results_out, model_number, is.distribution, sig
             y2 <- intercept.estimate(results_out$Intercepts[model_number,1], slope)
         }
     } else {
-        #Get the first y coordinate
+        ## Get the first y coordinate
         if(model_number == 1) {
-            #Get the initial (estimated) intercept if significant
+            ## Get the initial (estimated) intercept if significant
             if(results_out$Intercept$Initial[4, significance] < 0.05) {
                 y1 <- unlist(results_out$Intercept$Initial[1, significance])
             } else {
                 y1 <- 0
             }
         } else {
-            #Get the predicted intercept
+            ## Get the predicted intercept
             y1 <- unlist(results_out$Intercepts$Predicted[model_number-1, significance])
         }
 
-        #Get the second y coordinate (second intercept)
+        ## Get the second y coordinate (second intercept)
         if(model_number-1 < nrow(results_out$Intercept$Predicted)) {
-            #Intercept already estimated
+            ## Intercept already estimated
             y2 <- unlist(results_out$Intercepts$Predicted[model_number, significance])
         } else {
-            #Estimate the intercept
+            ## Estimate the intercept
             if(results_out$Slopes$`Pr(>|t|)`[model_number, significance] < 0.05) {
                 slope <- unlist(results_out$Slopes$Estimate[model_number, significance])
             } else {
@@ -431,34 +416,34 @@ get.intercept.coords <- function(results_out, model_number, is.distribution, sig
         }        
     }
 
-    #Return the coordinates
+    ## Return the coordinates
     return(c(y1, y2))
 }
 
-#Plotting the results of sequential tests
+## Plotting the results of sequential tests
 plot.seq.test <- function(results_out, is.distribution, significance, lines.args, token.args) {
-    #Get the number of models to plot
+    ## Get the number of models to plot
     if(is.distribution != TRUE) {
         n_models <- nrow(results_out$Slopes)
     } else {
         n_models <- nrow(results_out$Slopes$Estimate)
     }
 
-    #Loop through each model
+    ## Loop through each model
     for(model_number in 1:n_models) {
-        #Getting x,y coordinates for one model
+        ## Getting x,y coordinates for one model
         x_coords <- c(model_number, model_number+1)
         y_coords <- get.intercept.coords(results_out, model_number=model_number, is.distribution, significance)
 
-        #Plotting the line
+        ## Plotting the line
         add.line(x_coords, y_coords, lines.args)
 
-        #Add significance (if necessary)
+        ## Add significance (if necessary)
         if(is.distribution != TRUE) {
             p_value <- results_out$Slope[model_number, 4]
         } else {
             p_value <- results_out$Slope$`Pr(>|t|)`[model_number, significance]
-            #get p_value
+            ## get p_value
         }
 
         significance.token(x_coords, y_coords, p_value, token.args)
@@ -466,7 +451,7 @@ plot.seq.test <- function(results_out, is.distribution, significance, lines.args
 }
 
 
-#The following is a modified version of plot.randtest from ade4 v1.4-3
+## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
     obs <- data_sub$obs
     sim <- data_sub$sim
@@ -483,7 +468,7 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
     lines(c(obs, obs), c(y0/2, 0))
     points(obs, y0/2, pch = 18, cex = 2)
 
-#    hist(sim, plot = TRUE, nclass = nclass, xlim = xlim0, col = grey(0.8)) ; warning("DEBUG plot.randtest")
+##     hist(sim, plot = TRUE, nclass = nclass, xlim = xlim0, col = grey(0.8)) ; warning("DEBUG plot.randtest")
     legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
 
 }

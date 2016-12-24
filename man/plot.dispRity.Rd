@@ -5,7 +5,7 @@
 \title{dispRity object plotting}
 \usage{
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
-  rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
+  rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col,
   time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
   nclass = 10, coeff = 1, ...)
 }
@@ -18,7 +18,7 @@
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
 
-\item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
+\item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
 \item{elements}{\code{logical} whether to plot the number of elements per series.}
 
