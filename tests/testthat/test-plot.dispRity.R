@@ -1,9 +1,9 @@
 #TESTING plot.dispRity
 
 context("plot.dispRity (non-graphic)") 
-## Loading the data
-load("disparity")
 
+## Loading the data
+data("disparity")
 
 #######################
 #Testing
@@ -73,4 +73,27 @@ test_that("extract.from.summary works", {
     expect_equal(
         extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
         ,c(1.780,1.812,1.874,1.877,1.907,1.878,1.818))
+})
+
+test_that("transpose.box works", {
+
+    expect_error(
+        transpose.box("disparity", rarefaction = FALSE)
+        )
+    expect_error(
+        transpose.box(disparity, rarefaction = 99)
+        )
+    expect_equal(
+        dim(transpose.box(disparity, rarefaction = FALSE))
+        ,c(100, 7))
+    expect_equal(
+        dim(transpose.box(disparity, rarefaction = 5))
+        ,c(100, 7))
+
+    test <- transpose.box(disparity, rarefaction = FALSE)
+    for(series in 1:length(disparity$series)) {
+        expect_equal(
+            test[,series]
+            ,as.vector(disparity$disparity[[series]][[2]]))
+    }
 })

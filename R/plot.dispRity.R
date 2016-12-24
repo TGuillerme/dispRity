@@ -368,7 +368,6 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
 
         ## Rarefaction plots
 
-        ## TO LAPPLY!
         for(nPlot in 1:n_plots) {
 
             ## Modify get.series into just data$series!
@@ -383,60 +382,65 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         ## Done!
         par(op_tmp)
 
-    } else { 
+        return()
 
-        ## Continuous plot
-        if(type == "continuous") {
-            if(elements == FALSE) {
-                saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
-                ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
-            } else {
-                ## bigger_margin<-par(mar=c(5,4,4,4))
-                saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
-                ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
-                par(new = TRUE)
-                plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
-                ## plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                ## par(bigger_margin)
-            }
-
-        } else {
-
-            ## Box plot
-            if(type == "box") {
-                ## Simple case: boxplot
-                plot_data <- transpose.box(data, rarefaction)
-                boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
-                ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
-
-                if(observed == TRUE) {
-                    if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
-                        ## Add the points observed (if existing)
-                        for(point in 1:length(plot_data)) {
-                            x_coord <- point
-                            y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
-                            points(x_coord, y_coord, pch = 4, col = col[length(col)])
-                        }
-                    }
-                }
-                    
-
-            } else {
-
-                ## Personalised discrete plots
-                if(elements == FALSE) {
-                    saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) 
-                    ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
-                } else {
-                    ## bigger_margin <- par(mar=c(5,4,4,4))
-                    saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...)
-                    ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
-                    par(new = TRUE)
-                    plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
-                    ## plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                    ## par(bigger_margin)
-                }
-            }   
-        }
     }
+
+    ## Continuous plot
+    if(type == "continuous") {
+        if(elements == FALSE) {
+            saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
+            ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+        } else {
+            ## bigger_margin<-par(mar=c(5,4,4,4))
+            saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
+            ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+            par(new = TRUE)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
+            ## plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+            ## par(bigger_margin)
+        }
+        return()
+    }
+
+
+    ## Box plot
+    if(type == "box") {
+        ## Simple case: boxplot
+        plot_data <- transpose.box(data, rarefaction)
+        boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
+        ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
+
+        if(observed == TRUE) {
+            if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
+                ## Add the points observed (if existing)
+                for(point in 1:length(plot_data)) {
+                    x_coord <- point
+                    y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
+                    points(x_coord, y_coord, pch = 4, col = col[length(col)])
+                }
+            }
+        }
+        return()
+    }
+
+
+    ## Polygons or lines
+    if(type == "polygon" | type == "lines") {
+        ## Personalised discrete plots
+        if(elements == FALSE) {
+            saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) 
+            ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
+        } else {
+            ## bigger_margin <- par(mar=c(5,4,4,4))
+            saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...)
+            ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
+            par(new = TRUE)
+            plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
+            ## plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+            ## par(bigger_margin)
+        }
+        return()
+    }
+
 }

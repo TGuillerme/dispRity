@@ -269,36 +269,18 @@ plot.rarefaction<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, 
 
 ## Transposing data for boxploting (taking functions from summary.dispRity)
 transpose.box <- function(data, rarefaction) {
-    ## Getting the bootstrapped results
-    BSresults <- data$disparity$bootstrapped
-    ## Unlisting the results
-    BSresults_unlist <- unlist(recursive.unlist(BSresults), recursive=FALSE)
-    ## Get the rarefaction multiplier
-    multiplier <- unlist(lapply(BSresults, length))
-    ## Create the (dummy) table results
-    results_table <- data.frame(cbind(rep(data$series, multiplier), diversity.count(data$data$bootstraps)), stringsAsFactors=FALSE)
 
-    ## Get the vector of list elements to print out
-    if(is.numeric(rarefaction)) {
-        list_elements_out <- which(as.numeric(results_table[,2]) == rarefaction)
+    if(rarefaction == FALSE) {
+        box_data <- lapply(data$disparity, function(X) return(X[[2]]))
     } else {
-        if(rarefaction == "max") rarefaction.fun <- max
-        if(rarefaction == "min") rarefaction.fun <- min
-        list_elements_out <- NULL
-        for(series in 1:length(multiplier)) {
-            ## Selecting the right series
-            right_series <- which(results_table[,1] == names(multiplier)[series])
-            ## Selecting the max/min from there
-            list_elements_out[series] <- rarefaction.fun(right_series)
-        }
+        rare_rows <- lapply(lapply(data$series, lapply, nrow), function(X) which(X == rarefaction)-1)
+        get.rare <- function(data, rare) return(data[[rare]])
+        box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    ## Extract the list
-    list_out <- BSresults_unlist[list_elements_out]
-    ## Add the names
-    names(list_out) <- names(multiplier)
-    return(list_out)
+    return(t(matrix(unlist(box_data), nrow = length(data$series), byrow = TRUE)))
 }
+
 
 ## Adding a line
 add.line <- function(xs, ys, lines.args) {

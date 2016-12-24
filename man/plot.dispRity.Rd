@@ -4,10 +4,10 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
-  rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col,
-  time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  nclass = 10, coeff = 1, ...)
+\method{plot}{dispRity}(data, type, quantiles = c(50, 95),
+  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
+  ylab, col, time.series = TRUE, observed = FALSE, add = FALSE,
+  density = NULL, nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -16,7 +16,7 @@
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).}
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
@@ -32,7 +32,7 @@
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.}
 
-\item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}
+\item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
