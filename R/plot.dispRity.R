@@ -6,7 +6,7 @@
 #' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
-#' @param rarefaction Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.
+#' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
@@ -81,7 +81,7 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefaction=FALSE, elements=FALSE, ylim, xlab, ylab, col, time.series=TRUE, observed=FALSE, add=FALSE, density=NULL, nclass=10, coeff=1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.series = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -100,10 +100,10 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
     #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
 
     #         #Checking if distribution
-    #         is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
+    #         is_distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
 
     #         #significance sanitizing
-    #         if(is.distribution == TRUE) {
+    #         if(is_distribution == TRUE) {
     #             if(class(significance) == "character") {
     #                 if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
     #                 significance = 1
@@ -124,7 +124,7 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
     #             #series
     #             series <- unique(unlist(strsplit(names(data$models), split = " - ")))
     #             #Get the all the intercepts estimate
-    #             if(is.distribution == TRUE) {
+    #             if(is_distribution == TRUE) {
     #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(series)-2),significance]), unlist(results_out$Slopes$Estimate[(length(series)-1),significance]))))
     #             } else {
     #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(series)-1),1], results_out$Slopes[(length(series)-1),1]))
@@ -144,342 +144,332 @@ plot.dispRity<-function(data, type, quantiles=c(50,95), cent.tend=mean, rarefact
     #             axis(1, at = 1:series_length, labels = series)
     #         }
 
-    #         plot.seq.test(results_out, is.distribution, significance, lines.args, token.args)
+    #         plot.seq.test(results_out, is_distribution, significance, lines.args, token.args)
 
     #     }
 
+
+    ## ----
+    ## Modified randtest plot
+    ## ----
+
     if(length(class(data)) > 1) {
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
-            #sanitising
+            ## sanitising
             check.class(nclass, "numeric")
             check.class(coeff, "numeric")
             check.length(nclass, 1, " must be a single numeric value.")
             check.length(coeff, 1, " must be a single numeric value.")
-
-
-            #length_data variable initialisation
+            
+            ## length_data variable initialisation
             length_data <- length(data)
             
-            #Set up the plotting window
-            #Open the multiple plots
+            ## Set up the plotting window
+            ## Open the multiple plots
             if(length_data != 1) {
                 op_tmp <- par(mfrow = c(ceiling(sqrt(length_data)), round(sqrt(length_data))))
 
-                #Rarefaction plots
+                ## Rarefaction plots
                 for(model in 1:length_data) {
                     plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for series ", names(data)[[model]], sep = ""), ...)
-                    #plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for series ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                    ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for series ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
                 }
                 par(op_tmp)
             } else {
                 plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
-                #plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
+                ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
+        }
+        return()
+    }
+
+    ## ----
+    ## Normal disparity plot
+    ## ----
+
+    ## must be class dispRity
+    check.class(data, "dispRity")
+    ## must have one element called dispRity
+    if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
+    ## Check if disparity is a value or a distribution
+    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
+    ## Check the bootstraps
+    is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+
+    ## quantiles
+    ## Only check if the data is_bootstrapped
+    if(is_bootstrapped) {
+        check.class(quantiles, "numeric", " must be any value between 1 and 100.")
+
+        ## Are quantiles probabilities or proportions ?
+        if(any(quantiles < 1)) {
+            ## Transform into proportion
+            quantiles <- quantiles*100
+        }
+        ## Are quantiles proper proportions
+        if(any(quantiles < 0) | any(quantiles > 100)) {
+            stop("quantiles(s) must be any value between 0 and 100.")
+        }
+    }
+
+    ## cent.tend
+    ## Must be a function
+    check.class(cent.tend, "function")
+    ## The function must work
+    silent <- check.metric(cent.tend)
+
+    ## type
+    if(length(data$series) == 1) {
+        type <- "box"
+        message("Only one series of data available: type is set to \"box\".")
+    }
+
+    if(missing(type)) {
+        ## Set type to default
+        if(any(grep("continuous", data$call$series))) {
+            type <- "continuous"
+        } else {
+            type <- "box"
         }
     } else {
+        ## type must be either "discrete", "d", "continuous", or "c"
+        all_types <- c("continuous", "c", "box", "b", "lines", "l", "polygon", "p")
+        ## type must be a character string
+        check.class(type, "character")
+        ## type must have only one element
+        check.length(type, 1, paste(" argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
+        check.method(type, all_types, "method ")
+        
+        ## if type is a letter change it to the full word (lazy people...)
+        if(type == "c") type <- "continuous"
+        if(type == "b") type <- "box"
+        if(type == "l") type <- "lines"
+        if(type == "p") type <- "polygon"
+    }
 
-        #must be class dispRity
-        check.class(data, "dispRity")
-        #must have 5 elements
-        check.length(data, 5, " must be a 'dispRity' object.")
-        #must have one element called dispRity
-        if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
-        OBSresults <- data$disparity$observed
-        #is the data bootstrapped?   
-        if(!is.na(match("bootstraps", names(data$data)))) {
-            #must have more than one bootstrap!
-            if(length(data$data$bootstrap[[1]][[1]]) > 1) {
-                is.bootstrapped <- TRUE
-                BSresults <- data$disparity$bootstrapped
-            } else {
-                is.bootstrapped <- FALSE
-            }
+    ## If continuous, set time to continuous Ma (default)
+    if(type == "continuous" & time.series) {
+        ## Check if time.slicing was used (saved in call)
+        if(data$call$series[1] == "continuous") {
+            time_slicing <- names(data$series)
+        }
+    } 
+    if(!time.series) {
+        time_slicing <- FALSE
+    } else {
+        time_slicing <- names(data$series)
+    }
+
+    ## elements
+    ## must be logical
+    check.class(elements, "logical")
+
+    ## Rarefaction
+    if(is.null(rarefaction)) {
+        rarefaction <- FALSE
+    }
+    ## If data is not bootstrapped, rarefaction is FALSE
+    if(!is_bootstrapped) {
+        rarefaction <- FALSE
+    }
+    ## Check class
+    check.class(rarefaction, c("logical", "integer", "numeric"))
+    if(class(rarefaction) != "logical") {
+        rarefaction <- as.numeric(rarefaction)
+        check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
+        ## Check if all series have the appropriate rarefaction level
+        rarefaction_series <- lapply(lapply(data$series, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
+        ## Check if series have no rarefaction
+        if(length(unlist(rarefaction_series)) != length(data$series)) {
+            wrong_rarefaction <- lapply(rarefaction_series, function(X) ifelse(length(X) == 0, TRUE, FALSE))
+            stop(paste("The following series do not contain ", rarefaction, " elements: ", paste(names(data$series)[unlist(wrong_rarefaction)], collapse = ", "), ".", sep = "" ))
+        }
+    }
+
+    ## observed
+    check.class(observed, "logical")
+
+    ## xlab
+    if(missing(xlab)) { 
+        xlab <- "default"
+        if(time.series != FALSE) {
+            xlab <- "Time (Mya)"
+        }
+    } else {
+        ## length must be 1
+        check.length(xlab, 1, " must be a character string.")
+    }
+
+    ## ylab
+    if(missing(ylab)) {
+        ylab <- "default"
+    } else {
+        ## length must be 
+        if(elements == FALSE) {
+            check.length(ylab, 1, " must be a character string.")
         } else {
-            is.bootstrapped <- FALSE
+            if(length(ylab) > 2) stop("ylab can have maximum two elements.")
         }
-        #check if is.distribution
-        is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
+    }
 
-        #quantiles
-        #Only check if the data is bootstrapped
-        if(is.bootstrapped == TRUE) {
-            check.class(quantiles, "numeric", " must be any value between 1 and 100.")
-            #remove warnings
-            options(warn = -1)
-            if(any(quantiles) < 1) {
-                stop("quantiles(s) must be any value between 1 and 100.")
-            }
-            if(any(quantiles) > 100) {
-                stop("quantiles(s) must be any value between 1 and 100.")
-            }
-            options(warn = 0)
+    ## col
+    ## if default, is ok
+    if(missing(col)) {
+        if(type == "box") {
+            col <- "white"
+        } else {
+            col <- "default"
         }
+    } else {
+        check.class(col, "character", " must be a character string.")
+    }
 
-        #cent.tend
-        #Must be a function
-        check.class(cent.tend, "function")
-        #The function must work
-        silent <- check.metric(cent.tend)
+    ## ylim
+    if(missing(ylim)) {
+        ylim <- "default"
+    } else {
+        check.class(ylim, "numeric")
+        check.length(ylim, 2, " must be a vector of two elements.")
+    }
 
-        #type
-        if(missing(type)) {
-            #Set type to default
-            if(any(grep("continuous method", data$call))) {
-                type <- "continuous"
-            } else {
+    ## add
+    check.class(add, "logical")
+
+    ## density
+    if(type == "continuous" || type == "polygon") {
+        if(!is.null(density)) {
+            check.class(density, "numeric")
+            check.length(density, 1, " must be a single numeric value.")
+        }
+    }
+
+    ## PREPARING THE PLOT
+
+
+
+
+
+
+########
+    ## STOPPED HERE
+########
+
+
+
+
+
+
+
+    ## summarising the data
+    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
+
+
+
+
+
+    ## Get the summarised data to plot
+    # if(rarefaction == TRUE | class(rarefaction) == "numeric") {
+    #     if(rarefaction == TRUE) {
+    #         summarised_data <- summarised_data[-which(is.na(summarised_data$obs)),]
+    #     } else {
+    #         summarised_data <- summarised_data[which(summarised_data$n == rarefaction),]
+    #     }
+    # }
+
+
+
+    ## Check continuous (set to discrete if only one series)
+    if(rarefaction != "plot") {
+        if(type == "continuous") {
+            if(length(unique(summarised_data$series)) == 1) {
                 type <- "box"
-            }
-        } else {
-            #type must be either "discrete", "d", "continuous", or "c"
-            all_types <- c("continuous", "c", "box", "b", "lines", "l", "polygon", "p")
-            #type must be a character string
-            check.class(type, "character")
-            #type must have only one element
-            check.length(type, 1, paste(" argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
-            if(all(is.na(match(type, all_types)))) stop(paste("Type argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
-            
-            #if type is a letter change it to the full word (lazy people...)
-            if(type == "c") type <- "continuous"
-            if(type == "b") type <- "box"
-            if(type == "l") type <- "lines"
-            if(type == "p") type <- "polygon"
-        }
-
-        #If continuous, set time to continuous Ma (default)
-        if(type == "continuous" & time.series == TRUE) {
-            #Check if time.slicing was used (saved in call)
-            if(any(grep("Data was split using continuous method", data$call))) {
-                time_slicing <- data$series
-            }
-        } 
-        if(time.series != TRUE) {
-            time_slicing <- FALSE
-        } else {
-            time_slicing <- data$series
-        }
-
-        #elements
-        #must be logical
-        if(class(elements) != "logical") {
-            if(elements != "log") {
-                stop("Diversity must be either a logical or 'log'.")
-            } else {
-                elements <- TRUE
-                div.log <- TRUE
-            }
-        } else {
-            div.log <- FALSE
-        }
-
-        #rarefaction
-        #Set to null (default)
-        which.rare <- NULL
-        #if rarefaction is "plot", plot the rarefaction curves
-        if(rarefaction != "plot") {
-        #Else, make sure rarefaction works    
-            #must be logical
-            if(class(rarefaction) == "logical") {
-                logic.rare <- TRUE
-                if(rarefaction == TRUE) {
-                    which.rare <- "min"
-                } else {
-                    which.rare <- "max"
-                }
-            } else {
-                check.class(rarefaction, "numeric", " must be either logical or a single numeric value.")
-                check.length(rarefaction, 1, " must be either logical or a single numeric value.")
-                which.rare <- rarefaction
-            }
-        } else {
-            #Rarefaction plot
-            which.rare <- "plot"
-            #Cancel plot type
-            type <- "rarefaction"
-        }
-
-        #Test if rarefaction data exists!
-        if(which.rare != "max") {
-            if(any(grep("rarefied", data$call)) == FALSE) {
-                stop("Data set is not rarefied. Use rarefaction = FALSE.")
+                message('Only one series of data available: type is set to "box".')
             }
         }
+    }
 
-        #xlab
-        if(missing(xlab)) { 
-            xlab <- "default"
-            if(time.series != FALSE) {
-                xlab <- "Time (Mya)"
-            }
-        } else {
-            #length must be 1
-            check.length(xlab, 1, " must be a character string.")
+    ## Setting the default arguments
+    default_arg <- set.default(summarised_data, data$call, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, which.rare = which.rare)
+    ylim <- default_arg[[1]]
+    xlab <- default_arg[[2]]
+    ylab <- default_arg[[3]]
+    col <- default_arg[[4]]
+
+    ## PLOTTING THE RESULTS
+
+    if(which.rare == "plot") {
+        ## How many rarefaction plots?
+        n_plots <- length(unique(summarised_data[,1]))
+
+        ## Open the multiple plots
+        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+
+        ## Rarefaction plots
+        for(nPlot in 1:n_plots) {
+            get_series <- get.series(summarised_data, rare_level = nPlot)
+            tmp_summarised_data <- get_series[[1]]
+            level_name <- get_series[[2]]
+            plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
+            ## plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
         }
 
-        #ylab
-        if(missing(ylab)) {
-            ylab <- "default"
-        } else {
-            #length must be 
+        ## Done!
+        par(op_tmp)
+
+    } else { 
+
+        ## Continuous plot
+        if(type == "continuous") {
             if(elements == FALSE) {
-                check.length(ylab, 1, " must be a character string.")
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
+                ## saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
             } else {
-                if(length(ylab) > 2) stop("ylab can have maximum two elements.")
+                ## bigger_margin<-par(mar=c(5,4,4,4))
+                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
+                ## saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+                par(new = TRUE)
+                plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab, ...)
+                ## plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                ## par(bigger_margin)
             }
-        }
 
-        #col
-        #if default, is ok
-        if(missing(col)) {
+        } else {
+
+            ## Box plot
             if(type == "box") {
-                col <- "white"
-            } else {
-                col <- "default"
-            }
-        } else {
-            check.class(col, "character", " must be a character string.")
-        }
+                ## Simple case: boxplot
+                plot_data <- transpose.box(data, which.rare)
+                boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
+                ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
 
-        #ylim
-        if(missing(ylim)) {
-            ylim <- "default"
-        } else {
-            check.class(ylim, "numeric")
-            check.length(ylim, 2, " must be a vector of two elements.")
-        }
-
-        #add
-        check.class(add, "logical")
-
-        #density
-        if(type == "continuous" || type == "polygon") {
-            if(!is.null(density)) {
-                check.class(density, "numeric")
-                check.length(density, 1, " must be a single numeric value.")
-            }
-        }
-
-        #PREPARING THE PLOT
-
-        #summarising the data
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
-
-        #Check the rarefaction
-        if(which.rare != "max") {
-            if(length(unique(summarised_data$n)) == 1) {
-                if(which.rare == "plot") {
-                    stop("Data is not rarefied!")
-                }
-                rarefaction <- FALSE
-                which.rare <- "max"
-            }
-        }
-
-        #Rarefaction must be in summarised_data
-        if(class(which.rare) == "numeric") {
-            #The data must have the right number of rarefaction elements
-            elements_in <- length(which(unlist(summarised_data$n) == which.rare))
-            elements_req <- length(unique(unlist(summarised_data[[1]])))
-            if(elements_in != elements_req) {
-                stop(paste("Rarefaction: only ", elements_in, "/" ,elements_req, " series have at least ", which.rare, " elements.", sep=""))
-            }
-        }
-
-        #Check continuous (set to discrete if only one series)
-        if(which.rare != "plot") {
-            if(type == "continuous") {
-                if(length(unique(summarised_data$series)) == 1) {
-                    type <- "box"
-                    message('Only one series of data available: type is set to "box".')
-                }
-            }
-        }
-
-        #Setting the default arguments
-        default_arg <- set.default(summarised_data, data$call, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, which.rare = which.rare)
-        ylim <- default_arg[[1]]
-        xlab <- default_arg[[2]]
-        ylab <- default_arg[[3]]
-        col <- default_arg[[4]]
-
-        #PLOTTING THE RESULTS
-
-        if(which.rare == "plot") {
-            #How many rarefaction plots?
-            n_plots <- length(unique(summarised_data[,1]))
-
-            #Open the multiple plots
-            op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
-
-            #Rarefaction plots
-            for(nPlot in 1:n_plots) {
-                get_series <- get.series(summarised_data, rare_level = nPlot)
-                tmp_summarised_data <- get_series[[1]]
-                level_name <- get_series[[2]]
-                plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name, ...)
-                #plot.rarefaction(tmp_summarised_data, which.rare, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
-            }
-
-            #Done!
-            par(op_tmp)
-
-        } else { 
-
-            #Continuous plot
-            if(type == "continuous") {
-                if(elements == FALSE) {
-                    saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
-                    #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
-                } else {
-                    #bigger_margin<-par(mar=c(5,4,4,4))
-                    saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
-                    #saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
-                    par(new = TRUE)
-                    plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
-                    #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                    #par(bigger_margin)
-                }
-
-            } else {
-
-                #Box plot
-                if(type == "box") {
-                    #Simple case: boxplot
-                    plot_data <- transpose.box(data, which.rare)
-                    boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
-                    #boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
-
-                    if(observed == TRUE) {
-                        if(any(!is.na(extract.summary(summarised_data, 3, which.rare)))){
-                            #Add the points observed (if existing)
-                            for(point in 1:length(plot_data)) {
-                                x_coord <- point
-                                y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
-                                points(x_coord, y_coord, pch = 4, col = col[length(col)])
-                            }
+                if(observed == TRUE) {
+                    if(any(!is.na(extract.summary(summarised_data, 3, which.rare)))){
+                        ## Add the points observed (if existing)
+                        for(point in 1:length(plot_data)) {
+                            x_coord <- point
+                            y_coord <- extract.summary(summarised_data, 3, which.rare)[point]
+                            points(x_coord, y_coord, pch = 4, col = col[length(col)])
                         }
                     }
-                        
+                }
+                    
 
+            } else {
+
+                ## Personalised discrete plots
+                if(elements == FALSE) {
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) 
+                    ## saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
                 } else {
-
-                    #Personalised discrete plots
-                    if(elements == FALSE) {
-                        saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) 
-                        #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
-                    } else {
-                        #bigger_margin <- par(mar=c(5,4,4,4))
-                        saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...)
-                        #saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
-                        par(new = TRUE)
-                        plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab, ...)
-                        #plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
-                        #par(bigger_margin)
-                    }
-                }   
-            }
-
-
-        #End dispRity plot
+                    ## bigger_margin <- par(mar=c(5,4,4,4))
+                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...)
+                    ## saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
+                    par(new = TRUE)
+                    plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab, ...)
+                    ## plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                    ## par(bigger_margin)
+                }
+            }   
         }
     }
 }
