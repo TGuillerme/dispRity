@@ -74,11 +74,3 @@ test_that("extract.from.summary works", {
         extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
         ,c(1.780,1.812,1.874,1.877,1.907,1.878,1.818))
 })
-
-
-#Extract summary
-#extract.summary(summarised_data, what=2, which.rare=3))
-
-
-#Get series
-#get.series

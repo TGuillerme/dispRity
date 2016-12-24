@@ -5,7 +5,7 @@
 #' @param data A \code{dispRity} object.
 #' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
-#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).
+#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
@@ -13,7 +13,7 @@
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the graph.
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.
-#' @param observed \code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).
+#' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
@@ -76,12 +76,12 @@
 # series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
 # data <- sequential.test(series, family = gaussian, correction = "hommel")
 # quantiles=c(50,95)
-# cent.tend=mean
+# cent.tend=median
 # significance="cent.tend"
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.series = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.series = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -370,6 +370,9 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
 
         ## TO LAPPLY!
         for(nPlot in 1:n_plots) {
+
+            ## Modify get.series into just data$series!
+
             get_series <- get.series(summarised_data, rare_level = nPlot)
             tmp_summarised_data <- get_series[[1]]
             level_name <- get_series[[2]]
@@ -385,15 +388,15 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
         ## Continuous plot
         if(type == "continuous") {
             if(elements == FALSE) {
-                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
-                ## saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+                saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
+                ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
             } else {
                 ## bigger_margin<-par(mar=c(5,4,4,4))
-                saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
-                ## saved_par <- plot.continuous(summarised_data, which.rare, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+                saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...)
+                ## saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
                 par(new = TRUE)
-                plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab, ...)
-                ## plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
+                ## plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
                 ## par(bigger_margin)
             }
 
@@ -402,16 +405,16 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
             ## Box plot
             if(type == "box") {
                 ## Simple case: boxplot
-                plot_data <- transpose.box(data, which.rare)
+                plot_data <- transpose.box(data, rarefaction)
                 boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
                 ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
 
                 if(observed == TRUE) {
-                    if(any(!is.na(extract.from.summary(summarised_data, 3, which.rare)))){
+                    if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
                         ## Add the points observed (if existing)
                         for(point in 1:length(plot_data)) {
                             x_coord <- point
-                            y_coord <- extract.from.summary(summarised_data, 3, which.rare)[point]
+                            y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
                             points(x_coord, y_coord, pch = 4, col = col[length(col)])
                         }
                     }
@@ -422,15 +425,15 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = mean, ra
 
                 ## Personalised discrete plots
                 if(elements == FALSE) {
-                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...) 
-                    ## saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
+                    saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) 
+                    ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
                 } else {
                     ## bigger_margin <- par(mar=c(5,4,4,4))
-                    saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, ...)
-                    ## saved_par <- plot.discrete(summarised_data, which.rare, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
+                    saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...)
+                    ## saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, cex.lab = 0.1) ; warning("DEBUG: plot")
                     par(new = TRUE)
-                    plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab, ...)
-                    ## plot.elements(summarised_data, which.rare, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
+                    plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab)
+                    ## plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
                     ## par(bigger_margin)
                 }
             }   
