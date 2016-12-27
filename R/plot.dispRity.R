@@ -216,7 +216,9 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## Must be a function
     check.class(cent.tend, "function")
     ## The function must work
-    silent <- check.metric(cent.tend)
+    if(make.metric(cent.tend, silent = TRUE) != "level1") {
+        stop("cent.tend argument must be a function that outputs a single numeric value.")
+    }
 
     ## type
     if(length(data$series) == 1) {
@@ -273,7 +275,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         rarefaction <- FALSE
     }
     ## Check class
-    check.class(rarefaction, c("logical", "integer", "numeric"))
+    silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
     if(class(rarefaction) != "logical") {
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
@@ -345,15 +347,15 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
 
     ## PREPARING THE PLOT
 
+    ## summarising the data
+    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
+
     ## Setting the default arguments
     default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction)
     ylim <- default_arg[[1]]
     xlab <- default_arg[[2]]
     ylab <- default_arg[[3]]
     col <- default_arg[[4]]
-
-    ## summarising the data
-    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
 
     ## PLOTTING THE RESULTS
 
@@ -408,8 +410,8 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     if(type == "box") {
         ## Simple case: boxplot
         plot_data <- transpose.box(data, rarefaction)
-        boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add, ...)
-        ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add) ; warning("DEBUG: plot")
+        boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add = add, ...)
+        ## boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab, col = col, add = add) ; warning("DEBUG: plot")
 
         if(observed == TRUE) {
             if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
