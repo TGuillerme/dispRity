@@ -4,12 +4,16 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
     ## ylim
     if(ylim[[1]] == "default") {
         ## Setting the ylim to min/max -/+ 5%.
-        ylim = c(min(summarised_data[,-c(1:2)], na.rm = TRUE) - min(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[,-c(1:2)], na.rm = TRUE) + max(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02)
+        if(rarefaction != TRUE) {
+            ylim <- c(min(summarised_data[,-c(1:2)], na.rm = TRUE) - min(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[,-c(1:2)], na.rm = TRUE) + max(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02)
+        } else {
+            ylim <- "rarefaction"
+        }
     }
 
     ## xlab
     if(xlab == "default") {
-        if(rarefaction == "plot") {
+        if(rarefaction == TRUE) {
             xlab <- "Elements"
         } else {
             xlab <- "Series"
@@ -227,42 +231,40 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
 }
 
 
+## Splitting the summarised data table by series (list)
+split.summary.data <- function(series_levels, summarised_data) {
+    return(summarised_data[which(summarised_data$series == series_levels),])
+}
+
 ## rarefaction plottings
-plot.rarefaction<-function(summarised_data, rarefaction, ylim, xlab, ylab, col, ...) {
-## plots rarefaction curves (continuous, multiple panels if series > 1)
-
-    plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
-    ## plot(summarised_data[,3], type = "l", xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim) ; warning("DEBUG: plot")
-
-    ## Add the quantiles
-    ## Check if bootstrapped
-    if(ncol(summarised_data) > 3) {
-        ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data)-4)/2
-
-        ## Set the colours
-        if(length(col[-1]) < quantiles_n) {
-            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", rarefaction)[[4]]
-            poly_col <- col[-1]
-            poly_col <- rev(poly_col)
-        } else {
-            poly_col <- col[-1]
-            poly_col <- rev(poly_col)
-        }
-
-        ## Add the quantile lines (from inner to outer quantiles)
-        for (cis in 1:quantiles_n) {
-            ## lower quantile
-            lines(summarised_data[, 4+cis], lty = (quantiles_n+2-cis))## , col = poly_col[cis])
-            ## upper quantile
-            lines(summarised_data[, ncol(summarised_data) - (cis-1)], lty = (quantiles_n+2-cis))## , col = poly_col[cis])
-        }
-
-        ## Add the central tendency
-        lines(summarised_data[, 4], lty = 1)## , col = col[1])
-
+plot.rarefaction <- function(sub_data, ylim, xlab, ylab, ...) {
+    ## Get parameters
+    if(ylim[[1]] == "rarefaction") {
+        ## ylim?
+        ylim <- c(min(sub_data[,-c(1:2)], na.rm = TRUE) - min(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(sub_data[,-c(1:2)], na.rm = TRUE) + max(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02)
+    }
+    ## title?
+    main <- unique(as.character(sub_data$series))
+    ## how many quantiles?
+    quantiles_n <- (ncol(sub_data)-4)/2
+    ## colors?
+    if(length(col) < quantiles_n) {
+        col <- rep(col[[1]], n_quantiles+1)
     }
 
+    ## Plot central tendency curve (continuous)
+    plot(sub_data[,4], type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
+
+
+    ## Plot the quantiles curves
+    if(quantiles_n != 0) {
+        for (cis in 1:quantiles_n) {
+            ## lower quantile
+            lines(sub_data[, 4+cis], lty = (quantiles_n+2-cis), col = col[[cis+1]])
+            ## upper quantile
+            lines(sub_data[, ncol(sub_data) - (cis-1)], lty = (quantiles_n+2-cis), col = col[[cis+1]])
+        }
+    }
     ##  Save parameters
     return(par())
 }

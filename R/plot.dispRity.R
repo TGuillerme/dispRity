@@ -59,7 +59,7 @@
 #'      elements = TRUE, col = c("red", "orange", "yellow"))
 #' 
 #' ## Rarefactions plots
-#' plot(disparity, rarefaction = "plot")
+#' plot(disparity, rarefaction = TRUE)
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 #'
@@ -180,7 +180,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
                 ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
         }
-        return()
+        return(invisible())
     }
 
     ## ----
@@ -358,34 +358,31 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     col <- default_arg[[4]]
 
     ## PLOTTING THE RESULTS
-
-    warning("In plot.dispRity, sort out rarefaction plots")
-
-    if(rarefaction == "plot") {
+    if(rarefaction == TRUE) {
         ## How many rarefaction plots?
-        n_plots <- length(unique(summarised_data[,1]))
+        n_plots <- length(data$series)
 
         ## Open the multiple plots
         op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
 
         ## Rarefaction plots
 
+        ## Get the list of series
+        series_levels <- as.numeric(as.character(unique(summarised_data$series)))
+
+        ## Split the summary table
+        sub_summarised_data <- lapply(as.list(series_levels), split.summary.data, summarised_data)
+
+        ## Plot the rarefaction curves
         for(nPlot in 1:n_plots) {
-
-            ## Modify get.series into just data$series!
-
-            get_series <- get.series(summarised_data, rare_level = nPlot)
-            tmp_summarised_data <- get_series[[1]]
-            level_name <- get_series[[2]]
-            plot.rarefaction(tmp_summarised_data, rarefaction, ylim, xlab, ylab, col, main = level_name, ...)
-            ## plot.rarefaction(tmp_summarised_data, rarefaction, ylim, xlab, ylab, col, main = level_name) ; warning("DEBUG: plot")
+            plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, ...)
+            # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab) ; warning("DEBUG: plot")
         }
 
         ## Done!
         par(op_tmp)
 
-        return()
-
+        return(invisible())
     }
 
     ## Continuous plot
@@ -402,7 +399,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
             ## plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
             ## par(bigger_margin)
         }
-        return()
+        return(invisible())
     }
 
 
@@ -423,7 +420,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
                 }
             }
         }
-        return()
+        return(invisible())
     }
 
 
@@ -442,7 +439,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
             ## plot.elements(data, summarised_data, rarefaction, ylab = ylab, col = col, type, div.log = FALSE, cex.lab = saved_par$cex.lab) ; warning("DEBUG: plot")
             ## par(bigger_margin)
         }
-        return()
+        return(invisible())
     }
 
 }

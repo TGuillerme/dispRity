@@ -83,7 +83,7 @@ plot(disparity, type = "continuous", time.series = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots
-plot(disparity, rarefaction = "plot")
+plot(disparity, rarefaction = TRUE)
 
 }
 \author{
