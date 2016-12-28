@@ -44,7 +44,7 @@ test_that("set.default works", {
         , c("Bli", "Blu"))
     expect_equal(
         test[[4]]
-        , c("pink", "knip"))
+        , c("pink", "knip", "#BEBEBE"))
 })
 
 test_that("extract.from.summary works", {

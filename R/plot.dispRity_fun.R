@@ -1,5 +1,5 @@
 ## default settings
-set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction) {
+set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE) {
 
     ## ylim
     if(ylim[[1]] == "default") {
@@ -36,6 +36,15 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
             n_quantiles <- (ncol(summarised_data)-4)/2
             colfun <- colorRampPalette(c("grey", "lightgrey"))
             col <- c(col, colfun(n_quantiles))
+        }
+    } else {
+        if(type != "box") {
+            n_quantiles <- ncol(summarised_data[,-c(1:4)])/2
+            cols_missing <- (n_quantiles + 1) - length(col)
+            if(cols_missing > 0) {
+                colfun <- colorRampPalette(c("grey", "lightgrey"))
+                col <- c(col, colfun(cols_missing))
+            }
         }
     }
 
