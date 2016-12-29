@@ -98,8 +98,10 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
         width <- 0.5 # points_n/(points_n*2)
 
         ## Set the colours
-        if(length(col[-1]) < quantiles_n) {
-            col_tmp <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default")[[4]]
+        if(length(col) < (quantiles_n+1)) {
+            cols_missing <- (quantiles_n + 1) - length(col)
+            colfun <- colorRampPalette(c("grey", "lightgrey"))
+            col_tmp <- c(col, colfun(cols_missing))
             poly_col <- col_tmp[-1]
             poly_col <- rev(poly_col)
         } else {
@@ -177,9 +179,11 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         quantiles_n <- (ncol(summarised_data)-4)/2
 
         ## Set the colours
-        if(length(col[-1]) < quantiles_n) {
-            col <- set.default(summarised_data, call = 1, elements = 1, ylim = 1, xlab = 1, ylab = 1, col = "default", rarefaction)[[4]]
-            poly_col <- col[-1]
+        if(length(col) < (quantiles_n+1)) {
+            cols_missing <- (quantiles_n + 1) - length(col)
+            colfun <- colorRampPalette(c("grey", "lightgrey"))
+            col_tmp <- c(col, colfun(cols_missing))
+            poly_col <- col_tmp[-1]
             poly_col <- rev(poly_col)
         } else {
             poly_col <- col[-1]
@@ -246,7 +250,7 @@ split.summary.data <- function(series_levels, summarised_data) {
 }
 
 ## rarefaction plottings
-plot.rarefaction <- function(sub_data, ylim, xlab, ylab, ...) {
+plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, ...) {
     ## Get parameters
     if(ylim[[1]] == "rarefaction") {
         ## ylim?
@@ -256,6 +260,7 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, ...) {
     main <- unique(as.character(sub_data$series))
     ## how many quantiles?
     quantiles_n <- (ncol(sub_data)-4)/2
+
     ## colors?
     if(length(col) < quantiles_n) {
         col <- rep(col[[1]], n_quantiles+1)
