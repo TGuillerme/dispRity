@@ -94,7 +94,11 @@ print.dispRity <- function(x, all = FALSE) {
                 if(length(method) != 1) {
                     method <- paste(method[1], " (", method[2],")", sep = "")
                 }
-                cat(paste(length(series), method, "series for", nrow(x$matrix), "elements"))
+                if(method == "customised") {
+                    cat(paste(length(series), method, "series for", nrow(x$matrix), "elements"))    
+                } else {
+                    cat(paste(length(series), method, "time series for", nrow(x$matrix), "elements"))
+                }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
                 if(length(series) > 5) {
