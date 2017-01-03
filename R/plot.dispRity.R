@@ -398,6 +398,10 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
 
     ## Continuous plot
     if(type == "continuous") {
+        ## Bigger plot margins if elements needed
+        if(elements) {
+            par(mar = c(5, 4, 4, 4) + 0.1)
+        }
         saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
         # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
@@ -409,12 +413,16 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
 
     ## Polygons or lines
     if(type == "polygon" | type == "lines") {
+        ## Bigger plot margins if elements needed
+        if(elements) {
+            par(mar = c(5, 4, 4, 4) + 0.1)
+        }
         ## Personalised discrete plots
         saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) 
         # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab)
         }
         return(invisible())
     }
@@ -423,6 +431,10 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     if(type == "box") {
         ## Simple case: boxplot
         plot_data <- transpose.box(data, rarefaction)
+        ## Bigger plot margins if elements needed
+        if(elements) {
+            par(mar = c(5, 4, 4, 4) + 0.1)
+        }
         saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
         # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
 
@@ -436,9 +448,9 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
                 }
             }
         }
-        if(elements == TRUE) {
+        if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab)
         }
 
         return(invisible())

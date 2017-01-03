@@ -213,6 +213,8 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
 
 ## Plotting elements
 plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, ...) {
+
+    div.log = FALSE
     ## Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]] <- "Elements"
