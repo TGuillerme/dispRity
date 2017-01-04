@@ -89,6 +89,10 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
     ## level 3 decomposition
     if(!is.null(metrics_list$level3.fun)) {
         if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- array()
+
             #matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...)
             matrix_decomposition <- array(apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_bs_matrix)))
             decompose_matrix <- FALSE
@@ -102,6 +106,10 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
     ## level 2 decomposition
     if(!is.null(metrics_list$level2.fun)) {
         if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- numeric(ncol(matrix))
+
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level2.fun, data = data, ...)
             decompose_matrix <- FALSE
         } else {
@@ -114,6 +122,10 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
     ## level 1 metric decomposition
     if(!is.null(metrics_list$level1.fun)) {
         if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- numeric(ncol(matrix))
+
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level1.fun, data = data, ...)
             decompose_matrix <- FALSE
         } else {

@@ -161,7 +161,7 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         ## Lapply through the disparity scores (serried)
         lapply_loop <- data$disparity
     }
-
+    
     if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
