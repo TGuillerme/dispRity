@@ -137,7 +137,6 @@ centroids <- function(matrix, centroid) {
 
     ## Initialise values
     cent.dist <- numeric(nrow(matrix))
-    centroid <- numeric(ncol(matrix))
 
     if(missing(centroid)) {
         #Calculating the centroid point
@@ -182,9 +181,6 @@ mode.val <- function(X){
 
 # Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
-
-    ## Initialise values
-    eigen.value <- numeric(ncol(matrix))
 
     #Initialising the variables
     ncol_matrix <- ncol(matrix)

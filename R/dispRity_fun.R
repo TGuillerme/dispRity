@@ -108,7 +108,7 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
         if(decompose_matrix) {
             
             ## Initialise values
-            matrix_decomposition <- numeric(ncol(matrix))
+            matrix_decomposition <- numeric(ncol(data$matrix))
 
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level2.fun, data = data, ...)
             decompose_matrix <- FALSE
@@ -124,7 +124,7 @@ disparity.bootstraps <- function(one_bs_matrix, metrics_list, data, matrix_decom
         if(decompose_matrix) {
             
             ## Initialise values
-            matrix_decomposition <- numeric(ncol(matrix))
+            matrix_decomposition <- numeric(ncol(data$matrix))
 
             matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level1.fun, data = data, ...)
             decompose_matrix <- FALSE
