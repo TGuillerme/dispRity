@@ -154,3 +154,67 @@ lapply.wrapper <- function(series, metrics_list, data, matrix_decomposition, ver
 combine.disparity <- function(one_disparity_series, one_bootstrap_series) {
     return(c(one_bootstrap_series[1], one_disparity_series))
 }
+
+
+
+
+
+
+
+## Alternative (slower!)
+# ## Function for calculating disparity
+# disparity.bootstraps <- function(one_series_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+#     ## Storing the metrics list as temporary
+#     metrics_list_tmp <- metrics_list
+
+#     ## Set matrix decomposition option
+#     if(matrix_decomposition != TRUE) {
+#         disparity <- one_series_bootstrap
+#         matrix_decomposition <- FALSE
+#     }
+
+#     ## 1 - Decomposing the matrix (if necessary)
+#     if(matrix_decomposition) {
+#         ## Getting the first metric
+#         first_metric <- get.first.metric(metrics_list_tmp)
+#         metrics_list_tmp <- first_metric[[2]]
+#         first_metric <- first_metric[[1]]
+#         ## Find out whether to output an array
+#         use_array <- !is.null(metrics_list$level3.fun)
+#         ## Initialise the vector
+#         disparity <- ifelse(use_array, array(), list())
+#         ## Decompose the metric using the first metric
+#         disparity <- apply.decompose.matrix(one_series_bootstrap, fun = first_metric, data, use_array = use_array)
+#     }
+
+#     ## 2 - Applying the metrics to the decomposed matrix
+
+#     ## Apply function level 3
+#     if(!is.null(metrics_list_tmp$level3.fun)) {
+#         disparity <- apply(disparity, 2, metrics_list_tmp$level3.fun, ...)
+#         # disparity <- apply(disparity, 2, metrics_list_tmp$level3.fun) ; warning("DEBUG disparity_fun")
+#     }
+
+#     ## Apply function level 2
+#     if(!is.null(metrics_list_tmp$level2.fun)) {
+#         disparity <- apply(disparity, 3, metrics_list_tmp$level2.fun, ...)
+#         # disparity <- apply(disparity, 3, metrics_list_tmp$level2.fun) ; warning("DEBUG disparity_fun")
+#     }
+
+#     ## For level 1 metric (if class is array)
+#     if(!is.null(metrics_list_tmp$level1.fun)) {
+#         not_array <- class(disparity) != "array"
+#         if(not_array) {
+#             disparity <- apply(disparity, 2, metrics_list_tmp$level1.fun, ...)
+#             # disparity <- apply(disparity, 2, metrics_list_tmp$level1.fun) ; warning("DEBUG disparity_fun")
+#         } else {
+#             disparity <- apply(disparity, 3, metrics_list_tmp$level1.fun, ...)
+#             # disparity <- apply(disparity, 3, metrics_list_tmp$level1.fun) ; warning("DEBUG disparity_fun")
+#         }
+#         disparity <- t(as.matrix(disparity))
+#     }
+
+#     #if(verbose) message(".", appendLF = FALSE)
+
+#     return(disparity)
+# }
