@@ -332,6 +332,12 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         } else {
             col <- "default"
         }
+
+        ## temporary annoying bug fix
+        if(rarefaction) {
+            col <- "black"
+        }
+
     } else {
         check.class(col, "character", " must be a character string.")
     }

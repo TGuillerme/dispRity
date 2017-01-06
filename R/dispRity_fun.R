@@ -39,7 +39,7 @@ get.dispRity.metric.handle <- function(metric, match_call) {
         ## getting the metric levels
         levels <- unlist(lapply(metric, make.metric, silent=TRUE))
         ## can only unique levels
-        if(length(levels) != length(unique(levels))) stop("Some functions in metric are the same of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
+        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 
         ## At least one level 1 or level 2 metric is required
         if(length(levels) == 1 && levels[[1]] == "level3") {

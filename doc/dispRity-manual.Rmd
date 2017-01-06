@@ -504,71 +504,55 @@ plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
 
 > The `type` argument is not mandatory for the two first plots since both `continuous` and `box` are the default options for respectively continuous and discrete data.
 
-It is also possible to easily look at the behaviour of the disparity metric with the rarefied data (i.e. how does the disparity score change when the number of elements goes down) by using the `rarefaction = TRUE` argument:
-
-<!-- 
-```{r, fig.width=6, fig.height=6}
-## Graphical options
-par(bty = "n")
-## The rarefaction curves
-plot(disp_crown_stemBS, elements = TRUE, rarefaction = TRUE)
-
-```
-
-
-The different dashed lines represent the different confidence intervals around each rarefaction curve. We can see that the disparity metric becomes stable after more than 10 elements.
-
-It is also possible, when using the `type = lines` argument, to plot lines rather than boxes.
-This option can be useful when displaying many series in a same window. Additionally, it is possible to plot the observed data when existing (i.e. not when the data is rarefied) by using the option `observed = TRUE`.
-
-```{r}
-## Graphical options
-par(bty = "n")
-## The disparity-through-time data in a time-binned way (with lines rather than
-## boxes) with the observed data as crosses
-plot(disp_time_binsBS, type = "lines", observed = TRUE)
-```
-
-The `type = continuous` argument plots superimposed continuous (along the x axis) polygons that represent the confidence intervals and a continuous line that represents the central tendency of the data.
-Note that, as a S3 method function, `plot.dispRity` can take the classic graphical options from the `plot` function or even to add other plots to the previous ones.
+Since `plot.dispRity` uses the arguments from the generic `plot` method, it is of course possible to change pretty much everything using the regular plot arguments:
 
 ```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
-
-## First, plotting the continuous data with a y axis limit
-plot(disp_time_slicesBS, type = "continuous")
-## Note that the type = "continuous" argument is not mandatory here.
+## Plotting the results with some classic options from plot
+plot(disp_time_slicesBS, col = c("blue", "orange", "green"), ylab = c("Some measurement"),
+    xlab = "Some other measurement", main = "Many options...", ylim = c(0,2.1))
+## Adding a legend
+legend("topleft", legend = c("Central tendency", "Confidence interval 1", "Confidence interval 2"),
+    col = c("blue", "orange", "green"), pch = 19)
 ```
 
-I encourage you to play with the graphical options to have some prettier results.
-Note that most of the options from `plot` can be passed to `plot.dispRity` via `...`.
+Additionally to the classic `plot` arguments, the function can also take arguments that are specific to `plot.dispRity` like adding the number of elements or rarefaction level (as described above) but also changing the values of the quantiles to plot as well as the central tendency.
 
 ```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
-## A plot with many options!
-plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)),
-    cent.tend = sd, type = "continuous", elements = "log",
-    col = c("black", rainbow(10)), ylab = c("Disparity", "log(Diversity)"),
+## Plotting the results with some plot.dispRity arguments
+plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd, type = "c",
+    elements = TRUE, col = c("black", rainbow(10)), ylab = c("Disparity", "Diversity"),
     xlab = "Time (in in units from past to present)", time.series = FALSE,
     observed = TRUE, main = "Many options...")
 ```
 
+> Note that the argument `observed = TRUE` allows to plot the disparity values calculated from the non-bootstrapped data as crosses on the plot.
 
-Finally, it is possible to add multiple plots on top of each other:
+For comparing results, it is also possible to add a plot to the existent plot by using `add = TRUE`:
 
 ```{r, fig.width=6, fig.height=6}
 ## Graphical options
 par(bty = "n")
-
-## First, plotting the continuous data with a y axis limit
+## Plotting the continuous disparity with a fixed y axis
 plot(disp_time_slicesBS, ylim = c(0.5,2))
-
-## Second, adding the discrete data
-par(new = TRUE)
-plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="")
+## Adding the discrete data using the same fixed y axis to have the results at the same scale
+plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
 ```
+
+<!-- TODO: fix the placement bug with add = TRUE! -->
+
+Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
+
+```{r, fig.width=6, fig.height=6}
+## Graphical options
+par(bty = "n")
+## Plotting the rarefaction curves
+plot(disp_crown_stemBS, rarefaction = TRUE)
+```
+<!-- 
 
 `test.dispRity`
 ---------------
