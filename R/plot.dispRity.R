@@ -380,7 +380,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         ## Rarefaction plots
 
         ## Get the list of series
-        series_levels <- as.numeric(as.character(unique(summarised_data$series)))
+        series_levels <- unique(summarised_data$series)
 
         ## Split the summary table
         sub_summarised_data <- lapply(as.list(series_levels), split.summary.data, summarised_data)

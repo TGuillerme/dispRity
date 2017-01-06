@@ -33,14 +33,14 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         col <- "black"
         ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
-            n_quantiles <- (ncol(summarised_data)-4)/2
+            quantiles_n <- (ncol(summarised_data)-4)/2
             colfun <- colorRampPalette(c("grey", "lightgrey"))
-            col <- c(col, colfun(n_quantiles))
+            col <- c(col, colfun(quantiles_n))
         }
     } else {
         if(type != "box") {
-            n_quantiles <- ncol(summarised_data[,-c(1:4)])/2
-            cols_missing <- (n_quantiles + 1) - length(col)
+            quantiles_n <- ncol(summarised_data[,-c(1:4)])/2
+            cols_missing <- (quantiles_n + 1) - length(col)
             if(cols_missing > 0) {
                 colfun <- colorRampPalette(c("grey", "lightgrey"))
                 col <- c(col, colfun(cols_missing))
@@ -270,7 +270,7 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, ...) {
 
     ## colors?
     if(length(col) < quantiles_n) {
-        col <- rep(col[[1]], n_quantiles+1)
+        col <- rep(col[[1]], quantiles_n+1)
     }
 
     ## Plot central tendency curve (continuous)
