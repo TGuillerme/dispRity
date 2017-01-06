@@ -75,12 +75,13 @@
 # sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
 # series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
 # data <- sequential.test(series, family = gaussian, correction = "hommel")
+# data <- sum_of_variances
 # quantiles=c(50,95)
 # cent.tend=median
 # rarefaction = NULL
 # elements = TRUE
-# type = "continuous"
-# time.series = TRUE
+# type = "discrete"
+# time.series = FALSE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -436,7 +437,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
-        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
+        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot") ; par(new = TRUE) ; warning("DEBUG: par new") 
 
         if(observed == TRUE) {
             if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
