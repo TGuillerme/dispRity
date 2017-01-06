@@ -155,66 +155,164 @@ combine.disparity <- function(one_disparity_series, one_bootstrap_series) {
     return(c(one_bootstrap_series[1], one_disparity_series))
 }
 
+## Getting the first metric
+get.first.metric <- function(metrics_list_tmp) {
+    ## Initialise
+    metric <- 1
+    counter <- 1
+
+    ## Select the first metric
+    while(is.null(metrics_list_tmp[[metric]]) & counter < 3) {
+        metric <- metric + 1
+        counter <- counter + 1
+    }
+
+    ## output
+    metric_out <- metrics_list_tmp[[metric]]
+    metrics_list_tmp[metric] <- list(NULL)
+    return(list(metric_out, metrics_list_tmp, metric))
+}
+
+## Generates the output vector for the decomposition function
+generate.empty.output <- function(one_series_bootstrap, data, level) {
+    if(level == 3) {
+        ## Return an array
+        return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_series_bootstrap))))
+    }
+    if(level == 2) {
+        ## Return a matrix
+        return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_series_bootstrap)))
+    }
+    if(level == 1) {
+        ## Return a vector
+        return(numeric(ncol(one_series_bootstrap)))
+    }
+}
+
+## Apply decompose matrix
+apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
+    ## Calculates disparity from a bootstrap table
+    decompose.matrix <- function(one_bootstrap, fun, data, ...) {
+        return(fun( data$matrix[one_bootstrap, 1:data$call$dimensions], ...))
+    }
+
+    ## Decomposing the matrix
+    if(use_array) {
+        return(array(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_bs_matrix))))
+    } else {
+        return(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...))
+    }
+}
 
 
+## Calculating the disparity for a bootstrap matrix 
+disparity.bootstraps <- function(one_series_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+    ## 1 - Decomposing the matrix (if necessary)
+    if(matrix_decomposition) {
+        ## Find out whether to output an array
+        use_array <- !is.null(metrics_list$level3.fun)        
+        ## Getting the first metric
+        first_metric <- get.first.metric(metrics_list)
+        level <- first_metric[[3]]
+        metrics_list <- first_metric[[2]]
+        first_metric <- first_metric[[1]]
+        ## Decompose the metric using the first metric
+        disparity_out <- apply.decompose.matrix(one_series_bootstrap, fun = first_metric, data = data, use_array = use_array)
+    } else {
+        disparity_out <- one_series_bootstrap
+    }
+
+    ## 2 - Applying the metrics to the decomposed matrix
+    if(!is.null(metrics_list$level3.fun)) {
+        disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
+    }
+
+    if(!is.null(metrics_list$level2.fun)) {
+        disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
+    }
+
+    if(!is.null(metrics_list$level1.fun)) {
+        margin <- ifelse(class(disparity_out) != "array", 2, 3)
+        disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
+        disparity_out <- t(as.matrix(disparity_out))
+    }
+
+    return(disparity_out)
+}
+
+## Calculating the disparity for a bootstrap matrix (older version)
+disparity.bootstraps.old <- function(one_bs_matrix, metrics_list, data, matrix_decomposition, ...){
+
+    ## Calculates disparity from a bootstrap table
+    decompose.matrix <- function(one_bootstrap, fun, data, ...) {
+        return(fun( data$matrix[one_bootstrap, 1:data$call$dimensions], ...))
+    }
+
+    if(matrix_decomposition) {
+        ## Decompose the matrix using the bootstraps
+        decompose_matrix <- TRUE
+    } else {
+        ## Matrix already decomposed, used the decomposition
+        decompose_matrix <- FALSE
+        matrix_decomposition <- one_bs_matrix
+    }
+
+    ## Level 3 metric decomposition
+    ## do the decomposition in the matrix or return FALSE
+    ## level 3 decomposition
+    if(!is.null(metrics_list$level3.fun)) {
+        if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- array()
+
+            #matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...)
+            matrix_decomposition <- array(apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level3.fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_bs_matrix)))
+            decompose_matrix <- FALSE
+        } else {
+            matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level3.fun, ...)
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a list of matrices for each bootstraps
 
 
+    ## level 2 decomposition
+    if(!is.null(metrics_list$level2.fun)) {
+        if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- numeric(ncol(data$matrix))
+
+            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level2.fun, data = data, ...)
+            decompose_matrix <- FALSE
+        } else {
+            matrix_decomposition <- apply(matrix_decomposition, 3, metrics_list$level2.fun, ...)
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a matrix with n-bootstraps columns and n-dimensions rows
 
 
-## Alternative (slower!)
-# ## Function for calculating disparity
-# disparity.bootstraps <- function(one_series_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
-#     ## Storing the metrics list as temporary
-#     metrics_list_tmp <- metrics_list
+    ## level 1 metric decomposition
+    if(!is.null(metrics_list$level1.fun)) {
+        if(decompose_matrix) {
+            
+            ## Initialise values
+            matrix_decomposition <- numeric(ncol(data$matrix))
 
-#     ## Set matrix decomposition option
-#     if(matrix_decomposition != TRUE) {
-#         disparity <- one_series_bootstrap
-#         matrix_decomposition <- FALSE
-#     }
+            matrix_decomposition <- apply(one_bs_matrix, 2, decompose.matrix, fun = metrics_list$level1.fun, data = data, ...)
+            decompose_matrix <- FALSE
+        } else {
+            if(class(matrix_decomposition) != "array") {
+                matrix_decomposition <- apply(matrix_decomposition, 2, metrics_list$level1.fun, ...)
+            } else {
+                matrix_decomposition <- apply(matrix_decomposition, 3, metrics_list$level1.fun, ...)
+            }
 
-#     ## 1 - Decomposing the matrix (if necessary)
-#     if(matrix_decomposition) {
-#         ## Getting the first metric
-#         first_metric <- get.first.metric(metrics_list_tmp)
-#         metrics_list_tmp <- first_metric[[2]]
-#         first_metric <- first_metric[[1]]
-#         ## Find out whether to output an array
-#         use_array <- !is.null(metrics_list$level3.fun)
-#         ## Initialise the vector
-#         disparity <- ifelse(use_array, array(), list())
-#         ## Decompose the metric using the first metric
-#         disparity <- apply.decompose.matrix(one_series_bootstrap, fun = first_metric, data, use_array = use_array)
-#     }
+            ## Transform the vector back into a matrix
+            matrix_decomposition <- t(as.matrix(matrix_decomposition))
+        }
+    }# ; warning("DEBUG dispRity_fun.R")
+    ## This should output a matrix with n-bootstraps columns and 1 row
 
-#     ## 2 - Applying the metrics to the decomposed matrix
-
-#     ## Apply function level 3
-#     if(!is.null(metrics_list_tmp$level3.fun)) {
-#         disparity <- apply(disparity, 2, metrics_list_tmp$level3.fun, ...)
-#         # disparity <- apply(disparity, 2, metrics_list_tmp$level3.fun) ; warning("DEBUG disparity_fun")
-#     }
-
-#     ## Apply function level 2
-#     if(!is.null(metrics_list_tmp$level2.fun)) {
-#         disparity <- apply(disparity, 3, metrics_list_tmp$level2.fun, ...)
-#         # disparity <- apply(disparity, 3, metrics_list_tmp$level2.fun) ; warning("DEBUG disparity_fun")
-#     }
-
-#     ## For level 1 metric (if class is array)
-#     if(!is.null(metrics_list_tmp$level1.fun)) {
-#         not_array <- class(disparity) != "array"
-#         if(not_array) {
-#             disparity <- apply(disparity, 2, metrics_list_tmp$level1.fun, ...)
-#             # disparity <- apply(disparity, 2, metrics_list_tmp$level1.fun) ; warning("DEBUG disparity_fun")
-#         } else {
-#             disparity <- apply(disparity, 3, metrics_list_tmp$level1.fun, ...)
-#             # disparity <- apply(disparity, 3, metrics_list_tmp$level1.fun) ; warning("DEBUG disparity_fun")
-#         }
-#         disparity <- t(as.matrix(disparity))
-#     }
-
-#     #if(verbose) message(".", appendLF = FALSE)
-
-#     return(disparity)
-# }
+    return(matrix_decomposition)
+}
