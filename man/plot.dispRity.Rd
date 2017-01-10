@@ -12,7 +12,7 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -36,7 +36,7 @@
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
-\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
+\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
@@ -52,8 +52,8 @@ The different \code{type} arguments are:
 \itemize{
   \item \code{"continuous"}: plots the results as a continuous line.
   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
-  \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
-  \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
+  \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
+  \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 }
 The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
 \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
@@ -72,7 +72,7 @@ plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mode.val)
 
 ## Using different options
-plot(disparity, type = "lines", elements = TRUE, ylim = c(0, 5),
+plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
      xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)

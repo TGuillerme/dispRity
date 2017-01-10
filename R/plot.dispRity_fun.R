@@ -95,7 +95,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
         quantiles_n <- (ncol(summarised_data)-4)/2
 
         ## Set the width (default)
-        width <- 0.5 # points_n/(points_n*2)
+        width <- points_n/8
 
         ## Set the colours
         if(length(col) < (quantiles_n+1)) {
@@ -109,12 +109,25 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             poly_col <- rev(poly_col)
         }
 
+        ## Set the shift parameter (for add)
+        shift = 0
+        if(add) {
+            ## Is the previous plot the same size?
+            prev_axis <- par("xaxp")
+            if(prev_axis[2] == points_n) {
+                shift = 0
+            } else {
+                shift = 0.5
+            }
+        }
+
+
         ## Add the quantiles
         if(type == "polygon") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting X
-                    x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5))
+                    x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5)) + shift
                     ## Setting Y
                     y_vals <- c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
                               extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
@@ -126,14 +139,14 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
                 }
             }
         }
-        if(type == "lines") {
+        if(type == "line") {
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting Y
                     y_vals<-c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
                               extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
                     ## Plotting the box
-                    lines(x = c(point, point), y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
+                    lines(x = rep((point + shift), 2) , y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
 
                 }
             }
@@ -141,11 +154,11 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
     }
 
     ## Add the points estimates
-    points(1:points_n, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
+    points(1:points_n + shift, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
 
     if(observed == TRUE) {
         ## Add the points observed (if existing)
-        points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4)
+        points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4) + shift
     }
 
     ## Save parameters
@@ -158,15 +171,27 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
     ## How many points?
     points_n <- length(unique(summarised_data$series))
 
+    ## Set the shift parameter (for add)
+    shift = 0
+    if(add) {
+        ## Is the previous plot the same size?
+        prev_axis <- par("xaxp")
+        if(prev_axis[2] == points_n) {
+            shift = 0
+        } else {
+            shift = 0.5
+        }
+    }
+
     ## Plot the central tendency
     if(add == FALSE) {
         if(time_slicing[1] == FALSE) {
             ## Plot with standard xaxis
-            plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
-            #plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            #plot(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
     } else {
@@ -274,16 +299,16 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, ...) {
     }
 
     ## Plot central tendency curve (continuous)
-    plot(sub_data[,4], type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
+    plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
 
 
     ## Plot the quantiles curves
     if(quantiles_n != 0) {
         for (cis in 1:quantiles_n) {
             ## lower quantile
-            lines(sub_data[, 4+cis], lty = (quantiles_n+2-cis), col = col[[cis+1]])
+            lines(rev(sub_data[, 4+cis]), lty = (quantiles_n+2-cis), col = col[[cis+1]])
             ## upper quantile
-            lines(sub_data[, ncol(sub_data) - (cis-1)], lty = (quantiles_n+2-cis), col = col[[cis+1]])
+            lines(rev(sub_data[, ncol(sub_data) - (cis-1)]), lty = (quantiles_n+2-cis), col = col[[cis+1]])
         }
     }
     ##  Save parameters

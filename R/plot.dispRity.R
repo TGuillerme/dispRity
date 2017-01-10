@@ -3,7 +3,7 @@
 #' @description Plots a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
+#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
@@ -15,7 +15,7 @@
 #' @param time.series \code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
-#' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.
+#' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -28,8 +28,8 @@
 #' \itemize{
 #'   \item \code{"continuous"}: plots the results as a continuous line.
 #'   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
-#'   \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
-#'   \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
+#'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
+#'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 #' }
 #' The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
 #' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
@@ -48,7 +48,7 @@
 #'      cent.tend = mode.val)
 #' 
 #' ## Using different options
-#' plot(disparity, type = "lines", elements = TRUE, ylim = c(0, 5),
+#' plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
 #'      xlab = ("Time (Ma)"), ylab = "disparity")
 #' 
 #' ## Continuous plotting (all default options)
@@ -245,7 +245,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         }
     } else {
         ## type must be either "discrete", "d", "continuous", or "c"
-        all_types <- c("continuous", "c", "box", "b", "lines", "l", "polygon", "p")
+        all_types <- c("continuous", "c", "box", "b", "line", "l", "polygon", "p")
         ## type must be a character string
         check.class(type, "character")
         ## type must have only one element
@@ -255,7 +255,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         ## if type is a letter change it to the full word (lazy people...)
         if(type == "c") type <- "continuous"
         if(type == "b") type <- "box"
-        if(type == "l") type <- "lines"
+        if(type == "l") type <- "line"
         if(type == "p") type <- "polygon"
     }
 
@@ -304,7 +304,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(time.series != FALSE) {
+        if(time.series != FALSE & rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {
@@ -327,17 +327,11 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## col
     ## if default, is ok
     if(missing(col)) {
-        if(type == "box") {
+        if(type == "box" & rarefaction != TRUE) {
             col <- "white"
         } else {
             col <- "default"
         }
-
-        ## temporary annoying bug fix
-        if(rarefaction) {
-            col <- "black"
-        }
-
     } else {
         check.class(col, "character", " must be a character string.")
     }
@@ -419,7 +413,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     }
 
     ## Polygons or lines
-    if(type == "polygon" | type == "lines") {
+    if(type == "polygon" | type == "line") {
         ## Bigger plot margins if elements needed
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)
