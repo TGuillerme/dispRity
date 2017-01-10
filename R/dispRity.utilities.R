@@ -285,7 +285,7 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, series,
         if(rarefaction != FALSE) {
             check.class(rarefaction, c("numeric", "integer"))
             check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
-            if(any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
+            if(data$call$bootstrap[[3]][1] != "full" & any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
                 stop("Rarefaction level not found.")
             }
         } 
