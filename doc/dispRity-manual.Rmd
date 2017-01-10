@@ -132,8 +132,6 @@ These objects allow to easily use S3 method functions such as `summary.dispRity`
 But also, this allows to use the S3 method for printing `dispRity` objects via `print.dispRity` that allows to summarise the content of the objects similar to the `phylo` class objects (see `ape::print.phylo`).
 The full structure of a `dispRity` object is detailed [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-<!-- TODO: change to html link -->
-
 ```{r}
 ## What is the class of the median_centroids object?
 class(median_centroids)
@@ -177,8 +175,6 @@ summary(dispRity(sliced_data, metric = sum.divided.by.length))
 ```
 
 For more information on the metrics, please refer to the [`dispRity` metric manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd) for the vignette about the metric implementation in `dispRity`.
-
-<!-- TODO: change to html link -->
 
 Functions
 =========
@@ -248,7 +244,7 @@ series_factors2 <- as.data.frame(
 cust.series(BeckLee_mat50, series_factors2)
 ```
 
-`time.series`
+`time.series`  <a name="time.series"></a>
 -------------
 
 Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
@@ -390,9 +386,7 @@ In fact, the `dispRity` function intakes two main arguments: the data and the di
 The disparity metric is a function or a set of functions that summarises the ordinated matrix to a single value that represents, in our example, the diversity of morphologies.
 
 The `dispRity` algorithm decomposes the metrics functions into three levels that correspond to the dimensions of the output of each metric function.
-For more details on this algorithm please refer to the [metric vignette](https://github.com/TGuillerme/dispRity).
-
-<!-- TODO: change to html link -->
+For more details on this algorithm please refer to the [metric vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd).
 
 In practice, the `dispRity` function intakes one or more functions as a definition of disparity.
 Several of these functions will be already implemented in other packages (such as `stats::median`, `base::sum`, etc.); some others are implemented in this package (listed in `?dispRity.metric`) and finally some others can be defined by the users.
@@ -436,6 +430,8 @@ To display the results, see the section [summary](#summary).
 In these examples we used only simple ordinated matrix but of course, it possible to directly use the `dispRity` objects we generated in the steps above.
 Thus we can calculate the bootstrapped and rarefied disparity in each series of the ordinated space.
 Here we are going to define disparity as being the median distance between each element and each dimensions' centre.
+
+<a name="disparity.calculation"></a>
 
 ```{r}
 ## Disparity in crown and stem mammals:
@@ -497,7 +493,7 @@ plot(disp_time_binsBS, type = "continuous")
 ## Plotting discrete disparity results
 plot(disp_crown_stemBS, type = "box")
 ## Plotting the disparity using lines for the rarefaction level of 20 elements only
-plot(disp_crown_stemBS, type = "lines", rarefaction = 20)
+plot(disp_crown_stemBS, type = "line", rarefaction = 20)
 ## Plotting the disparity using polygons while also displaying the number of elements
 plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
 ```
@@ -539,10 +535,8 @@ par(bty = "n")
 ## Plotting the continuous disparity with a fixed y axis
 plot(disp_time_slicesBS, ylim = c(0.5,2))
 ## Adding the discrete data using the same fixed y axis to have the results at the same scale
-plot(disp_time_binsBS, discrete_type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
+plot(disp_time_binsBS, type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
 ```
-
-<!-- TODO: fix the placement bug with add = TRUE! -->
 
 Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
 
@@ -552,14 +546,14 @@ par(bty = "n")
 ## Plotting the rarefaction curves
 plot(disp_crown_stemBS, rarefaction = TRUE)
 ```
-<!-- 
 
 `test.dispRity`
 ---------------
 
-Finally, the `dispRity` package allows to apply some tests to the data in order to properly test hypothesis.
-The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object (containing disparity measurements), a `test` and a `comparisons` argument.
-The `test` argument can be any statistical or non-statistical test to apply to the disparity object. It can be common test function (e.g. `stats::t.test`) or some functions implemented in `dispRity` (see `dispRity.test`) or even user defined functions. The `comparisons` argument must indicate the way the test should be applied to the data:
+Finally, the `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
+The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object, a `test` and a `comparisons` argument.
+
+The `comparisons` argument must indicate the way the test should be applied to the data:
 
  *   `pairwise` (default): to compare each series pairwise
 
@@ -572,53 +566,129 @@ The `test` argument can be any statistical or non-statistical test to apply to t
 It is also possible to input a list of pairs of `numeric` values or `characters` matching the series names to create personalised test.
 Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` and the `dispRity::sequential.test` have a specific way to be applied to the data and therefore ignore the `comparisons` argument.
 
+
+The `test` argument can be any statistical or non-statistical test to apply to the disparity object.
+It can be common statistical test functions (e.g. `stats::t.test`), some functions implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
+
+
 This function also allows to correct for type I error inflation when using multiple comparisons via the `correction` argument. This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
 
 Note that the `test.dispRity` algorithm deals with some classic tests outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
 It is however possible to get the full detailed output by using the options `details = TRUE`.
 
 ```{r}
-## Performing a pairwise t-test to the test a difference in disparity between
-## crown and stem mammals (note that "pairwise" is default)
+## Performing a t-test to the test a difference in disparity between crown and stem mammals
 test.dispRity(disp_crown_stemBS, test = t.test)
 
-## The same test but with the detailed output
+## Performing the same test but with the detailed t.test output
 test.dispRity(disp_crown_stemBS, test = t.test, details = TRUE)
 
-## A wilcoxon rank test applied to sliced disparity the data sequentially with
-## the Bonferroni correction.
-test.dispRity(disp_time_slicesBS, test = wilcox.test,
-    comparisons = "sequential", correction = "bonferroni")
+## Performing a Wilcoxon test applied to sliced disparity the data sequentially with correction
+test.dispRity(disp_time_slicesBS, test = wilcox.test, comparisons = "sequential",
+    correction = "bonferroni")
 
-## An analysis of variance (aov) applied to the same data
-test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
-
-## Note that in this case, the output is the regular aov output:
-slice_aov <- test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
-class(slice_aov) ; summary(slice_aov)
-
-## Measuring the overlap between distributions in the time bins (using the
-## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
+## Measuring the overlap between distributions in the time bins (using the implemented
+## Bhattacharyya Coefficient function - see ?bhatt.coeff)
 test.dispRity(disp_time_binsBS, test = bhatt.coeff)
+```
 
+It is also possible to apply some more *complex* tests that have their own output class (like `stats::aov`).
+The results can then be analysed as usual using the associated `summary` S3 method:
+
+```{r}
+## Performing and ANOVA applied to the same data
+slice_aov <- (test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all"))
+
+## The output is a regular ANOVA output...
+class(slice_aov)
+
+## That can be summarised using summary
+summary(slice_aov)
 ```
 
 utilities
 ---------
+The package also provides some utilities functions to facilitate multidimensional analysis.
 
 ### `dispRity` object utilities  <a name="dispRity.utilities"></a>
+The first series of utilities are functions for manipulating `dispRity` objects:
 
-export(make.dispRity)
-export(fill.dispRity)
-export(matrix.dispRity)
-export(get.series.dispRity)
-export(extract.dispRity)
-export(scale.dispRity)
-export(sort.dispRity)
+#### `make.dispRity`
+This function creates empty `dispRity` objects.
+
+```{r}
+## Creating an empty dispRity object
+make.dispRity()
+## Creating an "empty" dispRity object with a matrix
+(disparity_obj <- make.dispRity(matrix(rnorm(20), 5, 4)))
+```
+
+####  `fill.dispRity`
+This function initialises a `dispRity` object and generating it's call properties.
+
+```{r}
+## The dispRity object's call is indeed empty
+disparity_obj$call
+## Creating an empty dispRity object
+(disparity_obj <- fill.dispRity(disparity_obj))
+## The dipRity object has now the proper minimal attributes
+disparity_obj$call
+```
+
+####  `matrix.dispRity`
+This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped or/and rarefied one.
+
+```{r}
+## Extracting the matrix containing the coordinates for the crown mammals
+str(matrix.dispRity(disp_crown_stemBS, "Group.crown"))
+## Extracting the 3rd boostrapped matrix with the 10th rarefaction level from the same group
+str(matrix.dispRity(disp_crown_stemBS, series = 1, bootstrap = 3, rarefaction = 10))
+```
+
+#### `get.series.dispRity`
+This function creates a dispRity object that contains only elements from one specific series.
+
+```{r}
+## Extracting all the data for the crown mammals
+(crown_mammals <- get.series.dispRity(disp_crown_stemBS, "Group.crown"))
+## The object keeps the properties of the parent object but is composed of only one series
+length(crown_mammals$series)
+```
+
+#### `extract.dispRity`
+This function extracts the calculated disparity values of a specific matrix.
+
+```{r}
+## Extracting the observed disparity (default)
+extract.dispRity(disp_crown_stemBS)
+
+## Extracting the disparity from the bootstrapped values from the 10th rarefaction level from the
+## second series (stem mammals)
+extract.dispRity(disp_crown_stemBS, observed = FALSE, series = 2, rarefaction = 10)
+```
+
+#### `scale.dispRity`
+This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
+
+```{r}
+## Getting the disparity values of the time series
+summary(disp_time_slicesBS)
+
+## Scaling the same disparity values
+summary(scale(disp_time_slicesBS, scale = TRUE))
+```
+
+#### `sort.dispRity`
+This is the S3 method of `sort` for sorting the series alphabetically (default) or following a specific pattern.
+
+```{r}
+## Sorting the disparity series in inverse alphabetic order
+summary(sort(disp_time_slicesBS, decreasing = TRUE))
+```
 
 ### Package general utilities
 
-## `tree.age`
+#### `tree.age`
 
 This function allows to calculate the age of each individual nodes and tips in a tree.
 It can either use the root age of the tree (if present as `$root.time`) or else calculate the age using a user defined root age via the `age` argument.
@@ -636,11 +706,56 @@ head(tree.age(BeckLee_tree, age = 1), 5)
 head(tree.age(BeckLee_tree, age = 1, order = "present"), 5)
 ```
 
+#### `slice.tree`
+
+This function is at the core of `time.series` when using the time slicing method.
+It allows to slice a phylogenetic tree at a certain time point and selecting the nodes or tips following the models detailed in the `time.series` [section above](#time.series).
+
+```{r, fig.width=8, fig.height=6}
+set.seed(1)
+## Generating a random ultrametric tree
+tree <- rcoal(20)
+## Adding some node labels
+tree$node.label <- letters[1:19]
+## Adding a root age (as the maximum tree age)
+tree$root.time <- max(tree.age(tree)$ages)
+
+## Creating a deltran tree at the slice 0.25
+tree_25 <- slice.tree(tree, age = 0.25, "deltran")
+## Creating a deltran tree at the slice 0.50
+tree_50 <- slice.tree(tree, age = 0.50, "acctran")
+
+## Illustrating the results
+par(mfrow = c(1,3))
+plot(tree, main = "Full tree", cex = 1.5)
+nodelabels(tree$node.label, cex = 1.1)
+axisPhylo()
+plot(tree_25, main = "Slice at time 0.25", cex = 1.5)
+axisPhylo()
+plot(tree_50, main = "Slice at time 0.50", cex = 1.5)
+axisPhylo()
+```
+
+#### `sim.morpho`
+This function (and it's associated utilities) allows to generate realistic discrete morphological matrices.
+See the [associated vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd) for more details.
+
+
+Other utilities functions are also available within the package and more will be added in the future. For the full list, refer to the package's functions list within `R`.
+
+
 parallel  <a name="parallel"></a>
 ---------
 
-Some of the core functions from the package have a `parallel` option.
- -->
+`dispRity` and `boot.matrix` have also `parallel` option.
+This option uses the package `snow` to run the `lapply` loops within the package in parallel.
+In both functions, this option is ignored when missing, otherwise, it takes as option, the number of threads (cores) and the virtual connection process (VCP) name following the function `makeCluster`.
+
+For example, we can speed up the [disparity calculations of the rarefied data](#disparity.calculation) by using 4 different threads and a `"SOCK"` connection (although `"MPI"` is much more recommended but needs more specific installation).
+
+```{r, eval=FALSE}
+dispRity(crown_stemBS, metric = c(median, centroids), parallel = c(4, "SOCK"))
+```
 
 Suggestions
 ============
