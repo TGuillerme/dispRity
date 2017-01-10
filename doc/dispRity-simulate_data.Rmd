@@ -77,7 +77,7 @@ set.seed(1)
 my_tree <- rcoal(15)
 ## matrix
 morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
-    rates = c(rgamma, 0.5, 1), invariant = TRUE)
+    rates = c(rgamma, rate = 100, shape = 5), invariant = FALSE)
 check.morpho(morpho_mat, my_tree)
 ```
 

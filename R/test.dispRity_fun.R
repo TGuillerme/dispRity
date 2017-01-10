@@ -119,7 +119,7 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
 save.comparison.list <- function(comp_series, extracted_data) {
     #Saving the list of comparisons
     comparisons_list <- convert.to.character(comp_series, extracted_data)
-    comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " - "))
+    comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " : "))
     return(comparisons_list)
 }
 

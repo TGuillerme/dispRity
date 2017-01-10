@@ -1,5 +1,7 @@
 #' @title Slicing a tree.
 #'
+#' @usage slice.tree(tree, age, model, FAD, LAD)
+#' 
 #' @description Slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
@@ -8,6 +10,20 @@
 #' @param FAD,LAD The first and last occurrence data.
 #' 
 #' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.series}}.
+#'
+#' @examples
+#' set.seed(1)
+#' ## Generate a random ultrametric tree
+#' tree <- rcoal(20)
+#' 
+#' ## Add some node labels
+#' tree$node.label <- letters[1:19]
+#' 
+#' ## Add it's root time
+#' tree$root.time <- max(tree.age(tree)$ages)
+#' 
+#' ## Create a slice on the tree at age 0.5
+#' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 #'
 #' @author Thomas Guillerme
 #' @export
@@ -19,7 +35,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     #For adding modules (i.e. models) follow the format
     # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
     # for (tip in 1:Ntip(tree_slice)) {
-    #   tree_sliced$tip.label[tip]<-module(tree, tips[tip], tree_slice)
+    #   tree_sliced$tip.label[tip]<-module(tree, tree_slice$tip.label[tip], tree_slice)
     # }
 
     #SANITIZING
@@ -45,28 +61,18 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         stop('To few taxa in the tree at age ', age, '!')
     }
 
-    #Selecting the tips
-    tips<-tree_slice$tip.label
-
     #renaming the tree_slice
-    tree_sliced<-tree_slice
+    tree_sliced <- tree_slice
 
     #Correcting the sliced tree
     for (tip in 1:Ntip(tree_slice)) {
 
-        #Check if the tree is sliced at the exact age of a tip (e.g. time=0)
-        if(tree_age[which(tree_age[,2] == tips[tip]),1] == age) {
-            #Save the tip
-            tree_slice$tip.label[tip] <- tree_slice$tip.label[tip]
+        #Check if the tree is not sliced at the exact age of a tip (e.g. time=0)
+        if(tree_age[which(tree_age[,2] == tree_slice$tip.label[tip]),1] != age) {
 
-        } else {
+            #Check if the age of the tip is not in between the FAD/LAD
+            if(!FAD[which(FAD[,2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[,2] == tree_slice$tip.label[tip]),1] <= age) {
 
-            #Check if the age of the tip is in between the FAD/LAD
-            if(FAD[which(FAD[,2] == tips[tip]),1] >= age & LAD[which(LAD[,2] == tips[tip]),1] <= age) {
-                #Save the tip
-                tree_slice$tip.label[tip] <- tree_slice$tip.label[tip]
-
-            } else {
 
                 #Chose the tip/node following the given model
                 if(model == "punctuated") {
@@ -77,17 +83,17 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
                 if(selected_model == "deltran") {
                     #Parent
-                    tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tips[tip], tree_slice)
+                    tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
                 }
 
                 if(selected_model == "acctran") {
                     #Offspring
-                    tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tips[tip], tree_slice)
+                    tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
                 }
 
                 if(selected_model == "gradual") {
                     #Closest
-                    tree_sliced$tip.label[tip] <- slice.tree_GRADUAL(tree, tips[tip], tree_slice)
+                    tree_sliced$tip.label[tip] <- slice.tree_GRADUAL(tree, tree_slice$tip.label[tip], tree_slice)
                 }              
             }
         } 

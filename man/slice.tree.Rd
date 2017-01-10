@@ -18,6 +18,21 @@ slice.tree(tree, age, model, FAD, LAD)
 \description{
 Slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
 }
+\examples{
+set.seed(1)
+## Generate a random ultrametric tree
+tree <- rcoal(20)
+
+## Add some node labels
+tree$node.label <- letters[1:19]
+
+## Add it's root time
+tree$root.time <- max(tree.age(tree)$ages)
+
+## Create a slice on the tree at age 0.5
+tree_75 <- slice.tree(tree, age = 0.75, "deltran")
+
+}
 \author{
 Thomas Guillerme
 }

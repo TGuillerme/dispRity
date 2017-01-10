@@ -4,10 +4,10 @@
 \alias{print.dispRity}
 \title{Prints a \code{dispRity} object.}
 \usage{
-\method{print}{dispRity}(data, all = FALSE)
+\method{print}{dispRity}(x, all = FALSE)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{x}{A \code{dispRity} object.}
 
 \item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).}
 }
@@ -15,19 +15,16 @@
 Summarises the content of a \code{dispRity} object.
 }
 \examples{
-## Load the Beck & Lee 2014 matrix
-data(BeckLee_mat50)
-
-## Creating a dispRity object
-disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, variances))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Displaying the summary of the object content
-disparity_object
-print(disparity_object)
-print.dispRity(disparity_object)
+disparity
+print(disparity) # the same
+print.dispRity(disparity) # the same
 
 ## Displaying the full object
-print.dispRity(disparity_object, all = TRUE)
+print.dispRity(disparity, all = TRUE)
 
 }
 \author{

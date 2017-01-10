@@ -4,8 +4,7 @@
 \alias{time.series}
 \title{Separating ordinated data in time series.}
 \usage{
-\method{time}{series}(data, tree, method, time, model, inc.nodes = FALSE,
-  FADLAD, verbose = FALSE)
+time.series(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
@@ -59,10 +58,9 @@ time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 ## Time slicing (continuous method)
 ## Generate 5 equidistant time slices in the data set assuming gradual
 ## evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+time.series(data = BeckLee_mat99, tree = BeckLee_tree,
      method = "continuous", model = "acctran", time = 5,
      FADLAD = BeckLee_ages)
-str(lapply(sliced_data$data, class)) # A list of 5 matrices
 
 }
 \author{

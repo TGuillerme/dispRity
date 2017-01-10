@@ -72,30 +72,31 @@ test_that("proportional.distribution works", {
 
 #Testing gen.seq.HKY.binary
 test_that("gen.seq.HKY.binary works", {
+    verbose = FALSE
     #errors
     expect_error(
-        gen.seq.HKY.binary("a", c(runif, 2, 2), c(runif, 1, 1))
+        gen.seq.HKY.binary("a", c(runif, 2, 2), c(runif, 1, 1), verbose)
         )
     expect_error(
-        gen.seq.HKY.binary(5, c(runif, 2, 2), c(runif, 1, 1))
+        gen.seq.HKY.binary(5, c(runif, 2, 2), c(runif, 1, 1), verbose)
         )
     expect_error(
-        gen.seq.HKY.binary(rtree(5), runif, c(runif, 1, 1))
+        gen.seq.HKY.binary(rtree(5), runif, c(runif, 1, 1), verbose)
         )
     expect_error(
-        gen.seq.HKY.binary(rtree(5), c(runif, 1, 1), runif)
+        gen.seq.HKY.binary(rtree(5), c(runif, 1, 1), runif, verbose)
         )
 
     #results is a vector of length 5 (characters)
     expect_equal(
-        length(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1))), 5
+        length(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose) ), 5
         )
     expect_is(
-        gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1)), "character"
+        gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose), "character"
         )
     set.seed(1)
     expect_equal(
-        unique(as.vector(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1)))), c("1", "0")
+        unique(as.vector(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose))), c("1", "0")
         )
 })
 
@@ -139,10 +140,10 @@ test_that("k.sampler works", {
 test_that("rTraitDisc.mk works", {
     #errors
     expect_error(
-        rTraitDisc.mk("a", c(runif,1,1), c(runif,2,2), c(0.5, 0.5))
+        rTraitDisc.mk("a", c(runif,1,1), c(runif,2,2), c(0.5, 0.5), verbose)
         )
     expect_error(
-        rTraitDisc.mk(rtree(5), c(runif,1,1), rates = "a", c(0.5, 0.5))
+        rTraitDisc.mk(rtree(5), c(runif,1,1), rates = "a", c(0.5, 0.5), verbose)
         )
 })
 

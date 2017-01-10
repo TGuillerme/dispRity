@@ -14,7 +14,7 @@ sim.morpho(tree, characters, states = 1, model = "ER", rates,
 
 \item{states}{A \code{numeric} string of probabilities for the number of states for each characters (\code{default = 1}; i.e. 100\% binary state characters; see details).}
 
-\item{model}{Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"mixed"}; see details) or user defined model (see details).}
+\item{model}{Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"mixed"}) or user defined model (see details).}
 
 \item{rates}{A function an it's parameters for the rates distribution (see details).}
 
@@ -25,7 +25,7 @@ sim.morpho(tree, characters, states = 1, model = "ER", rates,
 \item{verbose}{Whether to be verbose or not (\code{default = FALSE}).}
 }
 \description{
-Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} function.
+Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} or \code{\link[phyclust]{gen.seq.HKY}} functions.
 }
 \details{
 \itemize{

@@ -4,21 +4,21 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, quantiles = c(50, 95), cent.tend = mean,
-  rarefaction = FALSE, elements = FALSE, ylim, xlab, ylab, col,
-  time.series = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  nclass = 10, coeff = 1, ...)
+\method{plot}{dispRity}(data, type, quantiles = c(50, 95),
+  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
+  ylab, col, time.series = TRUE, observed = FALSE, add = FALSE,
+  density = NULL, nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"lines"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).}
 
-\item{rarefaction}{Either a \code{logical} whether to rarefy the data; or an \code{integer} for setting a specific rarefaction level or \code{"plot"} to plot the rarefaction curves.}
+\item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
 \item{elements}{\code{logical} whether to plot the number of elements per series.}
 
@@ -32,11 +32,11 @@
 
 \item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.}
 
-\item{observed}{\code{logical} whether to plot the observed values or not (if existing; default is \code{FALSE}).}
+\item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
-\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "lines"}.}
+\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
@@ -52,49 +52,38 @@ The different \code{type} arguments are:
 \itemize{
   \item \code{"continuous"}: plots the results as a continuous line.
   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
-  \item \code{"lines"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
-  \item \code{"polygon"}: identical as \code{"lines"} but using polygons rather than vertical lines.
+  \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
+  \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 }
 The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
 \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
 Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_tree) ; data(BeckLee_mat50)
-data(BeckLee_mat99) ; data(BeckLee_ages)
-
-## Setting the data
-## Generate 5 equidistant time slices in the data set assuming gradual
-## evolutionary models
-sliced_data <- time.series(data = BeckLee_mat99, tree = BeckLee_tree,
-     method = "continuous", model = "acctran", time = 5,
-     FADLAD = BeckLee_ages)
-bootstrapped_data <- boot.matrix(sliced_data, bootstraps = 20,
-     rarefaction = TRUE)
-sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Discrete plotting
-plot(sum_of_variances, type = "box")
+plot(disparity, type = "box")
 
 ## Using polygons rather than boxes (quantiles and central tendency can be
 ## set by the user)
-plot(sum_of_variances, type = "polygon", quantiles = c(10, 50, 95),
+plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mode.val)
 
 ## Using different options
-plot(sum_of_variances, type = "lines", elements = TRUE, ylim = c(0, 5),
+plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
      xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)
-plot(sum_of_variances, type = "continuous")
+plot(disparity, type = "continuous")
 
 ## Using different options (with non time.slicing option)
-plot(sum_of_variances, type = "continuous", time.series = FALSE,
+plot(disparity, type = "continuous", time.series = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots
-plot(sum_of_variances, rarefaction = "plot")
+plot(disparity, rarefaction = TRUE)
 
 }
 \author{

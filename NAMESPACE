@@ -1,15 +1,10 @@
 #Dependencies
 import(ape)
 importFrom("paleotree", "timeSliceTree")
-importFrom("snow", "makeCluster")
-importFrom("snow", "stopCluster")
-importFrom("snow", "parLapply")
+importFrom("snow", "makeCluster", "stopCluster", "parLapply")
 importFrom("geometry", "convhulln")
-importFrom("hypervolume", "hypervolume")
-importFrom("hypervolume", "estimate_bandwidth")
-importFrom("hypervolume", "get_volume")
-importFrom("ade4", "randtest")
-importFrom("ade4", "as.randtest")
+importFrom("hypervolume", "hypervolume", "estimate_bandwidth", "get_volume")
+importFrom("ade4", "randtest", "as.randtest")
 importFrom("grDevices", "colorRampPalette", "grey")
 importFrom("caper", "comparative.data")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text")
@@ -17,6 +12,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
+# importFrom("RCurl", "getURL", "url.exists")
 
 ##Functions
 export(time.series)
@@ -24,7 +20,6 @@ export(cust.series)
 export(boot.matrix)
 export(dispRity)
 export(test.dispRity)
-export(tree.age)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
@@ -35,23 +30,6 @@ export(check.morpho)
 ##Morpho utilities
 export(get.contrast.matrix)
 export(apply.inapplicable)
-
-##Utilities
-export(make.metric)
-export(get.dispRity)
-export(extract.dispRity)
-export(space.maker)
-export(pair.plot)
-export(scale.dispRity)
-export(sort.dispRity)
-export(slice.tree)
-export(clean.data)
-export(merge.time.series)
-#export(cor.diversity) - TO DO!
-#export(cor.time.pco) - TO DO!
-#export(make.model) - TO DO!
-#export(make.boot) - TO DO!
-
 
 ##disparity metrics
 export(variances)
@@ -69,8 +47,29 @@ export(bhatt.coeff)
 export(sequential.test)
 export(null.test)
 
+##Package utilities
+export(tree.age)
+export(make.metric)
+export(space.maker)
+export(pair.plot)
+export(slice.tree)
+export(clean.data)
+
+##dispRity object utilities
+export(make.dispRity)
+export(fill.dispRity)
+export(matrix.dispRity)
+export(get.series.dispRity)
+export(extract.dispRity)
+export(scale.dispRity)
+export(sort.dispRity)
+#export(merge.time.series)
+
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
+S3method(matrix, dispRity)
+#S3method(get.series, dispRity)
+S3method(scale, dispRity)
 S3method(sort, dispRity)

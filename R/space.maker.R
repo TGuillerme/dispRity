@@ -80,11 +80,11 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     # SANITZING
 
     # elements
-    check.class(elements, "numeric")
+    check.class(elements, c("numeric", "integer")) -> silent
     check.length(elements, 1, msg = "'elements' must be a single numeric value.")
 
     # dimensions
-    check.class(dimensions, "numeric")
+    check.class(dimensions, c("numeric", "integer")) -> silent
     check.length(dimensions, 1, msg = "'dimensions' must be a single numeric value.")
     # must be smaller than elements - No...
     #if(dimensions > elements) stop("'dimensions' must be smaller than 'elements'")
