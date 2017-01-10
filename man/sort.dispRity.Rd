@@ -23,7 +23,7 @@ data(disparity)
 ## Sorting the data
 summary(disparity)
 summary(sort(disparity, decreasing = TRUE))
-summary(sort(disparity, sort = c(1,3,4,5,2)))
+summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 
 }
 \author{

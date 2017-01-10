@@ -12,7 +12,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
-importFrom("RCurl", "getURL", "url.exists")
+# importFrom("RCurl", "getURL", "url.exists")
 
 ##Functions
 export(time.series)
@@ -54,7 +54,6 @@ export(space.maker)
 export(pair.plot)
 export(slice.tree)
 export(clean.data)
-export(merge.time.series)
 
 ##dispRity object utilities
 export(make.dispRity)
@@ -64,6 +63,7 @@ export(get.series.dispRity)
 export(extract.dispRity)
 export(scale.dispRity)
 export(sort.dispRity)
+#export(merge.time.series)
 
 ##S3 methods
 S3method(plot, dispRity)

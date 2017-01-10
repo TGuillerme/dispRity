@@ -395,7 +395,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) 
 #' ## Sorting the data
 #' summary(disparity)
 #' summary(sort(disparity, decreasing = TRUE))
-#' summary(sort(disparity, sort = c(1,3,4,5,2)))
+#' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
 #'
@@ -409,7 +409,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) 
 # data <- dispRity(series, metric = mean)
 # summary(data)
 # summary(sort(data, decreasing = TRUE))
-# summary(sort(data, sort = c(1,3,4,5,2)))
+# summary(sort(data, sort = c(7,1,3,4,5,2,6)))
 
 sort.dispRity <- function(data, decreasing = FALSE, sort) {
 
