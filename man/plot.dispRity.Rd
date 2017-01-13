@@ -16,7 +16,7 @@
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).}
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 

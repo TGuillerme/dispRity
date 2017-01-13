@@ -41,9 +41,10 @@
 # data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
 # data <- dispRity(data_series_boot, metric = c(variances))
 
-print.dispRity <- function(x, all = FALSE) {
+print.dispRity <- function(x, all = FALSE, ...) {
 
-    if(all == TRUE) {
+
+    if(all) {
         ## Print everything
         tmp <- x
         class(tmp) <- "list"

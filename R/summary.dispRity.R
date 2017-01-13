@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object.
 #' @param quantiles The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
-#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).
+#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
 #' @param rounding Optional, a value for rounding the values in the output table (default = 2).
 # ' @param results Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")

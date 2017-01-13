@@ -12,7 +12,7 @@
 
 \item{quantiles}{The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).}
 
 \item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 

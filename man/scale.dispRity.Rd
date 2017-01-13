@@ -5,7 +5,7 @@
 \title{Scaling and centering disparity results.}
 \usage{
 \method{scale}{dispRity}(data, center = FALSE, scale = FALSE,
-  use.all = TRUE)
+  use.all = TRUE, ...)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}

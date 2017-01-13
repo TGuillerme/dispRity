@@ -51,8 +51,8 @@ boot.matrix(BeckLee_mat50, bootstraps = 20)
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-## Bootstrapping an ordinated matrix with only 90\% of the first axis
-boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
+## Bootstrapping an ordinated matrix with only 3 dimensions
+boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 
 ## Bootstrapping a series of matrices
 ## Generating a dummy series of matrices

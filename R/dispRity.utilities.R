@@ -338,7 +338,7 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, series,
 # summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
 # summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) {
+scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {
@@ -411,7 +411,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE) 
 # summary(sort(data, decreasing = TRUE))
 # summary(sort(data, sort = c(7,1,3,4,5,2,6)))
 
-sort.dispRity <- function(data, decreasing = FALSE, sort) {
+sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 
     ## Sanitizing
 

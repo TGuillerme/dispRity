@@ -5,7 +5,7 @@
 #' @param data A \code{dispRity} object.
 #' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
-#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[base]{median}}).
+#' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per series.
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
