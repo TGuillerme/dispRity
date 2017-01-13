@@ -86,8 +86,7 @@
 # source("sanitizing.R")
 # source("dispRity_fun.R")
 # source("dispRity.metric.R")
-# source("make.dispRity.R")
-# source("fetch.dispRity.R")
+# source("dispRity.utilities.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
 # source("time.series.R") ; source("time.series_fun.R")
 # source("cust.series.R") ; source("cust.series_fun.R")
@@ -109,7 +108,7 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## Saving the call
     match_call <- match.call()
 
-    ## warning("DEBUG") ; return(match_call)
+    # warning("DEBUG") ; return(match_call)
 
     ## Check data class
     if(class(data) != "dispRity") {
@@ -117,9 +116,13 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
-        ## Data is not bootstrapped
-        if(is.null(data$call$bootstrap)) {
-            data <- fill.dispRity(data)
+        ## Making sure matrix exist
+        if(is.null(data$matrix)) {
+            stop(paste(match_call$data, "must contain a matrix."))
+        }
+        ## Make sure dimensions exist in the call
+        if(is.null(data$call$dimensions)) {
+            data$call$dimensions <- ncol(data$matrix)
         }
     }
 
