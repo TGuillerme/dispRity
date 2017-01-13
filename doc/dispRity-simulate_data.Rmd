@@ -11,9 +11,6 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-
-This vignette details how to simulate morphological data in `dispRity` (v.0.2.1).
-
 Simulating morphological data in `dispRity`
 =================
 
@@ -33,7 +30,9 @@ library(dispRity)
 
 Quick go through
 =================================
-This is a quick example on how it works
+The function basically intakes a phylogenetic tree, the number of required characters and the evolutionary model and a function from which to draw the rates.
+The package then proposes a function for quickly checking the matrix' phylogenetic signal using parsimony.
+
 
 ```{r}
 library(dispRity)
@@ -57,19 +56,17 @@ check.morpho(my_matrix, my_tree)
 In details
 =================================
 Basically, `sim.morpho` is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix.
-It has two implemented models: `"ER"` for Equal Rates (M*k* model) or the `"HKY"` one which is the molecular HKY model but transforms pyrines in 0's and purimidines in 1's.
-It can also intake some specific distribution for the rates or the substitutions, allowing to modify these basic models.
+It has three implemented models: `"ER"` for Equal Rates (the M*k* model); the `"HKY"` one which is the molecular HKY model but transforms pyrines in 0's and purimidines in 1's; or the `"mixed"` model that randomly uses an `"ER"` or and `"HKY"` for the binary characters and `"ER"` for the multistates (>2) characters.
+Both models intakes specific distributions for their rates or substitution models.
+These distributions should be passed to these arguments in the format of `c(sampler_function, distribution_parameters)` where the the sampler function is a the random generation function of that distribution (e.g. `rnorm`, `runif`, etc...) and the parameters are any parameters to be passed to this function. 
 
-The `check.morpho` runs a quick MP tree using the `phangorn` parsimony algorithm.
-It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the MP tree and the provided tree.
+The `check.morpho` runs a quick maximum parsimony tree using the `phangorn` parsimony algorithm.
+It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree.
 
-Good parameters for a good matrix
+Parameters for a good(ish) matrix
 -----------------------------------
-
-I was testing the effect of different parameters on the ability to generate a ``realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature).
-The matrix seems the most ``realistic'' with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter ($\alpha$) of 0.5 and no scaling ($\beta$ = 1).
-
-Something like that should give a decent matrix:
+There are many parameters that can realise a ``realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature) but because of the randomness of the generation (the code generates random matrices after all!) not all end up in creating good matrices.
+The following parameters however, seems to generate a fairly ``realistic'' with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter ($\alpha$) of 5 and no scaling ($\beta$ = 1) with a rate of 100.
 
 ```{r}
 set.seed(1)

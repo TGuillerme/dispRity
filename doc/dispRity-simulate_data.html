@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2016-12-20" />
+<meta name="date" content="2017-01-13" />
 
 <title>dispRity simulate data</title>
 
@@ -70,11 +70,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity simulate data</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2016-12-20</em></h4>
+<h4 class="date"><em>2017-01-13</em></h4>
 
 
 
-<p>This vignette details how to simulate morphological data in <code>dispRity</code> (v.0.2.1).</p>
 <div id="simulating-morphological-data-in-disprity" class="section level1">
 <h1>Simulating morphological data in <code>dispRity</code></h1>
 </div>
@@ -90,7 +89,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="quick-go-through" class="section level1">
 <h1>Quick go through</h1>
-<p>This is a quick example on how it works</p>
+<p>The function basically intakes a phylogenetic tree, the number of required characters and the evolutionary model and a function from which to draw the rates. The package then proposes a function for quickly checking the matrix’ phylogenetic signal using parsimony.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dispRity)
 <span class="kw">set.seed</span>(<span class="dv">123</span>)
 ## Setting the starting tree with 15 taxa as a random coalescent tree
@@ -120,12 +119,11 @@ my_matrix[<span class="dv">1</span>:<span class="dv">5</span>, <span class="dv">
 </div>
 <div id="in-details" class="section level1">
 <h1>In details</h1>
-<p>Basically, <code>sim.morpho</code> is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix. It has two implemented models: <code>&quot;ER&quot;</code> for Equal Rates (M<em>k</em> model) or the <code>&quot;HKY&quot;</code> one which is the molecular HKY model but transforms pyrines in 0’s and purimidines in 1’s. It can also intake some specific distribution for the rates or the substitutions, allowing to modify these basic models.</p>
-<p>The <code>check.morpho</code> runs a quick MP tree using the <code>phangorn</code> parsimony algorithm. It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the MP tree and the provided tree.</p>
-<div id="good-parameters-for-a-good-matrix" class="section level2">
-<h2>Good parameters for a good matrix</h2>
-<p>I was testing the effect of different parameters on the ability to generate a <code>realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature). The matrix seems the most</code>realistic’’ with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 0.5 and no scaling (<span class="math inline">\(\beta\)</span> = 1).</p>
-<p>Something like that should give a decent matrix:</p>
+<p>Basically, <code>sim.morpho</code> is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix. It has three implemented models: <code>&quot;ER&quot;</code> for Equal Rates (the M<em>k</em> model); the <code>&quot;HKY&quot;</code> one which is the molecular HKY model but transforms pyrines in 0’s and purimidines in 1’s; or the <code>&quot;mixed&quot;</code> model that randomly uses an <code>&quot;ER&quot;</code> or and <code>&quot;HKY&quot;</code> for the binary characters and <code>&quot;ER&quot;</code> for the multistates (&gt;2) characters. Both models intakes specific distributions for their rates or substitution models. These distributions should be passed to these arguments in the format of <code>c(sampler_function, distribution_parameters)</code> where the the sampler function is a the random generation function of that distribution (e.g. <code>rnorm</code>, <code>runif</code>, etc…) and the parameters are any parameters to be passed to this function.</p>
+<p>The <code>check.morpho</code> runs a quick maximum parsimony tree using the <code>phangorn</code> parsimony algorithm. It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree.</p>
+<div id="parameters-for-a-goodish-matrix" class="section level2">
+<h2>Parameters for a good(ish) matrix</h2>
+<p>There are many parameters that can realise a <code>realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature) but because of the randomness of the generation (the code generates random matrices after all!) not all end up in creating good matrices. The following parameters however, seems to generate a fairly</code>realistic’’ with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 5 and no scaling (<span class="math inline">\(\beta\)</span> = 1) with a rate of 100.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
 ## tree
 my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
