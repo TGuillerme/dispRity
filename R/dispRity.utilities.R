@@ -293,7 +293,11 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, series,
 
     ## Get the disparity values
     if(observed) {
-        return(lapply(data$disparity[series], lapply.observed)) ## lapply observed lives in summary.dispRity_fun.R
+        ## Lapply wrapper for getting the disparity observed values
+        lapply.observed <- function(disparity) {
+            return(c(disparity$elements))
+        }
+        return(lapply(data$disparity[series], lapply.observed))
     } else {
         output <- lapply(as.list(series), extract.disparity.values, data, rarefaction, concatenate)
         names(output) <- names(data$series[series])
