@@ -20,7 +20,7 @@ The following installs the latest released version (see patch notes below). For 
 
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
-*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd).
+*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd) [html](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
 *  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd).
 *  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd).
 *  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
