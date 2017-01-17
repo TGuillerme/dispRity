@@ -20,11 +20,11 @@ The following installs the latest released version (see patch notes below). For 
 
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
-*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd) [html](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
-*  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd).
-*  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd).
-*  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
-*  Simulating morphological characters [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd).
+*  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
+*  A tutorial for palaeobiologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.html).
+*  A tutorial ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
+*  The disparity metrics [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
+*  Simulating morphological characters [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
