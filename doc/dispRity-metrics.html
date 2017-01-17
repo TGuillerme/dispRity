@@ -73,6 +73,25 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h4 class="date"><em>2017-01-17</em></h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#disparity-metrics">Disparity metrics</a></li>
+<li><a href="#the-function-levels">The function levels</a><ul>
+<li><a href="#a-level-1-function">A level 1 function</a></li>
+<li><a href="#a-level-2-function">A level 2 function</a></li>
+<li><a href="#a-level-3-function">A level 3 function</a></li>
+</ul></li>
+<li><a href="#make.metric"><code>make.metric</code></a></li>
+<li><a href="#metric-argument-in-disprity">metric argument in <code>dispRity</code></a><ul>
+<li><a href="#what-level-is-the-disparity">What level is the disparity?</a></li>
+</ul></li>
+<li><a href="#metrics-implemented-in-disprity">Metrics implemented in <code>dispRity</code></a><ul>
+<li><a href="#equations-and-implementations">Equations and implementations:</a></li>
+<li><a href="#metrics-run-through">Metrics run through</a></li>
+</ul></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
 
 <div id="disparity-metrics" class="section level1">
 <h1>Disparity metrics</h1>
@@ -101,9 +120,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 ## Any summary metric such as mean or median are good examples of level 1
 ## functions as they reduce the matrix to a single dimension (i.e. one value):
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.1707667</code></pre>
+<pre><code>## [1] 0.5809565</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] 0.04803808</code></pre>
+<pre><code>## [1] 0.3679781</code></pre>
 </div>
 <div id="a-level-2-function" class="section level2">
 <h2>A level 2 function</h2>
@@ -114,7 +133,7 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 ## This function is a level 2 function as it reduces the matrix into a two
 ## dimensional element (a vector of values):
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.148950184 -0.012035806  0.005894663  0.037572852</code></pre>
+<pre><code>## [1]  0.004208444 -0.669905857  0.011847380  3.606821345</code></pre>
 <p>Several level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> function that calculates the variance of each dimension of the ordinated matrix or the <code>ranges</code> one that calculates the range of each dimension.</p>
 </div>
 <div id="a-level-3-function" class="section level2">
@@ -122,10 +141,10 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <p>Finally a level 3 function will transform the <code>matrix</code> into another <code>matrix</code>. Note that the dimension of the output matrix don’t need to match the the input one:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The var functions computes the variance/covariance matrix which will be a 3x3 matrix
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##           [,1]       [,2]       [,3]
-## [1,] 0.0671122  0.1781030  0.1179494
-## [2,] 0.1781030  0.7084103 -0.3163269
-## [3,] 0.1179494 -0.3163269  1.9209340</code></pre>
+<pre><code>##            [,1]       [,2]      [,3]
+## [1,] 1.46805331 0.06312273 0.4674592
+## [2,] 0.06312273 0.71679981 0.1380971
+## [3,] 0.46745925 0.13809711 0.8857432</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level1">

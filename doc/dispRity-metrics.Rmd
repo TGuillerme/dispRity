@@ -2,7 +2,10 @@
 title: "dispRity metrics"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+    rmarkdown::html_vignette:
+        toc: true
+        toc_depth: 2
 bibliography: References.bib
 bst: sysbio.bst
 vignette: >
