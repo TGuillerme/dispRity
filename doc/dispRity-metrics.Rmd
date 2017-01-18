@@ -24,7 +24,7 @@ Of course, there are many more examples of metrics one can use for describing so
 
 Because of this great diversity of metric, the package `dispRity` has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis.
 In fact, the core function of the package, `dispRity`, allows the user to define any metric with the `metric` argument.
-However, because of the infrastructure of the package (especially the one of the `dispRity` objects – see the [`dispRity` manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd)), the `metric` argument has to follow certain rules:
+However, because of the infrastructure of the package (especially the one of the `dispRity` objects – see the [`dispRity` manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html), the `metric` argument has to follow certain rules:
 
 1.  it must be composed from one to three `function` objects;
 

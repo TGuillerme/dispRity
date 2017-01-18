@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2017-01-17" />
+<meta name="date" content="2017-01-18" />
 
 <title>dispRity manual</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity manual</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2017-01-17</em></h4>
+<h4 class="date"><em>2017-01-18</em></h4>
 
 
 <div id="TOC">
@@ -263,7 +263,7 @@ sum.divided.by.length &lt;-<span class="st"> </span>function(X) <span class="kw"
 ## 7     30 10  0.017
 ## 8     15 10  0.017
 ## 9      0 10  0.017</code></pre>
-<p>For more information on the metrics, please refer to the <a href="https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd"><code>dispRity</code> metric manual</a> for the vignette about the metric implementation in <code>dispRity</code>.</p>
+<p>For more information on the metrics, please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html"><code>dispRity</code> metric manual</a> for the vignette about the metric implementation in <code>dispRity</code>.</p>
 </div>
 </div>
 <div id="functions" class="section level1">
@@ -444,7 +444,7 @@ series_factors2 &lt;-<span class="st"> </span><span class="kw">as.data.frame</sp
 <div id="disprity" class="section level2">
 <h2><code>dispRity</code></h2>
 <p>This function is a modular function that allows to simply (and quickly!) calculate disparity from a matrix. Because disparity can be measured in many ways, this function is a tool to measure disparity <em>as defined by the user</em>. In fact, the <code>dispRity</code> function intakes two main arguments: the data and the disparity metric. The disparity metric is a function or a set of functions that summarises the ordinated matrix to a single value that represents, in our example, the diversity of morphologies.</p>
-<p>The <code>dispRity</code> algorithm decomposes the metrics functions into three levels that correspond to the dimensions of the output of each metric function. For more details on this algorithm please refer to the <a href="https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd">metric vignette</a>.</p>
+<p>The <code>dispRity</code> algorithm decomposes the metrics functions into three levels that correspond to the dimensions of the output of each metric function. For more details on this algorithm please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html">metric vignette</a>.</p>
 <p>In practice, the <code>dispRity</code> function intakes one or more functions as a definition of disparity. Several of these functions will be already implemented in other packages (such as <code>stats::median</code>, <code>base::sum</code>, etc.); some others are implemented in this package (listed in <code>?dispRity.metric</code>) and finally some others can be defined by the users. The <code>make.metric</code> function is designed to help users create and test their own disparity metric functions. In practice, the use of these metrics in the <code>dispRity</code> function, is pretty easy:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the mean value of the ordinated space (using base::mean)
 <span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> mean)</code></pre></div>
@@ -850,7 +850,7 @@ tree_50 &lt;-<span class="st"> </span><span class="kw">slice.tree</span>(tree, <
 </div>
 <div id="sim.morpho" class="section level4">
 <h4><code>sim.morpho</code></h4>
-<p>This function (and it’s associated utilities) allows to generate realistic discrete morphological matrices. See the <a href="https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd">associated vignette</a> for more details.</p>
+<p>This function (and it’s associated utilities) allows to generate realistic discrete morphological matrices. See the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html">associated vignette</a> for more details.</p>
 <p>Other utilities functions are also available within the package and more will be added in the future. For the full list, refer to the package’s functions list within <code>R</code>.</p>
 </div>
 </div>

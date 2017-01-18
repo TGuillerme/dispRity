@@ -177,7 +177,7 @@ sum.divided.by.length <- function(X) sum(X)/length(X)
 summary(dispRity(sliced_data, metric = sum.divided.by.length))
 ```
 
-For more information on the metrics, please refer to the [`dispRity` metric manual](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd) for the vignette about the metric implementation in `dispRity`.
+For more information on the metrics, please refer to the [`dispRity` metric manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html) for the vignette about the metric implementation in `dispRity`.
 
 Functions
 =========
@@ -389,7 +389,7 @@ In fact, the `dispRity` function intakes two main arguments: the data and the di
 The disparity metric is a function or a set of functions that summarises the ordinated matrix to a single value that represents, in our example, the diversity of morphologies.
 
 The `dispRity` algorithm decomposes the metrics functions into three levels that correspond to the dimensions of the output of each metric function.
-For more details on this algorithm please refer to the [metric vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metric.Rmd).
+For more details on this algorithm please refer to the [metric vignette](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
 
 In practice, the `dispRity` function intakes one or more functions as a definition of disparity.
 Several of these functions will be already implemented in other packages (such as `stats::median`, `base::sum`, etc.); some others are implemented in this package (listed in `?dispRity.metric`) and finally some others can be defined by the users.
@@ -741,7 +741,7 @@ axisPhylo()
 
 #### `sim.morpho`
 This function (and it's associated utilities) allows to generate realistic discrete morphological matrices.
-See the [associated vignette](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd) for more details.
+See the [associated vignette](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html) for more details.
 
 
 Other utilities functions are also available within the package and more will be added in the future. For the full list, refer to the package's functions list within `R`.
