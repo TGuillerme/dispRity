@@ -84,8 +84,8 @@ is.invariant <- function(character) {
 }
 
 
-## Mixed model sampler
-mixed.model <- function(tree, substitution, rates, states, verbose, ...) {
+## MIXED model sampler
+MIXED.model <- function(tree, substitution, rates, states, verbose, ...) {
 
     ## Get the number of states
     n_states <- k.sampler(states)

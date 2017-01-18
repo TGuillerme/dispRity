@@ -14,7 +14,7 @@ sim.morpho(tree, characters, states = 1, model = "ER", rates,
 
 \item{states}{A \code{numeric} string of probabilities for the number of states for each characters (\code{default = 1}; i.e. 100\% binary state characters; see details).}
 
-\item{model}{Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"mixed"}) or user defined model (see details).}
+\item{model}{Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"MIXED"}) or user defined model (see details).}
 
 \item{rates}{A function an it's parameters for the rates distribution (see details).}
 
@@ -34,7 +34,7 @@ Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} or \code{\l
      \itemize{
          \item \code{"ER"} uses the \code{ape::rTraitDisc} function with the \code{"ER"} model argument (= Mk model).
          \item \code{"HKY"} uses the \code{phyclust::gen.seq.HKY} function with \code{kappa} sampled from the \code{substitution} argument, \code{pi = runif(4)} (divided by \code{sum(runif(4))}), \code{rate.scale} sampled from the \code{rates} distribution and \code{L} being the number of \code{characters} and transforms the purines (A, G) into 0 and the pyrimidines (C, T) into 1.
-         \item \code{"mixed"} randomly uses \code{"ER"} or \code{"HKY"} for binary characters and \code{"ER"} for any character with more than two states.
+         \item \code{"MIXED"} randomly uses \code{"ER"} or \code{"HKY"} for binary characters and \code{"ER"} for any character with more than two states.
          \item the user defined model must be a \code{function} that generates \emph{a single} discrete morphological characters and intakes one element from at least the following arguments: \code{tree}, \code{states}, \code{rates}, \code{substitution}.
      }
 
@@ -62,8 +62,8 @@ matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates)
 ## Mk invariant matrix (10*50) (for Mk models)
 matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
      invariant = FALSE)
-## Mixed model invariant matrix (10*50)
-matrixMk <- sim.morpho(tree, characters = 50, model = "mixed",
+## MIXED model invariant matrix (10*50)
+matrixMk <- sim.morpho(tree, characters = 50, model = "MIXED",
      rates = my_rates, substitution = my_substitutions,  invariant = FALSE,
      verbose = TRUE)
 

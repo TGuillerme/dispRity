@@ -248,6 +248,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         all_types <- c("continuous", "c", "box", "b", "line", "l", "polygon", "p")
         ## type must be a character string
         check.class(type, "character")
+        type <- tolower(type)
         ## type must have only one element
         check.length(type, 1, paste(" argument must be either a user's function or one of the following:\n", paste(all_types, collapse=", "), ".", sep=""))
         check.method(type, all_types, "method ")

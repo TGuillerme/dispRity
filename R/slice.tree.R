@@ -27,7 +27,11 @@
 #'
 #' @author Thomas Guillerme
 #' @export
+#' 
 
+# DEBUG
+# warning("DEBUG slice.tree")
+# source("sanitizing.R")
 
 #Function modified from paleotree::timeSliceTree
 slice.tree <- function(tree, age, model, FAD, LAD) {
@@ -39,6 +43,13 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     # }
 
     #SANITIZING
+    check.class(tree, "phylo")
+    check.class(age, c("numeric", "integer"), " must be a single numeric value.")
+    check.length(age, 1, " must be a single numeric value.")
+    check.class(model, "character", " must be one of the following: acctran, deltran, punctuated, gradual.")
+    model <- tolower(model)
+    check.method(model, c("acctran", "deltran", "punctuated", "gradual"), "Slicing model")
+
     #FAD/LAD
     if(missing(FAD)) {
         FAD <- tree.age(tree)

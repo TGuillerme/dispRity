@@ -151,6 +151,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
 
     ## BOOT.TYPE
     check.class(boot.type, "character")
+    boot.type <- tolower(boot.type)
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
