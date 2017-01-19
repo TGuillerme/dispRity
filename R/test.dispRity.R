@@ -270,7 +270,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## Formatting the output (if needed)
 
-    if(!details & comparisons != "all") {
+    if(!details & comp != "all") {
         ## Getting the output class
         out_class <- unique(unlist(lapply(details_out, lapply, class)))
 
@@ -300,7 +300,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     } else {
 
         ## Dealing with aov/lm class
-        if(comparisons == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
+        if(comp == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
             ## If concatenate == TRUE
             if(is_distribution == TRUE && is_bootstrapped == TRUE && concatenate == FALSE) {
                 ## Transform results into a list

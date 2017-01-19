@@ -326,7 +326,11 @@ transpose.box <- function(data, rarefaction) {
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    return(t(matrix(unlist(box_data), nrow = length(data$series), byrow = TRUE)))
+    output <- t(matrix(unlist(box_data), nrow = length(data$series), byrow = TRUE))
+
+    colnames(output) <- names(data$series)
+
+    return(output)
 }
 
 

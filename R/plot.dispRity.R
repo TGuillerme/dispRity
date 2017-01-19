@@ -80,8 +80,7 @@
 # cent.tend=median
 # rarefaction = NULL
 # elements = TRUE
-# type = "discrete"
-# time.series = FALSE
+# time.series = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -305,7 +304,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(time.series != FALSE & rarefaction != TRUE) {
+        if(data$call$series != "customised" & time.series != FALSE & rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {
@@ -438,7 +437,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
-        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot") ; par(new = TRUE) ; warning("DEBUG: par new") 
+        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
 
         if(observed == TRUE) {
             if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
