@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2017-01-18" />
+<meta name="date" content="2017-01-23" />
 
 <title>dispRity metrics</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity metrics</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2017-01-18</em></h4>
+<h4 class="date"><em>2017-01-23</em></h4>
 
 
 <div id="TOC">
@@ -96,7 +96,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="disparity-metrics" class="section level1">
 <h1>Disparity metrics</h1>
 <p>There are many ways for measuring disparity! In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA). For example, one can look at ellipsoid hyper-volume of the ordinated space <span class="citation">(Donohue et al. 2013)</span>, the sum and the product of the ranges and variances <span class="citation">(Wills, Briggs, and Fortey 1994–4AD)</span> or the median position of the elements relative to their centroid <span class="citation">(Guillerme and Cooper in prep.)</span>. Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.</p>
-<p>Because of this great diversity of metric, the package <code>dispRity</code> has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis. In fact, the core function of the package, <code>dispRity</code>, allows the user to define any metric with the <code>metric</code> argument. However, because of the infrastructure of the package (especially the one of the <code>dispRity</code> objects <U+2013> see the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html"><code>dispRity</code> manual</a>, the <code>metric</code> argument has to follow certain rules:</p>
+<p>Because of this great diversity of metric, the package <code>dispRity</code> has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis. In fact, the core function of the package, <code>dispRity</code>, allows the user to define any metric with the <code>metric</code> argument. However, because of the infrastructure of the package (especially the one of the <code>dispRity</code> objects – see the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html"><code>dispRity</code> manual</a>, the <code>metric</code> argument has to follow certain rules:</p>
 <ol style="list-style-type: decimal">
 <li><p>it must be composed from one to three <code>function</code> objects;</p></li>
 <li><p>these functions can only intake a <code>matrix</code> or a <code>vector</code>;</p></li>
@@ -120,9 +120,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 ## Any summary metric such as mean or median are good examples of level 1
 ## functions as they reduce the matrix to a single dimension (i.e. one value):
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.2140826</code></pre>
+<pre><code>## [1] 0.4611901</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.2687676</code></pre>
+<pre><code>## [1] 0.5476239</code></pre>
 </div>
 <div id="a-level-2-function" class="section level2">
 <h2>A level 2 function</h2>
@@ -133,7 +133,7 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 ## This function is a level 2 function as it reduces the matrix into a two
 ## dimensional element (a vector of values):
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1]  0.003251846 -0.042095903  2.323819594 -0.074692780</code></pre>
+<pre><code>## [1] -0.21101586 -0.25285546  0.02701672  0.61422600</code></pre>
 <p>Several level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> function that calculates the variance of each dimension of the ordinated matrix or the <code>ranges</code> one that calculates the range of each dimension.</p>
 </div>
 <div id="a-level-3-function" class="section level2">
@@ -141,10 +141,10 @@ prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply<
 <p>Finally a level 3 function will transform the <code>matrix</code> into another <code>matrix</code>. Note that the dimension of the output matrix don’t need to match the the input one:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The var functions computes the variance/covariance matrix which will be a 3x3 matrix
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##             [,1]       [,2]        [,3]
-## [1,]  0.46160675 -0.2384725 -0.05639437
-## [2,] -0.23847253  0.1945375  0.24853017
-## [3,] -0.05639437  0.2485302  0.85166973</code></pre>
+<pre><code>##            [,1]       [,2]       [,3]
+## [1,]  0.6572853  0.4903445 -0.6245042
+## [2,]  0.4903445  0.7419708 -0.6188983
+## [3,] -0.6245042 -0.6188983  0.6747500</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level1">
