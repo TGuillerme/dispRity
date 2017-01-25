@@ -16,8 +16,6 @@ library(dispRity)
 
 The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
-> A brand new version, v0.3 (*dispRity lite*), is in preparation and should be released early 2017. This version **highly** improves calculation speed and memory footprints of `dispRity` objects! Stay tuned! Check the [dev-testing branch](https://github.com/TGuillerme/dispRity/tree/dev-testing) for more info.
-
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
 *  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
@@ -29,13 +27,12 @@ Note that some of the vignettes do not contain all the details of the improvemen
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
-* 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
-  * *new* utility function: `merge.time.series` for cleaning or merging time series
-  * *new* vignette: `dispRity-simulate_data` on how to simulate morphological data in `dispRity`
-  * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are
-  * *new* function: `sim.morpho` generates morphological matrices 
-  * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
-  * minor graphical functions updates
+* 2017/01/25 - v0.3.0 *dispRity lite!*
+  * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.
+  * **removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
+  * **changed argument** in `plot.dispRity`, `type = "lines"` is now replaced by `type = "line"`.
+  * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
