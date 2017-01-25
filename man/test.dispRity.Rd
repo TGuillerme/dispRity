@@ -2,10 +2,10 @@
 % Please edit documentation in R/test.dispRity.R
 \name{test.dispRity}
 \alias{test.dispRity}
-\title{Disparity statistics}
+\title{Testing disparity hypothesis}
 \usage{
-test.dispRity(data, test, comparisons = "pairwise", correction,
-  concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)),
+test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
+  correction, concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)),
   details = FALSE, ...)
 }
 \arguments{
@@ -15,7 +15,9 @@ test.dispRity(data, test, comparisons = "pairwise", correction,
 
 \item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).}
 
-\item{correction}{which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
+\item{rarefaction}{A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).}
+
+\item{correction}{Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
 
 \item{concatenate}{Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).}
 
@@ -69,10 +71,10 @@ test.dispRity(sum_of_variances, aov, "all")
 disparity_var <- dispRity(bootstrapped_data, metric = variances)
 ## Differences between the concatenated bootstrapped values of the series
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-     concatenate = TRUE)
+     concatenate = TRUE, correction = "bonferroni")
 ## Differences between the series bootstrapped
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-     concatenate = FALSE)
+     concatenate = FALSE, correction = "bonferroni")
 
 }
 \author{

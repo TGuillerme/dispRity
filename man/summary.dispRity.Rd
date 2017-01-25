@@ -4,21 +4,19 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = mean,
-  recall = FALSE, rounding, results = "coefficients")
+\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = median,
+  recall = FALSE, rounding)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
 \item{quantiles}{The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
-\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[base]{mean}}).}
+\item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).}
 
 \item{recall}{\code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 
 \item{rounding}{Optional, a value for rounding the values in the output table (default = 2).}
-
-\item{results}{Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")}
 }
 \value{
 A \code{data.frame} with:
@@ -31,26 +29,14 @@ A \code{data.frame} with:
 Creates a summary of a \code{dispRity} object.
 }
 \examples{
-## Load the Beck & Lee 2014 data
-data(BeckLee_mat50)
-
-## Calculating the disparity from a customised series
-## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-     dimnames = list(rownames(BeckLee_mat50))))
-customised_series <- cust.series(BeckLee_mat50, factors)
-## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
-## Calculating the sum of variances
-sum_of_variances <- dispRity(bootstrapped_data,
-     metric = c(sum, variances))
+## Load the disparity data based on Beck & Lee 2014
+data(disparity)
 
 ## Summarising the results
-summary(sum_of_variances) # default
+summary(disparity) # default
 ## Using different options
-summary(sum_of_variances, quantiles = 75, cent.tend = median,
-     rounding = 0, recall = TRUE)
+summary(disparity, quantiles = 75, cent.tend = mean, rounding = 8,
+     recall = TRUE)
 
 }
 \author{

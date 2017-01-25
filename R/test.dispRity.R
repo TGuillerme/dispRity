@@ -1,11 +1,12 @@
-#' @title Disparity statistics 
+#' @title Testing disparity hypothesis
 #'
 #' @description Applying statistical tests to dispRity objects
 #'
 #' @param data A \code{dispRity} object.
 #' @param test A test \code{function} to apply to the data.
 #' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
-#' @param correction which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
+#' @param rarefaction A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).
+#' @param correction Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param concatenate Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).
 #' @param conc.quantiles If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles.
 #' @param details Whether to output the details of each test (non-formatted; default = \code{FALSE}).
@@ -52,10 +53,10 @@
 #' disparity_var <- dispRity(bootstrapped_data, metric = variances)
 #' ## Differences between the concatenated bootstrapped values of the series
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-#'      concatenate = TRUE)
+#'      concatenate = TRUE, correction = "bonferroni")
 #' ## Differences between the series bootstrapped
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-#'      concatenate = FALSE)
+#'      concatenate = FALSE, correction = "bonferroni")
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
 #'
@@ -66,104 +67,129 @@
 # source("test.dispRity_fun.R")
 # source("summary.dispRity_fun.R")
 # source("make.metric_fun.R")
-# source("extract.dispRity.R")
-# source("extract.dispRity_fun.R")
-# source("sequential.test.R")
-# source("sequential.test_fun.R")
+# source("dispRity.utilities.R")
+# source("dispRity.utilities_fun.R")
+# # source("sequential.test.R")
+# # source("sequential.test_fun.R")
 # data(BeckLee_mat50)
 # factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
 # customised_series <- cust.series(BeckLee_mat50, factors)
 # bootstrapped_data <- boot.matrix(customised_series, bootstraps = 10)
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)
-# data <- data_multi
+# data <- data_single
+# test = t.test
+# comparisons = "pairwise"
+# rarefaction = NULL
+# concatenate = TRUE
+# conc.quantiles = c(mean, c(95, 50))
 # test.dispRity(data, test = aov, comparisons = "all")
 # test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
-test.dispRity <- function(data, test, comparisons="pairwise", correction, concatenate=TRUE, conc.quantiles=c(mean, c(95, 50)), details=FALSE, ...) { #format: get additional option for input format?
+test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NULL, correction, concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)), details = FALSE, ...) { #format: get additional option for input format?
 
-    #get call
-    match_call<-match.call()
+    ## get call
+    match_call <- match.call()
 
-    #----------------------
-    # SANITIZING
-    #----------------------
-    #DATA
-    #must be class dispRity
+    ## DATA
+    ## must be class dispRity...
     check.class(data, "dispRity")
-    #Check if it's a bootstrapped dispRity object
-    if(class(data) == "dispRity" & length(data) == 4) stop(paste(data$call), "\nUse the dispRity function to calculate disparity.", sep="")
-    #must have 5 elements
-    check.length(data, 5, " must be a 'dispRity' object.")
-    #must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop("Data must be a dispRity object.")
-    #is the data bootstrapped? 
-    is.bootstrapped <- ifelse(!is.na(match("bootstraps", names(data$data))), TRUE, FALSE)
-    #check if is.distribution
-    is.distribution <- ifelse(length(data$disparity$observed[[1]][[1]][[1]]) == 1, FALSE, TRUE)
+    ## ...and have disparity data
+    if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
+    ## ...and must have more than one series
+    if(length(data$series) == 1) stop(paste(match_call$data, "must have more than one series."))
 
-    #Stop if disparity is not a distribution, nor bootstrapped
-    if(is.bootstrapped == FALSE && is.distribution == FALSE) stop("Data is neither a distribution nor bootstrapped: impossible to compare single values.")
+    ## Check if disparity is a value or a distribution
+    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
+
+    ## Check the bootstraps
+    is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+
+    ## Stop if disparity is not a distribution, nor bootstrapped
+    if(!is_bootstrapped & !is_distribution) stop(paste(match_call$data, "is neither a distribution nor bootstrapped: impossible to compare single values."))
     
-    #Test
-    #must be a single function
+    ## Stop if disparity is not bootstrapped and rarefaction is required
+    if(!is_bootstrapped & !is.null(rarefaction)) stop("Impossible to use a rarefaction level for non-bootstrapped data.")
+
+    ## Test
+    ## must be a single function
     check.class(test, "function", " must be a single function.")
     check.length(test, 1, " must be a single function.")
 
-    #Details
+    ## Details
     check.class(details, "logical")
 
-    #Stop if only one series
-    if(length(extract.dispRity(data)) == 1 && as.character(match_call$test) != "null.test") stop(paste(as.expression(match_call$data), " must have at least two series.", sep=""))
-
-    #Else, check comparisons
+    ## Authorised methods
     all_comparisons <- c("referential", "sequential", "pairwise", "all")
 
-    #Check if the comparisons is not one of the inbuilt comparisons
+    ## Check if the comparisons is not one of the inbuilt comparisons
     if(all(is.na(match(comparisons, all_comparisons)))) {
-        #must be a list
-        check.class(comparisons, "list", " must be a list of one or more pairs of series.")
-        #must be pairs
-        if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), " must be a list of one or more pairs of series.", sep=""))    
-        #If character, input must match the series
+        
+        ## Else must be a list
+        check.class(comparisons, "list", paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of series.", sep = ""))
+        
+        ## must be pairs
+        if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of series.", sep = ""), sep=""))    
+        
+        ## If character, input must match the series
         if(class(unlist(comparisons)) == "character") {
             if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
         }
-        #If numeric, input must match de series numbers
+
+        ## If numeric, input must match de series numbers
         if(class(unlist(comparisons)) == "numeric") {
             if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
         }
-        #Comparison is "custom"
+
+        ## Comparison is "custom"
         comp <- "custom"
+    
     } else {
-        #Make sure only one inbuilt comparison is given
-        check.length(comparisons, 1, " must be either 'referential', 'sequential', 'pairwise', 'all' or a vector of series names/numbers.")
+        ## Make sure only one inbuilt comparison is given
+        check.length(comparisons, 1, paste(" must be either", paste(all_comparisons, collapse = ", "), "."))        
         comp <- comparisons
 
-        #Set specific comparisons if needed
+        ## Set specific comparisons if needed
         if(as.character(match_call$test) == "sequential.test") {
             comp <- "sequential.test"
             comparisons <- "all"
         }
+
         if(as.character(match_call$test) == "null.test") {
             comp <- "null.test"
             comparisons <- "all"
         }
     }
 
-    #concatenate
+    ## rarefaction
+    if(!is.null(rarefaction)) {
+        check.class(rarefaction, c("numeric", "integer"))
+        check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
+        if(is.na(match(rarefaction, data$call$bootstrap[[3]]))) {
+            stop("Rarefaction level not found.")
+        }
+    } else {
+        rarefaction <- FALSE
+    }
+
+    ## concatenate
     check.class(concatenate, "logical")
-    #concatenate (ignore if data is not bootstrapped)
-    if(is.bootstrapped == TRUE && is.distribution == TRUE && concatenate == FALSE) {
-        #conc.quantiles must be a list
+
+    ## concatenate (ignore if data is not bootstrapped)
+    if(is_bootstrapped & is_distribution & !concatenate) {
+
+        ## conc.quantiles must be a list
         check.class(conc.quantiles, "list", " must be a list of at least one function and one quantile value (in that order).")
+        
         if(length(conc.quantiles) < 2) stop("conc.quantiles must be a list of at least one function and one quantile value (in that order).")
-        #first element of conc.quantiles must be a function
+        
+        ## first element of conc.quantiles must be a function
         con.cen.tend <- conc.quantiles[[1]]
         check.class(con.cen.tend, "function")
         check.metric(con.cen.tend) -> silent
-        #second and more elements must be numeric
+        
+        ## second and more elements must be numeric
         quantiles <- unlist(conc.quantiles[-1])
         if(class(quantiles) != "numeric") stop("Quantiles provided in conc.quantiles must be stated after the function and must be numeric.")
         if(sum(quantiles) != length(quantiles)) {
@@ -173,88 +199,84 @@ test.dispRity <- function(data, test, comparisons="pairwise", correction, concat
         }
     }
 
-    #correction
+    ## correction
     if(!missing(correction)) {
-        check.class(correction, 'character')
-        p.adjust_list<- c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
-        if(all(is.na(match(correction, p.adjust_list)))) {
-            stop("correction type must be one of the p.adjust function options.")
-        }
+        check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
         if(length(data$data$bootstrap) > 2 & correction == "none") {
             message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
         }
     }
 
-    #----------------------
-    # APPLYING THE TEST
-    #----------------------
+    ## ----------------------
+    ##  APPLYING THE TEST
+    ## ----------------------
 
-    #Extracting the data (sends error if data is not bootstrapped)
-    extracted_data <- extract.dispRity(data, observed = FALSE, concatenate = concatenate, keep.structure = TRUE)
+    ## Extracting the data (sends error if data is not bootstrapped)
 
-    #Custom, pairwise, sequential and referential
+    extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+
+    ## Custom, pairwise, sequential and referential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
-        #Get the list of comparisons
+        ## Get the list of comparisons
         comp_series <- set.comparisons.list(comp, extracted_data, comparisons)
 
-        #Apply the test to the list of pairwise comparisons
+        ## Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_series, extracted_data, test, ...)
-        #details_out <- test.list.lapply.distributions(comp_series, extracted_data, test) ; warning("DEBUG")
+        ## details_out <- test.list.lapply.distributions(comp_series, extracted_data, test) ; warning("DEBUG")
 
-        #Saving the list of comparisons
+        ## Renaming the detailed results list
         comparisons_list <- save.comparison.list(comp_series, extracted_data)
-
-        #Renaming the detailed results list
         names(details_out) <- comparisons_list
     }
 
-    #ANOVA/GLM type
+    ## ANOVA/GLM type
     if(comp == "all") {
 
-        #Splitting the data per bootstrap
+        ## Splitting the data per bootstrap
         list_of_data <- list()
         for(bootstrap in 1:length(extracted_data[[1]])) {
             list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
         }
         list_of_data <- lapply(list_of_data, list.to.table)
 
-        #running the tests
-        details_out <- lapply(list_of_data, lapply.aov.type, test, ...)
-        #details_out <- lapply(list_of_data, lapply.aov.type, test) ; warning("DEBUG")
+        ## running the tests
+        try(details_out <- lapply(list_of_data, lapply.aov.type, test, ...), silent = TRUE)
+        ## try(details_out <- lapply(list_of_data, lapply.aov.type, test), silent = TRUE) ; warning("DEBUG")
+        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
     }
 
-    #Sequential.test comparisons (one to each other)
+    ## Sequential.test comparisons (one to each other)
     if(comp == "sequential.test") {
-        #Applying the test to the list of extracted data
+        ## Applying the test to the list of extracted data
         if(!missing(correction)) {
             details_out <- test(extracted_data, correction, call = data$call, ...)
-            #details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
+            ## details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
         } else {
             details_out <- test(extracted_data, call = data$call, ...)
-            #details_out <- test(extracted_data, call = data$call, family = gaussian)
+            ## details_out <- test(extracted_data, call = data$call, family = gaussian)
         }
     }
 
-    #Null testing
+    ## Null testing
     if(comp == "null.test") {
-        #Applying the test to the data
+        ## Applying the test to the data
         details_out <- test(data, ...)
-        #details_out <- test(data, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
+        ## details_out <- test(data, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
     }
 
-    #----------------------
-    # TEST OUTPUT
-    #----------------------
+    ## ----------------------
+    ##  TEST OUTPUT
+    ## ----------------------
 
-    #Formatting the output (if needed)
+    ## Formatting the output (if needed)
 
-    if(details == FALSE & comparisons != "all") {
-        #Getting the output class
+    if(!details & comp != "all") {
+        ## Getting the output class
         out_class <- unique(unlist(lapply(details_out, lapply, class)))
 
-        #Numeric output
+        ## Numeric output
         if(out_class == "numeric") {
-            if(concatenate == TRUE) {
+            if(concatenate) {
                 table_out <- output.numeric.results(details_out, as.expression(match_call$test), comparisons_list)
             } else {
                 table_out <- output.numeric.results(details_out, as.expression(match_call$test), comparisons_list, conc.quantiles, con.cen.tend)
@@ -262,9 +284,9 @@ test.dispRity <- function(data, test, comparisons="pairwise", correction, concat
             return(table_out)
         }
 
-        #htest output
+        ## htest output
         if(out_class == "htest") {
-            if(concatenate == TRUE) {
+            if(concatenate) {
                 table_out <- output.htest.results(details_out, comparisons_list)
             } else {
                 table_out <- output.htest.results(details_out, comparisons_list, conc.quantiles, con.cen.tend)
@@ -272,20 +294,20 @@ test.dispRity <- function(data, test, comparisons="pairwise", correction, concat
             return(table_out)
         }
 
-        #no implemented output:
+        ## no implemented output:
         return(details_out)
 
     } else {
 
-        #Dealing with aov/lm class
-        if(comparisons == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
-            #If concatenate == TRUE
-            if(is.distribution == TRUE && is.bootstrapped == TRUE && concatenate == FALSE) {
-                #Transform results into a list
+        ## Dealing with aov/lm class
+        if(comp == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
+            ## If concatenate == TRUE
+            if(is_distribution == TRUE && is_bootstrapped == TRUE && concatenate == FALSE) {
+                ## Transform results into a list
                 table_out <- output.aov.results(details_out, conc.quantiles, con.cen.tend)
                 return(table_out)
             } else {
-                #Results should be a single test 
+                ## Results should be a single test 
                 if(length(details_out) == 1) {
                     return(details_out[[1]])
                 } else {
@@ -297,21 +319,21 @@ test.dispRity <- function(data, test, comparisons="pairwise", correction, concat
             return(table_out)
         }
 
-        #Sequential test results
+        ## Sequential test results
         if(details == FALSE && comp == "sequential.test") {
-            #Sequential test already formated
+            ## Sequential test already formated
             return(details_out)
         }
 
-        #Null.test results
+        ## Null.test results
         if(details == FALSE && comp == "null.test") {
             if(length(data$series) == 1) {
-                #Return a single randtest already formatted.
+                ## Return a single randtest already formatted.
                 return(details_out)
             } else {
-                #Saving the calling parameters
+                ## Saving the calling parameters
                 call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.from.call(data, "metric", eval = FALSE), ".\n", sep ="")
-                #Creating the results table
+                ## Creating the results table
                 table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$series), ncol = 1, dimnames = list(c(data$series)))
                 table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$series), ncol = 4,  dimnames = list(c(data$series)), byrow = TRUE)
 
@@ -323,7 +345,7 @@ test.dispRity <- function(data, test, comparisons="pairwise", correction, concat
             }
         }
 
-        #returning the detailed output
+        ## returning the detailed output
         return(details_out)
     }
 }

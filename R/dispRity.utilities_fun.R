@@ -1,0 +1,29 @@
+## Extracting a specific rarefaction level
+extract.disparity.values <- function(series, data, rarefaction, concatenate) {
+    ## Get the rarefaction level
+    if(rarefaction != FALSE) {
+        rarefaction = as.numeric(which(lapply(data$series[[series]][-1], nrow) == rarefaction) + 1)
+        if(length(rarefaction) == 0) {
+            ## No rarefaction level for this series
+            return(NULL)
+        }
+    } else {
+        rarefaction = 2
+    }
+    if(concatenate) {
+        return(list(as.numeric(data$disparity[[series]][[rarefaction]])))
+    } else {
+        return(lapply(seq_len(ncol(data$disparity[[series]][[rarefaction]])), function(col) data$disparity[[series]][[rarefaction]][,col]))
+    }
+}
+
+## Remove nulls from a list
+clean.list <- function(list) {
+    nulls <- unlist(lapply(list, is.null))
+    return(list[!nulls])
+}
+
+## Recursive sorting
+recursive.sort <- function(data, sort) {
+    return(data[sort])
+}

@@ -18,22 +18,21 @@ The following installs the latest released version (see patch notes below). For 
 
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
-*  The package manual [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.Rmd).
-*  A tutorial for palaeobiologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.Rmd).
-*  A tutorial ecologists [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.Rmd).
-*  The disparity metrics [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd).
-*  Simulating morphological characters [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.Rmd).
+*  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
+*  A tutorial for palaeobiologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.html).
+*  A tutorial ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
+*  The disparity metrics [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
+*  Simulating morphological characters [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
-* 2016/11/07 - v0.2.1 - *Simulating morphological matrices*
-  * *new* utility function: `merge.time.series` for cleaning or merging time series
-  * *new* vignette: `dispRity-simulate_data` on how to simulate morphological data in `dispRity`
-  * *new* function: `check.morpho` for checking the how "realistic" the morphological matrices are
-  * *new* function: `sim.morpho` generates morphological matrices 
-  * *new* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
-  * minor graphical functions updates
+* 2017/01/25 - v0.3.0 *dispRity lite!*
+  * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.
+  * **removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
+  * **changed argument** in `plot.dispRity`, `type = "lines"` is now replaced by `type = "line"`.
+  * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
@@ -48,9 +47,9 @@ Citation
 -------
 If you are using this package, please cite the following Zenodo DOI (an associated paper will be added soon):
 
-* Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
+* Guillerme, T. (**2016**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
 
- [BibTeX](https://zenodo.org/record/31742/export/hx), [EndNote](https://zenodo.org/record/31742/export/xe), [DataCite](https://zenodo.org/record/31742/export/dcite3), [RefWorks](https://zenodo.org/record/31742/export/xw)
+ [BibTeX](https://zenodo.org/record/55646/export/hx), [EndNote](https://zenodo.org/record/55646/export/xe), [DataCite](https://zenodo.org/record/55646/export/dcite3), [RefWorks](https://zenodo.org/record/55646/export/xw)
 
 Acknowledgments
 -------

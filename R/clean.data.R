@@ -46,7 +46,8 @@ clean.data<-function(data, tree) {
     }
 
     #tree
-    tree_class <- check.class(tree, c("phylo", "multiPhylo"), " must be a phylo or multiPhylo object.")
+    check.class(tree, c("phylo", "multiPhylo"), " must be a phylo or multiPhylo object.")
+    tree_class <- class(tree)
 
 
     #CLEANING THE DATA/TREES

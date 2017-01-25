@@ -99,7 +99,7 @@
 
 #kth root scaling
 k.root <- function(data, dimensions){
-    data^(1/dimensions)
+    return(data^(1/dimensions))
 }
 
 #Calculating each axis variance
@@ -113,6 +113,10 @@ variances <- function(matrix, k.root) {
 
 #Calculating each axis ranges
 ranges <- function(matrix, k.root) {
+
+    ## Initialise values
+    max_values <- min_values <- ranges <- numeric(ncol(matrix))
+
     #Max values
     max_values <- apply(matrix, 2, max)
     #Min values
@@ -130,6 +134,9 @@ ranges <- function(matrix, k.root) {
 
 #Calculating the distance from centroid
 centroids <- function(matrix, centroid) {
+
+    ## Initialise values
+    cent.dist <- numeric(nrow(matrix))
 
     if(missing(centroid)) {
         #Calculating the centroid point
@@ -174,6 +181,7 @@ mode.val <- function(X){
 
 # Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
+
     #Initialising the variables
     ncol_matrix <- ncol(matrix)
 

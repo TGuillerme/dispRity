@@ -2,10 +2,12 @@
 #'
 #' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 #'
+#' @usage boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
+#' 
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
 #' @param bootstraps The number of bootstrap pseudo-replicates (\code{default = 1000}).
-#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data.
-#' @param rm.last.axis Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).
+#' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
 #' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
@@ -19,10 +21,7 @@
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
-#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap.
-#'  
-#' \code{rm.last.axis}: the provided \code{numeric} value should be the percentage of axis to keep. By default when \code{rm.last.axis = TRUE}, 95% of the axis are preserved (the last 5% are removed).
-#'
+#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have less elements than the rarefaction value, the series is not rarefied!
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
 #'   \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
@@ -42,8 +41,8 @@
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 #' ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-#' ## Bootstrapping an ordinated matrix with only 90% of the first axis
-#' boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
+#' ## Bootstrapping an ordinated matrix with only 3 dimensions
+#' boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 #' 
 #' ## Bootstrapping a series of matrices
 #' ## Generating a dummy series of matrices
@@ -67,128 +66,120 @@
 #' 
 #' @author Thomas Guillerme
 
-boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FALSE, verbose=FALSE, boot.type="full", parallel) {
-    #----------------------
-    # SANITIZING
-    #----------------------
-    #DATA
-    #If class is dispRity, data is serial
+## DEBUG
+# warning("DEBUG boot.matrix")
+# source("sanitizing.R")
+# source("boot.matrix_fun.R")
+# data(BeckLee_mat50)
+# bootstraps = 7
+# rarefaction = FALSE
+# dimensions = FALSE
+# verbose = FALSE
+# boot.type = "full"
+# data <- BeckLee_mat50
+# bootstraps = 11
+# rarefaction = c(5,6)
+# data <- cust.series(BeckLee_mat50, factors)
+# bootstraps <- 3
+# rarefaction <- TRUE
+
+boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
+    
+    match_call <- match.call()
+    ## ----------------------
+    ##  SANITIZING
+    ## ----------------------
+    ## DATA
+    ## If class is dispRity, data is serial
     if(class(data) != "dispRity") {
-        #Set previous call logic
-        prev_call <- FALSE
+        ## Data must be a matrix
+        check.class(data, "matrix")
 
-        #If data is matrix, transform to list
-        if(class(data) == "matrix") {
-            data <- list(data)
-        }
+        ## Creating the dispRity object
+        dispRity_object <- make.dispRity(data = data)
+        #dispRity_object$series$origin$elements <- seq(1:nrow(data))
+        data <- dispRity_object
 
-        #Data must be a list
-        check.class(data, "list", " must be either a matrix, a list of matrices or an output from time.series or cust.series.")
-
-        #Extract info
-        taxa_list <- unlist(lapply(data, rownames))
-        names(taxa_list) <- NULL
-        series_list <- names(data)
-        if(is.null(series_list)) {
-            series_list <- length(data)
-        }
     } else {
-        #Must be proper format
-        check.length(data, 3, " must be either a matrix, a list of matrices or an output from time.series or cust.series.")
-        #Extracting the info
-        taxa_list <- data$elements
-        series_list <- data$series[-1]
-        series_type <- data$series[1]
-        data <- data$data
-        #Set previous call logic
-        prev_call <- TRUE
-    }
-
-    #Each matrix must have the same number of columns
-    mat_columns <- unique(unlist(lapply(data, ncol)))
-    if(length(mat_columns) != 1) stop("Some matrices in data have different number of columns.")
-
-    #Making sure there is at least 3 rows per element
-    if(any(unlist(lapply(data, nrow) < 3))) stop("Some matrices in data have less than 3 rows.")
-
-    #BOOTSTRAP
-    #Must be a numeric value
-    check.class(bootstraps, "numeric", " must be a single (entire) numerical value.")
-    check.length(bootstraps, 1, " must be a single (entire) numerical value.")
-    #Make sure the bootstrap is a whole number
-    bootstraps <- round(abs(bootstraps))
-
-    #RAREFACTION
-    #Is it not logical?
-    if(class(rarefaction) != "logical") {
-        logic.rare <- FALSE
-        #Is it numeric?
-        check.class(rarefaction, "numeric", " must be either numeric or logical.")
-        #Is it only one value?
-        if(length(rarefaction) == 1) {
-            rare.list <- FALSE
-        } else {
-            rare.list <- TRUE
+        ## Must be proper format
+        check.length(data, 3, " must be either a matrix or an output from the time.series or cust.series functions.")
+        
+        ## With the proper names
+        data_names <- names(data)
+        if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "series") {
+            stop(paste(match_call$data, "must be either a matrix or an output from the time.series or cust.series functions."))
         }
-    } else {
-        logic.rare <- TRUE
-        rare.list <- FALSE
-    }
 
-    #VERBOSE
-    check.class(verbose, "logical")
-    # ~~~
-    # Use progress bars?
-    # ~~~
-        #total <- 20
-        ## create progress bar
-        #pb <- txtProgressBar(min = 0, max = total, style = 3)
-        #for(i in 1:total){
-        #Sys.sleep(0.1)
-        ## update progress bar
-        #setTxtProgressBar(pb, i)
-        #}
-        #close(pb)
-
-
-    #BOOT.TYPE
-    check.class(boot.type, "character")
-    check.length(boot.type, 1, " must be a single character string")
-    #Must be one of these methods
-    boot.methods_list <- c('full', "single")
-    if(all(is.na(match(boot.type, boot.methods_list)))) {
-        stop("boot.method must be 'full' or 'single'.")
-    }
-    # ~~~
-    # Add some extra method i.e. proportion of bootstrap shifts?
-    # ~~~
-
-    #RM.LAST.AXIS
-    #If TRUE, set automatic threshold at 0.95
-    if(class(rm.last.axis) != "logical") {
-        #Else must be a single numeric value (proportional)
-        check.class(rm.last.axis, "numeric", " must be logical or a proportional threshold value.")
-        check.length(rm.last.axis, 1, " must be logical or a proportional threshold value.", errorif=FALSE)
-        if(rm.last.axis < 0) {
-            stop("rm.last.axis must be logical or a proportional threshold value.")
-        } else {
-            if(rm.last.axis > 1) {
-                stop("rm.last.axis must be logical or a v threshold value.")
-            } else {
-                rm.axis <- TRUE
-                last.axis <- rm.last.axis
+        if(length(data$series) > 1) {
+            ## Check if any series has at least three rows
+            elements_check <- unlist(lapply(unlist(data$series, recursive = FALSE), function(X) length(X) < 3))
+            if(any(elements_check)) {
+                stop(paste("The following series have less than 3 elements: ", paste( unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
             }
         }
+    }
+
+    ## Data must contain a first "bootstrap" (empty list)
+    if(length(data$series) == 0) data <- fill.dispRity(data)
+
+    ## BOOTSTRAP
+    ## Must be a numeric value
+    check.class(bootstraps, "numeric", " must be a single (entire) numerical value.")
+    check.length(bootstraps, 1, " must be a single (entire) numerical value.")
+    ## Make sure the bootstrap is a whole number
+    bootstraps <- round(abs(bootstraps))
+
+    ## RAREFACTION
+    ## Is it not logical?
+    if(class(rarefaction) != "logical") {
+        ## Is it numeric?
+        check.class(rarefaction, "numeric", " must be either numeric or logical.")
+        rare_out <- rarefaction
     } else {
-        if(rm.last.axis != FALSE) {
-            rm.axis <- TRUE
-            last.axis <- 0.95
+        if(rarefaction) {
+            #rarefaction <- lapply(unlist(lapply(data$series, lapply, nrow), recursive = FALSE), seq, to = 3)
+            rarefaction <- seq(from = nrow(data$matrix), to = 3)
+            rare_out <- "full"
         } else {
-            rm.axis <- FALSE
+            rarefaction <- NULL
+            rare_out <- NULL
         }
     }
 
-    #Parallel
+    ## VERBOSE
+    check.class(verbose, "logical")
+
+    ## BOOT.TYPE
+    check.class(boot.type, "character")
+    boot.type <- tolower(boot.type)
+    check.length(boot.type, 1, " must be a single character string")
+    
+    ## Must be one of these methods
+    check.method(boot.type, c("full", "single", "rangers"))
+    ## Set up the bootstrap type function
+    if(boot.type == "full") boot.type.fun <- boot.full
+    if(boot.type == "single") boot.type.fun <- boot.single
+    ## Some humour:
+    if(boot.type == "rangers") stop("Nice shoes!")
+    ##  ~~~
+    ##  Add some extra method i.e. proportion of bootstrap shifts?
+    ##  ~~~
+
+    ## RM.LAST.AXIS
+    ## If TRUE, set automatic threshold at 0.95
+    if(!missing(dimensions)) {
+        ## Else must be a single numeric value (proportional)
+        check.class(dimensions, "numeric", " must be logical or a proportional threshold value.")
+        check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
+        if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
+        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
+        data$call$dimensions <- dimensions
+    } else {
+        data$call$dimensions <- ncol(data$matrix)
+    }
+
+    ## Parallel
     if(missing(parallel)) {
         do_parallel <- FALSE
     } else {
@@ -196,98 +187,31 @@ boot.matrix<-function(data, bootstraps=1000, rarefaction=FALSE, rm.last.axis=FAL
         check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
         check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
         check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-        #Set up the cluster
+        ## Set up the cluster
         cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
-        #Set up the bootstrap type function
-        if(class(boot.type) != "function") {
-            if(boot.type == "full") {
-                boot.type.fun <- boot.full
-            }
-            if(boot.type == "single") {
-                boot.type.fun <- boot.single
-            }
-        } else {
-            boot.type.fun <- boot.type
-        }
     }
 
-    #----------------------
-    #BOOTSTRAPING THE DATA
-    #----------------------
-
-    #length_data variable initialisation
-    length_data <- length(data)
-    #length_rarefaction variable initialisation
-    length_rarefaction <- length(rarefaction)
-
-    #REMOVING THE LAST AXIS (optional)
-
-    if(rm.axis==TRUE) {
-        if(length_data > 1) {
-            #Recreate the "full" matrix
-            full_matrix <- data[[1]]
-            for(series in 2:length_data) {
-                full_matrix <- rbind(full_matrix, data[[series]])
-            }
-            #Removing any duplicated taxa
-            full_matrix <- full_matrix[unique(rownames(full_matrix)),]
-        } else {
-            full_matrix <- data[[1]]
-        }
-
-        #calculate the cumulative variance per axis
-        scree_data <- cumsum(apply(full_matrix, 2, var) / sum(apply(full_matrix, 2, var)))
-        #extract the axis  below the threshold value
-        axis_selected <- length(which(scree_data < last.axis))
-        #remove the extra axis from the list
-        data <- lapply(data, "[", TRUE, (1:axis_selected))
-        #warning
-        #message(paste("The", length(scree_data)-axis_selected, "last axis have been removed from the data."))
+    ## Return object if BS = 0
+    if(bootstraps == 0) {
+        return(data)
     }
 
-    #BOOTSRAPING THE DATA
-    #verbose
-    if(verbose != FALSE) message("Bootstraping...", appendLF=FALSE)
-    #Bootstrap the data set 
-    if(do_parallel == FALSE) {
-        BSresult <- lapply(data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type)
+    ## BOOTSRAPING THE DATA
+    if(verbose) message("Bootstrapping", appendLF = FALSE)
+    ## Bootstrap the data set 
+    if(!do_parallel) {
+        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     } else {
-        BSresult <- parLapply(cluster, data, Bootstrap.rarefaction, bootstraps, rarefaction, boot.type.fun)
+        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
-    #Getting the observed results
-    OBSresult <- lapply(data, Bootstrap.rarefaction, bootstraps = 0, rarefaction = FALSE, boot.type = "full")
-    #verbose
-    if(verbose != FALSE) message("Done.", appendLF = TRUE)
+    if(verbose) message("Done.", appendLF = FALSE)
 
-    #Setting the output
-    boot.call <- paste("Data was bootstrapped ", bootstraps, " times, using the ", boot.type, " bootstrap method.", sep = "")
+    ## Combining and storing the results back in the dispRity object
+    data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
 
-    #Series
-    if(prev_call != FALSE) {
-        boot.call <- paste("Data was split using ", series_type, " method.\n", boot.call, sep = "")
-    }
+    ## Adding the call information about the bootstrap
+    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out))
 
-    #Rarefaction
-    if(logic.rare == TRUE) {
-        if(rarefaction == TRUE) {
-            boot.call <- paste(boot.call, "Data was fully rarefied (down to 3 elements).", sep = "\n")
-        }
-    } else {
-        if(rare.list == FALSE) {
-            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rarefaction, " elements per series.", sep = "")
-        } else {
-            rare.elements <- paste(paste(rarefaction[-length_rarefaction], collapse = ", "), rarefaction[length_rarefaction], sep = " and ")
-            boot.call <- paste(boot.call, "\nData was rarefied with a maximum of ", rare.elements, " elements per series.", sep = "")
-        }
-    }
-
-    #Remove last axis
-    if(rm.axis == TRUE) boot.call <- paste(boot.call, "\nThe", length(scree_data) - axis_selected, "last axis were removed from the original ordinated data.")
-
-    #SIZE
-    output <- list("data" = list("bootstraps" = BSresult, "observed" = OBSresult), "elements" = taxa_list, "series" = series_list, "call" = boot.call)
-    class(output) <- c("dispRity")
-
-return(output)
+    return(data)
 }

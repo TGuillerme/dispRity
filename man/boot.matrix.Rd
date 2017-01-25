@@ -4,17 +4,16 @@
 \alias{boot.matrix}
 \title{Bootstraps an rarefies ordinated data.}
 \usage{
-boot.matrix(data, bootstraps = 1000, rarefaction = FALSE,
-  rm.last.axis = FALSE, verbose = FALSE, boot.type = "full", parallel)
+boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).}
 
 \item{bootstraps}{The number of bootstrap pseudo-replicates (\code{default = 1000}).}
 
-\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data.}
+\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).}
 
-\item{rm.last.axis}{Either a \code{logical} value whether to remove the last axis of the ordinated matrix or a proportion of axis to save.}
+\item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
@@ -34,10 +33,7 @@ This function outputs a \code{dispRity} object containing:
 Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 }
 \details{
-\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap.
- 
-\code{rm.last.axis}: the provided \code{numeric} value should be the percentage of axis to keep. By default when \code{rm.last.axis = TRUE}, 95% of the axis are preserved (the last 5% are removed).
-
+\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have less elements than the rarefaction value, the series is not rarefied!
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
   \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
@@ -55,8 +51,8 @@ boot.matrix(BeckLee_mat50, bootstraps = 20)
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-## Bootstrapping an ordinated matrix with only 90\% of the first axis
-boot.matrix(BeckLee_mat50, bootstraps = 20, rm.last.axis = 0.9)
+## Bootstrapping an ordinated matrix with only 3 dimensions
+boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 
 ## Bootstrapping a series of matrices
 ## Generating a dummy series of matrices

@@ -1,203 +1,113 @@
-### Schematised structure of a `dispRity` object
+### Schematised structure of a `dispRity` object (lite version)
 
-
-````
-object
-  |
-  \---$data
-  |     \---$observed
-  |     |        \---[[1_series]] (the first series)
-  |     |        |        \---[[1_rarefaction]] (contains a single element)
-  |     |        |                \---[[1_bootstrap]] (contains a single element)
-  |     |        |                         \---[[1]] an ordinated "matrix"
-  |     |        \---[[..._series]]
-  |     |        |        \---[[1_rarefaction]] (contains a single element)
-  |     |        |                \---[[1_bootstrap]] (contains a single element)
-  |     |        |                         \---[[1]] an ordinated "matrix"
-  |     |        \---[[n_series]] ... (the nth series)
-  |     |                 \---[[1_rarefaction]] (contains a single element)
-  |     |                         \---[[1_bootstrap]] (contains a single element)
-  |     |                                  \---[[1]] an ordinated "matrix"
-  |     \---$bootstrapped (is NULL if data is not bootstrapped)
-  |              \---[[1_series]] (the first series)
-  |              |        \---[[1_rarefaction]] (the first rarefaction level)
-  |              |        |       \---[[1_bootstrap]] (the first bootstrap)
-  |              |        |       |        \---[[1]] an ordinated "matrix"
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[..._rarefaction]] (contains a single element)
-  |              |        |       \---[[1_bootstrap]]
-  |              |        |       |        \---[[1]]
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[n_rarefaction]] (the nth rarefaction level a single element)
-  |              |                \---[[1_bootstrap]]
-  |              |                |        \---[[1]]
-  |              |                \---[[..._bootstrap]] 
-  |              |                         \---[[1]] 
-  |              |                \---[[n_bootstrap]] 
-  |              |                         \---[[1]] 
-  |              \---[[..._series]]
-  |              |        \---[[1_rarefaction]] (the first rarefaction level)
-  |              |        |       \---[[1_bootstrap]] (the first bootstrap)
-  |              |        |       |        \---[[1]] an ordinated "matrix"
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[..._rarefaction]]
-  |              |        |       \---[[1_bootstrap]]
-  |              |        |       |        \---[[1]]
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[n_rarefaction]] (the nth rarefaction level a single element)
-  |              |                \---[[1_bootstrap]]
-  |              |                |        \---[[1]]
-  |              |                \---[[..._bootstrap]] 
-  |              |                         \---[[1]] 
-  |              |                \---[[n_bootstrap]] 
-  |              |                         \---[[1]] 
-  |              \---[[n_series]] ... (the nth series)
-  |                       \---[[1_rarefaction]]
-  |                       |       \---[[1_bootstrap]]
-  |                       |       |        \---[[1]]
-  |                       |       \---[[..._bootstrap]] 
-  |                       |               \---[[1]] 
-  |                       |       \---[[n_bootstrap]] 
-  |                       |                \---[[1]]
-  |                       \---[[..._rarefaction]]
-  |                       |       \---[[1_bootstrap]]
-  |                       |       |        \---[[1]]
-  |                       |       \---[[..._bootstrap]] 
-  |                       |               \---[[1]] 
-  |                       |       \---[[n_bootstrap]] 
-  |                       |                \---[[1]]
-  |                       \---[[n_rarefaction]]
-  |                               \---[[1_bootstrap]]
-  |                               |        \---[[1]]
-  |                               \---[[..._bootstrap]] 
-  |                                        \---[[1]] 
-  |                               \---[[n_bootstrap]] 
-  |                                        \---[[1]] 
-  \---$disparity
-  |     \---$observed
-  |     |        \---[[1_series]] (the first series)
-  |     |        |        \---[[1_rarefaction]] (contains a single element)
-  |     |        |                \---[[1_bootstrap]] (contains a single element)
-  |     |        |                         \---[[1]] "numeric" value or vector (of the unique bootstrap)
-  |     |        \---[[..._series]]
-  |     |        |        \---[[1_rarefaction]] (contains a single element)
-  |     |        |                \---[[1_bootstrap]] (contains a single element)
-  |     |        |                         \---[[1]] "numeric" value or vector (of the unique bootstrap)
-  |     |        \---[[n_series]] ... (the nth series)
-  |     |                 \---[[1_rarefaction]] (contains a single element)
-  |     |                         \---[[1_bootstrap]] (contains a single element)
-  |     |                                  \---[[1]] "numeric" value or vector (of the unique bootstrap)
-  |     \---$bootstrapped (is NULL if data is not bootstrapped)
-  |              \---[[1_series]] (the first series)
-  |              |        \---[[1_rarefaction]] (the first rarefaction level)
-  |              |        |       \---[[1_bootstrap]] (the first bootstrap)
-  |              |        |       |        \---[[1]] "numeric" value or vector (of the unique bootstrap)
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[..._rarefaction]] (contains a single element)
-  |              |        |       \---[[1_bootstrap]]
-  |              |        |       |        \---[[1]]
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[n_rarefaction]] (the nth rarefaction level a single element)
-  |              |                \---[[1_bootstrap]]
-  |              |                |        \---[[1]]
-  |              |                \---[[..._bootstrap]] 
-  |              |                         \---[[1]] 
-  |              |                \---[[n_bootstrap]] 
-  |              |                         \---[[1]] 
-  |              \---[[..._series]]
-  |              |        \---[[1_rarefaction]] (the first rarefaction level)
-  |              |        |       \---[[1_bootstrap]] (the first bootstrap)
-  |              |        |       |        \---[[1]] "numeric" value or vector (of the unique bootstrap)
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[..._rarefaction]]
-  |              |        |       \---[[1_bootstrap]]
-  |              |        |       |        \---[[1]]
-  |              |        |       \---[[..._bootstrap]] 
-  |              |        |               \---[[1]] 
-  |              |        |       \---[[n_bootstrap]] 
-  |              |        |                \---[[1]]
-  |              |        \---[[n_rarefaction]] (the nth rarefaction level a single element)
-  |              |                \---[[1_bootstrap]]
-  |              |                |        \---[[1]]
-  |              |                \---[[..._bootstrap]] 
-  |              |                         \---[[1]] 
-  |              |                \---[[n_bootstrap]] 
-  |              |                         \---[[1]] 
-  |              \---[[n_series]] ... (the nth series)
-  |                       \---[[1_rarefaction]]
-  |                       |       \---[[1_bootstrap]]
-  |                       |       |        \---[[1]]
-  |                       |       \---[[..._bootstrap]] 
-  |                       |               \---[[1]] 
-  |                       |       \---[[n_bootstrap]] 
-  |                       |                \---[[1]]
-  |                       \---[[..._rarefaction]]
-  |                       |       \---[[1_bootstrap]]
-  |                       |       |        \---[[1]]
-  |                       |       \---[[..._bootstrap]] 
-  |                       |               \---[[1]] 
-  |                       |       \---[[n_bootstrap]] 
-  |                       |                \---[[1]]
-  |                       \---[[n_rarefaction]]
-  |                               \---[[1_bootstrap]]
-  |                               |        \---[[1]]
-  |                               \---[[..._bootstrap]] 
-  |                                        \---[[1]] 
-  |                               \---[[n_bootstrap]] 
-  |                                        \---[[1]] 
-  \---$elements
-  |     \---[[n_elements]] "character" strings (the names of the elements)
-  |             \---[[1]] "character" string (the name of the 1st element)
-  |             \---[[ ]] ...
-  |             \---[[n]] "character" string (the name of the nst element)
-  |
-  \---$series
-  |     \---[[n_series]] "character" or "numeric" string(s) (the name of the series)
-  |             \---[[1]] "character" string (the name of the 1st series)
-  |             \---[[ ]] ...
-  |             \---[[n]] "character" string (the name of the nst series)
-  \---$call
-        \---[[1]] "character" string
-  
-````
-
-Accessing the 3rd bootstrapped matrix of the 2nd rarefaction level in the 1st series
-````r
-series_number = 1
-rarefaction_level = 2
-bootstrap_value = 3
-access <- object$data$bootstrap[[series_number]][[rarefaction_level]][[bootstrap_value]]
-class(access) == "matrix"
-length(access) == 1
 ```
-  
-Accessing the 3rd bootstrap value/distribution of the 2nd rarefaction level in the 1st series
-````r
-series_number = 1
-rarefaction_level = 2
-bootstrap_value = 3
-access <- object$disparity$bootstrap[[series_number]][[rarefaction_level]][[bootstrap_value]]
-class(access) == "numeric"
-length(access) >= 1
+object
+	|
+	\---$matrix* = class:"matrix" (the original ordinated matrix)
+	|
+	\---$call* = class:"list" (the details on the methods used)
+	|	|
+	|	\---$series = class:"character"
+	|	|
+	|	\---$bootstrap = class:"character"
+	|	|
+	|	\---$dimensions = class:"numeric"
+	|	|
+	|	\---$metric = class:"character"
+	|
+	\---$series* = class:"list" (the list of series)
+	|	|
+	|	\---[[1]]* = class:"list" (the first series the )
+	|	|	|
+	|	|	\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
+	|	|	|
+	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+	|	|	|
+	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+	|	|	|
+	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)
+	|	|
+	|	\---[[2]] = class:"list" (the first series)
+	|	|	|
+	|	|	\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
+	|	|	|
+	|	|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+	|	|	|
+	|	|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+	|	|	|
+	|	|	\---[[...]] = class:"matrix" (second rarefaction level...)			
+	|	|	|
+	|	|	\---[[...]] = class:"list" (the following rarefactions)
+	|	|	|	|
+	|	|		\---[[...]] = class:"numeric" (the bootstraps)
+	|	|
+	|	\---[[...]] = class:"list" (the followng series)
+	|		|
+	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
+	|		|
+	|		\---[[...]] = class:"matrix" (the rarefactions)
+	|
+	\---$disparity
+		|
+		\---[[2]] = class:"list" (the first series the )
+		|	|
+		|	\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
+		|	|
+		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+		|	|
+		|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+		|	|
+		|	\---[[...]] = class:"matrix" (second rarefaction level...)
+		|
+		\---[[2]] = class:"list" (the first series)
+		|	|
+		|	\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
+		|	|
+		|	\---[[2]] = class:"matrix" (the matrix containing the bootstrap draws for the unrarefyed data)
+		|	|
+		|	\---[[3]] = class:"matrix" (the matrix containing the bootstrap draws for the first rarefaction level)
+		|	|
+		|	\---[[...]] = class:"matrix" (second rarefaction level...)			
+		|	|
+		|	\---[[...]] = class:"list" (the following rarefactions)
+		|		|
+		|		\---[[...]] = class:"numeric" (the bootstraps)
+		|
+		\---[[...]] = class:"list" (the followng series)
+			|
+			\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
+			|
+			\---[[...]] = class:"matrix" (the rarefactions)
+```
+The elements marked with an asterisk (*) are mandatory.
+
+### Using `fetch.dispRity` functions for accessing specific data elements (matrix, etc.)
+
+## `fetch.matrix` for accessing a specific ordinated matrix
+
+```{r}
+## To get the matrix of the second series, first rarefaction level and 58th bootstrap
+fetch.matrix(dispRity_object, series = 2, rarefaction = 1, bootstrap = 58)
+```
+
+## `fetch.elements` to get the elements within a specific series
+
+```{r}
+## To get the elements in the first series
+fetch.elements(dispRity_object, series = 1)
+```
+
+## `fetch.series` to get the series names
+
+```{r}
+## To get the series
+fetch.elements(dispRity_object)
+```
+
+> Note that in each case, the values can be set to `0` to fetch the original matrix. For example, `fetch.matrix(dispRity_object,0,0,0)` gets the original input matrix (or `fetch.matrix(dispRity_object)` by default).
+
+### Using `get.dispRity` or `extract.dispRity` to get the disparity elements (i.e. disparity values)
+
+```{r}
+...
 ```

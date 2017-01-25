@@ -2,147 +2,142 @@
 #'
 #' @description Summarises the content of a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param x A \code{dispRity} object.
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).
-#'
-#' @examples
-#' ## Load the Beck & Lee 2014 matrix
-#' data(BeckLee_mat50)
+#' @param ... further arguments to be passed to \code{print} or to \code{print.dispRity}.
 #' 
-#' ## Creating a dispRity object
-#' disparity_object <- dispRity(BeckLee_mat50, metric = c(sum, variances))
+#' @examples
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
 #' 
 #' ## Displaying the summary of the object content
-#' disparity_object
-#' print(disparity_object)
-#' print.dispRity(disparity_object)
+#' disparity
+#' print(disparity) # the same
+#' print.dispRity(disparity) # the same
 #'
 #' ## Displaying the full object
-#' print.dispRity(disparity_object, all = TRUE)
+#' print.dispRity(disparity, all = TRUE)
 #'
 #' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
-print.dispRity<-function(data, all=FALSE) {
+## DEBUG
+# warning("DEBUG dispRity.R")
+# library(dispRity)
+# source("sanitizing.R")
+# source("dispRity.R")
+# source("dispRity_fun.R")
+# source("dispRity.metric.R")
+# source("make.dispRity.R")
+# source("fetch.dispRity.R")
+# source("boot.matrix.R") ; source("boot.matrix_fun.R")
+# source("time.series.R") ; source("time.series_fun.R")
+# source("cust.series.R") ; source("cust.series_fun.R")
+# data(BeckLee_mat50)
+# data(BeckLee_tree)
+# data_simple <- BeckLee_mat50
+# data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
+# data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
+# data <- dispRity(data_series_boot, metric = c(variances))
 
-    if(all == TRUE) {
-        tmp <- data
+print.dispRity <- function(x, all = FALSE, ...) {
+
+
+    if(all) {
+        ## Print everything
+        tmp <- x
         class(tmp) <- "list"
         print(tmp)
+
     } else {
 
-        #Sequential tests
-        if(length(class(data)) == 2){
-            if(class(data)[1] == "dispRity" & class(data)[2] == "seq.test") {
-                #Sequential test
-                call_split <- strsplit(data$call, split = "@")
-                cat(call_split[[1]][1])
-            
-                #Series
-                series_names <- unique(unlist(strsplit(names(data$models), split = " - ")))
-                if(length(series_names) == 1) {
-                    cat(paste(series_names))
-                } else {
-                    cat("Series:\n")
-                    if(length(series_names) > 5) {
-                        cat(paste(series_names[1:5], collapse=", "),"...")
-                    } else {
-                        cat(paste(series_names, collapse=", "), ".", sep="")
-                    }
-                }
+        if(length(class(x)) > 1) {
+            ## randtest
+            if(class(x)[2] == "randtest") {
 
-                #call
-                if(!is.na(call_split[[1]][2])) {
-                    cat(paste("\n",call_split[[1]][2], sep = ""))
-                } else {
-                    cat("\nNo previous call found.\n")
+                ## Remove the call (messy)
+                remove.call <- function(element) {
+                    element$call <- "dispRity::null.test"
+                    return(element)
                 }
+                x <- lapply(x, remove.call)
+
+
+                if(length(x) == 1) {
+                    print(x[[1]])
+                } else {
+                    tmp <- x
+                    class(tmp) <- "list"
+                    print(tmp) 
+                }
+                return()
             }
-            if(class(data)[1] == "dispRity" & class(data)[2] == "randtest") {
-                #length_data variable initialisation
-                length_data <- length(data)
+        }
 
-                for(model in 1:length_data) {
-                    #The following is a modified version of print.randtest from ade4 v1.4-3
-                    if(length_data != 1) {
-                        cat(paste("Monte-Carlo test on series", names(data)[[model]], "\n"))
-                    } else {
-                        cat("Monte-Carlo test\n")
-                    }
-                    #cat("Call: ")
-                    #print(data[[model]]$call)
-                    cat("Observation:", data[[model]]$obs, "\n")
-                    cat("Based on", data[[model]]$rep, "replicates\n")
-                    cat("Simulated p-value:", data[[model]]$pvalue, "\n")
-                    cat("Alternative hypothesis:", data[[model]]$alter, "\n\n")
-                    print(data[[model]]$expvar)
-                    cat("\n")
+        if(length(x$call) == 0) {
+            cat("Empty dispRity object.\n")
+            return()
+        }
+
+        cat(" ---- dispRity object ---- \n")
+
+        ## Print the matrix informations
+        if(any(names(x$call) == "series") && length(x$series) != 1) {
+            ## Get the number of series (minus origin)
+            series <- names(x$series)
+
+            ## Check if there are more than one series
+            if(length(series) != 1) {
+
+                ## Get the method
+                method <- x$call$series
+                if(length(method) != 1) {
+                    method <- paste(method[1], " (", method[2],")", sep = "")
+                }
+                if(method == "customised") {
+                    cat(paste(length(series), method, "series for", nrow(x$matrix), "elements"))    
+                } else {
+                    cat(paste(length(series), method, "time series for", nrow(x$matrix), "elements"))
+                }
+                if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
+                cat(":\n")
+                if(length(series) > 5) {
+                    cat("    ",paste(series[1:5], collapse=", "),"...\n")
+                } else {
+                    cat("    ",paste(series, collapse=", "), ".\n", sep="")
                 }
             }
         } else {
-            #Series
-            if(length(data) == 3) {
-                #head
-                cat(paste((length(data$series)-1), data$series[1], "series for", length(data$elements), "elements"), "\n")
-                
-                #series
-                #remove the method time
-                data$series<-data$series[-1]
-                
-                if(length(data$series) == 1) {
-                    cat(paste(data$series))
+            cat(paste(nrow(x$matrix), "elements"))
+            if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
+            cat(".\n")
+        }
+        
+        ## Print the bootstrap information
+        if(any(names(x$call) == "bootstrap")) {
+            if(x$call$bootstrap[[1]] != 0) {
+                cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+            }
+            if(!is.null(x$call$bootstrap[[3]])) {
+                if(x$call$bootstrap[[3]][[1]] == "full") {
+                    cat(" and fully rarefied")
                 } else {
-                    cat("Series:\n")
-                    if(length(data$series) > 5) {
-                        cat(paste(data$series[1:5], collapse=", "),"...")
-                    } else {
-                        cat(paste(data$series, collapse=", "), ".", sep="")
-                    }
+                    cat(paste(" and rarefied to ", paste(x$call$bootstrap[[3]], collapse = ", "), " elements", sep = ""))
                 }
             }
+            cat(".\n")
+        }
 
-            #Bootstraps
-            if(length(data) == 4) {
-                #head
-                cat(paste("Bootstrapped ordinated matrix with", length(data$elements), "elements"), "\n")
+        ## Print the disparity information
+        if(any(names(x$call) == "disparity")) {
+            
+            #metrics <- as.character(x$call$disparity$metrics)
+            #strsplit(strsplit(metrics, split = "c(", fixed = TRUE)[[1]], split = ")", fixed = TRUE)[[2]][1]
 
-                #series
-                if(length(data$series) == 1) {
-                    cat(paste(data$series))
-                } else {
-                    cat("Series:\n")
-                    if(length(data$series) > 5) {
-                        cat(paste(data$series[1:5], collapse=", "),"...")
-                    } else {
-                        cat(paste(data$series, collapse=", "), ".", sep="")
-                    }
-                }
-
-                #call
-                cat("\n", data$call, sep="")
-            }
-
-            #Disparity
-            if(length(data) == 5) {
-                #head
-                cat(paste("Disparity measurements across ", length(data$series), " series for ", length(data$elements), " elements", sep=""), "\n")
-
-                #series
-                if(length(data$series) == 1) {
-                    cat(paste(data$series))
-                } else {
-                    cat("Series:\n")
-                    if(length(data$series) > 5) {
-                        cat(paste(data$series[1:5], collapse=", "),"...")
-                    } else {
-                        cat(paste(data$series, collapse=", "), ".", sep="")
-                    }
-                }
-
-                #call
-                cat("\n", data$call, sep="")
-            }
+            cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics), collapse = ", ")))
+            cat(".\n")
         }
     }
 }

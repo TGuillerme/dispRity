@@ -158,13 +158,13 @@ test_that("save.comparison.list internal fun", {
 
     expect_equal(
         save.comparison.list(list(c(1,2), c(2,1)), my_data)
-        ,c("X - Y", "Y - X"))
+        ,c("X : Y", "Y : X"))
     expect_equal(
         save.comparison.list(list(c(1,2), c(1,2)), my_data)
-        ,c("X - Y", "X - Y"))
+        ,c("X : Y", "X : Y"))
     expect_equal(
         save.comparison.list(list(c(1,2)), my_data)
-        ,c("X - Y"))
+        ,c("X : Y"))
     expect_equal(
         save.comparison.list(1, my_data)
         ,c("X"))

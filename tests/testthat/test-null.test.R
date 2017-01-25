@@ -12,33 +12,21 @@ multi_disp <- dispRity(boot.matrix(cust.series(BeckLee_mat50, factors), bootstra
 
 
 #get.from.call
-test_that("get.from.call works", {
+test_that("get.metric.from.call works", {
     #Errors
     expect_error(
-        get.from.call(data = "a", what = "metric", eval = TRUE)
-        )
-    expect_error(
-        get.from.call(data = single_disp, what = "nothing", eval = TRUE)
+        get.metric.from.call("a")
         )
     #Right outputs
     expect_is(
-        get.from.call(data = single_disp, what = "metric", eval = TRUE)
+        get.metric.from.call(single_disp)
         , "function")
     expect_is(
-        get.from.call(data = single_disp, what = "metric", eval = FALSE)
-        , "character")
-    expect_is(
-        get.from.call(data = multi_disp, what = "metric", eval = TRUE)
+        get.metric.from.call(multi_disp)
         , "list")
-    expect_is(
-        get.from.call(data = multi_disp, what = "metric", eval = FALSE)
-        , "character")
     expect_equal(
-        get.from.call(data = single_disp, what = "dimensions", eval = TRUE)
-        , 48)
-    expect_equal(
-        get.from.call(data = single_disp, what = "dimensions", eval = FALSE)
-        , "48")
+        unique(unlist(lapply(get.metric.from.call(multi_disp), class)))
+        , "function")
 })
 
 #make.null.model

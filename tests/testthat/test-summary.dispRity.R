@@ -11,127 +11,141 @@ data<-test_data$ord_data_tips
 #######################
 
 #Case 1, no bootstrap
-data<-test_data$ord_data_tips
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+data <- test_data$ord_data_tips
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works without bootstraps", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 1
-    	)
+        nrow(test), 1
+        )
     expect_equal(
-    	ncol(test), 3
-    	)
+        ncol(test), 3
+        )
 })
 
 #Case 2, bootstraps
-data<-test_data$ord_data_tips
-data<-boot.matrix(data, bootstrap=5)
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+data <- test_data$ord_data_tips
+data <- boot.matrix(data, bootstrap = 5)
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works with bootstraps", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 1
-    	)
+        nrow(test), 1
+        )
     expect_equal(
-    	ncol(test), 8
-    	)
+        ncol(test), 8
+        )
 })
 
 #Case 3, bootstraps + rarefaction
-data<-test_data$ord_data_tips
-data<-boot.matrix(data, bootstrap=5, rarefaction=c(5,50))
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+data <- test_data$ord_data_tips
+data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,50))
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works with bootstraps and rarefaction", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 2
-    	)
+        nrow(test), 2
+        )
     expect_equal(
-    	ncol(test), 8
-    	)
+        ncol(test), 8
+        )
     expect_equal(
-    	test$obs.mean
-        , c(NA, 45.36))
+        test$obs
+        , c(45.36, NA))
 })
 
 #Case 4, time series
-data<-test_data$ord_data_tips
-factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
-data<-cust.series(data, factor)
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+data <- test_data$ord_data_tips
+factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(factor) <- rownames(data)
+data <- cust.series(data, factor)
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works with series", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 2
-    	)
+        nrow(test), 2
+        )
     expect_equal(
-    	ncol(test), 3
-    	)
+        ncol(test), 3
+        )
+    expect_equal(
+        test$obs
+        ,c(37.00, 37.97))
 })
 
 #Case 5, time series + bootstraps
-data<-test_data$ord_data_tips
-factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
-data<-cust.series(data, factor)
-data<-boot.matrix(data, bootstrap=5)
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+set.seed(1)
+data <- test_data$ord_data_tips
+factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(factor) <- rownames(data)
+data <- cust.series(data, factor)
+data <- boot.matrix(data, bootstrap = 5)
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works with series and bootstraps", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 2
-    	)
+        nrow(test), 2
+        )
     expect_equal(
-    	ncol(test), 8
-    	)
+        ncol(test), 8
+        )
+    expect_equal(
+        test$bs.median
+        ,c(32.65, 34.09))
 })
 
 #Case 5, time series + bootstraps + rarefaction
-data<-test_data$ord_data_tips
-factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
-data<-cust.series(data, factor)
-data<-boot.matrix(data, bootstrap=5, rarefaction=c(5,6))
-data<-dispRity(data, metric=c(sum, ranges))
-test<-summary(data)
+set.seed(1)
+data <- test_data$ord_data_tips
+factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(factor) <- rownames(data)
+data <- cust.series(data, factor)
+data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,6))
+data <- dispRity(data, metric = c(sum, ranges))
+test <- summary(data)
 
 #Test
 test_that("Works with series, bootstraps and rarefaction", {
     expect_is(
-    	test, "data.frame"
-    	)
+        test, "data.frame"
+        )
     expect_equal(
-    	nrow(test), 4
-    	)
+        nrow(test), 6
+        )
     expect_equal(
-    	ncol(test), 8
-    	)
+        ncol(test), 8
+        )
+    expect_equal(
+        test$obs
+        , c(37.00, NA, NA, 37.97, NA, NA))
+    expect_equal(
+        test$bs.median
+        , c(32.65, 20.39, 21.86, 33.75, 21.44, 23.33))
 })
 
 #Example
@@ -141,17 +155,17 @@ test_that("Example works", {
     bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     expect_is(
-    	summary(sum_of_ranges), "data.frame"
-    	)
+        summary(sum_of_ranges), "data.frame"
+        )
     expect_equal(
-    	dim(summary(sum_of_ranges)), c(2,8)
-    	)
+        dim(summary(sum_of_ranges)), c(2,8)
+        )
     expect_is(
-    	summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame"
-    	)
+        summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame"
+        )
     expect_equal(
-    	dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,6)
-    	)
+        dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,6)
+        )
 })
 
 #Testing with distributions

@@ -80,47 +80,64 @@
 #'
 #' @author Thomas Guillerme
 
-#For testing
-#source("sanitizing.R")
-#source("dispRity_fun.R")
+## DEBUG
+# warning("DEBUG dispRity.R")
+# library(dispRity)
+# source("sanitizing.R")
+# source("dispRity_fun.R")
+# source("dispRity.metric.R")
+# source("dispRity.utilities.R")
+# source("boot.matrix.R") ; source("boot.matrix_fun.R")
+# source("time.series.R") ; source("time.series_fun.R")
+# source("cust.series.R") ; source("cust.series_fun.R")
+# data(BeckLee_mat50)
+# data(BeckLee_tree)
+# data_simple <- BeckLee_mat50
+# data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
+# data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
+# metric = c(sum, variances)
+# verbose = TRUE
+# data <- data_series_boot
 
-dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
-    #----------------------
-    # SANITIZING
-    #----------------------
+dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
+    ## ----------------------
+    ##  SANITIZING
+    ## ----------------------
     
-    #Saving the call
+    ## Saving the call
     match_call <- match.call()
 
-    #warning("DEBUG") ; return(match_call)
+    # warning("DEBUG") ; return(match_call)
 
-    #Get the data handle
-    data_handle <- get.dispRity.data.handle(data)
+    ## Check data class
+    if(class(data) != "dispRity") {
+        check.class(data, "matrix")
+        ## Create the dispRity object
+        data <- fill.dispRity(make.dispRity(data = data))
+    } else {
+        ## Making sure matrix exist
+        if(is.null(data$matrix)) {
+            stop(paste(match_call$data, "must contain a matrix."))
+        }
+        ## Make sure dimensions exist in the call
+        if(is.null(data$call$dimensions)) {
+            data$call$dimensions <- ncol(data$matrix)
+        }
+    }
 
-    #Get the metric handle
-    metric_handle <- get.dispRity.metric.handle(metric, match_call)
+    ## Get the metric list
+    metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
-    #Stop if data already contains disparity and metric is not level1
-    if(!is.null(metric_handle$level3.fun) && data_handle$disparity.exists != FALSE) {
+    ## Stop if data already contains disparity and metric is not level1
+    if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop("Impossible to apply a level 3 metric on disparity data.")
     }
 
-    #VERBOSE
+    ## VERBOSE
     check.class(verbose, "logical")
-    # ~~~
-    # Use progress bars?
-    # ~~~
-        # total <- 20
-        # # create progress bar
-        # pb <- txtProgressBar(min = 0, max = total, style = 3)
-        # for(i in 1:total){
-        # Sys.sleep(0.1)
-        # # update progress bar
-        # setTxtProgressBar(pb, i)
-        # }
-        # close(pb)
 
-    #Parallel
+    ## Parallel
     if(missing(parallel)) {
         do_parallel <- FALSE
     } else {
@@ -131,80 +148,39 @@ dispRity<-function(data, metric, ..., verbose=FALSE, parallel) {
         cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
     }
 
-    #----------------------
-    #CALCULTING DISPARITY
-    #----------------------
+    ## ----------------------
+    ## CALCULTING DISPARITY
+    ## ----------------------
 
-    #If disparity already exists, export the data
-    if(data_handle$disparity.exists != FALSE) {
-        #Recalculating the observed disparity
-        data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun, ...)
-        #data$disparity$observed <- lapply(data$disparity$observed, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun) ; warning("DEBUG")
-        if(data_handle$is.bootstrapped != FALSE) {
-            data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun, ...)
-            #data$disparity$bootstrapped <- lapply(data$disparity$bootstrapped, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun) ; warning("DEBUG")
-        }
-        #Updating the call
-        #Querying the metrics from former call
-        call_split <- strsplit(strsplit(data$call, split = "Disparity calculated as: ")[[1]][2], split = " for ")[[1]]
-        
-        #Generating the new call
-        if(length(length(match_call$metric)) != 1) {
-            new_call <- paste("c(", paste(as.character(match_call$metric[-1]), collapse = ", ", sep = ""), ", ", call_split[1], ")", collapse = "", sep = "")
-        } else {
-            new_call <- paste("c(", match_call$metric, ", ", call_split[1], ")", collapse = "")
-        }
-
-        #Saving the new call
-        data$call <- paste(c("Disparity calculated as: ", new_call, " for ", call_split[2]), collapse = "")
-        #Returning the results
-        return(data)
-    }
-
-    #verbose
-    if(verbose != FALSE) message("Calculating disparity...", appendLF = FALSE)
-    #Calculate disparity in all the series
-    if(do_parallel != TRUE) {
-        results <- lapply(data_handle$BSresult, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun, ...)
-        #results <- lapply(data_handle$BSresult, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun); warning("DEBUG")
+    ## Set matrix decomposition
+    if(length(data$call$disparity$metrics) == 0) {
+        ## Data call had no metric calculated yet
+        matrix_decomposition <- TRUE
+        ## Lapply through the series
+        lapply_loop <- data$series
     } else {
-        results <- parLapply(cluster, data_handle$BSresult, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun, ...)
-        #results <- parLapply(cluster, data_handle$BSresult, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun); warning("DEBUG")
-        stopCluster(cluster)
+        ## Data has already been decomposed
+        matrix_decomposition <- FALSE
+        ## Lapply through the disparity scores (serried)
+        lapply_loop <- data$disparity
     }
     
-    #if data is bootstrapped, also calculate the observed disparity
-    if(data_handle$is.bootstrapped != FALSE) {
-        OBSresults <- lapply(data$data$observed, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun, ...)
-        #OBSresults <- lapply(data$data$observed, disparity.calc, level3.fun = metric_handle$level3.fun, level2.fun = metric_handle$level2.fun, level1.fun = metric_handle$level1.fun); warning("DEBUG")
-    }
-    #verbose
-    if(verbose != FALSE) message("Done.", appendLF = FALSE)
-
-    #----------------------
-    #OUTPUT
-    #----------------------
-    #call details
-    dispRity.call <- paste("Disparity calculated as: ", as.expression(match_call$metric), " for ", ncol(data_handle$BSresult[[1]][[1]][[1]]) ," dimensions.", sep = "")
-    #Add BS (and series) details
-    if(data_handle$is.bootstrapped != FALSE) {
-        dispRity.call <- paste(dispRity.call, data_handle$boot.call, sep = "\n")
+    if(!do_parallel) {
+        if(verbose) message("Calculating disparity", appendLF = FALSE)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        #disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
+        if(verbose) message("Done.", appendLF = FALSE)
     } else {
-        if(data_handle$prev_info != FALSE) {
-            dispRity.call <- paste(dispRity.call, "\ndata was split using ", data_handle$series_type, " method.", sep = "")
-        }
+        disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        stopCluster(cluster)
     }
 
+    ## Update the disparity
+    data$disparity <- disparity
 
-    #Creating the output object
-    if(data_handle$is.bootstrapped != FALSE) {
-        output <- list("data" = list("bootstraps" = data_handle$BSresult, "observed" = data_handle$data) , "disparity" = list("bootstrapped" = results, "observed" = OBSresults), "elements" = data_handle$taxa_list, "series" = data_handle$series_list, "call" = dispRity.call)
-    } else {
-        output <- list("data" = list("observed" = data_handle$data), "disparity" = list("observed" = results), "elements" = data_handle$taxa_list, "series" = data_handle$series_list, "call" = dispRity.call)
-    }
-    #Output object is a dispRity object
-    class(output) <- "dispRity"
+    ## Update the call
+    data$call$disparity$metrics <- c(data$call$disparity$metrics, match_call$metric)
 
-    return(output)
+    return(data)
 }
 

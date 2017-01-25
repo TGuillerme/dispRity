@@ -14,4 +14,7 @@ Example datasets from McClean (unpublished).
   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
 }
 }
+\seealso{
+BeckLee_data disparity
+}
 
