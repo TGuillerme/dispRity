@@ -4,7 +4,8 @@
 #'
 #' @param x A \code{dispRity} object.
 #' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).
-#'
+#' @param ... further arguments to be passed to \code{print} or to \code{print.dispRity}.
+#' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
