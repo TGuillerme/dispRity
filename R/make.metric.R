@@ -58,12 +58,15 @@ make.metric<-function(fun, ..., silent = FALSE) {
 
     #Testing the metric
     test <- NULL
-    try(test <- fun(matrix, ...), silent = TRUE)
+    op <- options(warn = 2)
+    test <- try(fun(matrix, ...), silent = TRUE)
     #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
+    options(op)
 
-    #Did the test failed?
-    if(is.null(test)) {
-        if(silent != TRUE) stop(paste("The provided function did not output anything!\nDoes the following works?\n", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep = ""))
+    if(is(test,"try-error")) {
+        if(silent != TRUE) {
+            stop(paste("The provided metric function generated an error or a warning!\nDoes the following works?\n    ", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))\n(the problem can also come from the optional arguments...)", sep = ""))
+        }
     } else {
 
         ##########

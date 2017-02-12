@@ -1,5 +1,8 @@
 Patch notes
 ----
+* 2017/01/25 - v0.3.1
+  * Minor bug correction for optional arguments passed to `plot`.
+  * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments sanitising is now passed to `make.metric`.
 * 2017/01/25 - v0.3.0 *dispRity lite!*
   * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
   * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.

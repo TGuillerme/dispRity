@@ -126,9 +126,7 @@ ranges <- function(matrix, k.root) {
     if(missing(k.root)) {
         return(ranges)
     } else {
-        if(k.root == TRUE) {
-            return(k.root(ranges, ncol(matrix)))
-        }
+        return(k.root(ranges, ncol(matrix)))
     }
 }
 
@@ -141,32 +139,12 @@ centroids <- function(matrix, centroid) {
     if(missing(centroid)) {
         #Calculating the centroid point
         centroid <- apply(matrix, 2, mean)
-    } else {
-        #Centroid is predetermined
-        if(class(centroid) != "numeric") {
-            stop("Centroid coordinates must be given as numeric values.")
-        } else {
-            #Initialising the variables
-            length_centroid <- length(centroid)
-            ncol_matrix <- ncol(matrix)
-            if(length_centroid != 1) {
-                #If numeric, must be the same length as matrix
-                if(length_centroid != ncol_matrix) stop(paste("The given centroid has ", length_centroid, " coordinates but must have ", ncol_matrix, ".", sep = ""))
-            } else {
-                centroid <- rep(centroid, ncol_matrix)
-            }
-        }
     }
 
     #Calculating the distance from centroid
     fun.dist <- function(row, centroid) {
         return(dist(rbind(row, centroid), method = "euclidean"))
     }
-
-    # cent.dist <- NULL
-    # for (j in 1:nrow(matrix)){
-    #     cent.dist[j] <- dist(rbind(matrix[j,], centroid), method = "euclidean")
-    # }
 
     cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
     names(cent.dist) <- NULL

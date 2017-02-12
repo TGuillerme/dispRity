@@ -304,7 +304,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(data$call$series != "customised" & time.series != FALSE & rarefaction != TRUE) {
+        if(!is.null(data$call$series) && data$call$series != "customised" && time.series != FALSE && rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {

@@ -289,7 +289,9 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, ...) {
         ylim <- c(min(sub_data[,-c(1:2)], na.rm = TRUE) - min(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(sub_data[,-c(1:2)], na.rm = TRUE) + max(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02)
     }
     ## title?
-    main <- unique(as.character(sub_data$series))
+    if(!exists(main)) {
+        main <- unique(as.character(sub_data$series))
+    }
     ## how many quantiles?
     quantiles_n <- (ncol(sub_data)-4)/2
 
@@ -299,7 +301,11 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, ...) {
     }
 
     ## Plot central tendency curve (continuous)
-    plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
+    if(!exists(main)) {
+        plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
+    } else {
+        plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
+    }
 
 
     ## Plot the quantiles curves
