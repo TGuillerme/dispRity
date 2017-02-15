@@ -2,7 +2,7 @@ Package: dispRity
 Title: Measuring disparity in R
 Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.3.0
+Version: 0.3.1
 Date: 2017-01-01
 Description: this is a modular package for calculating disparity in R. Disparity can be
 	calculated from any ordinated matrix. The package provides a set of implemented
@@ -23,7 +23,7 @@ Imports:
   phangorn,
   phyclust,
   snow
-License: GPL (>= 2)
+License: GPL-3
 VignetteBuilder: knitr
 Suggests:
     testthat,
