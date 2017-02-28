@@ -13,3 +13,7 @@
 
 # To do!
 * Improve `test.dispRity` architecture
+
+
+
+* Add a quick and easy analysis. Data in data out. Brew style
