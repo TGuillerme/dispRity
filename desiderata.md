@@ -13,3 +13,8 @@
 
 # To do!
 * Improve `test.dispRity` architecture
+* Change the structure of the `dispRity` calculation loop to be run in `C`. `make.metric` would then be a compiler function.
+
+
+
+* Add a quick and easy analysis. Data in data out. Brew style

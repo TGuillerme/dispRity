@@ -241,3 +241,6 @@ disparity.bootstraps.old <- function(one_bs_matrix, metrics_list, data, matrix_d
 
     return(matrix_decomposition)
 }
+
+
+## Speed improvement idea: run that in C and call functions as CLOSXP http://adv-r.had.co.nz/C-interface.html#c-data-structures
