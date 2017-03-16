@@ -1,12 +1,12 @@
-#' @title Bootstraps an rarefies ordinated data.
+#' @title Bootstraps and rarefies ordinated data.
 #'
 #' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 #'
 #' @usage boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 #' 
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
-#' @param bootstraps The number of bootstrap pseudo-replicates (\code{default = 1000}).
-#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).
+#' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 1000}).
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
@@ -21,11 +21,11 @@
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
-#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have less elements than the rarefaction value, the series is not rarefied!
+#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have fewer elements than the rarefaction value, the series is not rarefied.
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
-#'   \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
-#'   \item \code{"single"}: re-samples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each bootstrap).
+#'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
+#'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
 #' }
 #'
 #' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
@@ -39,7 +39,7 @@
 #' boot.matrix(BeckLee_mat50, bootstraps = 20)
 #' ## Bootstrapping an ordinated matrix with rarefaction
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
-#' ## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
+#' ## Bootstrapping an ordinated matrix with only elements 7, 10 and 11 sampled
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 #' ## Bootstrapping an ordinated matrix with only 3 dimensions
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
@@ -47,21 +47,20 @@
 #' ## Bootstrapping a series of matrices
 #' ## Generating a dummy series of matrices
 #' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
-#'      dimnames = list(letters[1:10]))
+#'                            dimnames = list(letters[1:10]))
 #' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
-#'      ncol = 1, dimnames = list(letters[1:10])))
+#'                          ncol = 1, dimnames = list(letters[1:10])))
 #' matrix.list <- cust.series(ordinated_matrix, factors)
 #' ## Bootstrapping the series of matrices 20 times (each)
 #' boot.matrix(matrix.list, bootstraps = 20)
 #' 
 #' \dontrun{
-#' ## Bootstrapping a series of matrices using a single thread
+#' ## Bootstrapping a series of matrices using a single thread # NC: What is a thread here?
 #' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
 #' ## Bootstrapping a series of matrices using 4 threads
 #' system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
-#'      parallel = c(4, "SOCK")))
-#' ## System time is three times shorter with parallel but elapsed is > 2 times
-#' ## longer.
+#'                         parallel = c(4, "SOCK")))
+#' ## System time is three times shorter with parallel but elapsed is more than twice as long.
 #' }
 #' 
 #' @author Thomas Guillerme
@@ -83,11 +82,12 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
+boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions,
+                        verbose = FALSE, boot.type = "full", parallel) {
     
     match_call <- match.call()
     ## ----------------------
-    ##  SANITIZING
+    ## Cleaning and checking
     ## ----------------------
     ## DATA
     ## If class is dispRity, data is serial
@@ -101,10 +101,10 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         data <- dispRity_object
 
     } else {
-        ## Must be proper format
+        ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the time.series or cust.series functions.")
         
-        ## With the proper names
+        ## With the correct names
         data_names <- names(data)
         if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "series") {
             stop(paste(match_call$data, "must be either a matrix or an output from the time.series or cust.series functions."))
@@ -114,7 +114,9 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
             ## Check if any series has at least three rows
             elements_check <- unlist(lapply(unlist(data$series, recursive = FALSE), function(X) length(X) < 3))
             if(any(elements_check)) {
-                stop(paste("The following series have less than 3 elements: ", paste( unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
+                stop(paste("The following series have less than 3 elements: ", 
+                           paste(unlist(strsplit(names(elements_check)[which(elements_check)], 
+                                         split = ".elements")), collapse = ", ") , "." , sep = ""))
             }
         }
     }
@@ -124,13 +126,13 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
 
     ## BOOTSTRAP
     ## Must be a numeric value
-    check.class(bootstraps, "numeric", " must be a single (entire) numerical value.")
-    check.length(bootstraps, 1, " must be a single (entire) numerical value.")
+    check.class(bootstraps, "numeric", " must be a single (integer) numerical value.") # NC: I think by entire here you meant integer?
+    check.length(bootstraps, 1, " must be a single (integer) numerical value.")
     ## Make sure the bootstrap is a whole number
     bootstraps <- round(abs(bootstraps))
 
     ## RAREFACTION
-    ## Is it not logical?
+    ## Is it logical?
     if(class(rarefaction) != "logical") {
         ## Is it numeric?
         check.class(rarefaction, "numeric", " must be either numeric or logical.")
@@ -160,7 +162,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(boot.type == "full") boot.type.fun <- boot.full
     if(boot.type == "single") boot.type.fun <- boot.single
     ## Some humour:
-    if(boot.type == "rangers") stop("Nice shoes!")
+    if(boot.type == "rangers") stop("Nice shoes!") # NC: I don't get it...
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~
@@ -173,7 +175,8 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
+        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be 
+                                                 more than the number of columns in the matrix.")
         data$call$dimensions <- dimensions
     } else {
         data$call$dimensions <- ncol(data$matrix)
@@ -184,9 +187,12 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         do_parallel <- FALSE
     } else {
         do_parallel <- TRUE
-        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.length(parallel, 2, " must be a vector containing the number of threads 
+                     and the virtual connection process type.")
+        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing 
+                    the number of threads and the virtual connection process type.")
+        check.class(parallel[2], "character", " must be a vector containing the number 
+                    of threads and the virtual connection process type.")
         ## Set up the cluster
         cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
     }
@@ -200,9 +206,11 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
-        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, 
+                                    rarefaction, boot.type.fun, verbose)
     } else {
-        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, 
+                                       bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
     if(verbose) message("Done.", appendLF = FALSE)

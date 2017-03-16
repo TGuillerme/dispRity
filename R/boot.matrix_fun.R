@@ -1,9 +1,10 @@
 ## Full bootstrap replacement 
 boot.full <- function(elements, rarefaction) {
-    return( sample(elements, rarefaction, replace = TRUE) )
+    return(sample(elements, rarefaction, replace = TRUE))
 }
 
-## Single bootstrap: for each bootstrap, select one row and replace it by a randomly chosen left one (for n rows, only one row can be present two times).
+## Single bootstrap: for each bootstrap, select one row and replace it by a 
+## randomly chosen remaining row (for n rows, only one row can be present twice).
 boot.single <- function(elements, rarefaction) {
     ## Rarefy the data
     rarefied_sample <- sample(elements, rarefaction, replace = FALSE)
@@ -22,15 +23,17 @@ replicate.bootstraps <- function(rarefaction, bootstraps, series, boot.type.fun,
 
 ## Performs bootstrap on multiple series and all rarefaction levels
 bootstrap.wrapper <- function(series, bootstraps, rarefaction, boot.type.fun, verbose) {
-    return(lapply(select.rarefaction(series, rarefaction), replicate.bootstraps, bootstraps, series, boot.type.fun, verbose))
+    return(lapply(select.rarefaction(series, rarefaction), replicate.bootstraps, 
+                                     bootstraps, series, boot.type.fun, verbose))
 }
 
 ## Rarefaction levels selection
 select.rarefaction <- function(series, rarefaction) {
-    return(as.list(unique(c(nrow(series$elements),rarefaction[which(rarefaction <= nrow(series$elements))]))))
+    return(as.list(unique(c(nrow(series$elements), 
+                            rarefaction[which(rarefaction <= nrow(series$elements))]))))
 }
 
-## Combine bootstrap results to a dispRity object
+## Combine bootstrap results into a dispRity object
 combine.bootstraps <- function(one_bs_result, one_series) {
     return(c(one_series, one_bs_result))
 }
