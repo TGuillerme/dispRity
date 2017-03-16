@@ -23,14 +23,12 @@ replicate.bootstraps <- function(rarefaction, bootstraps, series, boot.type.fun,
 
 ## Performs bootstrap on multiple series and all rarefaction levels
 bootstrap.wrapper <- function(series, bootstraps, rarefaction, boot.type.fun, verbose) {
-    return(lapply(select.rarefaction(series, rarefaction), replicate.bootstraps, 
-                                     bootstraps, series, boot.type.fun, verbose))
+    return(lapply(select.rarefaction(series, rarefaction), replicate.bootstraps, bootstraps, series, boot.type.fun, verbose))
 }
 
 ## Rarefaction levels selection
 select.rarefaction <- function(series, rarefaction) {
-    return(as.list(unique(c(nrow(series$elements), 
-                            rarefaction[which(rarefaction <= nrow(series$elements))]))))
+    return(as.list(unique(c(nrow(series$elements), rarefaction[which(rarefaction <= nrow(series$elements))]))))
 }
 
 ## Combine bootstrap results into a dispRity object

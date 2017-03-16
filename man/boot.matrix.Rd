@@ -2,16 +2,16 @@
 % Please edit documentation in R/boot.matrix.R
 \name{boot.matrix}
 \alias{boot.matrix}
-\title{Bootstraps an rarefies ordinated data.}
+\title{Bootstraps and rarefies ordinated data.}
 \usage{
 boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).}
 
-\item{bootstraps}{The number of bootstrap pseudo-replicates (\code{default = 1000}).}
+\item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 1000}).}
 
-\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values to rarefy the data (see details).}
+\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).}
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
@@ -33,11 +33,11 @@ This function outputs a \code{dispRity} object containing:
 Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 }
 \details{
-\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have less elements than the rarefaction value, the series is not rarefied!
+\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have fewer elements than the rarefaction value, the series is not rarefied.
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
-  \item \code{"full"}: re-samples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
-  \item \code{"single"}: re-samples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one elements can be duplicated in each bootstrap).
+  \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
+  \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
 }
 }
 \examples{
@@ -49,7 +49,7 @@ data(BeckLee_mat50)
 boot.matrix(BeckLee_mat50, bootstraps = 20)
 ## Bootstrapping an ordinated matrix with rarefaction
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
-## Bootstrapping an ordinated matrix with only 7,10 and 11 elements sampled
+## Bootstrapping an ordinated matrix with only elements 7, 10 and 11 sampled
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 ## Bootstrapping an ordinated matrix with only 3 dimensions
 boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
@@ -57,21 +57,20 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 ## Bootstrapping a series of matrices
 ## Generating a dummy series of matrices
 ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
-     dimnames = list(letters[1:10]))
+                           dimnames = list(letters[1:10]))
 factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
-     ncol = 1, dimnames = list(letters[1:10])))
+                         ncol = 1, dimnames = list(letters[1:10])))
 matrix.list <- cust.series(ordinated_matrix, factors)
 ## Bootstrapping the series of matrices 20 times (each)
 boot.matrix(matrix.list, bootstraps = 20)
 
 \dontrun{
-## Bootstrapping a series of matrices using a single thread
+## Bootstrapping a series of matrices using a single CPU
 system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-## Bootstrapping a series of matrices using 4 threads
+## Bootstrapping a series of matrices using 4 CPUs
 system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
-     parallel = c(4, "SOCK")))
-## System time is three times shorter with parallel but elapsed is > 2 times
-## longer.
+                        parallel = c(4, "SOCK")))
+## System time is three times shorter with parallel but elapsed is more than twice as long.
 }
 
 }

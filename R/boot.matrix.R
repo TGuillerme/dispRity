@@ -55,9 +55,9 @@
 #' boot.matrix(matrix.list, bootstraps = 20)
 #' 
 #' \dontrun{
-#' ## Bootstrapping a series of matrices using a single thread # NC: What is a thread here?
+#' ## Bootstrapping a series of matrices using a single CPU
 #' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-#' ## Bootstrapping a series of matrices using 4 threads
+#' ## Bootstrapping a series of matrices using 4 CPUs
 #' system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
 #'                         parallel = c(4, "SOCK")))
 #' ## System time is three times shorter with parallel but elapsed is more than twice as long.
@@ -82,8 +82,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions,
-                        verbose = FALSE, boot.type = "full", parallel) {
+boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
     
     match_call <- match.call()
     ## ----------------------
@@ -114,9 +113,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
             ## Check if any series has at least three rows
             elements_check <- unlist(lapply(unlist(data$series, recursive = FALSE), function(X) length(X) < 3))
             if(any(elements_check)) {
-                stop(paste("The following series have less than 3 elements: ", 
-                           paste(unlist(strsplit(names(elements_check)[which(elements_check)], 
-                                         split = ".elements")), collapse = ", ") , "." , sep = ""))
+                stop(paste("The following series have less than 3 elements: ", paste(unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
             }
         }
     }
@@ -126,7 +123,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
 
     ## BOOTSTRAP
     ## Must be a numeric value
-    check.class(bootstraps, "numeric", " must be a single (integer) numerical value.") # NC: I think by entire here you meant integer?
+    check.class(bootstraps, c("numeric", "integer"), " must be a single (integer) numerical value.")
     check.length(bootstraps, 1, " must be a single (integer) numerical value.")
     ## Make sure the bootstrap is a whole number
     bootstraps <- round(abs(bootstraps))
@@ -162,7 +159,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(boot.type == "full") boot.type.fun <- boot.full
     if(boot.type == "single") boot.type.fun <- boot.single
     ## Some humour:
-    if(boot.type == "rangers") stop("Nice shoes!") # NC: I don't get it...
+    if(boot.type == "rangers") stop("Nice shoes!") #NC: I don't get it... #TG: French humour.
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~
@@ -175,8 +172,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be 
-                                                 more than the number of columns in the matrix.")
+        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         data$call$dimensions <- dimensions
     } else {
         data$call$dimensions <- ncol(data$matrix)
@@ -187,12 +183,9 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         do_parallel <- FALSE
     } else {
         do_parallel <- TRUE
-        check.length(parallel, 2, " must be a vector containing the number of threads 
-                     and the virtual connection process type.")
-        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing 
-                    the number of threads and the virtual connection process type.")
-        check.class(parallel[2], "character", " must be a vector containing the number 
-                    of threads and the virtual connection process type.")
+        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
         ## Set up the cluster
         cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
     }
@@ -206,11 +199,9 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
-        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, 
-                                    rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     } else {
-        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, 
-                                       bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
     if(verbose) message("Done.", appendLF = FALSE)

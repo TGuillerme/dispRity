@@ -46,8 +46,7 @@ bhatt.coeff<-function(x, y, bw = bw.nrd0, ...) {
         band.width <- bw(c(x, y), ...)
         ## Bin breaks
         ## adding an extra bandwith to the max to be sure to include all the data
-        bin.breaks <- seq(from = min(c(x, y)), to = max(c(x, y) + band.width), 
-                          by = band.width) 
+        bin.breaks <- seq(from = min(c(x, y)), to = max(c(x, y) + band.width), by = band.width) 
         ## Number of bins
         bin.n <- length(bin.breaks) - 1
     } else {
@@ -66,9 +65,7 @@ bhatt.coeff<-function(x, y, bw = bw.nrd0, ...) {
     rel.histx <- histx / sum(histx)
     rel.histy <- histy / sum(histy)
     
-    ## Calculating the Bhattacharyya Coefficient 
-    ## (sum of the square root of the multiple of the relative counts of 
-    ## both distributions)
+    ## Calculating the Bhattacharyya Coefficient (sum of the square root of the multiple of the relative counts of both distributions)
     bhatt.coeff <- sum(sqrt(rel.histx * rel.histy))
     return(bhatt.coeff)
 }
