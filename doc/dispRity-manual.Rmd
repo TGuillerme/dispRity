@@ -14,32 +14,13 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+# Important note:
+> This vignette is being step by step fully rewritten. Feel free to comment on the current stages of rewriting (what information would you like to see in here?) by raising and issue in GitHub or sending me an email (<guillert@tcd.ie>). Else, you can check the former version of this vignette [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
+
 `dispRity` is a package for calculating disparity in `R`. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared. 
 <!-- Add version and table of content here! -->
 
-Before starting # NC: Not sure this qualifier is needed.
-===============
-
-Glossary <a name="glossary"></a>
---------
-
-This package is designed to be used in multiple disciplines, including palaeonotology, ecology and evolution. Therefore some names or terms used in this tutorial might be unfamiliar.
-Below is a list of the meanings of these terms, in the context of `dispRity`.
-
--   **Ordinated space**. The mathematical multidimensional object that will be analysed with this package.
-    In morphometrics, this is often referred to as the morphospace.
-    However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc.
-    In practice, this term designates an ordinated matrix where the columns represent the dimensions of the space (often – but not necessarily - > 3!) and the rows represent the elements within this space.
-
--   **Elements**. The rows of the ordinated space. Elements can be taxa, field sites, countries etc.
-
--   **Dimensions**. The columns of the ordinated space. The dimensions are referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA.
-
--   **Series**. Sub-samples of the ordinated space. #Change to subsample?
-    A series contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
-    For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two series containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
-
-Installation and loading # NC: Maybe this should be first?
+Installation and loading
 -------------------------
 
 You can install this package easily if you use the latest version of `R` (> 3.0.0) and `devtools`.
@@ -51,9 +32,32 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
 
-Note this uses the `release` branch (version `0.2`). <!-- add version !-->
+Note this uses the `release` branch (version `0.3`). <!-- add version !-->
 For the piping-hot (but potentially full of bugs) version, you can change the argument `ref = release` to `ref = master`.
 `dispRity` depends mainly on the `ape` package and uses functions from several other packages (`ade4`, `geometry`, `grDevices`, `hypervolume`, `paleotree`, `snow`, and `RCurl`).
+
+
+Glossary <a name="glossary"></a>
+--------
+
+This package is designed to be used in multiple disciplines, including palaeonotology, ecology and evolution.
+Therefore some names or terms used in this tutorial might be unfamiliar.
+Below is a list of the meanings of these terms, in the context of `dispRity`.
+
+-   **Ordinated space**. The mathematical multidimensional object that will be analysed with this package.
+    In morphometrics, this is often referred to as the morphospace.
+    However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc.
+    In practice, this term designates an ordinated matrix where the columns represent the dimensions of the space (often – but not necessarily - > 3!) and the rows represent the elements within this space.
+
+-   **Elements**. The rows of the ordinated space. Elements can be taxa, field sites, countries etc.
+
+-   **Dimensions**. The columns of the ordinated space. The dimensions are referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA.
+
+-   **Sub-samples**. Sub-samples of the ordinated space.
+    A sub-sample (or series) contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
+    For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two series containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
+
+<!-- TG: good call for changing series to subsamples. NEED TO BE APPLIED TO THE WHOLE PACKAGE! -->
 
 Datasets
 --------
@@ -61,12 +65,14 @@ Datasets
 `dispRity` contains several datasets to cover the different use cases for the package. 
 These are:
 
-# NC: Describe all datasets briefly?
+<!-- # NC: Describe all datasets briefly?
+TG: Fair enough. Goes on my TODO list (is commented out for now).
+We might change it to our own dataset though.
 - @beckancient2014
 -
 -
 -
-
+ -->
 
 In this tutorial we are going to use a subset of the ordinated cladistic data from @beckancient2014 <!-- fix citation -->
 that contains 50 mammalian taxa (elements) ordinated using their cladistic distance (i.e. the distances among their discrete morphological characters).
@@ -74,9 +80,9 @@ For examples using other kinds of datasets please refer to the [GitHub page](htt
 
 Loading and exploring the Beck and Lee data
 -------------------------------------------
-#NC: Not sure all this is needed here - maybe better to discuss what data is needed for specific analyses? Note that for a vignette it doesn't have to be the same example, or an analysis that runs all the way through - just examples of things you can do. I feel like if you want to make this multi disciplinary you could describe all four(?) datasets here then use them interchangeably below in the different function examples.
+<!-- #NC: Not sure all this is needed here - maybe better to discuss what data is needed for specific analyses? Note that for a vignette it doesn't have to be the same example, or an analysis that runs all the way through - just examples of things you can do. I feel like if you want to make this multi disciplinary you could describe all four(?) datasets here then use them interchangeably below in the different function examples.
 
-#NC: Also perhaps better to think of a vignette as - here is something you might want to do, here is how to do it in R. Rather than here is a function in my package, here is what it does. That's what the help files are for...
+#NC: Also perhaps better to think of a vignette as - here is something you might want to do, here is how to do it in R. Rather than here is a function in my package, here is what it does. That's what the help files are for... -->
 
 ```{r, fig.width=6, fig.height=6}
 ## Setting the random seed for repeatability
@@ -106,29 +112,31 @@ plot(BeckLee_tree, cex = 0.8) ; axisPhylo(root = 140) ; nodelabels(cex = 0.5)
 Basic use of `dispRity`
 -----------------------
 
-# NC: I think here what is needed are quick examples for more than one kind of dataset. With explanation! I've made a start below to help.
+<!-- # NC: I think here what is needed are quick examples for more than one kind of dataset. With explanation! I've made a start below to help. -->
 
 `dispRity` is very easy to use for a variety of analyses. 
 Below I will demonstrate its basic usage with a variety of datasets.
 Note that the power of `dispRity` lies in the ability to create custom disparity metrics etc.
 More details on these features, and the complexities of some of the functions, are provided later in this vignette.
 
-Example 1: Calculating and visualising disparity-through-time using Beck and Lee 201X data for extinct and extant eutherian mammal genera.
+Example 1: Calculating and visualising disparity-through-time using Beck and Lee 2014 data for extinct and extant eutherian mammal genera.
 
 Often in palaeontology and evolutionary biology we are interested in seeing how disparity (morphological diversity) has changed through time along a phylogeny. 
-To do this we need the following steps.
+To do this we need the following steps:
+
 1. Split the data so that 
 2. Estimate ancestral values
 3. Calculate disparity in each time slice
 4. Bootstrap
 5. Plot the results
 
-We can easily do this using `dispRity`.
+<!-- We can easily do this using `dispRity`.
 Note that we require the following data: a cladistic matrix, a phylogeny, .... and so on
 
 # Add the data loading bit here I think rather than above. Add setseed for each analysis example? Most people will not do all the examples at once.
 
-# Wonder if there could be a wrapper function for "disparity-through-time"? With options for the metric of course, and bootstrap or not etc.
+# Wonder if there could be a wrapper function for "disparity-through-time"? With options for the metric of course, and bootstrap or not etc. -->
+
 ```{r, fig.width=6, fig.height=6}
 ## Splitting the data into time series
 sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
@@ -149,7 +157,7 @@ plot(median_centroids)
 summary(test.dispRity(median_centroids, test = aov, comparisons = "all"))
 ```
 
-# NC: Move other examples here
+<!-- # NC: Move other examples here -->
 
 Features of the `dispRity` package
 ==================================
@@ -158,16 +166,18 @@ Features of the `dispRity` package
 -----------------------------------
 
 Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your `R` console.
-Even the simple Beck and Lee 201X example above produces an object with > 72 lines of lists of lists of matrices!
+Even the simple Beck and Lee 2014 example above produces an object with > 72 lines of lists of lists of matrices!
 
 Therefore `dispRity` uses a specific class of object called a `dispRity` object.
 These objects allow users to use S3 method functions such as `summary.dispRity` (see [summary](#summary) section), `plot.dispRity` (`plot`; see [plot](#plot) section) and `print.dispRity`. 
-# NC: I've simpiflied this as people who understand will know this already, people that don't won't care and don't need to know.
-`dispRity` also contains various utility functions that manipulate the `dispRity` object (e.g. `sort.dispRity`, `extract.dispRity` see the full list in the [`dispRity` utilities](#dispRity.utilities) section).
+<!-- # NC: I've simpiflied this as people who understand will know this already, people that don't won't care and don't need to know.
+ -->
+ `dispRity` also contains various utility functions that manipulate the `dispRity` object (e.g. `sort.dispRity`, `extract.dispRity` see the full list in the [`dispRity` utilities](#dispRity.utilities) section).
 These functions modify the `dispRity` object without having to delve into its complex structure!
 The full structure of a `dispRity` object is detailed [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-# NC: Explain the point of these examples here... Are they needed?
+<!-- # NC: Explain the point of these examples here... Are they needed? -->
+
 ```{r}
 ## What is the class of the median_centroids object?
 class(median_centroids)
@@ -188,11 +198,11 @@ print(median_centroids, all = TRUE)
 ```
 
 
-
+<!-- 
 # Modular functions - 
 # NC: not sure any more of these modular functions are relevant in the vignette? Maybe just mention the metrics? Remember a vignette is for users, not for you to show how the programming works.
 
-# NC: I'd include a brief explanation of the include disparity metrics here. But yes keep the crazy "level" details for the other vignette on metrics. I think you want to avoid having too many separate vignettes really.
+# NC: I'd include a brief explanation of the include disparity metrics here. But yes keep the crazy "level" details for the other vignette on metrics. I think you want to avoid having too many separate vignettes really. -->
 
 Disparity metrics
 ---------------------------
@@ -219,7 +229,7 @@ summary(dispRity(sliced_data, metric = mean))
 ```
 
 For more information on the metrics, please refer to the [`dispRity` metric manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html) for the vignette about the metric implementation in `dispRity`.
-# NC: See comment above about moving a lot of this here.
+<!-- # NC: See comment above about moving a lot of this here. -->
 
 Functions
 =========
@@ -231,7 +241,7 @@ Note however that most of these functions can be used in any order and that some
 One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter called *series*, see [glossary](#glossary)).
 These series correspond to regions of the ordinated space that we want to compare to each other.
 
-# NC: Again I think this might be better written as "here are some things you might want to modify, here is how" rather than a function by function approach.
+<!-- # NC: Again I think this might be better written as "here are some things you might want to modify, here is how" rather than a function by function approach. -->
 
 `cust.series` # NC: I'd have called this custom.series. It's only 2 more letters and makes it much more readable, and less about custard.
 -------------
@@ -247,7 +257,8 @@ stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
 ```
 
 We can then feed these lists of species to the `cust.series` function after transforming it into a factorial table:
-# NC: This is a fairly horrible set up to go through! Can't you make a function?
+<!-- # NC: This is a fairly horrible set up to go through! Can't you make a function? -->
+
 ```{r}
 ## Creating the factor table
 series_factors <- as.data.frame(

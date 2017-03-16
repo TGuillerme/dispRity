@@ -14,7 +14,9 @@
 # To do!
 * Improve `test.dispRity` architecture
 * Change the structure of the `dispRity` calculation loop to be run in `C`. `make.metric` would then be a compiler function.
-
+* Change `series` to `subsamples` throughout the package!
+* In manual, describe dataset + deal with comments
+* Wrapping function for `cust.series`
 
 
 * Add a quick and easy analysis. Data in data out. Brew style
