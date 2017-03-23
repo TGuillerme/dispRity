@@ -4,7 +4,7 @@
 #'
 #' @usage boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 #' 
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).
+#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 1000}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
@@ -16,19 +16,19 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
 #' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-#' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
+#' \item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #'
 #' @details  
-#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have fewer elements than the rarefaction value, the series is not rarefied.
+#' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsamples have fewer elements than the rarefaction value, the subsamples is not rarefied.
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
 #'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
 #'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
 #' }
 #'
-#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{dispRity}}.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 matrix
@@ -44,20 +44,20 @@
 #' ## Bootstrapping an ordinated matrix with only 3 dimensions
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 #' 
-#' ## Bootstrapping a series of matrices
-#' ## Generating a dummy series of matrices
+#' ## Bootstrapping a subsamples of matrices
+#' ## Generating a dummy subsamples of matrices
 #' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
 #'                            dimnames = list(letters[1:10]))
 #' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
 #'                          ncol = 1, dimnames = list(letters[1:10])))
-#' matrix.list <- cust.series(ordinated_matrix, factors)
-#' ## Bootstrapping the series of matrices 20 times (each)
+#' matrix.list <- cust.subsamples(ordinated_matrix, factors)
+#' ## Bootstrapping the subsamples of matrices 20 times (each)
 #' boot.matrix(matrix.list, bootstraps = 20)
 #' 
 #' \dontrun{
-#' ## Bootstrapping a series of matrices using a single CPU
+#' ## Bootstrapping a subsamples of matrices using a single CPU
 #' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-#' ## Bootstrapping a series of matrices using 4 CPUs
+#' ## Bootstrapping a subsamples of matrices using 4 CPUs
 #' system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
 #'                         parallel = c(4, "SOCK")))
 #' ## System time is three times shorter with parallel but elapsed is more than twice as long.
@@ -78,7 +78,7 @@
 # data <- BeckLee_mat50
 # bootstraps = 11
 # rarefaction = c(5,6)
-# data <- cust.series(BeckLee_mat50, factors)
+# data <- cust.subsamples(BeckLee_mat50, factors)
 # bootstraps <- 3
 # rarefaction <- TRUE
 
@@ -96,30 +96,30 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
 
         ## Creating the dispRity object
         dispRity_object <- make.dispRity(data = data)
-        #dispRity_object$series$origin$elements <- seq(1:nrow(data))
+        #dispRity_object$subsamples$origin$elements <- seq(1:nrow(data))
         data <- dispRity_object
 
     } else {
         ## Must be correct format
-        check.length(data, 3, " must be either a matrix or an output from the time.series or cust.series functions.")
+        check.length(data, 3, " must be either a matrix or an output from the time.subsamples or cust.subsamples functions.")
         
         ## With the correct names
         data_names <- names(data)
-        if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "series") {
-            stop(paste(match_call$data, "must be either a matrix or an output from the time.series or cust.series functions."))
+        if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsamples") {
+            stop(paste(match_call$data, "must be either a matrix or an output from the time.subsamples or cust.subsamples functions."))
         }
 
-        if(length(data$series) > 1) {
-            ## Check if any series has at least three rows
-            elements_check <- unlist(lapply(unlist(data$series, recursive = FALSE), function(X) length(X) < 3))
+        if(length(data$subsamples) > 1) {
+            ## Check if any subsamples has at least three rows
+            elements_check <- unlist(lapply(unlist(data$subsamples, recursive = FALSE), function(X) length(X) < 3))
             if(any(elements_check)) {
-                stop(paste("The following series have less than 3 elements: ", paste(unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
+                stop(paste("The following subsamples have less than 3 elements: ", paste(unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
             }
         }
     }
 
     ## Data must contain a first "bootstrap" (empty list)
-    if(length(data$series) == 0) data <- fill.dispRity(data)
+    if(length(data$subsamples) == 0) data <- fill.dispRity(data)
 
     ## BOOTSTRAP
     ## Must be a numeric value
@@ -136,7 +136,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
         rare_out <- rarefaction
     } else {
         if(rarefaction) {
-            #rarefaction <- lapply(unlist(lapply(data$series, lapply, nrow), recursive = FALSE), seq, to = 3)
+            #rarefaction <- lapply(unlist(lapply(data$subsamples, lapply, nrow), recursive = FALSE), seq, to = 3)
             rarefaction <- seq(from = nrow(data$matrix), to = 3)
             rare_out <- "full"
         } else {
@@ -199,15 +199,15 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
     if(!do_parallel) {
-        bootstrap_results <- lapply(data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$subsamples, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     } else {
-        bootstrap_results <- parLapply(cluster, data$series, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- parLapply(cluster, data$subsamples, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
         stopCluster(cluster)
     }
     if(verbose) message("Done.", appendLF = FALSE)
 
     ## Combining and storing the results back in the dispRity object
-    data$series <- mapply(combine.bootstraps, bootstrap_results, data$series, SIMPLIFY = FALSE)
+    data$subsamples <- mapply(combine.bootstraps, bootstrap_results, data$subsamples, SIMPLIFY = FALSE)
 
     ## Adding the call information about the bootstrap
     data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out))

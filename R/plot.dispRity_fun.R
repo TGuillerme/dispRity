@@ -16,7 +16,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         if(rarefaction == TRUE) {
             xlab <- "Elements"
         } else {
-            xlab <- "Series"
+            xlab <- "Subsamples"
         }
     }
     
@@ -77,7 +77,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
     ## How many points?
-    points_n <- length(unique(summarised_data$series))
+    points_n <- length(unique(summarised_data$subsamples))
 
     ## dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat <- matrix(1:points_n, ncol = points_n)
@@ -169,7 +169,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
     
     ## How many points?
-    points_n <- length(unique(summarised_data$series))
+    points_n <- length(unique(summarised_data$subsamples))
 
     ## Set the shift parameter (for add)
     shift = 0
@@ -255,7 +255,7 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
         }
     } else {
         ## Creating the dummy data table
-        points_n <- length(unique(summarised_data$series))
+        points_n <- length(unique(summarised_data$subsamples))
         dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
         if(div.log == FALSE) {
@@ -276,9 +276,9 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
 }
 
 
-## Splitting the summarised data table by series (list)
-split.summary.data <- function(series_levels, summarised_data) {
-    return(summarised_data[which(summarised_data$series == series_levels),])
+## Splitting the summarised data table by subsamples (list)
+split.summary.data <- function(subsamples_levels, summarised_data) {
+    return(summarised_data[which(summarised_data$subsamples == subsamples_levels),])
 }
 
 ## rarefaction plottings
@@ -290,7 +290,7 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     }
     ## title?
     if(missing(main)) {
-        main <- unique(as.character(sub_data$series))
+        main <- unique(as.character(sub_data$subsamples))
     }
     ## how many quantiles?
     quantiles_n <- (ncol(sub_data)-4)/2
@@ -327,14 +327,14 @@ transpose.box <- function(data, rarefaction) {
     if(rarefaction == FALSE) {
         box_data <- lapply(data$disparity, function(X) return(X[[2]]))
     } else {
-        rare_rows <- lapply(lapply(data$series, lapply, nrow), function(X) which(X == rarefaction)-1)
+        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X == rarefaction)-1)
         get.rare <- function(data, rare) return(data[[rare]])
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    output <- t(matrix(unlist(box_data), nrow = length(data$series), byrow = TRUE))
+    output <- t(matrix(unlist(box_data), nrow = length(data$subsamples), byrow = TRUE))
 
-    colnames(output) <- names(data$series)
+    colnames(output) <- names(data$subsamples)
 
     return(output)
 }

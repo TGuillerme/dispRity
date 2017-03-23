@@ -3,9 +3,9 @@
 #' @title Sequential linear regressions
 #'
 #' @description Function still in development.
-# ' @description Performs a sequential \code{\link[stats]{glm}} on the series by correcting for time autocorrelation. 
+# ' @description Performs a sequential \code{\link[stats]{glm}} on the subsamples by correcting for time autocorrelation. 
 #'
-# ' @param series time series of which to estimate the slopes sequentially.
+# ' @param subsamples time subsamples of which to estimate the slopes sequentially.
 # ' @param family the family of the \code{\link[stats]{glm}}.
 # ' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 # ' @param call optional, a call from a \code{dispRity} object.
@@ -17,31 +17,31 @@
 # ' @examples
 # ' ## Load the Beck & Lee 2014 data
 # ' data(BeckLee_mat50)
-# ' ## Calculating the disparity from a customised series
-# ' ## Generating the series
+# ' ## Calculating the disparity from a customised subsamples
+# ' ## Generating the subsamples
 # ' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
 # '      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# ' customised_series <- cust.series(BeckLee_mat50, factors)
+# ' customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
 # ' ## Bootstrapping the data
-# ' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+# ' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 # ' ## Calculating variances of each dimension
 # ' dim_variances <- dispRity(bootstrapped_data, metric = variances)
-# ' ## Extracting the disparity values of each series
-# ' series <- extract.dispRity(dim_variances, observed = FALSE,
+# ' ## Extracting the disparity values of each subsamples
+# ' subsamples <- extract.dispRity(dim_variances, observed = FALSE,
 # '      keep.structure = TRUE, concatenate = TRUE)
 # '
-# ' ## Running a gaussian sequential test on the series
-# ' results <- sequential.test(series, family = gaussian)
+# ' ## Running a gaussian sequential test on the subsamples
+# ' results <- sequential.test(subsamples, family = gaussian)
 # ' ## Summarising the results
 # ' summary(results, rounding = 5)
 # ' ## Simple plotting the results
 # ' plot(results)
 # ' 
-# ' ## Running a gaussian sequential test on multiple series
+# ' ## Running a gaussian sequential test on multiple subsamples
 # ' ## (i.e. non- concatenated)
-# ' series <- extract.dispRity(dim_variances, observed = FALSE,
+# ' subsamples <- extract.dispRity(dim_variances, observed = FALSE,
 # '      keep.structure = TRUE, concatenate = FALSE)
-# ' results <- sequential.test(series, family = gaussian)
+# ' results <- sequential.test(subsamples, family = gaussian)
 # ' ## Summarising
 # ' summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
 # ' ## Plotting the disparity first (as the me)
@@ -63,17 +63,17 @@
 # source("test.dispRity_fun.R")
 # data(BeckLee_mat50)
 # factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
+# customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3)
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)
-# series_single <- extract.dispRity(data_single, observed = FALSE)
-# series_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
+# subsamples_single <- extract.dispRity(data_single, observed = FALSE)
+# subsamples_multi <- extract.dispRity(data_multi, observed = FALSE, concatenate = FALSE)
 # results = "coefficients"
 # family = gaussian
-# data <- sequential.test(series_multi, family = gaussian)
+# data <- sequential.test(subsamples_multi, family = gaussian)
 
-sequential.test <- function(){ #function(series, family, correction, call = NULL, ...)
+sequential.test <- function(){ #function(subsamples, family, correction, call = NULL, ...)
 
     #Warning
     stop("The sequential.test function is still under development!")
@@ -97,21 +97,21 @@ sequential.test <- function(){ #function(series, family, correction, call = NULL
     # }
 
     # #Testing whether the results are distributions (BSed) or not.
-    # is.distribution <- ifelse(unique(unlist(lapply(series, class))) == "numeric", FALSE, TRUE)
+    # is.distribution <- ifelse(unique(unlist(lapply(subsamples, class))) == "numeric", FALSE, TRUE)
 
     # #If is not a distribution, reformat the list to be a list of MethodsListSelect
     # if(is.distribution != TRUE) {
-    #     series <- lapply(series, list)
+    #     subsamples <- lapply(subsamples, list)
     # } 
 
     # #APPLYING THE SEQUENTIAL TEST
 
     # #Setting the sequence
-    # seq_series <- set.comparisons.list("sequential", series, 1)
+    # seq_subsamples <- set.comparisons.list("sequential", subsamples, 1)
 
     # #Applying the first test to get the intercept origin
-    # first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family, ...)
-    # #first_model <- lapply(set.pair.series(series[seq_series[[1]]]), create.model, intercept = NULL, family) ; warning("DEBUG")
+    # first_model <- lapply(set.pair.subsamples(subsamples[seq_subsamples[[1]]]), create.model, intercept = NULL, family, ...)
+    # #first_model <- lapply(set.pair.subsamples(subsamples[seq_subsamples[[1]]]), create.model, intercept = NULL, family) ; warning("DEBUG")
     
     # #Calculate the intercepts for each first models
     # intercept_predict <- list()
@@ -122,23 +122,23 @@ sequential.test <- function(){ #function(series, family, correction, call = NULL
     # models[[1]] <- first_model
 
     # #Loop through the other models
-    # for(model in 2:(length(seq_series))) {
+    # for(model in 2:(length(seq_subsamples))) {
     #     #Calculate the new intercept from the previous model
     #     intercept_predict[[model]] <- mapply(set.intercept.next, models[[model-1]], intercept_predict[[model-1]], SIMPLIFY = FALSE)
 
     #     #Create the new model 
-    #     models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
-    #     #models[[model]] <- lapply(set.pair.series(series[seq_series[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
+    #     models[[model]] <- lapply(set.pair.subsamples(subsamples[seq_subsamples[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family, ...)
+    #     #models[[model]] <- lapply(set.pair.subsamples(subsamples[seq_subsamples[[model]]], intercept = intercept_predict[[model-1]]), create.model, intercept = "in.data", family) ; warning("DEBUG")
     # }
 
     # #OUTPUT
     # #Naming the models
-    # names(models) <- save.comparison.list(seq_series, series)
+    # names(models) <- save.comparison.list(seq_subsamples, subsamples)
     # #Creating the new call
     # if(!missing(correction)) {
-    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series with ", as.character(correction), " correction.\n@", sep="")
+    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " subsamples with ", as.character(correction), " correction.\n@", sep="")
     # } else {
-    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " series.\n@", sep="")
+    #     new_call <- paste("Sequential test (", as.character(match_call$family), ") across ", length(models)+1, " subsamples.\n@", sep="")
     # }
 
     # #Adding previous call (if exists)

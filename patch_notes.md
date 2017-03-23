@@ -1,6 +1,8 @@
 Patch notes
 ----
 * 2017/01/25 - v0.3.1
+  * **changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
+  * **changed name**: following the last change `time.series` becomes `time.subsamples` and `cust.series` becomes `custom.subsamples` (to avoid confusion with `custard.subsamples`!).
   * Minor bug correction for optional arguments passed to `plot`.
   * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments sanitising is now passed to `make.metric`.
 * 2017/01/25 - v0.3.0 *dispRity lite!*

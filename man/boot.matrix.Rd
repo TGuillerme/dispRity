@@ -7,7 +7,7 @@
 boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.series} or \link{cust.series}).}
+\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).}
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 1000}).}
 
@@ -25,7 +25,7 @@ boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = 
 This function outputs a \code{dispRity} object containing:
 \item{data}{A \code{list} of the observed and bootstrapped matrices.}
 \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-\item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
+\item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
 }
@@ -33,7 +33,7 @@ This function outputs a \code{dispRity} object containing:
 Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
 }
 \details{
-\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some series have fewer elements than the rarefaction value, the series is not rarefied.
+\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsamples have fewer elements than the rarefaction value, the subsamples is not rarefied.
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
@@ -54,20 +54,20 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 ## Bootstrapping an ordinated matrix with only 3 dimensions
 boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 
-## Bootstrapping a series of matrices
-## Generating a dummy series of matrices
+## Bootstrapping a subsamples of matrices
+## Generating a dummy subsamples of matrices
 ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
                            dimnames = list(letters[1:10]))
 factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
                          ncol = 1, dimnames = list(letters[1:10])))
-matrix.list <- cust.series(ordinated_matrix, factors)
-## Bootstrapping the series of matrices 20 times (each)
+matrix.list <- cust.subsamples(ordinated_matrix, factors)
+## Bootstrapping the subsamples of matrices 20 times (each)
 boot.matrix(matrix.list, bootstraps = 20)
 
 \dontrun{
-## Bootstrapping a series of matrices using a single CPU
+## Bootstrapping a subsamples of matrices using a single CPU
 system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-## Bootstrapping a series of matrices using 4 CPUs
+## Bootstrapping a subsamples of matrices using 4 CPUs
 system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
                         parallel = c(4, "SOCK")))
 ## System time is three times shorter with parallel but elapsed is more than twice as long.
@@ -78,6 +78,6 @@ system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{dispRity}}.
+\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{dispRity}}.
 }
 

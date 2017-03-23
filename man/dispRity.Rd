@@ -22,16 +22,16 @@ This function outputs a \code{dispRity} object containing:
 \item{data}{A \code{list} of the observed and bootstrapped matrices.}
 \item{disparity}{A \code{list} of disparity values (containing the observed disparity and the eventual bootstrapped one).}
 \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-\item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
+\item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
 \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 \code{dispRity} objects can be summarised using \code{print} (S3).
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
+Calculates disparity on an ordinated matrix or subsamples of matrices, where the disparity metric can be user specified.
 }
 \details{
-The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
 
 \code{metric} should be input as a vector of functions.
 The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -55,14 +55,14 @@ summary(sum_of_variances)
 bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
 dispRity(bootstrapped_data, metric = c(sum, variances))
 
-## Calculating the disparity from a customised series
-## Generating the series
+## Calculating the disparity from a customised subsamples
+## Generating the subsamples
 factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
      dimnames = list(rownames(BeckLee_mat50))))
-customised_series <- cust.series(BeckLee_mat50, factors)
+customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
@@ -81,7 +81,7 @@ summary(disparity_level1)
 \dontrun{
 ## Calculating disparity using one thread
 system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-## Bootstrapping a series of matrices using 4 threads
+## Bootstrapping a subsamples of matrices using 4 threads
 system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
      parallel = c(4, "SOCK")))
 ## System time is significantly longer! Using parallel is only an improvement
@@ -93,6 +93,6 @@ system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 

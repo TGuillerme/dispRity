@@ -15,23 +15,23 @@ boot.single <- function(elements, rarefaction) {
     return(rarefied_sample)
 }
 
-## Performs bootstrap on one series and all rarefaction levels
-replicate.bootstraps <- function(rarefaction, bootstraps, series, boot.type.fun, verbose) {
+## Performs bootstrap on one subsamples and all rarefaction levels
+replicate.bootstraps <- function(rarefaction, bootstraps, subsamples, boot.type.fun, verbose) {
     if(verbose) message(".", appendLF = FALSE)
-    return(replicate(bootstraps, boot.type.fun(series$elements, rarefaction)))
+    return(replicate(bootstraps, boot.type.fun(subsamples$elements, rarefaction)))
 }
 
-## Performs bootstrap on multiple series and all rarefaction levels
-bootstrap.wrapper <- function(series, bootstraps, rarefaction, boot.type.fun, verbose) {
-    return(lapply(select.rarefaction(series, rarefaction), replicate.bootstraps, bootstraps, series, boot.type.fun, verbose))
+## Performs bootstrap on multiple subsamples and all rarefaction levels
+bootstrap.wrapper <- function(subsamples, bootstraps, rarefaction, boot.type.fun, verbose) {
+    return(lapply(select.rarefaction(subsamples, rarefaction), replicate.bootstraps, bootstraps, subsamples, boot.type.fun, verbose))
 }
 
 ## Rarefaction levels selection
-select.rarefaction <- function(series, rarefaction) {
-    return(as.list(unique(c(nrow(series$elements), rarefaction[which(rarefaction <= nrow(series$elements))]))))
+select.rarefaction <- function(subsamples, rarefaction) {
+    return(as.list(unique(c(nrow(subsamples$elements), rarefaction[which(rarefaction <= nrow(subsamples$elements))]))))
 }
 
 ## Combine bootstrap results into a dispRity object
-combine.bootstraps <- function(one_bs_result, one_series) {
-    return(c(one_series, one_bs_result))
+combine.bootstraps <- function(one_bs_result, one_subsamples) {
+    return(c(one_subsamples, one_bs_result))
 }

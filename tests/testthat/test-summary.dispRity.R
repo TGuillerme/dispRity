@@ -69,16 +69,16 @@ test_that("Works with bootstraps and rarefaction", {
         , c(45.36, NA))
 })
 
-#Case 4, time series
+#Case 4, time subsamples
 data <- test_data$ord_data_tips
 factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(factor) <- rownames(data)
-data <- cust.series(data, factor)
+data <- custom.subsamples(data, factor)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with series", {
+test_that("Works with subsamples", {
     expect_is(
         test, "data.frame"
         )
@@ -93,18 +93,18 @@ test_that("Works with series", {
         ,c(37.00, 37.97))
 })
 
-#Case 5, time series + bootstraps
+#Case 5, time subsamples + bootstraps
 set.seed(1)
 data <- test_data$ord_data_tips
 factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(factor) <- rownames(data)
-data <- cust.series(data, factor)
+data <- custom.subsamples(data, factor)
 data <- boot.matrix(data, bootstrap = 5)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with series and bootstraps", {
+test_that("Works with subsamples and bootstraps", {
     expect_is(
         test, "data.frame"
         )
@@ -119,18 +119,18 @@ test_that("Works with series and bootstraps", {
         ,c(32.65, 34.09))
 })
 
-#Case 5, time series + bootstraps + rarefaction
+#Case 5, time subsamples + bootstraps + rarefaction
 set.seed(1)
 data <- test_data$ord_data_tips
 factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(factor) <- rownames(data)
-data <- cust.series(data, factor)
+data <- custom.subsamples(data, factor)
 data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,6))
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with series, bootstraps and rarefaction", {
+test_that("Works with subsamples, bootstraps and rarefaction", {
     expect_is(
         test, "data.frame"
         )
@@ -151,8 +151,8 @@ test_that("Works with series, bootstraps and rarefaction", {
 #Example
 test_that("Example works", {
     factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_series <- cust.series(BeckLee_mat50, factors)
-    bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     expect_is(
         summary(sum_of_ranges), "data.frame"
@@ -171,9 +171,9 @@ test_that("Example works", {
 #Testing with distributions
 test_that("Test with disparity as a distribution", {
     factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_series <- cust.series(BeckLee_mat50, factors)
-    sum_of_ranges1 <- dispRity(customised_series, metric=ranges)
-    bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+    sum_of_ranges1 <- dispRity(customised_subsamples, metric=ranges)
+    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
     sum_of_ranges2 <- dispRity(bootstrapped_data, metric=ranges)
 
     expect_is(
@@ -195,8 +195,8 @@ test_that("Test with disparity as a distribution", {
 # test_that("Test seq.test object management", {
 #     data(BeckLee_mat50)
 #     factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-#     customised_series <- cust.series(BeckLee_mat50, factors)
-#     bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3)
+#     customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+#     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3)
 #     sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
 #     data_distribution <- sequential.test(extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE), family = gaussian)
 #     data_concatenated <- sequential.test(extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE), family = gaussian)

@@ -1,6 +1,7 @@
-#' @title Separating ordinated data in custom series.
+#' @title Separating ordinated data in custom subsamples.
+#' @aliases cust.series custom.series cust.subsamples
 #'
-#' @description Splits the ordinated data into a customized series list.
+#' @description Splits the ordinated data into a customized subsamples list.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param factor A \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
@@ -9,11 +10,11 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
 #' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-#' \item{series}{A \code{vector} containing the name of the series.}
+#' \item{subsamples}{A \code{vector} containing the name of the subsamples.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' 
 #' @details
-#' The customized series can typically be a factor. For a finite number of taxonomic groups, traits, etc.
+#' The customized subsamples can typically be a factor. For a finite number of taxonomic groups, traits, etc.
 #'
 #' @examples
 #' ## Generating a dummy ordinated matrix
@@ -23,21 +24,21 @@
 #' factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
 #'      ncol = 1, dimnames = list(letters[1:10])))
 #' ## Splitting the dummy ordinated matrix
-#' cust.series(ordinated_matrix, factors)
+#' cust.subsamples(ordinated_matrix, factors)
 #'
-#' @seealso \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
 ## DEBUG
-# warning("DEBUG cust.series")
+# warning("DEBUG cust.subsamples")
 # source("sanitizing.R")
-# source("cust.series_fun.R")
-# source("time.series_fun.R")
+# source("cust.subsamples_fun.R")
+# source("time.subsamples_fun.R")
 # data <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
 # factor <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-cust.series <- function(data, factor) {
+custom.subsamples <- function(data, factor) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -62,17 +63,17 @@ cust.series <- function(data, factor) {
     check.elements <- function(factor) {
         any(table(as.factor(factor)) < 3)
     }
-    if(any(apply(factor, 2, check.elements))) stop("There must be at least three elements per series.")
+    if(any(apply(factor, 2, check.elements))) stop("There must be at least three elements per subsamples.")
 
     ## ----------------------
     ##  SPLITING THE DATA INTO A LIST
     ## ----------------------
 
-    ## Creating the series
-    series_list <- unlist(apply(factor, 2, split.elements, data), recursive = FALSE)
-    ## Adding the original series
-    #series_list <- c(make.origin.series(data), series_list)
+    ## Creating the subsamples
+    subsamples_list <- unlist(apply(factor, 2, split.elements, data), recursive = FALSE)
+    ## Adding the original subsamples
+    #subsamples_list <- c(make.origin.subsamples(data), subsamples_list)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("series" = "customised"), series = series_list))
+    return(make.dispRity(data = data, call = list("subsamples" = "customised"), subsamples = subsamples_list))
 }

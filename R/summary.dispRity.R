@@ -11,8 +11,8 @@
 #'
 #' @return
 #' A \code{data.frame} with:
-#' \item{series}{the series names.}
-#' \item{n}{the number of elements per series.}
+#' \item{subsamples}{the subsamples names.}
+#' \item{n}{the number of elements per subsamples.}
 #' \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
 #' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiless of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiless of the observed disparity is displayed).}
 #' 
@@ -36,10 +36,10 @@
 # source("summary.dispRity_fun.R")
 # data(BeckLee_mat50)
 # factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 3, rarefaction = TRUE)
-# series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE)
-# data <- sequential.test(series, family = gaussian, correction = "hommel")
+# customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3, rarefaction = TRUE)
+# subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE)
+# data <- sequential.test(subsamples, family = gaussian, correction = "hommel")
 
 # data <- dispRity(bootstrapped_data, metric = variances)
 
@@ -103,16 +103,16 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
     ## Check the bootstraps
     bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
 
-    ## Get the elements per series
-    elements <- lapply(data$series, lapply.get.elements, bootstrapped)
+    ## Get the elements per subsamples
+    elements <- lapply(data$subsamples, lapply.get.elements, bootstrapped)
     if(is.null(elements[[1]])) {
-        elements <- list(nrow(data$series[[1]]$elements))
+        elements <- list(nrow(data$subsamples[[1]]$elements))
     }
 
-    ## Get the names of the series
-    names <- names(data$series)
+    ## Get the names of the subsamples
+    names <- names(data$subsamples)
     if(is.null(names)) {
-        names <- seq(1:length(data$series))
+        names <- seq(1:length(data$subsamples))
     }
 
     ## Get the disparity values
@@ -120,7 +120,7 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
     names(disparity_values) <- NULL
 
     ## Initialise the results
-    summary_results <- data.frame(row.names = NULL, "series" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
+    summary_results <- data.frame(row.names = NULL, "subsamples" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
 
     ## Add the observed values
     if(is_distribution) {

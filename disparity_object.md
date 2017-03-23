@@ -7,7 +7,7 @@ object
 	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|
-	|	\---$series = class:"character"
+	|	\---$subsamples = class:"character"
 	|	|
 	|	\---$bootstrap = class:"character"
 	|	|
@@ -15,11 +15,11 @@ object
 	|	|
 	|	\---$metric = class:"character"
 	|
-	\---$series* = class:"list" (series as a list)
+	\---$subsamples* = class:"list" (subsamples as a list)
 	|	|
-	|	\---[[1]]* = class:"list" (first item in series list)
+	|	\---[[1]]* = class:"list" (first item in subsamples list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first series)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first subsamples)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -27,9 +27,9 @@ object
 	|	|	|
 	|	|	\---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
 	|	|
-	|	\---[[2]] = class:"list" (second item in series list)
+	|	\---[[2]] = class:"list" (second item in subsamples list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second series)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second subsamples)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -41,17 +41,17 @@ object
 	|	|	|	|
 	|	|		\---[[...]] = class:"numeric" (the bootstraps)
 	|	|
-	|	\---[[...]] = class:"list" (the following series)
+	|	\---[[...]] = class:"list" (the following subsamples)
 	|		|
-	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this series)
+	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this subsamples)
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
 	\---$disparity
 		|
-		\---[[2]] = class:"list" (the first series)
+		\---[[2]] = class:"list" (the first subsamples)
 		|	|
-		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the series)
+		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsamples)
 		|	|
 		|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 		|	|
@@ -59,9 +59,9 @@ object
 		|	|
 		|	\---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
 		|
-		\---[[2]] = class:"list" (the first series)
+		\---[[2]] = class:"list" (the first subsamples)
 		|	|
-		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the series)
+		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsamples)
 		|	|
 		|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 		|	|
@@ -73,9 +73,9 @@ object
 		|		|
 		|		\---[[...]] = class:"numeric" (the bootstraps)
 		|
-		\---[[...]] = class:"list" (the following series)
+		\---[[...]] = class:"list" (the following subsamples)
 			|
-			\---$observed* = class:"numeric" (the vector containing the observed disparity within this series)
+			\---$observed* = class:"numeric" (the vector containing the observed disparity within this subsamples)
 			|
 			\---[[...]] = class:"matrix" (the rarefactions)
 ```
@@ -86,21 +86,21 @@ The elements marked with an asterisk (*) are mandatory.
 ## `fetch.matrix` for accessing a specific ordinated matrix
 
 ```{r}
-## To extract the matrix for the second series, first rarefaction level and 58th bootstrap
-fetch.matrix(dispRity_object, series = 2, rarefaction = 1, bootstrap = 58)
+## To extract the matrix for the second subsamples, first rarefaction level and 58th bootstrap
+fetch.matrix(dispRity_object, subsamples = 2, rarefaction = 1, bootstrap = 58)
 ```
 
-## `fetch.elements` to extract the elements within a specific series
+## `fetch.elements` to extract the elements within a specific subsamples
 
 ```{r}
-## To extract the elements in the first series
-fetch.elements(dispRity_object, series = 1)
+## To extract the elements in the first subsamples
+fetch.elements(dispRity_object, subsamples = 1)
 ```
 
-## `fetch.series` to extract the series names
+## `fetch.subsamples` to extract the subsamples names
 
 ```{r}
-## To extract the series names
+## To extract the subsamples names
 fetch.elements(dispRity_object)
 ```
 

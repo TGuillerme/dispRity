@@ -1,19 +1,19 @@
 ## Extracting a specific rarefaction level
-extract.disparity.values <- function(series, data, rarefaction, concatenate) {
+extract.disparity.values <- function(subsamples, data, rarefaction, concatenate) {
     ## Get the rarefaction level
     if(rarefaction != FALSE) {
-        rarefaction = as.numeric(which(lapply(data$series[[series]][-1], nrow) == rarefaction) + 1)
+        rarefaction = as.numeric(which(lapply(data$subsamples[[subsamples]][-1], nrow) == rarefaction) + 1)
         if(length(rarefaction) == 0) {
-            ## No rarefaction level for this series
+            ## No rarefaction level for this subsamples
             return(NULL)
         }
     } else {
         rarefaction = 2
     }
     if(concatenate) {
-        return(list(as.numeric(data$disparity[[series]][[rarefaction]])))
+        return(list(as.numeric(data$disparity[[subsamples]][[rarefaction]])))
     } else {
-        return(lapply(seq_len(ncol(data$disparity[[series]][[rarefaction]])), function(col) data$disparity[[series]][[rarefaction]][,col]))
+        return(lapply(seq_len(ncol(data$disparity[[subsamples]][[rarefaction]])), function(col) data$disparity[[subsamples]][[rarefaction]][,col]))
     }
 }
 

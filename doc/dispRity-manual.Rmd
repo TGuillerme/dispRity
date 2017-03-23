@@ -53,11 +53,9 @@ Below is a list of the meanings of these terms, in the context of `dispRity`.
 
 -   **Dimensions**. The columns of the ordinated space. The dimensions are referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA.
 
--   **Sub-samples**. Sub-samples of the ordinated space.
-    A sub-sample (or series) contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
-    For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two series containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
-
-<!-- TG: good call for changing series to subsamples. NEED TO BE APPLIED TO THE WHOLE PACKAGE! -->
+-   **Subsamples**. Sub-samples of the ordinated space.
+    A sub-sample (or subsamples) contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
+    For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
 
 Datasets
 --------
@@ -138,8 +136,8 @@ Note that we require the following data: a cladistic matrix, a phylogeny, .... a
 # Wonder if there could be a wrapper function for "disparity-through-time"? With options for the metric of course, and bootstrap or not etc. -->
 
 ```{r, fig.width=6, fig.height=6}
-## Splitting the data into time series
-sliced_data <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",
+## Splitting the data into time subsamples
+sliced_data <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",
     model = "acctran", time = rev(seq(from=0, to=130, by=15)),
     FADLAD = BeckLee_ages)
 
@@ -238,15 +236,15 @@ In the following section, different functionalities of the package are detailed.
 The functions are presented in a "classic" pipelined study fashion for convenience (i.e. splitting the data, bootstrapping it, calculating disparity, testing differences).
 Note however that most of these functions can be used in any order and that some steps can of course be skipped and that the package contains many more additional functions!
 
-One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter called *series*, see [glossary](#glossary)).
-These series correspond to regions of the ordinated space that we want to compare to each other.
+One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter called *subsamples*, see [glossary](#glossary)).
+These subsamples correspond to regions of the ordinated space that we want to compare to each other.
 
 <!-- # NC: Again I think this might be better written as "here are some things you might want to modify, here is how" rather than a function by function approach. -->
 
-`cust.series` # NC: I'd have called this custom.series. It's only 2 more letters and makes it much more readable, and less about custard.
+`custom.subsamples` # NC: I'd have called this custom.subsamples. It's only 2 more letters and makes it much more readable, and less about custard.
 -------------
 
-The `cust.series` function allows to create these series according to one or more factors determined by the user.
+The `custom.subsamples` function allows to create these subsamples according to one or more factors determined by the user.
 In this example, we can split the matrix based on the phylogeny and separate to different groups of taxa: the crown mammals (all the living mammals and their direct ancestor) and the stem mammals (all the mammals that have no related living descendants).
 To do so, we need to separate the tree into two subtrees at the node 71 (see [phylogeny above](#mammal_tree)).
 
@@ -256,18 +254,18 @@ crown <- extract.clade(BeckLee_tree, node = 71)$tip.label
 stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
 ```
 
-We can then feed these lists of species to the `cust.series` function after transforming it into a factorial table:
+We can then feed these lists of species to the `custom.subsamples` function after transforming it into a factorial table:
 <!-- # NC: This is a fairly horrible set up to go through! Can't you make a function? -->
 
 ```{r}
 ## Creating the factor table
-series_factors <- as.data.frame(
+subsamples_factors <- as.data.frame(
     matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
     ncol = 1, dimnames = list(c(crown, stem), "Group")))
-head(series_factors)
+head(subsamples_factors)
 
-## Creating the two series
-crown_stem <- cust.series(BeckLee_mat50, series_factors)
+## Creating the two subsamples
+crown_stem <- custom.subsamples(BeckLee_mat50, subsamples_factors)
 ```
 
 The results of this function (like many others presented below) outputs a `dispRity` object:
@@ -276,43 +274,43 @@ The results of this function (like many others presented below) outputs a `dispR
 crown_stem
 ```
 
-The two series represent two groups occupying specific regions of the mammalian morphospace.
-The `dispRity` object itself always contains the original morphospace (`$matrix`) as well as information on which taxa compose the series (`$series`):
+The two subsamples represent two groups occupying specific regions of the mammalian morphospace.
+The `dispRity` object itself always contains the original morphospace (`$matrix`) as well as information on which taxa compose the subsamples (`$subsamples`):
 
 ```{r}
 ## This object contains three elements
 names(crown_stem)
 ## With "matrix" being the original matrix (the ordinated space)
 str(crown_stem$matrix)
-## And "series" the elements from this ordinated space into the two sub-spaces
-str(crown_stem$series)
+## And "subsamples" the elements from this ordinated space into the two sub-spaces
+str(crown_stem$subsamples)
 ```
 
 Note that here we are separating the taxa into two exclusive groups (i.e. crown mammals can be crown only, same for stem mammals).
 It is however possible to add more factors with overlapping groups:
 
 ```{r}
-## Adding all mammals to the a new series (along with crown and stem as before)
-series_factors2 <- as.data.frame(
+## Adding all mammals to the a new subsamples (along with crown and stem as before)
+subsamples_factors2 <- as.data.frame(
     matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem)),
     rep("Mammalia", Ntip(BeckLee_tree))), ncol = 2,
     dimnames = list(c(crown, stem), c("Group", "Class")), byrow = FALSE))
 
-## Creating the three series: Group.stem/crown and Class.Mammalia
-cust.series(BeckLee_mat50, series_factors2)
+## Creating the three subsamples: Group.stem/crown and Class.Mammalia
+custom.subsamples(BeckLee_mat50, subsamples_factors2)
 ```
 
-`time.series`  <a name="time.series"></a>
+`time.subsamples`  <a name="time.subsamples"></a>
 -------------
 
 Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
-The `time.series` function allows to create series containing all the elements present at specific points in time or during specific periods.
+The `time.subsamples` function allows to create subsamples containing all the elements present at specific points in time or during specific periods.
 This functions needs as input an ordinated space and a matching phylogenetic tree.
-Two types of time series can be performed by using the `method` option:
+Two types of time subsamples can be performed by using the `method` option:
 
- *  discrete time series (or time-binning) using `method = discrete`;
+ *  discrete time subsamples (or time-binning) using `method = discrete`;
 
- *  continuous time series (or time-slicing) using `method = continuous`.
+ *  continuous time subsamples (or time-slicing) using `method = continuous`.
 
 For the time-slicing method details see @GuillermeSTD.
 <!-- TODO: link to the time-slicing algorithm explained! -->
@@ -329,7 +327,7 @@ Here is an example for `method = discrete`:
 
 ```{r}
 ## Generating three time bins containing the data present every 40 Ma
-time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
     time = c(120, 80, 40, 0))
 ```
 
@@ -340,16 +338,16 @@ This is possible by providing a table containing the first and last occurrence d
 ```{r}
 ## Generating three time bins containing the data present every 40 Ma, including taxa that might
 ## span between time bins.
-(time_bins <- time.series(data = BeckLee_mat50, tree = BeckLee_tree,
+(time_bins <- time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree,
     method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages))
 ```
 
-This generated indeed a `dispRity` object of 3 series.
-Note that we can also generate equivalent results by just telling the function that we want three time-bins (series) as follow:
+This generated indeed a `dispRity` object of 3 subsamples.
+Note that we can also generate equivalent results by just telling the function that we want three time-bins (subsamples) as follow:
 
 ```{r}
 ## Automatically generate three equal length bins:
-time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
     time = 3)
 ```
 
@@ -372,19 +370,19 @@ This option, however, requires a matrix that contains the ordinated distance bet
 
 ```{r}
 ## Generating four time slices every 40 million years assuming a gradual evolutionary model
-(time_slices <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, 
+(time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
     method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages))
 ## Note that in the same way as before, we can also automatically generate the slices
-time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
+time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
     model = "gradual", time = 4)
 ```
 
 `boot.matrix`
 -------------
 
-Once we obtain our different series, it is possible to bootstrap and rarefy them (i.e. pseudo-replicating the data).
-The bootstrap will allow us to make each series more robust to outliers and the rarefaction will allow us to compare series with the same number of elements to get rid of eventual sampling problems.
+Once we obtain our different subsamples, it is possible to bootstrap and rarefy them (i.e. pseudo-replicating the data).
+The bootstrap will allow us to make each subsamples more robust to outliers and the rarefaction will allow us to compare subsamples with the same number of elements to get rid of eventual sampling problems.
 The `boot.matrix` allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
 The default options will bootstrap the matrix 1000 times without rarefaction using the "full" bootstrap method (see below).
 
@@ -401,7 +399,7 @@ Currently two algorithms are implemented:
  *  `single` where only one random elements is replaced by one other random elements each pseudo-replication
 
 This function also allows to rarefy the data using the `rarefaction` argument.
-The default argument is `FALSE` but it can be set to `TRUE` to fully rarefy the data (i.e. remove *n* elements for the number of pseudo-replicates, where *n* varies from the maximum number of elements present in each series to a minimum of 3 elements).
+The default argument is `FALSE` but it can be set to `TRUE` to fully rarefy the data (i.e. remove *n* elements for the number of pseudo-replicates, where *n* varies from the maximum number of elements present in each subsamples to a minimum of 3 elements).
 It can also be set to one or more `numeric` values to only rarefy to the corresponding number of elements.
 One additional important argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
 When left missing, all dimensions from the ordinated matrix are used.
@@ -423,14 +421,14 @@ boot.matrix(BeckLee_mat50, dimensions = 0.5)
 boot.matrix(BeckLee_mat50, dimensions = 10)
 ```
 
-Of course, one could be interested in directly supplying the series generated above directly to this function.
-In fact, it can also deal with a list of matrices or with a `dispRity` object output from the `cust.series` or `time.series` functions.
+Of course, one could be interested in directly supplying the subsamples generated above directly to this function.
+In fact, it can also deal with a list of matrices or with a `dispRity` object output from the `custom.subsamples` or `time.subsamples` functions.
 
 ```{r}
-## Bootstrapping and fully rarefying the crown/stem series
+## Bootstrapping and fully rarefying the crown/stem subsamples
 (crown_stemBS <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE))
 
-## Bootstrapping on the time binning/slicing series
+## Bootstrapping on the time binning/slicing subsamples
 (time_binsBS <- boot.matrix(time_bins, bootstraps = 100))
 (time_slicesBS <- boot.matrix(time_slices, bootstraps = 100))
 ```
@@ -486,7 +484,7 @@ These functions do not directly output the disparity values but only the summary
 To display the results, see the section [summary](#summary).
 
 In these examples we used only simple ordinated matrix but of course, it possible to directly use the `dispRity` objects we generated in the steps above.
-Thus we can calculate the bootstrapped and rarefied disparity in each series of the ordinated space.
+Thus we can calculate the bootstrapped and rarefied disparity in each subsamples of the ordinated space.
 Here we are going to define disparity as being the median distance between each element and each dimensions' centre.
 
 <a name="disparity.calculation"></a>
@@ -523,7 +521,7 @@ summary(disp_time_binsBS, quantile = 88, cent.tend = sd)
 summary(disp_time_binsBS, recall = TRUE, rounding = 5)
 ```
 
-> Information about the number of elements per series as well as the observed (i.e. non-bootstrapped) disparity is also calculated.
+> Information about the number of elements per subsamples as well as the observed (i.e. non-bootstrapped) disparity is also calculated.
 This is specifically handy when rarefying the data for example
 
 ```{r}
@@ -538,9 +536,9 @@ This function intakes the same options as `summary.dispRity` along side with var
 
 The plots can be of four different types: `continuous` for displaying continuous disparity curves and `box`, `lines` and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines and confidence interval polygons.
 
-> This argument can be left missing. In this case, the algorithm will automatically detect the type of series from the `dispRity` object.
+> This argument can be left missing. In this case, the algorithm will automatically detect the type of subsamples from the `dispRity` object.
 
-It is also possible to display the number of elements per series (has a horizontal doted line) using the option `elements = TRUE`.
+It is also possible to display the number of elements per subsamples (has a horizontal doted line) using the option `elements = TRUE`.
 Additionally, when the data is rarefied, one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the `rarefaction` argument.
 
 ```{r, fig.width=6, fig.height=6}
@@ -579,7 +577,7 @@ par(bty = "n")
 ## Plotting the results with some plot.dispRity arguments
 plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd, type = "c",
     elements = TRUE, col = c("black", rainbow(10)), ylab = c("Disparity", "Diversity"),
-    xlab = "Time (in in units from past to present)", time.series = FALSE,
+    xlab = "Time (in in units from past to present)", time.subsamples = FALSE,
     observed = TRUE, main = "Many options...")
 ```
 
@@ -613,15 +611,15 @@ The function `test.dispRity` works in a similar way as the `dispRity` function: 
 
 The `comparisons` argument must indicate the way the test should be applied to the data:
 
- *   `pairwise` (default): to compare each series pairwise
+ *   `pairwise` (default): to compare each subsamples pairwise
 
- *  `referential`: to compare each series to the first one
+ *  `referential`: to compare each subsamples to the first one
 
- *  `sequential`: to compare each series to the following one
+ *  `sequential`: to compare each subsamples to the following one
 
- *  `all`: to compare all the series together (like in analysis of variance)
+ *  `all`: to compare all the subsamples together (like in analysis of variance)
 
-It is also possible to input a list of pairs of `numeric` values or `characters` matching the series names to create personalised test.
+It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsamples names to create personalised test.
 Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` and the `dispRity::sequential.test` have a specific way to be applied to the data and therefore ignore the `comparisons` argument.
 
 
@@ -669,7 +667,7 @@ utilities
 The package also provides some utilities functions to facilitate multidimensional analysis.
 
 ### `dispRity` object utilities  <a name="dispRity.utilities"></a>
-The first series of utilities are functions for manipulating `dispRity` objects:
+The first subsamples of utilities are functions for manipulating `dispRity` objects:
 
 #### `make.dispRity`
 This function creates empty `dispRity` objects.
@@ -700,17 +698,17 @@ This function extracts a specific matrix from a disparity object. The matrix can
 ## Extracting the matrix containing the coordinates for the crown mammals
 str(matrix.dispRity(disp_crown_stemBS, "Group.crown"))
 ## Extracting the 3rd boostrapped matrix with the 10th rarefaction level from the same group
-str(matrix.dispRity(disp_crown_stemBS, series = 1, bootstrap = 3, rarefaction = 10))
+str(matrix.dispRity(disp_crown_stemBS, subsamples = 1, bootstrap = 3, rarefaction = 10))
 ```
 
-#### `get.series.dispRity`
-This function creates a dispRity object that contains only elements from one specific series.
+#### `get.subsamples.dispRity`
+This function creates a dispRity object that contains only elements from one specific subsamples.
 
 ```{r}
 ## Extracting all the data for the crown mammals
-(crown_mammals <- get.series.dispRity(disp_crown_stemBS, "Group.crown"))
-## The object keeps the properties of the parent object but is composed of only one series
-length(crown_mammals$series)
+(crown_mammals <- get.subsamples.dispRity(disp_crown_stemBS, "Group.crown"))
+## The object keeps the properties of the parent object but is composed of only one subsamples
+length(crown_mammals$subsamples)
 ```
 
 #### `extract.dispRity`
@@ -721,15 +719,15 @@ This function extracts the calculated disparity values of a specific matrix.
 extract.dispRity(disp_crown_stemBS)
 
 ## Extracting the disparity from the bootstrapped values from the 10th rarefaction level from the
-## second series (stem mammals)
-extract.dispRity(disp_crown_stemBS, observed = FALSE, series = 2, rarefaction = 10)
+## second subsamples (stem mammals)
+extract.dispRity(disp_crown_stemBS, observed = FALSE, subsamples = 2, rarefaction = 10)
 ```
 
 #### `scale.dispRity`
 This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
 
 ```{r}
-## Getting the disparity values of the time series
+## Getting the disparity values of the time subsamples
 summary(disp_time_slicesBS)
 
 ## Scaling the same disparity values
@@ -737,10 +735,10 @@ summary(scale(disp_time_slicesBS, scale = TRUE))
 ```
 
 #### `sort.dispRity`
-This is the S3 method of `sort` for sorting the series alphabetically (default) or following a specific pattern.
+This is the S3 method of `sort` for sorting the subsamples alphabetically (default) or following a specific pattern.
 
 ```{r}
-## Sorting the disparity series in inverse alphabetic order
+## Sorting the disparity subsamples in inverse alphabetic order
 summary(sort(disp_time_slicesBS, decreasing = TRUE))
 ```
 
@@ -766,8 +764,8 @@ head(tree.age(BeckLee_tree, age = 1, order = "present"), 5)
 
 #### `slice.tree`
 
-This function is at the core of `time.series` when using the time slicing method.
-It allows to slice a phylogenetic tree at a certain time point and selecting the nodes or tips following the models detailed in the `time.series` [section above](#time.series).
+This function is at the core of `time.subsamples` when using the time slicing method.
+It allows to slice a phylogenetic tree at a certain time point and selecting the nodes or tips following the models detailed in the `time.subsamples` [section above](#time.subsamples).
 
 ```{r, fig.width=8, fig.height=6}
 set.seed(1)

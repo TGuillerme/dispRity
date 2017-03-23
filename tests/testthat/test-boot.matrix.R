@@ -52,19 +52,19 @@ test_that("No bootstraps", {
         length(test)
         , 3)
     expect_equal(
-        as.vector(test$series[[1]][[1]])
+        as.vector(test$subsamples[[1]][[1]])
         , seq(1:nrow(test$matrix)))
     expect_equal(
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        length(test$series[[1]])
+        length(test$subsamples[[1]])
         ,1)
     expect_equal(
-        length(test$series)
+        length(test$subsamples)
         ,1)
     expect_is(
-        test$series[[1]][[1]]
+        test$subsamples[[1]][[1]]
         ,"matrix")
 })
 
@@ -93,13 +93,13 @@ test_that("5 bootstraps", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[1]][[1]])
+        dim(test$subsamples[[1]][[1]])
         ,c(50,1))
     expect_equal(
-        dim(test$series[[1]][[2]])
+        dim(test$subsamples[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        length(test$series[[1]])
+        length(test$subsamples[[1]])
         ,2)
 })
 
@@ -116,10 +116,10 @@ test_that("5 bootstraps, rarefaction = 5", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$series[[1]][[2]])
+        dim(test$subsamples[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        dim(test$series[[1]][[3]])
+        dim(test$subsamples[[1]][[3]])
         ,c(5,5))
 })
 
@@ -127,11 +127,11 @@ test_that("5 bootstraps, rarefaction = 5", {
 test_that("5 bootstraps, rarefaction = TRUE", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
-        length(test$series[[1]])
+        length(test$subsamples[[1]])
         , 49)
     for(rare in 2:49) {
         expect_equal(
-            dim(test$series[[1]][[rare]])
+            dim(test$subsamples[[1]][[rare]])
             ,c(50-(rare-2),5))
     }
 })
@@ -151,11 +151,11 @@ test_that("5 bootstraps, rarefaction = 5,6, boot type", {
 })
 
 
-## Bootstraps = 5 + Rarefaction = c(5,6) + series
-test_that("5 bootstraps, rarefaction = 5,6, series", {
+## Bootstraps = 5 + Rarefaction = c(5,6) + subsamples
+test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
     factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-    matrix_list <- cust.series(ordinated_matrix, factors)
+    matrix_list <- custom.subsamples(ordinated_matrix, factors)
     test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(4,3))
     expect_is(
         test
@@ -167,16 +167,16 @@ test_that("5 bootstraps, rarefaction = 5,6, series", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        length(test$series)
+        length(test$subsamples)
         ,2)
     expect_equal(
-        length(test$series[[1]])
+        length(test$subsamples[[1]])
         ,4)
     expect_equal(
-        length(test$series[[2]])
+        length(test$subsamples[[2]])
         ,4)
     expect_equal(
-        dim(test$series[[2]][[2]])
-        ,c(nrow(test$series[[2]]$elements), 2))
+        dim(test$subsamples[[2]][[2]])
+        ,c(nrow(test$subsamples[[2]]$elements), 2))
 })
 

@@ -1,6 +1,6 @@
-## TESTING cust.series
+## TESTING custom.subsamples
 
-context("cust.series")
+context("custom.subsamples")
 
 data <- matrix(data = rnorm(10*9), nrow = 10, ncol = 9)
 rownames(data) <- letters[1:10]
@@ -9,37 +9,37 @@ rownames(data) <- letters[1:10]
 test_that("Sanitizing works", {
     ## class
     expect_error(
-        cust.series(data, factor = "A")
+        custom.subsamples(data, factor = "A")
         )
     ## same number of rows
     factor <- matrix(5,5)
     expect_error(
-        cust.series(data, factor)
+        custom.subsamples(data, factor)
         )
     factor <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1))
     expect_error(
-        cust.series(data, factor)
+        custom.subsamples(data, factor)
         )
     ## row names must be the same
     rownames(factor) <- letters[2:11]
     expect_error(
-        cust.series(data, factor)
+        custom.subsamples(data, factor)
         )
     ## One class with only 3 elements
     rownames(factor) <- letters[1:10]
     factor[1:2,1] <- 3
     expect_error(
-        cust.series(data, factor)
+        custom.subsamples(data, factor)
         )
 })
 
 ## Results
 factor <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1))
 rownames(factor) <- letters[1:10]
-test <- cust.series(data, factor)
+test <- custom.subsamples(data, factor)
 
 ## Test
-test_that("cust.series works", {
+test_that("custom.subsamples works", {
     expect_is(
         test
         , "dispRity")
@@ -53,10 +53,10 @@ test_that("cust.series works", {
         dim(test$matrix)
         , c(10,9))
     expect_equal(
-        length(test$series[[1]]$elements)
+        length(test$subsamples[[1]]$elements)
         ,5)
     expect_equal(
-        length(test$series[[2]]$elements)
+        length(test$subsamples[[2]]$elements)
         ,5)
 })
 
@@ -64,7 +64,7 @@ test_that("cust.series works", {
 test_that("Example works", {
     ordinated_matrix  <-  matrix(data  =  rnorm(90), nrow  =  10, ncol  =  9, dimnames  =  list(letters[1:10]))
     factors  <-  as.data.frame(matrix(data  =  c(rep(1,5), rep(2,5)), nrow  =  10, ncol  =  1, dimnames  =  list(letters[1:10])))
-    ex1 <- cust.series(ordinated_matrix, factors)
+    ex1 <- custom.subsamples(ordinated_matrix, factors)
     expect_is(
         ex1
         , "dispRity")
@@ -72,6 +72,6 @@ test_that("Example works", {
         length(ex1)
         ,3)
     expect_equal(
-        dim(ex1$matrix[ex1$series[[2]]$elements,])
+        dim(ex1$matrix[ex1$subsamples[[2]]$elements,])
         , c(5,9))
 })

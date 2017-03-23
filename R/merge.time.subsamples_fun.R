@@ -7,22 +7,22 @@ check.data.to.merge <- function(data) {
         #data must be of size k*<=k-1
         if(ncol(data) > (nrow_data - 1)) stop("Input data must have at maximum k-1 columns")
     } else {
-        check.length(data, 3, " must be a dispRity series object output from time.series().")
+        check.length(data, 3, " must be a dispRity subsamples object output from time.subsamples().")
     }
 }
 
-warn.merge <- function(data, series, merge) {
-    message("The interval ", names(data$data)[series], " was merged with ", names(data$data)[merge], " because it had less than 3 elements.")
+warn.merge <- function(data, subsamples, merge) {
+    message("The interval ", names(data$data)[subsamples], " was merged with ", names(data$data)[merge], " because it had less than 3 elements.")
 }
 
-merge.series <- function(data, series, merge) {
-    # Target series (where to merge)
+merge.subsamples <- function(data, subsamples, merge) {
+    # Target subsamples (where to merge)
     matrix_merge <- data$data[[merge]]
-    name_merge <- data$series[[merge+1]]
+    name_merge <- data$subsamples[[merge+1]]
 
-    # Series to remove
-    matrix_remove <- data$data[[series]]
-    name_remove <- data$series[[series+1]]
+    # subsamples to remove
+    matrix_remove <- data$data[[subsamples]]
+    name_remove <- data$subsamples[[subsamples+1]]
     # Removing redundant rownames (if any!)
     redundants <- which(!is.na(match(rownames(matrix_remove), rownames(matrix_merge))))
     if(length(redundants) != 0) {
@@ -31,45 +31,45 @@ merge.series <- function(data, series, merge) {
 
     # Merging data
     data$data[[merge]] <- rbind(matrix_merge, matrix_remove)
-    data$data[[series]] <- NULL
+    data$data[[subsamples]] <- NULL
 
-    # Renaming series
-    if(series < merge) {
-        names(data$data)[[series]] <- paste(name_remove, name_merge, sep = ";")
-        data$series[[series+1]] <- paste(name_remove, name_merge, sep = ";")
-        data$series <- data$series[-(merge+1)]
+    # Renaming subsamples
+    if(subsamples < merge) {
+        names(data$data)[[subsamples]] <- paste(name_remove, name_merge, sep = ";")
+        data$subsamples[[subsamples+1]] <- paste(name_remove, name_merge, sep = ";")
+        data$subsamples <- data$subsamples[-(merge+1)]
     } else {
         names(data$data)[[merge]] <- paste(name_merge, name_remove, sep = ";")
-        data$series[[merge+1]] <- paste(name_merge, name_remove, sep = ";")
-        data$series <- data$series[-(series+1)]
+        data$subsamples[[merge+1]] <- paste(name_merge, name_remove, sep = ";")
+        data$subsamples <- data$subsamples[-(subsamples+1)]
     }
     return(data)
 }
 
-clean.series <- function(data1, after) {
+clean.subsamples <- function(data1, after) {
     # Looping through each element (iterative process!)
     interval <- 1
     while(interval <= length(data1$data)) {
         # Check if there are enough elements
         if(nrow(data1$data[[interval]]) < 3) {
-            # Merge with the next series
+            # Merge with the next subsamples
             if(after) {
-                # Check if the next series is not last!
+                # Check if the next subsamples is not last!
                 if(interval != length(data1$data)) {
                     warn.merge(data1, interval, interval+1)
-                    data1 <- merge.series(data1, interval, interval+1)
+                    data1 <- merge.subsamples(data1, interval, interval+1)
                 } else {
                     warn.merge(data1, interval, interval-1)
-                    data1 <- merge.series(data1, interval, interval-1)
+                    data1 <- merge.subsamples(data1, interval, interval-1)
                 }
             } else {
-                #Check if the series is not first!
+                #Check if the subsamples is not first!
                 if(interval != 1) {
                     warn.merge(data1, interval, interval-1)
-                    data1 <- merge.series(data1, interval, interval-1)
+                    data1 <- merge.subsamples(data1, interval, interval-1)
                 } else {
                     warn.merge(data1, interval, interval+1)
-                    data1 <- merge.series(data1, interval, interval+1)
+                    data1 <- merge.subsamples(data1, interval, interval+1)
                 }
             }
         }

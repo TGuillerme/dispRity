@@ -63,7 +63,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
     #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
     options(op)
 
-    if(is(test,"try-error")) {
+    if(any(test == "try-error")) {
         if(silent != TRUE) {
             stop(paste("The provided metric function generated an error or a warning!\nDoes the following works?\n    ", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))\n(the problem can also come from the optional arguments...)", sep = ""))
         }

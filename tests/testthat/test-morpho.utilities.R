@@ -1,4 +1,4 @@
-#TESTING cust.series
+#TESTING morpho.utilities
 
 context("morpho.utilities")
 

@@ -37,6 +37,6 @@ tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 Thomas Guillerme
 }
 \seealso{
-\code{\link[paleotree]{timeSliceTree}}, \code{\link{time.series}}.
+\code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
 }
 
