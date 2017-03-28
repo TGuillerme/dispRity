@@ -12,7 +12,7 @@ custom.subsamples(data, group)
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
 
-\item{group}{Either a \code{list} of row numbers to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.}
+\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -25,21 +25,24 @@ This function outputs a \code{dispRity} object containing:
 Splits the ordinated data into a customized subsamples list.
 }
 \details{
-The customized subsamples can typically be a group. For a finite number of taxonomic groups, traits, etc.
+Note that every elements from the input data can be assigned to multiple groups!
 }
 \examples{
 ## Generating a dummy ordinated matrix
 ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
      dimnames = list(letters[1:10]))
 
-## Splitting the ordinated matrix into two groups
-custom.subsamples(ordinated_matrix, )
+## Splitting the ordinated matrix into two groups using row numbers
+custom.subsamples(ordinated_matrix, list("A" = c(1:4), "B" = c(5:10)))
 
-## Using a data frame to create the different subsamples
-## Creating a list of dummy groups (1 or 2)
+## Splitting the ordinated matrix into three groups using row names
+custom.subsamples(ordinated_matrix,
+     list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"),
+          "C" = c("a", "c", "d", "f", "h")))
+
+## Splitting the ordinated matrix into four groups using a data frame
 groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
-## Splitting the dummy ordinated matrix into 4 groups
 custom.subsamples(ordinated_matrix, groups)
 
 }
