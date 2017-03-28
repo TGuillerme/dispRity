@@ -2,9 +2,9 @@ context("sequential.test")
 
 #Testing data
 data(BeckLee_mat50)
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
      dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-sum_of_variances <- dispRity(boot.matrix(custom.subsamples(BeckLee_mat50, factors), bootstraps = 100), metric = c(sum, variances))
+sum_of_variances <- dispRity(boot.matrix(custom.subsamples(BeckLee_mat50, groups), bootstraps = 100), metric = c(sum, variances))
 subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE)
 seq_subsamples <- list(c(1,2), c(2,3))
 

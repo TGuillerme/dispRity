@@ -58,9 +58,9 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 ## Generating a dummy subsamples of matrices
 ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
                            dimnames = list(letters[1:10]))
-factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
+groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
                          ncol = 1, dimnames = list(letters[1:10])))
-matrix.list <- cust.subsamples(ordinated_matrix, factors)
+matrix.list <- cust.subsamples(ordinated_matrix, groups)
 ## Bootstrapping the subsamples of matrices 20 times (each)
 boot.matrix(matrix.list, bootstraps = 20)
 

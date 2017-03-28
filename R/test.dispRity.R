@@ -31,9 +31,9 @@
 #'
 #' ## Calculating the disparity from a customised subsamples
 #' ## Generating the subsamples
-#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+#' groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
 #'       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-#' customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+#' customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 #' ## Calculating the sum of variances
@@ -45,7 +45,7 @@
 #' ## Measuring differences from a reference_subsamples
 #' test.dispRity(sum_of_variances, wilcox.test, "referential")
 #'
-#' ## Testing the effect of the factors
+#' ## Testing the effect of the groups
 #' test.dispRity(sum_of_variances, aov, "all")
 #' ## warning: this violates some aov assumptions!
 #'
@@ -72,8 +72,8 @@
 # # source("sequential.test.R")
 # # source("sequential.test_fun.R")
 # data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+# groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+# customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 # bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 10)
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)

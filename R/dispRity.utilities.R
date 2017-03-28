@@ -332,8 +332,8 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-# customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+# groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+# customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
 # bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 7, rarefaction = c(10, 25))
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 

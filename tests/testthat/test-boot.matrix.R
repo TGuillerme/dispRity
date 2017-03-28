@@ -154,8 +154,8 @@ test_that("5 bootstraps, rarefaction = 5,6, boot type", {
 ## Bootstraps = 5 + Rarefaction = c(5,6) + subsamples
 test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
-    factors <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-    matrix_list <- custom.subsamples(ordinated_matrix, factors)
+    groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+    matrix_list <- custom.subsamples(ordinated_matrix, groups)
     test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(4,3))
     expect_is(
         test

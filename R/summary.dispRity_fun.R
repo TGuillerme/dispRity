@@ -62,7 +62,7 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     if(rounding != "default") {
         for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "factor") {
+            if(class(results_table[,column]) != "group") {
                 results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
             } else {
                 results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
@@ -71,7 +71,7 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     } else {
         for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "factor") {
+            if(class(results_table[,column]) != "group") {
                 if(any(!is.na(results_table[,column]))) {
                     results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
                 }

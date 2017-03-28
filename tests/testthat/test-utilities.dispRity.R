@@ -77,8 +77,8 @@ test_that("matrix.dispRity", {
 
     ## Calculating the disparity from a customised subsamples
     ## Generating the subsamples
-    factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+    groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
     ## Bootstrapping and rarefying the data
     set.seed(1)
     dispRity_data <- boot.matrix(customised_subsamples, bootstraps = 100,rarefaction = c(15, 10))
@@ -237,8 +237,8 @@ test_that("extract.dispRity", {
 
 test_that("scale.dispRity", {
     data(BeckLee_mat50)
-    factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+    groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 7, rarefaction = c(10, 25))
     data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 

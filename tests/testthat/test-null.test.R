@@ -5,10 +5,10 @@ context("null.test")
 # Testing data
 data(BeckLee_mat50)
 single_disp <- dispRity(BeckLee_mat50, metric = ellipse.volume)
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
      dimnames = list(rownames(BeckLee_mat50))))
-multi_disp <- dispRity(boot.matrix(custom.subsamples(BeckLee_mat50, factors), bootstraps = 100), metric = c(sum, variances))
+multi_disp <- dispRity(boot.matrix(custom.subsamples(BeckLee_mat50, groups), bootstraps = 100), metric = c(sum, variances))
 
 
 #get.from.call

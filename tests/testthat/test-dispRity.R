@@ -71,8 +71,8 @@ test_that("disparity.bootstraps internal works", {
 #Loading the data
 load("test_data.Rda")
 data <- test_data$ord_data_tips
-factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
-rownames(factor) <- rownames(data)
+group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(group) <- rownames(data)
 
 #Sanitizing
 test_that("Sanitizing works", {
@@ -205,7 +205,7 @@ test <- NULL ; data<-test_data$ord_data_tips
 
 #one matrix with subsamples
 data<-test_data$ord_data_tips
-data<-custom.subsamples(data, factor)
+data<-custom.subsamples(data, group)
 test<-dispRity(data, metric=c(sum, ranges))
 test_that("dispRity works with custom subsamples", {
     expect_is(
@@ -225,9 +225,9 @@ test_that("dispRity works with custom subsamples", {
 test <- NULL ; data<-test_data$ord_data_tips
 
 #bootstrapped + rarefied + subsamples
-factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(factor)<-rownames(data)
-data<-custom.subsamples(data, factor)
+group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
+rownames(group)<-rownames(data)
+data<-custom.subsamples(data, group)
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 
@@ -275,8 +275,8 @@ test <- NULL ; data<-test_data$ord_data_tips
 #         dim(ex2[[1]][[1]][[1]][[1]][[1]]), c(50,48)
 #         )
 
-#     factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-#     customised_subsamples <- custom.subsamples(BeckLee_mat50, factors)
+#     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#     customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 #     set.seed(1)
 #     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
 #     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
@@ -319,9 +319,9 @@ test <- NULL ; data<-test_data$ord_data_tips
 #     ranges_test <- dispRity(data, metric = ranges)
 #     set.seed(1)
 #     ranges_test_bs <- dispRity(boot.matrix(data, 10), metric = ranges)
-#     ranges_test_subsamples <- dispRity(custom.subsamples(data, factor), metric = ranges)
+#     ranges_test_subsamples <- dispRity(custom.subsamples(data, group), metric = ranges)
 #     set.seed(1)
-#     ranges_test_subsamples_bs <- dispRity(boot.matrix(custom.subsamples(data, factor), 10), metric = ranges)
+#     ranges_test_subsamples_bs <- dispRity(boot.matrix(custom.subsamples(data, group), 10), metric = ranges)
 
 #     mean_ranges_test <- dispRity(ranges_test, metric = mean)
 #     set.seed(1)
