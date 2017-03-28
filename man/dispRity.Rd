@@ -57,10 +57,9 @@ dispRity(bootstrapped_data, metric = c(sum, variances))
 
 ## Calculating the disparity from a customised subsamples
 ## Generating the subsamples
-factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
-     rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
-     dimnames = list(rownames(BeckLee_mat50))))
-customised_subsamples <- cust.subsamples(BeckLee_mat50, factors)
+customised_subsamples <- custom.subsamples(BeckLee_mat50,
+     list(group1 = 1:(nrow(BeckLee_mat50)/2),
+          group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 ## Calculating the sum of variances
@@ -93,6 +92,6 @@ system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+\code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 

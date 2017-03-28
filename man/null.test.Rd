@@ -36,8 +36,7 @@ data(BeckLee_mat50)
 ## Calculating the disparity as the ellipsoid volume
 obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
 ## Testing against normal distribution
-results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
-results ; plot(results)
+null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 
 \dontrun{
 ## Running the test on multiple subsamples

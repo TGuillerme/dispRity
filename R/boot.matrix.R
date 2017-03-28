@@ -48,11 +48,9 @@
 #' ## Generating a dummy subsamples of matrices
 #' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
 #'                            dimnames = list(letters[1:10]))
-#' groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10,
-#'                          ncol = 1, dimnames = list(letters[1:10])))
-#' matrix.list <- cust.subsamples(ordinated_matrix, groups)
+#' matrix_list <- custom.subsamples(ordinated_matrix, list(A = 1:5, B = 6:10))
 #' ## Bootstrapping the subsamples of matrices 20 times (each)
-#' boot.matrix(matrix.list, bootstraps = 20)
+#' boot.matrix(matrix_list, bootstraps = 20)
 #' 
 #' \dontrun{
 #' ## Bootstrapping a subsamples of matrices using a single CPU

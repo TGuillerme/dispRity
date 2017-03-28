@@ -13,7 +13,6 @@ importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
 # importFrom("RCurl", "getURL", "url.exists")
-  
 
 ##Functions
 export(time.subsamples)
