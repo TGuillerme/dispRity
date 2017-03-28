@@ -159,8 +159,10 @@ test_that("Sanitizing works for time.subsamples (wrapper)", {
     expect_error(
         time.subsamples(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
-    expect_error(
-        time.subsamples(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+    expect_warning(
+        expect_error(
+            time.subsamples(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+            )
         )
     ## tree
     expect_error(

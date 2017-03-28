@@ -113,6 +113,7 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## Check data class
     if(class(data) != "dispRity") {
         check.class(data, "matrix")
+        if(ncol(data) > (nrow(data) - 1)) warning("Input matrix should have at maximum (rows-1) columns.")
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {

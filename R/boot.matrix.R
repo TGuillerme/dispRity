@@ -93,7 +93,7 @@ boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions
     if(class(data) != "dispRity") {
         ## Data must be a matrix
         check.class(data, "matrix")
-
+        if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
         ## Creating the dispRity object
         dispRity_object <- make.dispRity(data = data)
         #dispRity_object$subsamples$origin$elements <- seq(1:nrow(data))
