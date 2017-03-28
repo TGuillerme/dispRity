@@ -75,54 +75,54 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
     
     match_call <- match.call()
 
-    #Sanitizing
+    ## Sanitizing
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
 
-    #is_distribution?
+    ## is_distribution?
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     if(is_distribution) {
         stop(paste("null.test cannot intake disparity distributions yet. Try averaging disparity to a level 1 using:\n",
             paste("  ", match_call$data, " <- dispRity(", match_call$data, ", metric = median)\n", sep = "")))
     }
 
-    #replicates
+    ## replicates
     check.class(replicates, "numeric")
     check.length(replicates, 1, " must be a single numeric value.")
 
-    #alter
+    ## alter
     alternative_hypothesis <- c("greater", "less", "two-sided")
     check.method(alter, alternative_hypothesis, "Alternative hypothesis")
 
-    #scaling
+    ## scaling
     check.class(scale, "logical")
 
-    #NULL TESTING
+    ## NULL TESTING
 
-    #Generating the null models
+    ## Generating the null models
     if(length(data$subsamples) != 1) {
-        #Subdivide the data per subsamples
+        ## Subdivide the data per subsamples
         sub_data <- lapply(as.list(seq(1:length(data$subsamples))), function(X) get.subsamples.dispRity(data, X))
-        #Apply the data to all subsamples
+        ## Apply the data to all subsamples
         null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, scale)
     } else {
-        #Apply the data to one subsamples
+        ## Apply the data to one subsamples
         null_models_results <- make.null.model(data, replicates, null.distrib, null.args, null.cor, scale)
     }
 
-    #testing the null hypothesis
+    ## testing the null hypothesis
     if(class(null_models_results) != "list") {
-        #Apply the randtest to one subsamples
+        ## Apply the randtest to one subsamples
         test_out  <- ade4::as.randtest(obs = summary(data, round = 10)[,3], sim = null_models_results, alter = alter, ...)
-        #test_out  <- ade4::as.randtest(obs = summary(data, round = 10)[,3], sim = null_models_results, alter = alter)
-        #Store it as a list of one element (to be consistent for S3 methods)
+        # test_out  <- ade4::as.randtest(obs = summary(data, round = 10)[,3], sim = null_models_results, alter = alter)
+        ## Store it as a list of one element (to be consistent for S3 methods)
         test_out <- list(test_out)
     } else {
-        #Extracting the observed data for each subsamples
+        ## Extracting the observed data for each subsamples
         summary_observed <- as.list(summary(data, round = 10)[,3])
         test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
-        #test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
-        #Attributing the subsamples names
+        # test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
+        ## Attributing the subsamples names
         names(test_out) <- names(data$subsamples)
     }
 

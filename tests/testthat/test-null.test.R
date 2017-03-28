@@ -138,5 +138,5 @@ test_that("null.test works", {
         , "dispRity")
     expect_equal(
         unique(unlist(lapply(null.test(multi_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE), class)))
-        , "randtest")
+        , "randtest", "lightrandtest")
 })
