@@ -1,11 +1,9 @@
 #' @title Bootstraps and rarefies ordinated data.
 #'
 #' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
-#'
-#' @usage boot.matrix(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel)
 #' 
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).
-#' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 1000}).
+#' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
@@ -56,9 +54,9 @@
 #' ## Bootstrapping a subsamples of matrices using a single CPU
 #' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
 #' ## Bootstrapping a subsamples of matrices using 4 CPUs
-#' system.time(boot.matrix(matrix.list, bootstraps = 1000, rarefaction = TRUE,
+#' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE,
 #'                         parallel = c(4, "SOCK")))
-#' ## System time is three times shorter with parallel but elapsed is more than twice as long.
+#' ## System time is three times shorter with parallel.
 #' }
 #' 
 #' @author Thomas Guillerme
@@ -80,7 +78,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 1000, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
+boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
     
     match_call <- match.call()
     ## ----------------------

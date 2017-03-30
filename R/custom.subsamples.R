@@ -89,7 +89,7 @@ custom.subsamples <- function(data, group) {
     } else {
         ## Using a list
 
-        if(unique(unlist(lapply(group, class))) == "numeric" | unique(unlist(lapply(group, class))) == "integer") {
+        if(all(unique(unlist(lapply(group, class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
             if(max(unlist(group)) > nrow(data)) stop("Rows numbers in group don't match the row numbers in data.")
         } else {

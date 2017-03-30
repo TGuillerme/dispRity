@@ -1,7 +1,8 @@
 Patch notes
 ----
-* 2017/01/25 - v0.3.1
-  * Input ordinated matrices do not need to be of maximum size n*(n-1). Bigger matrices now only trigger a warning.
+* 2017/??/?? - v0.4 *user friendly*
+  * *new* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
+  * Input ordinated matrices do not need to be of maximum size `n*(n-1)`. Bigger matrices now only trigger a warning.
   * **changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
   * **changed name**: `time.series` is now renamed `time.subsamples`.
   * **modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). It's `factor` argument as been changed to `groups` and can now intake a simple list.

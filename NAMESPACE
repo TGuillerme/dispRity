@@ -12,6 +12,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
+# importFrom("methods", "hasArg")
 # importFrom("RCurl", "getURL", "url.exists")
 
 ##Functions
@@ -23,6 +24,8 @@ export(test.dispRity)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
+export(dispRity.through.time)
+export(dispRity.per.group)
 
 ##Generate morphological data
 export(sim.morpho)
