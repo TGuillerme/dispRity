@@ -135,7 +135,7 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 }
 
 #' @title Extracts subsamples from a dispRity object.
-#' @aliases get.dispRity
+#' @aliases get.dispRity, get.subsamples.dispRity
 #'
 #' @description Extracting some subsamples and data from a \code{dispRity} object.
 #'
@@ -150,10 +150,10 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 #' data(disparity)
 #'
 #' ## Get one subsamples
-#' get.subsamples.dispRity(disparity, "60")
+#' get.subsamples(disparity, "60")
 #'
 #' ## Get two subsamples
-#' get.subsamples.dispRity(disparity, c(1,5))
+#' get.subsamples(disparity, c(1,5))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
 #'
@@ -165,11 +165,11 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 # subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
 # bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
 # disparity_data <- dispRity(bootstrapped_data, variances)
-# get.subsamples.dispRity(bootstrapped_data, subsamples = "66.75552") # 1 subsamples for 23 elements
-# get.subsamples.dispRity(subsamples_full, subsamples = 1) # 1 subsamples for 3 elements
-# get.subsamples.dispRity(disparity_data, subsamples = c(1,5)) # 2 subsamples for 13 elements
+# get.subsamples(bootstrapped_data, subsamples = "66.75552") # 1 subsamples for 23 elements
+# get.subsamples(subsamples_full, subsamples = 1) # 1 subsamples for 3 elements
+# get.subsamples(disparity_data, subsamples = c(1,5)) # 2 subsamples for 13 elements
 
-get.subsamples.dispRity <- function(data, subsamples) {
+get.subsamples <- function(data, subsamples) {
     ## data
     check.class(data, "dispRity")
 
@@ -453,3 +453,129 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 }
 
 
+#' @title Combines or cleans subsamples.
+#'
+#' @description Combines multiple subsamples together or cleans a subsamples series to contain at least n elements.
+#'
+#' @param data A \code{dispRity} object.
+#' @param subsamples Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements per series (see details).
+#' 
+#' @details  
+#' If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1,3,4)} will merge subsamples 1 and 3 into 4, on the opposite, \code{c(3,4,1)} will merge the subsamples 3 and 4 into 1.
+#' When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (appart from the last subsample that gets merged with the previous one).
+#' 
+#' @return
+#' A \code{dispRity} object containing the original matrix and subsamples.
+#' NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
+#' 
+#' @examples
+#' ## Load the disparity data
+#' data(disparity)
+#' 
+#' ## Merging the two first subsamples
+#' merge.subsamples(disparity, c(1,2))
+#' 
+#' @seealso \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+#For testing
+# stop("DEBUG merge.time.subsamples")
+# source("sanitizing.R")
+# source("merge.subsamples_fun.R")
+
+# data(disparity)
+# data <- disparity
+# data1 <- time_binsEQ_Beck
+# data2 <- time_binsEQ_Beck
+# after = TRUE
+
+merge.subsamples <- function(data, subsamples) {
+
+    ## Saving the call
+    match_call <- match.call()
+    # match_call <- list(data = "data")
+
+    ## Sanitizing
+
+    ## Data
+    check.class(data, "dispRity")
+    
+    ## Check for previous data    
+    has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
+    has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    if(has_disparity && has_bootstrap) {
+        warning(paste(match_call$data, "contains bootstrap and disparity data that has been discarded in the output."))
+        data$disparity <- NULL
+        data$call$disparity <- NULL
+        data$call$bootstrap <- NULL
+        data$subsamples <- lapply(data$subsamples, "[[", 1)
+    } else {
+        if(has_disparity && !has_bootstrap) {
+            warning(paste(match_call$data, "contains disparity data that has been discarded in the output."))
+            data$disparity <- NULL
+            data$call$disparity <- NULL
+        } else {
+            if(!has_disparity && has_bootstrap) {
+                warning(paste(match_call$data, "contains bootstrap data that has been discarded in the output."))
+                data$call$bootstrap <- NULL
+                data$subsamples <- lapply(data$subsamples, "[[", 1)
+            }
+        }
+    }
+
+    ## subsamples
+    subsamples_class <- check.class(subsamples, c("character", "numeric", "integer"))
+    if(length(subsamples) == 1 && (subsamples_class == "numeric" || subsamples_class == "integer")) {
+        ## Subsamples is the minimum per subsamples
+        clean_data <- TRUE
+        minimum <- subsamples
+        if(minimum > nrow(data$matrix)) {
+            stop(paste("Minimum sample size (", minimum, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""))
+        }
+
+    } else {
+        clean_data <- FALSE
+        ## Must be at leas two long
+        check.length(subsamples, 2, " must contain at least two subsamples.")
+        if(subsamples_class == "character") {
+            ## Must be present in the subsamples names
+            matches <- subsamples %in% names(data$subsamples)
+            if(any(matches == FALSE)) {
+                stop(paste(paste(subsamples[!matches], collapse = " and "), "don't match with any of the subsamples names in", match_call$data))
+            } else {
+                subsamples <- match(subsamples, names(data$subsamples))
+            }
+        }
+    }
+
+    if(length(data$subsamples) < length(subsamples)) {
+        stop(paste(match_call$data, "does not contain enough subsamples!"))
+    }
+
+    if(clean_data) {
+        ## Cleaning the data
+        n_subs <- length(data$subsamples)
+        for(subs in 1:(n_subs - 1)) {
+            while(nrow(data$subsamples[[subs]]$elements) < minimum) {
+                data <- merge.two.subsamples(subs1 = subs, subs2 = (subs + 1), data = data)
+                ## Decrement n_subs
+                n_subs <- n_subs - 1
+            }
+        }
+        ## Final element
+        if(nrow(data$subsamples[[length(data$subsamples)]]$elements) < minimum) {
+            data <- merge.two.subsamples(subs1 = length(data$subsamples), subs2 = (length(data$subsamples) - 1), data = data)
+        }
+        return(data)
+    } else {
+        ## Merging two subsamples
+        subs2 <- length(subsamples)
+        for(subs1 in 1:(subs2-1)) {
+            data <- merge.two.subsamples(subsamples[subs1], subsamples[subs2], data)
+            ## Decrement the subsamples
+            subs2 <- subs2 - 1 
+        }
+        return(data)
+    }
+}

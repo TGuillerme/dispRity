@@ -102,7 +102,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
     ## Generating the null models
     if(length(data$subsamples) != 1) {
         ## Subdivide the data per subsamples
-        sub_data <- lapply(as.list(seq(1:length(data$subsamples))), function(X) get.subsamples.dispRity(data, X))
+        sub_data <- lapply(as.list(seq(1:length(data$subsamples))), function(X) get.subsamples(data, X))
         ## Apply the data to all subsamples
         null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, scale)
     } else {

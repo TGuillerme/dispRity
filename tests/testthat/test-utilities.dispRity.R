@@ -105,26 +105,26 @@ test_that("matrix.dispRity", {
 })
 
 
-## get.subsamples.dispRity
-test_that("get.subsamples.dispRity", {
+## get.subsamples
+test_that("get.subsamples", {
     subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
     bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
     disparity_data <- dispRity(bootstrapped_data, variances)
 
     expect_error(
-        get.subsamples.dispRity(disparity_data)
+        get.subsamples(disparity_data)
         )
     expect_error(
-        get.subsamples.dispRity(disparity_data, matrix(1))
+        get.subsamples(disparity_data, matrix(1))
         )
     expect_error(
-        get.subsamples.dispRity(disparity_data, "blabalbal")
+        get.subsamples(disparity_data, "blabalbal")
         )
     expect_error(
-        get.subsamples.dispRity(disparity_data, 1:10)
+        get.subsamples(disparity_data, 1:10)
         )
 
-    test <- get.subsamples.dispRity(subsamples_full, subsamples = c(1,2))
+    test <- get.subsamples(subsamples_full, subsamples = c(1,2))
     expect_is(
         test
         ,"dispRity")
@@ -138,7 +138,7 @@ test_that("get.subsamples.dispRity", {
         names(test$subsamples)
         ,names(subsamples_full$subsamples)[1:2])
 
-    test <- get.subsamples.dispRity(bootstrapped_data, subsamples = "66.75552")
+    test <- get.subsamples(bootstrapped_data, subsamples = "66.75552")
     expect_is(
         test
         ,"dispRity")
@@ -152,7 +152,7 @@ test_that("get.subsamples.dispRity", {
         test$call$bootstrap[[1]]
         ,10)
 
-    test <- get.subsamples.dispRity(disparity_data, subsamples = c(1:3))
+    test <- get.subsamples(disparity_data, subsamples = c(1:3))
     expect_is(
         test
         ,"dispRity")
@@ -287,4 +287,22 @@ test_that("sort.dispRity", {
     expect_true(
         all(summary(sorted) == summary(data)[c(1,3,4,5,2),])
         )
+})
+
+
+
+## merge.two.subsamples
+test_that("merge.two.subsamples", {
+    # ## Merging two subsamples
+    # merge.two.subsamples <- function(subs1, subs2, data) {
+    #     ## Get the list of new sub-samples
+    #     new_subsample <- list("elements" = matrix(unique(c(data$subsamples[[subs1]], data$subsamples[[subs2]], ncol = 1))))
+    #     ## Replace the second subsample by the new one
+    #     data$subsamples[[subs2]] <- new_subsample
+    #     ## Rename it
+    #     names(data$subsamples)[subs2] <- paste(names(data$subsamples)[subs1], names(data$subsamples)[subs2], sep = "-") 
+    #     ## Remove the former
+    #     data$subsamples[[subs1]] <- NULL
+    #     return(data)
+    # }
 })
