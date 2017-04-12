@@ -24,9 +24,10 @@ When a single numeric value is given, subsamples  are merged with the next one u
 }
 \examples{
 ## Generate subsamples from a dummy matrix
-dummy_subsamples <- custom.subsamples(matrix(rnorm(120), 40),
-     group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24)
-             , "e" = c(25:30), "f" = c(31:40)))
+dummy_matrix <- matrix(rnorm(120), 40)
+dummy_subsamples <- custom.subsamples(dummy_matrix,
+     group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
+                  "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
 
 ## Merging the two first subsamples
 merge.subsamples(dummy_subsamples, c(1,2))

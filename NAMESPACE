@@ -14,6 +14,9 @@ importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsi
 # importFrom("methods", "hasArg")
 # importFrom("RCurl", "getURL", "url.exists")
 
+##C libraries
+useDynLib(dispRity)
+
 ##Functions
 export(time.subsamples)
 export(custom.subsamples)

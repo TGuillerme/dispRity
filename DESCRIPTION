@@ -15,7 +15,6 @@ Depends:
     ape,
 Imports:
   ade4,
-  caper,
   geometry,
   grDevices,
   hypervolume,

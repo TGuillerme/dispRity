@@ -107,6 +107,8 @@ test_that("matrix.dispRity", {
 
 ## get.subsamples
 test_that("get.subsamples", {
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
     subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
     bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
     disparity_data <- dispRity(bootstrapped_data, variances)
@@ -297,7 +299,7 @@ test_that("merge.subsamples", {
     data_test1 <- disparity
     expect_warning(data_test2 <- custom.subsamples(matrix(rnorm(120), 40), group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24), "e" = c(25:30), "f" = c(31:40))))
     tests <- list()
-    expected_names <- list(c("70", "60", "80-90-50", "40", "30"),
+    expected_names <- list(c("70", "60", "90-80-50", "40", "30"),
                            c("70", "60", "80-90-50", "40", "30"),
                            c("90-80", "70", "60", "30-50-40"),
                            c("b-a-c", "d", "e", "f"),

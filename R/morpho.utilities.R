@@ -115,7 +115,7 @@ get.contrast.matrix <- function(matrix) {
 #' my_inapplicables <- c(rep("character", 5), rep("clade", 5))
 #' 
 #' ## Apply some inapplicable characters to the matrix
-#' matrix <- apply.NA(matrixMk, my_inapplicables, tree, verbose = T)
+#' matrix <- apply.NA(matrixMk, my_inapplicables, tree, verbose = TRUE)
 #'
 #' @seealso \code{\link{sim.morpho}}
 #' 

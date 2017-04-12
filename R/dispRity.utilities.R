@@ -470,9 +470,10 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 #' 
 #' @examples
 #' ## Generate subsamples from a dummy matrix
-#' dummy_subsamples <- custom.subsamples(matrix(rnorm(120), 40),
-#'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24)
-#'              , "e" = c(25:30), "f" = c(31:40)))
+#' dummy_matrix <- matrix(rnorm(120), 40)
+#' dummy_subsamples <- custom.subsamples(dummy_matrix,
+#'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
+#'                   "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
 #' 
 #' ## Merging the two first subsamples
 #' merge.subsamples(dummy_subsamples, c(1,2))
@@ -551,6 +552,8 @@ merge.subsamples <- function(data, subsamples) {
         clean_data <- FALSE
         ## Must be at least two long
         if(length(subsamples) < 2) stop("Subsamples argument must contain at least two values.")
+        ## Must not contain duplicates
+        if(length(subsamples) != length(unique(subsamples))) stop("Subsamples argument must not contain duplicates.")
         if(subsamples_class == "character") {
             ## Must be present in the subsamples names
             matches <- subsamples %in% names(data$subsamples)
@@ -594,8 +597,8 @@ merge.subsamples <- function(data, subsamples) {
             if(subs > (length(data$subsamples))) {break}
             ## Merging subsamples
             replace_2 <- match(name_replace, names(data$subsamples))
-            replace_1 <- match(names[subsamples[subs]], names(data$subsamples))
-            name_replace <- paste(names[subsamples[subs]], name_replace, sep = "-") 
+            replace_1 <- match(names[subs], names(data$subsamples))
+            name_replace <- paste(names[subs], name_replace, sep = "-") 
             data <- merge.two.subsamples(replace_1, replace_2, data)
         }
         return(data)
