@@ -26,13 +26,6 @@ export(print.dispRity)
 export(dispRity.through.time)
 export(dispRity.per.group)
 
-##Generate morphological data
-export(sim.morpho)
-export(check.morpho)
-##Morpho utilities
-export(get.contrast.matrix)
-export(apply.inapplicable)
-
 ##disparity metrics
 export(variances)
 export(ranges)
@@ -49,14 +42,6 @@ export(bhatt.coeff)
 export(sequential.test)
 export(null.test)
 
-##Package utilities
-export(tree.age)
-export(make.metric)
-export(space.maker)
-export(pair.plot)
-export(slice.tree)
-export(clean.data)
-
 ##dispRity object utilities
 export(make.dispRity)
 export(fill.dispRity)
@@ -66,6 +51,20 @@ export(scale.dispRity)
 export(sort.dispRity)
 export(get.subsamples)
 export(merge.subsamples)
+
+##Package utilities
+export(tree.age)
+export(make.metric)
+export(space.maker)
+export(pair.plot)
+export(slice.tree)
+export(clean.data)
+
+##Morphological data analysis
+export(sim.morpho)
+export(check.morpho)
+export(get.contrast.matrix)
+export(apply.NA)
 
 ##S3 methods
 S3method(plot, dispRity)

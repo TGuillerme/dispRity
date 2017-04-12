@@ -13,8 +13,6 @@ state.selector <- function(character) {
     sort(unique(character))
 }
 
-#NC: Lines should be <85 characters - I tried to fix but can't completely, also if you use two spaces instead of indents then you save some space
-#TG: I'll ignore line breaks for now since it's easier for me to develop/read the functions by lines (on the big screen). I will wrap all the lines later on.
 ## mapply function for inap.character
 mapply.inap.character <- function(target_character, pattern_character, matrix, invariant, ...) {
 
