@@ -469,20 +469,27 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 #' NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 #' 
 #' @examples
-#' ## Load the disparity data
-#' data(disparity)
+#' ## Generate a dummy matrix and subsamples
+#' dummy_matrix <- matrix(rnorm(100), 20)
+#' subsamples <- custom.subsamples(dummy_matrix, group = list(c(1:10), c(11:20)))
 #' 
 #' ## Merging the two first subsamples
 #' merge.subsamples(disparity, c(1,2))
 #' 
-#' @seealso \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' ## Merging the three subsamples by name
+#' merge.subsamples(disparity, c("70", "90", "50"))
+#' 
+#' ## Merging the subsamples to contain at least 20 taxa
+#' merge.subsamples(disparity, 20)
+#' 
+#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
 #For testing
 # stop("DEBUG merge.time.subsamples")
 # source("sanitizing.R")
-# source("merge.subsamples_fun.R")
+# source("dispRity.utilities_fun.R")
 
 # data(disparity)
 # data <- disparity
@@ -492,9 +499,15 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 
 merge.subsamples <- function(data, subsamples) {
 
+    ## Internal cleaning function for only selecting the elements of the list in a subsample
+    select.elements <- function(subsample) {
+        subsample[-1] <- NULL
+        return(subsample)
+    }
+
     ## Saving the call
     match_call <- match.call()
-    # match_call <- list(data = "data")
+    # match_call <- list(data = "data") ; warning("DEBUG merge.subsamples")
 
     ## Sanitizing
 
@@ -505,19 +518,19 @@ merge.subsamples <- function(data, subsamples) {
     has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
     has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
     if(has_disparity && has_bootstrap) {
-        warning(paste(match_call$data, "contains bootstrap and disparity data that has been discarded in the output."))
+        warning(paste(match_call$data, "contained bootstrap and disparity data that has been discarded in the output."))
         data$disparity <- NULL
         data$call$disparity <- NULL
         data$call$bootstrap <- NULL
-        data$subsamples <- lapply(data$subsamples, "[[", 1)
+        data$subsamples <- lapply(data$subsamples, select.elements)
     } else {
         if(has_disparity && !has_bootstrap) {
-            warning(paste(match_call$data, "contains disparity data that has been discarded in the output."))
+            warning(paste(match_call$data, "contained disparity data that has been discarded in the output."))
             data$disparity <- NULL
             data$call$disparity <- NULL
         } else {
             if(!has_disparity && has_bootstrap) {
-                warning(paste(match_call$data, "contains bootstrap data that has been discarded in the output."))
+                warning(paste(match_call$data, "contained bootstrap data that has been discarded in the output."))
                 data$call$bootstrap <- NULL
                 data$subsamples <- lapply(data$subsamples, "[[", 1)
             }
@@ -529,15 +542,14 @@ merge.subsamples <- function(data, subsamples) {
     if(length(subsamples) == 1 && (subsamples_class == "numeric" || subsamples_class == "integer")) {
         ## Subsamples is the minimum per subsamples
         clean_data <- TRUE
-        minimum <- subsamples
-        if(minimum > nrow(data$matrix)) {
-            stop(paste("Minimum sample size (", minimum, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""))
+        if(subsamples > nrow(data$matrix)) {
+            stop(paste("Minimum sample size (", subsamples, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""))
         }
 
     } else {
         clean_data <- FALSE
-        ## Must be at leas two long
-        check.length(subsamples, 2, " must contain at least two subsamples.")
+        ## Must be at least two long
+        if(length(subsamples) < 2) {stop("Subsamples argument must contain at least two values.")}
         if(subsamples_class == "character") {
             ## Must be present in the subsamples names
             matches <- subsamples %in% names(data$subsamples)
@@ -555,26 +567,27 @@ merge.subsamples <- function(data, subsamples) {
 
     if(clean_data) {
         ## Cleaning the data
-        n_subs <- length(data$subsamples)
-        for(subs in 1:(n_subs - 1)) {
-            while(nrow(data$subsamples[[subs]]$elements) < minimum) {
+        for(subs in 1:(length(data$subsamples) - 1)) {
+            ## Loop oversize buffer
+            if(subs > (length(data$subsamples) - 1)) {break}
+            ## Merging subsamples
+            while(nrow(data$subsamples[[subs]]$elements) < subsamples) {
                 data <- merge.two.subsamples(subs1 = subs, subs2 = (subs + 1), data = data)
-                ## Decrement n_subs
-                n_subs <- n_subs - 1
             }
         }
         ## Final element
-        if(nrow(data$subsamples[[length(data$subsamples)]]$elements) < minimum) {
+        if(nrow(data$subsamples[[length(data$subsamples)]]$elements) < subsamples) {
             data <- merge.two.subsamples(subs1 = length(data$subsamples), subs2 = (length(data$subsamples) - 1), data = data)
         }
         return(data)
     } else {
         ## Merging two subsamples
         subs2 <- length(subsamples)
+        name_replace <- names(data$subsamples)[subsamples[subs2]]
         for(subs1 in 1:(subs2-1)) {
-            data <- merge.two.subsamples(subsamples[subs1], subsamples[subs2], data)
-            ## Decrement the subsamples
-            subs2 <- subs2 - 1 
+            replace <- match(name_replace, names(data$subsamples))
+            name_replace <- paste(names(data$subsamples)[subsamples[subs1]], name_replace, sep = "-") 
+            data <- merge.two.subsamples(subsamples[subs1], replace, data)
         }
         return(data)
     }
