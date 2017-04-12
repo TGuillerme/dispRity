@@ -29,13 +29,14 @@ Note that every elements from the input data can be assigned to multiple groups!
 }
 \examples{
 ## Generating a dummy ordinated matrix
-ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
-     dimnames = list(letters[1:10]))
+ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
 
 ## Splitting the ordinated matrix into two groups using row numbers
-custom.subsamples(ordinated_matrix, list("A" = c(1:4), "B" = c(5:10)))
+custom.subsamples(ordinated_matrix, list(c(1:4), c(5:10)))
 
 ## Splitting the ordinated matrix into three groups using row names
+ordinated_matrix <- matrix(data = rnorm(90), nrow = 10,
+     dimnames = list(letters[1:10]))
 custom.subsamples(ordinated_matrix,
      list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"),
           "C" = c("a", "c", "d", "f", "h")))

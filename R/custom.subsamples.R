@@ -51,6 +51,10 @@
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
 custom.subsamples <- function(data, group) {
+
+    ## Saving the call
+    match_call <- match.call()
+
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -59,6 +63,11 @@ custom.subsamples <- function(data, group) {
     check.class(data, 'matrix')
     ## data must be of size k*<=k-1
     if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
+    ## data must have rownames
+    if(is.null(rownames(data))) {
+        warning(paste("Rownames generated for ", match_call$data, " as seq(1:", nrow(data) ,")", sep = ""))
+        rownames(data) <- seq(1:nrow(data))
+    } 
 
     ## group
     ## group is a matrix or a data.frame
