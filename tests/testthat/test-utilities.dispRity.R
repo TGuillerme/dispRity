@@ -291,18 +291,70 @@ test_that("sort.dispRity", {
 
 
 
-## merge.two.subsamples
-test_that("merge.two.subsamples", {
-    # ## Merging two subsamples
-    # merge.two.subsamples <- function(subs1, subs2, data) {
-    #     ## Get the list of new sub-samples
-    #     new_subsample <- list("elements" = matrix(unique(c(data$subsamples[[subs1]], data$subsamples[[subs2]], ncol = 1))))
-    #     ## Replace the second subsample by the new one
-    #     data$subsamples[[subs2]] <- new_subsample
-    #     ## Rename it
-    #     names(data$subsamples)[subs2] <- paste(names(data$subsamples)[subs1], names(data$subsamples)[subs2], sep = "-") 
-    #     ## Remove the former
-    #     data$subsamples[[subs1]] <- NULL
-    #     return(data)
-    # }
+## merge.subsamples
+test_that("merge.subsamples", {
+    data(disparity)
+    data_test1 <- disparity
+    expect_warning(data_test2 <- custom.subsamples(matrix(rnorm(120), 40), group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24), "e" = c(25:30), "f" = c(31:40))))
+    tests <- list()
+    expected_names <- list(c("70", "60", "80-90-50", "40", "30"),
+                           c("70", "60", "80-90-50", "40", "30"),
+                           c("90-80", "70", "60", "30-50-40"),
+                           c("b-a-c", "d", "e", "f"),
+                           c("b-a-c", "d", "e", "f"),
+                           c("a-b", "c", "d-e", "f"))
+    expected_elements <- list(c(23, 21, 49, 15, 10),
+                              c(23, 21, 49, 15, 10),
+                              c(34, 23, 21, 23),
+                              c(20, 4, 6, 10),
+                              c(20, 4, 6, 10),
+                              c(10, 10, 11, 10))
+
+    ## Errors
+    expect_error(
+        merge.subsamples("data_test1", c(1,2))
+        )
+    expect_error(
+        merge.subsamples(matrix(100,10), c(1,2))
+        )
+    expect_error(
+        merge.subsamples(data_test2, "c(1,2)")
+        )
+    expect_error(
+        merge.subsamples(data_test2, c(13,14))
+        )
+    expect_error(
+        merge.subsamples(data_test2, c("a", "x"))
+        )
+
+
+    ## Warnings
+    expect_warning(
+        tests[[1]] <- merge.subsamples(data_test1, c(2,1,5))
+        )
+    expect_warning(
+        tests[[2]] <- merge.subsamples(data_test1, c("90", "80", "50"))
+        )
+    expect_warning(
+        tests[[3]] <- merge.subsamples(data_test1, 20)
+        )
+
+    ## Working fine!
+    tests[[4]] <- merge.subsamples(data_test2, c(1,2,3))
+    tests[[5]] <- merge.subsamples(data_test2, c("a", "b", "c"))
+    tests[[6]] <- merge.subsamples(data_test2, 10)
+
+    for(test in 1:length(tests)) {
+        ## Class
+        expect_is(tests[[test]]
+            , "dispRity")
+        ## Number of subsamples
+        expect_equal(
+            names(tests[[test]]$subsamples)
+            ,expected_names[[test]])
+        ## Number of elements per subsample
+        expect_equal(
+            as.vector(unlist(lapply(tests[[test]]$subsamples, lapply, length)))
+            ,expected_elements[[test]])
+    }
 })

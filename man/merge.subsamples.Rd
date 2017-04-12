@@ -23,17 +23,25 @@ If \code{subsample} is a vector, the subsamples are merged in the given input or
 When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (appart from the last subsample that gets merged with the previous one).
 }
 \examples{
-## Load the disparity data
-data(disparity)
+## Generate subsamples from a dummy matrix
+dummy_subsamples <- custom.subsamples(matrix(rnorm(120), 40),
+     group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24)
+             , "e" = c(25:30), "f" = c(31:40)))
 
 ## Merging the two first subsamples
-merge.subsamples(disparity, c(1,2))
+merge.subsamples(dummy_subsamples, c(1,2))
+
+## Merging the three subsamples by name
+merge.subsamples(dummy_subsamples, c("d", "c", "e"))
+
+## Merging the subsamples to contain at least 20 taxa
+merge.subsamples(dummy_subsamples, 10)
 
 }
 \author{
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 

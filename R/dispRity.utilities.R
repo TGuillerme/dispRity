@@ -469,18 +469,19 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 #' NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 #' 
 #' @examples
-#' ## Generate a dummy matrix and subsamples
-#' dummy_matrix <- matrix(rnorm(100), 20)
-#' subsamples <- custom.subsamples(dummy_matrix, group = list(c(1:10), c(11:20)))
+#' ## Generate subsamples from a dummy matrix
+#' dummy_subsamples <- custom.subsamples(matrix(rnorm(120), 40),
+#'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24)
+#'              , "e" = c(25:30), "f" = c(31:40)))
 #' 
 #' ## Merging the two first subsamples
-#' merge.subsamples(disparity, c(1,2))
+#' merge.subsamples(dummy_subsamples, c(1,2))
 #' 
 #' ## Merging the three subsamples by name
-#' merge.subsamples(disparity, c("70", "90", "50"))
+#' merge.subsamples(dummy_subsamples, c("d", "c", "e"))
 #' 
 #' ## Merging the subsamples to contain at least 20 taxa
-#' merge.subsamples(disparity, 20)
+#' merge.subsamples(dummy_subsamples, 10)
 #' 
 #' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
@@ -549,7 +550,7 @@ merge.subsamples <- function(data, subsamples) {
     } else {
         clean_data <- FALSE
         ## Must be at least two long
-        if(length(subsamples) < 2) {stop("Subsamples argument must contain at least two values.")}
+        if(length(subsamples) < 2) stop("Subsamples argument must contain at least two values.")
         if(subsamples_class == "character") {
             ## Must be present in the subsamples names
             matches <- subsamples %in% names(data$subsamples)
@@ -557,6 +558,10 @@ merge.subsamples <- function(data, subsamples) {
                 stop(paste(paste(subsamples[!matches], collapse = " and "), "don't match with any of the subsamples names in", match_call$data))
             } else {
                 subsamples <- match(subsamples, names(data$subsamples))
+            }
+        } else {
+            if(any(subsamples > length(data$subsamples))) {
+                stop(paste("subsamples", paste(subsamples[which(subsamples > length(data$subsamples))], collapse = " and "), "don't match with any of the subsamples in", match_call$data))
             }
         }
     }
@@ -582,12 +587,16 @@ merge.subsamples <- function(data, subsamples) {
         return(data)
     } else {
         ## Merging two subsamples
-        subs2 <- length(subsamples)
-        name_replace <- names(data$subsamples)[subsamples[subs2]]
-        for(subs1 in 1:(subs2-1)) {
-            replace <- match(name_replace, names(data$subsamples))
-            name_replace <- paste(names(data$subsamples)[subsamples[subs1]], name_replace, sep = "-") 
-            data <- merge.two.subsamples(subsamples[subs1], replace, data)
+        names <- names(data$subsamples)[subsamples]
+        name_replace <- names(data$subsamples)[subsamples[length(subsamples)]]
+        for(subs in 1:(length(subsamples)-1)) {
+            ## Loop oversize buffer
+            if(subs > (length(data$subsamples))) {break}
+            ## Merging subsamples
+            replace_2 <- match(name_replace, names(data$subsamples))
+            replace_1 <- match(names[subsamples[subs]], names(data$subsamples))
+            name_replace <- paste(names[subsamples[subs]], name_replace, sep = "-") 
+            data <- merge.two.subsamples(replace_1, replace_2, data)
         }
         return(data)
     }
