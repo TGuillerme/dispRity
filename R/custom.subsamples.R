@@ -18,13 +18,14 @@
 #'
 #' @examples
 #' ## Generating a dummy ordinated matrix
-#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
-#'      dimnames = list(letters[1:10]))
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
 #' 
 #' ## Splitting the ordinated matrix into two groups using row numbers
-#' custom.subsamples(ordinated_matrix, list("A" = c(1:4), "B" = c(5:10)))
+#' custom.subsamples(ordinated_matrix, list(c(1:4), c(5:10)))
 #' 
 #' ## Splitting the ordinated matrix into three groups using row names
+#' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10,
+#'      dimnames = list(letters[1:10]))
 #' custom.subsamples(ordinated_matrix,
 #'      list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"),
 #'           "C" = c("a", "c", "d", "f", "h")))
@@ -105,6 +106,9 @@ custom.subsamples <- function(data, group) {
         }
         ## Checking if the groups have a list three elements
         if(any(unlist(lapply(group, length)) < 3 )) stop("There must be at least three elements per subsamples.")
+
+        ## Checking if the groups have names
+        if(is.null(names(group))) names(group) <- seq(1:length(group))
 
         ## Creating the subsamples
         subsamples_list <- lapply(group, function(x) list("elements" = matrix(x)))
