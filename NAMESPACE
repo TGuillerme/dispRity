@@ -68,6 +68,7 @@ export(sim.morpho)
 export(check.morpho)
 export(get.contrast.matrix)
 export(apply.NA)
+export(char.diff)
 
 ##S3 methods
 S3method(plot, dispRity)
