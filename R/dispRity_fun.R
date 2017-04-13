@@ -19,7 +19,7 @@ get.dispRity.metric.handle <- function(metric, match_call) {
         ## Which level is the metric?
         level <- make.metric(metric, silent = TRUE)
         if(level == "level3") {
-            stop(paste(as.expression(match_call$metric), " must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
+            stop(paste(as.expression(match_call$metric), " metric must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
         } else {
             level3.fun <- NULL
             if(level == "level2") {
