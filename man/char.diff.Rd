@@ -7,10 +7,13 @@
 char.diff(matrix)
 }
 \arguments{
-\item{matrix}{A discrete morphological matrix or a list containing discrete characters.}
+\item{matrix}{A discrete matrix or a list containing discrete characters.}
+}
+\value{
+A character difference value or a matrix of class \code{char.diff}
 }
 \description{
-Calculates the character difference from a discrete morphological matrix
+Calculates the character difference from a discrete matrix
 }
 \details{
 The character difference is calculated as @@
