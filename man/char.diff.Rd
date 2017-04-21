@@ -35,4 +35,7 @@ Gower, J.C. 1966. Some distance properties of latent root and vector methods use
 
 Guillerme, T., Brazeau, M. D., 201@. @@
 }
+\seealso{
+\code{\link{plot.char.diff}}.
+}
 
