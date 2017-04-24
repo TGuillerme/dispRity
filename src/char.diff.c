@@ -191,7 +191,7 @@ SEXP C_char_diff(SEXP x, SEXP smethod, SEXP attrs)
     // Wrap up the results
     SEXP names = getAttrib(attrs, R_NamesSymbol); // Row/column names attributes
     for (int i = 0; i < LENGTH(attrs); i++) {
-        setAttrib(result, install(translateChar(STRING_ELT(names, i))), VECTOR_ELT(attrs, i));        
+        setAttrib(result, install(translateChar(STRING_ELT(names, i))), VECTOR_ELT(attrs, i));
     }
 
     UNPROTECT(2);
