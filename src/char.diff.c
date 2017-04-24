@@ -1,5 +1,5 @@
 /* 
- * char.diff function
+ *  char.diff function
  * 
  *  Parts of this script are modifications of r-source/src/library/stats/src/distance.c
  *  from https://github.com/wch/r-source by Thomas Guillerme (guillert@tcd.ie)
@@ -121,6 +121,7 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
 enum { GOWER=1};
 /* == 1,2,..., defined by order in the R function dist */
 
+
 // R_distance function (R::dist())
 void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
 {
@@ -168,4 +169,32 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
     for(i = j+dc ; i < *nr ; i++)
         d[ij++] = distfun(x, *nr, *nc, i, j);
 #endif
+}
+
+
+// R/C interface (former Diff)
+SEXP C_char_diff(SEXP x, SEXP smethod, SEXP attrs)
+{
+    // Define the variable
+    SEXP result;
+    int nr = nrows(x), nc = ncols(x), method = asInteger(smethod);
+    int diag = 0;
+    R_xlen_t N;
+    N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
+    PROTECT(result = allocVector(REALSXP, N));
+    if(TYPEOF(x) != REALSXP) x = coerceVector(x, REALSXP);
+    PROTECT(x);
+    
+    // Calculate the distance matrix
+    R_distance(REAL(x), &nr, &nc, REAL(result), &diag, &method);
+    
+    // Wrap up the results
+    SEXP names = getAttrib(attrs, R_NamesSymbol); // Row/column names attributes
+    for (int i = 0; i < LENGTH(attrs); i++) {
+        setAttrib(result, install(translateChar(STRING_ELT(names, i))), VECTOR_ELT(attrs, i));        
+    }
+
+    UNPROTECT(2);
+
+    return result;
 }
