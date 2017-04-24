@@ -54,7 +54,7 @@ char.diff <- function (matrix)  {
 
         ## Calculating the gower distance
         options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
+        output <- as.matrix(.Call("matrix_handler", matrix, method, attrs))
         options(warn = 0)
 
         ## Calculating the character difference
