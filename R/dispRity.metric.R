@@ -97,12 +97,12 @@
 #'
 #' @author Thomas Guillerme
 
-#kth root scaling
+## kth root scaling
 k.root <- function(data, dimensions){
     return(data^(1/dimensions))
 }
 
-#Calculating each axis variance
+## Calculating each axis variance
 variances <- function(matrix, k.root) {
     if(missing(k.root)) {
         return(apply(matrix, 2, var))
@@ -111,17 +111,17 @@ variances <- function(matrix, k.root) {
     }
 }
 
-#Calculating each axis ranges
+## Calculating each axis ranges
 ranges <- function(matrix, k.root) {
 
     ## Initialise values
     max_values <- min_values <- ranges <- numeric(ncol(matrix))
 
-    #Max values
+    ## Max values
     max_values <- apply(matrix, 2, max)
-    #Min values
+    ## Min values
     min_values <- apply(matrix, 2, min)
-    #Ranges values
+    ## Ranges values
     ranges <- abs(max_values-min_values)
     if(missing(k.root)) {
         return(ranges)
@@ -130,94 +130,93 @@ ranges <- function(matrix, k.root) {
     }
 }
 
-#Calculating the distance from centroid
+## Calculating the distance from centroid
 centroids <- function(matrix, centroid) {
 
     ## Initialise values
     cent.dist <- numeric(nrow(matrix))
 
     if(missing(centroid)) {
-        #Calculating the centroid point
+        ## Calculating the centroid point
         centroid <- apply(matrix, 2, mean)
     }
 
-    #Calculating the distance from centroid
+    ## Euclidean distance from the centroid
     fun.dist <- function(row, centroid) {
-        return(dist(rbind(row, centroid), method = "euclidean"))
+        return(sqrt(sum((row-centroid)^2)))
     }
 
     cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
-    names(cent.dist) <- NULL
 
     return(cent.dist)
 }
 
-# Calculate the mode of a vector
+## Calculate the mode of a vector
 mode.val <- function(X){
     return(as.numeric(names(sort(-table(X))[1])))
 }
 
-# Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
+# #Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
 
-    #Initialising the variables
+    ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
     # The eigen value is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
     eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
 
-    #volume (from Donohue et al 2013, Ecology Letters)
+    ## volume (from Donohue et al 2013, Ecology Letters)
     volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))
 
     return(volume)
 }
 
-# Calculate the convex hull hyper-surface
+## Calculate the convex hull hyper-surface
 convhull.surface <- function(matrix) {
-    # Algorithm warn
+    ## Algorithm warn
     if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
-    # calculate the area
+    ## calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
 
-# Calculate the convex hull hyper-volume
+## Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
-    # Algorithm warn
+    ## Algorithm warn
     if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
-    # calculate the volume
+    ## calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
 
-# Calculate the hypervolume using hypervolume::hypervolume
+## Calculate the hypervolume using hypervolume::hypervolume
 hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, warnings, name) {
-    # Tolerate missing arguments (set defaults)
-    # repsperpoint
+    ## Tolerate missing arguments (set defaults)
+    ## repsperpoint
     if(missing(repsperpoint)) {
         repsperpoint <- 1000
     }
-    # bandwith
+    ## bandwith
     if(missing(bandwidth)) {
         bandwidth <- hypervolume::estimate_bandwidth(matrix)
     }
-    # quantile
+    ## quantile
     if(missing(quantile)) {
         quantile <- 0.95
     }
-    # verbose
-    if(missing(name)) {
+    ## verbose
+    if(missing(verbose)) {
         verbose <- FALSE
     }
-    # warnings
+    ## warnings
     if(missing(warnings)) {
         warnings <- FALSE
     }
-    # name
+    ## name
     if(missing(name)) {
         name <- NULL
     }
 
-    return(hypervolume::get_volume(hypervolume::hypervolume(matrix, repsperpoint=repsperpoint, bandwidth=bandwidth, quantile=quantile, verbose=verbose, warnings=warnings, name=name)))
+    return(hypervolume::get_volume(hypervolume::hypervolume(matrix, repsperpoint = repsperpoint, bandwidth = bandwidth, quantile = quantile, verbose = verbose, warnings = warnings, name = name)))
 }
 
 # # Hyper volume testing
@@ -240,8 +239,8 @@ hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, war
 # ordihull::vegan
 # convex.hull::igraph
 
-# Diagonal
+## Diagonal
 diagonal <- function(matrix) {
-    #If all the dimensions of the space are orthogonal to each other, then, following Pythagoras Theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimensions.
+    ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras Theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimensions.
     return(sqrt(sum(ranges(matrix))))
 }
