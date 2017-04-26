@@ -78,7 +78,7 @@ char.diff_R <- function(X,Y){
         #}
 
         # Get the characters difference
-        return( round( 1 - ( abs(sum(abs(differences))/length(X)-0.5)/0.5 ), digit = 10))
+        return( round( 1 - ( abs(sum(abs(differences))/length(X)-0.5)/0.5 ), digits = 10))
     }
 }
 

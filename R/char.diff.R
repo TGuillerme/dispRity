@@ -58,7 +58,7 @@ char.diff <- function (matrix)  {
         options(warn = 0)
 
         ## Calculating the character difference
-        output <- round( 1 - ( abs(output-0.5)/0.5 ), digit = 10)
+        output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
 
         class(output) <- c("matrix", "char.diff")
 

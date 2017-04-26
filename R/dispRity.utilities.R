@@ -229,7 +229,7 @@ get.subsamples <- function(data, subsamples) {
 #' boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
 #'      rarefaction = 5)
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{get.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{get.subsamples}}.
 #'
 #' @author Thomas Guillerme
 
@@ -313,6 +313,7 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsamples of bootstraps (default is \code{TRUE}).
+#' @param ... optional arguments to be passed to \code{scale}.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -391,6 +392,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #' @param data A \code{dispRity} object.
 #' @param decreasing \code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.
 #' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.
+#' @param ... optional arguments to be passed to \code{sort}.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -401,7 +403,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #' summary(sort(disparity, decreasing = TRUE))
 #' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 #'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsamples}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
 #' @export

@@ -1,6 +1,6 @@
 Patch notes
 ----
-* 2017/??/?? - v0.4 *user friendly*
+* 2017/??/?? - v0.4.0 *user friendly*
   * *new* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
   * *new* function: `merge.subsamples` for... merging subsamples!
   * *new* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.

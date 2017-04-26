@@ -40,6 +40,6 @@ boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{get.dispRity}}.
+\code{\link{dispRity}}, \code{\link{get.subsamples}}.
 }
 
