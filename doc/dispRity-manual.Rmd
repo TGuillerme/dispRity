@@ -14,35 +14,177 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-# Important note:
-> This vignette is being step by step fully rewritten. Feel free to comment on the current stages of rewriting (what information would you like to see in here?) by raising and issue in GitHub or sending me an email (<guillert@tcd.ie>). Else, you can check the former version of this vignette [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
+# `dispRity`
 
-`dispRity` is a package for calculating disparity in `R`. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared. 
+This is a package for measuring disparity in `R`. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared.
 <!-- Add version and table of content here! -->
 
-Installation and loading
--------------------------
+# Introduction
+
+## What's `dispRity`
+This is a package for measuring disparity in `R`.
+It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) to perform some multidimensional analysis.
+Typically, these analysis are used in palaeobiology to study the changes in morphology through time.
+
+
+## Installing and running the package
 
 You can install this package easily if you use the latest version of `R` (> 3.0.0) and `devtools`.
 
 ```{r, eval = FALSE}
+## Checking if devtools is already installed
 if(!require(devtools)) install.packages("devtools")
+
+## Installing the latest released version directly from GitHub
 install_github("TGuillerme/dispRity", ref = "release")
-# Load the package
+
+## Loading the package
 library(dispRity)
 ```
 
-Note this uses the `release` branch (version `0.3`). <!-- add version !-->
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if Claddis is installed BUILD ONLY
+library(dispRity)
+```
+
+Note this uses the `release` branch (version`0.4`). <!-- add version !-->
 For the piping-hot (but potentially full of bugs) version, you can change the argument `ref = release` to `ref = master`.
 `dispRity` depends mainly on the `ape` package and uses functions from several other packages (`ade4`, `geometry`, `grDevices`, `hypervolume`, `paleotree`, `snow`, and `RCurl`).
 
+## Why not CRAN
 
-Glossary <a name="glossary"></a>
---------
+This package is not readily available on CRAN.
+This is mainly because some parts are still in development and that I prefer the reactivity of GitHub for implementing new suggestions from users.
+However, the package follows the strict (and useful!) CRAN standards via Travis. <!-- add link !-->
 
-This package is designed to be used in multiple disciplines, including palaeonotology, ecology and evolution.
-Therefore some names or terms used in this tutorial might be unfamiliar.
-Below is a list of the meanings of these terms, in the context of `dispRity`.
+## Help
+
+If you need help about the package, I hope that the following manual will be useful.
+If you still need more help, do not hesitate to drop me an email!
+
+Parts of this package are still in development and some other parts are probably not covered.
+Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dispRity).
+
+
+# Getting started
+
+## Which data?
+
+Disparity must be measured from ordinated matrices.
+These matrices can be of any type of ordination (PCO, PCA, PCoA, MDS, etc.) as long as they have your elements names as rows (taxa, experiments, countries, etc.) and your ordinations axis as columns (the dimensions of your dataset).
+
+### Ordination from `Claddis`
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if Claddis is installed BUILD ONLY
+if(!require(Claddis)) install.packages("Claddis")
+```
+`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
+For this, simply input a matrix in the `Claddis` format to the function an it will automatically calculate and ordinate the distances among taxa:
+
+```{r}
+## Ordinating the example data from Claddis
+Claddis.ordination(Michaux1989) 
+```
+
+Note that some several options are available, namely which type of distance should be computed.
+See more info in the function manual (`?Claddis.ordination`).
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
+
+### Ordination from `geomorph`
+
+> TBC!
+
+### General ordinations
+
+If you are not using the packages mentioned above (`Claddis` and `geomorph`) you can easily make your own ordinations by using the following functions from the `stats` package.
+Here is how to do it for the following types of matrices:
+
+ * Multivariate matrices
+
+```{r}
+## A multivariate matrix
+head(USArrests)
+
+## Ordinating the matrix using prcomp()
+ordination <- prcomp(USArrests)
+
+## Selecting the ordinated matrix
+ordinated_matrix <- ordination$x
+head(ordinated_matrix)
+```
+This results in a ordinated matrix with US states as elements and four dimensions (PC 1 to 4). For an alternative method, have a look at the `?princomp` function.
+
+ * Distance matrices
+
+```{r}
+## A matrix of distances between cities
+str(eurodist)
+
+## Ordinating the matrix using cmdscale() with k = 5 dimensions
+ordinated_matrix <- cmdscale(eurodist, k = 5)
+head(ordinated_matrix)
+```
+This results in a ordinated matrix with European cities as elements and 5 dimensions.
+Note that the number of dimensions should not exceed the number of elements - 1.
+
+Of course any other methods for creating the ordination matrix is totally valid!
+The only requirements for `dispRity` is to use matrices with elements as rows and dimensions as columns...
+
+
+## Simple analysis
+
+Two functions allow to run templated analysis simply using an ordination matrix: either calculating the disparity through time or the disparity per groups.
+
+### Example data
+
+For illustrating the following functions, we will use data from Beck and Lee 2015. <!-- ADD PAPER CITE HERE -->
+This dataset contains an ordinated matrix of 50 mammals' discrete characters (called `BeckLee_mat50`), a matrix of the same 50 mammals and the estimate discrete data from their descendants (thus 50 + 49 rows, called `BeckLee_mat99`), a data frame containing the ages of each taxa in the dataset (called `BeckLee_ages`) and finally a phylogenetic tree with the relations of the 50 mammals (called `BeckLee_tree`).
+
+```{r, fig.width=6, fig.height=6}
+## Setting the random seed for repeatability
+set.seed(123)
+
+## Loading the ordinated matrices
+data(BeckLee_mat50)
+data(BeckLee_mat99)
+
+## The first 5 taxa and dimensions of the 50 taxa matrix
+head(BeckLee_mat50[,1:5])
+
+## The first 5 taxa and dimensions of the 99 taxa + ancestors matrix
+head(BeckLee_mat99[,1:5])
+tail(BeckLee_mat99[,1:5])
+
+## Loading a list of first and last occurrence data
+data(BeckLee_ages)
+head(BeckLee_ages)
+
+## Loading the phylogeny
+data(BeckLee_tree)
+plot(BeckLee_tree, cex = 0.8) ; axisPhylo(root = 140) ; nodelabels(cex = 0.5)
+```
+
+Note of course that you can use your data obtain from the previous chapter!
+
+
+### Disparity through time
+
+This
+
+```{r}
+# dispRity.through.time()
+```
+
+### Disparity between groups
+
+```{r}
+# dispRity.per.group()
+```
+
+# Specific tutorials
+
+# Glossary <a name="glossary"></a>
 
 -   **Ordinated space**. The mathematical multidimensional object that will be analysed with this package.
     In morphometrics, this is often referred to as the morphospace.
@@ -57,762 +199,19 @@ Below is a list of the meanings of these terms, in the context of `dispRity`.
     A sub-sample (or subsamples) contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
     For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
 
-Datasets
---------
 
-`dispRity` contains several datasets to cover the different use cases for the package. 
-These are:
 
-<!-- # NC: Describe all datasets briefly?
-TG: Fair enough. Goes on my TODO list (is commented out for now).
-We might change it to our own dataset though.
-- @beckancient2014
--
--
--
- -->
 
-In this tutorial we are going to use a subset of the ordinated cladistic data from @beckancient2014 <!-- fix citation -->
-that contains 50 mammalian taxa (elements) ordinated using their cladistic distance (i.e. the distances among their discrete morphological characters).
-For examples using other kinds of datasets please refer to the [GitHub page](https://github.com/TGuillerme/dispRity) for other vignettes.
+# The package's guts
 
-Loading and exploring the Beck and Lee data
--------------------------------------------
-<!-- #NC: Not sure all this is needed here - maybe better to discuss what data is needed for specific analyses? Note that for a vignette it doesn't have to be the same example, or an analysis that runs all the way through - just examples of things you can do. I feel like if you want to make this multi disciplinary you could describe all four(?) datasets here then use them interchangeably below in the different function examples.
+## Running `dispRity` in parallel
 
-#NC: Also perhaps better to think of a vignette as - here is something you might want to do, here is how to do it in R. Rather than here is a function in my package, here is what it does. That's what the help files are for... -->
+## `dispRity` object structure
 
-```{r, fig.width=6, fig.height=6}
-## Setting the random seed for repeatability
-set.seed(123)
+## Modularity
 
-## Loading the ordinated matrix containing 50 taxa
-data(BeckLee_mat50)
-dim(BeckLee_mat50)
-head(BeckLee_mat50[,1:5])
+### Making your own metrics
 
-## Loading another ordinated matrix containing 50 tips + 49 nodes
-data(BeckLee_mat99)
-dim(BeckLee_mat99)
-head(BeckLee_mat99[,1:5], 2)
-tail(BeckLee_mat99[,1:5], 2)
+### Making your own tests
 
-## Loading a list of first and last occurrence data
-data(BeckLee_ages)
-head(BeckLee_ages)
-
-## Loading the phylogeny
-data(BeckLee_tree)
-plot(BeckLee_tree, cex = 0.8) ; axisPhylo(root = 140) ; nodelabels(cex = 0.5)
-```
-<a name="mammal_tree"></a>
-
-Basic use of `dispRity`
------------------------
-
-<!-- # NC: I think here what is needed are quick examples for more than one kind of dataset. With explanation! I've made a start below to help. -->
-
-`dispRity` is very easy to use for a variety of analyses. 
-Below I will demonstrate its basic usage with a variety of datasets.
-Note that the power of `dispRity` lies in the ability to create custom disparity metrics etc.
-More details on these features, and the complexities of some of the functions, are provided later in this vignette.
-
-Example 1: Calculating and visualising disparity-through-time using Beck and Lee 2014 data for extinct and extant eutherian mammal genera.
-
-Often in palaeontology and evolutionary biology we are interested in seeing how disparity (morphological diversity) has changed through time along a phylogeny. 
-To do this we need the following steps:
-
-1. Split the data so that 
-2. Estimate ancestral values
-3. Calculate disparity in each time slice
-4. Bootstrap
-5. Plot the results
-
-<!-- We can easily do this using `dispRity`.
-Note that we require the following data: a cladistic matrix, a phylogeny, .... and so on
-
-# Add the data loading bit here I think rather than above. Add setseed for each analysis example? Most people will not do all the examples at once.
-
-# Wonder if there could be a wrapper function for "disparity-through-time"? With options for the metric of course, and bootstrap or not etc. -->
-
-```{r, fig.width=6, fig.height=6}
-## Splitting the data into time subsamples
-sliced_data <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",
-    model = "acctran", time = rev(seq(from=0, to=130, by=15)),
-    FADLAD = BeckLee_ages)
-
-## Bootstrapping the data to measure its variance
-bootstrapped_data <- boot.matrix(sliced_data, 100)
-
-## Calculating disparity as the median distance from each element to the groups centroids
-median_centroids <- dispRity(bootstrapped_data, metric = c(median, centroids))
-
-## Summarising the disparity results
-summary(median_centroids)
-plot(median_centroids)
-
-## Testing the effect of time on disparity (note that using an ANOVA violates some assumptions!)
-summary(test.dispRity(median_centroids, test = aov, comparisons = "all"))
-```
-
-<!-- # NC: Move other examples here -->
-
-Features of the `dispRity` package
-==================================
-
-`dispRity` objects
------------------------------------
-
-Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your `R` console.
-Even the simple Beck and Lee 2014 example above produces an object with > 72 lines of lists of lists of matrices!
-
-Therefore `dispRity` uses a specific class of object called a `dispRity` object.
-These objects allow users to use S3 method functions such as `summary.dispRity` (see [summary](#summary) section), `plot.dispRity` (`plot`; see [plot](#plot) section) and `print.dispRity`. 
-<!-- # NC: I've simpiflied this as people who understand will know this already, people that don't won't care and don't need to know.
- -->
- `dispRity` also contains various utility functions that manipulate the `dispRity` object (e.g. `sort.dispRity`, `extract.dispRity` see the full list in the [`dispRity` utilities](#dispRity.utilities) section).
-These functions modify the `dispRity` object without having to delve into its complex structure!
-The full structure of a `dispRity` object is detailed [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
-
-<!-- # NC: Explain the point of these examples here... Are they needed? -->
-
-```{r}
-## What is the class of the median_centroids object?
-class(median_centroids)
-
-## What does the object contain?
-names(median_centroids)
-
-## Summarising it using the S3 method print.dispRity
-median_centroids
-```
-
-Note that it is always possible to recall the full object using the argument `all = TRUE` in `print.dispRity`:
-
-```{r, eval=FALSE}
-## Display the full object
-print(median_centroids, all = TRUE)
-## This is more than ~ 2500 lines on my 13 inch laptop screen!
-```
-
-
-<!-- 
-# Modular functions - 
-# NC: not sure any more of these modular functions are relevant in the vignette? Maybe just mention the metrics? Remember a vignette is for users, not for you to show how the programming works.
-
-# NC: I'd include a brief explanation of the include disparity metrics here. But yes keep the crazy "level" details for the other vignette on metrics. I think you want to avoid having too many separate vignettes really. -->
-
-Disparity metrics
----------------------------
-
-#
-
-Custom disparity metrics
----------------------------
-
-`dispRity` is a *modular package*, i.e. its architecture is designed to be fairly easily modified by users so they can create personalised functions.
-The most relevant example of this is that `dispRity` allows users to implement custom disparity metrics when using the `dispRity` function via the `metric` argument.
-
-As a simple example, if one wanted to use the sum divided by length (i.e. the mean!) as a disparity metric, this could be done as follows.
-
-```{r}
-## Create a function for measuring the sum divided by the length
-sum.divided.by.length <- function(X) sum(X)/length(X)
-
-## Calculate disparity using sum.divided.by.length
-summary(dispRity(sliced_data, metric = sum.divided.by.length))
-
-## This should match disparity obtained when we use the function mean...
-summary(dispRity(sliced_data, metric = mean))
-```
-
-For more information on the metrics, please refer to the [`dispRity` metric manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html) for the vignette about the metric implementation in `dispRity`.
-<!-- # NC: See comment above about moving a lot of this here. -->
-
-Functions
-=========
-
-In the following section, different functionalities of the package are detailed.
-The functions are presented in a "classic" pipelined study fashion for convenience (i.e. splitting the data, bootstrapping it, calculating disparity, testing differences).
-Note however that most of these functions can be used in any order and that some steps can of course be skipped and that the package contains many more additional functions!
-
-One of the first steps in disparity analysis is to split the ordinated space into sub-samples of this space (hereafter called *subsamples*, see [glossary](#glossary)).
-These subsamples correspond to regions of the ordinated space that we want to compare to each other.
-
-<!-- # NC: Again I think this might be better written as "here are some things you might want to modify, here is how" rather than a function by function approach. -->
-
-`custom.subsamples` # NC: I'd have called this custom.subsamples. It's only 2 more letters and makes it much more readable, and less about custard.
--------------
-
-The `custom.subsamples` function allows to create these subsamples according to one or more factors determined by the user.
-In this example, we can split the matrix based on the phylogeny and separate to different groups of taxa: the crown mammals (all the living mammals and their direct ancestor) and the stem mammals (all the mammals that have no related living descendants).
-To do so, we need to separate the tree into two subtrees at the node 71 (see [phylogeny above](#mammal_tree)).
-
-```{r}
-## Selecting the crown and stem mammals
-crown <- extract.clade(BeckLee_tree, node = 71)$tip.label
-stem <- drop.tip(BeckLee_tree, tip = crown)$tip.label
-```
-
-We can then feed these lists of species to the `custom.subsamples` function after transforming it into a factorial table:
-<!-- # NC: This is a fairly horrible set up to go through! Can't you make a function? -->
-
-```{r}
-## Creating the factor table
-subsamples_factors <- as.data.frame(
-    matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem))),
-    ncol = 1, dimnames = list(c(crown, stem), "Group")))
-head(subsamples_factors)
-
-## Creating the two subsamples
-crown_stem <- custom.subsamples(BeckLee_mat50, subsamples_factors)
-```
-
-The results of this function (like many others presented below) outputs a `dispRity` object:
-
-```{r}
-crown_stem
-```
-
-The two subsamples represent two groups occupying specific regions of the mammalian morphospace.
-The `dispRity` object itself always contains the original morphospace (`$matrix`) as well as information on which taxa compose the subsamples (`$subsamples`):
-
-```{r}
-## This object contains three elements
-names(crown_stem)
-## With "matrix" being the original matrix (the ordinated space)
-str(crown_stem$matrix)
-## And "subsamples" the elements from this ordinated space into the two sub-spaces
-str(crown_stem$subsamples)
-```
-
-Note that here we are separating the taxa into two exclusive groups (i.e. crown mammals can be crown only, same for stem mammals).
-It is however possible to add more factors with overlapping groups:
-
-```{r}
-## Adding all mammals to the a new subsamples (along with crown and stem as before)
-subsamples_factors2 <- as.data.frame(
-    matrix(data = c(rep("crown", length(crown)), rep("stem", length(stem)),
-    rep("Mammalia", Ntip(BeckLee_tree))), ncol = 2,
-    dimnames = list(c(crown, stem), c("Group", "Class")), byrow = FALSE))
-
-## Creating the three subsamples: Group.stem/crown and Class.Mammalia
-custom.subsamples(BeckLee_mat50, subsamples_factors2)
-```
-
-`time.subsamples`  <a name="time.subsamples"></a>
--------------
-
-Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
-The `time.subsamples` function allows to create subsamples containing all the elements present at specific points in time or during specific periods.
-This functions needs as input an ordinated space and a matching phylogenetic tree.
-Two types of time subsamples can be performed by using the `method` option:
-
- *  discrete time subsamples (or time-binning) using `method = discrete`;
-
- *  continuous time subsamples (or time-slicing) using `method = continuous`.
-
-For the time-slicing method details see @GuillermeSTD.
-<!-- TODO: link to the time-slicing algorithm explained! -->
-For both methods, the function intakes the `time` argument which can be a vector of `numeric` values for:
-
- *  defining the boundaries of the time bins (when `method = discrete`);
-
- *  defining the time slices (when `method = continuous`).
-
-Otherwise, the `time` argument can be set as a single `numeric` value for automatically generating a given number of equidistant time-bins/slices.
-Additionally, it is also possible to input a data frame containing the first and last occurrence data (FAD/LAD) for taxa that span over a longer time than the given tips/nodes age.
-
-Here is an example for `method = discrete`:
-
-```{r}
-## Generating three time bins containing the data present every 40 Ma
-time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
-    time = c(120, 80, 40, 0))
-```
-
-In this example, the taxa were split inside each time-bin according to their age.
-Note however that some taxa might span between some time bins and should be included in more than one.
-This is possible by providing a table containing the first and last occurrence data:
-
-```{r}
-## Generating three time bins containing the data present every 40 Ma, including taxa that might
-## span between time bins.
-(time_bins <- time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree,
-    method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages))
-```
-
-This generated indeed a `dispRity` object of 3 subsamples.
-Note that we can also generate equivalent results by just telling the function that we want three time-bins (subsamples) as follow:
-
-```{r}
-## Automatically generate three equal length bins:
-time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
-    time = 3)
-```
-
-We now have three time bins of 44.50368 million years each.
-
-When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1% of the tree length as long as at least three elements are present at that point in time.
-The algorithm adds an extra 1% tree length until reaching the required minimum of three elements.
-It is also possible to include nodes in each bin by using `inc.nodes = TRUE` and providing a matrix that contains the ordinated distance between tips *and* nodes.
-
-For the time-slicing method (`method = continuous`), the idea is fairly similar.
-This option, however, requires a matrix that contains the ordinated distance between taxa *and* nodes as well as an extra argument being the assumed evolutionary model (via the `model` argument):
-
- *  `acctran` where the data chosen on each time slice is always the one of the offspring
-
- *  `deltran` where the data chosen on each time slice is always the one of the descendant
-
- *  `punctuated` where the data chosen on each time slice is randomly chosen between the offspring or the descendant
-
- *  `gradual` where the data chosen on each time slice is either the offspring or the descendant depending on branch length
-
-```{r}
-## Generating four time slices every 40 million years assuming a gradual evolutionary model
-(time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
-    FADLAD = BeckLee_ages))
-## Note that in the same way as before, we can also automatically generate the slices
-time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
-    model = "gradual", time = 4)
-```
-
-`boot.matrix`
--------------
-
-Once we obtain our different subsamples, it is possible to bootstrap and rarefy them (i.e. pseudo-replicating the data).
-The bootstrap will allow us to make each subsamples more robust to outliers and the rarefaction will allow us to compare subsamples with the same number of elements to get rid of eventual sampling problems.
-The `boot.matrix` allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
-The default options will bootstrap the matrix 1000 times without rarefaction using the "full" bootstrap method (see below).
-
-```{r}
-boot.matrix(data = BeckLee_mat50)
-```
-
-The number of bootstrap pseudo-replicates can be defined using the `bootstraps` option.
-The method can be modified by controlling which bootstrap algorithm to use through the `boot.type` argument.
-Currently two algorithms are implemented:
-
- *  `full` where the bootstrapping is entirely stochastic (all the data is bootstrapped)
-
- *  `single` where only one random elements is replaced by one other random elements each pseudo-replication
-
-This function also allows to rarefy the data using the `rarefaction` argument.
-The default argument is `FALSE` but it can be set to `TRUE` to fully rarefy the data (i.e. remove *n* elements for the number of pseudo-replicates, where *n* varies from the maximum number of elements present in each subsamples to a minimum of 3 elements).
-It can also be set to one or more `numeric` values to only rarefy to the corresponding number of elements.
-One additional important argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
-When left missing, all dimensions from the ordinated matrix are used.
-
-```{r}
-## Bootstrapping with the single bootstrap method
-boot.matrix(BeckLee_mat50, boot.type = "single")
-
-## Bootstrapping with the full rarefaction
-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
-
-## Or with a set number of rarefaction levels
-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(6:8,3))
-
-## Removing the last axis 50% last dimensions
-boot.matrix(BeckLee_mat50, dimensions = 0.5)
-
-## Keeping the 10 first dimensions
-boot.matrix(BeckLee_mat50, dimensions = 10)
-```
-
-Of course, one could be interested in directly supplying the subsamples generated above directly to this function.
-In fact, it can also deal with a list of matrices or with a `dispRity` object output from the `custom.subsamples` or `time.subsamples` functions.
-
-```{r}
-## Bootstrapping and fully rarefying the crown/stem subsamples
-(crown_stemBS <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE))
-
-## Bootstrapping on the time binning/slicing subsamples
-(time_binsBS <- boot.matrix(time_bins, bootstraps = 100))
-(time_slicesBS <- boot.matrix(time_slices, bootstraps = 100))
-```
-
-`dispRity`
-----------
-
-This function is a modular function that allows to simply (and quickly!) calculate disparity from a matrix.
-Because disparity can be measured in many ways, this function is a tool to measure disparity *as defined by the user*.
-In fact, the `dispRity` function intakes two main arguments: the data and the disparity metric.
-The disparity metric is a function or a set of functions that summarises the ordinated matrix to a single value that represents, in our example, the diversity of morphologies.
-
-The `dispRity` algorithm decomposes the metrics functions into three levels that correspond to the dimensions of the output of each metric function.
-For more details on this algorithm please refer to the [metric vignette](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
-
-In practice, the `dispRity` function intakes one or more functions as a definition of disparity.
-Several of these functions will be already implemented in other packages (such as `stats::median`, `base::sum`, etc.); some others are implemented in this package (listed in `?dispRity.metric`) and finally some others can be defined by the users.
-The `make.metric` function is designed to help users create and test their own disparity metric functions.
-In practice, the use of these metrics in the `dispRity` function, is pretty easy:
-
-```{r}
-## Calculating disparity as the mean value of the ordinated space (using base::mean)
-dispRity(BeckLee_mat50, metric = mean)
-
-## Calculating disparity as the sum of variances of the ordinated space using base::sum on the
-## variances and dispRity::variances on each dimension of the ordinated spaces
-dispRity(BeckLee_mat50, metric = c(sum, variances))
-
-## Calculating disparity as the product of the centroids (using base::prod and dispRity::centroids)
-dispRity(BeckLee_mat50, metric = c(prod, centroids))
-
-## Defining the total range function:
-total.range <- function(X) abs(range(X)[1]-range(X)[2])
-
-## Calculating disparity as the total range of the centroids:
-dispRity(BeckLee_mat50, metric = c(total.range, centroids))
-```
-
-Note that in practice, the order of the functions in the `metric` argument does not matter:
-
-```{r}
-## Disparity as the standard deviation of the variances of the variance/covariance matrix;
-vars1 <- dispRity(BeckLee_mat50, metric = c(sd, variances, var))
-
-## Same disparity metric but with the functions ordered differently
-vars2 <- dispRity(BeckLee_mat50, metric = c(variances, var, sd))
-
-## Both versions gives the same results
-all(summary(vars1) == summary(vars2))
-```
-
-These functions do not directly output the disparity values but only the summary of the `dispRity` objects.
-To display the results, see the section [summary](#summary).
-
-In these examples we used only simple ordinated matrix but of course, it possible to directly use the `dispRity` objects we generated in the steps above.
-Thus we can calculate the bootstrapped and rarefied disparity in each subsamples of the ordinated space.
-Here we are going to define disparity as being the median distance between each element and each dimensions' centre.
-
-<a name="disparity.calculation"></a>
-
-```{r}
-## Disparity in crown and stem mammals:
-disp_crown_stemBS <- dispRity(crown_stemBS, metric = c(median, centroids))
-
-## Disparity through time:
-disp_time_binsBS <- dispRity(time_binsBS, metric = c(median, centroids))
-disp_time_slicesBS <- dispRity(time_slicesBS, metric = c(median, centroids))
-```
-
-Note that the computational time was longer for the rarefied data (`crown_stemBS`) since it had to calculate the disparity on all the rarefied matrix, each bootstrapped 100 times.
-For both the `boot.matrix` and the `dispRity` functions, it is possible to increase computational speed in some cases using the `parallel` option (see each [parallel section](#parallel) below).
-
-`summary` <a name="summary"></a>
----------
-
-This function is a S3 function (`summary.dispRity`) allowing to summarize the content of `dispRity` objects that contain disparity calculations.
-
-```{r}
-summary(disp_time_binsBS)
-```
-
-This function intakes a `dispRity` object plus various options namely the `quantile` values for the confidence intervals levels (by default, the 50 and 95 quantiles are calculated); the `cent.tend` for the  central tendency to use for summarising the results (default is `median`); the `rounding` option corresponding to the number of decimals to print (default is `2`) and the `recall` option for printing the call of the `dispRity` object as well (default is `FALSE`)
-These options can easily be changed from the defaults as follows:
-
-```{r}
-## Summarising the results using the 88 quantile and the standard deviation as the central tendency. 
-summary(disp_time_binsBS, quantile = 88, cent.tend = sd)
-
-## Printing the details of the dispRity object and rounding the values to the 5th decimal
-summary(disp_time_binsBS, recall = TRUE, rounding = 5)
-```
-
-> Information about the number of elements per subsamples as well as the observed (i.e. non-bootstrapped) disparity is also calculated.
-This is specifically handy when rarefying the data for example
-
-```{r}
-head(summary(disp_crown_stemBS))
-```
-
-`plot` <a name="plot"></a>
-------
-
-An alternative way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
-This function intakes the same options as `summary.dispRity` along side with various graphical options described in the function manual (see `?plot.dispRity`).
-
-The plots can be of four different types: `continuous` for displaying continuous disparity curves and `box`, `lines` and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines and confidence interval polygons.
-
-> This argument can be left missing. In this case, the algorithm will automatically detect the type of subsamples from the `dispRity` object.
-
-It is also possible to display the number of elements per subsamples (has a horizontal doted line) using the option `elements = TRUE`.
-Additionally, when the data is rarefied, one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the `rarefaction` argument.
-
-```{r, fig.width=6, fig.height=6}
-## Graphical parameters
-op <- par(mfrow = c(2,2), bty = "n")
-## Plotting continuous disparity results
-plot(disp_time_binsBS, type = "continuous")
-## Plotting discrete disparity results
-plot(disp_crown_stemBS, type = "box")
-## Plotting the disparity using lines for the rarefaction level of 20 elements only
-plot(disp_crown_stemBS, type = "line", rarefaction = 20)
-## Plotting the disparity using polygons while also displaying the number of elements
-plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
-```
-
-> The `type` argument is not mandatory for the two first plots since both `continuous` and `box` are the default options for respectively continuous and discrete data.
-
-Since `plot.dispRity` uses the arguments from the generic `plot` method, it is of course possible to change pretty much everything using the regular plot arguments:
-
-```{r, fig.width=6, fig.height=6}
-## Graphical options
-par(bty = "n")
-## Plotting the results with some classic options from plot
-plot(disp_time_slicesBS, col = c("blue", "orange", "green"), ylab = c("Some measurement"),
-    xlab = "Some other measurement", main = "Many options...", ylim = c(0,2.1))
-## Adding a legend
-legend("topleft", legend = c("Central tendency", "Confidence interval 1", "Confidence interval 2"),
-    col = c("blue", "orange", "green"), pch = 19)
-```
-
-Additionally to the classic `plot` arguments, the function can also take arguments that are specific to `plot.dispRity` like adding the number of elements or rarefaction level (as described above) but also changing the values of the quantiles to plot as well as the central tendency.
-
-```{r, fig.width=6, fig.height=6}
-## Graphical options
-par(bty = "n")
-## Plotting the results with some plot.dispRity arguments
-plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd, type = "c",
-    elements = TRUE, col = c("black", rainbow(10)), ylab = c("Disparity", "Diversity"),
-    xlab = "Time (in in units from past to present)", time.subsamples = FALSE,
-    observed = TRUE, main = "Many options...")
-```
-
-> Note that the argument `observed = TRUE` allows to plot the disparity values calculated from the non-bootstrapped data as crosses on the plot.
-
-For comparing results, it is also possible to add a plot to the existent plot by using `add = TRUE`:
-
-```{r, fig.width=6, fig.height=6}
-## Graphical options
-par(bty = "n")
-## Plotting the continuous disparity with a fixed y axis
-plot(disp_time_slicesBS, ylim = c(0.5,2))
-## Adding the discrete data using the same fixed y axis to have the results at the same scale
-plot(disp_time_binsBS, type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
-```
-
-Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
-
-```{r, fig.width=6, fig.height=6}
-## Graphical options
-par(bty = "n")
-## Plotting the rarefaction curves
-plot(disp_crown_stemBS, rarefaction = TRUE)
-```
-
-`test.dispRity`
----------------
-
-Finally, the `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
-The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object, a `test` and a `comparisons` argument.
-
-The `comparisons` argument must indicate the way the test should be applied to the data:
-
- *   `pairwise` (default): to compare each subsamples pairwise
-
- *  `referential`: to compare each subsamples to the first one
-
- *  `sequential`: to compare each subsamples to the following one
-
- *  `all`: to compare all the subsamples together (like in analysis of variance)
-
-It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsamples names to create personalised test.
-Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` and the `dispRity::sequential.test` have a specific way to be applied to the data and therefore ignore the `comparisons` argument.
-
-
-The `test` argument can be any statistical or non-statistical test to apply to the disparity object.
-It can be common statistical test functions (e.g. `stats::t.test`), some functions implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
-
-
-This function also allows to correct for type I error inflation when using multiple comparisons via the `correction` argument. This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
-
-Note that the `test.dispRity` algorithm deals with some classic tests outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
-It is however possible to get the full detailed output by using the options `details = TRUE`.
-
-```{r}
-## Performing a t-test to the test a difference in disparity between crown and stem mammals
-test.dispRity(disp_crown_stemBS, test = t.test)
-
-## Performing the same test but with the detailed t.test output
-test.dispRity(disp_crown_stemBS, test = t.test, details = TRUE)
-
-## Performing a Wilcoxon test applied to sliced disparity the data sequentially with correction
-test.dispRity(disp_time_slicesBS, test = wilcox.test, comparisons = "sequential",
-    correction = "bonferroni")
-
-## Measuring the overlap between distributions in the time bins (using the implemented
-## Bhattacharyya Coefficient function - see ?bhatt.coeff)
-test.dispRity(disp_time_binsBS, test = bhatt.coeff)
-```
-
-It is also possible to apply some more *complex* tests that have their own output class (like `stats::aov`).
-The results can then be analysed as usual using the associated `summary` S3 method:
-
-```{r}
-## Performing and ANOVA applied to the same data
-slice_aov <- (test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all"))
-
-## The output is a regular ANOVA output...
-class(slice_aov)
-
-## That can be summarised using summary
-summary(slice_aov)
-```
-
-utilities
----------
-The package also provides some utilities functions to facilitate multidimensional analysis.
-
-### `dispRity` object utilities  <a name="dispRity.utilities"></a>
-The first subsamples of utilities are functions for manipulating `dispRity` objects:
-
-#### `make.dispRity`
-This function creates empty `dispRity` objects.
-
-```{r}
-## Creating an empty dispRity object
-make.dispRity()
-## Creating an "empty" dispRity object with a matrix
-(disparity_obj <- make.dispRity(matrix(rnorm(20), 5, 4)))
-```
-
-####  `fill.dispRity`
-This function initialises a `dispRity` object and generating it's call properties.
-
-```{r}
-## The dispRity object's call is indeed empty
-disparity_obj$call
-## Creating an empty dispRity object
-(disparity_obj <- fill.dispRity(disparity_obj))
-## The dipRity object has now the proper minimal attributes
-disparity_obj$call
-```
-
-####  `matrix.dispRity`
-This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped or/and rarefied one.
-
-```{r}
-## Extracting the matrix containing the coordinates for the crown mammals
-str(matrix.dispRity(disp_crown_stemBS, "Group.crown"))
-## Extracting the 3rd boostrapped matrix with the 10th rarefaction level from the same group
-str(matrix.dispRity(disp_crown_stemBS, subsamples = 1, bootstrap = 3, rarefaction = 10))
-```
-
-#### `get.subsamples.dispRity`
-This function creates a dispRity object that contains only elements from one specific subsamples.
-
-```{r}
-## Extracting all the data for the crown mammals
-(crown_mammals <- get.subsamples.dispRity(disp_crown_stemBS, "Group.crown"))
-## The object keeps the properties of the parent object but is composed of only one subsamples
-length(crown_mammals$subsamples)
-```
-
-#### `extract.dispRity`
-This function extracts the calculated disparity values of a specific matrix.
-
-```{r}
-## Extracting the observed disparity (default)
-extract.dispRity(disp_crown_stemBS)
-
-## Extracting the disparity from the bootstrapped values from the 10th rarefaction level from the
-## second subsamples (stem mammals)
-extract.dispRity(disp_crown_stemBS, observed = FALSE, subsamples = 2, rarefaction = 10)
-```
-
-#### `scale.dispRity`
-This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
-
-```{r}
-## Getting the disparity values of the time subsamples
-summary(disp_time_slicesBS)
-
-## Scaling the same disparity values
-summary(scale(disp_time_slicesBS, scale = TRUE))
-```
-
-#### `sort.dispRity`
-This is the S3 method of `sort` for sorting the subsamples alphabetically (default) or following a specific pattern.
-
-```{r}
-## Sorting the disparity subsamples in inverse alphabetic order
-summary(sort(disp_time_slicesBS, decreasing = TRUE))
-```
-
-### Package general utilities
-
-#### `tree.age`
-
-This function allows to calculate the age of each individual nodes and tips in a tree.
-It can either use the root age of the tree (if present as `$root.time`) or else calculate the age using a user defined root age via the `age` argument.
-Also, it is possible to decide whether the time is calculated towards the past (e.g. million years ago) or towards the present (e.g. in time since the origin).
-
-```{r}
-## This tree has a root age
-BeckLee_tree$root.time
-## So we can get the age of each tips and nodes directly
-head(tree.age(BeckLee_tree), 5)
-## But we can also decide to make the age relative (between 1 and 0)
-head(tree.age(BeckLee_tree, age = 1), 5)
-## Or even relative, but from the root (i.e. how far are the nodes/tips
-## from the root)
-head(tree.age(BeckLee_tree, age = 1, order = "present"), 5)
-```
-
-#### `slice.tree`
-
-This function is at the core of `time.subsamples` when using the time slicing method.
-It allows to slice a phylogenetic tree at a certain time point and selecting the nodes or tips following the models detailed in the `time.subsamples` [section above](#time.subsamples).
-
-```{r, fig.width=8, fig.height=6}
-set.seed(1)
-## Generating a random ultrametric tree
-tree <- rcoal(20)
-## Adding some node labels
-tree$node.label <- letters[1:19]
-## Adding a root age (as the maximum tree age)
-tree$root.time <- max(tree.age(tree)$ages)
-
-## Creating a deltran tree at the slice 0.25
-tree_25 <- slice.tree(tree, age = 0.25, "deltran")
-## Creating a deltran tree at the slice 0.50
-tree_50 <- slice.tree(tree, age = 0.50, "acctran")
-
-## Illustrating the results
-par(mfrow = c(1,3))
-plot(tree, main = "Full tree", cex = 1.5)
-nodelabels(tree$node.label, cex = 1.1)
-axisPhylo()
-plot(tree_25, main = "Slice at time 0.25", cex = 1.5)
-axisPhylo()
-plot(tree_50, main = "Slice at time 0.50", cex = 1.5)
-axisPhylo()
-```
-
-#### `sim.morpho`
-This function (and it's associated utilities) allows to generate realistic discrete morphological matrices.
-See the [associated vignette](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html) for more details.
-
-
-Other utilities functions are also available within the package and more will be added in the future. For the full list, refer to the package's functions list within `R`.
-
-
-parallel  <a name="parallel"></a>
----------
-
-`dispRity` and `boot.matrix` have also `parallel` option.
-This option uses the package `snow` to run the `lapply` loops within the package in parallel.
-In both functions, this option is ignored when missing, otherwise, it takes as option, the number of threads (cores) and the virtual connection process (VCP) name following the function `makeCluster`.
-
-For example, we can speed up the [disparity calculations of the rarefied data](#disparity.calculation) by using 4 different threads and a `"SOCK"` connection (although `"MPI"` is much more recommended but needs more specific installation).
-
-```{r, eval=FALSE}
-dispRity(crown_stemBS, metric = c(median, centroids), parallel = c(4, "SOCK"))
-```
-
-Suggestions
-============
-If you have any extra suggestions or comments on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dispRity).
+## Where is this going?
