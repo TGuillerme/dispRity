@@ -1,12 +1,12 @@
 #' @title Imports data from Claddis
 #'
-#' @description Takes Claddis and computes both the distance and the ordination matrix 
+#' @description Takes Claddis data and computes both the distance and the ordination matrix 
 #'
 #' @param data Data from Claddis::ReadMorphNexus.
-#' @param distance Distance type to be computed by Claddis::MorphDistMatrix. Can be either \code{"Gower"}, \code{"GED"}, \code{"Max"}, \code{"Comp"}
+#' @param distance Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"Gower"}, \code{"GED"}, \code{"Max"}, \code{"Comp"}
 #' @param transform Whether to transform the proportional distances (for gower and max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).
 #' @param k The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.
-#' @param ... Any optional arguments to be passed to cmdscale::
+#' @param ... Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.
 #' 
 #' @examples
 #' require(Claddis)
@@ -14,7 +14,7 @@
 #' ## Creating an ordination of the distance matrix of Claddis example data
 #' Claddis.ordination(Michaux1989) 
 #'
-#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 #' @author Thomas Guillerme
 #' @export
