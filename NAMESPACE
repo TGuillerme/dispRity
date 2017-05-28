@@ -12,6 +12,7 @@ importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
 importFrom("Claddis", "MorphDistMatrix")
+importFrom("geomorph", "gpagen")
 # importFrom("methods", "hasArg")
 # importFrom("RCurl", "getURL", "url.exists")
 
