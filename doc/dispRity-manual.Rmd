@@ -141,7 +141,7 @@ Two functions allow to run templated analysis simply using an ordination matrix:
 For illustrating the following functions, we will use data from Beck and Lee 2015. <!-- ADD PAPER CITE HERE -->
 This dataset contains an ordinated matrix of 50 mammals' discrete characters (called `BeckLee_mat50`), a matrix of the same 50 mammals and the estimate discrete data from their descendants (thus 50 + 49 rows, called `BeckLee_mat99`), a data frame containing the ages of each taxa in the dataset (called `BeckLee_ages`) and finally a phylogenetic tree with the relations of the 50 mammals (called `BeckLee_tree`).
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=7, fig.height=7}
 ## Setting the random seed for repeatability
 set.seed(123)
 
@@ -170,19 +170,96 @@ Note of course that you can use your data obtain from the previous chapter!
 
 ### Disparity through time
 
-This
+One of the functions of the package is to look at how disparity changes through time.
+This function (and the following one) are the two most straight forward, they analysis the ordinated data in a pipelined way using a lot of default parameters.
+
+For disparity through time analysis, you will need:
+  
+  * An ordinated matrix (we covered that above)
+  * A phylogenetic tree: this must be a `phylo` object (from the `ape` package) and needs a `root.time` element. To give your tree a root time, you can simply do `my_tree$root.time <- my_age`.
+  * A required number of time subsamples (here 3)
+  * Your definition of disparity (here the sum of variances)
+
+Note that in the following example, the matrix and the tree comes from the previous sections
 
 ```{r}
-# dispRity.through.time()
+## Measuring disparity through time
+disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
+                                        time = 3, metric = c(sum, variances))
 ```
+
+When display our disparity data, we can now have information on the operations done to the matrix:
+
+```{r}
+## Printing what's in the disparity data
+disparity_data
+```
+Indeed, we asked for three subsamples (evenly spread across the age of the tree), the data was bootstrapped 100 times and the metric used was the sum of variances.
+
+We can now analyse this data by summarising and plotting it or performing some statistical tests on it (e.g. a simple `aov`):
+
+```{r, fig.width=7, fig.height=7}
+## Summarising the measurements
+summary(disparity_data)
+
+## Plotting the results
+plot(disparity_data)
+
+## Testing for an eventual difference between the time bins
+disp_aov <- test.dispRity(disparity_data, test = aov, comparisons = "all")
+summary(disp_aov)
+```
+
+Please refer to the specific tutorials below for (much!) more information on the nuts and bolts of the package.
+You can also directly explore the specific functions manuals within R and navigate to they're related functions.
 
 ### Disparity between groups
 
+One other typical analysis done with disparity is to look at the difference in disparity between several groups. 
+
 ```{r}
-# dispRity.per.group()
+## Creating the two groups as a list
+mammal_groups <- list("crown" = c(16, 19:41, 45:50),
+                      "stem" = c(1:15, 17:18, 42:44))
+
+## Measuring disparity for each group
+disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,
+                                     metric = c(sum, variances))
+```
+
+Similarly as above, we can display information about both groups by simply calling it and then summarising the data (and plotting it!) and performing a statistical test to compare both groups (here a Wilcoxon test).
+
+
+```{r, fig.width=7, fig.height=7}
+## Printing what's in the disparity data
+disparity_data
+
+## Summarising the measurements
+summary(disparity_data)
+
+## Plotting the results
+plot(disparity_data)
+
+## Testing for an eventual difference between the groups
+test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
+
 ```
 
 # Specific tutorials
+
+## Bootstraps and rarefactions
+
+## Time slicing
+
+## Disparity metrics
+
+## Plotting `dispRity` data
+
+## Testing disparity hypothesis
+
+## Disparity as a distribution
+
+## Ecological study
 
 # Glossary <a name="glossary"></a>
 
