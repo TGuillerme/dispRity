@@ -65,6 +65,13 @@ If you still need more help, do not hesitate to drop me an email!
 Parts of this package are still in development and some other parts are probably not covered.
 Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dispRity).
 
+## Citations
+
+You can cite both the package or this manual with the following citation:
+> Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
+
+Note that this citation is only temporary (but can still be used!).
+A future proper version of the latest package release, this manual and an associated methods paper should be submitted soon(ish!).
 
 # Getting started
 
@@ -247,19 +254,328 @@ test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
 
 # Specific tutorials
 
+## Time slicing
+
+
+Another way to split the ordinated space (maybe more relevant to palaeobiologists) is to do it according to time.
+The `time.subsamples` function allows to create subsamples containing all the elements present at specific points in time or during specific periods.
+This functions needs as input an ordinated space and a matching phylogenetic tree.
+Two types of time subsamples can be performed by using the `method` option:
+
+ *  discrete time subsamples (or time-binning) using `method = discrete`;
+
+ *  continuous time subsamples (or time-slicing) using `method = continuous`.
+
+For the time-slicing method details see @GuillermeSTD.
+<!-- TODO: link to the time-slicing algorithm explained! -->
+For both methods, the function intakes the `time` argument which can be a vector of `numeric` values for:
+
+ *  defining the boundaries of the time bins (when `method = discrete`);
+
+ *  defining the time slices (when `method = continuous`).
+
+Otherwise, the `time` argument can be set as a single `numeric` value for automatically generating a given number of equidistant time-bins/slices.
+Additionally, it is also possible to input a data frame containing the first and last occurrence data (FAD/LAD) for taxa that span over a longer time than the given tips/nodes age.
+
+Here is an example for `method = discrete`:
+
+```{r, eval=FALSE}
+## Generating three time bins containing the data present every 40 Ma
+time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+    time = c(120, 80, 40, 0))
+```
+
+In this example, the taxa were split inside each time-bin according to their age.
+Note however that some taxa might span between some time bins and should be included in more than one.
+This is possible by providing a table containing the first and last occurrence data:
+
+```{r, eval=FALSE}
+## Generating three time bins containing the data present every 40 Ma, including taxa that might
+## span between time bins.
+(time_bins <- time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree,
+    method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages))
+```
+
+This generated indeed a `dispRity` object of 3 subsamples.
+Note that we can also generate equivalent results by just telling the function that we want three time-bins (subsamples) as follow:
+
+```{r, eval=FALSE}
+## Automatically generate three equal length bins:
+time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+    time = 3)
+```
+
+We now have three time bins of 44.50368 million years each.
+
+When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as being the root age + 1% of the tree length as long as at least three elements are present at that point in time.
+The algorithm adds an extra 1% tree length until reaching the required minimum of three elements.
+It is also possible to include nodes in each bin by using `inc.nodes = TRUE` and providing a matrix that contains the ordinated distance between tips *and* nodes.
+
+For the time-slicing method (`method = continuous`), the idea is fairly similar.
+This option, however, requires a matrix that contains the ordinated distance between taxa *and* nodes as well as an extra argument being the assumed evolutionary model (via the `model` argument):
+
+ *  `acctran` where the data chosen on each time slice is always the one of the offspring
+
+ *  `deltran` where the data chosen on each time slice is always the one of the descendant
+
+ *  `punctuated` where the data chosen on each time slice is randomly chosen between the offspring or the descendant
+
+ *  `gradual` where the data chosen on each time slice is either the offspring or the descendant depending on branch length
+
+```{r, eval=FALSE}
+## Generating four time slices every 40 million years assuming a gradual evolutionary model
+(time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
+    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
+    FADLAD = BeckLee_ages))
+## Note that in the same way as before, we can also automatically generate the slices
+time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous",
+    model = "gradual", time = 4)
+```
+
 ## Bootstraps and rarefactions
 
-## Time slicing
+
+Once we obtain our different subsamples, it is possible to bootstrap and rarefy them (i.e. pseudo-replicating the data).
+The bootstrap will allow us to make each subsamples more robust to outliers and the rarefaction will allow us to compare subsamples with the same number of elements to get rid of eventual sampling problems.
+The `boot.matrix` allows to bootstraps and rarefy ordinated matrices in a fast and easy way.
+The default options will bootstrap the matrix 1000 times without rarefaction using the "full" bootstrap method (see below).
+
+```{r, eval=FALSE}
+boot.matrix(data = BeckLee_mat50)
+```
+
+The number of bootstrap pseudo-replicates can be defined using the `bootstraps` option.
+The method can be modified by controlling which bootstrap algorithm to use through the `boot.type` argument.
+Currently two algorithms are implemented:
+
+ *  `full` where the bootstrapping is entirely stochastic (all the data is bootstrapped)
+
+ *  `single` where only one random elements is replaced by one other random elements each pseudo-replication
+
+This function also allows to rarefy the data using the `rarefaction` argument.
+The default argument is `FALSE` but it can be set to `TRUE` to fully rarefy the data (i.e. remove *n* elements for the number of pseudo-replicates, where *n* varies from the maximum number of elements present in each subsamples to a minimum of 3 elements).
+It can also be set to one or more `numeric` values to only rarefy to the corresponding number of elements.
+One additional important argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
+When left missing, all dimensions from the ordinated matrix are used.
+
+```{r, eval=FALSE}
+## Bootstrapping with the single bootstrap method
+boot.matrix(BeckLee_mat50, boot.type = "single")
+
+## Bootstrapping with the full rarefaction
+boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+
+## Or with a set number of rarefaction levels
+boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(6:8,3))
+
+## Removing the last axis 50% last dimensions
+boot.matrix(BeckLee_mat50, dimensions = 0.5)
+
+## Keeping the 10 first dimensions
+boot.matrix(BeckLee_mat50, dimensions = 10)
+```
+
+Of course, one could be interested in directly supplying the subsamples generated above directly to this function.
+In fact, it can also deal with a list of matrices or with a `dispRity` object output from the `custom.subsamples` or `time.subsamples` functions.
+
+```{r, eval=FALSE}
+## Bootstrapping and fully rarefying the crown/stem subsamples
+(crown_stemBS <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE))
+
+## Bootstrapping on the time binning/slicing subsamples
+(time_binsBS <- boot.matrix(time_bins, bootstraps = 100))
+(time_slicesBS <- boot.matrix(time_slices, bootstraps = 100))
+```
 
 ## Disparity metrics
 
 ## Plotting `dispRity` data
 
+An alternative way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
+This function intakes the same options as `summary.dispRity` along side with various graphical options described in the function manual (see `?plot.dispRity`).
+
+The plots can be of four different types: `continuous` for displaying continuous disparity curves and `box`, `lines` and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines and confidence interval polygons.
+
+> This argument can be left missing. In this case, the algorithm will automatically detect the type of subsamples from the `dispRity` object.
+
+It is also possible to display the number of elements per subsamples (has a horizontal doted line) using the option `elements = TRUE`.
+Additionally, when the data is rarefied, one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the `rarefaction` argument.
+
+```{r, fig.width=6, fig.height=6, eval=FALSE}
+## Graphical parameters
+op <- par(mfrow = c(2,2), bty = "n")
+## Plotting continuous disparity results
+plot(disp_time_binsBS, type = "continuous")
+## Plotting discrete disparity results
+plot(disp_crown_stemBS, type = "box")
+## Plotting the disparity using lines for the rarefaction level of 20 elements only
+plot(disp_crown_stemBS, type = "line", rarefaction = 20)
+## Plotting the disparity using polygons while also displaying the number of elements
+plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
+```
+
+> The `type` argument is not mandatory for the two first plots since both `continuous` and `box` are the default options for respectively continuous and discrete data.
+
+Since `plot.dispRity` uses the arguments from the generic `plot` method, it is of course possible to change pretty much everything using the regular plot arguments:
+
+```{r, fig.width=6, fig.height=6, eval=FALSE}
+## Graphical options
+par(bty = "n")
+## Plotting the results with some classic options from plot
+plot(disp_time_slicesBS, col = c("blue", "orange", "green"), ylab = c("Some measurement"),
+    xlab = "Some other measurement", main = "Many options...", ylim = c(0,2.1))
+## Adding a legend
+legend("topleft", legend = c("Central tendency", "Confidence interval 1", "Confidence interval 2"),
+    col = c("blue", "orange", "green"), pch = 19)
+```
+
+Additionally to the classic `plot` arguments, the function can also take arguments that are specific to `plot.dispRity` like adding the number of elements or rarefaction level (as described above) but also changing the values of the quantiles to plot as well as the central tendency.
+
+```{r, fig.width=6, fig.height=6, eval=FALSE}
+## Graphical options
+par(bty = "n")
+## Plotting the results with some plot.dispRity arguments
+plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd, type = "c",
+    elements = TRUE, col = c("black", rainbow(10)), ylab = c("Disparity", "Diversity"),
+    xlab = "Time (in in units from past to present)", time.subsamples = FALSE,
+    observed = TRUE, main = "Many options...")
+```
+
+> Note that the argument `observed = TRUE` allows to plot the disparity values calculated from the non-bootstrapped data as crosses on the plot.
+
+For comparing results, it is also possible to add a plot to the existent plot by using `add = TRUE`:
+
+```{r, fig.width=6, fig.height=6, eval=FALSE}
+## Graphical options
+par(bty = "n")
+## Plotting the continuous disparity with a fixed y axis
+plot(disp_time_slicesBS, ylim = c(0.5,2))
+## Adding the discrete data using the same fixed y axis to have the results at the same scale
+plot(disp_time_binsBS, type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
+```
+
+Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
+
+```{r, fig.width=6, fig.height=6, eval=FALSE}
+## Graphical options
+par(bty = "n")
+## Plotting the rarefaction curves
+plot(disp_crown_stemBS, rarefaction = TRUE)
+```
+
 ## Testing disparity hypothesis
+
+
+Finally, the `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
+The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object, a `test` and a `comparisons` argument.
+
+The `comparisons` argument must indicate the way the test should be applied to the data:
+
+ *   `pairwise` (default): to compare each subsamples pairwise
+
+ *  `referential`: to compare each subsamples to the first one
+
+ *  `sequential`: to compare each subsamples to the following one
+
+ *  `all`: to compare all the subsamples together (like in analysis of variance)
+
+It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsamples names to create personalised test.
+Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` and the `dispRity::sequential.test` have a specific way to be applied to the data and therefore ignore the `comparisons` argument.
+
+
+The `test` argument can be any statistical or non-statistical test to apply to the disparity object.
+It can be common statistical test functions (e.g. `stats::t.test`), some functions implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
+
+
+This function also allows to correct for type I error inflation when using multiple comparisons via the `correction` argument. This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
+
+Note that the `test.dispRity` algorithm deals with some classic tests outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
+It is however possible to get the full detailed output by using the options `details = TRUE`.
+
+```{r, eval=FALSE}
+## Performing a t-test to the test a difference in disparity between crown and stem mammals
+test.dispRity(disp_crown_stemBS, test = t.test)
+
+## Performing the same test but with the detailed t.test output
+test.dispRity(disp_crown_stemBS, test = t.test, details = TRUE)
+
+## Performing a Wilcoxon test applied to sliced disparity the data sequentially with correction
+test.dispRity(disp_time_slicesBS, test = wilcox.test, comparisons = "sequential",
+    correction = "bonferroni")
+
+## Measuring the overlap between distributions in the time bins (using the implemented
+## Bhattacharyya Coefficient function - see ?bhatt.coeff)
+test.dispRity(disp_time_binsBS, test = bhatt.coeff)
+```
+
+It is also possible to apply some more *complex* tests that have their own output class (like `stats::aov`).
+The results can then be analysed as usual using the associated `summary` S3 method:
+
+```{r, eval=FALSE}
+## Performing and ANOVA applied to the same data
+slice_aov <- (test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all"))
+
+## The output is a regular ANOVA output...
+class(slice_aov)
+
+## That can be summarised using summary
+summary(slice_aov)
+```
 
 ## Disparity as a distribution
 
 ## Ecological study
+
+## Simulating discrete morphological data
+
+### Quick go through
+The function basically intakes a phylogenetic tree, the number of required characters and the evolutionary model and a function from which to draw the rates.
+The package then proposes a function for quickly checking the matrix' phylogenetic signal using parsimony.
+
+
+```{r, eval=FALSE}
+library(dispRity)
+set.seed(123)
+## Setting the starting tree with 15 taxa as a random coalescent tree
+my_tree <- rcoal(15)
+
+## Generating a matrix with 100 characters (85% binary and 15% three states) and
+## an equal rates model with a gamma rates distribution (0.5, 1) with no 
+## invariant characters.
+my_matrix <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
+    0.15), rates = c(rgamma, 0.5, 1), invariant = FALSE)
+
+## The head of the matrix
+my_matrix[1:5, 1:10]
+
+## Checking the matrix properties with a quick Maximum Parsimony tree search
+check.morpho(my_matrix, my_tree)
+```
+
+### In details
+
+Basically, `sim.morpho` is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix.
+It has three implemented models: `"ER"` for Equal Rates (the M*k* model); the `"HKY"` one which is the molecular HKY model but transforms pyrines in 0's and purimidines in 1's; or the `"mixed"` model that randomly uses an `"ER"` or and `"HKY"` for the binary characters and `"ER"` for the multistates (>2) characters.
+Both models intakes specific distributions for their rates or substitution models.
+These distributions should be passed to these arguments in the format of `c(sampler_function, distribution_parameters)` where the the sampler function is a the random generation function of that distribution (e.g. `rnorm`, `runif`, etc...) and the parameters are any parameters to be passed to this function. 
+
+The `check.morpho` runs a quick maximum parsimony tree using the `phangorn` parsimony algorithm.
+It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree.
+
+### Parameters for a good(ish) matrix
+There are many parameters that can realise a ``realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature) but because of the randomness of the generation (the code generates random matrices after all!) not all end up in creating good matrices.
+The following parameters however, seems to generate a fairly ``realistic'' with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter ($\alpha$) of 5 and no scaling ($\beta$ = 1) with a rate of 100.
+
+```{r, eval=FALSE}
+set.seed(1)
+## tree
+my_tree <- rcoal(15)
+## matrix
+morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
+    rates = c(rgamma, rate = 100, shape = 5), invariant = FALSE)
+check.morpho(morpho_mat, my_tree)
+```
+
 
 # Glossary <a name="glossary"></a>
 
@@ -283,9 +599,132 @@ test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
 
 ## Running `dispRity` in parallel
 
-## `dispRity` object structure
+## Manipulating `dispRity` objects
+
+Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your `R` console.
+Even the simple Beck and Lee 2014 example above produces an object with > 72 lines of lists of lists of matrices!
+
+Therefore `dispRity` uses a specific class of object called a `dispRity` object.
+These objects allow users to use S3 method functions such as `summary.dispRity` (see [summary](#summary) section), `plot.dispRity` (`plot`; see [plot](#plot) section) and `print.dispRity`. 
+<!-- # NC: I've simpiflied this as people who understand will know this already, people that don't won't care and don't need to know.
+ -->
+ `dispRity` also contains various utility functions that manipulate the `dispRity` object (e.g. `sort.dispRity`, `extract.dispRity` see the full list in the [`dispRity` utilities](#dispRity.utilities) section).
+These functions modify the `dispRity` object without having to delve into its complex structure!
+The full structure of a `dispRity` object is detailed [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
+
+<!-- # NC: Explain the point of these examples here... Are they needed? -->
+
+```{r, eval=FALSE}
+## What is the class of the median_centroids object?
+class(median_centroids)
+
+## What does the object contain?
+names(median_centroids)
+
+## Summarising it using the S3 method print.dispRity
+median_centroids
+```
+
+Note that it is always possible to recall the full object using the argument `all = TRUE` in `print.dispRity`:
+
+```{r, eval=FALSE}
+## Display the full object
+print(median_centroids, all = TRUE)
+## This is more than ~ 2500 lines on my 13 inch laptop screen!
+```
+
+
+<!-- 
+# Modular functions - 
+# NC: not sure any more of these modular functions are relevant in the vignette? Maybe just mention the metrics? Remember a vignette is for users, not for you to show how the programming works.
+
+# NC: I'd include a brief explanation of the include disparity metrics here. But yes keep the crazy "level" details for the other vignette on metrics. I think you want to avoid having too many separate vignettes really. -->
+
+
+
+## `dispRity` utilities
+
+The package also provides some utilities functions to facilitate multidimensional analysis.
+
+### `dispRity` object utilities  <a name="dispRity.utilities"></a>
+The first subsamples of utilities are functions for manipulating `dispRity` objects:
+
+#### `make.dispRity`
+This function creates empty `dispRity` objects.
+
+```{r, eval=FALSE}
+## Creating an empty dispRity object
+make.dispRity()
+## Creating an "empty" dispRity object with a matrix
+(disparity_obj <- make.dispRity(matrix(rnorm(20), 5, 4)))
+```
+
+####  `fill.dispRity`
+This function initialises a `dispRity` object and generating it's call properties.
+
+```{r, eval=FALSE}
+## The dispRity object's call is indeed empty
+disparity_obj$call
+## Creating an empty dispRity object
+(disparity_obj <- fill.dispRity(disparity_obj))
+## The dipRity object has now the proper minimal attributes
+disparity_obj$call
+```
+
+####  `matrix.dispRity`
+This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped or/and rarefied one.
+
+```{r, eval=FALSE}
+## Extracting the matrix containing the coordinates for the crown mammals
+str(matrix.dispRity(disp_crown_stemBS, "Group.crown"))
+## Extracting the 3rd boostrapped matrix with the 10th rarefaction level from the same group
+str(matrix.dispRity(disp_crown_stemBS, subsamples = 1, bootstrap = 3, rarefaction = 10))
+```
+
+#### `get.subsamples.dispRity`
+This function creates a dispRity object that contains only elements from one specific subsamples.
+
+```{r, eval=FALSE}
+## Extracting all the data for the crown mammals
+(crown_mammals <- get.subsamples.dispRity(disp_crown_stemBS, "Group.crown"))
+## The object keeps the properties of the parent object but is composed of only one subsamples
+length(crown_mammals$subsamples)
+```
+
+#### `extract.dispRity`
+This function extracts the calculated disparity values of a specific matrix.
+
+```{r, eval=FALSE}
+## Extracting the observed disparity (default)
+extract.dispRity(disp_crown_stemBS)
+
+## Extracting the disparity from the bootstrapped values from the 10th rarefaction level from the
+## second subsamples (stem mammals)
+extract.dispRity(disp_crown_stemBS, observed = FALSE, subsamples = 2, rarefaction = 10)
+```
+
+#### `scale.dispRity`
+This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
+
+```{r, eval=FALSE}
+## Getting the disparity values of the time subsamples
+summary(disp_time_slicesBS)
+
+## Scaling the same disparity values
+summary(scale(disp_time_slicesBS, scale = TRUE))
+```
+
+#### `sort.dispRity`
+This is the S3 method of `sort` for sorting the subsamples alphabetically (default) or following a specific pattern.
+
+```{r, eval=FALSE}
+## Sorting the disparity subsamples in inverse alphabetic order
+summary(sort(disp_time_slicesBS, decreasing = TRUE))
+
+
 
 ## Modularity
+
 
 ### Making your own metrics
 
