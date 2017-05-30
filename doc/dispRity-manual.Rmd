@@ -16,8 +16,9 @@ vignette: >
 
 # `dispRity`
 
-This is a package for measuring disparity in `R`. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared.
-<!-- Add version and table of content here! -->
+This is a package for measuring disparity in `R`.
+It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared.
+This manual is based on the version `1.0`.
 
 # Introduction
 
@@ -68,6 +69,7 @@ Thus if you have suggestions or comments on on what has already been developed o
 ## Citations
 
 You can cite both the package or this manual with the following citation:
+
 > Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
 
 Note that this citation is only temporary (but can still be used!).
@@ -174,7 +176,6 @@ plot(BeckLee_tree, cex = 0.8) ; axisPhylo(root = 140) ; nodelabels(cex = 0.5)
 
 Note of course that you can use your data obtain from the previous chapter!
 
-
 ### Disparity through time
 
 One of the functions of the package is to look at how disparity changes through time.
@@ -222,7 +223,14 @@ You can also directly explore the specific functions manuals within R and naviga
 
 ### Disparity between groups
 
-One other typical analysis done with disparity is to look at the difference in disparity between several groups. 
+Alternatively, you can be interested in looking at disparity between groups rather than through time.
+For example, on question could be is there a difference in disparity between two groups?
+
+To perform such analysis, you will need:
+ 
+ * An ordinated matrix (always!)
+ * A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example `list("a" = c(1,2), "b" = c(3,4))` will create a group _a_ containing elements 1 and 2 from the matrix and a group _b_ containing elements 3 and 4. Note that elements can be present in multiple groups at once.
+ * Your definition of disparity (here the sum of variances)
 
 ```{r}
 ## Creating the two groups as a list
@@ -235,7 +243,6 @@ disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,
 ```
 
 Similarly as above, we can display information about both groups by simply calling it and then summarising the data (and plotting it!) and performing a statistical test to compare both groups (here a Wilcoxon test).
-
 
 ```{r, fig.width=7, fig.height=7}
 ## Printing what's in the disparity data
@@ -253,6 +260,7 @@ test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
 ```
 
 # Specific tutorials
+
 
 ## Time slicing
 
