@@ -44,19 +44,19 @@
 #' @author Thomas Guillerme
 
 
-make.metric<-function(fun, ..., silent = FALSE) {
-    #Sanitizing
-    #fun
+make.metric <- function(fun, ..., silent = FALSE) {
+    ## Sanitizing
+    ## fun
     check.class(fun, "function")
 
-    #Getting the function name
+    ## Getting the function name
     match_call<-match.call()
 
-    #Testing the metric
-    #making the testing matrix
+    ## Testing the metric
+    ## making the testing matrix
     matrix <- matrix(rnorm(20), 5,4)
 
-    #Testing the metric
+    ## Testing the metric
     test <- NULL
     op <- options(warn = 2)
     test <- try(fun(matrix, ...), silent = TRUE)
@@ -70,10 +70,10 @@ make.metric<-function(fun, ..., silent = FALSE) {
     } else {
 
         ##########
-        #What is the output class of the function?
+        ## What is the output class of the function?
         ##########
 
-        #If class is matrix -> level3.fun
+        ## If class is matrix -> level3.fun
         if(class(test) == "matrix") {
             fun_type <- "level3"
             if(silent != TRUE) {
@@ -81,15 +81,15 @@ make.metric<-function(fun, ..., silent = FALSE) {
                 cat(paste("\nAdditional level 2 and/or level 1 function(s) will be needed.", sep = ""))
             }
         } else {
-            #If class is numeric
+            ## If class is numeric
             if(class(test) == "numeric") {
-                #If only one value -> level1.fun
+                ## If only one value -> level1.fun
                 if(length(test) == 1) {
                     fun_type <- "level1"
                     if(silent != TRUE) {
                         cat(paste(as.expression(match_call$fun)," outputs a single value.\n", as.expression(match_call$fun), " is detected as being a level 1 function.", sep = ""))
                     }
-                #If more than one value -> level1.fun
+                ## If more than one value -> level1.fun
                 } else {
                     fun_type <- "level2"
                     if(silent != TRUE) {
@@ -97,7 +97,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
                     }
                 }
             } else {
-                #Function provides a wrong output
+                ## Function provides a wrong output
                 if(silent != TRUE) {
                     stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following outputs a matrix or a numeric vector?\n", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep = ""))
                 }
@@ -105,7 +105,7 @@ make.metric<-function(fun, ..., silent = FALSE) {
         }
     }
     ##########
-    #Return the level type for dispRity
+    ## Return the level type for dispRity
     ##########
 
     if(silent == TRUE) return(fun_type)

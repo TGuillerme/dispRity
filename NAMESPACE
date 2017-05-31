@@ -10,7 +10,7 @@ importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "pa
 importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median", "cmdscale")
 importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
-importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
+importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 importFrom("Claddis", "MorphDistMatrix")
 importFrom("geomorph", "gpagen")
 # importFrom("methods", "hasArg")

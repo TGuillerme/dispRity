@@ -16,14 +16,25 @@ boot.single <- function(elements, rarefaction) {
 }
 
 ## Performs bootstrap on one subsamples and all rarefaction levels
-replicate.bootstraps <- function(rarefaction, bootstraps, subsamples, boot.type.fun, verbose) {
-    if(verbose) message(".", appendLF = FALSE)
+replicate.bootstraps.verbose <- function(rarefaction, bootstraps, subsamples, boot.type.fun, verbose) {
+    message(".", appendLF = FALSE)
+    return(replicate(bootstraps, boot.type.fun(subsamples$elements, rarefaction)))
+}
+replicate.bootstraps.silent <- function(rarefaction, bootstraps, subsamples, boot.type.fun) {
     return(replicate(bootstraps, boot.type.fun(subsamples$elements, rarefaction)))
 }
 
 ## Performs bootstrap on multiple subsamples and all rarefaction levels
 bootstrap.wrapper <- function(subsamples, bootstraps, rarefaction, boot.type.fun, verbose) {
-    return(lapply(select.rarefaction(subsamples, rarefaction), replicate.bootstraps, bootstraps, subsamples, boot.type.fun, verbose))
+
+    ## Verbose?
+    if(verbose == TRUE){
+        replicate.bootstraps <- replicate.bootstraps.verbose
+    } else {
+        replicate.bootstraps <- replicate.bootstraps.silent
+    }
+
+    return(lapply(select.rarefaction(subsamples, rarefaction), replicate.bootstraps, bootstraps, subsamples, boot.type.fun))
 }
 
 ## Rarefaction levels selection

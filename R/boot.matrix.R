@@ -62,7 +62,7 @@
 #' @author Thomas Guillerme
 
 ## DEBUG
-# warning("DEBUG boot.matrix")
+# stop("DEBUG boot.matrix")
 # source("sanitizing.R")
 # source("boot.matrix_fun.R")
 # data(BeckLee_mat50)
@@ -154,8 +154,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## Set up the bootstrap type function
     if(boot.type == "full") boot.type.fun <- boot.full
     if(boot.type == "single") boot.type.fun <- boot.single
-    ## Some humour:
-    if(boot.type == "rangers") stop("Nice shoes!") #NC: I don't get it... #TG: French humour.
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~

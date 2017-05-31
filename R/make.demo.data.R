@@ -1,5 +1,4 @@
 ## Developer function for making the disparity data
-
 make.demo.data <- function() {
     file.remove("../data/disparity.rda")
     set.seed(1)

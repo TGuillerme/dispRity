@@ -17,7 +17,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    test0 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a array
     expect_is(
@@ -36,7 +36,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    test1 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -55,7 +55,7 @@ test_that("disparity.bootstraps internal works", {
     ## Without matrix decomposition
     matrix_decomposition = FALSE
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = NULL, "level1.fun" = mean)
-    test2 <- disparity.bootstraps(test1, metrics_list, data, matrix_decomposition)
+    test2 <- disparity.bootstraps.silent(test1, metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(

@@ -25,7 +25,7 @@
 #' @references
 #' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325–338.
 #' 
-#' Guillerme, T., Brazeau, M. D., 201@. @@@@
+# Guillerme, T., Brazeau, M. D., 201@. @@@@
 
 char.diff <- function (matrix)  {
     ## Sanitizing
