@@ -23,7 +23,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-bhatt.coeff<-function(x, y, bw = bw.nrd0, ...) {
+bhatt.coeff <- function(x, y, bw = bw.nrd0, ...) {
     ## Check data
     ## x and y
     check.class(x, "numeric")
@@ -32,7 +32,7 @@ bhatt.coeff<-function(x, y, bw = bw.nrd0, ...) {
     ## bw (bandwidth)
     if(class(bw) == "numeric") {
         check.length(bw, 1, " must be either a single numeric value or a function.")
-         bw<-round(bw)
+        bw <- round(bw)
     } else {
         check.class(bw, "function", " must be either a single numeric value or a function.")
     }
