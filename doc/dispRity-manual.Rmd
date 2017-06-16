@@ -213,7 +213,7 @@ We can now analyse this data by summarising and plotting it or performing some s
 summary(disparity_data)
 
 ## Plotting the results
-plot(disparity_data)
+plot(disparity_data, type = "continuous")
 
 ## Testing for an eventual difference between the time bins
 disp_aov <- test.dispRity(disparity_data, test = aov, comparisons = "all")
@@ -736,7 +736,76 @@ summary(dispRity(dummy_space, metric = centroids, centroid = c(0,0,0,0,0)))
 summary(dispRity(dummy_space, metric = centroids, centroid = c(0,1,2,3,4)))
 ```
 
-An alternative way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
+
+## Summarising dispRity data (plots)
+
+Because of its architecture, printing `dispRity` objects only summarise their content but does not print the disparity value measured or associated analysis.
+<!-- link to dispRity objects -->
+To actually summary what's in a dispRity object, one can either use the `summary` function for visualising the data in a table or `plot` to have a graphic representation of the results.
+
+
+### Summarising `dispRity` data
+This function is a S3 function (`summary.dispRity`) allowing to summarise the content of `dispRity` objects that contain disparity calculations.
+
+```{r}
+## Example data from previous sections
+crown_stem <- custom.subsamples(BeckLee_mat50,
+    group = list("crown" = c(16, 19:41, 45:50), "stem" = c(1:15, 17:18, 42:44)))
+## Bootstrapping and rarefying these groups
+boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 200, rarefaction = TRUE)
+## Calculate disparity
+disparity_crown_stem <- dispRity(boot_crown_stem, metric = c(sum, variances))
+
+## Creating time slices subsamples
+time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
+    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
+    FADLAD = BeckLee_ages)
+## Bootstrapping on the time binning/slicing subsamples
+boot_time_slices <- boot.matrix(time_slices, bootstraps = 1000)
+## Calculate disparity
+disparity_time_slices <- dispRity(boot_time_slices, metric = c(sum, variances))
+```
+
+This objects are easy to summarise as follow:
+
+```{r}
+## Default summary
+summary(disparity_time_slices)
+```
+
+Information about the number of elements per subsamples as well as the observed (i.e. non-bootstrapped) disparity is also calculated.
+This is specifically handy when rarefying the data for example
+
+```{r}
+head(summary(disparity_crown_stem))
+```
+
+The summary functions can also take various options such as the `quantile` values for the confidence intervals levels (by default, the 50 and 95 quantiles are calculated); the `cent.tend` for the  central tendency to use for summarising the results (default is `median`); the `rounding` option corresponding to the number of decimals to print (default is `2`) and the `recall` option for printing the call of the `dispRity` object as well (default is `FALSE`)
+These options can easily be changed from the defaults as follows:
+
+```{r}
+## Same but using the 88 quantile and the standard deviation as the summary. 
+summary(disparity_time_slices, quantile = 88, cent.tend = sd)
+
+## Printing the details of the object and rounding the values to the 5th decimal
+summary(disparity_time_slices, recall = TRUE, rounding = 5)
+```
+
+Information about the number of elements per subsamples as well as the observed (i.e. non-bootstrapped) disparity is also calculated.
+This is specifically handy when rarefying the data for example
+
+Note that the summary table is a `data.frame`, hence it is easy to modify as any table using `dplyr`.
+You can also export it in `csv` format using `write.csv` or even directly export into `LaTeX` format using the following;
+
+```{r, eval = FALSE}
+## Loading the xtable package
+require(xtable)
+## Converting the table in LaTeX
+xtable(summary(disparity_time_slices))
+```
+
+### Plotting `dispRity` data
+An alternative (and more fun!) way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
 This function intakes the same options as `summary.dispRity` along side with various graphical options described in the function manual (see `?plot.dispRity`).
 
 The plots can be of four different types: `continuous` for displaying continuous disparity curves and `box`, `lines` and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines and confidence interval polygons.
@@ -746,67 +815,111 @@ The plots can be of four different types: `continuous` for displaying continuous
 It is also possible to display the number of elements per subsamples (has a horizontal doted line) using the option `elements = TRUE`.
 Additionally, when the data is rarefied, one can also indicate which level of rarefaction to display (i.e. display the results for a certain number of elements) by using the `rarefaction` argument.
 
-```{r, fig.width=6, fig.height=6, eval=FALSE}
+```{r, fig.width=8, fig.height=8}
 ## Graphical parameters
 op <- par(mfrow = c(2,2), bty = "n")
-## Plotting continuous disparity results
-plot(disp_time_binsBS, type = "continuous")
-## Plotting discrete disparity results
-plot(disp_crown_stemBS, type = "box")
-## Plotting the disparity using lines for the rarefaction level of 20 elements only
-plot(disp_crown_stemBS, type = "line", rarefaction = 20)
-## Plotting the disparity using polygons while also displaying the number of elements
-plot(disp_crown_stemBS, type = "polygon", elements = TRUE)
-```
 
-> The `type` argument is not mandatory for the two first plots since both `continuous` and `box` are the default options for respectively continuous and discrete data.
+## Plotting continuous disparity results
+plot(disparity_time_slices, type = "continuous")
+
+## Plotting discrete disparity results
+plot(disparity_crown_stem, type = "box")
+
+## Same but using lines for the rarefaction level of 20 elements only
+plot(disparity_crown_stem, type = "line", rarefaction = 20)
+
+## Same but using polygons while also displaying the number of elements
+plot(disparity_crown_stem, type = "polygon", elements = TRUE)
+
+## Resetting graphical parameters
+par(op)
+```
 
 Since `plot.dispRity` uses the arguments from the generic `plot` method, it is of course possible to change pretty much everything using the regular plot arguments:
 
-```{r, fig.width=6, fig.height=6, eval=FALSE}
+```{r, fig.width=8, fig.height=8}
 ## Graphical options
 par(bty = "n")
+
 ## Plotting the results with some classic options from plot
-plot(disp_time_slicesBS, col = c("blue", "orange", "green"), ylab = c("Some measurement"),
-    xlab = "Some other measurement", main = "Many options...", ylim = c(0,2.1))
+plot(disparity_time_slices, col = c("blue", "orange", "green"),
+    ylab = c("Some measurement"), xlab = "Some other measurement",
+    main = "Many options...", ylim = c(5, 0), xlim = c(4, 0))
+
 ## Adding a legend
-legend("topleft", legend = c("Central tendency", "Confidence interval 1", "Confidence interval 2"),
-    col = c("blue", "orange", "green"), pch = 19)
+legend("topleft", legend = c("Central tendency",
+                             "Confidence interval 1",
+                            "Confidence interval 2"),
+     col = c("blue", "orange", "green"), pch = 19)
+
+## Resetting graphical parameters
+par(op)
 ```
 
 Additionally to the classic `plot` arguments, the function can also take arguments that are specific to `plot.dispRity` like adding the number of elements or rarefaction level (as described above) but also changing the values of the quantiles to plot as well as the central tendency.
 
-```{r, fig.width=6, fig.height=6, eval=FALSE}
+```{r, fig.width=8, fig.height=8}
 ## Graphical options
 par(bty = "n")
+
 ## Plotting the results with some plot.dispRity arguments
-plot(disp_time_slicesBS, quantile = c(seq(from=10, to=100, by=10)), cent.tend = sd, type = "c",
-    elements = TRUE, col = c("black", rainbow(10)), ylab = c("Disparity", "Diversity"),
-    xlab = "Time (in in units from past to present)", time.subsamples = FALSE,
-    observed = TRUE, main = "Many options...")
+plot(disparity_time_slices, quantile = c(seq(from=10, to=100, by=10)),
+    cent.tend = sd, type = "c", elements = TRUE, col = c("black", rainbow(10)),
+    ylab = c("Disparity", "Diversity"), time.subsamples = FALSE,
+    xlab = "Time (in in units from past to present)", observed = TRUE,
+    main = "Many more options...")
+
+## Resetting graphical parameters
+par(op)
 ```
 
 > Note that the argument `observed = TRUE` allows to plot the disparity values calculated from the non-bootstrapped data as crosses on the plot.
 
 For comparing results, it is also possible to add a plot to the existent plot by using `add = TRUE`:
 
-```{r, fig.width=6, fig.height=6, eval=FALSE}
+```{r, fig.width=8, fig.height=8}
 ## Graphical options
 par(bty = "n")
+
 ## Plotting the continuous disparity with a fixed y axis
-plot(disp_time_slicesBS, ylim = c(0.5,2))
-## Adding the discrete data using the same fixed y axis to have the results at the same scale
-plot(disp_time_binsBS, type = "line", ylim=c(0.5,2), xlab="", ylab="", add = TRUE)
+plot(disparity_time_slices, ylim = c(1, 4))
+## Adding the discrete data
+plot(disparity_crown_stem, type = "line", ylim = c(1, 4), xlab = "", ylab = "",
+    add = TRUE)
+
+## Resetting graphical parameters
+par(op)
 ```
+
+<!-- Change this example to add time bins! -->
 
 Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
 
-```{r, fig.width=6, fig.height=6, eval=FALSE}
+```{r, fig.width=8, fig.height=8}
 ## Graphical options
 par(bty = "n")
+
 ## Plotting the rarefaction curves
-plot(disp_crown_stemBS, rarefaction = TRUE)
+plot(disparity_crown_stem, rarefaction = TRUE)
+
+## Resetting graphical parameters
+par(op)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Testing disparity hypothesis
 
