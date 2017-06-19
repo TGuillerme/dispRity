@@ -9,10 +9,12 @@
 #' @param ... Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.
 #' 
 #' @examples
+#' \dontrun{
 #' require(Claddis)
 #' 
 #' ## Creating an ordination of the distance matrix of Claddis example data
-#' Claddis.ordination(Michaux1989) 
+#' Claddis.ordination(Claddis::Michaux1989)
+#' }
 #'
 #' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
