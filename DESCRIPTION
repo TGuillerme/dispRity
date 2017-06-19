@@ -7,15 +7,14 @@ Date: 2017-06-19
 Description: this is a modular package for calculating disparity in R. Disparity can be
 	calculated from any ordinated matrix. The package provides a set of implemented
 	metrics to measure the ordinated space and allows users to provide and test their own
-	metrics. The package also provides functions for looking at disparity in a serial way
-	(e.g. time series) as well as visualising the results. Finally, this package provides
-	several basic statistical test for disparity analysis.
+	metrics. The package also provides functions for looking at disparity serially
+	(e.g. time series) and for visualising the results. Finally, this package provides
+	several basic statistical tests commonly used in disparity analyses.
 Depends:
     R (>= 3.0.0),
     ape,
 Imports:
   ade4,
-  caper,
   geometry,
   grDevices,
   hypervolume,
@@ -23,7 +22,7 @@ Imports:
   phangorn,
   phyclust,
   snow
-License: GPL (>= 2)
+License: GPL-3
 VignetteBuilder: knitr
 Suggests:
     testthat,

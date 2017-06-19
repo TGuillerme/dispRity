@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object.
 #' @param test A test \code{function} to apply to the data.
-#' @param comparisons If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).
+#' @param comparisons If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsamples names/number to compare (see details).
 #' @param rarefaction A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).
 #' @param correction Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
 #' @param concatenate Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).
@@ -15,11 +15,11 @@
 #' @details  
 #' The \code{comparison} argument can be:
 #' \itemize{
-#'   \item \code{"pairwise"}: pairwise comparisons of all the series (default).
-#'   \item \code{"referential"}: compares the first series to all the others.
-#'   \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
-#'   \item \code{"all"}: compares all the series simultaneously to the data (i.e. \code{bootstrapped disparity ~ series names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
-#'   \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
+#'   \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
+#'   \item \code{"referential"}: compares the first subsamples to all the others.
+#'   \item \code{"sequential"}: compares each subsamples sequentially (e.g. first against second, second against third, etc.).
+#'   \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
+#'   \item A list of pairs of number of subsamples to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
 #'   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
 #' }
@@ -29,32 +29,32 @@
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
 #'
-#' ## Calculating the disparity from a customised series
-#' ## Generating the series
-#' factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+#' ## Calculating the disparity from a customised subsamples
+#' ## Generating the subsamples
+#' groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
 #'       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-#' customised_series <- cust.series(BeckLee_mat50, factors)
+#' customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 #' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+#' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 #' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
-#' ## Measuring the series overlap
+#' ## Measuring the subsamples overlap
 #' test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 #' 
-#' ## Measuring differences from a reference_series
+#' ## Measuring differences from a reference_subsamples
 #' test.dispRity(sum_of_variances, wilcox.test, "referential")
 #'
-#' ## Testing the effect of the factors
+#' ## Testing the effect of the groups
 #' test.dispRity(sum_of_variances, aov, "all")
 #' ## warning: this violates some aov assumptions!
 #'
 #' ## Measuring disparity as a distribution
 #' disparity_var <- dispRity(bootstrapped_data, metric = variances)
-#' ## Differences between the concatenated bootstrapped values of the series
+#' ## Differences between the concatenated bootstrapped values of the subsamples
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
 #'      concatenate = TRUE, correction = "bonferroni")
-#' ## Differences between the series bootstrapped
+#' ## Differences between the subsamples bootstrapped
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
 #'      concatenate = FALSE, correction = "bonferroni")
 #' 
@@ -72,9 +72,9 @@
 # # source("sequential.test.R")
 # # source("sequential.test_fun.R")
 # data(BeckLee_mat50)
-# factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_series <- cust.series(BeckLee_mat50, factors)
-# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 10)
+# groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+# customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+# bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 10)
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)
 # data <- data_single
@@ -97,8 +97,8 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     check.class(data, "dispRity")
     ## ...and have disparity data
     if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
-    ## ...and must have more than one series
-    if(length(data$series) == 1) stop(paste(match_call$data, "must have more than one series."))
+    ## ...and must have more than one subsamples
+    if(length(data$subsamples) == 1) stop(paste(match_call$data, "must have more than one subsamples."))
 
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
@@ -127,19 +127,19 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     if(all(is.na(match(comparisons, all_comparisons)))) {
         
         ## Else must be a list
-        check.class(comparisons, "list", paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of series.", sep = ""))
+        check.class(comparisons, "list", paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsamples.", sep = ""))
         
         ## must be pairs
-        if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of series.", sep = ""), sep=""))    
+        if(length(unlist(comparisons))%%2 != 0) stop(paste(as.expression(match_call$comparisons), paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsamples.", sep = ""), sep=""))    
         
-        ## If character, input must match the series
+        ## If character, input must match the subsamples
         if(class(unlist(comparisons)) == "character") {
-            if(any(is.na(match(unlist(comparisons), data$series)))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+            if(any(is.na(match(unlist(comparisons), data$subsamples)))) stop(paste(as.expression(match_call$comparisons), ": at least one subsamples was not found.", sep=""))
         }
 
-        ## If numeric, input must match de series numbers
+        ## If numeric, input must match de subsamples numbers
         if(class(unlist(comparisons)) == "numeric") {
-            if(any(is.na(match(unlist(comparisons), seq(1:length(data$series)))))) stop(paste(as.expression(match_call$comparisons), ": at least one series was not found.", sep=""))
+            if(any(is.na(match(unlist(comparisons), seq(1:length(data$subsamples)))))) stop(paste(as.expression(match_call$comparisons), ": at least one subsamples was not found.", sep=""))
         }
 
         ## Comparison is "custom"
@@ -218,14 +218,14 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## Custom, pairwise, sequential and referential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         ## Get the list of comparisons
-        comp_series <- set.comparisons.list(comp, extracted_data, comparisons)
+        comp_subsamples <- set.comparisons.list(comp, extracted_data, comparisons)
 
         ## Apply the test to the list of pairwise comparisons
-        details_out <- test.list.lapply.distributions(comp_series, extracted_data, test, ...)
-        ## details_out <- test.list.lapply.distributions(comp_series, extracted_data, test) ; warning("DEBUG")
+        details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, test, ...)
+        ## details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, test) ; warning("DEBUG")
 
         ## Renaming the detailed results list
-        comparisons_list <- save.comparison.list(comp_series, extracted_data)
+        comparisons_list <- save.comparison.list(comp_subsamples, extracted_data)
         names(details_out) <- comparisons_list
     }
 
@@ -327,15 +327,15 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
         ## Null.test results
         if(details == FALSE && comp == "null.test") {
-            if(length(data$series) == 1) {
+            if(length(data$subsamples) == 1) {
                 ## Return a single randtest already formatted.
                 return(details_out)
             } else {
                 ## Saving the calling parameters
                 call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.from.call(data, "metric", eval = FALSE), ".\n", sep ="")
                 ## Creating the results table
-                table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$series), ncol = 1, dimnames = list(c(data$series)))
-                table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$series), ncol = 4,  dimnames = list(c(data$series)), byrow = TRUE)
+                table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$subsamples), ncol = 1, dimnames = list(c(data$subsamples)))
+                table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$subsamples), ncol = 4,  dimnames = list(c(data$subsamples)), byrow = TRUE)
 
                 table_out <- cbind(table_obs, table_sta)
                 colnames(table_out) <- c("Obs.", "Std.Obs", "Expect", "Var", "p-value")

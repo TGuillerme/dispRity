@@ -14,7 +14,9 @@
 
 \item{scale}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
 
-\item{use.all}{\code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each series of bootstraps (default is \code{TRUE}).}
+\item{use.all}{\code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsamples of bootstraps (default is \code{TRUE}).}
+
+\item{...}{optional arguments to be passed to \code{scale}.}
 }
 \description{
 Scales or/and centers the disparity measurements.

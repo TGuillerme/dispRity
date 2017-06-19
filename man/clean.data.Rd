@@ -22,6 +22,7 @@ Cleans a table/tree to match with a given table/tree
 trees_list <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4,
      tip.label = LETTERS[1:4]), rtree(6, tip.label = LETTERS[1:6]))
 class(trees_list) <- "multiPhylo"
+
 ##Creating a matrix
 dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2,
     dimnames = list(LETTERS[1:5], c("var1", "var2")))

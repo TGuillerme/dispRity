@@ -23,8 +23,8 @@ get.contrast.matrix(matrix)
 matrix[sample(1:100, 10)] <- "?"
 matrix[sample(1:100, 10)] <- "-"
 
-## Get the matrix's contrast matrix
-get.contrast.matrix(matrixMk)
+## Get the contrast matrix
+get.contrast.matrix(matrix)
 
 }
 \author{

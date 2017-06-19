@@ -1,15 +1,16 @@
-#' @title Separating ordinated data in time series.
+#' @title Separating ordinated data in time subsamples.
+#' @aliases time.series
 #'
-#' @description Splits the ordinated data into a time series list.
+#' @description Splits the ordinated data into a time subsamples list.
 #' 
-#' @usage time.series(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
+#' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
-#' @param method The time series method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
+#' @param method The time subsamples method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
-#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time series. Is ignored if \code{method = "continuous"}.
+#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #'
@@ -17,11 +18,11 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
 #' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-#' \item{series}{A \code{vector} containing the name of the series.}
+#' \item{subsamples}{A \code{vector} containing the name of the subsamples.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' 
 #' @details
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time series is:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time subsamples is:
 #' \itemize{
 #'   \item \code{"acctran"}: always the one of the ancestral node.
 #'   \item \code{"deltran"}: always the one of the offspring node or tip.
@@ -36,26 +37,26 @@
 #'
 #' ## Time bining (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-#' time.series(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 #' ## Generate the same one but including nodes
-#' time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
+#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #'
 #' ## Time slicing (continuous method)
 #' ## Generate 5 equidistant time slices in the data set assuming gradual
 #' ## evolutionary models
-#' time.series(data = BeckLee_mat99, tree = BeckLee_tree,
+#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
 #'
-#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
 ##Testing
-# warning("DEBUG time.series")
+# warning("DEBUG time.subsamples")
 # source("sanitizing.R")
-# source("time.series_fun.R")
+# source("time.subsamples_fun.R")
 # data(BeckLee_tree) ; data(BeckLee_mat50)
 # data(BeckLee_mat99) ; data(BeckLee_ages)
 # data = BeckLee_mat99
@@ -66,7 +67,7 @@
 # inc.nodes = TRUE
 # FADLAD = BeckLee_ages
 
-time.series <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE) {
+time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -77,7 +78,7 @@ time.series <- function(data, tree, method, time, model, inc.nodes = FALSE, FADL
     ## nrow_data variable declaration
     nrow_data <- nrow(data)
     ## data must be of size k*<=k-1
-    if(ncol(data) > (nrow_data - 1)) stop("Input data must have at maximum rows-1 columns")
+    if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
 
     ## TREE (1)
     ## tree must be a phylo object
@@ -202,20 +203,20 @@ time.series <- function(data, tree, method, time, model, inc.nodes = FALSE, FADL
     check.class(verbose, "logical")
 
     ## ----------------------
-    ##  GENRATING THE TIME SERIES
+    ##  GENRATING THE TIME subsamples
     ## ----------------------
 
     if(method == "discrete") {
-        time_series <- time.series.discrete(data, tree, time, FADLAD, inc.nodes)
+        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
     }
 
     if(method == "continuous") {
-        time_series <- time.series.continuous(data, tree, time, model, FADLAD, verbose)
+        time_subsamples <- time.subsamples.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
-    ## Adding the original series
-    #time_series <- c(make.origin.series(data), time_series)
+    ## Adding the original subsamples
+    #time_subsamples <- c(make.origin.subsamples(data), time_subsamples)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("series" = c(method, model)), series = time_series))
+    return(make.dispRity(data = data, call = list("subsamples" = c(method, model)), subsamples = time_subsamples))
 }

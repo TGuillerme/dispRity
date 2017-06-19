@@ -42,9 +42,8 @@
 #' matrix[sample(1:100, 10)] <- "?"
 #' matrix[sample(1:100, 10)] <- "-"
 #' 
-#' ## Get the matrix's contrast matrix
-#' get.contrast.matrix(matrixMk)
-# }
+#' ## Get the contrast matrix
+#' get.contrast.matrix(matrix)
 #' 
 #' @seealso \code{\link{check.morpho}}
 #' 
@@ -82,7 +81,7 @@ get.contrast.matrix <- function(matrix) {
 #' @description Apply inapplicable characters to discrete morphological matrix.
 #'
 #' @param matrix A discrete morphological matrix.
-#' @param inapplicables Optional, a vector of characters inapplicability source (either \code{"character"} or \code{"clade"}; see details). The length of this vector must be at maximum half the total number of characters.
+#' @param NAs Either a numeric value of how many characters to make inapplicable or vector of characters inapplicability source (either \code{"character"} or \code{"clade"}; see details). The length of this vector must be at maximum half the total number of characters.
 #' @param tree If any inapplicable source is \code{"clade"}, a tree from where to select the clades.
 #' @param invariant Whether to allow invariant sites among the characters with inapplicable data. If \code{invariant = FALSE} the algorithm will try to remove such characters (if possible).
 #' @param verbose Whether to be verbose or not.
@@ -100,52 +99,57 @@ get.contrast.matrix <- function(matrix) {
 #' For example \code{NAs = c(rep("character", 2), rep("clade", 2))} will generate 4 characters with inapplicable data, two using previous characters and two other using random clades.
 #' 
 #' @examples
-# \dontrun{
 #' set.seed(4)
 #' ## A random tree with 15 tips
 #' tree <- rcoal(15)
 #' ## setting up the parameters
-#' my_rates = c(rgamma, 2, 0.5) # A gamma rate distribution with of shape alpha = 0.5
-#' my_substitutions = c(runif, 2, 2) # A fixed substitution rate of 2 (T/T ratio in HKY)
+#' my_rates = c(rgamma, rate = 10, shape = 5)
+#' my_substitutions = c(runif, 2, 2)
 #'
 #' ## A Mk matrix (10*50)
-#' matrixMk <- sim.morpho(tree, characters = 100, model = "ER", states = c(0.85, 0.15),
-#'      rates = my_rates)
+#' matrixMk <- sim.morpho(tree, characters = 100, model = "ER",
+#'      states = c(0.85, 0.15), rates = my_rates, invariant = FALSE)
 #' 
 #' ## Setting the number and source of inapplicable characters
 #' my_inapplicables <- c(rep("character", 5), rep("clade", 5))
 #' 
 #' ## Apply some inapplicable characters to the matrix
-#' matrix <- apply.inapplicable(matrixMk, my_inapplicables, tree)
-# }
+#' matrix <- apply.NA(matrixMk, my_inapplicables, tree, verbose = TRUE)
+#'
 #' @seealso \code{\link{sim.morpho}}
 #' 
 #' @author Thomas Guillerme
 
-apply.inapplicable <- function(matrix, inapplicables, tree, invariant = FALSE, verbose = FALSE, ...) {
+apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE, ...) {
 
     ## SANITIZING
     ## matrix
     check.class(matrix, "matrix")
 
     ## inapplicables
-    check.class(inapplicables, "character")
-    inap.source_options <- c("character", "clade")
-    if(all(is.na(match(unique(inapplicables), inap.source_options)))) {
-        stop("inapplicables argument must be a vector containing at least one of the following: ", paste(inap.source_options, collapse=", "), sep="")
-    }        
-    if(length(inapplicables) > ncol(matrix)/2) {
-        stop("Only half the number of characters can be inapplicables")
+    class_inapplicable <- check.class(NAs, c("character", "numeric"))
+    if(class_inapplicable == "character") {
+        inap.source_options <- c("character", "clade")
+
+        if(!all(NAs %in% inap.source_options)) {
+            stop("NAs argument must be a vector containing at least one of the following: ", paste(inap.source_options, collapse=", "), sep="")
+        }        
+        if(length(NAs) > ncol(matrix)/2) {
+            stop("Only half the number of characters can be NAs")
+        }
+    } else {
+        if(NAs > ncol(matrix)/2) stop("Only half the number of characters can be NAs")
+        NAs <- rep("character", NAs)
     }
 
     ## tree
-    if(any(inapplicables == "clade") && missing(tree)) {
+    if(any(NAs == "clade") && missing(tree)) {
         stop("Tree argument is missing for applying inapplicable characters on random clades.")
     } else {
-        if(any(inapplicables == "clade")) {
+        if(any(NAs == "clade")) {
             ## tree must be same size as the matrix
             if(any(sort(row.names(matrix)) != sort(tree$tip.label))) {
-                stop("Provided tree has not the same number of taxa as the matrix.")
+                stop("Provided tree has not the same taxa as the matrix.")
             }
         }
     }
@@ -161,20 +165,20 @@ apply.inapplicable <- function(matrix, inapplicables, tree, invariant = FALSE, v
     matrix_out <- matrix
 
     ## From the characters first (if any)
-    if(any(inapplicables == "character")) {
+    if(any(NAs == "character")) {
         ## Get the number of inapplicable characters
-        inapplicables_characters <- length(which(inapplicables == "character"))
+        inapplicables_characters <- length(which(NAs == "character"))
         ## Create the characters to make inapplicable
-        target_characters <- seq(from = 2, to = inapplicables_characters*2, by = 2)
+        target_characters <- sample(seq(from = 2, to = ncol(matrix), by = 2), inapplicables_characters)
         ## Create the characters to match inapplicability from
-        pattern_characters <- seq(from = 1, to = inapplicables_characters*2, by = 2)
+        pattern_characters <- target_characters-1
 
         ## Get the target characters with inapplicables
         matrix_inapplicable <- mapply(mapply.inap.character, as.list(target_characters), as.list(pattern_characters), MoreArgs=list(matrix, invariant))
 
         ## Invariant warning
         if(invariant == FALSE) {
-            invariants <- length(which(apply(matrix_inapplicable, 2, function(X) length(unique(X))) <= 2))
+            invariants <- length(which(apply(matrix_inapplicable, 2, function(X) length(unique(X))) <= 1))
             if(invariants != 0) {
                 message(paste(invariants, "characters are now invariant due inapplicable data."))
             }
@@ -184,14 +188,20 @@ apply.inapplicable <- function(matrix, inapplicables, tree, invariant = FALSE, v
         matrix_out[,target_characters] <- matrix_inapplicable
     } else {
         inapplicables_characters <- 0
+        target_characters <- NULL
     }
 
     ## From the clades (if any)
-    if(any(inapplicables == "clade")) {
+    if(any(NAs == "clade")) {
         ## Get the number of inapplicable characters
-        inapplicables_clades <- length(which(inapplicables == "clade"))
+        inapplicables_clades <- length(which(NAs == "clade"))
+        
         ## Create the characters to make inapplicable (after the inapplicable characters if any)
-        target_characters <- seq(from = inapplicables_characters*2+1, to = inapplicables_characters*2+inapplicables_clades)
+        if(!is.null(target_characters)) {
+            target_characters <- sample(seq(from = 2, to = ncol(matrix), by = 2)[-target_characters], inapplicables_clades)
+        } else {
+            target_characters <- sample(seq(from = 2, to = ncol(matrix), by = 2), inapplicables_clades)
+        }
 
         ## Get the target characters with inapplicables
         matrix_inapplicable <- matrix(unlist(lapply(as.list(target_characters), lapply.inap.clade, matrix, tree, invariant)), ncol = inapplicables_clades, byrow = FALSE, dimnames = list(rownames(matrix)))

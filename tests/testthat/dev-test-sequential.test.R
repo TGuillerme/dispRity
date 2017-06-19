@@ -2,50 +2,50 @@ context("sequential.test")
 
 #Testing data
 data(BeckLee_mat50)
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
      dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-sum_of_variances <- dispRity(boot.matrix(cust.series(BeckLee_mat50, factors), bootstraps = 100), metric = c(sum, variances))
-series <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE)
-seq_series <- list(c(1,2), c(2,3))
+sum_of_variances <- dispRity(boot.matrix(custom.subsamples(BeckLee_mat50, groups), bootstraps = 100), metric = c(sum, variances))
+subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE)
+seq_subsamples <- list(c(1,2), c(2,3))
 
-test_that("set.pair.series internal", {
+test_that("set.pair.subsamples internal", {
     set.seed(1)
-    series_pair <- list(replicate(3,rnorm(10), simplify = FALSE), replicate(3,rnorm(10, 100), simplify = FALSE))
+    subsamples_pair <- list(replicate(3,rnorm(10), simplify = FALSE), replicate(3,rnorm(10, 100), simplify = FALSE))
     #Errors
     expect_error(
-        set.pair.series("a", NULL)
+        set.pair.subsamples("a", NULL)
         )
     expect_error(
-        set.pair.series(list(), NULL)
+        set.pair.subsamples(list(), NULL)
         )
 
     #Normal results
     expect_is(
-        set.pair.series(series_pair, intercept = NULL)
+        set.pair.subsamples(subsamples_pair, intercept = NULL)
         ,"list")
     expect_equal(
-        unique(unlist(lapply(set.pair.series(series_pair, intercept = NULL), class)))
+        unique(unlist(lapply(set.pair.subsamples(subsamples_pair, intercept = NULL), class)))
         ,"data.frame")
     expect_equal(
-        unique(unlist(lapply(set.pair.series(series_pair, intercept = NULL), dim)))
+        unique(unlist(lapply(set.pair.subsamples(subsamples_pair, intercept = NULL), dim)))
         ,c(20, 2))
     expect_equal(
-        unique(unlist(lapply(set.pair.series(series_pair, intercept = "a"), dim)))
+        unique(unlist(lapply(set.pair.subsamples(subsamples_pair, intercept = "a"), dim)))
         ,c(20, 3))
     expect_lt(
-        max(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][1:10])
+        max(set.pair.subsamples(subsamples_pair, intercept = NULL)[[1]][[1]][1:10])
         ,50)
     expect_gt(
-        min(set.pair.series(series_pair, intercept = NULL)[[1]][[1]][11:20])
+        min(set.pair.subsamples(subsamples_pair, intercept = NULL)[[1]][[1]][11:20])
         ,50)
     expect_equal(
-        unique(set.pair.series(series_pair, intercept = NULL)[[1]][[2]][1:10])
+        unique(set.pair.subsamples(subsamples_pair, intercept = NULL)[[1]][[2]][1:10])
         ,0)
     expect_equal(
-        unique(set.pair.series(series_pair, intercept = NULL)[[1]][[2]][11:20])
+        unique(set.pair.subsamples(subsamples_pair, intercept = NULL)[[1]][[2]][11:20])
         ,1)
     expect_false(
-        set.pair.series(series_pair, intercept = NULL)[[1]][[1]][1] == set.pair.series(series_pair, intercept = NULL)[[2]][[1]][1]
+        set.pair.subsamples(subsamples_pair, intercept = NULL)[[1]][[1]][1] == set.pair.subsamples(subsamples_pair, intercept = NULL)[[2]][[1]][1]
         )
 })
 
@@ -99,14 +99,14 @@ test_that("create.model works", {
         create.model(matrix(2,2), family = gaussian)
         )
     expect_error(
-        create.model(set.pair.series(series[seq_series[[1]]]), family = "whatever")
+        create.model(set.pair.subsamples(subsamples[seq_subsamples[[1]]]), family = "whatever")
         )
     #Normal results
     expect_is(
-        create.model(set.pair.series(series[seq_series[[1]]])[[1]], family = gaussian)
+        create.model(set.pair.subsamples(subsamples[seq_subsamples[[1]]])[[1]], family = gaussian)
         , c("glm","lm"))
     expect_equal(
-        length(create.model(set.pair.series(series[seq_series[[1]]])[[1]], family = gaussian))
+        length(create.model(set.pair.subsamples(subsamples[seq_subsamples[[1]]])[[1]], family = gaussian))
         , 30)
 })
 
@@ -118,10 +118,10 @@ test_that("sequential.test works", {
             )
         )
     expect_error(
-        sequential.test(series, family = c(1, 2))
+        sequential.test(subsamples, family = c(1, 2))
         )
     #results
-    test <- sequential.test(series, family = gaussian)
+    test <- sequential.test(subsamples, family = gaussian)
     expect_is(
         test
         , c("dispRity", "seq.test"))

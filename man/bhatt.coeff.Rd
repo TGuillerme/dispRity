@@ -9,12 +9,12 @@ bhatt.coeff(x, y, bw = bw.nrd0, ...)
 \arguments{
 \item{x, y}{two distributions.}
 
-\item{bw}{the bandwith size, either a \code{numeric} or a \code{function} (see \code{\link[stats]{bw.nrd0}}).}
+\item{bw}{the bandwidth size, either a \code{numeric} or a \code{function} (see \code{\link[stats]{bw.nrd0}}).}
 
 \item{...}{optional arguments to be passed to the \code{bw} argument.}
 }
 \description{
-Calculates the probability of overlap between to distributions.
+Calculates the probability of overlap between two distributions.
 }
 \examples{
 ## Two dummy distributions

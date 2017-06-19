@@ -68,7 +68,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     } else {
         stop("User functions not implemented yet for model argument.")
         use.optim.parsimony <- FALSE
-        parsimony.algorithm <- parsimony
+        parsimony.algorithm <- phangorn::parsimony
     }
 
     #first.tree
