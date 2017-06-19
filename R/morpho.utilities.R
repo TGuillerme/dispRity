@@ -38,7 +38,7 @@
 #' ## Get the contrast matrix
 #' get.contrast.matrix(matrix)
 #' 
-#' ## Adding inapplicable and missing data to the matrix
+#' ## Adding inapplicable and missing data to the matrix
 #' matrix[sample(1:100, 10)] <- "?"
 #' matrix[sample(1:100, 10)] <- "-"
 #' 
@@ -48,7 +48,6 @@
 #' @seealso \code{\link{check.morpho}}
 #' 
 #' @author Thomas Guillerme
-##' @export
 
 get.contrast.matrix <- function(matrix) {
     
@@ -89,15 +88,15 @@ get.contrast.matrix <- function(matrix) {
 #' @param ... Any additional arguments.
 #' 
 #' @details
-#' \itemize{
-#' \item If the \code{NAs} argument is a numeric value n, generates n characters with inapplicable data based on the \code{"clade"} source.
-#' \item The \code{NAs} argument intakes a vector of character inapplicability source rendering a number of characters inapplicable using the following sources:
-#'      \itemize{
-#'          \item \code{"character"} draws inapplicable characters directly from the character matrix, ignoring the phylogeny (i.e. for a random character X, an other random character Y will have inapplicable characters for each character states 0 for character X).
-#'          \item \code{"clade"} draws inapplicable characters from the phylogeny: it will randomly apply inapplicable characters states for some characters by randomly selecting clades from the provided tree. The algorithm randomly assigns an inapplicable token for this character for all taxa in this clade or all taxa outside this clade.
-#'      }
+#' If the \code{NAs} argument is a numeric value n, generates n characters with inapplicable data based on the \code{"clade"} source.
+#' 
+#' The \code{NAs} argument intakes a vector of character inapplicability source rendering a number of characters inapplicable using the following sources:
+#'      
+#'      \code{"character"} draws inapplicable characters directly from the character matrix, ignoring the phylogeny (i.e. for a random character X, an other random character Y will have inapplicable characters for each character states 0 for character X).
+#'      
+#'      \code{"clade"} draws inapplicable characters from the phylogeny: it will randomly apply inapplicable characters states for some characters by randomly selecting clades from the provided tree. The algorithm randomly assigns an inapplicable token for this character for all taxa in this clade or all taxa outside this clade.
+#' 
 #' For example \code{NAs = c(rep("character", 2), rep("clade", 2))} will generate 4 characters with inapplicable data, two using previous characters and two other using random clades.
-#' }
 #' 
 #' @examples
 #' set.seed(4)

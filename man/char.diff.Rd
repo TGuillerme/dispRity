@@ -16,7 +16,7 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
-The character difference is calculated as @@
+The character difference is calculated as half the sum of the gower distances between the characters.
 }
 \examples{
 ## Comparing two characters
@@ -31,7 +31,7 @@ char.diff(morpho_matrix)
 Thomas Guillerme
 }
 \references{
-Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325–338.
+Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
 \code{\link{plot.char.diff}}.

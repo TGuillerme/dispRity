@@ -5,7 +5,7 @@
 #' @param matrix A discrete matrix or a list containing discrete characters.
 #' 
 #' @details
-#' The character difference is calculated as @@@
+#' The character difference is calculated as half the sum of the gower distances between the characters.
 #' 
 #' @return
 #' A character difference value or a matrix of class \code{char.diff}
@@ -23,9 +23,8 @@
 #' @author Thomas Guillerme
 #' 
 #' @references
-#' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325–338.
-#' 
-# Guillerme, T., Brazeau, M. D., 201@. @@@@
+#' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
+
 
 char.diff <- function (matrix)  {
     ## Sanitizing
@@ -89,6 +88,7 @@ char.diff <- function (matrix)  {
 #' @param ylim Two \code{numeric} values to determine the y axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
 #' @param xlab A \code{character} string for the the x axis. Can be missing.
 #' @param ylab A \code{character} string for the the y axis. Can be missing.
+#' @param main An overall title for the plot.
 #' @param ... Any additional graphical arguments to be passed to \code{image}.
 #' 
 #' @examples

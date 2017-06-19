@@ -31,6 +31,8 @@
 
 \item{col}{Two colors for forming the gradient if \code{type = "correlation"} or for the density lines colors if \code{type = "density"}.}
 
+\item{main}{An overall title for the plot.}
+
 \item{...}{Any additional graphical arguments to be passed to \code{image}.}
 }
 \description{
