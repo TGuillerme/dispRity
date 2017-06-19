@@ -22,10 +22,12 @@ Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
 Takes Claddis data and computes both the distance and the ordination matrix
 }
 \examples{
+\dontrun{
 require(Claddis)
 
 ## Creating an ordination of the distance matrix of Claddis example data
-Claddis.ordination(Michaux1989) 
+Claddis.ordination(Claddis::Michaux1989)
+}
 
 }
 \author{
