@@ -4,8 +4,9 @@ context("ordinations")
 
 test_that("Claddis.ordination works", {
     
-    require(Claddis)
-    data <- Michaux1989    
+    data_matrix <- matrix(c("0", "0", "1", "1", "0", "0", "1", "1", "0", "1", "0", "1", "0", "1", "1", "1", "0", "1", "0", "0", "0", "0", "1", "0", "1", "0", "0", "1", "0", "0", "0", "1", "0", "1", "0", "1", "0", "1", "0", "0", "0", "0", "1", "0"), byrow = FALSE, nrow = 4)
+    rownames(data_matrix) <- c("Ancilla", "Turrancilla", "Ancillista", "Amalda")
+    data <- list(header = "", matrix = data_matrix, ordering = rep("unord", 11), weights = rep(1, 11), max.vals = rep(1, 11), min.vals = rep(0, 11), step.matrices = NULL, symbols = c("0", "1"))
 
     ## Sanitizing
     expect_error(Claddis.ordination(matrix(5), distance = "Gower", transform = "none", k = 2))
