@@ -20,7 +20,7 @@ Combines multiple subsamples together or cleans a subsamples series to contain a
 }
 \details{
 If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1,3,4)} will merge subsamples 1 and 3 into 4, on the opposite, \code{c(3,4,1)} will merge the subsamples 3 and 4 into 1.
-When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (appart from the last subsample that gets merged with the previous one).
+When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (apart from the last subsample that gets merged with the previous one).
 }
 \examples{
 ## Generate subsamples from a dummy matrix

@@ -17,7 +17,7 @@
 #' \itemize{
 #'   \item "level 1": for functions that decompose a \code{matrix} into a single value.
 #'   \item "level 2": for functions that decompose a \code{matrix} into a \code{vector}.
-#'   \item "level 3": for functions that transforme the \code{matrix} into anothrer \code{matrix}.
+#'   \item "level 3": for functions that transform the \code{matrix} into another \code{matrix}.
 #' }
 #' For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{variances}} is composed of two metric levels:
 #' \itemize{

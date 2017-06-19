@@ -10,7 +10,7 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{quantiles}{The quantiless to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
+\item{quantiles}{The quantiles to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).}
 
@@ -23,7 +23,7 @@ A \code{data.frame} with:
 \item{subsamples}{the subsamples names.}
 \item{n}{the number of elements per subsamples.}
 \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
-\item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiless of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiless of the observed disparity is displayed).}
+\item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).}
 }
 \description{
 Creates a summary of a \code{dispRity} object.
