@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
+[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.55646.svg)](https://doi.org/10.5281/zenodo.55646)
+
 
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
@@ -27,12 +30,19 @@ Note that some of the vignettes do not contain all the details of the improvemen
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
-* 2017/01/25 - v0.3.0 *dispRity lite!*
-  * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
-  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.
-  * **removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
-  * **changed argument** in `plot.dispRity`, `type = "lines"` is now replaced by `type = "line"`.
-  * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
+* 2017/06/19 - v0.3.9  (version 0.4 pre-release) <!--*user friendly*-->
+  * Entirely rewritten manual!
+  * *New* function: `Claddis.ordination` for automatically ordinating data from `Claddis`!
+  * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
+  * *New* function: `merge.subsamples` for... merging subsamples!
+  * *New* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
+  * Input ordinated matrices do not need to be of maximum size `n*(n-1)`. Bigger matrices now only trigger a warning.
+  * **Changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
+  * **Changed name**: `time.series` is now renamed `time.subsamples`.
+  * **Changed name**: `get.subsamples.dispRity` is now renamed `get.subsamples`.
+  * **Modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). It's `factor` argument as been changed to `groups` and can now intake a simple list.
+  * Minor bug correction for optional arguments passed to `plot`.
+  * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments sanitising is now passed to `make.metric`.
   
 Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 

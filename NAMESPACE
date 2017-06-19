@@ -6,31 +6,34 @@ importFrom("geometry", "convhulln")
 importFrom("hypervolume", "hypervolume", "estimate_bandwidth", "get_volume")
 importFrom("ade4", "randtest", "as.randtest")
 importFrom("grDevices", "colorRampPalette", "grey")
-importFrom("caper", "comparative.data")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend")
-importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median")
+importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median", "cmdscale")
 importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
-importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony")
+importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
+# importFrom("Claddis", "MorphDistMatrix")
+# importFrom("geomorph", "gpagen")
+# importFrom("methods", "hasArg")
 # importFrom("RCurl", "getURL", "url.exists")
-  
+
+##C libraries
+useDynLib(dispRity)
+
+## Data utilities
+export(Claddis.ordination)
+# export(geomorph.ordination)
 
 ##Functions
-export(time.series)
-export(cust.series)
+export(time.subsamples)
+export(custom.subsamples)
 export(boot.matrix)
 export(dispRity)
 export(test.dispRity)
 export(summary.dispRity)
 export(plot.dispRity)
 export(print.dispRity)
-
-##Generate morphological data
-export(sim.morpho)
-export(check.morpho)
-##Morpho utilities
-export(get.contrast.matrix)
-export(apply.inapplicable)
+export(dispRity.through.time)
+export(dispRity.per.group)
 
 ##disparity metrics
 export(variances)
@@ -48,6 +51,16 @@ export(bhatt.coeff)
 export(sequential.test)
 export(null.test)
 
+##dispRity object utilities
+export(make.dispRity)
+export(fill.dispRity)
+export(matrix.dispRity)
+export(extract.dispRity)
+export(scale.dispRity)
+export(sort.dispRity)
+export(get.subsamples)
+export(merge.subsamples)
+
 ##Package utilities
 export(tree.age)
 export(make.metric)
@@ -56,21 +69,19 @@ export(pair.plot)
 export(slice.tree)
 export(clean.data)
 
-##dispRity object utilities
-export(make.dispRity)
-export(fill.dispRity)
-export(matrix.dispRity)
-export(get.series.dispRity)
-export(extract.dispRity)
-export(scale.dispRity)
-export(sort.dispRity)
-#export(merge.time.series)
+##Morphological data analysis
+export(sim.morpho)
+export(check.morpho)
+export(get.contrast.matrix)
+export(apply.NA)
+export(char.diff)
+export(plot.char.diff)
+S3method(plot, char.diff)
 
 ##S3 methods
 S3method(plot, dispRity)
 S3method(summary, dispRity)
 S3method(print, dispRity)
 S3method(matrix, dispRity)
-#S3method(get.series, dispRity)
 S3method(scale, dispRity)
 S3method(sort, dispRity)

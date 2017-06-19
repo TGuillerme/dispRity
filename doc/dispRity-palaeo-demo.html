@@ -12,7 +12,7 @@
 
 <meta name="author" content="Thomas Guillerme" />
 
-<meta name="date" content="2017-01-23" />
+<meta name="date" content="2017-06-19" />
 
 <title>dispRity palaeo demo</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">dispRity palaeo demo</h1>
 <h4 class="author"><em>Thomas Guillerme</em></h4>
-<h4 class="date"><em>2017-01-23</em></h4>
+<h4 class="date"><em>2017-06-19</em></h4>
 
 
 
@@ -135,32 +135,32 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1>A disparity-through-time analysis</h1>
 <div id="splitting-the-morphospace-through-time" class="section level2">
 <h2>Splitting the morphospace through time</h2>
-<p>One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time series that contain the total amount of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning). Basically, the full morphospace in the previous step represents the total amount of morphologies in all time and is likely to be greater than any time series of the morphospace.</p>
-<p>The <code>dispRity</code> package provides a <code>time.series</code> function that allows to split the morphospace time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>). In this example, we are going to split the morphospace into 5 equal time bins of 20 million years long from 100 million years ago (Mya) to the present. We will also provide to the function the table containing the first and last occurrences data for some fossils to take into account the fact that some fossils might span between our different time bins.</p>
+<p>One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time subsamples that contain the total amount of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning). Basically, the full morphospace in the previous step represents the total amount of morphologies in all time and is likely to be greater than any time subsamples of the morphospace.</p>
+<p>The <code>dispRity</code> package provides a <code>time.subsamples</code> function that allows to split the morphospace time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>). In this example, we are going to split the morphospace into 5 equal time bins of 20 million years long from 100 million years ago (Mya) to the present. We will also provide to the function the table containing the first and last occurrences data for some fossils to take into account the fact that some fossils might span between our different time bins.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating the vector of time bins ages
 (time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</code></pre></div>
 <pre><code>## [1] 100  80  60  40  20   0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Splitting the morphospace using the time.series function
-(binned_morphospace &lt;-<span class="st"> </span><span class="kw">time.series</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Splitting the morphospace using the time.subsamples function
+(binned_morphospace &lt;-<span class="st"> </span><span class="kw">time.subsamples</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,
     <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,
     <span class="dt">FADLAD =</span> BeckLee_ages))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements:
+## 5 discrete time subsamples for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
-<p>The output object is a <code>dispRity</code> object. For details about this object class, please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html"><code>dispRity</code> manual</a>. In brief, however, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time series, morphospace attributes, etc.) that display only a summary of the object when calling the object for avoiding jamming the <code>R</code> console.</p>
+<p>The output object is a <code>dispRity</code> object. For details about this object class, please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html"><code>dispRity</code> manual</a>. In brief, however, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsamples, morphospace attributes, etc.) that display only a summary of the object when calling the object for avoiding jamming the <code>R</code> console.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the class of the object
 <span class="kw">class</span>(binned_morphospace)</code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the content of the object
 <span class="kw">str</span>(binned_morphospace)</code></pre></div>
 <pre><code>## List of 3
-##  $ matrix: num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
+##  $ matrix    : num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : chr [1:50] &quot;Cimolestes&quot; &quot;Maelestes&quot; &quot;Batodon&quot; &quot;Bulaklestes&quot; ...
 ##   .. ..$ : NULL
-##  $ call  :List of 1
-##   ..$ series: chr &quot;discrete&quot;
-##  $ series:List of 5
+##  $ call      :List of 1
+##   ..$ subsamples: chr &quot;discrete&quot;
+##  $ subsamples:List of 5
 ##   ..$ 100 - 80:List of 1
 ##   .. ..$ elements: int [1:8, 1] 5 4 6 8 43 10 11 42
 ##   ..$ 80 - 60 :List of 1
@@ -173,11 +173,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ##   .. ..$ elements: int [1:10, 1] 36 37 38 32 33 34 50 48 29 30
 ##  - attr(*, &quot;class&quot;)= chr &quot;dispRity&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(binned_morphospace)</code></pre></div>
-<pre><code>## [1] &quot;matrix&quot; &quot;call&quot;   &quot;series&quot;</code></pre>
+<pre><code>## [1] &quot;matrix&quot;     &quot;call&quot;       &quot;subsamples&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the object as a dispRity class
 binned_morphospace</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements:
+## 5 discrete time subsamples for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
 <blockquote>
 <p>These objects will gradually contain more information when reaching the following steps in the disparity-through-time analysis.</p>
@@ -185,63 +185,63 @@ binned_morphospace</code></pre></div>
 </div>
 <div id="bootstrapping-the-data" class="section level2">
 <h2>Bootstrapping the data</h2>
-<p>Once we obtain our different time series, we can bootstrap and rarefy them (i.e. pseudo-replicating the data). The bootstrapping will allow to make each series more robust to outliers and the rarefaction will allow us to compare series with the same number of taxa to get rid of eventual sampling problems (i.e. more taxa in one series than the other). The <code>boot.matrix</code> function that allows to bootstrap the <code>dispRity</code> object and the <code>rarefaction</code> option within allows to rarefy it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time series 100 times
+<p>Once we obtain our different time subsamples, we can bootstrap and rarefy them (i.e. pseudo-replicating the data). The bootstrapping will allow to make each subsamples more robust to outliers and the rarefaction will allow us to compare subsamples with the same number of taxa to get rid of eventual sampling problems (i.e. more taxa in one subsamples than the other). The <code>boot.matrix</code> function that allows to bootstrap the <code>dispRity</code> object and the <code>rarefaction</code> option within allows to rarefy it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time subsamples 100 times
 (boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements with 48 dimensions:
+## 5 discrete time subsamples for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the minimum number of rows (=taxa) in the time series
-<span class="kw">min</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(boot_bin_morphospace$series, lapply, nrow)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the minimum number of rows (=taxa) in the time subsamples
+<span class="kw">min</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(boot_bin_morphospace$subsamples, lapply, nrow)))</code></pre></div>
 <pre><code>## [1] 6</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time series 100 times and rarefying them 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time subsamples 100 times and rarefying them 
 (rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,
     <span class="dt">rarefaction =</span> <span class="dv">6</span>))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements with 48 dimensions:
+## 5 discrete time subsamples for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.</code></pre>
 </div>
 <div id="calculating-disparity" class="section level2">
 <h2>Calculating disparity</h2>
-<p>We can now calculate the disparity within each time series along side with some confidence intervals generated by the pseudo-replication step above (bootstraps/rarefaction). Disparity can be calculated in many ways and this package allows user to come up with their own disparity metrics. For more info, please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html"><code>dispRity</code> metric vignette</a>.</p>
-<p>In this example, we are going to calculate the spread of the data in each time series by calculating the disparity as the sum of the variance of each dimension of the morphospace in each time series using the <code>dispRity</code> function. Thus, in this example, the disparity is defined by the multi-dimensional variance of each time series (i.e. the spread of the taxa within the morphospace). Note that this metric comes with a caveat not solved here since it ignores the covariance among the dimensions of the morphospace.</p>
+<p>We can now calculate the disparity within each time subsamples along side with some confidence intervals generated by the pseudo-replication step above (bootstraps/rarefaction). Disparity can be calculated in many ways and this package allows user to come up with their own disparity metrics. For more info, please refer to the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html"><code>dispRity</code> metric vignette</a>.</p>
+<p>In this example, we are going to calculate the spread of the data in each time subsamples by calculating the disparity as the sum of the variance of each dimension of the morphospace in each time subsamples using the <code>dispRity</code> function. Thus, in this example, the disparity is defined by the multi-dimensional variance of each time subsamples (i.e. the spread of the taxa within the morphospace). Note that this metric comes with a caveat not solved here since it ignores the covariance among the dimensions of the morphospace.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity for the bootstrapped data
 (boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements with 48 dimensions:
+## 5 discrete time subsamples for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(sum, variances).</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity for the rarefied data
 (rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time series for 50 elements with 48 dimensions:
+## 5 discrete time subsamples for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.
 ## Disparity was calculated as: c(sum, variances).</code></pre>
-<p>The <code>dispRity</code> function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, series, metric, etc.). To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied on a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).</p>
+<p>The <code>dispRity</code> function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, subsamples, metric, etc.). To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied on a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).</p>
 <p>As for any <code>R</code> package, you can refer yourself to each individual function for more details.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summarising the disparity results
 <span class="kw">summary</span>(boot_disparity)</code></pre></div>
-<pre><code>##     series  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.488 1.087 1.389 1.568 1.648
-## 2  80 - 60 15 1.782     1.679 1.538 1.631 1.728 1.792
-## 3  60 - 40 13 1.913     1.772 1.607 1.734 1.826 1.886
-## 4  40 - 20  6 2.022     1.707 1.212 1.537 1.822 1.942
-## 5   20 - 0 10 1.971     1.794 1.598 1.716 1.842 1.890</code></pre>
+<pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1   100 - 80  8 1.675     1.488 1.087 1.389 1.568 1.648
+## 2    80 - 60 15 1.782     1.679 1.538 1.631 1.728 1.792
+## 3    60 - 40 13 1.913     1.772 1.607 1.734 1.826 1.886
+## 4    40 - 20  6 2.022     1.707 1.212 1.537 1.822 1.942
+## 5     20 - 0 10 1.971     1.794 1.598 1.716 1.842 1.890</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(rare_disparity)</code></pre></div>
-<pre><code>##     series  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.484 1.194 1.400 1.547 1.636
-## 2 100 - 80  6    NA     1.477 0.993 1.361 1.569 1.698
-## 3  80 - 60 15 1.782     1.674 1.517 1.600 1.725 1.793
-## 4  80 - 60  6    NA     1.655 1.299 1.532 1.754 1.882
-## 5  60 - 40 13 1.913     1.767 1.601 1.714 1.829 1.861
-## 6  60 - 40  6    NA     1.787 1.314 1.672 1.879 1.984
-## 7  40 - 20  6 2.022     1.736 1.281 1.603 1.822 1.948
-## 8   20 - 0 10 1.971     1.807 1.595 1.729 1.856 1.917
-## 9   20 - 0  6    NA     1.790 1.435 1.718 1.873 1.995</code></pre>
+<pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1   100 - 80  8 1.675     1.484 1.194 1.400 1.547 1.636
+## 2   100 - 80  6    NA     1.477 0.993 1.361 1.569 1.698
+## 3    80 - 60 15 1.782     1.674 1.517 1.600 1.725 1.793
+## 4    80 - 60  6    NA     1.655 1.299 1.532 1.754 1.882
+## 5    60 - 40 13 1.913     1.767 1.601 1.714 1.829 1.861
+## 6    60 - 40  6    NA     1.787 1.314 1.672 1.879 1.984
+## 7    40 - 20  6 2.022     1.736 1.281 1.603 1.822 1.948
+## 8     20 - 0 10 1.971     1.807 1.595 1.729 1.856 1.917
+## 9     20 - 0  6    NA     1.790 1.435 1.718 1.873 1.995</code></pre>
 <blockquote>
 <p>The summary.dispRity function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function’s manual for more details.</p>
 </blockquote>
@@ -259,7 +259,7 @@ binned_morphospace</code></pre></div>
 </div>
 <div id="testing-differences" class="section level2">
 <h2>Testing differences</h2>
-<p>Finally, to draw some valid conclusions from these results, we can apply some statistical testing to the data. We can test, for example, if mammalian disparity changed through time since the last 100 million years (Mya). To do so, we can apply some comparisons of the means between each time-bins in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em> which is in turn equal to the disparity in bin <em>n+2</em>, etc. Because our data is temporally auto-correlated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and was pseudo-replicated (i.e. each bootstrap draw creates non-independent time series because they are all based on the same time series), we are going to apply a non-parametric mean comparison: the <code>wilcox.test</code>. Also, we are going to apply a p-value correction to avoid type I error inflation due to performing multiple test for the same hypothesis (see <code>?p.adjust</code> for more details).</p>
+<p>Finally, to draw some valid conclusions from these results, we can apply some statistical testing to the data. We can test, for example, if mammalian disparity changed through time since the last 100 million years (Mya). To do so, we can apply some comparisons of the means between each time-bins in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em> which is in turn equal to the disparity in bin <em>n+2</em>, etc. Because our data is temporally auto-correlated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and was pseudo-replicated (i.e. each bootstrap draw creates non-independent time subsamples because they are all based on the same time subsamples), we are going to apply a non-parametric mean comparison: the <code>wilcox.test</code>. Also, we are going to apply a p-value correction to avoid type I error inflation due to performing multiple test for the same hypothesis (see <code>?p.adjust</code> for more details).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## testing the differences between bins in the bootstrapped dataset.
 <span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,
     <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>

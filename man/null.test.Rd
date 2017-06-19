@@ -27,9 +27,6 @@ null.test(data, replicates = 100, null.distrib, null.args = NULL,
 \description{
 Testing the difference between the observed disparity and disparity under a null model.
 }
-\details{
-
-}
 \examples{
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
