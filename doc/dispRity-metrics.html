@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Thomas Guillerme" />
+
+<meta name="date" content="2017-06-19" />
+
+<title>dispRity metrics</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">dispRity metrics</h1>
+<h4 class="author"><em>Thomas Guillerme</em></h4>
+<h4 class="date"><em>2017-06-19</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#disparity-metrics">Disparity metrics</a></li>
+<li><a href="#the-function-levels">The function levels</a><ul>
+<li><a href="#a-level-1-function">A level 1 function</a></li>
+<li><a href="#a-level-2-function">A level 2 function</a></li>
+<li><a href="#a-level-3-function">A level 3 function</a></li>
+</ul></li>
+<li><a href="#make.metric"><code>make.metric</code></a></li>
+<li><a href="#metric-argument-in-disprity">metric argument in <code>dispRity</code></a><ul>
+<li><a href="#what-level-is-the-disparity">What level is the disparity?</a></li>
+</ul></li>
+<li><a href="#metrics-implemented-in-disprity">Metrics implemented in <code>dispRity</code></a><ul>
+<li><a href="#equations-and-implementations">Equations and implementations:</a></li>
+<li><a href="#metrics-run-through">Metrics run through</a></li>
+</ul></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+
+<div id="disparity-metrics" class="section level1">
+<h1>Disparity metrics</h1>
+<p>There are many ways for measuring disparity! In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA). For example, one can look at ellipsoid hyper-volume of the ordinated space <span class="citation">(Donohue et al. 2013)</span>, the sum and the product of the ranges and variances <span class="citation">(Wills, Briggs, and Fortey 1994–4AD)</span> or the median position of the elements relative to their centroid <span class="citation">(Guillerme and Cooper in prep.)</span>. Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks or some being more generalist.</p>
+<p>Because of this great diversity of metric, the package <code>dispRity</code> has not a unique way to measure disparity but rather proposes to facilitate users to define their own disparity metric that will best suit to their particular analysis. In fact, the core function of the package, <code>dispRity</code>, allows the user to define any metric with the <code>metric</code> argument. However, because of the infrastructure of the package (especially the one of the <code>dispRity</code> objects – see the <a href="http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html"><code>dispRity</code> manual</a>, the <code>metric</code> argument has to follow certain rules:</p>
+<ol style="list-style-type: decimal">
+<li><p>it must be composed from one to three <code>function</code> objects;</p></li>
+<li><p>these functions can only intake a <code>matrix</code> or a <code>vector</code>;</p></li>
+<li><p>each of these functions must be of one of the three levels described below;</p></li>
+<li><p>at least one of the functions must be of level 1 or 2 (see below).</p></li>
+</ol>
+</div>
+<div id="the-function-levels" class="section level1">
+<h1>The function levels</h1>
+<p>The metric functions levels determine the dimensional level of decomposition of the input <code>matrix</code>. In other words, each level designate the dimensions of the output: either three (a <code>matrix</code>); two (a <code>vector</code>); or one (a single <code>numeric</code> value) dimensions.</p>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Illustration of the different levels of output of a function with an input matrix" />
+<p class="caption">Illustration of the different levels of output of a function with an input <code>matrix</code></p>
+</div>
+<div id="a-level-1-function" class="section level2">
+<h2>A level 1 function</h2>
+<p>A level 1 function will decompose a <code>matrix</code> or a <code>vector</code> into a single value:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## First, let's create a dummy matrix
+dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">12</span>), <span class="dv">4</span>, <span class="dv">3</span>)
+
+## Any summary metric such as mean or median are good examples of level 1
+## functions as they reduce the matrix to a single dimension (i.e. one value):
+<span class="kw">mean</span>(dummy_matrix)</code></pre></div>
+<pre><code>## [1] -0.007473441</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
+<pre><code>## [1] -0.07796621</code></pre>
+</div>
+<div id="a-level-2-function" class="section level2">
+<h2>A level 2 function</h2>
+<p>A level 2 function will decompose a <code>matrix</code> into a <code>vector</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## We can define a function that outputs the products of each row of the matrix:
+prod.rows &lt;-<span class="st"> </span>function(matrix) <span class="kw">apply</span>(matrix, <span class="dv">1</span>, prod)
+
+## This function is a level 2 function as it reduces the matrix into a two
+## dimensional element (a vector of values):
+<span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
+<pre><code>## [1]  0.95922781 -0.02998551  0.62009283 -0.22396568</code></pre>
+<p>Several level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> function that calculates the variance of each dimension of the ordinated matrix or the <code>ranges</code> one that calculates the range of each dimension.</p>
+</div>
+<div id="a-level-3-function" class="section level2">
+<h2>A level 3 function</h2>
+<p>Finally a level 3 function will transform the <code>matrix</code> into another <code>matrix</code>. Note that the dimension of the output matrix don’t need to match the the input one:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The var functions computes the variance/covariance matrix which will be a 3x3 matrix
+<span class="kw">var</span>(dummy_matrix)</code></pre></div>
+<pre><code>##             [,1]        [,2]        [,3]
+## [1,]  0.53080043 -0.02823468 -0.03646011
+## [2,] -0.02823468  0.42762206 -0.29401866
+## [3,] -0.03646011 -0.29401866  0.25386924</code></pre>
+</div>
+</div>
+<div id="make.metric" class="section level1">
+<h1><code>make.metric</code></h1>
+<p>Of course, functions can be more complex and involve multiple operations such as the <code>centroids</code> function (see <code>?dispRity.metric</code>) that calculates the euclidean distance between each elements and the ordinated space centroid. The <code>make.metric</code> function implemented in <code>dispRity</code> is designed to help testing and finding the level of the functions. This function tests:</p>
+<ol style="list-style-type: decimal">
+<li><p>if your function can deal with a <code>matrix</code> or a <code>vector</code> as an input;</p></li>
+<li><p>which is your function’s level according to it’s output (level 1, 2 or 3, see above);</p></li>
+<li><p>whether the function can properly be implemented in the <code>dispRity</code> function (the function is fed into a <code>lapply</code> loop).</p></li>
+</ol>
+<p>For example, let’s see if the functions described above are the right levels:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## First we need to load the package
+<span class="kw">library</span>(dispRity)
+
+## Which level is the mean function? And is able to be used in the dispRity?
+<span class="kw">make.metric</span>(mean)</code></pre></div>
+<pre><code>## mean outputs a single value.
+## mean is detected as being a level 1 function.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Same questions from the prod.rows function:
+<span class="kw">make.metric</span>(prod.rows)</code></pre></div>
+<pre><code>## prod.rows outputs a matrix object.
+## prod.rows is detected as being a level 2 function.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Same questions for the var function:
+<span class="kw">make.metric</span>(var)</code></pre></div>
+<pre><code>## var outputs a matrix object.
+## var is detected as being a level 3 function.
+## Additional level 2 and/or level 1 function(s) will be needed.</code></pre>
+</div>
+<div id="metric-argument-in-disprity" class="section level1">
+<h1>metric argument in <code>dispRity</code></h1>
+<p>Using this metric structure, we can easily use any disparity metric in the <code>dispRity</code>function as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## First we need to load the data
+<span class="kw">data</span>(BeckLee_mat50)
+
+## Measuring disparity as the standard deviation of all the value of the
+## ordinated matrix (level 1 function).
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> sd))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 50 0.201</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring disparity as the standard deviation of the variance of each axis of
+## the ordinated matrix (level 1 and level 2 functions).
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(sd, variances)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 50 0.028</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring disparity as the standard deviation of the variance of each axis of
+## the variance covariance matrix (level 1, level 2 and level 3 functions).
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(sd, variances, var)), <span class="dt">round =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>##   subsamples  n          obs
+## 1          1 50 0.0001025857</code></pre>
+<p>Note that the order of each function in the metric argument does not matter, the <code>dispRity</code> function will automatically detect the function levels (using <code>make.metric</code>) and apply them to the data in decreasing order (level 3 &gt; level 2 &gt; level 1).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Disparity as the standard deviation of the variance of each axis of the
+## variance covariance matrix:
+disparity1 &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(sd, variances, var)), <span class="dt">round =</span> <span class="dv">10</span>)
+
+## Same but using a different functions order for the metric argument
+disparity2 &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(variances, sd, var)), <span class="dt">round =</span> <span class="dv">10</span>)
+
+## Both ways output the same disparity values:
+disparity1 ==<span class="st"> </span>disparity2</code></pre></div>
+<pre><code>##      subsamples    n  obs
+## [1,]       TRUE TRUE TRUE</code></pre>
+<div id="what-level-is-the-disparity" class="section level2">
+<h2>What level is the disparity?</h2>
+<p>In these examples, we considered disparity to be a single value. For example, in the previous one, we defined disparity as the standard deviation of the variances of each column of the variance/covariance matrix (<code>metric = c(variances, sd, var)</code>). This results in single value to be calculated.</p>
+<p>In some cases however, it might also be interesting to calculate disparity as a distribution. For example, one of the metrics commonly used in palaeobiology is the sum of variances of each dimensions (<code>metric = c(sum, variances)</code>) <span class="citation">(Wills, Briggs, and Fortey 1994–4AD)</span>. However, it might be interesting to look directly at the distribution of the variances itself.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A one dimensional disparity value
+(sum_variances1 &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(median, variances))))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 50 0.033</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A two dimensional disparity
+(<span class="kw">summary</span>(all_variances &lt;-<span class="st"> </span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> variances))))</code></pre></div>
+<pre><code>##   subsamples  n obs.median  2.5%   25%   75% 97.5%
+## 1          1 50      0.033 0.014 0.025 0.046   0.1</code></pre>
+<p>Looking at all the variances rather than simply their median can tell us that (by the look of it) the variances of each dimensions seems to be normally distributed.</p>
+<blockquote>
+<p>It is also possible to reuse an already calculated disparity distribution and summarise it using a level 1 metric:</p>
+</blockquote>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Transforming the two dimensional one in a one dimensional one
+sum_variances2 &lt;-<span class="st"> </span><span class="kw">summary</span>(<span class="kw">dispRity</span>(all_variances, <span class="dt">metric =</span> median))
+
+## Both ways output the same disparity values:
+sum_variances1 ==<span class="st"> </span>sum_variances2</code></pre></div>
+<pre><code>##      subsamples    n  obs
+## [1,]       TRUE TRUE TRUE</code></pre>
+</div>
+</div>
+<div id="metrics-implemented-in-disprity" class="section level1">
+<h1>Metrics implemented in <code>dispRity</code></h1>
+<p>Several disparity metrics are directly implemented in the <code>dispRity</code> package. The detailed list can be found in <code>?dispRity.metric</code> along with some explanations on each metric.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="69%"></col>
+<col width="12%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Level</th>
+<th align="left">Name</th>
+<th align="left">Description</th>
+<th align="left">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>ellipse.volume</code><sup>1</sup></td>
+<td align="left">The volume of the ellipsoid of the space</td>
+<td align="left"><span class="citation">(Donohue et al. 2013)</span></td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left"><code>convhull.surface</code></td>
+<td align="left">The surface of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>convhull.volume</code></td>
+<td align="left">The volume of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left"><code>hypervolume</code></td>
+<td align="left">The volume of the ordinated space</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/hypervolume/index.html"><code>hypervolume</code></a><code>::hypervolume</code></td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left"><code>diagonal</code></td>
+<td align="left">The longest distance in the ordinated space (like the diagonal in two dimensions)</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><code>ranges</code></td>
+<td align="left">The range of each dimension</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left"><code>variances</code></td>
+<td align="left">The variance of each dimension</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left"><code>centroids</code><sup>2</sup></td>
+<td align="left">The distance between each element and the centroid of the ordinated space</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left"><code>mode.val</code></td>
+<td align="left">The modal value</td>
+<td align="left"><code>dispRity</code></td>
+</tr>
+</tbody>
+</table>
+<p>1: The functions estimation of the eigen value only works for MDS or PCoA ordinations (not PCA).</p>
+<p>2: Note that by default, the centroid is the centroid of the elements. It can however be fixed to an arbitrary value by using the <code>centroid</code> argument <code>centroids(space, centroid = rep(0, ncol(space)))</code>, for example the origin of the ordinated space.</p>
+<div id="equations-and-implementations" class="section level2">
+<h2>Equations and implementations:</h2>
+<p>Some of the functions described below are directly implemented in the <code>dispRity</code> package and do not require any dependencies (<a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">see implementation here</a>).</p>
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+<p>With <em>k</em> being the number of dimensions, <span class="math inline">\(\lambda_i\)</span> is the eigen value of each dimension.</p>
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+<p>With <em>k</em> being the dimensions.</p>
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+<p>With <em>k</em> being the dimensions.</p>
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+<p>With <em>k</em> being the dimensions and <span class="math inline">\(\sigma^{2}\)</span> their variance.</p>
+\begin{equation}
+    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+\end{equation}
+<p>With <em>n</em> being each element in the ordinated space, <em>k</em> being its dimensions and <span class="math inline">\(Centroid_{k}\)</span> their mean (or can be set to an arbitrary value) and.</p>
+</div>
+<div id="metrics-run-through" class="section level2">
+<h2>Metrics run through</h2>
+<p>Here is a run through of the main metrics implemented in <code>dispRity</code>. First, we will create a dummy ordinated space using the <code>space.maker</code> utility function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating a 10*5 normal space
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">10</span>, <span class="dv">5</span>, rnorm)</code></pre></div>
+<div id="volumes-and-surface-metrics" class="section level3">
+<h3>Volumes and surface metrics</h3>
+<p>The functions <code>ellipse.volume</code>, <code>convhull.surface</code>, <code>convhull.volume</code> and <code>hyper.volume</code> all measure the surface or the volume of the ordinated space occupancy:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ellipsoid volume
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ellipse.volume))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 257.8</code></pre>
+<blockquote>
+<p>Because there is only one series (i.e. one matrix) in the dispRity object, this operation is the equivalent of doing simply <code>ellipse.volume(dummy_space)</code> (with rounding).</p>
+</blockquote>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the convex hull surface
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.surface))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 11.91</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the convex hull volume
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.volume))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 1.031</code></pre>
+<p>The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space. For the full and correct calculation of the volume of the ordinated space, it is possible to us the <code>hyper.volume</code> function that intakes more options but takes longer to calculate.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the true multidimensional volume
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 24.03</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the volume with different options to be passed to hypervolume::hypervolume
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> hyper.volume, <span class="dt">repsperpoint =</span> <span class="dv">100</span>, <span class="dt">quantile =</span> <span class="fl">0.5</span>))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 404.7</code></pre>
+<blockquote>
+<p>Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">Curse of dimensionality</a> which often results in near 0 disparity values.</p>
+</blockquote>
+</div>
+<div id="ranges-variances-and-diagonal" class="section level3">
+<h3>Ranges, variances and diagonal</h3>
+<p>The functions <code>ranges</code>, <code>variances</code> and <code>diagonal</code> all measure properties of the ordinated space base on it’s dimensions properties (they are also less affected by the Curse of dimensionality):</p>
+<p><code>ranges</code> and <code>variances</code> both work on the same principle and measure the range/variance of each dimensions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ranges of each dimensions in the ordinated space
+<span class="kw">ranges</span>(dummy_space)</code></pre></div>
+<pre><code>## [1] 2.430909 3.726481 2.908329 2.735739 1.588603</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the distribution of these ranges
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ranges))</code></pre></div>
+<pre><code>##   subsamples  n obs.median  2.5%   25%   75% 97.5%
+## 1          1 10      2.736 1.673 2.431 2.908 3.645</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the sum and the product of these ranges
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, ranges)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 13.39</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(prod, ranges)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 114.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the variances of each dimensions in the ordinated space
+<span class="kw">variances</span>(dummy_space)</code></pre></div>
+<pre><code>## [1] 0.6093144 1.1438620 0.9131859 0.6537768 0.3549372</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the distribution of these variances
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> variances))</code></pre></div>
+<pre><code>##   subsamples  n obs.median 2.5%   25%   75% 97.5%
+## 1          1 10      0.654 0.38 0.609 0.913 1.121</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the sum and the product of these variances
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 3.675</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(prod, variances)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 0.148</code></pre>
+<p>The <code>diagonal</code> function measures the multidimensional diagonal of the whole space (i.e. in our case the longest euclidean distance in our 5 dimensional space):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ordinated space's diagonal
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> diagonal))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 3.659</code></pre>
+<blockquote>
+<p>This metric is only mathematically valid if the dimensions within the space are all orthogonal!</p>
+</blockquote>
+</div>
+<div id="centroids-metrics" class="section level3">
+<h3>Centroids metrics</h3>
+<p>The <code>centroids</code> metric allows to measure the position of the different elements compared to a fixed point in the ordinated space. By default, this function measures the distance between each elements and the central point between them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the distribution of the distances between each elements and the centroid
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids))</code></pre></div>
+<pre><code>##   subsamples  n obs.median  2.5%   25%   75% 97.5%
+## 1          1 10      1.435 0.788 1.267 1.993 3.167</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the median value of these distances
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids)))</code></pre></div>
+<pre><code>##   subsamples  n   obs
+## 1          1 10 1.435</code></pre>
+<p>It is however possible to fix the coordinates of a specific point in the ordinated space as long as it has the correct number of dimensions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the distance between the elements and the origin of the ordinated space
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids, <span class="dt">centroid =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)))</code></pre></div>
+<pre><code>##   subsamples  n obs.median  2.5% 25%   75% 97.5%
+## 1          1 10      1.487 0.785 1.2 2.044 3.176</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the distance between the elements and a specific point
+<span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids, <span class="dt">centroid =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)))</code></pre></div>
+<pre><code>##   subsamples  n obs.median  2.5%   25%   75% 97.5%
+## 1          1 10      5.489 4.293 5.032 6.155 6.957</code></pre>
+</div>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-DonohueDim">
+<p>Donohue, Ian, Owen L. Petchey, José M. Montoya, Andrew L. Jackson, Luke McNally, Mafalda Viana, Kevin Healy, Miguel Lurgi, Nessa E. O’Connor, and Mark C. Emmerson. 2013. “On the Dimensionality of Ecological Stability.” <em>Ecology Letters</em> 16 (4): 421–29. doi:<a href="https://doi.org/10.1111/ele.12086">10.1111/ele.12086</a>.</p>
+</div>
+<div id="ref-GuillermeSTD">
+<p>Guillerme, Thomas, and Natalie Cooper. in prep. “Mammalian Morphological Diversity Does Not Increase in Response to the Cretaceous-Paleogene Mass Extinction and the Extinction of the (Non-Avian) Dinosaurs.” <a href="https://github.com/TGuillerme/SpatioTemporal_Disparity/raw/master/Writing/STD_draft.pdf" class="uri">https://github.com/TGuillerme/SpatioTemporal_Disparity/raw/master/Writing/STD_draft.pdf</a>.</p>
+</div>
+<div id="ref-Wills1994">
+<p>Wills, Matthew A., Derek E. G. Briggs, and Richard A. Fortey. 1994–4AD. “Disparity as an Evolutionary Index: A Comparison of Cambrian and Recent Arthropods.” <em>Paleobiology</em> 20 (2). Paleontological Society: 93–130. doi:<a href="https://doi.org/10.2307/2401014">10.2307/2401014</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
