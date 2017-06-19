@@ -22,24 +22,24 @@ geomorph.ordination <- function(data, k, ...) {
 
     stop("IN DEVELOPMENT")
 
-    match_call <- match.call()
+    # match_call <- match.call()
 
-    ## Sanitising
-    ## data
-    check.class(data, "list")
-    if(is.null(data$land)) {
-        stop(paste(match_call$data, "must be a list with a 'land' element."))
-    } else {
-        if(class(data$land) != "array") {
-            stop(paste(match_call$data, "$land must be a (p x k x n) array.", sep = ""))
-        }
-    }
+    # ## Sanitising
+    # ## data
+    # check.class(data, "list")
+    # if(is.null(data$land)) {
+    #     stop(paste(match_call$data, "must be a list with a 'land' element."))
+    # } else {
+    #     if(class(data$land) != "array") {
+    #         stop(paste(match_call$data, "$land must be a (p x k x n) array.", sep = ""))
+    #     }
+    # }
 
     
-    ## Procrustes
-    Y.gpa <- geomorph::gpagen(data$land)
+    # ## Procrustes
+    # Y.gpa <- geomorph::gpagen(data$land)
 
-    ## Ordination?
+    # ## Ordination?
 
-    return(Y.gpa)
+    # return(Y.gpa)
 }

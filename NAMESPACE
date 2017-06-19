@@ -11,8 +11,8 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn", "data")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
-importFrom("Claddis", "MorphDistMatrix")
-importFrom("geomorph", "gpagen")
+# importFrom("Claddis", "MorphDistMatrix")
+# importFrom("geomorph", "gpagen")
 # importFrom("methods", "hasArg")
 # importFrom("RCurl", "getURL", "url.exists")
 
