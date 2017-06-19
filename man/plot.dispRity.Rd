@@ -6,13 +6,13 @@
 \usage{
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95),
   cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
-  ylab, col, time.series = TRUE, observed = FALSE, add = FALSE,
+  ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE,
   density = NULL, nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.series}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsamples}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -20,7 +20,7 @@
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
-\item{elements}{\code{logical} whether to plot the number of elements per series.}
+\item{elements}{\code{logical} whether to plot the number of elements per subsamples.}
 
 \item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
 
@@ -30,7 +30,7 @@
 
 \item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
 
-\item{time.series}{\code{logical} whether to handle continuous data from the \code{time.series} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the series are used for the x axis labels.}
+\item{time.subsamples}{\code{logical} whether to handle continuous data from the \code{time.subsamples} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsamples are used for the x axis labels.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
 
@@ -79,7 +79,7 @@ plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
 plot(disparity, type = "continuous")
 
 ## Using different options (with non time.slicing option)
-plot(disparity, type = "continuous", time.series = FALSE,
+plot(disparity, type = "continuous", time.subsamples = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots

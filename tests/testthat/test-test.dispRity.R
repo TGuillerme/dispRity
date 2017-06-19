@@ -154,7 +154,7 @@ test_that("set.comparisons.list internal fun", {
 test_that("save.comparison.list internal fun", {
     my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
     names(my_data) <- c("X", "Y")
-    my_comp_series <- list(c(1,2), c(2,1))
+    my_comp_subsamples <- list(c(1,2), c(2,1))
 
     expect_equal(
         save.comparison.list(list(c(1,2), c(2,1)), my_data)
@@ -198,16 +198,16 @@ test_that("example works fine", {
     ## Load the Beck & Lee 2014 data
     data(BeckLee_mat50)
 
-    ## Calculating the disparity from a customised series
-    ## Generating the series
-    factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-    customised_series <- cust.series(BeckLee_mat50, factors)
+    ## Calculating the disparity from a customised subsamples
+    ## Generating the subsamples
+    groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
     ## Bootstrapping the data
-    bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
+    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-    ## Measuring the series overlap
+    ## Measuring the subsamples overlap
     expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
         , "data.frame")
@@ -218,7 +218,7 @@ test_that("example works fine", {
     	sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
         , 0.67027)
 
-    ## Measuring differences from a reference_series
+    ## Measuring differences from a reference_subsamples
     expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
         , "list")
@@ -255,7 +255,7 @@ test_that("example works fine", {
         unique(unlist(lapply(test2, dim)))
         ,c(3,5))
 
-    ## Testing the effect of the factors
+    ## Testing the effect of the groups
     expect_is(
         test.dispRity(sum_of_ranges, aov, "all")
         , c("aov", "lm"))

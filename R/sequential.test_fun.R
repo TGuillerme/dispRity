@@ -1,25 +1,25 @@
 #Getting the data function
-set.pair.series <- function(series_pair, intercept=NULL) {
-    series_pair_out <- list()
-    for(element in 1:length(series_pair[[1]])) {
-        tmp_list <- lapply(series_pair, `[[`, element)
-        #Getting the series from the list
-        series_pair_out[[element]] <- list.to.table(tmp_list)
-        #Remove series column
-        series_pair_out[[element]]$series <- NULL
-        #Setting the factor as binomial
-        series_pair_out[[element]]$factor <- c(rep(0, length(series_pair[[1]][[element]])), rep(1, length(series_pair[[2]][[element]])))
+set.pair.subsamples <- function(subsamples_pair, intercept=NULL) {
+    subsamples_pair_out <- list()
+    for(element in 1:length(subsamples_pair[[1]])) {
+        tmp_list <- lapply(subsamples_pair, `[[`, element)
+        #Getting the subsamples from the list
+        subsamples_pair_out[[element]] <- list.to.table(tmp_list)
+        #Remove subsamples column
+        subsamples_pair_out[[element]]$subsamples <- NULL
+        #Setting the group as binomial
+        subsamples_pair_out[[element]]$group <- c(rep(0, length(subsamples_pair[[1]][[element]])), rep(1, length(subsamples_pair[[2]][[element]])))
         #Add intercept (if non-null)
         if(!is.null(intercept)) {
             #If intercept is a list get the right element!
             if(class(intercept) == "list") {
-                series_pair_out[[element]]$intercept <- intercept[[element]][[1]]
+                subsamples_pair_out[[element]]$intercept <- intercept[[element]][[1]]
             } else {
-                series_pair_out[[element]]$intercept <- intercept
+                subsamples_pair_out[[element]]$intercept <- intercept
             }
         }
     }
-    return(series_pair_out)
+    return(subsamples_pair_out)
 }
 #Estimating intercept function
 intercept.estimate <- function(intercept0, slope) {
@@ -87,12 +87,12 @@ create.model <- function(data, family, intercept = NULL, ...) {
             intercept <- unique(data$intercept)
         } 
         #Estimate the model using the intercept
-        #model <- glm(factor ~ data - 1+offset(intercept), data = data, family = family, ...) # For binomial
-        model <- glm(data ~ factor - 1+offset(intercept), data = data, family = family, ...) 
+        #model <- glm(group ~ data - 1+offset(intercept), data = data, family = family, ...) # For binomial
+        model <- glm(data ~ group - 1+offset(intercept), data = data, family = family, ...) 
     } else {
         #Estimating the intercept and the slope in the model
-        #model <- glm(factor ~ data, data = data, family = family, ...) # For binomial
-        model <- glm(data ~ factor, data = data, family = family, ...)
+        #model <- glm(group ~ data, data = data, family = family, ...) # For binomial
+        model <- glm(data ~ group, data = data, family = family, ...)
     }
 
     return(model)

@@ -4,8 +4,8 @@
 
 # ## Calculating some disparity
 # data(BeckLee_mat99) ; data(BeckLee_tree)
-# suppressMessages(series <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100,80,60), model = "gradual"))
-# bootstraps_dat <- boot.matrix(series, bootstraps = 20, rarefaction = TRUE)
+# suppressMessages(subsamples <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100,80,60), model = "gradual"))
+# bootstraps_dat <- boot.matrix(subsamples, bootstraps = 20, rarefaction = TRUE)
 # disparity_data <- dispRity(bootstraps_dat, metric = mean)
 
 # test_that("Example works", {

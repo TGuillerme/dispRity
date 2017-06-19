@@ -11,10 +11,12 @@
 
 \item{decreasing}{\code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.}
 
-\item{sort}{An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the series.}
+\item{sort}{An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.}
+
+\item{...}{optional arguments to be passed to \code{sort}.}
 }
 \description{
-Sort (or order) the series of a \code{dispRity} object.
+Sort (or order) the subsamples of a \code{dispRity} object.
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
@@ -30,6 +32,6 @@ summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsamples}}, \code{\link{extract.dispRity}}.
 }
 

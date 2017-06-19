@@ -18,7 +18,7 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity, all = TRUE)
 #'
-#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -32,15 +32,15 @@
 # source("make.dispRity.R")
 # source("fetch.dispRity.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.series.R") ; source("time.series_fun.R")
-# source("cust.series.R") ; source("cust.series_fun.R")
+# source("time.subsamples.R") ; source("time.subsamples_fun.R")
+# source("cust.subsamples.R") ; source("cust.subsamples_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-# data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
-# data <- dispRity(data_series_boot, metric = c(variances))
+# data_subsamples_simple <- time.subsamples(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_subsamples_boot <- boot.matrix(data_subsamples_simple, bootstraps = 11, rarefaction = c(5,6))
+# data <- dispRity(data_subsamples_boot, metric = c(variances))
 
 print.dispRity <- function(x, all = FALSE, ...) {
 
@@ -84,29 +84,29 @@ print.dispRity <- function(x, all = FALSE, ...) {
         cat(" ---- dispRity object ---- \n")
 
         ## Print the matrix informations
-        if(any(names(x$call) == "series") && length(x$series) != 1) {
-            ## Get the number of series (minus origin)
-            series <- names(x$series)
+        if(any(names(x$call) == "subsamples") && length(x$subsamples) != 1) {
+            ## Get the number of subsamples (minus origin)
+            subsamples <- names(x$subsamples)
 
-            ## Check if there are more than one series
-            if(length(series) != 1) {
+            ## Check if there are more than one subsamples
+            if(length(subsamples) != 1) {
 
                 ## Get the method
-                method <- x$call$series
+                method <- x$call$subsamples
                 if(length(method) != 1) {
                     method <- paste(method[1], " (", method[2],")", sep = "")
                 }
                 if(method == "customised") {
-                    cat(paste(length(series), method, "series for", nrow(x$matrix), "elements"))    
+                    cat(paste(length(subsamples), method, "subsamples for", nrow(x$matrix), "elements"))    
                 } else {
-                    cat(paste(length(series), method, "time series for", nrow(x$matrix), "elements"))
+                    cat(paste(length(subsamples), method, "time subsamples for", nrow(x$matrix), "elements"))
                 }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
-                if(length(series) > 5) {
-                    cat("    ",paste(series[1:5], collapse=", "),"...\n")
+                if(length(subsamples) > 5) {
+                    cat("    ",paste(subsamples[1:5], collapse=", "),"...\n")
                 } else {
-                    cat("    ",paste(series, collapse=", "), ".\n", sep="")
+                    cat("    ",paste(subsamples, collapse=", "), ".\n", sep="")
                 }
             }
         } else {

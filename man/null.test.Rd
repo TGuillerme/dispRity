@@ -36,17 +36,16 @@ data(BeckLee_mat50)
 ## Calculating the disparity as the ellipsoid volume
 obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
 ## Testing against normal distribution
-results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
-results ; plot(results)
+null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 
 \dontrun{
-## Running the test on multiple series
-## Generating the series
-factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+## Running the test on multiple subsamples
+## Generating the subsamples
+groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-customised_series <- cust.series(BeckLee_mat50, factors)
+customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 ## Calculating variances of each dimension
 sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 ## Testing against normal distribution

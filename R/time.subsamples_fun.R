@@ -29,8 +29,8 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 }
 
 
-## Discrete time series
-time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
+## Discrete time subsamples
+time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
     
     ## lapply fun for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes) {
@@ -63,8 +63,8 @@ time.series.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
     return(interval_elements)
 }
 
-## Continuous time series
-time.series.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+## Continuous time subsamples
+time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
     ## lapply fun gor getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose) {
         ## Get the subtree
@@ -115,9 +115,9 @@ time.series.continuous <- function(data, tree, time, model, FADLAD, verbose) {
     return(slices_elements)
 }
 
-## Making the origin series for a disparity_object
-make.origin.series <- function(data) {
+## Making the origin subsamples for a disparity_object
+make.origin.subsamples <- function(data) {
     origin <- list("elements" = as.matrix(seq(1:nrow(data))))
-    origin_series <- list("origin" = origin)
-    return(origin_series)
+    origin_subsamples <- list("origin" = origin)
+    return(origin_subsamples)
 }

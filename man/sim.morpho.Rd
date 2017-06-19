@@ -46,23 +46,26 @@ For example \code{states = c(0.7, 0.2, 0.1)} will generate 70% of characters wit
 }
 }
 \examples{
-## A random tree with 10 tips
-tree <- rcoal(10)
-## setting up the parameters
-## A gamma rate distribution with of alpha = 0.5
+
+set.seed(4)
+## A random tree with 15 tips
+tree <- rcoal(15)
+## Setting up the parameters
 my_rates = c(rgamma, rate = 10, shape = 5)
-## A fixed substitution rate of 2 (T/T ratio in HKY)
 my_substitutions = c(runif, 2, 2)
 
-## HKY binary (10*50)
+## HKY binary (15*50)
 matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY",
      rates = my_rates, substitution = my_substitutions)
-## Mk matrix (10*50) (for Mkv models)
+
+## Mk matrix (15*50) (for Mkv models)
 matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates) 
-## Mk invariant matrix (10*50) (for Mk models)
+
+## Mk invariant matrix (15*50) (for Mk models)
 matrixMk <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
      invariant = FALSE)
-## MIXED model invariant matrix (10*50)
+
+## MIXED model invariant matrix (15*50)
 matrixMk <- sim.morpho(tree, characters = 50, model = "MIXED",
      rates = my_rates, substitution = my_substitutions,  invariant = FALSE,
      verbose = TRUE)

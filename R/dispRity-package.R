@@ -67,7 +67,7 @@ NULL
 #'
 #' And example of \code{dispRity} object.
 #'
-#' This matrix is based on \code{\link{BeckLee}} dataset and split into 7 continuous series (\code{\link{time.series}}).
+#' This matrix is based on \code{\link{BeckLee}} dataset and split into 7 continuous subsamples (\code{\link{time.subsamples}}).
 #' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 #' Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 #'

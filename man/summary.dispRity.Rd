@@ -20,8 +20,8 @@
 }
 \value{
 A \code{data.frame} with:
-\item{series}{the series names.}
-\item{n}{the number of elements per series.}
+\item{subsamples}{the subsamples names.}
+\item{n}{the number of elements per subsamples.}
 \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
 \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiless of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiless of the observed disparity is displayed).}
 }
