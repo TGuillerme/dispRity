@@ -27,6 +27,6 @@ tree.age(rtree(10), order='present')
 Thomas Guillerme
 }
 \seealso{
-\code{\link{slice.tree}}, \code{\link{time.subsamples}}.
+\code{\link{slice.tree}}, \code{\link{time.series}}.
 }
 

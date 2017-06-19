@@ -249,7 +249,7 @@ The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `hyper
 ## Calculating the ellipsoid volume
 summary(dispRity(dummy_space, metric = ellipse.volume))
 ```
-> Because there is only one subsamples (i.e. one matrix) in the dispRity object, this operation is the equivalent of doing simply `ellipse.volume(dummy_space)` (with rounding).
+> Because there is only one series (i.e. one matrix) in the dispRity object, this operation is the equivalent of doing simply `ellipse.volume(dummy_space)` (with rounding).
 
 ```{r}
 ## Calculating the convex hull surface

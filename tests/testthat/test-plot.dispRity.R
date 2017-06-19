@@ -21,10 +21,10 @@ test_that("set.default works", {
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE)
     expect_equal(
         round(test[[1]], 5)
-        , round(c(0.96824, 2.02266), 5))
+        , round(c(0.90160, 2.01858), 5))
     expect_equal(
         test[[2]]
-        , "Subsamples")
+        , "Series")
     expect_equal(
         test[[3]]
         , "c(median, centroids)")
@@ -72,7 +72,7 @@ test_that("extract.from.summary works", {
         ,as.numeric(rep(NA, 7)))
     expect_equal(
         extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
-        ,c(1.776, 1.808, 1.881, 1.880, 1.902, 1.885, 1.823))
+        ,c(1.780,1.812,1.874,1.877,1.907,1.878,1.818))
 })
 
 test_that("transpose.box works", {
@@ -91,9 +91,9 @@ test_that("transpose.box works", {
         ,c(100, 7))
 
     test <- transpose.box(disparity, rarefaction = FALSE)
-    for(subsamples in 1:length(disparity$subsamples)) {
+    for(series in 1:length(disparity$series)) {
         expect_equal(
-            test[,subsamples]
-            ,as.vector(disparity$disparity[[subsamples]][[2]]))
+            test[,series]
+            ,as.vector(disparity$disparity[[series]][[2]]))
     }
 })

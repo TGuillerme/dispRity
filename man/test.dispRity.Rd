@@ -13,7 +13,7 @@ test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
 
 \item{test}{A test \code{function} to apply to the data.}
 
-\item{comparisons}{If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsamples names/number to compare (see details).}
+\item{comparisons}{If data contains more than two series, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of series names/number to compare (see details).}
 
 \item{rarefaction}{A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).}
 
@@ -33,11 +33,11 @@ Applying statistical tests to dispRity objects
 \details{
 The \code{comparison} argument can be:
 \itemize{
-  \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
-  \item \code{"referential"}: compares the first subsamples to all the others.
-  \item \code{"sequential"}: compares each subsamples sequentially (e.g. first against second, second against third, etc.).
-  \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
-  \item A list of pairs of number of subsamples to compare. Each element of the the list must contain two elements
+  \item \code{"pairwise"}: pairwise comparisons of all the series (default).
+  \item \code{"referential"}: compares the first series to all the others.
+  \item \code{"sequential"}: compares each series sequentially (e.g. first against second, second against third, etc.).
+  \item \code{"all"}: compares all the series simultaneously to the data (i.e. \code{bootstrapped disparity ~ series names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
+  \item A list of pairs of number of series to compare. Each element of the the list must contain two elements
      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
 }
@@ -47,32 +47,32 @@ IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pa
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 
-## Calculating the disparity from a customised subsamples
-## Generating the subsamples
-groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
+## Calculating the disparity from a customised series
+## Generating the series
+factors <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+customised_series <- cust.series(BeckLee_mat50, factors)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 
-## Measuring the subsamples overlap
+## Measuring the series overlap
 test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 
-## Measuring differences from a reference_subsamples
+## Measuring differences from a reference_series
 test.dispRity(sum_of_variances, wilcox.test, "referential")
 
-## Testing the effect of the groups
+## Testing the effect of the factors
 test.dispRity(sum_of_variances, aov, "all")
 ## warning: this violates some aov assumptions!
 
 ## Measuring disparity as a distribution
 disparity_var <- dispRity(bootstrapped_data, metric = variances)
-## Differences between the concatenated bootstrapped values of the subsamples
+## Differences between the concatenated bootstrapped values of the series
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
      concatenate = TRUE, correction = "bonferroni")
-## Differences between the subsamples bootstrapped
+## Differences between the series bootstrapped
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
      concatenate = FALSE, correction = "bonferroni")
 

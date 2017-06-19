@@ -4,7 +4,7 @@
 \alias{extract.dispRity}
 \title{Extracting disparity values.}
 \usage{
-extract.dispRity(data, observed = TRUE, rarefaction = FALSE, subsamples,
+extract.dispRity(data, observed = TRUE, rarefaction = FALSE, series,
   concatenate = TRUE)
 }
 \arguments{
@@ -14,7 +14,7 @@ extract.dispRity(data, observed = TRUE, rarefaction = FALSE, subsamples,
 
 \item{rarefaction}{Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).}
 
-\item{subsamples}{Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).}
+\item{series}{Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).}
 
 \item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.}
 }
@@ -40,6 +40,6 @@ boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
 Thomas Guillerme
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{get.subsamples}}.
+\code{\link{dispRity}}, \code{\link{get.dispRity}}.
 }
 

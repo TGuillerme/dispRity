@@ -5,11 +5,11 @@ context("dispRity")
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-data_subsamples_simple <- time.subsamples(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-data_subsamples_boot <- boot.matrix(data_subsamples_simple, bootstraps = 11, rarefaction = c(5,6))
+data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
 metric = c(sum, variances)
 verbose = TRUE
-data <- data_subsamples_boot
+data <- data_series_boot
 
 test_that("disparity.bootstraps internal works", {
     data(BeckLee_mat50)
@@ -17,7 +17,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    test0 <- disparity.bootstraps(data$series[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a array
     expect_is(
@@ -36,7 +36,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    test1 <- disparity.bootstraps(data$series[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -55,7 +55,7 @@ test_that("disparity.bootstraps internal works", {
     ## Without matrix decomposition
     matrix_decomposition = FALSE
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = NULL, "level1.fun" = mean)
-    test2 <- disparity.bootstraps.silent(test1, metrics_list, data, matrix_decomposition)
+    test2 <- disparity.bootstraps(test1, metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -71,8 +71,8 @@ test_that("disparity.bootstraps internal works", {
 #Loading the data
 load("test_data.Rda")
 data <- test_data$ord_data_tips
-group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
-rownames(group) <- rownames(data)
+factor <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(factor) <- rownames(data)
 
 #Sanitizing
 test_that("Sanitizing works", {
@@ -203,11 +203,11 @@ test_that("dispRity works with a bootstrapped and rarefied matrix", {
 test <- NULL ; data<-test_data$ord_data_tips
 
 
-#one matrix with subsamples
+#one matrix with series
 data<-test_data$ord_data_tips
-data<-custom.subsamples(data, group)
+data<-cust.series(data, factor)
 test<-dispRity(data, metric=c(sum, ranges))
-test_that("dispRity works with custom subsamples", {
+test_that("dispRity works with custom series", {
     expect_is(
         test, "dispRity"
         )
@@ -224,14 +224,14 @@ test_that("dispRity works with custom subsamples", {
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
-#bootstrapped + rarefied + subsamples
-group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(group)<-rownames(data)
-data<-custom.subsamples(data, group)
+#bootstrapped + rarefied + series
+factor<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
+rownames(factor)<-rownames(data)
+data<-cust.series(data, factor)
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 
-test_that("dispRity works with a bootstrapped, rarefied, custom subsamples", {
+test_that("dispRity works with a bootstrapped, rarefied, custom series", {
     expect_is(
         test, "dispRity"
         )
@@ -275,10 +275,10 @@ test <- NULL ; data<-test_data$ord_data_tips
 #         dim(ex2[[1]][[1]][[1]][[1]][[1]]), c(50,48)
 #         )
 
-#     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-#     customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+#     factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+#     customised_series <- cust.series(BeckLee_mat50, factors)
 #     set.seed(1)
-#     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+#     bootstrapped_data <- boot.matrix(customised_series, bootstraps=100)
 #     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
 #     ex3 <- summary(sum_of_ranges, rounding = 2)
@@ -319,16 +319,16 @@ test <- NULL ; data<-test_data$ord_data_tips
 #     ranges_test <- dispRity(data, metric = ranges)
 #     set.seed(1)
 #     ranges_test_bs <- dispRity(boot.matrix(data, 10), metric = ranges)
-#     ranges_test_subsamples <- dispRity(custom.subsamples(data, group), metric = ranges)
+#     ranges_test_series <- dispRity(cust.series(data, factor), metric = ranges)
 #     set.seed(1)
-#     ranges_test_subsamples_bs <- dispRity(boot.matrix(custom.subsamples(data, group), 10), metric = ranges)
+#     ranges_test_series_bs <- dispRity(boot.matrix(cust.series(data, factor), 10), metric = ranges)
 
 #     mean_ranges_test <- dispRity(ranges_test, metric = mean)
 #     set.seed(1)
 #     mean_ranges_test_bs <- dispRity(ranges_test_bs, metric = mean)
-#     mean_ranges_test_subsamples <- dispRity(ranges_test_subsamples, metric = mean)
+#     mean_ranges_test_series <- dispRity(ranges_test_series, metric = mean)
 #     set.seed(1)
-#     mean_ranges_test_subsamples_bs <- dispRity(ranges_test_subsamples_bs, metric = mean)
+#     mean_ranges_test_series_bs <- dispRity(ranges_test_series_bs, metric = mean)
 
 #     #The calculated mean in mean_ranges_test must be equal to the mean in range_test summary
 #     expect_equal(
@@ -338,10 +338,10 @@ test <- NULL ; data<-test_data$ord_data_tips
 #         summary(ranges_test_bs)[1,3], summary(mean_ranges_test_bs)[1,3]
 #         )
 #     expect_equal(
-#         summary(ranges_test_subsamples)[c(1:2),3], summary(mean_ranges_test_subsamples)[c(1:2),3]
+#         summary(ranges_test_series)[c(1:2),3], summary(mean_ranges_test_series)[c(1:2),3]
 #         )
 #     expect_equal(
-#         summary(ranges_test_subsamples_bs)[c(1:2),3], summary(mean_ranges_test_subsamples_bs)[c(1:2),3]
+#         summary(ranges_test_series_bs)[c(1:2),3], summary(mean_ranges_test_series_bs)[c(1:2),3]
 #         )
 
 #     #Same for the bs values
@@ -349,6 +349,6 @@ test <- NULL ; data<-test_data$ord_data_tips
 #         summary(ranges_test_bs)[1,4], summary(mean_ranges_test_bs)[1,4]
 #         )
 #     expect_equal(
-#         summary(ranges_test_subsamples_bs)[c(1:2),4], summary(mean_ranges_test_subsamples_bs)[c(1:2),4]
+#         summary(ranges_test_series_bs)[c(1:2),4], summary(mean_ranges_test_series_bs)[c(1:2),4]
 #         )
 # })

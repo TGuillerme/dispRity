@@ -4,30 +4,30 @@ CI.converter <- function(CI) {
 }
 
 # Wrapping function for summarising a single rarefaction
-get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
+get.summary <- function(disparity_series_rare, cent.tend, quantiles) {
     output <- list()
-    # output$cent_tend <- apply(disparity_subsamples_rare, 1, cent.tend)
+    # output$cent_tend <- apply(disparity_series_rare, 1, cent.tend)
     if(!missing(cent.tend)) {
-        output$cent_tend <- cent.tend(as.vector(disparity_subsamples_rare))
+        output$cent_tend <- cent.tend(as.vector(disparity_series_rare))
     }
-    # output$quantiles <- apply(disparity_subsamples_rare, 1, quantile, probs = CI.converter(quantiles))
+    # output$quantiles <- apply(disparity_series_rare, 1, quantile, probs = CI.converter(quantiles))
     if(!missing(quantiles)) {
-        output$quantiles <- quantile(as.vector(disparity_subsamples_rare), probs = CI.converter(quantiles))
+        output$quantiles <- quantile(as.vector(disparity_series_rare), probs = CI.converter(quantiles))
     }
     return(output)
 }
 
-## Lapply wrapping function for summarising a single subsamples
-lapply.summary <- function(disparity_subsamples, cent.tend, quantiles) {
-    return(lapply(disparity_subsamples[-1], get.summary, cent.tend, quantiles))
+## Lapply wrapping function for summarising a single series
+lapply.summary <- function(disparity_series, cent.tend, quantiles) {
+    return(lapply(disparity_series[-1], get.summary, cent.tend, quantiles))
 }
 
 ## Lapply wrapper for getting elements
-lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
+lapply.get.elements <- function(series, bootstrapped = TRUE) {
     if(bootstrapped){
-        return(unlist(lapply(subsamples[-1], nrow)))
+        return(unlist(lapply(series[-1], nrow)))
     } else {
-        return(unlist(lapply(subsamples, nrow)))
+        return(unlist(lapply(series, nrow)))
     }
 }
 
@@ -62,7 +62,7 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     if(rounding != "default") {
         for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
+            if(class(results_table[,column]) != "factor") {
                 results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
             } else {
                 results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
@@ -71,7 +71,7 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     } else {
         for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
+            if(class(results_table[,column]) != "factor") {
                 if(any(!is.na(results_table[,column]))) {
                     results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
                 }

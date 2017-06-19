@@ -5,12 +5,12 @@
 \alias{matrix.dispRity}
 \title{Fetching a matrix from a \code{dispRity} object.}
 \usage{
-matrix.dispRity(data, subsamples, rarefaction, bootstrap)
+matrix.dispRity(data, series, rarefaction, bootstrap)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsamples}{A \code{numeric} value to select a subsamples (\code{0} is no subsamples; default).}
+\item{series}{A \code{numeric} value to select a series (\code{0} is no series; default).}
 
 \item{rarefaction}{A \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction; default).}
 
@@ -26,12 +26,12 @@ data(disparity)
 ## To get the original matrix
 matrix.dispRity(disparity)
 
-## To get the un-bootstrapped matrix from the second subsamples
-matrix.dispRity(disparity, subsamples = 2)
+## To get the un-bootstrapped matrix from the second series
+matrix.dispRity(disparity, series = 2)
 
 ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
-## same subsamples
-matrix.dispRity(disparity, subsamples = 2, rarefaction = 2, bootstrap = 52)
+## same series
+matrix.dispRity(disparity, series = 2, rarefaction = 2, bootstrap = 52)
 
 }
 \author{

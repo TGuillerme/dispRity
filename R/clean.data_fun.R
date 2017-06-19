@@ -1,31 +1,39 @@
-## Cleaning a tree so that the species match with the ones in a table
+#Cleaning a tree so that the species match with the ones in a table
 clean.tree.table <- function(tree, data) {
 
-    ## Intersecting names between both data sets
-    matching_names <- intersect(tree$tip.label, rownames(data))
+    #create a dummy data
+    dummy_data <- as.data.frame(data)
 
-    ## Which data is present
-    data_match <- rownames(data) %in% matching_names
+    #Adding a row called taxa_names_column containing the taxa names
+    dummy_data[,ncol(data)+1] <- rownames(data)
+    names(dummy_data)[ncol(data)+1] <- "taxa_names_column"
 
-    ## Which tips are present
-    tips_match <- tree$tip.label %in% matching_names
+    #run caper::comparative.data to check the non matching columns/rows
+    missing <- caper::comparative.data(tree, dummy_data, "taxa_names_column", vcv = FALSE, vcv.dim = 2, na.omit = TRUE, force.root = FALSE, warn.dropped = FALSE, scope = NULL)$dropped
 
-    ## Matching the data    
-    if(all(data_match)) {
-        dropped_rows <- NA
+    #Dropping tips (if necessary)
+    if(length(missing$tips) != 0) {
+        #drop the missing tips
+        tree_tmp <- drop.tip(tree, missing$tips)
+        #save the missing tips names
+        dropped_tips <- missing$tips
     } else {
-        rows_numbers <- which(!data_match)
-        dropped_rows <- rownames(data)[rows_numbers]
-        data <- data[-c(rows_numbers),]
-    }
-
-    ## Matching the tree
-    if(all(tips_match)) {
+        #No drop needed!
+        tree_tmp <- tree
         dropped_tips <- NA
-    } else {
-        dropped_tips <- tree$tip.label[!tips_match]
-        tree <- drop.tip(tree, tip = dropped_tips)
     }
 
-    return(list("tree" = tree, "data" = data, "dropped_tips" = dropped_tips, "dropped_rows" = dropped_rows))
+    #Dropping rows (if necessary)
+    if(length(missing$unmatched.rows) != 0) {
+        #Drop the unmatched rows
+        data_tmp <- data[-match(missing$unmatched.rows, dummy_data[,ncol(data)+1]),]
+        #save the dropped rows names
+        dropped_rows <- missing$unmatched.rows
+    } else {
+        #No drop needed!
+        data_tmp <- data
+        dropped_rows <- NA
+    }
+
+    return(list("tree" = tree_tmp, "data" = data_tmp, "dropped_tips" = dropped_tips, "dropped_rows" = dropped_rows))
 }

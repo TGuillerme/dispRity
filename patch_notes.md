@@ -1,17 +1,5 @@
 Patch notes
 ----
-* 2017/??/?? - v0.4.0 *user friendly*
-  * *new* function: `Claddis.ordination` for automatically ordinating data from `Claddis`!
-  * *new* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
-  * *new* function: `merge.subsamples` for... merging subsamples!
-  * *new* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
-  * Input ordinated matrices do not need to be of maximum size `n*(n-1)`. Bigger matrices now only trigger a warning.
-  * **changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
-  * **changed name**: `time.series` is now renamed `time.subsamples`.
-  * **changed name**: `get.subsamples.dispRity` is now renamed `get.subsamples`.
-  * **modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). It's `factor` argument as been changed to `groups` and can now intake a simple list.
-  * Minor bug correction for optional arguments passed to `plot`.
-  * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments sanitising is now passed to `make.metric`.
 * 2017/01/25 - v0.3.0 *dispRity lite!*
   * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
   * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.

@@ -92,8 +92,8 @@ A multidimensional approach with `dispRity`
 Splitting the data
 ------------------
 
-The first step in such analysis will be to create different subsamples that will represent sub-samples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
-Each of these subsamples contain a certain number of elements (i.e. a subset of the 40 experimental field plots) that have some attributes in common.
+The first step in such analysis will be to create different series that will represent sub-samples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
+Each of these series contain a certain number of elements (i.e. a subset of the 40 experimental field plots) that have some attributes in common.
 In our example, we are going to group the elements according to their depth and treatment.
 
 ```{r}
@@ -104,11 +104,11 @@ names(factors) <- c("Treat", "Depth")
 head(factors)
 ```
 
-Second, let’s split the data according to these factors to create the subsamples of the ordinated space by using the `custom.subsamples` function:
+Second, let’s split the data according to these factors to create the series of the ordinated space by using the `cust.series` function:
 
 ```{r}
 ## Splitting the ordinated space into four subsamples
-(customised_subsamples <- custom.subsamples(ord_matrix, factors))
+(customised_series <- cust.series(ord_matrix, factors))
 ```
 
 Note that the output of `dispRity` functions are `dispRity` objects.
@@ -129,10 +129,10 @@ Here we are going to feed the functions `stats::median` and `dispRity::centroids
 
 ```{r}
 ## Calculating disparity as the median distance between each elements and their group centroid
-(disparity <- dispRity(customised_subsamples, metric = c(median, centroids)))
+(disparity <- dispRity(customised_series, metric = c(median, centroids)))
 ```
 
-Similarly than with `custom.subsamples`, `dispRity` displays a `dispRity` object.
+Similarly than with `cust.series`, `dispRity` displays a `dispRity` object.
 To actually look at the calculated values, we can summarise the data by simply using `summary`:
 
 ```{r}
@@ -144,16 +144,16 @@ Bootstrapping the data
 ----------------------
 
 We can also want to bootstrap the data to test the robustness of the measured disparity to outliers.
-Also, as we can see, each subsamples has different numbers of elements.
-It might be interesting to rarefy the data as well to have only subsamples with the same number of elements.
+Also, as we can see, each series has different numbers of elements.
+It might be interesting to rarefy the data as well to have only series with the same number of elements.
 Both steps are easily doable through the `boot.matrix` function.
 
 ```{r}
-## Bootstrapping the customised subsamples 100 times
-(bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100))
+## Bootstrapping the customised series 100 times
+(bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100))
 
-## Bootstrapping the subsamples and using rarefaction (i.e. only re-sampling 17 elements each time)
-(rarefied_data <- boot.matrix(customised_subsamples, bootstraps = 100, rarefaction = 17))
+## Bootstrapping the series and using rarefaction (i.e. only re-sampling 17 elements each time)
+(rarefied_data <- boot.matrix(customised_series, bootstraps = 100, rarefaction = 17))
 ```
 
 We can now rerun a more robust disparity analysis using the bootstrapped data:
@@ -197,7 +197,7 @@ plot(disparity_BS, main = "Bootstrapped data")
 plot(disparity_rare, main = "Rarefied data")
 ```
 
-As we can see, there seems to be no strong effect of the number of experimental plots in each subsamples (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
+As we can see, there seems to be no strong effect of the number of experimental plots in each series (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
 
 Testing the hypothesis
 ----------------------
@@ -212,7 +212,7 @@ summary(test.dispRity(disparity_BS, test = aov, comparisons = "all"))
 summary(test.dispRity(disparity_rare, test = aov, comparisons = "all"))
 
 ## Post-hoc testing of the effect of the two different factors
-## Note that the comparison contains the list of the pairs of subsamples to compare
+## Note that the comparison contains the list of the pairs of series to compare
 test.dispRity(disparity_BS, test = wilcox.test, comparisons = list(c(1,2), c(3,4)))
 
 ## Testing the effect of the two different factors for the rarefied data

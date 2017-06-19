@@ -1,6 +1,6 @@
 #' @title Calculates disparity from an ordinated matrix.
 #'
-#' @description Calculates disparity on an ordinated matrix or subsamples of matrices, where the disparity metric can be user specified.
+#' @description Calculates disparity on an ordinated matrix or series of matrices, where the disparity metric can be user specified.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
@@ -13,13 +13,13 @@
 #' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
 #' \item{disparity}{A \code{list} of disparity values (containing the observed disparity and the eventual bootstrapped one).}
 #' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-#' \item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
+#' \item{series}{A \code{vector} containing the name of the series (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
 #' \code{dispRity} objects can be summarised using \code{print} (S3).
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.series}} or \code{\link{cust.series}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
 #' 
 #' \code{metric} should be input as a vector of functions.
 #' The functions are sorted and used by "level" from "level 3" to "level 1" (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -43,13 +43,14 @@
 #' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
 #' dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
-#' ## Calculating the disparity from a customised subsamples
-#' ## Generating the subsamples
-#' customised_subsamples <- custom.subsamples(BeckLee_mat50,
-#'      list(group1 = 1:(nrow(BeckLee_mat50)/2),
-#'           group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
+#' ## Calculating the disparity from a customised series
+#' ## Generating the series
+#' factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
+#'      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
+#'      dimnames = list(rownames(BeckLee_mat50))))
+#' customised_series <- cust.series(BeckLee_mat50, factors)
 #' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+#' bootstrapped_data <- boot.matrix(customised_series, bootstraps = 100)
 #' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' summary(sum_of_variances)
@@ -68,14 +69,14 @@
 #' \dontrun{
 #' ## Calculating disparity using one thread
 #' system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-#' ## Bootstrapping a subsamples of matrices using 4 threads
+#' ## Bootstrapping a series of matrices using 4 threads
 #' system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 #'      parallel = c(4, "SOCK")))
 #' ## System time is significantly longer! Using parallel is only an improvement
 #' ## for big datasets.
 #' }
 #' 
-#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+#' @seealso \code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -87,17 +88,17 @@
 # source("dispRity.metric.R")
 # source("dispRity.utilities.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.subsamples.R") ; source("time.subsamples_fun.R")
-# source("cust.subsamples.R") ; source("cust.subsamples_fun.R")
+# source("time.series.R") ; source("time.series_fun.R")
+# source("cust.series.R") ; source("cust.series_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_subsamples_simple <- time.subsamples(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-# data_subsamples_boot <- boot.matrix(data_subsamples_simple, bootstraps = 11, rarefaction = c(5,6))
+# data_series_simple <- time.series(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_series_boot <- boot.matrix(data_series_simple, bootstraps = 11, rarefaction = c(5,6))
 # metric = c(sum, variances)
 # verbose = TRUE
-# data <- data_subsamples_boot
+# data <- data_series_boot
 
 dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## ----------------------
@@ -112,7 +113,6 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     ## Check data class
     if(class(data) != "dispRity") {
         check.class(data, "matrix")
-        if(ncol(data) > (nrow(data) - 1)) warning("Input matrix should have at maximum (rows-1) columns.")
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
@@ -156,8 +156,8 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     if(length(data$call$disparity$metrics) == 0) {
         ## Data call had no metric calculated yet
         matrix_decomposition <- TRUE
-        ## Lapply through the subsamples
-        lapply_loop <- data$subsamples
+        ## Lapply through the series
+        lapply_loop <- data$series
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE

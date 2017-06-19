@@ -33,6 +33,6 @@ print.dispRity(disparity, all = TRUE)
 Thomas Guillerme
 }
 \seealso{
-\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{cust.series}}, \code{\link{time.series}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 

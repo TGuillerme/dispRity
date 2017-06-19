@@ -67,9 +67,9 @@ test_that("centroids metric", {
 
     #Checking the centroid argument
     #Wrong argument
-    # expect_error(
-    #     centroids(matrix, centroid = "a")
-    #     )
+    expect_error(
+        centroids(matrix, centroid = "a")
+        )
     #Using the real centroid
     expect_equal(
         cent1, centroids(matrix, centroid = centroid)

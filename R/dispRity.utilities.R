@@ -2,13 +2,13 @@
 
 #' @title Creates a \code{dispRity} object.
 #' 
-#' @usage make.dispRity(data, call, subsamples)
+#' @usage make.dispRity(data, call, series)
 #'
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @param data A \code{matrix}.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
-#' @param subsamples Optional, a \code{list} to be a \code{dispRity} subsamples list.
+#' @param series Optional, a \code{list} to be a \code{dispRity} series list.
 #' 
 #' @examples
 #' ## An empty dispRity object
@@ -20,9 +20,9 @@
 #' 
 #' @author Thomas Guillerme
 
-make.dispRity <- function(data, call, subsamples) {
+make.dispRity <- function(data, call, series) {
     ## Make the empty object
-    dispRity_object <- list("matrix" = NULL , "call" = list(), "subsamples" = list())
+    dispRity_object <- list("matrix" = NULL , "call" = list(), "series" = list())
 
     ## Add the matrix
     if(!missing(data)) {
@@ -36,10 +36,10 @@ make.dispRity <- function(data, call, subsamples) {
         dispRity_object$call <- call
     }
 
-    ## Add the subsamples
-    if(!missing(subsamples)) {
-        check.class(subsamples, "list")
-        dispRity_object$subsamples <- subsamples
+    ## Add the series
+    if(!missing(series)) {
+        check.class(series, "list")
+        dispRity_object$series <- series
     }
 
     class(dispRity_object) <- "dispRity"
@@ -80,13 +80,13 @@ fill.dispRity <- function(data) {
         data$call$dimensions <- ncol(data$matrix)
     }
 
-    ## Fill empty subsamples
-    if(length(data$subsamples) == 0) {
-        data$subsamples <- c(data$subsamples, list(list("elements" = as.matrix(1:nrow(data$matrix)))))
-        #data$subsamples[[1]][[1]] <- matrix(1:nrow(data$matrix))
+    ## Fill empty series
+    if(length(data$series) == 0) {
+        data$series <- c(data$series, list(list("elements" = as.matrix(1:nrow(data$matrix)))))
+        #data$series[[1]][[1]] <- matrix(1:nrow(data$matrix))
     } else {
-        for(subsamples in 2:length(data$subsamples)) {
-            data$subsamples[[subsamples]] <- list("elements" = as.matrix(data$subsamples[[subsamples]]$elements))
+        for(series in 2:length(data$series)) {
+            data$series[[series]] <- list("elements" = as.matrix(data$series[[series]]$elements))
         }
     }
 
@@ -100,7 +100,7 @@ fill.dispRity <- function(data) {
 #' @description Fetching a specific matrix from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsamples A \code{numeric} value to select a subsamples (\code{0} is no subsamples; default).
+#' @param series A \code{numeric} value to select a series (\code{0} is no series; default).
 #' @param rarefaction A \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction; default).
 #' @param bootstrap A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).
 #' 
@@ -111,36 +111,36 @@ fill.dispRity <- function(data) {
 #' ## To get the original matrix
 #' matrix.dispRity(disparity)
 #' 
-#' ## To get the un-bootstrapped matrix from the second subsamples
-#' matrix.dispRity(disparity, subsamples = 2)
+#' ## To get the un-bootstrapped matrix from the second series
+#' matrix.dispRity(disparity, series = 2)
 #' 
 #' ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
-#' ## same subsamples
-#' matrix.dispRity(disparity, subsamples = 2, rarefaction = 2, bootstrap = 52)
+#' ## same series
+#' matrix.dispRity(disparity, series = 2, rarefaction = 2, bootstrap = 52)
 #' 
 #' @author Thomas Guillerme
-matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
+matrix.dispRity <- function(data, series, rarefaction, bootstrap){
 
     ## Sanitizing
     check.class(data, "dispRity")
-    if(missing(subsamples)) {
+    if(missing(series)) {
         return(data$matrix)
     } else {
         if(missing(rarefaction) || missing(bootstrap)) {
-            return(data$matrix[data$subsamples[[subsamples]]$elements, 1:data$call$dimensions])
+            return(data$matrix[data$series[[series]]$elements, 1:data$call$dimensions])
         } else {
-            return(data$matrix[data$subsamples[[subsamples]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
+            return(data$matrix[data$series[[series]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
         }
     }
 }
 
-#' @title Extracts subsamples from a dispRity object.
-#' @aliases get.dispRity, get.subsamples.dispRity
+#' @title Extracts series from a dispRity object.
+#' @aliases get.dispRity
 #'
-#' @description Extracting some subsamples and data from a \code{dispRity} object.
+#' @description Extracting some series and data from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsamples A list of subsamples names or subsamples numbers to be extracted.
+#' @param series A list of series names or series numbers to be extracted.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object.
@@ -149,11 +149,11 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
 #'
-#' ## Get one subsamples
-#' get.subsamples(disparity, "60")
+#' ## Get one series
+#' get.series.dispRity(disparity, "60")
 #'
-#' ## Get two subsamples
-#' get.subsamples(disparity, c(1,5))
+#' ## Get two series
+#' get.series.dispRity(disparity, c(1,5))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
 #'
@@ -162,43 +162,43 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-# bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
+# series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
 # disparity_data <- dispRity(bootstrapped_data, variances)
-# get.subsamples(bootstrapped_data, subsamples = "66.75552") # 1 subsamples for 23 elements
-# get.subsamples(subsamples_full, subsamples = 1) # 1 subsamples for 3 elements
-# get.subsamples(disparity_data, subsamples = c(1,5)) # 2 subsamples for 13 elements
+# get.series.dispRity(bootstrapped_data, series = "66.75552") # 1 series for 23 elements
+# get.series.dispRity(series_full, series = 1) # 1 series for 3 elements
+# get.series.dispRity(disparity_data, series = c(1,5)) # 2 series for 13 elements
 
-get.subsamples <- function(data, subsamples) {
+get.series.dispRity <- function(data, series) {
     ## data
     check.class(data, "dispRity")
 
-    ## subsamples
-    if(length(subsamples) > length(data$subsamples)) {
-        stop("Not enough subsamples in the original data.")
+    ## series
+    if(length(series) > length(data$series)) {
+        stop("Not enough series in the original data.")
     } else {
-        if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
-            if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
-                stop("subsamples not found.")
+        if(class(series) == "numeric" | class(series) == "integer") {
+            if(any(is.na(match(series, 1:length(data$series))))) {
+                stop("Series not found.")
             }
         } else {
-            if(class(subsamples) == "character") {
-                subsamples <- match(subsamples, names(data$subsamples))
-                if(any(is.na(subsamples))) {
-                    stop("subsamples not found.")
+            if(class(series) == "character") {
+                series <- match(series, names(data$series))
+                if(any(is.na(series))) {
+                    stop("Series not found.")
                 }
             } else {
-                stop("subsamples argument must be of class \"numeric\" or \"character\".")
+                stop("Series argument must be of class \"numeric\" or \"character\".")
             }
         }
     }
 
     ## create the new data set
-    data_out <- list("matrix" = data$matrix, "call" = data$call, "subsamples" = data$subsamples[subsamples])
+    data_out <- list("matrix" = data$matrix, "call" = data$call, "series" = data$series[series])
 
     ## Add the disparity (if available)
     if(!is.null(data$call$disparity)) {
-        data_out$disparity <- data$disparity[subsamples]
+        data_out$disparity <- data$disparity[series]
     }
 
     class(data_out) <- "dispRity"
@@ -212,7 +212,7 @@ get.subsamples <- function(data, subsamples) {
 #' @param data A \code{dispRity} object containing disparity results.
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
 #' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
-#' @param subsamples Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).
+#' @param series Optional, a \code{numeric} or \code{character} for which series to get (if missing, the value for all series are given).
 #' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.
 #' 
 #' @examples
@@ -229,19 +229,19 @@ get.subsamples <- function(data, subsamples) {
 #' boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
 #'      rarefaction = 5)
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{get.subsamples}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{get.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-# bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
+# series_full <- time.series(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# bootstrapped_data <- boot.matrix(series_full, bootstraps = 10, rarefaction = c(3, 5))
 # data <- dispRity(bootstrapped_data, c(sum,variances))
-# extract.dispRity(data, observed = FALSE, rarefaction = 5,subsamples = 2)
+# extract.dispRity(data, observed = FALSE, rarefaction = 5,series = 2)
 
-extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamples, concatenate = TRUE) {
+extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, series, concatenate = TRUE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -256,25 +256,25 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
     ## Observed
     check.class(observed, "logical")
 
-    ## subsamples
-    if(missing(subsamples)) {
-        subsamples <- seq(1:length(data$subsamples))
+    ## Series
+    if(missing(series)) {
+        series <- seq(1:length(data$series))
     } else {
-        if(length(subsamples) > length(data$subsamples)) {
-            stop("Not enough subsamples in the original data.")
+        if(length(series) > length(data$series)) {
+            stop("Not enough series in the original data.")
         } else {
-            if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
-                if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
-                    stop("subsamples not found.")
+            if(class(series) == "numeric" | class(series) == "integer") {
+                if(any(is.na(match(series, 1:length(data$series))))) {
+                    stop("Series not found.")
                 }
             } else {
-                if(class(subsamples) == "character") {
-                    subsamples <- match(subsamples, names(data$subsamples))
-                    if(any(is.na(subsamples))) {
-                        stop("subsamples not found.")
+                if(class(series) == "character") {
+                    series <- match(series, names(data$series))
+                    if(any(is.na(series))) {
+                        stop("Series not found.")
                     }
                 } else {
-                    stop("subsamples argument must be of class \"numeric\" or \"character\".")
+                    stop("Series argument must be of class \"numeric\" or \"character\".")
                 }
             }
         }
@@ -297,10 +297,10 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
         lapply.observed <- function(disparity) {
             return(c(disparity$elements))
         }
-        return(lapply(data$disparity[subsamples], lapply.observed))
+        return(lapply(data$disparity[series], lapply.observed))
     } else {
-        output <- lapply(as.list(subsamples), extract.disparity.values, data, rarefaction, concatenate)
-        names(output) <- names(data$subsamples[subsamples])
+        output <- lapply(as.list(series), extract.disparity.values, data, rarefaction, concatenate)
+        names(output) <- names(data$series[series])
         return(output)
     }
 }
@@ -312,8 +312,7 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
 #' @param data a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
-#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsamples of bootstraps (default is \code{TRUE}).
-#' @param ... optional arguments to be passed to \code{scale}.
+#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each series of bootstraps (default is \code{TRUE}).
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -333,9 +332,9 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat50)
-# groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-# customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
-# bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 7, rarefaction = c(10, 25))
+# factors <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+# customised_series <- cust.series(BeckLee_mat50, factors)
+# bootstrapped_data <- boot.matrix(customised_series, bootstraps = 7, rarefaction = c(10, 25))
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 # summary(data) # No scaling
@@ -387,12 +386,11 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 
 #' @title Sorting or ordering a \code{dispRity} object.
 #'
-#' @description Sort (or order) the subsamples of a \code{dispRity} object.
+#' @description Sort (or order) the series of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
 #' @param decreasing \code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.
-#' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.
-#' @param ... optional arguments to be passed to \code{sort}.
+#' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the series.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -403,7 +401,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #' summary(sort(disparity, decreasing = TRUE))
 #' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 #'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsamples}}, \code{\link{extract.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.dispRity}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
 #' @export
@@ -411,8 +409,8 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsamples <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
-# data <- dispRity(subsamples, metric = mean)
+# series <- time.series(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+# data <- dispRity(series, metric = mean)
 # summary(data)
 # summary(sort(data, decreasing = TRUE))
 # summary(sort(data, sort = c(7,1,3,4,5,2,6)))
@@ -423,9 +421,9 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 
     ## data
     check.class(data, "dispRity")
-    ## Initialising subsamples length variable
-    length_subsamples <- length(data$subsamples)
-    if(length_subsamples == 1) stop("Data contains only one subsamples.")
+    ## Initialising series length variable
+    length_series <- length(data$series)
+    if(length_series == 1) stop("Data contains only one series.")
 
     ## decreasing
     check.class(decreasing, "logical")
@@ -433,18 +431,18 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
     ## sort
     if(!missing(sort)) {
         check.class(sort, "numeric")
-        check.length(sort, length_subsamples, " must be the same length as the number of subsamples in data.")
-        if(all.equal(sort(sort), seq(from = 1, to = length_subsamples)) != TRUE) {
-            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_subsamples, ".", sep = ""))
+        check.length(sort, length_series, " must be the same length as the number of series in data.")
+        if(all.equal(sort(sort), seq(from = 1, to = length_series)) != TRUE) {
+            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_series, ".", sep = ""))
         }
     } else {
-        if(decreasing == FALSE) sort <- seq(from = 1, to = length_subsamples)
-        if(decreasing == TRUE) sort <- rev(seq(from = 1, to = length_subsamples))
+        if(decreasing == FALSE) sort <- seq(from = 1, to = length_series)
+        if(decreasing == TRUE) sort <- rev(seq(from = 1, to = length_series))
     }
 
 
-    ## Sorting the subsamples
-    data$subsamples <- data$subsamples[sort]
+    ## Sorting the series
+    data$series <- data$series[sort]
 
     ## Sorting the disparity
     if(!is.null(data$call$disparity)) {
@@ -455,154 +453,3 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 }
 
 
-#' @title Combines or cleans subsamples.
-#'
-#' @description Combines multiple subsamples together or cleans a subsamples series to contain at least n elements.
-#'
-#' @param data A \code{dispRity} object.
-#' @param subsamples Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements per series (see details).
-#' 
-#' @details  
-#' If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1,3,4)} will merge subsamples 1 and 3 into 4, on the opposite, \code{c(3,4,1)} will merge the subsamples 3 and 4 into 1.
-#' When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (appart from the last subsample that gets merged with the previous one).
-#' 
-#' @return
-#' A \code{dispRity} object containing the original matrix and subsamples.
-#' NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
-#' 
-#' @examples
-#' ## Generate subsamples from a dummy matrix
-#' dummy_matrix <- matrix(rnorm(120), 40)
-#' dummy_subsamples <- custom.subsamples(dummy_matrix,
-#'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
-#'                   "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
-#' 
-#' ## Merging the two first subsamples
-#' merge.subsamples(dummy_subsamples, c(1,2))
-#' 
-#' ## Merging the three subsamples by name
-#' merge.subsamples(dummy_subsamples, c("d", "c", "e"))
-#' 
-#' ## Merging the subsamples to contain at least 20 taxa
-#' merge.subsamples(dummy_subsamples, 10)
-#' 
-#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-#'
-#' @author Thomas Guillerme
-
-#For testing
-# stop("DEBUG merge.time.subsamples")
-# source("sanitizing.R")
-# source("dispRity.utilities_fun.R")
-
-# data(disparity)
-# data <- disparity
-# data1 <- time_binsEQ_Beck
-# data2 <- time_binsEQ_Beck
-# after = TRUE
-
-merge.subsamples <- function(data, subsamples) {
-
-    ## Internal cleaning function for only selecting the elements of the list in a subsample
-    select.elements <- function(subsample) {
-        subsample[-1] <- NULL
-        return(subsample)
-    }
-
-    ## Saving the call
-    match_call <- match.call()
-    # match_call <- list(data = "data") ; warning("DEBUG merge.subsamples")
-
-    ## Sanitizing
-
-    ## Data
-    check.class(data, "dispRity")
-    
-    ## Check for previous data    
-    has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
-    has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
-    if(has_disparity && has_bootstrap) {
-        warning(paste(match_call$data, "contained bootstrap and disparity data that has been discarded in the output."))
-        data$disparity <- NULL
-        data$call$disparity <- NULL
-        data$call$bootstrap <- NULL
-        data$subsamples <- lapply(data$subsamples, select.elements)
-    } else {
-        if(has_disparity && !has_bootstrap) {
-            warning(paste(match_call$data, "contained disparity data that has been discarded in the output."))
-            data$disparity <- NULL
-            data$call$disparity <- NULL
-        } else {
-            if(!has_disparity && has_bootstrap) {
-                warning(paste(match_call$data, "contained bootstrap data that has been discarded in the output."))
-                data$call$bootstrap <- NULL
-                data$subsamples <- lapply(data$subsamples, "[[", 1)
-            }
-        }
-    }
-
-    ## subsamples
-    subsamples_class <- check.class(subsamples, c("character", "numeric", "integer"))
-    if(length(subsamples) == 1 && (subsamples_class == "numeric" || subsamples_class == "integer")) {
-        ## Subsamples is the minimum per subsamples
-        clean_data <- TRUE
-        if(subsamples > nrow(data$matrix)) {
-            stop(paste("Minimum sample size (", subsamples, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""))
-        }
-
-    } else {
-        clean_data <- FALSE
-        ## Must be at least two long
-        if(length(subsamples) < 2) stop("Subsamples argument must contain at least two values.")
-        ## Must not contain duplicates
-        if(length(subsamples) != length(unique(subsamples))) stop("Subsamples argument must not contain duplicates.")
-        if(subsamples_class == "character") {
-            ## Must be present in the subsamples names
-            matches <- subsamples %in% names(data$subsamples)
-            if(any(matches == FALSE)) {
-                stop(paste(paste(subsamples[!matches], collapse = " and "), "don't match with any of the subsamples names in", match_call$data))
-            } else {
-                subsamples <- match(subsamples, names(data$subsamples))
-            }
-        } else {
-            if(any(subsamples > length(data$subsamples))) {
-                stop(paste("subsamples", paste(subsamples[which(subsamples > length(data$subsamples))], collapse = " and "), "don't match with any of the subsamples in", match_call$data))
-            }
-        }
-    }
-
-    if(length(data$subsamples) < length(subsamples)) {
-        stop(paste(match_call$data, "does not contain enough subsamples!"))
-    }
-
-    if(clean_data) {
-        ## Cleaning the data
-        for(subs in 1:(length(data$subsamples) - 1)) {
-            ## Loop oversize buffer
-            if(subs > (length(data$subsamples) - 1)) {break}
-            ## Merging subsamples
-            while(nrow(data$subsamples[[subs]]$elements) < subsamples) {
-                data <- merge.two.subsamples(subs1 = subs, subs2 = (subs + 1), data = data)
-            }
-        }
-        ## Final element
-        if(nrow(data$subsamples[[length(data$subsamples)]]$elements) < subsamples) {
-            data <- merge.two.subsamples(subs1 = length(data$subsamples), subs2 = (length(data$subsamples) - 1), data = data)
-        }
-        return(data)
-    } else {
-        ## Merging two subsamples
-        names <- names(data$subsamples)[subsamples]
-        name_replace <- names(data$subsamples)[subsamples[length(subsamples)]]
-        for(subs in 1:(length(subsamples)-1)) {
-            ## Loop oversize buffer
-            if(subs > (length(data$subsamples))) {break}
-            ## Merging subsamples
-            replace_2 <- match(name_replace, names(data$subsamples))
-            replace_1 <- match(names[subs], names(data$subsamples))
-            name_replace <- paste(names[subs], name_replace, sep = "-") 
-            data <- merge.two.subsamples(replace_1, replace_2, data)
-        }
-        return(data)
-    }
-}

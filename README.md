@@ -1,11 +1,10 @@
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.55646.svg)](https://doi.org/10.5281/zenodo.55646)
 
 **dispRity** is a `R` package for summarising ordinated matrices (e.g. MDS, PCA, PCO or PCoA analysis).
 
 <a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
-Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the package's novel features.
+Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the package's novelties.
 
 ## Installing dispRity
 ```r
@@ -15,13 +14,13 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
 
-The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option with `ref="master"`. If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) for the latest developments.
+The following installs the latest released version (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option by `ref="master"`. If you're using the `master` branch, see the latest developement in the [patch note](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
 #### Vignettes
-Note that some of the vignettes do not contain all the details of the chnages from version `0.2`. Refer to each function's manual for more information.
+Note that some of the vignettes do not contain all the details of the improvements from version `0.2`. Refer to each function's manual for more information.
 *  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
 *  A tutorial for palaeobiologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.html).
-*  A tutorial for ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
+*  A tutorial ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
 *  The disparity metrics [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
 *  Simulating morphological characters [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html).
 
@@ -35,10 +34,10 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * **changed argument** in `plot.dispRity`, `type = "lines"` is now replaced by `type = "line"`.
   * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
   
-Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
+Previous patch notes and the *next version* ones can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
-#### Implemented metrics
-A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd). Note, however, that the whole purpose of `dispRity`'s architecture is to allow users to implement their own metrics, so this list is not exhaustive.
+#### Implemented metric
+A list of implemented metrics is available [here](https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.Rmd). Note that the whole idea of `dispRity`'s architecture is to allow users to implement their own metrics though!
 
 Authors
 -------
