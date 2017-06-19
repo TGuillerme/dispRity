@@ -107,7 +107,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
         }
 
     } else {
-        stop("User functions not implemented yet for model argument.")
+        stop("User functions are not supported yet for the model argument.\nTry using \"HKY\", \"ER\" or \"MIXED\".")
         #Add checker for arguments to be passed to users function
     }
 

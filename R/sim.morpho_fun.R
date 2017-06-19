@@ -33,7 +33,7 @@ gen.seq.HKY.binary <- function(tree, substitution, rates, states, verbose, ...) 
     
     ## The character generator function
     HKY.seq.generator <- function(tree, substitution, rate, ...) {
-        return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, stats::runif, pass.to.gen.seq.HKY = TRUE), kappa = sample.distribution(1, substitution), L = 1, rate.scale = sample.distribution(1, rates), ...))
+        return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, stats::runif, pass.to.gen.seq.HKY = TRUE), kappa = abs(sample.distribution(1, substitution)), L = 1, rate.scale = abs(sample.distribution(1, rates)), ...))
     }
 
     ## The character selector (isolating the characters) function
@@ -71,7 +71,7 @@ rTraitDisc.mk <- function(tree, substitution, rates, states, verbose, ...) {
     ## verbose
     if(verbose) cat(".")
     ## Use the rTraitDisc function with ER model
-    return(as.character(rTraitDisc(tree, k = k.sampler(states), rate = sample.distribution(1, rates), model = "ER", states = seq(from=0, to=(length(states))), ...) ))
+    return(as.character(rTraitDisc(tree, k = k.sampler(states), rate = abs(sample.distribution(1, rates)), model = "ER", states = seq(from = 0, to = (length(states))), ...) ))
 }
 
 ## Invariant characters detector
