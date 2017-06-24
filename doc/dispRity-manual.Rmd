@@ -406,7 +406,7 @@ time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
     method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages)
 ## Bootstrapping on the time binning/slicing subsamples
-boot.matrix(time_slices, bootstraps = 1000)
+boot.matrix(time_slices, bootstraps = 100)
 ```
 
 ## Disparity metrics
@@ -752,7 +752,7 @@ This function is a S3 function (`summary.dispRity`) allowing to summarise the co
 crown_stem <- custom.subsamples(BeckLee_mat50,
     group = list("crown" = c(16, 19:41, 45:50), "stem" = c(1:15, 17:18, 42:44)))
 ## Bootstrapping and rarefying these groups
-boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 200, rarefaction = TRUE)
+boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE)
 ## Calculate disparity
 disparity_crown_stem <- dispRity(boot_crown_stem, metric = c(sum, variances))
 
@@ -761,9 +761,17 @@ time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
     method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages)
 ## Bootstrapping on the time binning/slicing subsamples
-boot_time_slices <- boot.matrix(time_slices, bootstraps = 1000)
+boot_time_slices <- boot.matrix(time_slices, bootstraps = 100)
 ## Calculate disparity
 disparity_time_slices <- dispRity(boot_time_slices, metric = c(sum, variances))
+
+## Creating time bins subsamples
+time_bins <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
+    method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages)
+## Bootstrapping on the time binning/slicing subsamples
+boot_time_bins <- boot.matrix(time_bins, bootstraps = 100)
+## Calculate disparity
+disparity_time_bins <- dispRity(boot_time_bins, metric = c(sum, variances))
 ```
 
 This objects are easy to summarise as follow:
@@ -839,7 +847,7 @@ Since `plot.dispRity` uses the arguments from the generic `plot` method, it is o
 
 ```{r, fig.width=8, fig.height=8}
 ## Graphical options
-par(bty = "n")
+op <- par(bty = "n")
 
 ## Plotting the results with some classic options from plot
 plot(disparity_time_slices, col = c("blue", "orange", "green"),
@@ -860,7 +868,7 @@ Additionally to the classic `plot` arguments, the function can also take argumen
 
 ```{r, fig.width=8, fig.height=8}
 ## Graphical options
-par(bty = "n")
+op <- par(bty = "n")
 
 ## Plotting the results with some plot.dispRity arguments
 plot(disparity_time_slices, quantile = c(seq(from=10, to=100, by=10)),
@@ -879,25 +887,23 @@ For comparing results, it is also possible to add a plot to the existent plot by
 
 ```{r, fig.width=8, fig.height=8}
 ## Graphical options
-par(bty = "n")
+op <- par(bty = "n")
 
 ## Plotting the continuous disparity with a fixed y axis
 plot(disparity_time_slices, ylim = c(1, 4))
 ## Adding the discrete data
-plot(disparity_crown_stem, type = "line", ylim = c(1, 4), xlab = "", ylab = "",
+plot(disparity_time_bins, type = "line", ylim = c(1, 4), xlab = "", ylab = "",
     add = TRUE)
 
 ## Resetting graphical parameters
 par(op)
 ```
 
-<!-- Change this example to add time bins! -->
-
 Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the `rarefaction = TRUE` argument:
 
 ```{r, fig.width=8, fig.height=8}
 ## Graphical options
-par(bty = "n")
+op <- par(bty = "n")
 
 ## Plotting the rarefaction curves
 plot(disparity_crown_stem, rarefaction = TRUE)
@@ -906,29 +912,15 @@ plot(disparity_crown_stem, rarefaction = TRUE)
 par(op)
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Testing disparity hypothesis
 
 
-Finally, the `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
+The `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
 The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object, a `test` and a `comparisons` argument.
 
 The `comparisons` argument must indicate the way the test should be applied to the data:
 
- *   `pairwise` (default): to compare each subsamples pairwise
+ *  `pairwise` (default): to compare each subsamples pairwise
 
  *  `referential`: to compare each subsamples to the first one
 
@@ -937,8 +929,8 @@ The `comparisons` argument must indicate the way the test should be applied to t
  *  `all`: to compare all the subsamples together (like in analysis of variance)
 
 It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsamples names to create personalised test.
-Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` and the `dispRity::sequential.test` have a specific way to be applied to the data and therefore ignore the `comparisons` argument.
-
+Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` that has a specific way to be applied to the data and therefore ignore the `comparisons` argument. 
+<!-- Add sequential test one day! -->
 
 The `test` argument can be any statistical or non-statistical test to apply to the disparity object.
 It can be common statistical test functions (e.g. `stats::t.test`), some functions implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
@@ -949,37 +941,95 @@ This function also allows to correct for type I error inflation when using multi
 Note that the `test.dispRity` algorithm deals with some classic tests outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
 It is however possible to get the full detailed output by using the options `details = TRUE`.
 
-```{r, eval=FALSE}
+```{r}
 ## Performing a t-test to the test a difference in disparity between crown and stem mammals
-test.dispRity(disp_crown_stemBS, test = t.test)
+test.dispRity(disparity_crown_stem, test = t.test)
 
 ## Performing the same test but with the detailed t.test output
-test.dispRity(disp_crown_stemBS, test = t.test, details = TRUE)
+test.dispRity(disparity_crown_stem, test = t.test, details = TRUE)
 
 ## Performing a Wilcoxon test applied to sliced disparity the data sequentially with correction
-test.dispRity(disp_time_slicesBS, test = wilcox.test, comparisons = "sequential",
+test.dispRity(disparity_time_slices, test = wilcox.test, comparisons = "sequential",
     correction = "bonferroni")
 
 ## Measuring the overlap between distributions in the time bins (using the implemented
 ## Bhattacharyya Coefficient function - see ?bhatt.coeff)
-test.dispRity(disp_time_binsBS, test = bhatt.coeff)
+test.dispRity(disparity_time_bins, test = bhatt.coeff)
 ```
 
 It is also possible to apply some more *complex* tests that have their own output class (like `stats::aov`).
 The results can then be analysed as usual using the associated `summary` S3 method:
 
-```{r, eval=FALSE}
+```{r}
 ## Performing and ANOVA applied to the same data
-slice_aov <- (test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all"))
+slice_aov <- test.dispRity(disp_time_slicesBS, test = aov, comparisons = "all")
+slice_aov
 
-## The output is a regular ANOVA output...
+## The output is a regular ANOVA output
 class(slice_aov)
 
 ## That can be summarised using summary
 summary(slice_aov)
 ```
+Of course, following the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
+The only condition is that the test can be applied to at least two distributions.
+In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `aov` for example).
 
 ## Disparity as a distribution
+
+Disparity is often regarded as a summary value of the position of the all elements in the ordinated space.
+For example, the sum of variances, the product of ranges or the median distance between the elements and their centroid will summarise disparity as a single value.
+This value can be of course pseudo-replicated (boostraped) in order to obtain a more confident distribution of this summary metric.
+However, another way to perform disparity analysis is to use the whole distribution rather than their summary (e.g. the variances or the ranges).
+
+This is possible in the `dispRity` package by calculating disparity as a level 2 metric only!
+Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxa and their centroid as disparity
+
+```{r}
+## Measuring disparity as a whole distribution
+disparity_centroids <- dispRity(boot_time_slices, metric = centroids)
+```
+
+The resulting disparity object being a level 2, it can easily also be transformed into a level 1 one by for example measuring the median distance of all these distributions:
+
+```{r}
+## Measuring median disparity in each time slice
+disparity_centroids_median <- dispRity(disparity_centroids, metric = median)
+```
+
+And we can now compare the differences between both methods:
+
+```{r}
+## Summarising both disparity measurements:
+## The distributions:
+summary(disparity_centroids)
+## The summary of the distributions (as median)
+summary(disparity_centroids_median)
+```
+
+We can see that the summary message for the distribution is slightly different than before.
+Here `summary` also displays the observed central tendency (i.e. the central tendency of the measured distributions).
+Note that, as expected, it is the same in both metrics!
+
+
+<!-- STOPPED HERE -->
+
+
+```{r, fig.width=8, fig.height=8}
+## Graphical parameters
+op <- par(bty = "n", mfrow = c(1,2))
+
+## Plotting both disparity measurements
+plot(disparity_centroids, ylab = "Distribution of all the distances")
+plot(disparity_centroids_median, ylab = "Distribution of the medians of all the distances")
+
+par(op)
+```
+
+
+The resulted distributions can then be studied the same way as described above.
+
+
 
 ## Ecological study
 
@@ -1177,7 +1227,7 @@ This is the S3 method of `sort` for sorting the subsamples alphabetically (defau
 ```{r, eval=FALSE}
 ## Sorting the disparity subsamples in inverse alphabetic order
 summary(sort(disp_time_slicesBS, decreasing = TRUE))
-
+```
 
 
 ## Modularity
