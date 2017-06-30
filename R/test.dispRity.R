@@ -6,9 +6,9 @@
 #' @param test A test \code{function} to apply to the data.
 #' @param comparisons If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsamples names/number to compare (see details).
 #' @param rarefaction A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).
-#' @param correction Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
+#' @param correction Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}; default = \code{"none"}).
 #' @param concatenate Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).
-#' @param conc.quantiles If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles.
+#' @param conc.quantiles If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles (default = \code{c(mean, c(95, 50))}).
 #' @param details Whether to output the details of each test (non-formatted; default = \code{FALSE}).
 #' @param ... Additional options to pass to the test \code{function}.
 #'
@@ -56,7 +56,8 @@
 #'      concatenate = TRUE, correction = "bonferroni")
 #' ## Differences between the subsamples bootstrapped
 #' test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-#'      concatenate = FALSE, correction = "bonferroni")
+#'      concatenate = FALSE, correction = "bonferroni",
+#'      conc.quantiles = c(mean, c(95, 5)))
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
 #'
@@ -87,7 +88,7 @@
 # test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
-test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NULL, correction, concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)), details = FALSE, ...) { #format: get additional option for input format?
+test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NULL, correction = "none", concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)), details = FALSE, ...) { #format: get additional option for input format?
 
     ## get call
     match_call <- match.call()
@@ -200,11 +201,9 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     }
 
     ## correction
-    if(!missing(correction)) {
-        check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-        if(length(data$data$bootstrap) > 2 & correction == "none") {
-            message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
-        }
+    check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
+    if(length(data$data$bootstrap) > 2 & correction == "none") {
+        message("Multiple p-values will be calculated without adjustment!\nThis will inflate the probability of having significant results.")
     }
 
     ## ----------------------
@@ -222,7 +221,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
         ## Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, test, ...)
-        ## details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, test) ; warning("DEBUG")
+        # details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, test) ; warning("DEBUG")
 
         ## Renaming the detailed results list
         comparisons_list <- save.comparison.list(comp_subsamples, extracted_data)
@@ -248,13 +247,10 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## Sequential.test comparisons (one to each other)
     if(comp == "sequential.test") {
         ## Applying the test to the list of extracted data
-        if(!missing(correction)) {
-            details_out <- test(extracted_data, correction, call = data$call, ...)
-            ## details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
-        } else {
-            details_out <- test(extracted_data, call = data$call, ...)
-            ## details_out <- test(extracted_data, call = data$call, family = gaussian)
-        }
+        details_out <- test(extracted_data, correction, call = data$call, ...)
+        ## details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
+        details_out <- test(extracted_data, call = data$call, ...)
+        ## details_out <- test(extracted_data, call = data$call, family = gaussian)
     }
 
     ## Null testing
@@ -287,10 +283,11 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## htest output
         if(out_class == "htest") {
             if(concatenate) {
-                table_out <- output.htest.results(details_out, comparisons_list)
+                table_out <- output.htest.results(details_out, comparisons_list, correction = correction)
             } else {
-                table_out <- output.htest.results(details_out, comparisons_list, conc.quantiles, con.cen.tend)
+                table_out <- output.htest.results(details_out, comparisons_list, conc.quantiles, con.cen.tend, correction = correction)
             }
+
             return(table_out)
         }
 
@@ -314,7 +311,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
                     return(details_out)
                 }
             }
-
 
             return(table_out)
         }

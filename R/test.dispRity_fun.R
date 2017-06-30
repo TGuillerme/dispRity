@@ -155,7 +155,7 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
 }
 
 ## Returning a table for htests
-output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend, correction) {
     ## Getting the test elements
     test_elements <- unique(unlist(lapply(details_out, lapply, names)))
     ## Selecting the numeric (or) integer elements only
@@ -183,6 +183,15 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
         table_out <- lapply(as.list(test_elements), lapply.output.test.elements, details_out, comparisons_list, conc.quantiles, con.cen.tend)
     } else {
         table_out <- lapply(as.list(test_elements), lapply.output.test.elements, details_out, comparisons_list)
+    }
+
+    ## Applying the correction
+    if(correction != "none") {
+        ## Find which element contains the p-values
+        pvalues <- unlist(lapply(lapply(lapply(table_out, colnames), function(X) X == "p.value"), any))
+        if(any(pvalues)) {
+            table_out[pvalues][[1]] <- apply(table_out[pvalues][[1]], 2, p.adjust, method = correction, n = nrow(table_out[pvalues][[1]]))
+        }
     }
 
     return(table_out)

@@ -5,8 +5,8 @@
 \title{Testing disparity hypothesis}
 \usage{
 test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
-  correction, concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)),
-  details = FALSE, ...)
+  correction = "none", concatenate = TRUE, conc.quantiles = c(mean, c(95,
+  50)), details = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -17,7 +17,7 @@ test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
 
 \item{rarefaction}{A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).}
 
-\item{correction}{Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.}
+\item{correction}{Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}; default = \code{"none"}).}
 
 \item{concatenate}{Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).}
 
