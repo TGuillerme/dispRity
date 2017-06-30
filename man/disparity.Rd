@@ -15,4 +15,3 @@ Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{c
 \seealso{
 McClean_data BeckLee_data
 }
-

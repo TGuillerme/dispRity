@@ -27,10 +27,9 @@ matrix[sample(1:100, 10)] <- "-"
 get.contrast.matrix(matrix)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{check.morpho}}
 }
-
+\author{
+Thomas Guillerme
+}

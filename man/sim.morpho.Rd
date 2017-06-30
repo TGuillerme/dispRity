@@ -71,10 +71,9 @@ matrixMk <- sim.morpho(tree, characters = 50, model = "MIXED",
      verbose = TRUE)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{check.morpho}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
 }
-
+\author{
+Thomas Guillerme
+}

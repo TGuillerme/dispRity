@@ -53,10 +53,9 @@ char.diff_matrix <- char.diff(morpho_matrix)
 plot(char.diff_matrix, type = "density")
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{char.diff}}
 }
-
+\author{
+Thomas Guillerme
+}

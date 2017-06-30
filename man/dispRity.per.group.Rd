@@ -31,10 +31,9 @@ result <- dispRity.per.group(BeckLee_mat50, list(crown = c(16, 19:41, 45:50),
 summary(result) ; plot(result)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{custom.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

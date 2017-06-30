@@ -68,10 +68,9 @@ scatterplot3d(space.maker(5000, 3, c(rnorm, rnorm, runif)), pch = 20)
 }
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{null.test}}, \code{\link{test.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

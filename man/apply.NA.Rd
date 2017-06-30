@@ -52,10 +52,9 @@ my_inapplicables <- c(rep("character", 5), rep("clade", 5))
 matrix <- apply.NA(matrixMk, my_inapplicables, tree, verbose = TRUE)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{sim.morpho}}
 }
-
+\author{
+Thomas Guillerme
+}

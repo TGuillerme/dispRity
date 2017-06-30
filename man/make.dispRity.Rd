@@ -28,4 +28,3 @@ make.dispRity(data = matrix(rnorm(12), ncol = 3))
 \author{
 Thomas Guillerme
 }
-

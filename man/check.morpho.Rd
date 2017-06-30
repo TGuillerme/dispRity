@@ -50,10 +50,9 @@ random.matrix <- sim.morpho(random.tree, characters = 50, model = "ER",
 check.morpho(random.matrix, orig.tree = random.tree)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{sim.morpho}}, \code{\link{get.contrast.matrix}}, \code{\link[phangorn]{optim.parsimony}}
 }
-
+\author{
+Thomas Guillerme
+}

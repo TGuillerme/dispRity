@@ -17,4 +17,3 @@ Example datasets from McClean (unpublished).
 \seealso{
 BeckLee_data disparity
 }
-

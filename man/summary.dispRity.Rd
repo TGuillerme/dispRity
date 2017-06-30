@@ -39,10 +39,9 @@ summary(disparity, quantiles = 75, cent.tend = mean, rounding = 8,
      recall = TRUE)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{plot.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

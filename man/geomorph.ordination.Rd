@@ -4,19 +4,19 @@
 \alias{geomorph.ordination}
 \title{Imports data from geomorph}
 \usage{
-geomorph.ordination(data, k, ...)
+geomorph.ordination(data, ...)
 }
 \arguments{
-\item{data}{An array (p x k x n) containing landmark coordinates for a set of specimens.}
+\item{data}{An array (p x k x n) typically obtained from a procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{geomorph.data.frame} object.}
 
-\item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
-
-\item{...}{Any optional arguments to be passed to \code{\link[geomorph]{gpagen}}.}
+\item{...}{Any optional arguments to be passed to \code{\link[stats]{prcomp}}.}
 }
 \description{
-Takes geomorph landmark data and computes both a procrustes analysis and an ordination
+Takes geomorph procrustes object or a geomorph.data.frame object and performs an ordination.
+}
+\details{
+If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors
 }
 \seealso{
-\code{\link[geomorph]{gpagen}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link[geomorph]{gpagen}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
-

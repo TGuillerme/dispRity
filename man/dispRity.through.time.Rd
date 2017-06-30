@@ -35,10 +35,9 @@ result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
 summary(result) ; plot(result)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

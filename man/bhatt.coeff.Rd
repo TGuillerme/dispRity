@@ -24,13 +24,12 @@ x <- rnorm(1000, 0, 1) ; y <- rnorm(1000, 1, 2)
 bhatt.coeff(x, y)
 
 }
-\author{
-Thomas Guillerme
-}
 \references{
 Bhattacharyya A. \bold{1943}. On a measure of divergence between two statistical populations defined by their probability distributions. Bull. Calcutta Math. Soc., 35, pp. 99-109
 }
 \seealso{
 \code{\link{test.dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}.
 }
-
+\author{
+Thomas Guillerme
+}

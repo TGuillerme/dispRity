@@ -37,10 +37,9 @@ cleaned$tree
 cleaned$data
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{tree.age}}.
 }
-
+\author{
+Thomas Guillerme
+}

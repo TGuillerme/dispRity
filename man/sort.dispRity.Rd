@@ -28,10 +28,9 @@ summary(sort(disparity, decreasing = TRUE))
 summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsamples}}, \code{\link{extract.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

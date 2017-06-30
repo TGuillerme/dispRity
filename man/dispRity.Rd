@@ -88,10 +88,9 @@ system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 }
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

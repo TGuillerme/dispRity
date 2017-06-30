@@ -33,10 +33,9 @@ tree$root.time <- max(tree.age(tree)$ages)
 tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
 }
-
+\author{
+Thomas Guillerme
+}

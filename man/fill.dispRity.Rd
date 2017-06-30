@@ -23,4 +23,3 @@ fill.dispRity(empty)
 \author{
 Thomas Guillerme
 }
-

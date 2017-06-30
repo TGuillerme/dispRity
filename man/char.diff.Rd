@@ -27,13 +27,12 @@ morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 char.diff(morpho_matrix)
 
 }
-\author{
-Thomas Guillerme
-}
 \references{
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
 \code{\link{plot.char.diff}}.
 }
-
+\author{
+Thomas Guillerme
+}

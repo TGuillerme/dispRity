@@ -50,10 +50,9 @@ my_fun <- function(x) (x + sum(x))
 make.metric(my_fun)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 }
-
+\author{
+Thomas Guillerme
+}

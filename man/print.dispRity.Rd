@@ -29,10 +29,9 @@ print.dispRity(disparity) # the same
 print.dispRity(disparity, all = TRUE)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

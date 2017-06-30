@@ -39,10 +39,9 @@ merge.subsamples(dummy_subsamples, c("d", "c", "e"))
 merge.subsamples(dummy_subsamples, 10)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

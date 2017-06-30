@@ -21,7 +21,7 @@ test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
 
 \item{concatenate}{Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).}
 
-\item{conc.quantiles}{If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles.}
+\item{conc.quantiles}{If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles (default = \code{c(mean, c(95, 50))}).}
 
 \item{details}{Whether to output the details of each test (non-formatted; default = \code{FALSE}).}
 
@@ -74,13 +74,13 @@ test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
      concatenate = TRUE, correction = "bonferroni")
 ## Differences between the subsamples bootstrapped
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
-     concatenate = FALSE, correction = "bonferroni")
+     concatenate = FALSE, correction = "bonferroni",
+     conc.quantiles = c(mean, c(95, 5)))
 
-}
-\author{
-Thomas Guillerme
 }
 \seealso{
 \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
 }
-
+\author{
+Thomas Guillerme
+}

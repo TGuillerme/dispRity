@@ -36,10 +36,9 @@ boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
      rarefaction = 5)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{get.subsamples}}.
 }
-
+\author{
+Thomas Guillerme
+}

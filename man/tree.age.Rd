@@ -23,10 +23,9 @@ tree.age(rtree(10), age=50)
 tree.age(rtree(10), order='present')
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{slice.tree}}, \code{\link{time.subsamples}}.
 }
-
+\author{
+Thomas Guillerme
+}

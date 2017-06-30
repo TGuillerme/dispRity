@@ -44,10 +44,9 @@ pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
 pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{test.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

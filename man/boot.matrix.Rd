@@ -73,10 +73,9 @@ system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE,
 }
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

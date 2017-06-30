@@ -51,13 +51,12 @@ results ; plot(results)
 }
 
 }
-\author{
-Thomas Guillerme
-}
 \references{
 Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
 }
 \seealso{
 \code{\link{space.maker}}, \code{\link{test.dispRity}}, \code{\link{sequential.test}}.
 }
-
+\author{
+Thomas Guillerme
+}

@@ -2,10 +2,10 @@
 % Please edit documentation in R/dispRity-package.R
 \name{BeckLee}
 \alias{BeckLee}
-\alias{BeckLee_ages}
+\alias{BeckLee_tree}
 \alias{BeckLee_mat50}
 \alias{BeckLee_mat99}
-\alias{BeckLee_tree}
+\alias{BeckLee_ages}
 \title{Beck and Lee 2014 datasets}
 \format{3 matrices and one phylogenetic tree.}
 \source{
@@ -30,4 +30,3 @@ Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 \seealso{
 McClean_data disparity
 }
-

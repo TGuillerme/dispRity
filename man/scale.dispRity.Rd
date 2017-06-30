@@ -32,10 +32,9 @@ summary(scale(disparity)) # Dividing by the maximum
 summary(scale.dispRity(disparity, max = 0.1))
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 }
-
+\author{
+Thomas Guillerme
+}

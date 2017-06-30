@@ -86,10 +86,9 @@ plot(disparity, type = "continuous", time.subsamples = FALSE,
 plot(disparity, rarefaction = TRUE)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 }
-
+\author{
+Thomas Guillerme
+}
