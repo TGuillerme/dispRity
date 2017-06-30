@@ -2,7 +2,7 @@ Package: dispRity
 Title: Measuring disparity in R
 Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 0.3.9
+Version: 0.4
 Date: 2017-06-19
 Description: this is a modular package for calculating disparity in R. Disparity can be
 	calculated from any ordinated matrix. The package provides a set of implemented

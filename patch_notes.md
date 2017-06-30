@@ -1,8 +1,8 @@
 Patch notes
 ----
-* 2017/06/19 - v0.3.9  (version 0.4 pre-release) <!--*user friendly*-->
+* 2017/06/19 - v0.4.0  (see v.0.3.9 pre-release) *user friendly*
   * Entirely rewritten manual!
-  * *New* function: `Claddis.ordination` for automatically ordinating data from `Claddis`!
+  * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
   * *New* function: `merge.subsamples` for... merging subsamples!
   * *New* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
