@@ -21,7 +21,7 @@ useDynLib(dispRity)
 
 ## Data utilities
 export(Claddis.ordination)
-# export(geomorph.ordination)
+export(geomorph.ordination)
 
 ##Functions
 export(time.subsamples)

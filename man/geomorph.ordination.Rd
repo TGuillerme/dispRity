@@ -7,15 +7,39 @@
 geomorph.ordination(data, ...)
 }
 \arguments{
-\item{data}{An array (p x k x n) typically obtained from a procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{geomorph.data.frame} object.}
+\item{data}{An array (p x k x n) typically obtained from a procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.}
 
 \item{...}{Any optional arguments to be passed to \code{\link[stats]{prcomp}}.}
 }
+\value{
+A \code{matrix} or a \code{dispRity} object.
+}
 \description{
-Takes geomorph procrustes object or a geomorph.data.frame object and performs an ordination.
+Takes geomorph procrustes object or a geomorph.data.frame object and ordinates it.
 }
 \details{
-If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors
+If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors.
+}
+\examples{
+\dontrun{
+require(geomorph)
+## Loading the plethodon dataset
+data(plethodon)
+
+## Performing a procrustes transform
+procrustes <- gpagen(plethodon$land,PrinAxes=FALSE)
+
+## Obtaining the ordination matrix
+geomorph.ordination(procrustes)
+
+
+## Using a geomorph.data.frame
+geomorph_df <- geomorph.data.frame(procrustes,
+     species = plethodon$species, site = plethodon$site)
+
+geomorph.ordination(geomorph_df)
+}
+
 }
 \seealso{
 \code{\link[geomorph]{gpagen}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
