@@ -31,9 +31,10 @@
 #'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
 #'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 #' }
-#' The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-#' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-#' Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
+#TG: The following is form sequential.test (not implemented yet)
+# The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+# \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+# Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 #'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -60,6 +61,28 @@
 #' 
 #' ## Rarefactions plots
 #' plot(disparity, rarefaction = TRUE)
+#' 
+#' \dontrun{
+#' ## Geoscale plots
+#' require(geoscale)
+#' 
+#' ## Converting the data into a list
+#' data_obs <- extract.dispRity(disparity, observed = TRUE)
+#' data_distribution <- extract.dispRity(disparity, observed = FALSE)
+#' ## Removing one list level
+#' data_distribution <- unlist(data_distribution, recursive = FALSE)
+#' data_obs <- as.vector(data_obs)
+#' 
+#' ## Getting the ages
+#' ages <- as.numeric(names(disparity$subsamples))
+#' 
+#' ## Plotting the results median
+#' geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
+#'
+#' ## Plotting the results distribution
+#' geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
+#' }
+#' 
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 #'
@@ -287,6 +310,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## Check class
     silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
     if(class(rarefaction) != "logical") {
+        ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
         ## Check if all subsamples have the appropriate rarefaction level

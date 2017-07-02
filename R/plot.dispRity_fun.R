@@ -324,11 +324,16 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
 ## Transposing data for boxploting (taking functions from summary.dispRity)
 transpose.box <- function(data, rarefaction) {
 
+    get.rare <- function(data, rare){
+        return(data[[rare]])
+    }
+
     if(rarefaction == FALSE) {
+        ## Select the raw data
         box_data <- lapply(data$disparity, function(X) return(X[[2]]))
     } else {
-        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X == rarefaction)-1)
-        get.rare <- function(data, rare) return(data[[rare]])
+        ## Select the rarefaction data
+        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
