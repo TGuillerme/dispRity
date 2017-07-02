@@ -8,7 +8,6 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -50,15 +49,6 @@
 #' ## Bootstrapping the subsamples of matrices 20 times (each)
 #' boot.matrix(matrix_list, bootstraps = 20)
 #' 
-#' \dontrun{
-#' ## Bootstrapping a subsamples of matrices using a single CPU
-#' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-#' ## Bootstrapping a subsamples of matrices using 4 CPUs
-#' system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE,
-#'                         parallel = c(4, "SOCK")))
-#' ## System time is three times shorter with parallel.
-#' }
-#' 
 #' @author Thomas Guillerme
 
 ## DEBUG
@@ -78,8 +68,10 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", parallel) {
+boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full") {
     
+    parallel <- FALSE
+
     match_call <- match.call()
     ## ----------------------
     ## Cleaning and checking
@@ -172,18 +164,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         data$call$dimensions <- ncol(data$matrix)
     }
 
-    ## Parallel
-    if(missing(parallel)) {
-        do_parallel <- FALSE
-    } else {
-        do_parallel <- TRUE
-        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-        ## Set up the cluster
-        cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
-    }
-
     ## Return object if BS = 0
     if(bootstraps == 0) {
         return(data)
@@ -192,12 +172,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## BOOTSRAPING THE DATA
     if(verbose) message("Bootstrapping", appendLF = FALSE)
     ## Bootstrap the data set 
-    if(!do_parallel) {
-        bootstrap_results <- lapply(data$subsamples, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
-    } else {
-        bootstrap_results <- parLapply(cluster, data$subsamples, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
-        stopCluster(cluster)
-    }
+    bootstrap_results <- lapply(data$subsamples, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
     if(verbose) message("Done.", appendLF = FALSE)
 
     ## Combining and storing the results back in the dispRity object

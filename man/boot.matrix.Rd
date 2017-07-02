@@ -5,7 +5,7 @@
 \title{Bootstraps and rarefies ordinated data.}
 \usage{
 boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
-  verbose = FALSE, boot.type = "full", parallel)
+  verbose = FALSE, boot.type = "full")
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).}
@@ -19,8 +19,6 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
-
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -62,15 +60,6 @@ ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
 matrix_list <- custom.subsamples(ordinated_matrix, list(A = 1:5, B = 6:10))
 ## Bootstrapping the subsamples of matrices 20 times (each)
 boot.matrix(matrix_list, bootstraps = 20)
-
-\dontrun{
-## Bootstrapping a subsamples of matrices using a single CPU
-system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-## Bootstrapping a subsamples of matrices using 4 CPUs
-system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE,
-                        parallel = c(4, "SOCK")))
-## System time is three times shorter with parallel.
-}
 
 }
 \seealso{

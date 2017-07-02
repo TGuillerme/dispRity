@@ -4,7 +4,7 @@
 \alias{dispRity}
 \title{Calculates disparity from an ordinated matrix.}
 \usage{
-dispRity(data, metric, ..., verbose = FALSE, parallel)
+dispRity(data, metric, ..., verbose = FALSE)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).}
@@ -14,8 +14,6 @@ dispRity(data, metric, ..., verbose = FALSE, parallel)
 \item{...}{Optional arguments to be passed to the metric.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
-
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -77,15 +75,6 @@ disparity_level1 <- dispRity(disparity_level2, metric = mean)
 summary(disparity_level2)
 summary(disparity_level1)
 
-\dontrun{
-## Calculating disparity using one thread
-system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-## Bootstrapping a subsamples of matrices using 4 threads
-system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
-     parallel = c(4, "SOCK")))
-## System time is significantly longer! Using parallel is only an improvement
-## for big datasets.
-}
 
 }
 \seealso{

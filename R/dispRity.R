@@ -6,7 +6,7 @@
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
-#' @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
+# @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -65,15 +65,15 @@
 #' summary(disparity_level2)
 #' summary(disparity_level1)
 #'
-#' \dontrun{
-#' ## Calculating disparity using one thread
-#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-#' ## Bootstrapping a subsamples of matrices using 4 threads
-#' system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
-#'      parallel = c(4, "SOCK")))
-#' ## System time is significantly longer! Using parallel is only an improvement
-#' ## for big datasets.
-#' }
+# \dontrun{
+# ## Calculating disparity using one thread
+# system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
+# ## Bootstrapping a subsamples of matrices using 4 threads
+# system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
+#      parallel = c(4, "SOCK")))
+# ## System time is significantly longer! Using parallel is only an improvement
+# ## for big datasets.
+# }
 #' 
 #' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 #'
@@ -99,7 +99,7 @@
 # verbose = TRUE
 # data <- data_subsamples_boot
 
-dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
+dispRity <- function(data, metric, ..., verbose = FALSE) { #parallel
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -138,15 +138,16 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
     check.class(verbose, "logical")
 
     ## Parallel
-    if(missing(parallel)) {
+    # if(missing(parallel)) {
         do_parallel <- FALSE
-    } else {
-        do_parallel <- TRUE
-        check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
-        check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-        cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
-    }
+    # } else {
+    #     do_parallel <- FALSE
+    #     warning("parallel option not implemented yet.")
+    #     # check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
+    #     # check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
+    #     # check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
+    #     # cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
+    # }
 
     ## ----------------------
     ## CALCULTING DISPARITY
@@ -165,15 +166,15 @@ dispRity <- function(data, metric, ..., verbose = FALSE, parallel) {
         lapply_loop <- data$disparity
     }
     
-    if(!do_parallel) {
+    # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
         #disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
         if(verbose) message("Done.", appendLF = FALSE)
-    } else {
-        disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        stopCluster(cluster)
-    }
+    # } else {
+    #     disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+    #     stopCluster(cluster)
+    # }
 
     ## Update the disparity
     data$disparity <- disparity
