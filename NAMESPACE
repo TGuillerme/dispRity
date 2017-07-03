@@ -48,7 +48,7 @@ export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)
-export(sequential.test)
+#export(sequential.test)
 export(null.test)
 
 ##dispRity object utilities
