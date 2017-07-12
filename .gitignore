@@ -10,3 +10,6 @@ doc/*.fls
 null.test/*
 #Other drafts
 drafts/*
+
+
+paper/*.fls
