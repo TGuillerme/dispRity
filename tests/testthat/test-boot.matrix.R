@@ -7,6 +7,58 @@ load("test_data.Rda")
 data <- test_data$ord_data_tips
 
 
+## Internal functions tests
+test_that("internal: bootstrap methods", {
+    ## Full bootstrap selects three value
+    expect_equal(
+        length(boot.full(seq(1:20), 3))
+        ,3)
+    ## Full bootstrap selects more values than the sequence length
+    expect_equal(
+        length(boot.full(seq(1:20), 40))
+        ,40)
+
+    ## Single bootstrap doesn't work with less than two values
+    expect_error(boot.single(seq(1:20), 1))
+    ## Single boostrap selects three value
+    expect_equal(
+        length(boot.single(seq(1:20), 3))
+        ,3)
+})
+
+## Internal functions tests
+test_that("internal: bootstrap replicates", {
+    data(disparity)
+    subsamples <- disparity$subsamples[[1]]
+
+    ## Select rarefactions
+    expect_equal(
+        select.rarefaction(subsamples, 8)
+        ,list(18, 8))
+    expect_equal(
+        select.rarefaction(subsamples, c(3,5))
+        ,list(18, 3, 5))
+
+    ## One bootstrap replicate
+    set.seed(1)
+    test_silent <- replicate.bootstraps.silent(6, 5, subsamples, boot.full)
+    set.seed(1)
+    expect_message(test_verbose <- replicate.bootstraps.verbose(6, 5, subsamples, boot.full))
+
+    ## Both are the same!
+    expect_is(test_silent, "matrix")
+    expect_is(test_verbose, "matrix")
+    expect_equal(dim(test_silent), c(6,5))
+    expect_equal(dim(test_verbose), c(6,5))
+    expect_true(all(as.vector(test_silent) == as.vector(test_verbose)))
+
+    ## Bootstrap replicates wrapper
+    test_boot <- bootstrap.wrapper(subsamples, bootstraps = 6, rarefaction = c(3,5), boot.type.fun = boot.full, verbose = FALSE)
+    expect_is(test_boot, "list")
+    expect_equal(length(test_boot), 3)
+    expect_equal(unlist(lapply(test_boot, dim)), c(18, 6, 3, 6, 5, 6))
+})
+
 ## Testing boot.matrix with a single matrix input
 bootstraps = 5
 rarefaction = FALSE
