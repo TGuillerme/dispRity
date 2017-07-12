@@ -93,7 +93,10 @@ plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend
             return(FALSE)
         }
     }
+
+    ## Removing columns with NAs
     NA_columns <- which(apply(matrix, 2, select.nas) == TRUE)
+    
     if(length(NA_columns) != 0) {
         matrix <- matrix[,-NA_columns]
     }
