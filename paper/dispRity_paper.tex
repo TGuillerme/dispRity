@@ -1,0 +1,237 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{natbib}
+
+%Packages
+\usepackage{pdflscape}
+\usepackage{fixltx2e}
+\usepackage{textcomp}
+\usepackage{fullpage}
+\usepackage{float}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{ifthen}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{enumerate}
+\usepackage[osf]{mathpazo}
+\usepackage{dcolumn}
+\usepackage{lineno}
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+\pagenumbering{arabic}
+
+
+%Pagination style and stuff
+\linespread{2}
+\raggedright
+\setlength{\parindent}{0.5in}
+\setcounter{secnumdepth}{0} 
+\renewcommand{\section}[1]{%
+\bigskip
+\begin{center}
+\begin{Large}
+\normalfont\scshape #1
+\medskip
+\end{Large}
+\end{center}}
+\renewcommand{\subsection}[1]{%
+\bigskip
+\begin{center}
+\begin{large}
+\normalfont\itshape #1
+\end{large}
+\end{center}}
+\renewcommand{\subsubsection}[1]{%
+\vspace{2ex}
+\noindent
+\textit{#1.}---}
+\renewcommand{\tableofcontents}{}
+%\bibpunct{(}{)}{;}{a}{}{,}
+
+%---------------------------------------------
+%
+%       START
+%
+%---------------------------------------------
+
+\begin{document}
+
+%Running head
+\begin{flushright}
+Version dated: \today
+\end{flushright}
+\bigskip
+\noindent RH: dispRity package.
+
+\bigskip
+\medskip
+\begin{center}
+
+\noindent{\Large \bf \texttt{dispRity}: a modular \texttt{R} package for measuring disparity.} 
+\bigskip
+
+\noindent {\normalsize \sc Thomas Guillerme$^1$$^,$$^*$}\\
+\noindent {\small \it 
+$^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, Buckhurst Road, Ascot SL5 7PY, United Kingdom.\\}
+\end{center}
+\medskip
+\noindent{*\bf Corresponding author.} \textit{guillert@tcd.ie}\\  
+\vspace{1in}
+
+%Line numbering
+\modulolinenumbers[1]
+\linenumbers
+
+%---------------------------------------------
+%
+%       ABSTRACT
+%
+%---------------------------------------------
+
+\newpage
+\begin{abstract}
+
+\begin{enumerate}
+    \item I present \texttt{dispRity}, an \texttt{R} package form measuring disparity from ordinated matrices. 
+    \item Disparity designates a suit of metrics to describe an ordinated matrix (also referred as morpho/eco/niche/etc.-space).
+    \item The package is based on a highly modular architecture were metrics for measuring disparity and tests for testing evolutionary hypothesis are provided as standalone functions.
+    \item This modular architecture allows great plasticity in using this package, namely by letting users define their own metric of disparity.
+    \item The package also provides numerous tools for modifying, summarising and plotting \texttt{dispRity} objects.
+\end{enumerate}
+
+\end{abstract}
+
+\noindent (Keywords: disparity, ordination, multidimensionality, disparity through time, palaeobiology, ecology)\\
+
+\vspace{1.5in}
+
+\newpage 
+
+%---------------------------------------------
+%
+%       INTRODUCTION
+%
+%---------------------------------------------
+
+\section{Introduction}
+Disparity = multidimensionality
+
+Disparity can be measured in many ways in palaeobiology (cite many examples) or in ecology (donohue and stuff).
+
+Although some packages have disparity components (Claddis, geomorph, adonis), all have their own definition of disparity and makes the whole work idiosuncratic
+
+Therefore I made this package to help measuring disparity
+
+\section{Description}
+
+\subsubsection{The package's data}
+
+Beck and Lee data
+Beck and Lee tree
+Beck and Lee ages
+
+disparity  disparity data
+
+\subsubsection{Running example}
+
+
+\subsection{The \texttt{dispRity} package}
+
+\subsubsection{The package's main functions}
+
+\begin{table}
+    \begin{tabular}{ll}
+        \hline
+        Function & Description \\ 
+        \hline
+        \texttt{geomorph.ordination} & Imports data from the \texttt{geomorph} package. \\
+        \texttt{Claddis.ordination} & Imports data from the \texttt{Claddis} package. \\
+        \texttt{custom.subsamples} & Separates ordinated data in custom subsamples. \\
+        \texttt{time.subsamples} & Separates ordinated data in time subsamples. \\
+        \texttt{boot.matrix} & Bootstraps and rarefies ordinated data or a \texttt{dispRity} object. \\
+        \texttt{dispRity} & Calculates disparity from an ordinated matrix or a \texttt{dispRity} object. \\
+        \texttt{summary.dispRity} & Summarises a \texttt{dispRity} object. \\
+        \texttt{plot.dispRity} & Plots a \texttt{dispRity} object. \\
+        \texttt{test.dispRity} & Applies statistical tests to a \texttt{dispRity} object.\\
+        \texttt{dispRity.per.group} & Pipelined disparity per groups analysis. \\
+        \texttt{dispRity.through.time} & Pipelined disparity through time analysis. \\
+        \texttt{dispRity.metrics} & A set of implemented disparity metrics functions.\\
+        \texttt{dispRity.utilities} & A set of functions for modifying a \texttt{dispRity} object.\\
+        \hline
+    \end{tabular}
+    \caption{Main functions in the \texttt{dispRity} package.}
+\end{table}
+
+\subsection{Fork flow}
+
+Workflow figure
+
+\subsubsection{Input data}
+
+\subsubsection{Manipulating the data}
+
+\subsubsection{Measuring disparity}
+
+\subsubsection{Summarising the data}
+
+Link to graph one two three
+
+\subsubsection{Testing hypothesis}
+
+\subsection{The \texttt{dispRity} object}
+
+Disparity object structure figure
+
+\subsection{Additional functions and data}
+
+The package also contains additional functions not directly linked to the disparity workflow nor to the \texttt{dispRity} object but that can be used as utilities for the studying discrete morphological data.
+
+\begin{table}
+    \begin{tabular}{ll}
+        \hline
+        Function & Description \\ 
+        \hline
+        \texttt{char.diff} & Calculates character differences. \\
+        \texttt{clean.data} & Cleans phylogenetic data (tree and table). \\
+        \texttt{sim.morpho} & Simulates morphological discrete data. \\
+        \texttt{slice.tree} & Slice through a phylogenetic tree. \\
+        \texttt{space.maker} & Creates multidimensional spaces. \\
+        \texttt{tree.age} & Calculates the age of nodes and tips in a tree. \\
+        \hline
+    \end{tabular}
+    \caption{Additional functions in the \texttt{dispRity} package.}
+\end{table}
+
+Additionally, this package also contains an ecology type data set from McClean
+
+McClean data
+
+\section{Conclusion}
+
+This package is good.
+
+\section{Data availability and reproducibility}
+Data are available on Dryad or Figshare.
+Code for reproducing the analyses is available on GitHub (\url{github.com/TGuillerme/SpatioTemporal_Disparity}).
+
+\section{Acknowledgments}
+Thanks to Dave Bapst, Martin Brazeau, Natalie Cooper, Andrew Jackson, Graeme Lloyd and Emma Sherratt.
+I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau.
+
+\section{Funding}
+This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092.
+
+\bibliographystyle{sysbio}
+\bibliography{References}
+
+\end{document}
