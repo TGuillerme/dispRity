@@ -5,6 +5,35 @@ context("custom.subsamples")
 data <- matrix(data = rnorm(10*9), nrow = 10, ncol = 9)
 rownames(data) <- letters[1:10]
 
+## Internal functions
+test_that("check.elements.data.frame", {
+    ## Returns false if all groups have > 3 elements
+    expect_false(check.elements.data.frame(c(rep(1,3), rep(2,4))))
+    ## else returns true
+    expect_true(check.elements.data.frame(c(rep(1,2), rep(2,4))))
+})
+
+test_that("convert.name.to.numbers", {
+    ## Returns the matching rownames ...
+    expect_equal(convert.name.to.numbers(c("a", "b"), data), c(1,2))
+    ## ... in the right input order
+    expect_equal(convert.name.to.numbers(c("d", "a"), data), c(4,1))
+    ## returns NA if no match
+    expect_true(is.na(convert.name.to.numbers(c("X"), data)))
+})
+
+test_that("split.elements.data.frame", {
+    test <- split.elements.data.frame(c(rep(1,5), rep(2,5)), data)
+
+    ## Must be a list of two elements ("1" and "2") with a list of 5 elements each within.
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(names(test), c("1", "2"))
+    expect_equal(as.vector(unlist(lapply(test, lapply, length))), c(5,5))
+
+})
+
+
 ## Sanitizing
 test_that("Sanitizing works", {
     ## class

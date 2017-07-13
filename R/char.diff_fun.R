@@ -1,35 +1,35 @@
+## Convert character
+convert.character <- function(X) {
+    if(class(X) == "numeric") {
+        X <- LETTERS[X+1]
+    } else {
+        X <- as.factor(X)
+        levels(X) <- 1:length(levels(X))
+        X <- as.numeric(X)
+    }
+    return(X)
+}
+
+## Transform states into similar values
+normalise.character <- function(X, states) {
+    ## Convert X to character
+    if(class(X) != "numeric") {
+        X <- convert.character(X)
+    }
+    X <- as.character(X)
+    ## Get the states of X
+    states_match <- sort(match(states, X))
+
+    ## Replacing the original states
+    for(state in 1:length(states)) {
+        X <- gsub(X[states_match[state]], LETTERS[state], X)
+    }
+    X <- convert.character(X)
+    return(X)
+}
+
 ## R version of the code (SLOW!)
 char.diff_R <- function(X, Y){ 
-
-    ## Convert character
-    convert.character <- function(X) {
-        if(class(X) == "numeric") {
-            X <- LETTERS[X+1]
-        } else {
-            X <- as.factor(X)
-            levels(X) <- 1:length(levels(X))
-            X <- as.numeric(X)
-        }
-        return(X)
-    }
-
-    ## Transform states into similar values
-    normalise.character <- function(X, states) {
-        ## Convert X to character
-        if(class(X) != "numeric") {
-            X <- convert.character(X)
-        }
-        X <- as.character(X)
-        ## Get the states of X
-        states_match <- sort(match(states, X))
-
-        ## Replacing the original states
-        for(state in 1:length(states)) {
-            X <- gsub(X[states_match[state]], LETTERS[state], X)
-        }
-        X <- convert.character(X)
-        return(X)
-    }
 
     ## Convert the characters to numeric (if needed)
     if(class(X) != "numeric") {
@@ -76,24 +76,23 @@ char.diff_R <- function(X, Y){
 }
 
 
+## Functions for getting the the density plot limits
+get.max.x <- function(density) return(max(density$x))
+get.max.y <- function(density) return(max(density$y))
+get.min.x <- function(density) return(min(density$x))
+get.min.y <- function(density) return(min(density$y))
+
+## Removing columns with only NAs
+select.nas <- function(column) {
+    if((length(column) - length(which(is.na(column)))) <= 2) {
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
+}
+
 
 plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab) {
-
-    ## Functions for getting the the density plot limits
-    get.max.x <- function(density) return(max(density$x))
-    get.max.y <- function(density) return(max(density$y))
-    get.min.x <- function(density) return(min(density$x))
-    get.min.y <- function(density) return(min(density$y))
-
-    ## Removing columns with only NAs
-    select.nas <- function(column) {
-        if((length(column) - length(which(is.na(column)))) <= 2) {
-            return(TRUE)
-        } else {
-            return(FALSE)
-        }
-    }
-
     ## Removing columns with NAs
     NA_columns <- which(apply(matrix, 2, select.nas) == TRUE)
     
