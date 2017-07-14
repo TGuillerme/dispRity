@@ -1,5 +1,48 @@
 context("dispRity.utilities")
 
+## utilities internals
+test_that("utilities internal: extract.disparity.values", {
+    data(disparity)
+    data <- disparity
+    test_con <- extract.disparity.values(1, data, rarefaction = FALSE, concatenate = TRUE)
+    ## extract list of 100 (bs) numeric elements
+    expect_is(test_con, "list")
+    expect_is(test_con[[1]], "numeric")
+    expect_equal(length(test_con[[1]]), data$call$bootstrap[[1]])
+
+    test_uncon <- extract.disparity.values(1, data, rarefaction = FALSE, concatenate = FALSE)
+    ## extract list of 100 (bs) numeric elements
+    expect_is(test_uncon, "list")
+    expect_is(test_uncon[[1]], "numeric")
+    expect_equal(length(test_uncon[[1]]), 1)
+    expect_equal(length(test_uncon), data$call$bootstrap[[1]])
+})
+
+test_that("utilities internal: clean.list", {
+    dummy_list <- list("a" = NULL, "b" = 1, "c" = list(NULL, 1))
+    test <- clean.list(dummy_list)
+    expect_is(test, "list")
+    expect_equal(length(test), length(dummy_list)-1)
+})
+
+test_that("utilities internal: recursive.sort", {
+    expect_equal(recursive.sort(LETTERS[1:5], 5:1), rev(LETTERS[1:5]))
+})
+
+test_that("utilities internal: merge.two.subsamples", {
+    data(disparity)
+    data <- disparity
+
+    ## Merging two first subsamples
+    test <- merge.two.subsamples(1,2, data)
+
+    expect_is(test, "dispRity")
+    expect_equal(length(test), 4)
+    expect_is(test$subsamples, "list")
+    expect_equal(length(test$subsamples),length(data$subsamples)-1)
+    expect_equal(names(test$subsamples)[1], paste(names(data$subsamples)[1:2], collapse = "-"))
+})
+
 ## make.dispRity
 test_that("make.matrix", {
     test1 <- make.dispRity()
