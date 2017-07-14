@@ -2,7 +2,21 @@
 
 context("dispRity.metric")
 
+
+
 #Testing the metrics
+test_that("k.root", {
+    mat <- matrix(abs(rnorm(25)), 5, 5)
+    test <- k.root(mat, 5)
+    ## Right format
+    expect_is(test, "matrix")
+    expect_equal(dim(test), dim(mat))
+    ## Repeatable
+    expect_true(all(test == k.root(mat, 5)))
+    ## Number of dimensions matters
+    expect_true(all(mat == k.root(mat, 1)))
+})
+
 test_that("variances metric", {
     #Create a dummy matrix
     matrix <- replicate(50, rnorm(100))
@@ -303,4 +317,9 @@ test_that("hyper.volume metric", {
     expect_equal(
         round(hyper.volume(matrix), 3)
         ,10.83)
+})
+
+test_that("diagonal", {
+    matrix <- matrix(seq(1:25), 5, 5)
+    expect_equal(diagonal(matrix), sqrt(20))
 })
