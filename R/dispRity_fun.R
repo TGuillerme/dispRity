@@ -67,9 +67,9 @@ get.dispRity.metric.handle <- function(metric, match_call) {
 
 
 ## Combining the disparity results with the elements
-combine.disparity <- function(one_disparity_subsamples, one_bootstrap_subsamples) {
-    return(c(one_bootstrap_subsamples[1], one_disparity_subsamples))
-}
+# combine.disparity <- function(one_disparity_subsamples, one_bootstrap_subsamples) {
+#     return(c(one_bootstrap_subsamples[1], one_disparity_subsamples))
+# }
 
 ## Getting the first metric
 get.first.metric <- function(metrics_list_tmp) {
@@ -89,21 +89,21 @@ get.first.metric <- function(metrics_list_tmp) {
     return(list(metric_out, metrics_list_tmp, metric))
 }
 
-## Generates the output vector for the decomposition function
-generate.empty.output <- function(one_subsamples_bootstrap, data, level) {
-    if(level == 3) {
-        ## Return an array
-        return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsamples_bootstrap))))
-    }
-    if(level == 2) {
-        ## Return a matrix
-        return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_subsamples_bootstrap)))
-    }
-    if(level == 1) {
-        ## Return a vector
-        return(numeric(ncol(one_subsamples_bootstrap)))
-    }
-}
+# ## Generates the output vector for the decomposition function
+# generate.empty.output <- function(one_subsamples_bootstrap, data, level) {
+#     if(level == 3) {
+#         ## Return an array
+#         return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsamples_bootstrap))))
+#     }
+#     if(level == 2) {
+#         ## Return a matrix
+#         return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_subsamples_bootstrap)))
+#     }
+#     if(level == 1) {
+#         ## Return a vector
+#         return(numeric(ncol(one_subsamples_bootstrap)))
+#     }
+# }
 
 ## Apply decompose matrix
 apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
