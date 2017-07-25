@@ -83,6 +83,7 @@ char.diff <- function (matrix)  {
 #' @param legend A logical value stating whether to print the legend or not (default = \code{TRUE}).
 #' @param legend.title A \code{character} string to be displayed as the title of the legend (default = \code{Difference}).
 #' @param legend.pos The position of the legend. Can be two \code{numeric}. Default is \code{"topleft"}.
+#' @param legend.round A \code{numeric} value for rounding up legend values. Default is \code{0}.
 #' @param axis A logical value stating whether to print the axis or not (default = \code{TRUE}).
 #' @param xlim Two \code{numeric} values to determine the x axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
 #' @param ylim Two \code{numeric} values to determine the y axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
@@ -111,7 +112,7 @@ char.diff <- function (matrix)  {
 #' @export
 #' 
 
-plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...) {
+plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...) {
 
     ## Saving the call
     match_call <- match.call()
@@ -145,13 +146,15 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
         check.length(legend.pos, 2, " must be a logical value or two character strings.")
     }
     check.class(legend.title, "character")
-    check.length(legend.title, 1, " must be a single character sting.")
+    check.length(legend.title, 1, " must be a single character string.")
     legend_pos_class <- check.class(legend.pos, c("character", "numeric"))
     if(legend_pos_class == "character") {
-        check.length(legend.pos, 1, " must be a single character sting or a pair of coordinates.")
+        check.length(legend.pos, 1, " must be a single character string or a pair of coordinates.")
     } else {
-        check.length(legend.pos, 2, " must be a single character sting or a pair of coordinates.")
+        check.length(legend.pos, 2, " must be a single character string or a pair of coordinates.")
     }
+    check.class(legend.round, "numeric")
+    check.length(legend.round, 1, " must be a single numeric value.")
 
     ## axis
     check.class(axis, "logical")
@@ -163,7 +166,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             main <- "Character differences profile"
         } else {
             check.class(main, "character")
-            check.length(main, 1, " must be a single character sting.", errorif = FALSE)
+            check.length(main, 1, " must be a single character string.", errorif = FALSE)
         }
         if(class(legend) == "logical" & legend == TRUE) {
             legend <- c("Combined", "Individual")
@@ -178,13 +181,13 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             xlab <- "Character differences"
         } else {
             check.class(xlab, "character")
-            check.length(xlab, 1, " must be a single character sting.", errorif = FALSE) 
+            check.length(xlab, 1, " must be a single character string.", errorif = FALSE) 
         }
         if(missing(ylab)) {
             ylab <- "Density"
         } else {
             check.class(ylab, "character")
-            check.length(ylab, 1, " must be a single character sting.", errorif = FALSE) 
+            check.length(ylab, 1, " must be a single character string.", errorif = FALSE) 
         }
 
     } else {
@@ -219,7 +222,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
 
         ## Adding the legend
         if(legend) {
-            legend("topleft", legend = c(as.character(round(max(matrix, na.rm = TRUE), 2)), as.character(round(min(matrix, na.rm = TRUE), 2))), title = legend.title, col = col, pch = 19)
+            legend("topleft", legend = c(as.character(round(max(matrix, na.rm = TRUE), legend.round)), as.character(round(min(matrix, na.rm = TRUE), legend.round))), title = legend.title, col = col, pch = 19)
         }
     } else {
         ## Plotting the density profile
