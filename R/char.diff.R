@@ -163,7 +163,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             main <- "Character differences profile"
         } else {
             check.class(main, "character")
-            check.class(main, 1, " must be a single character sting.", errorif = FALSE)
+            check.length(main, 1, " must be a single character sting.", errorif = FALSE)
         }
         if(class(legend) == "logical" & legend == TRUE) {
             legend <- c("Combined", "Individual")
@@ -178,13 +178,13 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             xlab <- "Character differences"
         } else {
             check.class(xlab, "character")
-            check.class(xlab, 1, " must be a single character sting.") 
+            check.length(xlab, 1, " must be a single character sting.", errorif = FALSE) 
         }
         if(missing(ylab)) {
             ylab <- "Density"
         } else {
             check.class(ylab, "character")
-            check.class(ylab, 1, " must be a single character sting.") 
+            check.length(ylab, 1, " must be a single character sting.", errorif = FALSE) 
         }
 
     } else {
