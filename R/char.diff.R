@@ -163,7 +163,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             main <- "Character differences profile"
         } else {
             check.class(main, "character")
-            check.class(main, 1, " must be a single character sting.")
+            check.class(main, 1, " must be a single character sting.", errorif = FALSE)
         }
         if(class(legend) == "logical" & legend == TRUE) {
             legend <- c("Combined", "Individual")
