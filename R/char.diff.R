@@ -214,7 +214,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
         colheat <- rev(colfunc(10))
 
         ## Plotting the heat map
-        image(matrix, col = colheat, axes = FALSE, ...)
+        image(matrix, col = colheat, axes = FALSE, main = main, ...)
         if(axis) {
             axis(1, at = seq(from = 0, to = 1, length.out = ncol(matrix)), labels = FALSE, tick = TRUE)
             axis(2, at = seq(from = 0, to = 1, length.out = ncol(matrix)), labels = FALSE, tick = TRUE)
