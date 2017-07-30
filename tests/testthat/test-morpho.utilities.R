@@ -43,14 +43,14 @@ test_that("inap.clade", {
     rownames(matrix) <- test_tree$tip.label
     target_character <- matrix[,1]
     set.seed(1)
-    grade <- inap.clade(target_character, tree)
-    clade <- inap.clade(target_character, tree)
+    grade <- inap.clade(target_character, test_tree)
+    clade <- inap.clade(target_character, test_tree)
     expect_is(grade, "character")
     expect_is(clade, "character")
     expect_equal(length(grade), length(clade))
     expect_equal(length(grade), Ntip(test_tree))
-    expect_equal(as.vector(grade), c("-", "-", "-", "-", "-", "1", "-", "-", "0", "1", "-", "1", "-", "-", "-", "-", "-", "1", "-", "-"))
-    expect_equal(as.vector(clade), c("1", "0", "0", "1", "1", "1", "0", "1", "-", "1", "1", "-", "1", "1", "1", "0", "0", "1", "1", "0" ))
+    expect_equal(as.vector(grade), c("-", "-", "-", "-", "-", "-", "0", "1", "0", "1", "1", "1", "1", "1", "1", "0", "0", "1", "-", "-"))
+    expect_equal(as.vector(clade), c("1", "0", "0", "1", "1", "1", "0", "1", "0", "1", "1", "1", "1", "1", "1", "-", "-", "1", "1", "0"))
 })
 
 test_that("lapply.inap.clade", {
