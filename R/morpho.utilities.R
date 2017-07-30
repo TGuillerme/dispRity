@@ -85,7 +85,7 @@ get.contrast.matrix <- function(matrix) {
 #' @param tree If any inapplicable source is \code{"clade"}, a tree from where to select the clades.
 #' @param invariant Whether to allow invariant sites among the characters with inapplicable data. If \code{invariant = FALSE} the algorithm will try to remove such characters (if possible).
 #' @param verbose Whether to be verbose or not.
-#' @param ... Any additional arguments.
+##' @param ... Any additional arguments.
 #' 
 #' @details
 #' If the \code{NAs} argument is a numeric value n, generates n characters with inapplicable data based on the \code{"clade"} source.
@@ -120,7 +120,7 @@ get.contrast.matrix <- function(matrix) {
 #' 
 #' @author Thomas Guillerme
 
-apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE, ...) {
+apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, ...) {
 
     ## SANITIZING
     ## matrix

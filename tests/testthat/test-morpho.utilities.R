@@ -2,36 +2,65 @@
 
 context("morpho.utilities")
 
-#get.contrast.matrix
-test_that("get.contrast.matrix", {
-    #Errors
-    expect_error(
-        get.contrast.matrix(mean)
-        )
-    # A simple 2 by 2 matrix (0 1)
-    expect_equal(
-        dim(get.contrast.matrix(matrix(data = c(0,1,0,1), ncol = 2 ))), c(2,2)
-        )
-    expect_true(
-        all(get.contrast.matrix(matrix(data = c(0,1,0,1), ncol = 2 )) == matrix(data = c(1,0,0,1), ncol = 2 ))
-        )
 
-    # A 2 by 2 with ?
-    expect_equal(
-        dim(get.contrast.matrix(matrix(data = c("A","B","A","?"), ncol = 2 ))), c(3,2)
-        )
-    expect_true(
-        all(get.contrast.matrix(matrix(data = c("A","B","A","?"), ncol = 2 )) == matrix(data = c(1,0,0,1,1,1), ncol = 2 , byrow=TRUE))
-        )
-
-    # A "complex" one with inapplicables
-    expect_equal(
-        dim(get.contrast.matrix(matrix(data = c("A","0","-","?", "!", "A"), ncol =3 ))), c(5,4)
-        )
-    expect_true(
-        all(get.contrast.matrix(matrix(data = c("A","0","-","?", "!", "A"), ncol =3 )) == matrix(data = c(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 1,1,1,1), ncol = 4 , byrow=TRUE))
-        )
+## Internals
+test_that("state.selector", {
+    set.seed(1)
+    character <- sample((1:10), 10, replace = TRUE)
+    expect_equal(state.selector(character), c(1, 3, 4, 6, 7, 9, 10))
 })
+
+
+test_that("inap.character", {
+    set.seed(1)
+    target <- as.character(sample(c(0,1), 10, replace = TRUE))
+    pattern <- as.character(sample(c(0,1), 10, replace = TRUE))
+    expect_equal(inap.character(target, pattern), c("-", "-", "1", "-", "0", "-", "1", "1", "-", "0"))
+})
+
+test_that("mapply.inap.character", {
+    set.seed(1)
+    matrix <- matrix(as.character(sample(c(0,1), 20, replace = TRUE)), ncol = 2)
+    inap_char <- mapply.inap.character(1,2, matrix, invariant = TRUE)
+    expect_is(inap_char, "character")
+    expect_equal(length(inap_char), nrow(matrix))
+    expect_equal(inap_char, inap.character(matrix[,1], matrix[,2]))
+})
+
+test_that("select.clade", {
+    set.seed(1)
+    test_tree <- rtree(20, br = NULL)
+    clade <- select.clade(test_tree)
+    expect_is(clade, "character")
+    expect_equal(length(clade), 8)
+    expect_equal(clade, c("t15", "t3", "t6", "t2", "t16", "t12", "t1", "t18"))
+})
+
+test_that("inap.clade", {
+    set.seed(1)
+    test_tree <- rtree(20, br = NULL)
+    matrix <- matrix(as.character(sample(c(0,1), 40, replace = TRUE)), ncol = 2)
+    rownames(matrix) <- test_tree$tip.label
+    target_character <- matrix[,1]
+    set.seed(1)
+    grade <- inap.clade(target_character, tree)
+    clade <- inap.clade(target_character, tree)
+    expect_is(grade, "character")
+    expect_is(clade, "character")
+    expect_equal(length(grade), length(clade))
+    expect_equal(length(grade), Ntip(test_tree))
+    expect_equal(as.vector(grade), c("-", "-", "-", "-", "-", "1", "-", "-", "0", "1", "-", "1", "-", "-", "-", "-", "-", "1", "-", "-"))
+    expect_equal(as.vector(clade), c("1", "0", "0", "1", "1", "1", "0", "1", "-", "1", "1", "-", "1", "1", "1", "0", "0", "1", "1", "0" ))
+})
+
+test_that("lapply.inap.clade", {
+    set.seed(1)
+    test_tree <- rtree(20, br = NULL)
+    matrix <- matrix(as.character(sample(c(0,1), 40, replace = TRUE)), ncol = 2)
+    expect_is(lapply.inap.clade(2, matrix, test_tree, invariant = TRUE), "character")
+})
+
+
 
 # get.contrast.matrix
 test_that("get.contrast.matrix", {
@@ -63,6 +92,7 @@ test_that("get.contrast.matrix", {
         all(get.contrast.matrix(matrix(data = c("A","0","-","?", "!", "A"), ncol =3 )) == matrix(data = c(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 1,1,1,1), ncol = 4 , byrow=TRUE))
         )
 })
+
 
 # apply.NA
 test_that("apply.NA", {

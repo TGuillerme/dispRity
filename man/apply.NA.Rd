@@ -4,7 +4,7 @@
 \alias{apply.NA}
 \title{Apply inapplicable characters to a matrix.}
 \usage{
-apply.NA(matrix, NAs, tree, invariant = FALSE, verbose = FALSE, ...)
+apply.NA(matrix, NAs, tree, invariant = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{matrix}{A discrete morphological matrix.}
