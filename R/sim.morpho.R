@@ -50,7 +50,7 @@
 #'      invariant = FALSE)
 #'
 #' ## MIXED model invariant matrix (15*50)
-#' matrixMk <- sim.morpho(tree, characters = 50, model = "MIXED",
+#' matrixMixed <- sim.morpho(tree, characters = 50, model = "MIXED",
 #'      rates = my_rates, substitution = my_substitutions,  invariant = FALSE,
 #'      verbose = TRUE)
 #' 
