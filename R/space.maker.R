@@ -9,6 +9,7 @@
 #' @param distribution One or more \code{function} to determine the distribution of the \code{elements} along each \code{dimensions}. The function must have a single input: \code{elements}.
 #' @param arguments Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).
 #' @param cor.matrix An optional correlation \code{matrix} of size \code{dimensions * dimensions} (\code{default = NULL}, see details).
+#' @param scree An optional proportional \code{numeric} vector for approximating the \code{dimensions} variance (\code{default = NULL}, see details).
 #'
 #' @details
 #' For passing some additional arguments to different distributions, they must be given as a \code{list} to each function in the order they appear.
@@ -17,6 +18,7 @@
 #'
 #' The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 #' If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
+#' The \code{scree} argument is simply a value multiplier for each dimensions to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
 #' 
 #'
 #' @examples
@@ -25,7 +27,6 @@
 #'
 #' ## A circular space
 #' plot(space.maker(5000, 2, rnorm), pch = 20)
-#' 
 #'
 #' ## A 2D cilindrical space
 #' plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
@@ -39,6 +40,11 @@
 #' cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
 #' space <- space.maker(10000, 3, rnorm, cor.matrix = cor_matrix)
 #' round(cor(space), 1) ; cor_matrix ## Both should be really similar matrices
+#' 
+#' ## A 3 dimensional with a priori approximated variance per dimension
+#' space <- space.maker(10000, 3, rnorm, scree = c(0.6 ,0.3, 0.1))
+#' ## The resulting screeplot
+#' barplot(apply(space, 2, var))
 #' 
 #' \dontrun{
 #' require(scatterplot3d)
@@ -68,7 +74,8 @@
 # dimensions = 3
 # distribution = rnorm
 # arguments = NULL
-# cor_matrix = matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+# cor.matrix = matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+# scree = c(0.6, 0.3, 0.1)
 
 # space <- space.maker(1000, 3, rnorm, cor.matrix = cor_matrix)
 # space2 <- space.maker(1000, 3, rnorm, cor.matrix = NULL)
@@ -76,20 +83,20 @@
 # scatterplot3d(space, pch = 20)
 
 
-space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL) {
-    # SANITZING
+space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL, scree = NULL) {
+    ## SANITZING
 
-    # elements
+    ## elements
     check.class(elements, c("numeric", "integer")) -> silent
     check.length(elements, 1, msg = "'elements' must be a single numeric value.")
 
-    # dimensions
+    ## dimensions
     check.class(dimensions, c("numeric", "integer")) -> silent
     check.length(dimensions, 1, msg = "'dimensions' must be a single numeric value.")
     # must be smaller than elements - No...
     #if(dimensions > elements) stop("'dimensions' must be smaller than 'elements'")
 
-    # distribution
+    ## distribution
     if(length(distribution) == 1) {
         uni_distribution <- TRUE
         check.class(distribution, "function")
@@ -100,7 +107,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         if(length(distribution) > dimensions) warning(paste("There are more distributions than dimensions.\nOnly the first ", dimensions, "distributions will be used.", sep=""))
     }
 
-    # arguments
+    ## arguments
     if(!is.null(arguments)) {
         # Must be a list
         check.class(arguments, "list")
@@ -112,7 +119,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         }
     }
 
-    #cor.matrix
+    ## cor.matrix
     if(!is.null(cor.matrix)) {
         check.class(cor.matrix, "matrix")
         if(any(dim(cor.matrix) != dimensions)) {
@@ -120,40 +127,57 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         }
     }
 
-    # CREATE THE SPACE
-    # with only one distribution
+    ## scree
+    if(!is.null(scree)) {
+        check.class(scree, "numeric")
+        check.length(scree, dimensions, msg = " must be of the same length as the dimensions argument", errorif = FALSE)
+        if(sum(scree) != 1) {
+            stop("scree argument must be a numeric vector summing to 1.")
+        }
+    }
+
+    ## CREATE THE SPACE
+    ## with only one distribution
     if(uni_distribution == TRUE) {
 
         if(!is.null(arguments)) {
-            #Setting the n argument
+            ## Setting the n argument
             arguments <- unlist(arguments, recursive = FALSE)
-            #Generating the space
+            ## Generating the space
             space <- replicate(dimensions, do.call(distribution, arguments))
         } else {
-            #Generate the space without arguments
+            ## Generate the space without arguments
             space <- replicate(dimensions, distribution(elements))    
         }
 
     } else {
 
         if(!is.null(arguments)) {
-            #Mapply the distribution with the arguments
+            ## Mapply the distribution with the arguments
             space <- mapply(do.call, distribution, arguments)
         } else {
-            #Applying the function to the space
+            ## Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))
             space <- matrix(unlist(space), nrow=elements, byrow=FALSE)
         }
     }
 
-    #Apply the correlation matrix to the space (if !NULL)
+    ## Apply the correlation matrix to the space (if !NULL)
     if(!is.null(cor.matrix)) {
-        #Choleski decomposition
+        ## Choleski decomposition
         choleski_decomposition <- t(chol(cor.matrix))
-        #Multiply the matrices (transpose space)
+        ## Multiply the matrices (transpose space)
         space <- choleski_decomposition %*% t(space)
-        #Transpose space again
+        ## Transpose space again
         space <- t(space)
+    }
+
+    ## Modify the variance for each dimensions
+    if(!is.null(scree)) {
+        ## Variance corrector
+        effective_var <- apply(space, 2, var)
+        var_modifier <- effective_var * scree
+        space <- t(t(space) * var_modifier)
     }
 
     #output

@@ -2,43 +2,43 @@
 
 context("space.maker")
 
-# #Testing sample.distribution
-# test_that("sample.distribution works", {
-#     #errors
-#     expect_warning(
-#         expect_error(
-#             sample.distribution("a", c(runif,1,2))
-#             )
-#         )
-#     expect_error(
-#         sample.distribution(1, "c(runif,1,2)")
-#         )
-#     expect_error(
-#         sample.distribution(1, c(aov,1,2))
-#         )
+#Testing sample.distribution
+test_that("sample.distribution works", {
+    #errors
+    expect_warning(
+        expect_error(
+            sample.distribution("a", c(runif,1,2))
+            )
+        )
+    expect_error(
+        sample.distribution(1, "c(runif,1,2)")
+        )
+    expect_error(
+        sample.distribution(1, c(aov,1,2))
+        )
 
-#     #Returns the right number of values
-#     expect_equal(
-#         length(sample.distribution(1, c(runif))), 1
-#         )
-#     expect_equal(
-#         length(sample.distribution(1, c(runif, 1, 2))), 1
-#         )
-#     expect_equal(
-#         length(sample.distribution(1000, c(runif, 1, 2))), 1000
-#         )
+    #Returns the right number of values
+    expect_equal(
+        length(sample.distribution(1, c(runif))), 1
+        )
+    expect_equal(
+        length(sample.distribution(1, c(runif, 1, 2))), 1
+        )
+    expect_equal(
+        length(sample.distribution(1000, c(runif, 1, 2))), 1000
+        )
 
-#     #Returns values in the range
-#     expect_equal(
-#         length(sample.distribution(1, c(runif))), 1
-#         )
-#     expect_less_than(
-#         max(sample.distribution(1000, c(runif, 1,2))), 2.0000000001
-#         )
-#     expect_more_than(
-#         min(sample.distribution(1000, c(runif, 1,2))), 0.9999999999
-#         )
-# })
+    #Returns values in the range
+    expect_equal(
+        length(sample.distribution(1, c(runif)))
+        , 1)
+    expect_lt(
+        max(sample.distribution(1000, c(runif, 1,2)))
+        , 2.0000000001)
+    expect_gt(
+        min(sample.distribution(1000, c(runif, 1,2)))
+        , 0.9999999999)
+})
 
 #Testing space.maker
 test_that("space.maker works", {
@@ -95,4 +95,24 @@ test_that("correlation works", {
     expect_equal(
         round(cor_post, digit = 1)
         ,cor_pre)
+})
+
+
+test_that("scree works", {
+    ## One space
+    set.seed(1)
+    space_no_scre <- space.maker(1000, 3, rnorm)
+    
+    ## Same space but with corrected variance
+    set.seed(1)
+    scre <- c(0.8,0.15, 0.05)
+    space_scre <- space.maker(1000, 3, rnorm, scree = scre)
+
+    expect_equal(
+        round(apply(space_no_scre, 2, var), digit = 1)
+        , rep(1.1, 3))
+
+    expect_equal(
+        round(apply(space_scre, 2, var), digit = 1)
+        , c(0.8, 0.0, 0.0))
 })
