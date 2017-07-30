@@ -97,3 +97,22 @@ test_that("transpose.box works", {
             ,as.vector(disparity$disparity[[subsamples]][[2]]))
     }
 })
+
+test_that("split.summary.data works", {
+
+    data(disparity)
+    sum_data <- summary(disparity)
+    subsamples <- unique(sum_data$subsamples)
+
+    for(sub in 1:length(subsamples)) {
+        ## Create a split
+        split <- split.summary.data(subsamples[sub], sum_data)
+        ## test
+        expect_is(split, "data.frame")
+        expect_equal(dim(split), c(length(which(sum_data$subsamples == subsamples[sub])),8))
+    }
+})
+
+split.summary.data <- function(subsamples_levels, summarised_data) {
+    return(summarised_data[which(summarised_data$subsamples == subsamples_levels),])
+}

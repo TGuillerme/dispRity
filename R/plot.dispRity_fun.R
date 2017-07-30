@@ -346,129 +346,129 @@ transpose.box <- function(data, rarefaction) {
 
 
 ## Adding a line
-add.line <- function(xs, ys, lines.args) {
-    if(!is.null(lines.args)) {
-        ## Adding the x,y coordinates
-        lines.args$x <- xs ; lines.args$y <- ys
-        do.call(lines, lines.args)
-    } else {
-        lines(xs, ys)
-    }
-}
+# add.line <- function(xs, ys, lines.args) {
+#     if(!is.null(lines.args)) {
+#         ## Adding the x,y coordinates
+#         lines.args$x <- xs ; lines.args$y <- ys
+#         do.call(lines, lines.args)
+#     } else {
+#         lines(xs, ys)
+#     }
+# }
 
 ## Adding significance tokens
-significance.token <- function(xs, ys, p.value, token.args) {
-    if(p.value < 0.1) {
-        ## Selecting the token
-        if(p.value < 0.1) token <- "."
-        if(p.value < 0.05) token <- "*"
-        if(p.value < 0.01) token <- "**"
-        if(p.value < 0.001) token <- "***"
-        ## Default plotting
-        if(is.null(token.args)) {
-            text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
-        } else {
-        ## Plotting with arguments
-            token.args$labels <- token
-            token.args$x <- sum(xs)/2
-            if(any(names(token.args) == "float")) {
-                token.args$y <- max(ys)+max(ys)*token.args$float
-                token.args$float <- NULL
-            } else {
-                token.args$y <- max(ys)+max(ys)*0.05
-            }
-            do.call(text, token.args)
-        }
-    }
-}
+# significance.token <- function(xs, ys, p.value, token.args) {
+#     if(p.value < 0.1) {
+#         ## Selecting the token
+#         if(p.value < 0.1) token <- "."
+#         if(p.value < 0.05) token <- "*"
+#         if(p.value < 0.01) token <- "**"
+#         if(p.value < 0.001) token <- "***"
+#         ## Default plotting
+#         if(is.null(token.args)) {
+#             text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
+#         } else {
+#         ## Plotting with arguments
+#             token.args$labels <- token
+#             token.args$x <- sum(xs)/2
+#             if(any(names(token.args) == "float")) {
+#                 token.args$y <- max(ys)+max(ys)*token.args$float
+#                 token.args$float <- NULL
+#             } else {
+#                 token.args$y <- max(ys)+max(ys)*0.05
+#             }
+#             do.call(text, token.args)
+#         }
+#     }
+# }
 
 ## Getting the two coordinates of the intercepts (intercept0 and intercept predicted)
-get.intercept.coords <- function(results_out, model_number, is.distribution, significance) {
-    if(is.distribution != TRUE) {
-        ## Get the first y coordinate (first intercept)
-        y1 <- results_out$Intercept[model_number, 1]
-        ## Test if intercept0 is significant
-        if(model_number == 1) {
-            if(results_out$Intercept[model_number, 4] > 0.05) {
-                y1 <- 0
-            }
-        }
+# get.intercept.coords <- function(results_out, model_number, is.distribution, significance) {
+#     if(is.distribution != TRUE) {
+#         ## Get the first y coordinate (first intercept)
+#         y1 <- results_out$Intercept[model_number, 1]
+#         ## Test if intercept0 is significant
+#         if(model_number == 1) {
+#             if(results_out$Intercept[model_number, 4] > 0.05) {
+#                 y1 <- 0
+#             }
+#         }
 
-        ## Get the second y coordinate (second intercept)
-        if(model_number < nrow(results_out$Intercept)) {
-            ## Intercept already estimated
-            y2 <- results_out$Intercept[model_number+1, 1]
-        } else {
-            ## Estimate the intercept
-            if(results_out$Slopes[model_number, 4] < 0.05) {
-                slope <- results_out$Slopes[model_number, 1]
-            } else {
-                slope <- 0
-            }
-            y2 <- intercept.estimate(results_out$Intercepts[model_number,1], slope)
-        }
-    } else {
-        ## Get the first y coordinate
-        if(model_number == 1) {
-            ## Get the initial (estimated) intercept if significant
-            if(results_out$Intercept$Initial[4, significance] < 0.05) {
-                y1 <- unlist(results_out$Intercept$Initial[1, significance])
-            } else {
-                y1 <- 0
-            }
-        } else {
-            ## Get the predicted intercept
-            y1 <- unlist(results_out$Intercepts$Predicted[model_number-1, significance])
-        }
+#         ## Get the second y coordinate (second intercept)
+#         if(model_number < nrow(results_out$Intercept)) {
+#             ## Intercept already estimated
+#             y2 <- results_out$Intercept[model_number+1, 1]
+#         } else {
+#             ## Estimate the intercept
+#             if(results_out$Slopes[model_number, 4] < 0.05) {
+#                 slope <- results_out$Slopes[model_number, 1]
+#             } else {
+#                 slope <- 0
+#             }
+#             y2 <- intercept.estimate(results_out$Intercepts[model_number,1], slope)
+#         }
+#     } else {
+#         ## Get the first y coordinate
+#         if(model_number == 1) {
+#             ## Get the initial (estimated) intercept if significant
+#             if(results_out$Intercept$Initial[4, significance] < 0.05) {
+#                 y1 <- unlist(results_out$Intercept$Initial[1, significance])
+#             } else {
+#                 y1 <- 0
+#             }
+#         } else {
+#             ## Get the predicted intercept
+#             y1 <- unlist(results_out$Intercepts$Predicted[model_number-1, significance])
+#         }
 
-        ## Get the second y coordinate (second intercept)
-        if(model_number-1 < nrow(results_out$Intercept$Predicted)) {
-            ## Intercept already estimated
-            y2 <- unlist(results_out$Intercepts$Predicted[model_number, significance])
-        } else {
-            ## Estimate the intercept
-            if(results_out$Slopes$`Pr(>|t|)`[model_number, significance] < 0.05) {
-                slope <- unlist(results_out$Slopes$Estimate[model_number, significance])
-            } else {
-                slope <- 0
-            }
-            y2 <- intercept.estimate(unlist(results_out$Intercepts$Predicted[model_number-1, significance]), slope)
-        }        
-    }
+#         ## Get the second y coordinate (second intercept)
+#         if(model_number-1 < nrow(results_out$Intercept$Predicted)) {
+#             ## Intercept already estimated
+#             y2 <- unlist(results_out$Intercepts$Predicted[model_number, significance])
+#         } else {
+#             ## Estimate the intercept
+#             if(results_out$Slopes$`Pr(>|t|)`[model_number, significance] < 0.05) {
+#                 slope <- unlist(results_out$Slopes$Estimate[model_number, significance])
+#             } else {
+#                 slope <- 0
+#             }
+#             y2 <- intercept.estimate(unlist(results_out$Intercepts$Predicted[model_number-1, significance]), slope)
+#         }        
+#     }
 
-    ## Return the coordinates
-    return(c(y1, y2))
-}
+#     ## Return the coordinates
+#     return(c(y1, y2))
+# }
 
 ## Plotting the results of sequential tests
-plot.seq.test <- function(results_out, is.distribution, significance, lines.args, token.args) {
-    ## Get the number of models to plot
-    if(is.distribution != TRUE) {
-        n_models <- nrow(results_out$Slopes)
-    } else {
-        n_models <- nrow(results_out$Slopes$Estimate)
-    }
+# plot.seq.test <- function(results_out, is.distribution, significance, lines.args, token.args) {
+#     ## Get the number of models to plot
+#     if(is.distribution != TRUE) {
+#         n_models <- nrow(results_out$Slopes)
+#     } else {
+#         n_models <- nrow(results_out$Slopes$Estimate)
+#     }
 
-    ## Loop through each model
-    for(model_number in 1:n_models) {
-        ## Getting x,y coordinates for one model
-        x_coords <- c(model_number, model_number+1)
-        y_coords <- get.intercept.coords(results_out, model_number=model_number, is.distribution, significance)
+#     ## Loop through each model
+#     for(model_number in 1:n_models) {
+#         ## Getting x,y coordinates for one model
+#         x_coords <- c(model_number, model_number+1)
+#         y_coords <- get.intercept.coords(results_out, model_number=model_number, is.distribution, significance)
 
-        ## Plotting the line
-        add.line(x_coords, y_coords, lines.args)
+#         ## Plotting the line
+#         add.line(x_coords, y_coords, lines.args)
 
-        ## Add significance (if necessary)
-        if(is.distribution != TRUE) {
-            p_value <- results_out$Slope[model_number, 4]
-        } else {
-            p_value <- results_out$Slope$`Pr(>|t|)`[model_number, significance]
-            ## get p_value
-        }
+#         ## Add significance (if necessary)
+#         if(is.distribution != TRUE) {
+#             p_value <- results_out$Slope[model_number, 4]
+#         } else {
+#             p_value <- results_out$Slope$`Pr(>|t|)`[model_number, significance]
+#             ## get p_value
+#         }
 
-        significance.token(x_coords, y_coords, p_value, token.args)
-    }
-}
+#         significance.token(x_coords, y_coords, p_value, token.args)
+#     }
+# }
 
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
