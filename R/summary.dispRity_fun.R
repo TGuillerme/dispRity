@@ -6,11 +6,9 @@ CI.converter <- function(CI) {
 # Wrapping function for summarising a single rarefaction
 get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
     output <- list()
-    # output$cent_tend <- apply(disparity_subsamples_rare, 1, cent.tend)
     if(!missing(cent.tend)) {
         output$cent_tend <- cent.tend(as.vector(disparity_subsamples_rare))
     }
-    # output$quantiles <- apply(disparity_subsamples_rare, 1, quantile, probs = CI.converter(quantiles))
     if(!missing(quantiles)) {
         output$quantiles <- quantile(as.vector(disparity_subsamples_rare), probs = CI.converter(quantiles))
     }
@@ -41,7 +39,7 @@ mapply.observed <- function(disparity, elements) {
     return(c(disparity, rep(NA, (length(elements)-1))))
 }
 
-## Get digit for table
+## Get digit for table (Shifts the point to contain maximum 4 characters)
 get.digit <- function(column) {
     if(max(nchar(round(column)), na.rm = TRUE) <= 4) {
         return(4-max(nchar(round(column)), na.rm = TRUE))
@@ -50,38 +48,30 @@ get.digit <- function(column) {
     }
 }
 
+
+round.column <- function(column, rounding) {
+    ## Get the rounding value
+    rounding <- ifelse(rounding != "default", rounding, get.digit(as.numeric(column)))
+    ## Round the table
+    if(class(column) != "group") {
+        return(round(as.numeric(column), digits = rounding))
+    } else {
+        return(round(as.numeric(as.character(column)), digits = rounding))
+    }
+}
+
+
 ## Function for rounding the results
 rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     ## seq.test
-    if(seq.test != FALSE) {
-        start_column <- 1
-    } else {
-        start_column <- 3
-    }
+    start_column <- ifelse(seq.test, 1, 3)
 
-    if(rounding != "default") {
-        for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
-            } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
-            }
-        }
+    ## Apply the rounding
+    rounded_table <- as.matrix(results_table[,c(start_column:ncol(results_table))])
+    rounded_table <- apply(rounded_table, 2, round.column, rounding)
+    results_table[,c(start_column:ncol(results_table))] <- rounded_table
 
-    } else {
-        for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
-                }
-            } else {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
-                }
-            }
-        }
-    }
     return(results_table)
 }
 
