@@ -179,6 +179,7 @@ test_that("is.invariant works", {
 
 ## Testing mixed model
 test_that("MIXED.model works", {
+    verbose = FALSE
     expect_error(
         MIXED.model("a", c(runif,1,1), c(runif,2,2), c(0.5, 0.5), verbose)
         )

@@ -5,7 +5,7 @@
 \title{Creating some multidimensional spaces}
 \usage{
 space.maker(elements, dimensions, distribution, arguments = NULL,
-  cor.matrix = NULL)
+  cor.matrix = NULL, scree = NULL)
 }
 \arguments{
 \item{elements}{An \code{numeric} value.}
@@ -17,6 +17,8 @@ space.maker(elements, dimensions, distribution, arguments = NULL,
 \item{arguments}{Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).}
 
 \item{cor.matrix}{An optional correlation \code{matrix} of size \code{dimensions * dimensions} (\code{default = NULL}, see details).}
+
+\item{scree}{An optional proportional \code{numeric} vector for approximating the \code{dimensions} variance (\code{default = NULL}, see details).}
 }
 \description{
 Creates a multidimensional space with a given number of elements and dimensions
@@ -28,6 +30,7 @@ For example if \code{distribution = c(runif, rnorm, rgamma)} and one wants the d
 
 The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
+The \code{scree} argument is simply a value multiplier for each dimensions to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
 }
 \examples{
 ## A square space
@@ -35,7 +38,6 @@ plot(space.maker(5000, 2, runif), pch = 20)
 
 ## A circular space
 plot(space.maker(5000, 2, rnorm), pch = 20)
-
 
 ## A 2D cilindrical space
 plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
@@ -49,6 +51,11 @@ space.maker(5, 4, c(runif, runif, rnorm, rgamma),
 cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
 space <- space.maker(10000, 3, rnorm, cor.matrix = cor_matrix)
 round(cor(space), 1) ; cor_matrix ## Both should be really similar matrices
+
+## A 3 dimensional with a priori approximated variance per dimension
+space <- space.maker(10000, 3, rnorm, scree = c(0.6 ,0.3, 0.1))
+## The resulting screeplot
+barplot(apply(space, 2, var))
 
 \dontrun{
 require(scatterplot3d)
