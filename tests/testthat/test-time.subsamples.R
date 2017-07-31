@@ -9,6 +9,11 @@ data <- test_data$ord_data_tips
 FADLAD <- test_data$FADLAD_data
 
 test_that("adjust.FADLAD works", {
+
+    ## Test FADLAD
+    expect_equal(adjust.age(1, 1), 1)
+    expect_equal(adjust.age(1, 12), 1)
+
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
 
     ## Class is list
@@ -42,6 +47,11 @@ time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
 
 ## Test
 test_that("time.subsamples.discrete works properly without nodes", {
+    ## Test get.interval
+    # expect_equal(
+    #     as.vector(unlist(get.interval(1, time, adjust.FADLAD(FADLAD, tree, data), inc.nodes = FALSE)))
+    #     , c(5,4,6,8,43,10,11,42))
+
     ## class is list
     expect_is(
         time_subsamples, "list"
@@ -99,6 +109,12 @@ time_subsamples <- time.subsamples.continuous(data, tree, time, model = "deltran
 
 ## Test
 test_that("time.subsamples.continuous works properly with deltran model", {
+    
+    ## Get slice
+    # expect_equal(
+    #     as.vector(na.omit(unlist(get.slice(1, time[2], "ACCTRAN", adjust.FADLAD(FADLAD, tree, data), data, verbose = FALSE))))
+    #     , c(7, 8, 9, 1, 2, 3, 12, 13, 14, 15, 44, 70, 73, 76, 79, 85, 48, 90, 47, 95, 46, 98))
+
     ## class is list
     expect_is(
         time_subsamples
@@ -283,3 +299,13 @@ test_that("Example works", {
         nrow(ex3$subsamples[[3]]$elements)
         ,23)
 })
+
+test_that("make.origin.subsamples works (internal fun)", {
+    test_out <- make.origin.subsamples(matrix(rnorm(25), 5, 5))
+    expect_is(test_out, "list")
+    expect_equal(names(test_out), "origin")
+    expect_equal(names(test_out[[1]]), "elements")
+    expect_equal(dim(test_out[[1]][[1]]), c(5,1))
+})
+
+

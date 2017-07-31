@@ -1,11 +1,12 @@
+
+## Internal function for adjust.FADLAD
+adjust.age <- function(FADLAD, ages_tree) {
+    return(ifelse(FADLAD != ages_tree, FADLAD, ages_tree))
+}
+
 ## Get adjusted FADLAD
 ## FAD argument is whether to adjust FAD (TRUE) or LAD (FALSE)
 adjust.FADLAD <- function(FADLAD, tree, data) {
-
-    adjust.age <- function(FADLAD, ages_tree) {
-        return(ifelse(FADLAD != ages_tree, FADLAD, ages_tree))
-    }
-
     ## Get the tree ages
     ages_tree <- tree.age(tree)
 
@@ -41,7 +42,6 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
             matching <- match(tree$tip.label, rownames(data[one_interval,]))
             return( list("elements" = as.matrix(one_interval[matching[-which(is.na(matching))]]) ))
         }
-        
     }
 
     ## ages of tips/nodes + FAD/LAD
