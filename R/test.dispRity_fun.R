@@ -1,15 +1,6 @@
 ## Mapply function for applying the tests to distribution data
 test.mapply <- function(pair_comparison, data, test, ...) {
-    ## Check if any is constant
-    ##  uniques1 <- which(unlist(lapply(data[[pair_comparison[[1]]]], function(X) return(length(unique(X))))) == 1)
-    ##  uniques2 <- which(unlist(lapply(data[[pair_comparison[[2]]]], function(X) return(length(unique(X))))) == 1)
-
-    ##  if(is.na(any(match(uniques1, uniques2)))) {
-        tests <- mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE)
-        return(tests)
-    ##  } else {
-    ##      warning("Pair of subsamples ", paste(pair_comparison, collapse = " and "), " contains not enough unique values.")
-    ##  }
+    return(mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE))
 }
 
 ## transforming test into a lapply from a given list of comp for multiple distributions
@@ -35,23 +26,26 @@ convert.to.numeric <- function(list, object) {
     return(lapply(list, match, names(object)))
 }
 
+## Getting the names (character) (convert.to.character internal)
+names.fun <- function(list, object) {
+    return(names(object[c(list)]))
+}
+
 ## convert a list from numeric to character
 convert.to.character <- function(list, object) {
-    ## Getting the names (character)
-    names.fun <- function(list, object) {
-        return(names(object[c(list)]))
-    }
     ## Applying to the list
     return(lapply(list, names.fun, object))
 }
 
 
+## function for repeating the extracted_data names (list to table internal)
+rep.names <- function(name, subsamples) {
+    return(rep(name, subsamples))
+}
+
+
 ## Convert a list into a table (for aov)
 list.to.table <- function(extracted_data, style = "group") {
-    ## function for repeating the extracted_data names
-    rep.names <- function(name, subsamples) {
-        return(rep(name, subsamples))
-    }
 
     ## Get the list of names
     names_list <- as.list(names(extracted_data))
@@ -72,12 +66,14 @@ list.to.table <- function(extracted_data, style = "group") {
     return(output)
 }
 
+## lapply fun for htest.to.vector
+get.element <- function(print, htest) {
+    return(htest[grep(print, names(htest))][[1]])
+}
+
+## Converts an htest into a vector
 htest.to.vector <- function(htest, print) {
     ## print is a vector of htest elements to print
-    ## lapply fun
-    get.element <- function(print, htest) {
-        return(htest[grep(print, names(htest))][[1]])
-    }
     return(unlist(lapply(print, get.element, htest)))
 }
 
@@ -154,6 +150,17 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     return(table_out)
 }
 
+
+
+## Lapply function for getting the test elements (output.htest.results internal)
+lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+    if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
+        return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))
+    } else {
+        return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list))
+    }
+}
+
 ## Returning a table for htests
 output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend, correction) {
     ## Getting the test elements
@@ -167,15 +174,6 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
     }
     if(length(remove) > 0) {
         test_elements <- test_elements[-remove]
-    }
-
-    ## Lapply function for getting the test elements
-    lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
-        if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
-            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))
-        } else {
-            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list))
-        }
     }
     
     ## Get the results
