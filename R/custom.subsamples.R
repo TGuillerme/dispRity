@@ -61,8 +61,7 @@ custom.subsamples <- function(data, group) {
     ## DATA
     ## data must be a matrix
     check.class(data, 'matrix')
-    ## data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
+
     ## data must have rownames
     if(is.null(rownames(data))) {
         warning(paste("Rownames generated for ", match_call$data, " as seq(1:", nrow(data) ,")", sep = ""))

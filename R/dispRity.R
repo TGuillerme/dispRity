@@ -4,6 +4,7 @@
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).
+#' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 # @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
@@ -99,7 +100,7 @@
 # verbose = TRUE
 # data <- data_subsamples_boot
 
-dispRity <- function(data, metric, ..., verbose = FALSE) { #parallel
+dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -112,7 +113,6 @@ dispRity <- function(data, metric, ..., verbose = FALSE) { #parallel
     ## Check data class
     if(class(data) != "dispRity") {
         check.class(data, "matrix")
-        if(ncol(data) > (nrow(data) - 1)) warning("Input matrix should have at maximum (rows-1) columns.")
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
@@ -132,6 +132,17 @@ dispRity <- function(data, metric, ..., verbose = FALSE) { #parallel
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop("Impossible to apply a level 3 metric on disparity data.")
+    }
+
+    ## Dimensions
+    if(!missing(dimensions)) {
+        ## Else must be a single numeric value (proportional)
+        check.class(dimensions, "numeric", " must be logical or a proportional threshold value.")
+        check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
+        if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
+        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
+        data$call$dimensions <- dimensions
     }
 
     ## VERBOSE

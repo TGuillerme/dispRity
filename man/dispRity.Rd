@@ -4,12 +4,14 @@
 \alias{dispRity}
 \title{Calculates disparity from an ordinated matrix.}
 \usage{
-dispRity(data, metric, ..., verbose = FALSE)
+dispRity(data, metric, dimensions, ..., verbose = FALSE)
 }
 \arguments{
 \item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).}
 
 \item{metric}{A vector containing one to three functions. At least of must be a "level 1" or a "level 2" function (see details).}
+
+\item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
 \item{...}{Optional arguments to be passed to the metric.}
 

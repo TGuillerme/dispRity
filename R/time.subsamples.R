@@ -77,8 +77,6 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     check.class(data, "matrix")
     ## nrow_data variable declaration
     nrow_data <- nrow(data)
-    ## data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
 
     ## TREE (1)
     ## tree must be a phylo object

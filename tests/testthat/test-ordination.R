@@ -47,7 +47,7 @@ test_that("geomorph.ordination works", {
     expect_equal(colnames(test), paste0("PC", 1:10))
 
     ## geomorph.data.frame to ordination
-    expect_warning(test <- geomorph.ordination(dummy_geomorph_df)) #TG: warning comes from the 10*10 ordinated matrix (suggests 10*(>10))
+    test <- geomorph.ordination(dummy_geomorph_df)
     expect_is(test, "dispRity")
     expect_equal(length(test$subsamples), 4)
     expect_equal(

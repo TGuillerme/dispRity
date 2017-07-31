@@ -30,9 +30,6 @@ Claddis.ordination(Claddis::Michaux1989)
 }
 
 }
-\seealso{
-\code{\link[Claddis]{MorphDistMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-}
 \author{
 Thomas Guillerme
 }
