@@ -981,36 +981,37 @@ par(op)
 
 ## Testing disparity hypotheses
 
-The `dispRity` package allows to apply some test functions to the calculated disparity in order to test hypothesis.
-The function `test.dispRity` works in a similar way as the `dispRity` function: it intakes a `dispRity` object, a `test` and a `comparisons` argument.
+The `dispRity` package allows users to apply statistical tests to the calculated disparity to test various hypotheses.
+The function `test.dispRity` works in a similar way to the `dispRity` function: it takes a `dispRity` object, a `test` and a `comparisons` argument.
 
-The `comparisons` argument must indicate the way the test should be applied to the data:
+The `comparisons` argument indicates the way the test should be applied to the data:
 
- * `pairwise` (default): to compare each subsamples pairwise
- * `referential`: to compare each subsamples to the first one
- * `sequential`: to compare each subsamples to the following one
+ * `pairwise` (default): to compare each subsample in a pairwise manner
+ * `referential`: to compare each subsample to the first subsample
+ * `sequential`: to compare each subsample to the following subsample
  * `all`: to compare all the subsamples together (like in analysis of variance)
 
-It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsamples names to create personalised test.
-Some other specific tests implemented in `dispRity` such as the `dispRity::null.test` that has a specific way to be applied to the data and therefore ignore the `comparisons` argument. 
+It is also possible to input a list of pairs of `numeric` values or `characters` matching the subsample names to create personalised tests.
+Some other tests implemented in `dispRity` such as the `dispRity::null.test` have a specific way they are applied to the data and therefore ignore the `comparisons` argument. 
 <!-- Add sequential test one day! -->
 
 The `test` argument can be any statistical or non-statistical test to apply to the disparity object.
-It can be common statistical test functions (e.g. `stats::t.test`), some functions implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
+It can be a common statistical test function (e.g. `stats::t.test`), a function implemented in `dispRity` (e.g. see `?null.test`) or any function defined by the user.
 
-This function also allows to correct for type I error inflation when using multiple comparisons via the `correction` argument. This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
+This function also allows users to correct for Type I error inflation (false positives) when using multiple comparisons via the `correction` argument. 
+This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
 
-Note that the `test.dispRity` algorithm deals with some classic tests outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
-It is however possible to get the full detailed output by using the options `details = TRUE`.
+Note that the `test.dispRity` algorithm deals with some classical test outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
+It is, however, possible to get the full detailed output by using the options `details = TRUE`.
 
 ```{r}
-## T-test to the test a difference in disparity between crown and stem mammals
+## T-test to test for a difference in disparity between crown and stem mammals
 test.dispRity(disparity_crown_stem, test = t.test)
 
 ## Performing the same test but with the detailed t.test output
 test.dispRity(disparity_crown_stem, test = t.test, details = TRUE)
 
-## Wilcoxon test applied to sliced disparity the data sequentially with correction
+## Wilcoxon test applied to time sliced disparity with sequential comparisons, with Bonferroni correction
 test.dispRity(disparity_time_slices, test = wilcox.test,
               comparisons = "sequential", correction = "bonferroni")
 
@@ -1019,7 +1020,9 @@ test.dispRity(disparity_time_slices, test = wilcox.test,
 test.dispRity(disparity_time_bins, test = bhatt.coeff)
 ```
 
-It is also possible to apply some more *complex* tests that have their own output class (like `stats::aov`).
+It is also possible to apply some more *complex* tests that have their own output classes (like `stats::aov`).
+
+<!-- NC: again this  needs to be lm, aov is not appropriate. Will let you fix this -->
 The results can then be analysed as usual using the associated `summary` S3 method:
 
 ```{r}
@@ -1030,37 +1033,39 @@ The results can then be analysed as usual using the associated `summary` S3 meth
 ## The output is a regular ANOVA output
 class(slice_aov)
 
-## That can be summarised using summary
+## This output can be summarised using summary
 summary(slice_aov)
 ```
 
-Of course, following the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
+Of course, due to the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
 The only condition is that the test can be applied to at least two distributions.
-In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `aov` for example).
+In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `lm` for example).
 
 ## Disparity as a distribution
 
 Disparity is often regarded as a summary value of the position of the all elements in the ordinated space.
 For example, the sum of variances, the product of ranges or the median distance between the elements and their centroid will summarise disparity as a single value.
-This value can be of course pseudo-replicated (bootstrapped) in order to obtain a more confident distribution of this summary metric.
-However, another way to perform disparity analysis is to use the whole distribution rather than their summary (e.g. the variances or the ranges).
+This value can be pseudo-replicated (bootstrapped) to obtain a distribution of the summary metric with estimated error.
+However, another way to perform disparity analysis is to use the *whole distribution* rather than just a summary metric (e.g. the variances or the ranges).
 
 This is possible in the `dispRity` package by calculating disparity as a dimension-level 2 metric only!
-Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxa and their centroid as disparity
+Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.
+
+<!-- NC: I think when these prelim steps have been done a long time earlier, and/or are not built into the package, you probably want to include the code to get boot_time_slices here too. Most people won't read the manual cover to cover in one go -->
 
 ```{r}
 ## Measuring disparity as a whole distribution
 disparity_centroids <- dispRity(boot_time_slices, metric = centroids)
 ```
 
-The resulting disparity object being a dimension-level 2, it can easily also be transformed into a dimension-level 1 one by for example measuring the median distance of all these distributions:
+The resulting disparity object being of dimension-level 2, it can easily be transformed into a dimension-level 1 one by, for example, measuring the median distance of all these distributions:
 
 ```{r}
 ## Measuring median disparity in each time slice
 disparity_centroids_median <- dispRity(disparity_centroids, metric = median)
 ```
 
-And we can now compare the differences between both methods:
+And we can now compare the differences between these methods:
 
 ```{r}
 ## Summarising both disparity measurements:
@@ -1078,7 +1083,7 @@ Another, maybe more intuitive way, to compare both approaches for measuring disp
 
 ```{r, fig.width=8, fig.height=8}
 ## Graphical parameters
-op <- par(bty = "n", mfrow = c(1,2))
+op <- par(bty = "n", mfrow = c(1, 2))
 
 ## Plotting both disparity measurements
 plot(disparity_centroids, ylab = "Distribution of all the distances")
@@ -1088,46 +1093,44 @@ plot(disparity_centroids_median,
 par(op)
 ```
 
-The resulted distributions can then be studied the same way as described above.
-
+We can then test for differences in the resulting distributions using `test.dispRity` and the `bhatt.coeff` test as described above.
 
 ```{r}
 ## Probability of overlap in the distribution of medians
 test.dispRity(disparity_centroids_median, test = bhatt.coeff)
 ```
 
-In this case, we are looking at the probability of overlap of the distribution of median distances from centroids between each pair of time slices.
+In this case, we are looking at the probability of overlap of the distribution of median distances from centroids among each pair of time slices.
 In other words, we are measuring whether the medians from each bootstrap pseudo-replicate for each time slice overlap.
 But of course, we might be interested in the actual distribution of the distances from the centroid rather than simply their central tendencies.
 This can be problematic depending on the research question asked since we are effectively comparing non-independent medians distributions (because of the pseudo-replication).
 
-One solution is thus to look at the full distribution:
-
+One solution, therefore, is to look at the full distribution:
 
 ```{r}
 ## Probability of overlap for the full distributions
 test.dispRity(disparity_centroids, test = bhatt.coeff)
 ```
 
-These results show the actual overlap between all the measured distances from centroids concatenated across all the bootstraps.
-For example, when comparing the slices 120 and 80, we are effectively comparing the 5 \times 100 distances (the distances of the 5 elements in slice 120 bootstrapped 100 times) to the 19 \times 100 distances from slice 80.
+These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps.
+For example, when comparing the slices 120 and 80, we are effectively comparing the 5 \times 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 \times 100 distances from slice 80.
 However, this can also be problematic for some specific tests since the _n_ \times 100 distances are also pseudo-replicates and thus are still not independent.
 
-One second solution is to compare the distributions to each other _per replicates_:
+A second solution is to compare the distributions to each other _for each replicate_:
 
 ```{r}
 ## Boostrapped probability of overlap for the full distributions
 test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE)
 ```
 
-These results show the median overlap between pairs of distributions in the first column (`bhatt.coeff`) and then the distribution of these overlaps between each par of bootstraps.
+These results show the median overlap among pairs of distributions in the first column (`bhatt.coeff`) and then the distribution of these overlaps among each pair of bootstraps.
 In other words, when two distributions are compared, they are now compared for each bootstrap pseudo-replicate, thus effectively creating a distribution of probabilities of overlap.
-For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50% of the pseudo-replicates.
-Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option:
+For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50\% of the pseudo-replicates.
+Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option.
 
-## Ecological study
+## Ecological studies of disparity
 
-Disparity analysis are not restricted to palaeobiology analysis only.
+Disparity analyses are not restricted to palaeobiology analysis only.
 This package is designed for dealing with ordinated matrix, no matter which data was used in the ordination.
 Here is an short example of disparity analysis using ecological data from D. McClean (unpubl.).
 
