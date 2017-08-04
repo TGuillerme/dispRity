@@ -17,11 +17,11 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
 
-The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref="release"` option with `ref="master"`. If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) for the latest developments.
+The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref = "release"` option with `ref = "master"`. If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) for the latest developments.
 
 
 #### Vignettes
-Note that some of the vignettes do not contain all the details of the chnages from version `0.2`. Refer to each function's manual for more information.
+Note that some of the vignettes do not contain all the details of the changes from version `0.2`. Refer to each function's manual for more information.
 *  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
 *  A tutorial for palaeobiologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.html).
 *  A tutorial for ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
@@ -41,9 +41,9 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
   * **Changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
   * **Changed name**: `time.series` is now renamed `time.subsamples`.
   * **Changed name**: `get.subsamples.dispRity` is now renamed `get.subsamples`.
-  * **Modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). It's `factor` argument as been changed to `groups` and can now intake a simple list.
+  * **Modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). Its `factor` argument has been changed to `groups` and can now take a simple list.
   * Minor bug correction for optional arguments passed to `plot`.
-  * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments sanitising is now passed to `make.metric`.
+  * `variances`, `ranges` and `centroids` are now simplified for speed. The optional arguments data cleaning are now passed to `make.metric`.
   
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
 
