@@ -80,7 +80,7 @@ Version dated: \today
 \noindent{\Large \bf \texttt{dispRity}: a modular \texttt{R} package for measuring disparity.} 
 \bigskip
 
-\noindent {\normalsize \sc Thomas Guillerme$^1$$^,$$^*$}\\
+\noindent {\normalsize \sc Thomas Guillerme$^1$$^,$$^*$, Mark Puttick$^2$, Natalie Cooper$^3$}\\
 \noindent {\small \it 
 $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, Buckhurst Road, Ascot SL5 7PY, United Kingdom.\\}
 \end{center}
@@ -102,7 +102,7 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 \begin{abstract}
 
 \begin{enumerate}
-    \item I present \texttt{dispRity}, an \texttt{R} package form measuring disparity from ordinated matrices. 
+    \item We present \texttt{dispRity}, an \texttt{R} package in multidimensional spaces. 
     \item Disparity designates a suit of metrics to describe an ordinated matrix (also referred as morpho/eco/niche/etc.-space).
     \item The package is based on a highly modular architecture were metrics for measuring disparity and tests for testing evolutionary hypothesis are provided as standalone functions.
     \item This modular architecture allows great plasticity in using this package, namely by letting users define their own metric of disparity.
@@ -124,13 +124,32 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 %---------------------------------------------
 
 \section{Introduction}
-Disparity = multidimensionality
 
-Disparity can be measured in many ways in palaeobiology (cite many examples) or in ecology (donohue and stuff).
+Multidimensionality is a major aspect of natural sciences were variables co-vary through time and space from the organism to the environmental level.
 
-Although some packages have disparity components (Claddis, geomorph, adonis), all have their own definition of disparity and makes the whole work idiosuncratic
+In palaeobiology multidimensionality is a popular way to study morphological diversity and comes as a interesting alternative to unidimensional taxonomic diversity analysis \citep{Hopkins2017}.
 
-Therefore I made this package to help measuring disparity
+
+Although the concept of morphological disparity is well defined since more than two decades \citep[e.g.][]{gould1991disparity,Foote01071994,Foote29111996}, its specific definition varies widely among authors.
+In fact disparity Disparity is by nature multidimensional \citep{lloyd2016estimating} and thus there are many ways to measure it.
+
+
+
+Hereafter we will make a clear distinction between the multidimensional space which is a specific mathematical object and the disparity, which is a metric describing or summarising one or more aspects of this space.
+Both can be defined in various ways depending on the authors, for example, disparity is defined as the weighted mean pairwise dissimilarity in \cite{Close2015} or the ellipsoid volume in \cite{DonohueDim} and the multidimensional space is defined as the morphospace in \cite{raup1966geometric} and the morpho-functional space in \cite{diaz2016global}.
+
+The multidimensional space can be defined in many ways and arise from many mathematical transformations of the data such as the pairwise distance matrix \citep{Close2015}, a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, a multidimensional scaling \citep[MDS;][]{DonohueDim}, etc.
+Similarly, disparity metrics \citep[or indices;][]{Hopkins2017} can defined in many ways \citep[e.g.][or combinations thereof]{Wills2001,Ciampaglio2001,foth2012different,DonohueDim,Hughes20082013,finlay2015morphological,Close2015,diaz2016global}.
+Finally, difference between disparity metrics can also be measured in many ways: using NPMANOVA \citep[e.g.][]{Brusatte12092008}, multidimensional permutation test \citep[e.g.][]{diaz2016global} or even simple confidence interval overlap \citep[e.g.][]{halliday2016eutherian}.
+
+This variety of definitions and analysis have been developed in an equal variety of softwares such as \texttt{GINGKO} in javascript \citep{bouxin2005ginkgo,de2007ginkgo} or \texttt{geomorph} \citep{adams2013geomorph,adams2017geometric}, \texttt{Claddis} \citep{Claddis}, or \texttt{vegan} \citep{oksanen2007vegan} in R \citep{R}.
+This results in the need to learn different languages (or at least - when restricted to R - different packages with different standards) as well as making analysis sometimes idiosyncratic and often complex to repeat since they are based on a particular feature from a particular software.
+For example, in the excellent and widely used \texttt{geomorph} package morphological disparity analysis can be ran using the \texttt{morphol.disparity} function.
+Unfortunately, however, the multidimensional space can only be defined as the ordination of the procrustes transform of geometric morphometric landmarks, the disparity can only be defined as the Procrustes variance and the difference between groups can only be measured through permutation tests \citep{zelditch2012geometric,adams2013geomorph,adams2017geometric}.
+
+This package, is the first, to our knowledge, to be entirely dedicate to multidimensional analysis.
+It has a highly modular architecture and allow users to define their own multidimensional space, use their own definition of the disparity metric and measure the differences between metrics in their own terms.
+Furthermore, both a specific design and set of functions (through the \texttt{dispRity} object) allows to design analysis into easy and repeatable pipelines.
 
 \section{Description}
 
