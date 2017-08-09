@@ -18,7 +18,7 @@
 #'   \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
 #'   \item \code{"referential"}: compares the first subsamples to all the others.
 #'   \item \code{"sequential"}: compares each subsamples sequentially (e.g. first against second, second against third, etc.).
-#'   \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
+#'   \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
 #'   \item A list of pairs of number of subsamples to compare. Each element of the the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
 #'   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
@@ -45,9 +45,8 @@
 #' ## Measuring differences from a reference_subsamples
 #' test.dispRity(sum_of_variances, wilcox.test, "referential")
 #'
-#' ## Testing the effect of the groups
-#' test.dispRity(sum_of_variances, aov, "all")
-#' ## warning: this violates some aov assumptions!
+#' ## Running a linear model on the data
+#' test.dispRity(sum_of_variances, lm, "all")
 #'
 #' ## Measuring disparity as a distribution
 #' disparity_var <- dispRity(bootstrapped_data, metric = variances)
@@ -84,8 +83,8 @@
 # rarefaction = NULL
 # concatenate = TRUE
 # conc.quantiles = c(mean, c(95, 50))
-# test.dispRity(data, test = aov, comparisons = "all")
-# test.dispRity(data, test = aov, comparisons = "all", concatenate = FALSE)
+# test.dispRity(data, test = lm, comparisons = "all")
+# test.dispRity(data, test = lm, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
 
 test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NULL, correction = "none", concatenate = TRUE, conc.quantiles = c(mean, c(95, 50)), details = FALSE, ...) { #format: get additional option for input format?
@@ -239,8 +238,8 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         list_of_data <- lapply(list_of_data, list.to.table)
 
         ## running the tests
-        try(details_out <- lapply(list_of_data, lapply.aov.type, test, ...), silent = TRUE)
-        ## try(details_out <- lapply(list_of_data, lapply.aov.type, test), silent = TRUE) ; warning("DEBUG")
+        try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
+        ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
         if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
     }
 
@@ -296,13 +295,14 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     } else {
 
-        ## Dealing with aov/lm class
-        if(comp == "all" && unique(lapply(details_out, class))[[1]][[1]] == "aov") {
+        ## Dealing with lm class
+        if(comp == "all" && unique(lapply(details_out, class))[[1]][[1]] == "lm") {
             ## If concatenate == TRUE
             if(is_distribution == TRUE && is_bootstrapped == TRUE && concatenate == FALSE) {
-                ## Transform results into a list
-                table_out <- output.aov.results(details_out, conc.quantiles, con.cen.tend)
-                return(table_out)
+                # ## Transform results into a list
+                # table_out <- output.lm.results(details_out, conc.quantiles, con.cen.tend)
+                # return(table_out)
+                return(details_out)
             } else {
                 ## Results should be a single test 
                 if(length(details_out) == 1) {

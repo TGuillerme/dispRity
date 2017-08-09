@@ -36,7 +36,7 @@ The \code{comparison} argument can be:
   \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
   \item \code{"referential"}: compares the first subsamples to all the others.
   \item \code{"sequential"}: compares each subsamples sequentially (e.g. first against second, second against third, etc.).
-  \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{aov}} or \code{\link[stats]{glm}} type tests.
+  \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
   \item A list of pairs of number of subsamples to compare. Each element of the the list must contain two elements
      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
@@ -63,9 +63,8 @@ test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 ## Measuring differences from a reference_subsamples
 test.dispRity(sum_of_variances, wilcox.test, "referential")
 
-## Testing the effect of the groups
-test.dispRity(sum_of_variances, aov, "all")
-## warning: this violates some aov assumptions!
+## Running a linear model on the data
+test.dispRity(sum_of_variances, lm, "all")
 
 ## Measuring disparity as a distribution
 disparity_var <- dispRity(bootstrapped_data, metric = variances)

@@ -120,7 +120,7 @@ save.comparison.list <- function(comp_subsamples, extracted_data) {
 }
 
 ## Function for lapplying aov type functions
-lapply.aov.type <- function(data, test, ...) {
+lapply.lm.type <- function(data, test, ...) {
     return(test(data ~ subsamples, data = data, ...))
 }
 
@@ -195,25 +195,26 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
     return(table_out)
 }
 
-## Handling output for aov multiple tests
-output.aov.results <- function(details_out, conc.quantiles, con.cen.tend) {
-    ## Getting the summaries
-    summaries <- lapply(details_out, summary)
+# ## Handling output for lm multiple tests
+# output.lm.results <- function(details_out, conc.quantiles, con.cen.tend) {
+
+#     ## Getting the summaries
+#     summaries <- lapply(details_out, summary)
     
-    ## Transforming the list 
-    list_of_results <- list()
-    for(element in 1:length(summaries[[1]][[1]])) {
-        list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
-            dimnames = list(c("subsamples", "Residuals")))
-    }
+#     ## Transforming the list 
+#     list_of_results <- list()
+#     for(element in 1:length(summaries[[1]][[1]])) {
+#         list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
+#             dimnames = list(c("subsamples", "Residuals")))
+#     }
 
-    ## Get the quantiles
-    list_of_results <- lapply(list_of_results, get.quantiles.from.table, con.cen.tend, conc.quantiles, na.rm = TRUE)
+#     ## Get the quantiles
+#     list_of_results <- lapply(list_of_results, get.quantiles.from.table, con.cen.tend, conc.quantiles, na.rm = TRUE)
 
-    ## Name the elements
-    for(element in 1:length(summaries[[1]][[1]])) {
-        colnames(list_of_results[[element]])[[1]] <- names(summaries[[1]][[1]])[[element]]
-    }    
+#     ## Name the elements
+#     for(element in 1:length(summaries[[1]][[1]])) {
+#         colnames(list_of_results[[element]])[[1]] <- names(summaries[[1]][[1]])[[element]]
+#     }    
 
-    return(list_of_results)
-}
+#     return(list_of_results)
+# }
