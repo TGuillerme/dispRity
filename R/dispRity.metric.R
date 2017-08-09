@@ -29,12 +29,8 @@
 #'      }
 #'   \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
 #'      \itemize{
-#'          \item \code{repsperpoint = 1000}
-#'          \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method = "silverman")}
-#'          \item \code{quantile = 0.95}
-#'          \item \code{verbose = FALSE}
-#'          \item \code{warnings = FALSE}
-#'          \item \code{name = NULL}
+#'          \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
+#'          \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
 #'      }
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
@@ -187,34 +183,17 @@ convhull.volume <- function(matrix) {
 }
 
 ## Calculate the hypervolume using hypervolume::hypervolume
-hyper.volume <- function(matrix, repsperpoint, bandwidth, quantile, verbose, warnings, name) {
-    ## Tolerate missing arguments (set defaults)
-    ## repsperpoint
-    if(missing(repsperpoint)) {
-        repsperpoint <- 1000
-    }
-    ## bandwith
-    if(missing(bandwidth)) {
-        bandwidth <- hypervolume::estimate_bandwidth(matrix)
-    }
-    ## quantile
-    if(missing(quantile)) {
-        quantile <- 0.95
-    }
-    ## verbose
-    if(missing(verbose)) {
-        verbose <- FALSE
-    }
-    ## warnings
-    if(missing(warnings)) {
-        warnings <- FALSE
-    }
-    ## name
-    if(missing(name)) {
-        name <- NULL
+hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
+    ## Calculate the volume
+    output <- utils::capture.output(volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method, ...)))
+    # volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method)) ; warning("DEBUG hyper.volume")
+    names(volume) <- NULL
+
+    if(print.output) {
+        cat(output)
     }
 
-    return(hypervolume::get_volume(hypervolume::hypervolume(matrix, repsperpoint = repsperpoint, bandwidth = bandwidth, quantile = quantile, verbose = verbose, warnings = warnings, name = name)))
+    return(volume)
 }
 
 # # Hyper volume testing

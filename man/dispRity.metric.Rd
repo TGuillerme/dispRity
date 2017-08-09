@@ -48,12 +48,8 @@ The currently implemented dimension-level 1 metrics are:
      }
   \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
      \itemize{
-         \item \code{repsperpoint = 1000}
-         \item \code{bandwidth = \link[hypervolume]{estimate_bandwidth}(matrix, method = "silverman")}
-         \item \code{quantile = 0.95}
-         \item \code{verbose = FALSE}
-         \item \code{warnings = FALSE}
-         \item \code{name = NULL}
+         \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
+         \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
      }
   \item \code{diagonal}: calculates the longest distance in the ordinated space.
      \itemize{

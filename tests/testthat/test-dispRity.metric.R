@@ -297,9 +297,10 @@ test_that("hyper.volume metric", {
     matrix <- space.maker(5, 3, rnorm)
 
     #errors
+    expect_warning(
     expect_error(
         hyper.volume(1)
-        )
+        ))
     expect_error(
         hyper.volume("a")
         )
@@ -308,15 +309,18 @@ test_that("hyper.volume metric", {
         )
 
     #Works fine!
+    output <- capture.output(
+    expect_warning(
+        volume <- hyper.volume(matrix, verbose = FALSE)
+        )
+    )
+
     expect_is(
-        hyper.volume(matrix)
+        volume
         ,"numeric")
     expect_equal(
-        length(hyper.volume(matrix))
-        ,1)
-    expect_equal(
-        round(hyper.volume(matrix), 3)
-        ,10.83)
+        round(volume, 3)
+        ,91.863)
 })
 
 test_that("diagonal", {
