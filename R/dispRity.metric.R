@@ -1,21 +1,21 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal level3.fun level2.fun level1.fun
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
 #'
-#' @usage level3.fun(matrix, ...)
-#' level2.fun(matrix, ...)
-#' level1.fun(X, ...)
+#' @usage dimension.level3.fun(matrix, ...)
+#' dimension.level2.fun(matrix, ...)
+#' dimension.level1.fun(X, ...)
 #'  
 #' @param matrix A matrix.
 #' @param X A vector.
 #' @param ... Optional arguments to be passed to the function.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{level3.fun}, \code{level2.fun} and \code{level1.fun}.
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun} and \code{dimension.level1.fun}.
 #' 
-#' The currently implemented \code{level3} metrics are:
+#' The currently implemented dimension-level 1 metrics are:
 #' \itemize{
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
@@ -40,19 +40,17 @@
 #'      \itemize{
 #'          \item WARNING: This function is the generalisation of Pythagoras Theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
+#'   \item \code{mode.val}: calculates the modal value of a vector.
 #' }
-#' The currently implemented vector aggregate metrics (\code{level2.fun}) are:
+#' 
+#'  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
+#' 
+#' The currently implemented dimension-level 2 are:
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
 #'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
 #' }
-#' The currently implemented value aggregate metrics (\code{level1.fun}) are:
-#' \itemize{
-#'   \item \code{mode.val}: calculates the modal value of a vector.
-#' }
-#' See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
-#' 
 #'
 #' @examples
 #' ## A dummy matrix

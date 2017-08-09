@@ -38,9 +38,9 @@ Splits the ordinated data into a time subsamples list.
 If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time subsamples is:
 \itemize{
   \item \code{"acctran"}: always the one of the ancestral node.
-  \item \code{"deltran"}: always the one of the offspring node or tip.
-  \item \code{"punctuated"}: randomly selected from the ancestral node or the offspring node or tip.
-  \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the offspring node or tip.
+  \item \code{"deltran"}: always the one of the descendant node or tip.
+  \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip.
+  \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the descendant node or tip.
 }
 }
 \examples{
