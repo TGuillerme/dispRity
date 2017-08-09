@@ -717,9 +717,6 @@ For the full and correct calculation of the volume of the ordinated space, it is
 ## Calculating the true multidimensional volume
 summary(dispRity(dummy_space, metric = hyper.volume))
 
-## The volume with different options to be passed to hypervolume::hypervolume
-summary(dispRity(dummy_space, metric = hyper.volume, repsperpoint = 100,
-                 quantile = 0.5))
 ```
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values.
 
