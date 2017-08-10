@@ -19,7 +19,7 @@ object
 	|	|
 	|	\---[[1]]* = class:"list" (first item in subsamples list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first subsamples)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first subsample)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -29,7 +29,7 @@ object
 	|	|
 	|	\---[[2]] = class:"list" (second item in subsamples list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second subsamples)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second subsample)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -43,7 +43,7 @@ object
 	|	|
 	|	\---[[...]] = class:"list" (the following subsamples)
 	|		|
-	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this subsamples)
+	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this subsample)
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
@@ -81,6 +81,8 @@ object
 ```
 The elements marked with an asterisk (*) are mandatory.
 
+<!-- NC: Is the stuff below needed here? Could it just go into the utilities bit of the manual of be cut entirely? -->
+
 ### Using `fetch.dispRity` functions for accessing specific data elements (matrix, etc.)
 
 ## `fetch.matrix` for accessing a specific ordinated matrix
@@ -111,3 +113,4 @@ fetch.elements(dispRity_object)
 ```{r}
 ...
 ```
+<!-- NC: finish this or omit -->
