@@ -1213,7 +1213,7 @@ We can now run a more robust disparity analysis using the bootstrapped data:
 disparity <- dispRity(bootstrapped_data, metric = diagonal)
 ```
 
-#### Summarising and displaying the data
+#### Summarising and displaying the results
 
 Now let's summarise this data:
 
@@ -1273,7 +1273,7 @@ check.morpho(my_matrix, my_tree)
 Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!
 Nearly too good to be true...
 
-### A more detailed descriptions
+### A more detailed description
 
 `sim.morpho` is really flexible and takes many different arguments to allow users to simulate realistic matrices.
 It has three implemented models: `"ER"` for Equal Rates (the M*k* model); `"HKY"`, the molecular HKY model but transforms pyrines in 0's and pyrimidines in 1's; or the `"mixed"` model that randomly uses an `"ER"` and/or `"HKY"` for the binary characters and `"ER"` for the multistate (>2) characters.
