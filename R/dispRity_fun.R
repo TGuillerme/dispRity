@@ -19,7 +19,7 @@ get.dispRity.metric.handle <- function(metric, match_call) {
         ## Which level is the metric?
         level <- make.metric(metric, silent = TRUE)
         if(level == "level3") {
-            stop(paste(as.expression(match_call$metric), " metric must contain at least a level 1 or a level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
+            stop(paste(as.expression(match_call$metric), " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
         } else {
             level3.fun <- NULL
             if(level == "level2") {
@@ -39,11 +39,11 @@ get.dispRity.metric.handle <- function(metric, match_call) {
         ## getting the metric levels
         levels <- unlist(lapply(metric, make.metric, silent=TRUE))
         ## can only unique levels
-        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
+        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 
         ## At least one level 1 or level 2 metric is required
         if(length(levels) == 1 && levels[[1]] == "level3") {
-            stop("At least one metric must be level 1 or level 2\n.For more information, see:\n?make.metric()")
+            stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()")
         }
         
         ## Get the level 1 metric

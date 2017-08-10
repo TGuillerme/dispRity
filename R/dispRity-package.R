@@ -1,6 +1,6 @@
 #' Measuring Disparity in R
 #' 
-#' A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
+#' A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
 #' 
 #' @name dispRity-package
 #'
@@ -35,10 +35,10 @@ NULL
 #'   \item \code{BeckLee_tree} A phylogenetic tree with 50 living and fossil taxa
 #'   \item \code{BeckLee_mat50} The ordinated matrix based on the 50 taxa cladistic distances
 #'   \item \code{BeckLee_mat99} The ordinated matrix based on the 50 taxa + 49 nodes cladistic distances
-#'   \item \code{BeckLee_ages} A lit of first al last occurrence data for fossil taxa
+#'   \item \code{BeckLee_ages} A list of first and last occurrence data for fossil taxa
 #' }
 #'
-#' @format 3 matrices and one phylogenetic tree.
+#' @format three matrices and one phylogenetic tree.
 #' @source \url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
 #' @references Beck RMD & Lee MSY. 2014. Ancient dates or accelerated rates?
 #' Morphological clocks and the antiquity of placental mammals.
@@ -53,7 +53,7 @@ NULL
 #' Example datasets from McClean (unpublished).
 #'
 #' \itemize{
-#'   \item \code{ordination} The ordinated matrix based on the 40 sites and 20 dimensions
+#'   \item \code{ordination} The ordinated matrix based on 40 sites and 20 dimensions
 #'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
 #'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
 #' }
@@ -65,9 +65,9 @@ NULL
 
 #' disparity
 #'
-#' And example of \code{dispRity} object.
+#' And example of a \code{dispRity} object.
 #'
-#' This matrix is based on \code{\link{BeckLee}} dataset and split into 7 continuous subsamples (\code{\link{time.subsamples}}).
+#' This matrix is based on the \code{\link{BeckLee}} dataset and split into seven continuous subsamples (\code{\link{time.subsamples}}).
 #' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 #' Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 #'

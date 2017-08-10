@@ -1,6 +1,6 @@
 #' @title Calculates disparity from an ordinated matrix.
 #'
-#' @description Calculates disparity on an ordinated matrix or subsamples of matrices, where the disparity metric can be user specified.
+#' @description Calculates disparity on an ordinated matrix or subsamples of a matrix, where the disparity metric can be user specified.
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
@@ -12,7 +12,7 @@
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
-#' \item{disparity}{A \code{list} of disparity values (containing the observed disparity and the eventual bootstrapped one).}
+#' \item{disparity}{A \code{list} of disparity values (containing the observed disparity and the bootstrapped disparities).}
 #' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
 #' \item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
 #' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
@@ -20,18 +20,18 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from this \code{dispRity} function.
+#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
 #' 
 #' \code{metric} should be input as a vector of functions.
 #' The functions are sorted and used by dimension-level from 3 to 1 (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
-#' Typically dimension-level 3 functions intake a \code{matrix} and output a \code{matrix}; dimension-level 2 functions intake a \code{matrix} and output a \code{vector} and dimension-level 1 functions intake a \code{matrix} or a \code{vector} and output a single value.
+#' Typically dimension-level 3 functions take a \code{matrix} and output a \code{matrix}; dimension-level 2 functions take a \code{matrix} and output a \code{vector} and dimension-level 1 functions take a \code{matrix} or a \code{vector} and output a single value.
 #' When more than one function is input, they are treated first by dimension-level (i.e. 3, 2 and finally 1).
 #' Note that the functions can only take one metric of each dimension-level and thus can only take a maximum of three arguments!
 #' 
-#' Some metric functions are inbuilt in the \code{dispRity} package: see \code{\link{dispRity.metric}}
+#' Some metric functions are built into the \code{dispRity} package: see \code{\link{dispRity.metric}}
 #' For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
 #' 
-#' \emph{HINT:} for using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows to use two dimension-level 3 functions - the correlation of the variance-covariance matrix in this case).
+#' \emph{HINT:} if using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows one to use two dimension-level 3 functions - the correlation of the variance-covariance matrix in this case).
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -44,7 +44,7 @@
 #' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
 #' dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
-#' ## Calculating the disparity from a customised subsamples
+#' ## Calculating the disparity from a customised subsample
 #' ## Generating the subsamples
 #' customised_subsamples <- custom.subsamples(BeckLee_mat50,
 #'      list(group1 = 1:(nrow(BeckLee_mat50)/2),
@@ -55,21 +55,21 @@
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' summary(sum_of_variances)
 #' 
-#' ## Calculating disparity with different metrics dimension-level
+#' ## Calculating disparity with different metrics of different dimension-levels
 #' ## Disparity is calculated as the distribution of the variances in each
-#' ## dimensions (output are distributions)
+#' ## dimension (output are distributions)
 #' disparity_level2 <- dispRity(BeckLee_mat50, metric = variances)
-#' ## Disparity is calculated as the mean of the variances in each dimensions 
+#' ## Disparity is calculated as the mean of the variances in each dimension 
 #' ## (output are single values)
 #' disparity_level1 <- dispRity(disparity_level2, metric = mean)
-#' ## Both disparity have the same means but dimension-level 1 has no quantiles
+#' ## Both disparities have the same means but dimension-level 1 has no quantiles
 #' summary(disparity_level2)
 #' summary(disparity_level1)
 #'
 # \dontrun{
 # ## Calculating disparity using one thread
 # system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-# ## Bootstrapping a subsamples of matrices using 4 threads
+# ## Bootstrapping a subsample of matrices using four threads
 # system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 #      parallel = c(4, "SOCK")))
 # ## System time is significantly longer! Using parallel is only an improvement

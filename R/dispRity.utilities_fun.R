@@ -4,7 +4,7 @@ extract.disparity.values <- function(subsamples, data, rarefaction, concatenate)
     if(rarefaction != FALSE) {
         rarefaction = as.numeric(which(lapply(data$subsamples[[subsamples]][-1], nrow) == rarefaction) + 1)
         if(length(rarefaction) == 0) {
-            ## No rarefaction level for this subsamples
+            ## No rarefaction level for this subsample
             return(NULL)
         }
     } else {
@@ -30,9 +30,9 @@ recursive.sort <- function(data, sort) {
 
 ## Merging two subsamples
 merge.two.subsamples <- function(subs1, subs2, data) {
-    ## Get the list of new sub-samples
+    ## Get the list of new subsamples
     new_subsample <- list("elements" = matrix(unique(c(data$subsamples[[subs1]]$elements, data$subsamples[[subs2]]$elements, ncol = 1))))
-    ## Replace the second subsample by the new one
+    ## Replace the second subsample with the new one
     data$subsamples[[subs2]] <- new_subsample
     ## Rename it
     names(data$subsamples)[subs2] <- paste(names(data$subsamples)[subs1], names(data$subsamples)[subs2], sep = "-") 

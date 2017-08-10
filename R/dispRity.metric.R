@@ -21,31 +21,31 @@
 #'      \itemize{
 #'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
 #'      }
-#'   \item \code{convhull.surface}: calculates the convex hull hyper surface of a matrix.
-#'   \item \code{convhull.volume}: calculates the convex hull hyper volume of a matrix.
+#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix.
+#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix.
 #'      \itemize{
 #'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive!
 #'      }
-#'   \item \code{hyper.volume}: calculates the hyper volume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
+#'   \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
 #'      \itemize{
 #'          \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
 #'          \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
 #'      }
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
-#'          \item WARNING: This function is the generalisation of Pythagoras Theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
+#'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #' }
 #' 
 #'  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
 #' 
-#' The currently implemented dimension-level 2 are:
+#' The currently implemented dimension-level 2 metrics are:
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
-#'   \item \code{centroids}: calculates the euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0,1,2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0,0,0)} for a three dimensional matrix).
+#'   \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
 #' }
 #'
 #' @examples
@@ -59,14 +59,14 @@
 #' 
 #' ## ranges of each column in a matrix
 #' ranges(dummy_matrix)
-#' ## ranges of a each column in the matrix corrected using the kth root
+#' ## ranges of each column in the matrix corrected using the kth root
 #' ranges(dummy_matrix, k.root = TRUE)
 #' 
 #' ## Distances between each row and centroid of the matrix
 #' centroids(dummy_matrix)
-#' ## Distance between each rows and an arbitrary point
+#' ## Distances between each row and an arbitrary point
 #' centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9))
-#' ## Distance between each rows and the origin
+#' ## Distances between each row and the origin
 #' centroids(dummy_matrix, centroid = 0)
 #' 
 #' ## Modal value of a vector
@@ -75,7 +75,7 @@
 #' ## Ellipsoid volume of a matrix
 #' ellipse.volume(dummy_matrix) # WARNING: only valid for MDS/PCO matrices
 #' 
-#' ## Convex hull hyper-surface of a matrix
+#' ## Convex hull hypersurface of a matrix
 #' convhull.surface(dummy_matrix)
 #' 
 #' ## Convex hull volume of a matrix
@@ -96,7 +96,7 @@ k.root <- function(data, dimensions){
     return(data^(1/dimensions))
 }
 
-## Calculating each axis variance
+## Calculating the variance of each axis
 variances <- function(matrix, k.root) {
     if(missing(k.root)) {
         return(apply(matrix, 2, var))
@@ -105,7 +105,7 @@ variances <- function(matrix, k.root) {
     }
 }
 
-## Calculating each axis ranges
+## Calculating the range of each axis
 ranges <- function(matrix, k.root) {
 
     ## Initialise values
@@ -115,7 +115,7 @@ ranges <- function(matrix, k.root) {
     max_values <- apply(matrix, 2, max)
     ## Min values
     min_values <- apply(matrix, 2, min)
-    ## Ranges values
+    ## Range values
     ranges <- abs(max_values-min_values)
     if(missing(k.root)) {
         return(ranges)
@@ -150,13 +150,13 @@ mode.val <- function(X){
     return(as.numeric(names(sort(-table(X))[1])))
 }
 
-# #Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
+## Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
 ellipse.volume <- function(matrix) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
-    # The eigen value is equal to the sum of the variance/covariance within each axis
+    # The eigenvalue is equal to the sum of the variance/covariance within each axis
     # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
     eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
 
@@ -166,10 +166,10 @@ ellipse.volume <- function(matrix) {
     return(volume)
 }
 
-## Calculate the convex hull hyper-surface
+## Calculate the convex hull hypersurface
 convhull.surface <- function(matrix) {
-    ## Algorithm warn
-    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
+    ## Algorithm warning
+    if(any(dim(matrix) > 20)) message("WARNING: Your ordinated space is too big: convhull.surface function is likely to crash!")
     ## calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
@@ -177,7 +177,7 @@ convhull.surface <- function(matrix) {
 ## Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
     ## Algorithm warn
-    if(any(dim(matrix) > 20)) message("WARNING: Big ordinated space: convhull.surface function is likely to crash!")
+    if(any(dim(matrix) > 20)) message("WARNING: Your ordinated space is too big: convhull.surface function is likely to crash!")
     ## calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
@@ -196,7 +196,7 @@ hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
     return(volume)
 }
 
-# # Hyper volume testing
+# # Hypervolume testing
 # data <- space.maker(20, 5, rnorm)
 # # estimating the bandwith
 # bw <- estimate_bandwidth(data,method="silverman")
@@ -218,6 +218,6 @@ hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
 
 ## Diagonal
 diagonal <- function(matrix) {
-    ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras Theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimensions.
+    ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras' theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimension.
     return(sqrt(sum(ranges(matrix))))
 }

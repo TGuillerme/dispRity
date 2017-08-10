@@ -1,7 +1,7 @@
 ## Checking class metric
 check.metric <- function(metric) {
-    ## Testing the metric test
-    try(some_name.that.probAbly.doesnt.ExIsT <- metric(matrix(rnorm(25),5,5)), silent=TRUE)
+    ## Testing the metric
+    try(some_name.that.probAbly.doesnt.ExIsT <- metric(matrix(rnorm(25), 5, 5)), silent = TRUE)
     ## If function worked
     if(exists("some_name.that.probAbly.doesnt.ExIsT")) {
         ## Is it a summary metric (one value)?
