@@ -5,7 +5,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
     if(ylim[[1]] == "default") {
         ## Setting the ylim to min/max -/+ 5%.
         if(rarefaction != TRUE) {
-            ylim <- c(min(summarised_data[,-c(1:2)], na.rm = TRUE) - min(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[,-c(1:2)], na.rm = TRUE) + max(summarised_data[,-c(1:2)], na.rm = TRUE) * 0.02)
+            ylim <- c(min(summarised_data[, -c(1:2)], na.rm = TRUE) - min(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[, -c(1:2)], na.rm = TRUE) + max(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02)
         } else {
             ylim <- "rarefaction"
         }
@@ -33,13 +33,13 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         col <- "black"
         ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
-            quantiles_n <- (ncol(summarised_data)-4)/2
+            quantiles_n <- (ncol(summarised_data) - 4)/2
             colfun <- colorRampPalette(c("grey", "lightgrey"))
             col <- c(col, colfun(quantiles_n))
         }
     } else {
         if(type != "box") {
-            quantiles_n <- ncol(summarised_data[,-c(1:4)])/2
+            quantiles_n <- ncol(summarised_data[, -c(1:4)])/2
             cols_missing <- (quantiles_n + 1) - length(col)
             if(cols_missing > 0) {
                 colfun <- colorRampPalette(c("grey", "lightgrey"))
@@ -92,13 +92,13 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
     ## Check if bootstrapped
     if(is_bootstrapped) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data)-4)/2
+        quantiles_n <- (ncol(summarised_data) - 4)/2
 
         ## Set the width (default)
         width <- points_n/8
 
         ## Set the colours
-        if(length(col) < (quantiles_n+1)) {
+        if(length(col) < (quantiles_n + 1)) {
             cols_missing <- (quantiles_n + 1) - length(col)
             colfun <- colorRampPalette(c("grey", "lightgrey"))
             col_tmp <- c(col, colfun(cols_missing))
@@ -127,12 +127,12 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting X
-                    x_vals <- c(point-width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point+width/(quantiles_n-cis+1.5), point-width/(quantiles_n-cis+1.5)) + shift
+                    x_vals <- c(point-width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point-width/(quantiles_n - cis + 1.5)) + shift
                     ## Setting Y
-                    y_vals <- c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
                     ## Plotting the box
                     polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
@@ -143,10 +143,10 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting Y
-                    y_vals<-c(extract.from.summary(summarised_data, 4+cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)[point])
+                    y_vals<-c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
                     ## Plotting the box
-                    lines(x = rep((point + shift), 2) , y = y_vals, lty = (quantiles_n-cis+1), lwd = cis*1.5, col = col[[1]])
+                    lines(x = rep((point + shift), 2), y = y_vals, lty = (quantiles_n - cis + 1), lwd = cis * 1.5, col = col[[1]])
 
                 }
             }
@@ -201,10 +201,10 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
     ## Check if bootstrapped
     if(is_bootstrapped) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data)-4)/2
+        quantiles_n <- (ncol(summarised_data) - 4)/2
 
         ## Set the colours
-        if(length(col) < (quantiles_n+1)) {
+        if(length(col) < (quantiles_n + 1)) {
             cols_missing <- (quantiles_n + 1) - length(col)
             colfun <- colorRampPalette(c("grey", "lightgrey"))
             col_tmp <- c(col, colfun(cols_missing))
@@ -218,7 +218,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         ## Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
-            y_vals <- c(extract.from.summary(summarised_data, 4+cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
+            y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
             polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
         }
 
@@ -286,23 +286,23 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     ## Get parameters
     if(ylim[[1]] == "rarefaction") {
         ## ylim?
-        ylim <- c(min(sub_data[,-c(1:2)], na.rm = TRUE) - min(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02 , max(sub_data[,-c(1:2)], na.rm = TRUE) + max(sub_data[,-c(1:2)], na.rm = TRUE) * 0.02)
+        ylim <- c(min(sub_data[, -c(1:2)], na.rm = TRUE) - min(sub_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(sub_data[, -c(1:2)], na.rm = TRUE) + max(sub_data[, -c(1:2)], na.rm = TRUE) * 0.02)
     }
     ## title?
     if(missing(main)) {
         main <- unique(as.character(sub_data$subsamples))
     }
     ## how many quantiles?
-    quantiles_n <- (ncol(sub_data)-4)/2
+    quantiles_n <- (ncol(sub_data) - 4)/2
 
     ## colors?
     if(length(col) < quantiles_n) {
-        col <- rep(col[[1]], quantiles_n+1)
+        col <- rep(col[[1]], quantiles_n + 1)
     }
 
     ## Plot central tendency curve (continuous)
     # if(!missing(main)) {
-        plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
+        plot(rev(sub_data[, 4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
     # } else {
         # plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
     # }
@@ -312,9 +312,9 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     if(quantiles_n != 0) {
         for (cis in 1:quantiles_n) {
             ## lower quantile
-            lines(rev(sub_data[, 4+cis]), lty = (quantiles_n+2-cis), col = col[[cis+1]])
+            lines(rev(sub_data[, 4 + cis]), lty = (quantiles_n + 2 - cis), col = col[[cis + 1]])
             ## upper quantile
-            lines(rev(sub_data[, ncol(sub_data) - (cis-1)]), lty = (quantiles_n+2-cis), col = col[[cis+1]])
+            lines(rev(sub_data[, ncol(sub_data) - (cis - 1)]), lty = (quantiles_n + 2- cis), col = col[[cis + 1]])
         }
     }
     ##  Save parameters
@@ -333,7 +333,7 @@ transpose.box <- function(data, rarefaction) {
         box_data <- lapply(data$disparity, function(X) return(X[[2]]))
     } else {
         ## Select the rarefaction data
-        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
+        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X[-1] == rarefaction) + 1)
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 

@@ -31,7 +31,7 @@
 #'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
 #'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 #' }
-#TG: The following is form sequential.test (not implemented yet)
+#TG: The following is from sequential.test (not implemented yet)
 # The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
 # \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
 # Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
@@ -99,7 +99,7 @@
 # subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
 # data <- sequential.test(subsamples, family = gaussian, correction = "hommel")
 # data <- sum_of_variances
-# quantiles=c(50,95)
+# quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
 # elements = TRUE
@@ -113,7 +113,7 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -255,7 +255,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## type
     if(length(data$subsamples) == 1) {
         type <- "box"
-        message("Only one subsamples of data available: type is set to \"box\".")
+        message("Only one subsample of data available: type is set to \"box\".")
     }
 
     if(missing(type)) {
@@ -344,7 +344,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
-            if(length(ylab) > 2) stop("ylab can have maximum two elements.")
+            if(length(ylab) > 2) stop("ylab can have maximum of two elements.")
         }
     }
 

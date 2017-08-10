@@ -1,4 +1,4 @@
-#' @title Plots pairwise comparisons with
+#' @title Plots pairwise comparisons
 #'
 #' @description Plots pairwise comparisons from a data frame (typically output from \code{link{test.dispRity}}).
 #'
@@ -14,10 +14,10 @@
 #' 
 #' @details
 #' The number of rows (i.e. comparisons) in \code{matrix} must be equal to the results of a pairwise combination.
-#' In general, the number of rows \code{x} must satisfy the equation: \eqn{x  = n^2 / 2 - n / 2} where \code{n} must be an entire greater or equal than 2.
+#' In general, the number of rows \code{x} must satisfy the equation: \eqn{x  = n^2 / 2 - n / 2} where \code{n} must be an integer greater or equal than 2.
 #'
 #' @examples
-#' ## A small matrix of 2 pairwise comparisons of 7 elements (2*21 comparisons)
+#' ## A small matrix of two pairwise comparisons of seven elements (2*21 comparisons)
 #' data <- matrix(data = runif(42), ncol = 2)
 #' 
 #' ## Plotting the first column as a pairwise comparisons
