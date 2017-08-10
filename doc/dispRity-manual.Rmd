@@ -1357,7 +1357,7 @@ par(op)
 
 
 
-# The package's guts
+# The dispRity package's guts
 
 ## Manipulating `dispRity` objects
 
@@ -1394,10 +1394,10 @@ print(disparity, all = TRUE)
 
 ## `dispRity` utilities
 
-The package also provides some utilities functions to facilitate multidimensional analysis.
+The package also provides some utility functions to facilitate multidimensional analysis.
 
 ### `dispRity` object utilities  <a name="dispRity.utilities"></a>
-The first subsamples of utilities are functions for manipulating `dispRity` objects:
+The first set of utilities are functions for manipulating `dispRity` objects:
 
 #### `make.dispRity`
 This function creates empty `dispRity` objects.
@@ -1411,7 +1411,7 @@ make.dispRity()
 ```
 
 ####  `fill.dispRity`
-This function initialises a `dispRity` object and generating it's call properties.
+This function initialises a `dispRity` object and generates its call properties.
 
 ```{r}
 ## The dispRity object's call is indeed empty
@@ -1420,18 +1420,19 @@ disparity_obj$call
 ## Filling an empty disparity object (that needs to contain at least a matrix)
 (disparity_obj <- fill.dispRity(disparity_obj))
 
-## The dipRity object has now the proper minimal attributes
+## The dipRity object has now the correct minimal attributes
 disparity_obj$call
 ```
 
 ####  `matrix.dispRity`
-This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped or/and rarefied one.
+This function extracts a specific matrix from a disparity object.
+The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 
 ```{r}
 ## Extracting the matrix containing the coordinates of the elements at time 50
 str(matrix.dispRity(disparity, "50"))
 
-## Extracting the 3rd boostrapped matrix with the 2nd rarefaction level
+## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
 ## (15 elements) from the second group (80 Mya)
 str(matrix.dispRity(disparity, subsamples = 1, bootstrap = 3, rarefaction = 2))
 ```
