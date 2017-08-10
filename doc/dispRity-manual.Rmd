@@ -268,8 +268,6 @@ summary(disp_lm)
 ## Note that ANOVA assumptions were not checked here!
 ```
 
-<!-- NC: Is this using aov or lm? Note that aov can only be used with balanced designs, so where the three time bins have equal numbers of species. I expect you need to use lm (which also fits an ANOVA as an ANOVA is also a linear model). THIS IS IMPORTANT -->
-
 Please refer to the [specific tutorials](#specific-tutorial) for (much!) more information on the nuts and bolts of the package.
 You can also directly explore the specific function help files within R and navigate to related functions.
 
@@ -492,7 +490,6 @@ boot.matrix(time_slices, bootstraps = 100)
 There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space @DonohueDim, the sum and the product of the ranges and variances @Wills1994 or the median position of the elements relative to their centroid @Wills1994. 
-<!-- NC: probably should cite Matt Wills' paper for the centroid thing too as he invented it apparently; TG: ok fixed. Though one can argue Euclides invented it before him (and probably Gnut-the-enlighted-cavemen before-->
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
 
 Because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
@@ -1037,14 +1034,12 @@ However, another way to perform disparity analysis is to use the *whole distribu
 This is possible in the `dispRity` package by calculating disparity as a dimension-level 2 metric only!
 Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.
 
-<!-- NC: I think when these prelim steps have been done a long time earlier, and/or are not built into the package, you probably want to include the code to get boot_time_slices here too. Most people won't read the manual cover to cover in one go -->
-
 ```{r}
 ## Measuring disparity as a whole distribution
 disparity_centroids <- dispRity(boot_time_slices, metric = centroids)
 ```
 
-The resulting disparity object being of dimension-level 2, it can easily be transformed into a dimension-level 1 one by, for example, measuring the median distance of all these distributions:
+The resulting disparity object is of dimension-level 2, so it can easily be transformed into a dimension-level 1 object by, for example, measuring the median distance of all these distributions:
 
 ```{r}
 ## Measuring median disparity in each time slice
@@ -1116,13 +1111,13 @@ Note that the quantiles and central tendencies can be modified via the `conc.qua
 
 ## Ecological studies of disparity
 
-Disparity analyses are not restricted to palaeobiology analysis only.
-This package is designed for dealing with ordinated matrix, no matter which data was used in the ordination.
-Here is an short example of disparity analysis using ecological data from D. McClean (unpubl.).
+Disparity analyses are not restricted to palaeobiology analysis.
+This package is designed for dealing with ordinated matrices, no matter which data was used in the ordination.
+Here is an short example of disparity analysis using ecological data from Deirdre McClean (unpubl.).
 
 The dataset contains an ordinated matrix of 20 dimensions (columns) for 40 elements (rows).
-The elements are different experimental plots with discrete variations of nutrient enrichment and depth and freshwater benthic invertebrates.
-
+The elements are different experimental plots with discrete variations of nutrient enrichment, depth, and freshwater benthic invertebrates.
+<!-- NC: Explain a little more about what the data are here as I don't entirely get it. EG what's a treatement etc? Just a really simple explanataion is perfect -->
 ```{r}
 ## Loading the data
 data(McClean_data)
