@@ -2,7 +2,7 @@
 % Please edit documentation in R/space.maker.R
 \name{space.maker}
 \alias{space.maker}
-\title{Creating some multidimensional spaces}
+\title{Creating multidimensional spaces}
 \usage{
 space.maker(elements, dimensions, distribution, arguments = NULL,
   cor.matrix = NULL, scree = NULL)
@@ -12,7 +12,7 @@ space.maker(elements, dimensions, distribution, arguments = NULL,
 
 \item{dimensions}{An \code{numeric} value smaller than \code{elements}.}
 
-\item{distribution}{One or more \code{function} to determine the distribution of the \code{elements} along each \code{dimensions}. The function must have a single input: \code{elements}.}
+\item{distribution}{One or more \code{functions} to determine the distribution of the \code{elements} along each \code{dimension}. The function must have a single input: \code{elements}.}
 
 \item{arguments}{Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).}
 
@@ -24,13 +24,13 @@ space.maker(elements, dimensions, distribution, arguments = NULL,
 Creates a multidimensional space with a given number of elements and dimensions
 }
 \details{
-For passing some additional arguments to different distributions, they must be given as a \code{list} to each function in the order they appear.
+When passing additional arguments to different distributions, these must be given as a \code{list} to each function in the order they appear.
 For example if \code{distribution = c(runif, rnorm, rgamma)} and one wants the distributions to be \code{runif(elements, min = 1, max = 10)}, \code{rnorm(elements, mean = 8)} and \code{rgamma(elements, shape = 1, log = TRUE)}, the additional arguments should be passed as
 \code{c(list(min = 1, max = 10), list(mean = 8), list(shape = 1, log = TRUE)}. If no arguments have to be passed to a certain function, it can be left as \code{NULL} (e.g. \code{c(list(min = 1, max = 10), list(NULL), list(shape = 1, log = TRUE)}).
 
 The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
-The \code{scree} argument is simply a value multiplier for each dimensions to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
+The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
 }
 \examples{
 ## A square space
@@ -39,7 +39,7 @@ plot(space.maker(5000, 2, runif), pch = 20)
 ## A circular space
 plot(space.maker(5000, 2, rnorm), pch = 20)
 
-## A 2D cilindrical space
+## A 2-dimensional cylindrical space
 plot(space.maker(5000, 2, c(rnorm, runif)), pch = 20)
 
 ## A 4-dimensional space with different distributions
@@ -47,13 +47,13 @@ space.maker(5, 4, c(runif, runif, rnorm, rgamma),
      arguments = list(list(min = 1, max = 10), list(min = 1, max = 2),
      list(mean = 8), list(shape = 1)))
 
-## A 3 dimensional correlated space
-cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+## A 3-dimensional correlated space
+cor_matrix <- matrix(cbind(1, 0.8 ,0.2, 0.8, 1, 0.7, 0.2, 0.7, 1), nrow = 3)
 space <- space.maker(10000, 3, rnorm, cor.matrix = cor_matrix)
 round(cor(space), 1) ; cor_matrix ## Both should be really similar matrices
 
-## A 3 dimensional with a priori approximated variance per dimension
-space <- space.maker(10000, 3, rnorm, scree = c(0.6 ,0.3, 0.1))
+## A 3-dimensional space with a priori approximated variance for each dimension
+space <- space.maker(10000, 3, rnorm, scree = c(0.6, 0.3, 0.1))
 ## The resulting screeplot
 barplot(apply(space, 2, var))
 

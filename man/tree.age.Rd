@@ -11,16 +11,16 @@ tree.age(tree, age, order = "past")
 
 \item{age}{The age of the tree. If missing the age is set to be the tree height.}
 
-\item{order}{Either "past" if the units is express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.}
+\item{order}{Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.}
 }
 \description{
-Calculates the age of each nodes and tips in a tree give the hight of the tree or some specified age.
+Calculates the age of each node and tip in a tree give the height of the tree or some specified age.
 }
 \examples{
 ## A dated random phylogeny with a root 50 units of time old.
-tree.age(rtree(10), age=50)
+tree.age(rtree(10), age = 50)
 ## A random tree with the distance since the root.
-tree.age(rtree(10), order='present')
+tree.age(rtree(10), order = 'present')
 
 }
 \seealso{

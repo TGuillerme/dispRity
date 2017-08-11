@@ -16,7 +16,7 @@ extract.dispRity(data, observed = TRUE, rarefaction = FALSE, subsamples,
 
 \item{subsamples}{Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).}
 
-\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.}
+\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.}
 }
 \description{
 Extracts the disparity from a \code{dispRity} object.

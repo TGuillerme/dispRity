@@ -3,18 +3,18 @@
 \name{time.subsamples}
 \alias{time.subsamples}
 \alias{time.series}
-\title{Separating ordinated data in time subsamples.}
+\title{Separating data in time subsamples.}
 \usage{
 time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.}
+\item{data}{A matrix.}
 
 \item{tree}{A \code{phylo} object matching the data and with a \code{root.time} element.}
 
-\item{method}{The time subsamples method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
+\item{method}{The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
 
-\item{time}{Either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.}
+\item{time}{Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.}
 
 \item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.}
 
@@ -26,19 +26,20 @@ time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verb
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
-\item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-\item{subsamples}{A \code{vector} containing the name of the subsamples.}
-\code{dispRity} objects can be summarised using \code{print} (S3).
+\item{matrix}{the multidimensional space (a \code{matrix}).}
+\item{call}{A \code{list} containing the called arguments.}
+\item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+
+Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Splits the ordinated data into a time subsamples list.
+Splits the data into a time subsamples list.
 }
 \details{
-If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time subsamples is:
+If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsamples is:
 \itemize{
-  \item \code{"acctran"}: always the one of the ancestral node.
-  \item \code{"deltran"}: always the one of the descendant node or tip.
+  \item \code{"acctran"}: always the value from the ancestral node.
+  \item \code{"deltran"}: always the value from the descendant node or tip.
   \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip.
   \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the descendant node or tip.
 }
@@ -48,17 +49,17 @@ If \code{method = "continuous"} and when the sampling is done along an edge of t
 data(BeckLee_tree) ; data(BeckLee_mat50)
 data(BeckLee_mat99) ; data(BeckLee_ages)
 
-## Time bining (discrete method)
+## Time binning (discrete method)
 ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
 time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
-## Generate the same one but including nodes
+## Generate the same time bins but including nodes
 time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 
 ## Time slicing (continuous method)
-## Generate 5 equidistant time slices in the data set assuming gradual
-## evolutionary models
+## Generate five equidistant time slices in the dataset assuming a gradual
+## evolutionary model
 time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
      method = "continuous", model = "acctran", time = 5,
      FADLAD = BeckLee_ages)

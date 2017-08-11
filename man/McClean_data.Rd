@@ -9,7 +9,7 @@ Example datasets from McClean (unpublished).
 }
 \details{
 \itemize{
-  \item \code{ordination} The ordinated matrix based on the 40 sites and 20 dimensions
+  \item \code{ordination} The ordinated matrix based on 40 sites and 20 dimensions
   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
 }

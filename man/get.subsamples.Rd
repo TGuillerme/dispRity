@@ -11,7 +11,7 @@ get.subsamples(data, subsamples)
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsamples}{A list of subsamples names or subsamples numbers to be extracted.}
+\item{subsamples}{A list of subsample names or subsample numbers to be extracted.}
 }
 \value{
 This function outputs a \code{dispRity} object.
@@ -23,7 +23,7 @@ Extracting some subsamples and data from a \code{dispRity} object.
 ## Load the disparity data based on Beck & Lee 2014
 data(disparity)
 
-## Get one subsamples
+## Get one subsample
 get.subsamples(disparity, "60")
 
 ## Get two subsamples

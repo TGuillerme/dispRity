@@ -24,13 +24,13 @@ A \code{dispRity} object that can be passed to \code{summary} or \code{plot}.
 Performs a disparity through time analysis.
 }
 \details{
-By default the time subsamples are using \code{method = "discrete"}, the matrix is bootstrapped 100 times
+By default the time subsamples use \code{method = "discrete"}, the matrix is bootstrapped 100 times
 }
 \examples{
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50) ; data(BeckLee_tree)
 
-## Run a simple disparity through time analysis (with 3 time bins)
+## Run a simple disparity through time analysis (with three time bins)
 result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
 summary(result) ; plot(result)
 

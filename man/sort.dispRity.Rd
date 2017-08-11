@@ -9,7 +9,7 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{decreasing}{\code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.}
+\item{decreasing}{\code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.}
 
 \item{sort}{An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.}
 

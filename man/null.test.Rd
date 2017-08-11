@@ -14,7 +14,7 @@ null.test(data, replicates = 100, null.distrib, null.args = NULL,
 
 \item{null.distrib}{one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.}
 
-\item{null.args}{any additional distributions arguments to be passed to \code{\link{space.maker}} (see \code{arguments} within; \code{default = NULL}).}
+\item{null.args}{any additional distribution arguments to be passed to \code{\link{space.maker}} (see \code{arguments} within; \code{default = NULL}).}
 
 \item{null.cor}{an additional correlation matrix to be passed to \code{\link{space.maker}} (see \code{cor.matrix} within; \code{default = NULL}).}
 
@@ -40,7 +40,7 @@ null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 ## Generating the subsamples
 groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
+customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 ## Bootstrapping the data
 bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 ## Calculating variances of each dimension

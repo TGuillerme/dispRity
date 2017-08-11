@@ -23,7 +23,7 @@ This function tests:
   \item 2: which dimension-level is your function (1, 2 or 3, see \code{\link{dispRity.metric}}).
   \item 3: whether the function can properly be implemented in the \code{dispRity} function.
 }
-The 3 different metric levels correspond to the dimensions of the output and are:
+The three different metric levels correspond to the dimensions of the output and are:
 \itemize{
   \item "dimension-level 1": for functions that decompose a \code{matrix} into a single value.
   \item "dimension-level 2": for functions that decompose a \code{matrix} into a \code{vector}.
@@ -31,10 +31,10 @@ The 3 different metric levels correspond to the dimensions of the output and are
 }
 For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{variances}} is composed of two metric dimension-levels:
 \itemize{
-  \item The \code{\link[dispRity]{variances}} (dimension-level 2) that calculates the variances per column in a matrix (aggregates a \code{matrix} into a \code{vector}).
-  \item The \code{\link[base]{sum}} (dimension-level 1) that transform the \code{vector} of variances into a single value.
+  \item The \code{\link[dispRity]{variances}} (dimension-level 2) that calculates the variances for each column in a matrix (aggregates a \code{matrix} into a \code{vector}).
+  \item The \code{\link[base]{sum}} (dimension-level 1) that transforms the \code{vector} of variances into a single value.
 }
-See function example for a concrete illustration (three different dimension-level of the function \code{\link[base]{sum}}).
+See function example for a concrete illustration (three different dimension-levels of the function \code{\link[base]{sum}}).
 }
 \examples{
 ## A dimension-level 1 function

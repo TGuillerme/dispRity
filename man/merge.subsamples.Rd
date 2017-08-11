@@ -9,18 +9,18 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsamples}{Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements per series (see details).}
+\item{subsamples}{Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements for each series (see details).}
 }
 \value{
 A \code{dispRity} object containing the original matrix and subsamples.
-NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
+NOTE: if the data are already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 }
 \description{
-Combines multiple subsamples together or cleans a subsamples series to contain at least n elements.
+Combines multiple subsamples together or cleans a subsample series to contain at least n elements.
 }
 \details{
-If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1,3,4)} will merge subsamples 1 and 3 into 4, on the opposite, \code{c(3,4,1)} will merge the subsamples 3 and 4 into 1.
-When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (apart from the last subsample that gets merged with the previous one).
+If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1, 3, 4)} will merge subsamples 1 and 3 into 4, while the opposite, \code{c(3, 4, 1)} will merge subsamples 3 and 4 into 1.
+When a single numeric value is given, subsamples are merged with the next subsample until the correct number of elements for each subsample is reached (apart from the last subsample that gets merged with the previous one).
 }
 \examples{
 ## Generate subsamples from a dummy matrix

@@ -16,7 +16,7 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
-The character difference is calculated as half the sum of the gower distances between the characters.
+The character difference is calculated as half the sum of the Gower distances between the characters.
 }
 \examples{
 ## Comparing two characters

@@ -2,7 +2,7 @@
 % Please edit documentation in R/test.dispRity.R
 \name{test.dispRity}
 \alias{test.dispRity}
-\title{Testing disparity hypothesis}
+\title{Testing disparity hypotheses}
 \usage{
 test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
   correction = "none", concatenate = TRUE, conc.quantiles = c(mean, c(95,
@@ -13,13 +13,13 @@ test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
 
 \item{test}{A test \code{function} to apply to the data.}
 
-\item{comparisons}{If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsamples names/number to compare (see details).}
+\item{comparisons}{If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsample names/number to compare (see details).}
 
 \item{rarefaction}{A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).}
 
 \item{correction}{Which p-value correction to apply to \code{htest} category test (see \code{\link[stats]{p.adjust}}; default = \code{"none"}).}
 
-\item{concatenate}{Logical, whether to concatenate eventual bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped values individually (\code{FALSE}).}
+\item{concatenate}{Logical, whether to concatenate bootstrapped disparity values (\code{TRUE}; default) or to apply the test to each bootstrapped value individually (\code{FALSE}).}
 
 \item{conc.quantiles}{If \code{concatenate = TRUE}, must be a central tendency function and a vector of quantiles (default = \code{c(mean, c(95, 50))}).}
 
@@ -34,10 +34,10 @@ Applying statistical tests to dispRity objects
 The \code{comparison} argument can be:
 \itemize{
   \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
-  \item \code{"referential"}: compares the first subsamples to all the others.
-  \item \code{"sequential"}: compares each subsamples sequentially (e.g. first against second, second against third, etc.).
+  \item \code{"referential"}: compares the first subsample to all the others.
+  \item \code{"sequential"}: compares each subsample sequentially (e.g. first against second, second against third, etc.).
   \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
-  \item A list of pairs of number of subsamples to compare. Each element of the the list must contain two elements
+  \item A list of pairs of number of subsamples to compare. Each element of the list must contain two elements
      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
 }
@@ -47,7 +47,7 @@ IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pa
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 
-## Calculating the disparity from a customised subsamples
+## Calculating the disparity from customised subsamples
 ## Generating the subsamples
 groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
@@ -57,10 +57,10 @@ bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 
-## Measuring the subsamples overlap
+## Measuring the subsample overlap
 test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 
-## Measuring differences from a reference_subsamples
+## Measuring differences from a reference subsample
 test.dispRity(sum_of_variances, wilcox.test, "referential")
 
 ## Running a linear model on the data

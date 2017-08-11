@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{dispRity} object.}
 
-\item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).}
+\item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).}
 
 \item{...}{further arguments to be passed to \code{print} or to \code{print.dispRity}.}
 }
