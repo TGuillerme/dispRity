@@ -1,9 +1,9 @@
-## Converts one or more CI into a quantile probabilities
+## Converts one or more CI into quantile probabilities
 CI.converter <- function(CI) {
     sort(c(50-CI/2, 50+CI/2)/100)
 }
 
-# Wrapping function for summarising a single rarefaction
+# Wrapper function for summarising a single rarefaction
 get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
     output <- list()
     if(!missing(cent.tend)) {
@@ -15,12 +15,12 @@ get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
     return(output)
 }
 
-## Lapply wrapping function for summarising a single subsamples
+## lapply wrapper function for summarising a single subsample
 lapply.summary <- function(disparity_subsamples, cent.tend, quantiles) {
     return(lapply(disparity_subsamples[-1], get.summary, cent.tend, quantiles))
 }
 
-## Lapply wrapper for getting elements
+## lapply wrapper for getting elements
 lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
     if(bootstrapped){
         return(unlist(lapply(subsamples[-1], nrow)))
@@ -29,20 +29,20 @@ lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
     }
 }
 
-## Lapply wrapper for getting the disparity observed values
+## lapply wrapper for getting the disparity observed values
 lapply.observed <- function(disparity) {
     return(c(disparity$elements))
 }
 
-## Mapply wrapper for getting the disparity observed values
+## mapply wrapper for getting the disparity observed values
 mapply.observed <- function(disparity, elements) {
     return(c(disparity, rep(NA, (length(elements)-1))))
 }
 
-## Get digit for table (Shifts the point to contain maximum 4 characters)
+## Get digits for table (shifts the decimal point to contain a maximum of four characters)
 get.digit <- function(column) {
     if(max(nchar(round(column)), na.rm = TRUE) <= 4) {
-        return(4-max(nchar(round(column)), na.rm = TRUE))
+        return(4 - max(nchar(round(column)), na.rm = TRUE))
     } else {
         return(0)
     }

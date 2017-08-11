@@ -3,18 +3,18 @@
 #' @description Creates a summary of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param quantiles The quantiles to display (default is \code{quantiles = c(50,95)}; is ignored if the \code{dispRity} object is not bootstrapped).
+#' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
-#' @param recall \code{logical}, whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
+#' @param recall \code{logical} value specifying whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
 #' @param rounding Optional, a value for rounding the values in the output table (default = 2).
 # ' @param results Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")
 #'
 #' @return
 #' A \code{data.frame} with:
-#' \item{subsamples}{the subsamples names.}
-#' \item{n}{the number of elements per subsamples.}
+#' \item{subsamples}{the subsample names.}
+#' \item{n}{the number of elements in each subsample.}
 #' \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
-#' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparity's (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity is displayed).}
+#' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparities (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity are displayed).}
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -36,7 +36,7 @@
 # source("summary.dispRity_fun.R")
 # data(BeckLee_mat50)
 # groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
+# customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 # bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3, rarefaction = TRUE)
 # subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE)
 # data <- sequential.test(subsamples, family = gaussian, correction = "hommel")
@@ -48,7 +48,7 @@
 # recall <- FALSE
 # match_call <- list() ; match_call$cent.tend <- "median"
 
-summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
+summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
 
     #----------------------
     # SANITIZING
@@ -82,7 +82,7 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
     #DATA
     #must be class dispRity
     check.class(data, "dispRity")
-    #Check if it's a bootstrapped dispRity object
+    #Check if it is a bootstrapped dispRity object
     if(is.null(data$disparity)) {
         stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
     }
@@ -145,7 +145,7 @@ summary.dispRity <- function(data, quantiles = c(50,95), cent.tend = median, rec
         }
     }
 
-    #Round the results (number of decimals = maximum number of digits in the entire)
+    ## Round the results (number of decimals = maximum number of digits in the output)
     summary_results <- rounding.fun(summary_results, rounding)
 
     #----------------------

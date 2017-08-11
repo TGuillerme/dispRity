@@ -5,7 +5,7 @@
 #' @param matrix A discrete matrix or a list containing discrete characters.
 #' 
 #' @details
-#' The character difference is calculated as half the sum of the gower distances between the characters.
+#' The character difference is calculated as half the sum of the Gower distances between the characters.
 #' 
 #' @return
 #' A character difference value or a matrix of class \code{char.diff}

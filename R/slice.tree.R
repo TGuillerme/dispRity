@@ -1,11 +1,11 @@
-#' @title Slicing a tree.
+#' @title Time slicing a tree.
 #'
 #' @usage slice.tree(tree, age, model, FAD, LAD)
 #' 
-#' @description Slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
+#' @description Time slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
-#' @param age A single \code{numeric} value where to perform the slice.
+#' @param age A single \code{numeric} value indicating where to perform the slice.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
@@ -19,10 +19,10 @@
 #' ## Add some node labels
 #' tree$node.label <- letters[1:19]
 #' 
-#' ## Add it's root time
+#' ## Add its root time
 #' tree$root.time <- max(tree.age(tree)$ages)
 #' 
-#' ## Create a slice on the tree at age 0.5
+#' ## Slice the tree at age 0.5
 #' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 #'
 #' @author Thomas Guillerme
@@ -37,7 +37,7 @@
 slice.tree <- function(tree, age, model, FAD, LAD) {
 
     #For adding modules (i.e. models) follow the format
-    # tree_slice<-timeSliceTree(tree, age, drop.extinct=TRUE, plot=FALSE)
+    # tree_slice<-timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
     # for (tip in 1:Ntip(tree_slice)) {
     #   tree_sliced$tip.label[tip]<-module(tree, tree_slice$tip.label[tip], tree_slice)
     # }
@@ -69,7 +69,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
     #Error with trees with two taxa
     if(Ntip(tree_slice) < 3) {
-        stop('To few taxa in the tree at age ', age, '!')
+        stop('Too few taxa in the tree at age ', age, '!')
     }
 
     #renaming the tree_slice
@@ -79,10 +79,10 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     for (tip in 1:Ntip(tree_slice)) {
 
         #Check if the tree is not sliced at the exact age of a tip (e.g. time=0)
-        if(tree_age[which(tree_age[,2] == tree_slice$tip.label[tip]),1] != age) {
+        if(tree_age[which(tree_age[, 2] == tree_slice$tip.label[tip]), 1] != age) {
 
             #Check if the age of the tip is not in between the FAD/LAD
-            if(!FAD[which(FAD[,2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[,2] == tree_slice$tip.label[tip]),1] <= age) {
+            if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
 
 
                 #Chose the tip/node following the given model

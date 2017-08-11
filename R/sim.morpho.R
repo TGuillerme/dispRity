@@ -5,27 +5,27 @@
 #' @param tree A phylogenetic tree to use for generating the characters.
 #' @param characters The number of morphological characters to generate.
 #' @param model Either an implemented (\code{"ER"}, \code{"HKY"} or \code{"MIXED"}) or user defined model (see details).
-#' @param states A \code{numeric} string of probabilities for the number of states for each characters (\code{default = 1}; i.e. 100\% binary state characters; see details).
-#' @param rates A function an it's parameters for the rates distribution (see details).
-#' @param substitution A function an it's parameters for the substitutions distribution (see details; \code{default = c(runif, 2, 2)}).
+#' @param states A \code{numeric} string of probabilities for the number of states for each character (\code{default = 1}; i.e. 100\% binary state characters; see details).
+#' @param rates A function an its parameters for the rates distribution (see details).
+#' @param substitution A function an its parameters for the substitutions distribution (see details; \code{default = c(runif, 2, 2)}).
 #' @param invariant \code{logical}, whether to allow any invariant sites (\code{default = TRUE}).
 #' @param verbose Whether to be verbose or not (\code{default = FALSE}).
 #'
 #' @details
 #' \itemize{
 #' 
-#' \item The \code{model} arguments must be either a user's defined function for generating the discrete morphological characters (that intakes the states, rates and substitution arguments) or one of the two following:
+#' \item The \code{model} arguments must be either a user's defined function for generating the discrete morphological characters (that takes the states, rates and substitution arguments) or one of the two following:
 #'      \itemize{
 #'          \item \code{"ER"} uses the \code{ape::rTraitDisc} function with the \code{"ER"} model argument (= Mk model).
 #'          \item \code{"HKY"} uses the \code{phyclust::gen.seq.HKY} function with \code{kappa} sampled from the \code{substitution} argument, \code{pi = runif(4)} (divided by \code{sum(runif(4))}), \code{rate.scale} sampled from the \code{rates} distribution and \code{L} being the number of \code{characters} and transforms the purines (A, G) into 0 and the pyrimidines (C, T) into 1.
 #'          \item \code{"MIXED"} randomly uses \code{"ER"} or \code{"HKY"} for binary characters and \code{"ER"} for any character with more than two states.
-#'          \item the user defined model must be a \code{function} that generates \emph{a single} discrete morphological characters and intakes one element from at least the following arguments: \code{tree}, \code{states}, \code{rates}, \code{substitution}.
+#'          \item the user defined model must be a \code{function} that generates \emph{a single} discrete morphological character and takes one element from at least the following arguments: \code{tree}, \code{states}, \code{rates}, \code{substitution}.
 #'      }
 #'
-#' \item The \code{states} argument attributes a number of states to each character by using the given probability vector for each number of states starting from 2.
-#' For example \code{states = c(0.7, 0.2, 0.1)} will generate 70% of characters with 2 states, 20% of characters with 3 states and 10% of characters with 4 states. 
+#' \item The \code{states} argument attributes a number of states to each character by using the given probability vector for each number of states starting from two.
+#' For example \code{states = c(0.7, 0.2, 0.1)} will generate 70% of characters with two states, 20% of characters with three states and 10% of characters with four states. 
 #' 
-#' \item The \code{rates} and \code{substitution} arguments attributes a distribution function and it's optional parameters to a model. For example \code{rates = c(runif, 1, 10)} attributes a uniform distribution between 1 and 10 for the rates distribution.
+#' \item The \code{rates} and \code{substitution} arguments require a function that outputs a distribution and its optional parameters. For example \code{rates = c(runif, 1, 10)} creates a uniform distribution between 1 and 10 for the rates distribution.
 #' 
 #' }
 #' 

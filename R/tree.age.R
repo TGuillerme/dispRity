@@ -1,16 +1,16 @@
 #' @title Calculating the age of nodes and tips in a tree.
 #'
-#' @description Calculates the age of each nodes and tips in a tree give the hight of the tree or some specified age.
+#' @description Calculates the age of each node and tip in a tree give the height of the tree or some specified age.
 #'
 #' @param tree A \code{phylo} object.
 #' @param age The age of the tree. If missing the age is set to be the tree height.
-#' @param order Either "past" if the units is express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.
+#' @param order Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.
 #'
 #' @examples
 #' ## A dated random phylogeny with a root 50 units of time old.
-#' tree.age(rtree(10), age=50)
+#' tree.age(rtree(10), age = 50)
 #' ## A random tree with the distance since the root.
-#' tree.age(rtree(10), order='present')
+#' tree.age(rtree(10), order = 'present')
 #'
 #' @seealso \code{\link{slice.tree}}, \code{\link{time.subsamples}}.
 #'
@@ -35,8 +35,8 @@ tree.age <- function(tree, age, order = 'past'){
 
     #order
     check.class(order, 'character', ' must be \'past\' or \'present\'.')
-    if(order !='past') {
-        if(order !='present') {
+    if(order != 'past') {
+        if(order != 'present') {
             stop('order must be \'past\' or \'present\'.')
         }
     }
@@ -54,10 +54,10 @@ tree.age <- function(tree, age, order = 'past'){
         ages.table$ages <- round(ages.table$ages, digits = 7)
     } else {
         tree.height <- max(ages.table$ages)
-        ages.table$ages <- round(abs(ages.table$ages-tree.height), digits = 3)
+        ages.table$ages <- round(abs(ages.table$ages - tree.height), digits = 3)
     }
 
     #Output
-    #ages.table <- round(ages.table[1,], digits = 3)
+    #ages.table <- round(ages.table[1, ], digits = 3)
     return(ages.table)
 }

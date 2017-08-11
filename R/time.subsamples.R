@@ -7,8 +7,8 @@
 #'
 #' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
-#' @param method The time subsamples method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
-#' @param time Either a single \code{integer} for them number of discrete or continuous samples or a \code{vector} containing the age of each sample.
+#' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
+#' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
 #' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
@@ -24,8 +24,8 @@
 #' @details
 #' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time subsamples is:
 #' \itemize{
-#'   \item \code{"acctran"}: always the one of the ancestral node.
-#'   \item \code{"deltran"}: always the one of the descendant node or tip.
+#'   \item \code{"acctran"}: always the value from the ancestral node.
+#'   \item \code{"deltran"}: always the value from the descendant node or tip.
 #'   \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip.
 #'   \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the descendant node or tip.
 #' }
@@ -35,17 +35,17 @@
 #' data(BeckLee_tree) ; data(BeckLee_mat50)
 #' data(BeckLee_mat99) ; data(BeckLee_ages)
 #'
-#' ## Time bining (discrete method)
+#' ## Time binning (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
 #' time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
-#' ## Generate the same one but including nodes
+#' ## Generate the same time bins but including nodes
 #' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #'
 #' ## Time slicing (continuous method)
-#' ## Generate 5 equidistant time slices in the data set assuming gradual
-#' ## evolutionary models
+#' ## Generate five equidistant time slices in the dataset assuming a gradual
+#' ## evolutionary model
 #' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
@@ -101,25 +101,25 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(method == "c") method <- "continuous"
 
     ## TIME
-    ## time must be numeric of integer
+    ## time must be numeric or integer
     silent <- check.class(time, c("numeric", "integer"))
     ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
-        ## time must be at least 3 if discrete
+        ## time must be at least three if discrete
         if(method == "discrete" && time < 3) stop("If method is discrete, time must have at least 3 elements.")
-        ## or at least time 2 if continuous
+        ## or at least two if continuous
         if(method == "continuous" && time < 2) stop("If method is discrete, time must have at least 2 elements.")
         ## Create the time vector
-        ## Make sure the oldest slice has at least 3 taxa:
+        ## Make sure the oldest slice has at least three taxa:
         ## Set the oldest slice at 1% of tree height
         percent <- 0.01
-        while(Ntip(paleotree::timeSliceTree(tree, tree$root.time-percent*tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
-            ## Increase percent until slice has 3 elements
+        while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - percent * tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
+            ## Increase percentage until slice has three elements
             percent <- percent + 0.01
         }
         ## Set up time
-        if(method == "discrete") time <- seq(from = 0, to = tree$root.time-percent*tree$root.time, length.out = time+1)
-        if(method == "continuous") time <- seq(from = 0, to = tree$root.time-percent*tree$root.time, length.out = time)    
+        if(method == "discrete") time <- seq(from = 0, to = tree$root.time - percent * tree$root.time, length.out = time + 1)
+        if(method == "continuous") time <- seq(from = 0, to = tree$root.time - percent * tree$root.time, length.out = time)    
     }
 
     ## time cannot be older than the root age
@@ -163,11 +163,11 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
             ## Check if the tree and the table are the same length
-            if(nrow_data != (Ntip_tree+Nnode(tree))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
+            if(nrow_data != (Ntip_tree + Nnode(tree))) stop("The labels in the ordinated matrix and in the tree do not match!\nRemember to check the node labels in the tree and the ordinated matrix.")
             ## Check if both nodes and tip labels match with the data rownames
             if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
         } else {
-            stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
+            stop("The labels in the ordinated matrix and in the tree do not match!\nRemember to check the node labels in the tree and the ordinated matrix.")
         }
     }
 
@@ -177,7 +177,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(missing(FADLAD)) {
         ## If missing, create the FADLAD table
         FADLAD <- data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2])
-        ## message("No FAD/LAD table has been provided.\nEvery tips are assumed to be single points in time.")
+        ## message("No FAD/LAD table has been provided.\All tips are assumed to be single points in time.")
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
@@ -187,7 +187,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
             ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             ## If not generate the FADLAD for the missing taxa
             missing_FADLAD <- which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
-            add_FADLAD <- data.frame(tree.age_tree[missing_FADLAD,1], tree.age_tree[missing_FADLAD,1], row.names = tree.age_tree[missing_FADLAD,2])
+            add_FADLAD <- data.frame(tree.age_tree[missing_FADLAD, 1], tree.age_tree[missing_FADLAD, 1], row.names = tree.age_tree[missing_FADLAD, 2])
             colnames(add_FADLAD) <- colnames(FADLAD)
             FADLAD <- rbind(FADLAD, add_FADLAD)
         }
@@ -200,9 +200,9 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## VERBOSE
     check.class(verbose, "logical")
 
-    ## ----------------------
+    ## -------------------------------
     ##  GENRATING THE TIME subsamples
-    ## ----------------------
+    ## -------------------------------
 
     if(method == "discrete") {
         time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)

@@ -1,8 +1,8 @@
 #' @title Imports data from geomorph
 #'
-#' @description Takes geomorph procrustes object or a geomorph.data.frame object and ordinates it.
+#' @description Takes geomorph Procrustes object or a geomorph.data.frame object and ordinates it.
 #'
-#' @param data An array (p x k x n) typically obtained from a procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.
+#' @param data An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.
 #' @param ... Any optional arguments to be passed to \code{\link[stats]{prcomp}}.
 #' 
 #' @details
@@ -17,7 +17,7 @@
 #' ## Loading the plethodon dataset
 #' data(plethodon)
 #' 
-#' ## Performing a procrustes transform
+#' ## Performing a Procrustes transform
 #' procrustes <- gpagen(plethodon$land,PrinAxes=FALSE)
 #' 
 #' ## Obtaining the ordination matrix
@@ -59,7 +59,7 @@ geomorph.ordination <- function(data, ...) {
     }
 
 
-    ## Ordinating the procrustes data (code from Emma Sherratt)
+    ## Ordinating the Procrustes data (code from Emma Sherratt)
     columns <- dim(coords)[1] * dim(coords)[2]
     rows <- dim(coords)[3]
     matrix_out <- aperm(coords, c(3, 2, 1))

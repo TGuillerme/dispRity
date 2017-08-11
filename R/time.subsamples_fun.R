@@ -33,7 +33,7 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 ## Discrete time subsamples
 time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
     
-    ## lapply fun for getting the interval
+    ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes) {
         if(inc.nodes != FALSE) {
             return( list("elements" = as.matrix(which(ages_tree$FAD$ages >= time[interval+1] & ages_tree$LAD$ages <= time[interval]) )))
@@ -47,7 +47,7 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
     ## ages of tips/nodes + FAD/LAD
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
 
-    ## Attribute each taxa/node to it's interval
+    ## Attribute each taxa/node to its interval
     interval_elements <- lapply(as.list(seq(1:(length(time)-1))), get.interval, time, ages_tree, inc.nodes)
 
     ## Get the names of the intervals
@@ -65,7 +65,7 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
 
 ## Continuous time subsamples
 time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
-    ## lapply fun gor getting the slices
+    ## lapply function for getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose) {
         ## Get the subtree
         if(time[slice] == 0) {

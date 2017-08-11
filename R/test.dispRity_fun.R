@@ -1,4 +1,4 @@
-## Mapply function for applying the tests to distribution data
+## mapply function for applying the tests to distribution data
 test.mapply <- function(pair_comparison, data, test, ...) {
     return(mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE))
 }
@@ -11,12 +11,12 @@ test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
 
 ## Creating a list of sequences
 set.sequence <- function(length) {
-    ## Sequence of only 2
-    if(length==2) {
-        output <- matrix(data=c(1,2), nrow=2, byrow=TRUE)
+    ## Sequence of only two
+    if(length == 2) {
+        output <- matrix(data = c(1, 2), nrow = 2, byrow = TRUE)
     } else {
     ## sequence of more
-        output <- matrix(data=c(1:(length-1), 2:length), nrow=2, byrow=TRUE)
+        output <- matrix(data = c(1:(length - 1), 2:length), nrow = 2, byrow = TRUE)
     }
     return(output)
 }
@@ -66,7 +66,7 @@ list.to.table <- function(extracted_data, style = "group") {
     return(output)
 }
 
-## lapply fun for htest.to.vector
+## lapply function for htest.to.vector
 get.element <- function(print, htest) {
     return(htest[grep(print, names(htest))][[1]])
 }
@@ -81,21 +81,21 @@ htest.to.vector <- function(htest, print) {
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
     options(warn = -1)
     if(comp == "custom") {
-        ## get the lit of subsamples to compare
+        ## get the list of subsamples to compare
         comp_subsamples <- comparisons
     }
 
     if(comp == "pairwise") {
         ## Get the pairs of subsamples
         comp_subsamples <- combn(1:length(extracted_data), 2)
-        ## convert pair subsamples table in a list of pairs
+        ## convert pair subsamples table into a list of pairs
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
 
     if(comp == "sequential") {
         ## Set the list of sequences
         comp_subsamples <- set.sequence(length(extracted_data))
-        ## convert seq subsamples in a list of sequences
+        ## convert seq subsamples into a list of sequences
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
 
@@ -103,7 +103,7 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
         ## Set the list of comparisons as a matrix
         matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
         comp_subsamples <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
-        ## convert pair subsamples table in a list of pairs
+        ## convert pair subsamples table into a list of pairs
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
     options(warn = 0)
@@ -142,7 +142,7 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
         table_out <- table_temp
     }
 
-    ## Getting col names
+    ## Getting column names
     colnames(table_out)[1] <- name
     ## Getting row names (the comparisons)
     row.names(table_out) <- comparisons_list
@@ -152,7 +152,7 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
 
 
 
-## Lapply function for getting the test elements (output.htest.results internal)
+## lapply function for getting the test elements (output.htest.results internal)
 lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
     if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
         return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))

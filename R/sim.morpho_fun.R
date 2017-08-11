@@ -32,7 +32,7 @@ HKY.seq.generator <- function(tree, substitution, rate, ...) {
 
 ## The character selector (isolating the characters) function for gen.seq.HKY.binary
 character.selector <- function(generated_character) {
-    return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1,]), 1, strsplit, split = " "), recursive = FALSE), function(x) utils::tail(x, 1)))
+    return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1, ]), 1, strsplit, split = " "), recursive = FALSE), function(x) utils::tail(x, 1)))
 }
 
 ## seqgen HKY binary
@@ -62,7 +62,7 @@ k.sampler <- function(states) {
         ## Only binary characters
         return(2)
     } else {
-        return(sample(2:(length(states)+1), 1, prob = states))
+        return(sample(2:(length(states) + 1), 1, prob = states))
     }
 }
 

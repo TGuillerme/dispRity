@@ -1,4 +1,4 @@
-## Utilities functions for manipulating dispRity objects
+## Utility functions for manipulating dispRity objects
 
 #' @title Creates a \code{dispRity} object.
 #' 
@@ -49,7 +49,7 @@ make.dispRity <- function(data, call, subsamples) {
 
 #' @title Fills a \code{dispRity} object.
 #'
-#' @description Fills a \code{dispRity} object using the data from it's matrix
+#' @description Fills a \code{dispRity} object using the data from its matrix
 #'
 #' @param data A \code{dispRity} object.
 #' 
@@ -100,7 +100,7 @@ fill.dispRity <- function(data) {
 #' @description Fetching a specific matrix from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsamples A \code{numeric} value to select a subsamples (\code{0} is no subsamples; default).
+#' @param subsamples A \code{numeric} value to select subsamples (\code{0} is no subsamples; default).
 #' @param rarefaction A \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction; default).
 #' @param bootstrap A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).
 #' 
@@ -111,11 +111,11 @@ fill.dispRity <- function(data) {
 #' ## To get the original matrix
 #' matrix.dispRity(disparity)
 #' 
-#' ## To get the un-bootstrapped matrix from the second subsamples
+#' ## To get the un-bootstrapped matrix from the second subsample
 #' matrix.dispRity(disparity, subsamples = 2)
 #' 
 #' ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
-#' ## same subsamples
+#' ## same subsample
 #' matrix.dispRity(disparity, subsamples = 2, rarefaction = 2, bootstrap = 52)
 #' 
 #' @author Thomas Guillerme
@@ -140,7 +140,7 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 #' @description Extracting some subsamples and data from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsamples A list of subsamples names or subsamples numbers to be extracted.
+#' @param subsamples A list of subsample names or subsample numbers to be extracted.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object.
@@ -149,7 +149,7 @@ matrix.dispRity <- function(data, subsamples, rarefaction, bootstrap){
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
 #'
-#' ## Get one subsamples
+#' ## Get one subsample
 #' get.subsamples(disparity, "60")
 #'
 #' ## Get two subsamples
@@ -213,7 +213,7 @@ get.subsamples <- function(data, subsamples) {
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
 #' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
 #' @param subsamples Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).
-#' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual ones.
+#' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -390,7 +390,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #' @description Sort (or order) the subsamples of a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param decreasing \code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.
+#' @param decreasing \code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.
 #' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.
 #' @param ... optional arguments to be passed to \code{sort}.
 #' 
@@ -425,7 +425,7 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
     check.class(data, "dispRity")
     ## Initialising subsamples length variable
     length_subsamples <- length(data$subsamples)
-    if(length_subsamples == 1) stop("Data contains only one subsamples.")
+    if(length_subsamples == 1) stop("Data contains only one subsample.")
 
     ## decreasing
     check.class(decreasing, "logical")
@@ -457,18 +457,18 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 
 #' @title Combines or cleans subsamples.
 #'
-#' @description Combines multiple subsamples together or cleans a subsamples series to contain at least n elements.
+#' @description Combines multiple subsamples together or cleans a subsample series to contain at least n elements.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsamples Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements per series (see details).
+#' @param subsamples Either a \code{vector} of the number or name of the subsamples to merge or a single \code{numeric} value of the minimum of elements for each series (see details).
 #' 
 #' @details  
-#' If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1,3,4)} will merge subsamples 1 and 3 into 4, on the opposite, \code{c(3,4,1)} will merge the subsamples 3 and 4 into 1.
-#' When a single numeric value is given, subsamples  are merged with the next one until getting the right number of elements per subsamples (apart from the last subsample that gets merged with the previous one).
+#' If \code{subsample} is a vector, the subsamples are merged in the given input order. \code{c(1, 3, 4)} will merge subsamples 1 and 3 into 4, while the opposite, \code{c(3, 4, 1)} will merge subsamples 3 and 4 into 1.
+#' When a single numeric value is given, subsamples are merged with the next subsample until the correct number of elements for each subsample is reached (apart from the last subsample that gets merged with the previous one).
 #' 
 #' @return
 #' A \code{dispRity} object containing the original matrix and subsamples.
-#' NOTE: if the data is already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
+#' NOTE: if the data are already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 #' 
 #' @examples
 #' ## Generate subsamples from a dummy matrix
@@ -560,7 +560,7 @@ merge.subsamples <- function(data, subsamples) {
             ## Must be present in the subsamples names
             matches <- subsamples %in% names(data$subsamples)
             if(any(matches == FALSE)) {
-                stop(paste(paste(subsamples[!matches], collapse = " and "), "don't match with any of the subsamples names in", match_call$data))
+                stop(paste(paste(subsamples[!matches], collapse = " and "), "don't match with any of the subsample names in", match_call$data))
             } else {
                 subsamples <- match(subsamples, names(data$subsamples))
             }
@@ -595,7 +595,7 @@ merge.subsamples <- function(data, subsamples) {
         names <- names(data$subsamples)[subsamples]
         name_replace <- names(data$subsamples)[subsamples[length(subsamples)]]
         for(subs in 1:(length(subsamples)-1)) {
-            ## Loop oversize buffer
+            ## Loop over size buffer
             if(subs > (length(data$subsamples))) {break}
             ## Merging subsamples
             replace_2 <- match(name_replace, names(data$subsamples))

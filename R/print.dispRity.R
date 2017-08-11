@@ -3,7 +3,7 @@
 #' @description Summarises the content of a \code{dispRity} object.
 #'
 #' @param x A \code{dispRity} object.
-#' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise it's content (\code{FALSE} - default).
+#' @param all \code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).
 #' @param ... further arguments to be passed to \code{print} or to \code{print.dispRity}.
 #' 
 #' @examples
@@ -83,12 +83,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
         cat(" ---- dispRity object ---- \n")
 
-        ## Print the matrix informations
+        ## Print the matrix information
         if(any(names(x$call) == "subsamples") && length(x$subsamples) != 1) {
             ## Get the number of subsamples (minus origin)
             subsamples <- names(x$subsamples)
 
-            ## Check if there are more than one subsamples
+            ## Check if there is more than one subsample
             if(length(subsamples) != 1) {
 
                 ## Get the method

@@ -268,8 +268,6 @@ summary(disp_lm)
 ## Note that ANOVA assumptions were not checked here!
 ```
 
-<!-- NC: Is this using aov or lm? Note that aov can only be used with balanced designs, so where the three time bins have equal numbers of species. I expect you need to use lm (which also fits an ANOVA as an ANOVA is also a linear model). THIS IS IMPORTANT -->
-
 Please refer to the [specific tutorials](#specific-tutorial) for (much!) more information on the nuts and bolts of the package.
 You can also directly explore the specific function help files within R and navigate to related functions.
 
@@ -492,7 +490,6 @@ boot.matrix(time_slices, bootstraps = 100)
 There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space @DonohueDim, the sum and the product of the ranges and variances @Wills1994 or the median position of the elements relative to their centroid @Wills1994. 
-<!-- NC: probably should cite Matt Wills' paper for the centroid thing too as he invented it apparently; TG: ok fixed. Though one can argue Euclides invented it before him (and probably Gnut-the-enlighted-cavemen before-->
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
 
 Because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
@@ -1037,14 +1034,12 @@ However, another way to perform disparity analysis is to use the *whole distribu
 This is possible in the `dispRity` package by calculating disparity as a dimension-level 2 metric only!
 Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.
 
-<!-- NC: I think when these prelim steps have been done a long time earlier, and/or are not built into the package, you probably want to include the code to get boot_time_slices here too. Most people won't read the manual cover to cover in one go -->
-
 ```{r}
 ## Measuring disparity as a whole distribution
 disparity_centroids <- dispRity(boot_time_slices, metric = centroids)
 ```
 
-The resulting disparity object being of dimension-level 2, it can easily be transformed into a dimension-level 1 one by, for example, measuring the median distance of all these distributions:
+The resulting disparity object is of dimension-level 2, so it can easily be transformed into a dimension-level 1 object by, for example, measuring the median distance of all these distributions:
 
 ```{r}
 ## Measuring median disparity in each time slice
@@ -1115,13 +1110,15 @@ For example, when comparing the slices 120 and 80, we have a mean probability of
 Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option.
 
 ## Ecological studies of disparity
+<!-- NC: I wonder if this might be better just as a "hey we can do ecology stuff too and here is a link to a demo" rather than a new section? The manual is loooooooooong so splitting some stuff out might be good? -->
 
-Disparity analyses are not restricted to palaeobiology analysis only.
-This package is designed for dealing with ordinated matrix, no matter which data was used in the ordination.
-Here is an short example of disparity analysis using ecological data from D. McClean (unpubl.).
+Disparity analyses are not restricted to palaeobiology analysis.
+This package is designed for dealing with ordinated matrices, no matter which data was used in the ordination.
+Here is an short example of disparity analysis using ecological data from Deirdre McClean (unpubl.).
 
 The dataset contains an ordinated matrix of 20 dimensions (columns) for 40 elements (rows).
-The elements are different experimental plots with discrete variations of nutrient enrichment and depth and freshwater benthic invertebrates.
+The elements are different experimental plots with discrete variations of nutrient enrichment, depth, and freshwater benthic invertebrates.
+<!-- NC: Explain a little more about what the data are here as I don't entirely get it. EG what's a treatement etc? Just a really simple explanataion is perfect -->
 
 ```{r}
 ## Loading the data
@@ -1135,9 +1132,10 @@ treatments <- McClean_data$treatment
 depth <- McClean_data$depth
 ```
 
-### Classic analysis
+### Classic ecological "disparity" analysis
 
-A classical way to represent this ordinated data will be to use two dimensional plots.
+A classical way to represent this ordinated data would be to use two dimensional plots to look at how the different experimental plots differ in their values for nutrient enrichment, depth, and freshwater benthic invertebrates. 
+<!-- NC: or similar just to make it clearer -->
 
 ```{r, fig.width=6, fig.height=6}
 ## Setting the colors that will represent the treatments
@@ -1156,23 +1154,23 @@ plot(ordinated_matrix[, 1:2], col = cols, pch = pchs,
 par(op)
 ```
 
-This shows the distribution of the experimental plots along the two first axis of variance of the ordinated distance matrix (i.e. the first two dimensions).
-At a first glance, it seems difficult to see a clear effect from the treatments (blue or red) or the depth (rounds or triangles) since the different experimental plots with the same parameters don’t seem to cluster.
-However, the problem, is that this plot ignores the 18 other dimensions of the ordination!
-Additionally, these two represented dimensions do not represent a biological reality *per se*; i.e. the values on the first dimension do not represent some continuous traits (e.g. depth) but just the ordinations of correlations between the data and some factors.
+This shows the distribution of the experimental plots along the two first axis of variation of the ordinated distance matrix (i.e. the first two dimensions).
+At a first glance, it seems difficult to see a clear effect of the treatments (blue or red) or the depth (rounds or triangles) as the different experimental plots with the same parameters don't seem to cluster together.
+However, this may be because this plot ignores the 18 other dimensions of the ordination!
+Additionally, these two represented dimensions do not represent a biological reality *per se*; i.e. the values on the first dimension do not represent a continuous trait (e.g. depth), instead they just represent the ordinations of correlations between the data and some factors.
 
 Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a *n*-dimensional object.
 
 ### Multidimensional analysis with `dispRity`
 
-#### Splitting the data following the different factors
+#### Splitting the data with respect to the different factors
 
-The first step in such analysis will be to create different subsamples that will represent sub-samples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
-Each of these subsamples contain a certain number of elements (i.e. a subset of the 40 experimental field plots) that have some attributes in common.
+The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
+Each of these subsamples will contain a certain number of elements (i.e. a subset of the 40 experimental field plots) that have some attributes in common.
 In our example, we are going to group the elements according to their depth and treatment.
 
 ```{r}
-## Creating the table that contain the elements and their attributes
+## Creating a table that contain the elements and their attributes
 factors <- as.data.frame(matrix(data = c(treatments, depth),
           nrow = nrow(ordinated_matrix), ncol = 2, byrow = FALSE,
           dimnames = list(rownames(ordinated_matrix))))
@@ -1180,7 +1178,7 @@ names(factors) <- c("Treat", "Depth")
 head(factors)
 ```
 
-Second, let’s split the data according to these factors to create the subsamples of the ordinated space by using the `custom.subsamples` function:
+Second, let’s split the data according by depth and treatment to create the subsamples of the ordinated space by using the `custom.subsamples` function:
 
 ```{r}
 ## Splitting the ordinated space into four subsamples
@@ -1197,10 +1195,9 @@ disparity <- dispRity(customised_subsamples, metric = diagonal)
 summary(disparity)
 ```
 
-
-We can also want to bootstrap the data to test the robustness of the measured disparity to outliers.
-Also, as we can see, each subsamples has different numbers of elements.
-It might also be interesting to rarefy the data as well to have only subsamples with the same number of elements.
+We can also bootstrap the data to test the robustness of the measured disparity to outliers.
+Also, as we can see, each subsample has different numbers of elements.
+It might also be interesting to rarefy the data to have only subsamples with the same number of elements.
 
 ```{r}
 ## Bootstrapping the subsamples and using rarefaction
@@ -1209,14 +1206,14 @@ bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100,
                                  rarefaction = 17)
 ```
 
-We can now rerun a more robust disparity analysis using the bootstrapped data:
+We can now run a more robust disparity analysis using the bootstrapped data:
 
 ```{r}
 ## Calculating the bootstrapped disparity
 disparity <- dispRity(bootstrapped_data, metric = diagonal)
 ```
 
-#### Summarising and displaying the data
+#### Summarising and displaying the results
 
 Now let's summarise this data:
 
@@ -1225,7 +1222,7 @@ Now let's summarise this data:
 summary(disparity)
 
 ## Graphical options
-op <- par(mfrow = (c(1,2)), bty = "n")
+op <- par(mfrow = (c(1, 2)), bty = "n")
 
 ## Plotting the bootstrapped disparity
 plot(disparity, main = "Bootstrapped", las = 2, xlab = "")
@@ -1236,60 +1233,61 @@ plot(disparity, rarefaction = 17, main = "Rarefied", las = 2, xlab = "")
 par(op)
 ```
 
-As we can see, there seems to be no strong effect of the number of experimental plots in each subsamples (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
+As we can see, there seems to be no strong effect of the number of experimental plots in each subsample (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
 
-#### Summarising hypothesis
+#### Testing our hypotheses
 
-Finally, we can test our hypothesis (whether the sort of water treatment at certain depth alters invertebrate communities and composition in natural habitats) by using the `test.dispRity` function.
+Finally, we can test our hypothesis (whether the water treatment at certain depths alters invertebrate communities and composition in natural habitats) by using the `test.dispRity` function.
+<!-- Ah so this is what you are testing! Make this clearer in the intro bit to this section -->
 
 ```{r}
-## Testing the effect of our factors on the bootstrapped data
+## Testing the effect of treatment and depth on the bootstrapped data
 summary(test.dispRity(disparity, test = aov, comparisons = "all"))
 ```
 
-
 ## Simulating discrete morphological data
 
-The `dispRity` package also allows to simulate discrete morphological data matrices.
-
-### Quick go through
-The function basically intakes a phylogenetic tree, the number of required characters and the evolutionary model and a function from which to draw the rates.
-The package then proposes a function for quickly checking the matrix' phylogenetic signal using parsimony.
+The `dispRity` package also allows users to simulate discrete morphological data matrices.
+In brief, the function `sim.morpho` takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates.
+The package also contains a function for quickly checking the matrix's phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony. To understand these methods please refer to the phylogenetics literature. 
+<!-- NC: I wonder if you need to cite some papers here to explain how people can find out what a suitable model is etc? Or do we just assume everyone knows about making phylogenies? -->
 
 ```{r}
 set.seed(3)
-## Setting the starting tree with 15 taxa as a random coalescent tree
+## Simulating a starting tree with 15 taxa as a random coalescent tree
 my_tree <- rcoal(15)
 
-## Generating a matrix with 100 characters (85% binary and 15% three states) and
-## an equal rates model with a gamma rates distribution (0.5, 1) with no 
+## Generating a matrix with 100 characters (85% binary and 15% three state) and
+## an equal rates model with a gamma rate distribution (0.5, 1) with no 
 ## invariant characters.
 my_matrix <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
     0.15), rates = c(rgamma, 0.5, 1), invariant = FALSE)
 
-## The head of the matrix
+## The first few lines of the matrix
 my_matrix[1:5, 1:10]
 
 ## Checking the matrix properties with a quick Maximum Parsimony tree search
 check.morpho(my_matrix, my_tree)
 ```
 
-Note that this example produces a tree with a great consistency index and an identical topology as the random coalescent tree!
+Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!
 Nearly too good to be true...
 
-### In details
+### A more detailed description
 
-Basically, `sim.morpho` is really flexible and intakes a lot of different arguments to allow to simulate realistic matrix.
-It has three implemented models: `"ER"` for Equal Rates (the M*k* model); the `"HKY"` one which is the molecular HKY model but transforms pyrines in 0's and purimidines in 1's; or the `"mixed"` model that randomly uses an `"ER"` or and `"HKY"` for the binary characters and `"ER"` for the multistates (>2) characters.
-Both models intakes specific distributions for their rates or substitution models.
+`sim.morpho` is really flexible and takes many different arguments to allow users to simulate realistic matrices.
+It has three implemented models: `"ER"` for Equal Rates (the M*k* model); `"HKY"`, the molecular HKY model but transforms pyrines in 0's and pyrimidines in 1's; or the `"mixed"` model that randomly uses an `"ER"` and/or `"HKY"` for the binary characters and `"ER"` for the multistate (>2) characters.
+Both models take specific distributions for their rate or substitution models.
 These distributions should be passed to these arguments in the format of `c(sampler_function, distribution_parameters)` where the the sampler function is a the random generation function of that distribution (e.g. `rnorm`, `runif`, etc...) and the parameters are any parameters to be passed to this function. 
 
-The `check.morpho` runs a quick maximum parsimony tree using the `phangorn` parsimony algorithm.
-It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree.
+`check.morpho` runs a quick Maximum Parsimony tree search using the `phangorn` parsimony algorithm.
+It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree to determine how different they are.
 
-### Parameters for a good(ish) matrix
-There are many parameters that can realise a ``realistic'' matrix (meaning not to different from the input tree with a consistency and retention index close to what's in the literature) but because of the randomness of the generation (the code generates random matrices after all!) not all end up in creating good matrices.
-The following parameters however, seems to generate a fairly ``realistic'' with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three states characters, a gamma distribution with a shape parameter ($\alpha$) of 5 and no scaling ($\beta$ = 1) with a rate of 100.
+### Parameters for a realistic(ish) matrix
+There are many parameters that can create a ``realistic'' matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all end up creating "good" matrices.
+The following parameters however, seem to generate fairly ``realistic'' matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter ($\alpha$) of 5 and no scaling ($\beta$ = 1) with a rate of 100.
+<!-- NC: Check that I haven't changed what you mean here where i swapped good for realistic. Realistic is a better term. Or be clearer what you mena by "good" -->
+
 
 ```{r}
 set.seed(0)
@@ -1303,13 +1301,13 @@ check.morpho(morpho_mat, my_tree)
 
 ### `space.maker`
 Another way to simulate data is to directly simulate an ordinated space with the `space.maker` function.
-This function allows to simulated multidimensional spaces given a certain number of properties.
-It takes as arguments the number of elements (data points) and dimensions to create the space but also allows more fine tuning data simulation: it is possible to give a specific distribution to each dimensions, provide a correlation matrix to link the dimensions or even providing an *a priori* distribution of the variance per distributions!
-
+This function allows users to simulate multidimensional spaces with a certain number of properties.
+It takes as arguments the number of elements (data points) and dimensions to create the space but also permits more fine tuning in the data simulation: it is possible to give a specific distribution to each dimension, provide a correlation matrix to link the dimensions or even provide an *a priori* distribution of the variance for each distributions!
+<!-- ooh fancy! -->
 
 ```{r, fig.width=8, fig.height=8, eval=TRUE}
 ## Graphical options
-op <- par(mfrow = (c(2,2)), bty = "n")
+op <- par(mfrow = (c(2, 2)), bty = "n")
 ## Visualising 3D spaces
 require(scatterplot3d)
 
@@ -1325,7 +1323,7 @@ scatterplot3d(space.maker(2500, 3, c(runif, runif, runif),
               main = "Uniform plane space")
 
 ## An ellipsoid space (=a spheric space with correlation)
-cor_matrix <- matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
+cor_matrix <- matrix(cbind(1, 0.8, 0.2, 0.8, 1, 0.7, 0.2, 0.7, 1), nrow = 3)
 scatterplot3d(space.maker(2500, 3, rnorm, cor.matrix = cor_matrix), pch = 20,
               xlab = "", ylab = "", zlab = "",
               main = "Normal ellipsoid space")
@@ -1359,7 +1357,7 @@ par(op)
 
 
 
-# The package's guts
+# The dispRity package's guts
 
 ## Manipulating `dispRity` objects
 
@@ -1396,10 +1394,10 @@ print(disparity, all = TRUE)
 
 ## `dispRity` utilities
 
-The package also provides some utilities functions to facilitate multidimensional analysis.
+The package also provides some utility functions to facilitate multidimensional analysis.
 
 ### `dispRity` object utilities  <a name="dispRity.utilities"></a>
-The first subsamples of utilities are functions for manipulating `dispRity` objects:
+The first set of utilities are functions for manipulating `dispRity` objects:
 
 #### `make.dispRity`
 This function creates empty `dispRity` objects.
@@ -1413,7 +1411,7 @@ make.dispRity()
 ```
 
 ####  `fill.dispRity`
-This function initialises a `dispRity` object and generating it's call properties.
+This function initialises a `dispRity` object and generates its call properties.
 
 ```{r}
 ## The dispRity object's call is indeed empty
@@ -1422,18 +1420,19 @@ disparity_obj$call
 ## Filling an empty disparity object (that needs to contain at least a matrix)
 (disparity_obj <- fill.dispRity(disparity_obj))
 
-## The dipRity object has now the proper minimal attributes
+## The dipRity object has now the correct minimal attributes
 disparity_obj$call
 ```
 
 ####  `matrix.dispRity`
-This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped or/and rarefied one.
+This function extracts a specific matrix from a disparity object.
+The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 
 ```{r}
 ## Extracting the matrix containing the coordinates of the elements at time 50
 str(matrix.dispRity(disparity, "50"))
 
-## Extracting the 3rd boostrapped matrix with the 2nd rarefaction level
+## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
 ## (15 elements) from the second group (80 Mya)
 str(matrix.dispRity(disparity, subsamples = 1, bootstrap = 3, rarefaction = 2))
 ```

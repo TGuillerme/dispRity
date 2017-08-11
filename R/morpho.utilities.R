@@ -32,7 +32,7 @@
 #' @param matrix a discrete morphological character matrix.
 #' 
 #' @examples
-#' ## A random multi state matrix
+#' ## A random multistate matrix
 #' matrix <- matrix(sample(c(0,1,2), 100, TRUE), 10, 10)
 #' 
 #' ## Get the contrast matrix
@@ -149,7 +149,7 @@ apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, .
         if(any(NAs == "clade")) {
             ## tree must be same size as the matrix
             if(any(sort(row.names(matrix)) != sort(tree$tip.label))) {
-                stop("Provided tree has not the same taxa as the matrix.")
+                stop("Provided tree doe not have the same taxa as the matrix.")
             }
         }
     }
