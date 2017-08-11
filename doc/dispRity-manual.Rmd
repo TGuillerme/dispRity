@@ -31,7 +31,7 @@ However, there are many more applications in ecology, evolution and beyond.
 
 ## Installing and running the package
 
-You can install this package easily if you use the latest version of `R` (> 3.3.0) and `devtools`.
+You can install this package easily if you use the latest version of `R` (> 4.0) and `devtools`.
 
 ```{r, eval=FALSE}
 ## Checking if devtools is already installed
