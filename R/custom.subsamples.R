@@ -1,17 +1,18 @@
-#' @title Separating ordinated data into custom subsamples.
+#' @title Separating data into custom subsamples.
 #' @aliases cust.series custom.series cust.subsamples
 #'
-#' @description Splits the ordinated data into a customized subsamples list.
+#' @description Splits the data into a customized subsamples list.
 #'
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
+#' @param data A \code{matrix}.
 #' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
-#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-#' \item{subsamples}{A \code{vector} containing the names of the subsamples.}
-#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{call}{A \code{list} containing the called arguments.}
+#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#'
+#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details
 #' Note that every element from the input data can be assigned to multiple groups!

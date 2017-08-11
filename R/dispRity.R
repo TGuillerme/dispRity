@@ -1,8 +1,8 @@
-#' @title Calculates disparity from an ordinated matrix.
+#' @title Calculates disparity from a matrix.
 #'
-#' @description Calculates disparity on an ordinated matrix or subsamples of a matrix, where the disparity metric can be user specified.
+#' @description Calculates disparity on a matrix or subsamples of a matrix, where the disparity metric can be user specified.
 #'
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}, or a \code{dispRity} object (see details).
+#' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
@@ -11,12 +11,11 @@
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
-#' \item{disparity}{A \code{list} of disparity values (containing the observed disparity and the bootstrapped disparities).}
-#' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-#' \item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
-#' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
-#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{call}{A \code{list} containing the called arguments.}
+#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#' \item{disparity}{A \code{list} containing the disparity in each subsamples.}
+#'
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  

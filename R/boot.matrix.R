@@ -1,8 +1,8 @@
-#' @title Bootstraps and rarefies ordinated data.
+#' @title Bootstraps and rarefies data.
 #'
-#' @description Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
+#' @description Bootstraps and rarefies either a matrix or a list of matrices.
 #' 
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).
+#' @param data A matrix or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
@@ -11,11 +11,11 @@
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the observed and bootstrapped matrices.}
-#' \item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-#' \item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
-#' \item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
-#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{call}{A \code{list} containing the called arguments.}
+#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#'
+#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #'
 #' @details  
 #' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsamples have fewer elements than the rarefaction value, the subsamples is not rarefied.

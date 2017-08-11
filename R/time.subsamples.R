@@ -1,11 +1,11 @@
-#' @title Separating ordinated data in time subsamples.
+#' @title Separating data in time subsamples.
 #' @aliases time.series
 #'
-#' @description Splits the ordinated data into a time subsamples list.
+#' @description Splits the data into a time subsamples list.
 #' 
 #' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 #'
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
+#' @param data A matrix.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
@@ -16,13 +16,15 @@
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
-#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-#' \item{subsamples}{A \code{vector} containing the name of the subsamples.}
-#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{call}{A \code{list} containing the called arguments.}
+#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#'
+#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
+#'  
 #' @details
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the ordinated data selected for the time subsamples is:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsamples is:
 #' \itemize{
 #'   \item \code{"acctran"}: always the value from the ancestral node.
 #'   \item \code{"deltran"}: always the value from the descendant node or tip.
@@ -156,18 +158,18 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
         ## check if the tree and the table are the same length
-        if(nrow_data != Ntip_tree) stop("The labels in the ordinated matrix and in the tree do not match!")
+        if(nrow_data != Ntip_tree) stop("The labels in the matrix and in the tree do not match!")
         ## Also check if the names are identical
-        if(any(is.na(match(rownames(data), tree$tip.label)))) stop("The labels in the ordinated matrix and in the tree do not match!")        
+        if(any(is.na(match(rownames(data), tree$tip.label)))) stop("The labels in the matrix and in the tree do not match!")        
     } else {
         ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
             ## Check if the tree and the table are the same length
-            if(nrow_data != (Ntip_tree + Nnode(tree))) stop("The labels in the ordinated matrix and in the tree do not match!\nRemember to check the node labels in the tree and the ordinated matrix.")
+            if(nrow_data != (Ntip_tree + Nnode(tree))) stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
             ## Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the ordinated matrix and in the tree do not match!\nCheck especially the node labels in the tree and the ordinated matrix.")
+            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the matrix and in the tree do not match!\nCheck especially the node labels in the tree and the matrix.")
         } else {
-            stop("The labels in the ordinated matrix and in the tree do not match!\nRemember to check the node labels in the tree and the ordinated matrix.")
+            stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
         }
     }
 
@@ -177,7 +179,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(missing(FADLAD)) {
         ## If missing, create the FADLAD table
         FADLAD <- data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2])
-        ## message("No FAD/LAD table has been provided.\All tips are assumed to be single points in time.")
+        ## message("No FAD/LAD table has been provided. \nAll tips are assumed to be single points in time.")
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")

@@ -22,7 +22,7 @@
 #' ## Add its root time
 #' tree$root.time <- max(tree.age(tree)$ages)
 #' 
-#' ## Slice the tree at age 0.5
+#' ## Slice the tree at age 0.75
 #' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 #'
 #' @author Thomas Guillerme
