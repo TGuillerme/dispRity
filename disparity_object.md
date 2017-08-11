@@ -80,37 +80,3 @@ object
 			\---[[...]] = class:"matrix" (the rarefactions)
 ```
 The elements marked with an asterisk (*) are mandatory.
-
-<!-- NC: Is the stuff below needed here? Could it just go into the utilities bit of the manual of be cut entirely? -->
-
-### Using `fetch.dispRity` functions for accessing specific data elements (matrix, etc.)
-
-## `fetch.matrix` for accessing a specific ordinated matrix
-
-```{r}
-## To extract the matrix for the second subsamples, first rarefaction level and 58th bootstrap
-fetch.matrix(dispRity_object, subsamples = 2, rarefaction = 1, bootstrap = 58)
-```
-
-## `fetch.elements` to extract the elements within a specific subsamples
-
-```{r}
-## To extract the elements in the first subsamples
-fetch.elements(dispRity_object, subsamples = 1)
-```
-
-## `fetch.subsamples` to extract the subsamples names
-
-```{r}
-## To extract the subsamples names
-fetch.elements(dispRity_object)
-```
-
-> Note that in each case, the values can be set to `0` to fetch the original matrix. For example, `fetch.matrix(dispRity_object, 0, 0, 0)` extracts the original input matrix (or `fetch.matrix(dispRity_object)` by default).
-
-### Using `get.dispRity` or `extract.dispRity` to get the disparity elements (i.e. disparity values)
-
-```{r}
-...
-```
-<!-- NC: finish this or omit -->
