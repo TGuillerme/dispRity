@@ -21,7 +21,9 @@
 #'   \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
 #'   \item A list of pairs of number of subsamples to compare. Each element of the list must contain two elements
 #'      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
-#'   \item \bold{If the called test is \code{\link[dispRity]{sequential.test}} or \code{\link[dispRity]{null.test}}, the comparison argument is ignored.}
+#'   \item {If the called test is \code{\link[dispRity]{null.test}}, the comparison argument is ignored.} 
+#\code{\link[dispRity]{sequential.test}}
+#\code{\link[dispRity]{model.test}}
 #' }
 #' IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pairwise"}, \code{"referential"} or \code{"sequential"}),  don't forget about the Type I error rate inflation. You might want to use a \emph{p-value} correction (see \code{\link[stats]{p.adjust}}).
 #'

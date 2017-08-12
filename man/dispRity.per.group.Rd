@@ -2,7 +2,7 @@
 % Please edit documentation in R/dispRity.wrapper.R
 \name{dispRity.per.group}
 \alias{dispRity.per.group}
-\title{Disparity per groups.}
+\title{Disparity in different groups.}
 \usage{
 dispRity.per.group(data, group, metric = c(median, centroids), ...)
 }
@@ -20,6 +20,13 @@ A \code{dispRity} object that can be passed to \code{summary} or \code{plot}.
 }
 \description{
 Performs a disparity analysis between groups.
+}
+\details{
+Note that this is a wrapper function that allows users to run a basic disparity among groups analysis without too much effort. 
+As such it has a lot of defaults described in the functions that make up the analysis. 
+See \code{\link{custom.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}} for more details of the defaults used in each of these functions.
+Note that any of these defaults can be changed within the \code{disparity.through.time} function.
+For more details see the \code{dispRity} manual.
 }
 \examples{
 ## Load the Beck & Lee 2014 data

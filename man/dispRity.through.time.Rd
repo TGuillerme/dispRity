@@ -24,7 +24,13 @@ A \code{dispRity} object that can be passed to \code{summary} or \code{plot}.
 Performs a disparity through time analysis.
 }
 \details{
-By default the time subsamples use \code{method = "discrete"}, the matrix is bootstrapped 100 times
+By default the time subsamples use \code{method = "discrete"}, the matrix is bootstrapped 100 times.
+
+Note that this is a wrapper function that allows users to run a basic disparity-through-time analysis without too much effort. 
+As such it has a lot of defaults described in the functions that make up the analysis. 
+See \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}} for more details of the defaults used in each of these functions.
+Note that any of these defaults can be changed within the \code{disparity.through.time} function.
+For more details see the \code{dispRity} manual.
 }
 \examples{
 ## Load the Beck & Lee 2014 data
