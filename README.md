@@ -23,8 +23,9 @@ The following installs the latest release of dispRity (see patch notes below). F
 
 #### Vignettes
 Note that some of the vignettes do not contain all the details of the changes from version `0.2`. Refer to each function's manual for more information.
-*  The package manual [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
-*  A tutorial for palaeobiologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-palaeo-demo.html).
+
+*  The package manual [here](https://rawgit.com/TGuillerme/dispRity/master/gitbook/_book/index.html).
+*  A tutorial for palaeobiologists [here](https://rawgit.com/TGuillerme/dispRity/master/gitbook/_book/palaeobiology-demo-disparity-through-time-and-within-groups.html).
 *  A tutorial for ecologists [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-ecology-demo.html).
 *  The disparity metrics [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
 *  Simulating morphological characters [here](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-simulate_data.html).
