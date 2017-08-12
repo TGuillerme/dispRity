@@ -1,0 +1,247 @@
+---
+title: "Getting started with dispRity"
+author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+# Getting started with dispRity
+
+## What sort of data does dispRity work with?
+
+Disparity can be estimated from pretty much any matrix.
+Classically, however, it is measured from ordinated matrices.
+These matrices can be from any type of ordination (PCO, PCA, PCoA, MDS, etc.) as long as they have your element names as rows (taxa, experiments, countries etc.) and your ordination axes as columns (the dimensions of your dataset).
+
+### Ordination matrices from `Claddis`
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if Claddis is installed BUILD ONLY
+if(!require(Claddis)) install.packages("Claddis")
+```
+
+`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
+For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
+
+```{r}
+require(Claddis)
+
+## Ordinating the example data from Claddis
+Claddis.ordination(Michaux1989) 
+```
+
+Note that several options are available, namely which type of distance should be computed.
+See more info in the function manual (`?Claddis.ordination`).
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
+
+### Ordination matrices from `geomorph`
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if geomorph is installed BUILD ONLY
+if(!require(geomorph)) install.packages("geomorph")
+```
+
+You can also easily use data from `geomorph` using the `geomorph.ordination` function.
+This function simply takes Procrustes aligned data and performs an ordination:
+
+```{r}
+require(geomorph)
+
+## Loading the plethodon dataset
+data(plethodon)
+
+## Performing a Procrustes transform on the landmarks
+procrustes <- gpagen(plethodon$land, PrinAxes = FALSE, print.progress = FALSE)
+
+## Ordinating this data
+geomorph.ordination(procrustes)[1:5,1:5]
+```
+
+Options for the ordination (from `?prcomp`) can be directly passed to this function to perform customised ordinations.
+Additionally you can give the function a `geomorph.data.frame` object.
+If the latter contains sorting information (i.e. factors), they can be directly used to make a customised `dispRity` object [customised `dispRity` object](#customised-subsamples)!
+
+```{r}
+## Using a geomorph.data.frame
+geomorph_df <- geomorph.data.frame(procrustes,
+     species = plethodon$species, site = plethodon$site)
+
+## Ordinating this data and making a dispRity object
+geomorph.ordination(geomorph_df)
+```
+
+More about these `dispRity` objects below!
+
+### Other kinds of ordination matrices
+
+If you are not using the packages mentioned above (`Claddis` and `geomorph`) you can easily make your own ordination matrices by using the following functions from the `stats` package.
+Here is how to do it for the following types of matrices:
+
+ * Multivariate matrices (principal components analysis; PCA)
+
+```{r}
+## A multivariate matrix
+head(USArrests)
+
+## Ordinating the matrix using `prcomp` 
+ordination <- prcomp(USArrests)
+
+## Selecting the ordinated matrix
+ordinated_matrix <- ordination$x
+head(ordinated_matrix)
+```
+  This results in a ordinated matrix with US states as elements and four dimensions (PC 1 to 4). For an alternative method, see the `?princomp` function.
+
+ * Distance matrices (classical multidimensional scaling; MDS)
+
+```{r}
+## A matrix of distances between cities
+str(eurodist)
+
+## Ordinating the matrix using cmdscale() with k = 5 dimensions 
+ordinated_matrix <- cmdscale(eurodist, k = 5)
+head(ordinated_matrix)
+```
+
+  This results in a ordinated matrix with European cities as elements and five dimensions.
+
+Of course any other method for creating the ordination matrix is totally valid, you can also not use any ordination at all!
+The only requirements for the `dispRity` functions is that the input is a matrix with elements as rows and dimensions as columns.
+
+## Performing a simple dispRity analysis
+
+Two `dispRity` functions allow users to run an analysis pipeline simply by inputting an ordination matrix.
+These functions allow users to either calculate the disparity through time (`dispRity.through.time`) or the disparity of user-defined groups (`dispRity.per.group`).
+
+**IMPORTANT**
+
+Note that `disparity.through.time` and `disparity.per.group` are wrapper functions (i.e. they incorporate lots of other functions) that allow users to run a basic disparity-through-time, or disparity among groups, analysis without too much effort.
+As such they have a lot of defaults. 
+These are described in the help files for the functions that are used to make the wrapper functions, and not described in the help files for `disparity.through.time` and `disparity.per.group`. 
+These defaults are perfect for **data exploration**, but for a proper analysis you should consider the **best parameters for your question and data**. 
+For example, which metric should you use? How many bootstraps do you require? What model of evolution is most appropriate if you are time slicing? Should you rarefy the data?
+See `custom.subsamples`, `boot.matrix`, `dispRity.metric`, \code{\link{summary.dispRity}}, `plot.dispRity` for more details of the defaults used in each of these functions.
+Note that any of these defaults can be changed within the `disparity.through.time` or `disparity.per.group` functions.
+<!-- NC: Add links to these sections of the manual -->
+
+### Example data
+
+To illustrate these functions, we will use data from @beckancient2014.
+This dataset contains an ordinated matrix of 50 discrete characters from mammals (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
+
+```{r, fig.width=7, fig.height=7}
+## Loading the ordinated matrices
+data(BeckLee_mat50)
+data(BeckLee_mat99)
+
+## The first five taxa and dimensions of the 50 taxa matrix
+head(BeckLee_mat50[, 1:5])
+
+## The first five taxa and dimensions of the 99 taxa + ancestors matrix
+BeckLee_mat99[c(1, 2, 98, 99), 1:5]
+
+## Loading a list of first and last occurrence dates for the fossils
+data(BeckLee_ages)
+head(BeckLee_ages)
+
+## Loading and plotting the phylogeny
+data(BeckLee_tree)
+plot(BeckLee_tree, cex = 0.8) 
+axisPhylo(root = 140)
+nodelabels(cex = 0.5)
+```
+
+Of course you can use your own data as detailed in the [previous chapter](#What-sort-of-data-does-dispRity-work-with).
+
+### Disparity through time
+
+The `dispRity.through.time` function calculates disparity through time, a common analysis in palaeontology.
+This function (and the following one) uses an analysis pipeline with a lot of default parameters to make the analysis as simple as possible. 
+Of course all the defaults can be changed if required, more on this later.
+
+For a disparity through time analysis, you will need:
+  
+  * An ordinated matrix (we covered that above)
+  * A phylogenetic tree: this must be a `phylo` object (from the `ape` package) and needs a `root.time` element. To give your tree a root time (i.e. an age for the root), you can simply do `my_tree$root.time <- my_age`.
+  * The required number of time subsamples (here `time = 3`)
+  * Your favourite disparity metric (here the sum of variances)
+
+Using the @beckancient2014 data described [above](#example-data):
+
+```{r}
+## Measuring disparity through time
+disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
+                                        time = 3, metric = c(sum, variances))
+```
+
+This generates a `dispRity` object (see [here](#manipulating-dispRity-objects) for technical details).
+When displayed, these `dispRity` objects provide us with information on the operations done to the matrix:
+
+```{r}
+## Print the disparity_data object
+disparity_data
+```
+
+We asked for three subsamples (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.
+
+We can now summarise or plot the `disparity_data` object, or perform statistical tests on it (e.g. a simple `lm`): 
+
+
+```{r, fig.width=7, fig.height=7}
+## Summarising disparity through time
+summary(disparity_data)
+
+## Plotting the results
+plot(disparity_data, type = "continuous")
+
+## Testing for an difference among the time bins
+disp_lm <- test.dispRity(disparity_data, test = lm, comparisons = "all")
+summary(disp_lm)
+
+## Note that ANOVA assumptions were not checked here!
+```
+
+Please refer to the [specific tutorials](#specific-tutorial) for (much!) more information on the nuts and bolts of the package.
+You can also directly explore the specific function help files within R and navigate to related functions.
+
+### Disparity among groups
+
+The `dispRity.per.group` function is used if you are interested in looking at disparity among groups rather than through time.
+For example, you could ask if there is a difference in disparity between two groups?
+
+To perform such an analysis, you will need:
+ 
+ * An matrix with rows as elements and columns as dimensions (always!)
+ * A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example `list("a" = c(1,2), "b" = c(3,4))` will create a group _a_ containing elements 1 and 2 from the matrix and a group _b_ containing elements 3 and 4. Note that elements can be present in multiple groups at once.
+ * Your favourite disparity metric (here the sum of variances)
+
+Using the @beckancient2014 data described [above](#example-data):
+
+```{r}
+## Creating the two groups (crown versus stem) as a list
+mammal_groups <- list("crown" = c(16, 19:41, 45:50),
+                      "stem" = c(1:15, 17:18, 42:44))
+
+## Measuring disparity for each group
+disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,
+                                     metric = c(sum, variances))
+```
+
+We can display the disparity of both groups by simply looking at the output variable (`disparity_data`) and then summarising the `disparity_data` object and plotting it, and/or by performing a statistical test to compare disparity across the groups (here a Wilcoxon test).
+
+```{r, fig.width=7, fig.height=7}
+## Print the disparity_data object
+disparity_data
+
+## Summarising disparity in the different groups
+summary(disparity_data)
+
+## Plotting the results
+plot(disparity_data)
+
+## Testing for a difference between the groups
+test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
+```

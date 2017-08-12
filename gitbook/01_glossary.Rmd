@@ -1,0 +1,24 @@
+---
+title: "Glossary"
+author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+# Glossary
+
+-   **Ordinated space**. The mathematical multidimensional object that will be analysed with this package.
+    In morphometrics, this is often referred to as the morphospace.
+    However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc.
+    In practice, this term designates an ordinated matrix where the columns represent the dimensions of the space (often – but not necessarily - > 3!) and the rows represent the elements within this space.
+
+-   **Elements**. The rows of the ordinated space. Elements can be taxa, field sites, countries etc.
+
+-   **Dimensions**. The columns of the ordinated space. The dimensions are referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA.
+
+-   **Subsamples**. Sub-samples of the ordinated space.
+    A sub-sample (or subsamples) contains the same number of dimensions as the ordinated space but may contain a smaller subset of elements.
+    For example, if our ordinated space is composed of birds and mammals (the elements) and 50 principal components (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
