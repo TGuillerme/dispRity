@@ -307,3 +307,32 @@ test_that("make.origin.subsamples works (internal fun)", {
 })
 
 
+test_that("time.subsamples works without tree", {
+
+    FAD_LAD_data <- tree.age(BeckLee_tree)[1:50,]
+    rownames(FAD_LAD_data) <- FAD_LAD_data[,2]
+    colnames(FAD_LAD_data) <- c("FAD", "LAD")
+    FAD_LAD_data[, 2] <- FAD_LAD_data[, 1]
+
+    ## Missing the FADLAD argument
+    expect_error(
+        time.subsamples(BeckLee_mat50, method = "discrete", time = 5)
+        )
+
+    no_tree <- time.subsamples(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), FADLAD = FAD_LAD_data)
+    with_tree <- time.subsamples(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), tree = BeckLee_tree)
+
+    ## Right object
+    expect_is(no_tree, "dispRity")
+    ## Right subsamples
+    expect_equal(
+        names(no_tree$subsamples)
+        ,names(with_tree$subsamples))
+    ## Right subsamples values
+    for(sub in 1:3) {
+        expect_true(
+            all(sort(unlist(no_tree$subsamples[[sub]])) == sort(unlist(with_tree$subsamples[[sub]])))
+            )
+    }
+})
+

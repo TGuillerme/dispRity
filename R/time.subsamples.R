@@ -6,7 +6,7 @@
 #' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
 #'
 #' @param data A matrix.
-#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
+#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
@@ -61,9 +61,9 @@
 # source("time.subsamples_fun.R")
 # data(BeckLee_tree) ; data(BeckLee_mat50)
 # data(BeckLee_mat99) ; data(BeckLee_ages)
-# data = BeckLee_mat99
+# data = BeckLee_mat50
 # tree = BeckLee_tree
-# method = "continuous"
+# method = "discrete"
 # model = "acctran"
 # time = 5
 # inc.nodes = TRUE
@@ -82,11 +82,11 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
 
     ## TREE (1)
     ## tree must be a phylo object
-    check.class(tree, "phylo")
-    ## Ntip_tree variable declaration
-    Ntip_tree <- Ntip(tree)
-    ## tree must be dated
-    if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
+    if(!missing(tree)) {
+        check.class(tree, "phylo")
+        ## tree must be dated
+        if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
+    }
 
     ## METHOD
     all_methods <- c("discrete", "d", "continuous", "c")
@@ -101,6 +101,23 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## if method is "d" or "c", change it to "discrete" or "continuous" (lazy people...)
     if(method == "d") method <- "discrete"
     if(method == "c") method <- "continuous"
+
+    ## If the tree is missing, the method can intake a star tree (i.e. no phylogeny)
+    if(missing(tree) && method == "discrete" && !missing(FADLAD)) {
+        names_data <- rownames(data)
+        ## All names must be present in the data
+        if(!all(names_data %in% rownames(FADLAD))) {
+            stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
+        }
+        ## Generating the star tree
+        tree <- stree(nrow_data)
+        tree$tip.label <- names_data
+        tree$root.time <- max(names_data)
+    }
+
+    ## Ntip_tree variable declaration
+    Ntip_tree <- Ntip(tree)
+
 
     ## TIME
     ## time must be numeric or integer
