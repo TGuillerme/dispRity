@@ -11,10 +11,13 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+
+# Ecology demo
+
 This is an example of typical disparity analysis that can be performed in ecology.
 
 
-# Data
+## Data
 For this example, we will use the famous `iris` inbuilt data set
 
 ```{r}
@@ -47,7 +50,7 @@ petal_space <- ordination$x
 rownames(petal_space) <- 1:nrow(petal_space)
 ```
 
-# Classic analysis
+## Classic analysis
 A classical way to represent this ordinated data would be to use two dimensional plots to look at how the different species are distributed in the petal-space. 
 
 ```{r, fig.width=6, fig.height=6}
@@ -80,7 +83,7 @@ Additionally, these two represented dimensions do not represent a biological rea
 
 Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a *n*-dimensional object.
 
-# A multidimensional approach with `dispRity`
+## A multidimensional approach with `dispRity`
 
 The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
 Each of these subsamples will contain only the individuals of a specific species.
@@ -98,7 +101,7 @@ petal_subsamples
 
 This created a `dispRity` object (more about that [here](#guts)) with three subsamples corresponding to each subspecies.
 
-## Bootstrapping the data
+### Bootstrapping the data
 We can the bootstrap the subsamples to be able test the robustness of the measured disparity to outliers.
 We can do that using the default options of `boot.matrix` (more about that [here](#bootstraps-and-rarefactions)):
 
@@ -107,7 +110,7 @@ We can do that using the default options of `boot.matrix` (more about that [here
 (petal_bootstrapped <- boot.matrix(petal_subsamples))
 ```
 
-## Calculating disparity
+### Calculating disparity
 
 Disparity can be calculated in many ways, therefore the `dispRity` function allows users to define their own measure of disparity.
 For more details on measuring disparity, see the [dispRity metrics section](#disparity-metrics).
@@ -123,7 +126,7 @@ Here we are going to feed the functions `stats::median` and `dispRity::centroids
 (petal_disparity <- dispRity(petal_bootstrapped, metric = c(median, centroids)))
 ```
 
-## Summarising the results (plot)
+### Summarising the results (plot)
 Similarly to the `custom.subsamples` and `boot.matrix` function, `dispRity` displays a `dispRity` object.
 But we are definitely more interested in actually look at the calculated values.
 
@@ -147,7 +150,7 @@ plot(petal_disparity)
 Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!
 
 
-## Testing hypothesis
+### Testing hypothesis
 
 Finally we can test our hypothesis that we guessed from the disparity plot (that some groups occupy different volume of the petal-space) by using the `test.dispRity` option.
 
@@ -165,7 +168,7 @@ test.dispRity(petal_disparity, test = t.test, correction = "bonferroni")
 We can now see that there is a significant difference in petal-space occupancy between all species of iris.
 
 
-### Setting up a multidimensional null-hypothesis
+#### Setting up a multidimensional null-hypothesis
 
 One other series of test can be done on the shape of the petal-space.
 Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to Diaz _et al._ 2016):

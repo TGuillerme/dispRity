@@ -872,7 +872,7 @@ morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
 check.morpho(morpho_mat, my_tree)
 ```
 
-### `space.maker`
+## Simulating multidimensional spaces
 Another way to simulate data is to directly simulate an ordinated space with the `space.maker` function.
 This function allows users to simulate multidimensional spaces with a certain number of properties.
 It takes as arguments the number of elements (data points) and dimensions to create the space but also permits more fine tuning in the data simulation: it is possible to give a specific distribution to each dimension, provide a correlation matrix to link the dimensions or even provide an *a priori* distribution of the variance for each distributions!
