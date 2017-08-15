@@ -54,9 +54,10 @@ A list of implemented metrics is available [here](https://github.com/TGuillerme/
 
 Authors
 -------
-[Thomas Guillerme](http://tguillerme.github.io)
-[Natalie Cooper](http://nhcooper123.github.io)
-[Mark Puttick](https://puttickbiology.wordpress.com/)
+
+* [Thomas Guillerme](http://tguillerme.github.io)
+* [Natalie Cooper](http://nhcooper123.github.io)
+* [Mark Puttick](https://puttickbiology.wordpress.com/)
 
 Citation
 -------
