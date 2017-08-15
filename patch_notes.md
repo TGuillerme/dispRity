@@ -1,7 +1,7 @@
 Patch notes
 ----
-* 2017/06/19 - v0.4.0  (see v.0.3.9 pre-release) *users are friends*
-  * Entirely rewritten manual!
+* 2017/08/15 - v0.4.0 *users are friends*
+  * Entirely rewritten manual (in GitBook)!
   * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: >2sec for 5k taxa and 10k bootstraps!)
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)

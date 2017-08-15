@@ -1,6 +1,6 @@
 #' Measuring Disparity in R
 #' 
-#' A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
+#' A modular package for measuring disparity from multidimensional matrices. Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. disparity through time) or per groups as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
 #' 
 #' @name dispRity-package
 #'
@@ -18,26 +18,13 @@
 #' @importFrom ade4 randtest as.randtest 
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
-#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text 
-#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var 
-#' @importFrom utils combn 
+#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
+#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var median runif cmdscale
+#' @importFrom utils combn data capture.output
 #' @importFrom phyclust gen.seq.HKY 
-#' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony 
+#' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
 #' @importFrom RCurl getURL url.exists 
 #' 
-#' 
-# import(ape)
-# importFrom("paleotree", "timeSliceTree")
-# importFrom("snow", "makeCluster", "stopCluster", "parLapply")
-# importFrom("geometry", "convhulln")
-# importFrom("hypervolume", "hypervolume", "estimate_bandwidth", "get_volume")
-# importFrom("ade4", "randtest", "as.randtest")
-# importFrom("grDevices", "colorRampPalette", "grey")
-# importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend")
-# importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median", "cmdscale")
-# importFrom("utils", "combn", "data", "capture.output")
-# importFrom("phyclust", "gen.seq.HKY")
-# importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 
 NULL
 

@@ -167,14 +167,24 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 
 
 
+Biological data are complex; understanding the ecology and evolution of species often requires that we analyse multiple variables that covary with each other, and through space and time.
+One solution to this problem is to analyse data in a multivariate framework.
+Multivariate analyses aim to capture and incorporate this multidimensional complexity, while providing outputs that are interpretable in a physical world of only three dimensions.
+Classical multidimensional species features that have been analysed through multivariate data ranges from their morphology \citep{raup1966geometric}, to their functional traits \citep{diaz2016global}.
+However, such analysis are not limited at the species level and can also be applied to ecosystems \citep{DonohueDim}.
+
+Key multidimensional features of species that have important roles in ecology and evolution include morphology, functional traits. etc. etc.
+Many of these can be represented as matrices, these can be used in our package.
+In the interests of clarity/brievety, we here focus on just one kind of data: morphological diversity.
 
 
+Furthermore, we will also make a clear distinction between the multidimensional space which is a specific mathematical object and the disparity, which is a metric describing or summarising one or more aspects of this space.
 
-Disparity is really cool:
 
-
-Hereafter we will make a clear distinction between the multidimensional space which is a specific mathematical object and the disparity, which is a metric describing or summarising one or more aspects of this space.
 Both can be defined in various ways depending on the authors, for example, disparity is defined as the weighted mean pairwise dissimilarity in \cite{Close2015} or the ellipsoid volume in \cite{DonohueDim} and the multidimensional space is defined as the morphospace in \cite{raup1966geometric} and the morpho-functional space in \cite{diaz2016global}.
+
+
+
 
 The multidimensional space can be defined in many ways and arise from many mathematical transformations of the data such as the pairwise distance matrix \citep{Close2015}, a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, a multidimensional scaling \citep[MDS;][]{DonohueDim}, etc.
 Similarly, disparity metrics \citep[or indices;][]{Hopkins2017} can defined in many ways \citep[e.g.][or combinations thereof]{Wills2001,Ciampaglio2001,foth2012different,DonohueDim,Hughes20082013,finlay2015morphological,Close2015,diaz2016global}.
@@ -395,7 +405,6 @@ The package contains a dataset that is a subset from \cite{beckancient2014} incl
 
 \subsubsection{Typical disparity through type analysis}
 
-
 \texttt{dispRity.through.time(BeckLee\_mat50, )}
 
 This function is a wrapping function that is the equivalent to:
@@ -506,72 +515,6 @@ Future directions
 
 Conclusion
 
-
-
-
-
-% \subsubsection{The package's data}
-
-% Beck and Lee data
-% Beck and Lee tree
-% Beck and Lee ages
-
-% disparity  disparity data
-
-% \subsubsection{Running example}
-
-
-% \subsection{The \disp package}
-
-% \subsubsection{The package's main functions}
-
-% \subsection{Fork flow}
-
-% Workflow figure
-
-% \subsubsection{Input data}
-
-% \subsubsection{Manipulating the data}
-
-% \subsubsection{Measuring disparity}
-
-% \subsubsection{Summarising the data}
-
-% Link to graph one two three
-
-% \subsubsection{Testing hypothesis}
-
-% \subsection{The \disp object}
-
-% Disparity object structure figure
-
-% \subsection{Additional functions and data}
-
-% The package also contains additional functions not directly linked to the disparity workflow nor to the \disp object but that can be used as utilities for the studying discrete morphological data.
-
-% \begin{table}
-%     \begin{tabular}{ll}
-%         \hline
-%         Function & Description \\ 
-%         \hline
-%         \texttt{char.diff} & Calculates character differences. \\
-%         \texttt{clean.data} & Cleans phylogenetic data (tree and table). \\
-%         \texttt{sim.morpho} & Simulates morphological discrete data. \\
-%         \texttt{slice.tree} & Slice through a phylogenetic tree. \\
-%         \texttt{space.maker} & Creates multidimensional spaces. \\
-%         \texttt{tree.age} & Calculates the age of nodes and tips in a tree. \\
-%         \hline
-%     \end{tabular}
-%     \caption{Additional functions in the \disp package.}
-% \end{table}
-
-% Additionally, this package also contains an ecology type data set from McClean
-
-% McClean data
-
-% \section{Conclusion}
-
-% This package is good.
 
 % \section{Data availability and reproducibility}
 % Data are available on Dryad or Figshare.
