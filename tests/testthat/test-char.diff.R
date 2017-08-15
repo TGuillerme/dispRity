@@ -1,33 +1,54 @@
 context("char.diff")
 
+test_that("internal function char.diff", {
+
+    A <- c(1,0,0,0,0)
+    B <- c(0,1,1,1,1)
+    C <- c(9,8,8,8,8)
+
+    ## Convert character works (translate digits in letters)
+    expect_equal(convert.character(A), c("B", rep("A", 4)))
+
+    ## Normalise character works (translate digits in normalised way)
+    expect_true(all(is.na(normalise.character(A, c("a","b")))))
+    expect_equal(normalise.character(A, c(0,1)), normalise.character(B, c(1,0)))
+    expect_equal(normalise.character(A, c(0,1)), normalise.character(C, c(9,8)))
+    expect_equal(normalise.character(B, c(1,0)), normalise.character(C, c(9,8)))
+
+    ## char.diff_R is the same as char.diff for a list
+    matrix <- list(A, B)
+    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
+
+})
+
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
     B <- c(0,1,1,1,1)
 
-    #Difference is 0
+    ## Difference is 0
     expect_equal(char.diff(list(A,B)), 0)
-    #Difference is triangular
+    ## Difference is triangular
     expect_equal(char.diff(list(A,B)), char.diff(list(A,B)))
 
     C <- c(1,1,0,0,0)
 
-    #Difference is 0.4
+    ## Difference is 0.4
     expect_equal(char.diff(list(A,C)), 0.4)
-    #Difference is triangular
+    ## Difference is triangular
     expect_equal(char.diff(list(A,C)), char.diff(list(C,A)))
 
     D <- c(0,1,1,0,0)
 
-    #Difference is 0.4
+    ## Difference is 0.4
     expect_equal(char.diff(list(A,D)), 0.8)
-    #Difference is triangular
+    ## Difference is triangular
     expect_equal(char.diff(list(A,D)), char.diff(list(D,A)))
 
     E <- c(1,0,0,1,1)
 
-    #Difference is equal to D
+    ## Difference is equal to D
     expect_equal(char.diff(list(D,E)), 0)
-    #Difference is triangular (with D)
+    ## Difference is triangular (with D)
     expect_equal(char.diff(list(A,E)), char.diff(list(A,D)))
 })
 
@@ -72,4 +93,23 @@ test_that("char.diff matrix", {
             as.vector(tests[[test]])
             , expect_diff[[test]])
     }
+})
+
+
+test_that("char.diff plot functions", {
+
+    ## Getting the max/min x/y from a density
+    set.seed(1)
+    density <- density(rnorm(20))
+    expect_equal(round(get.max.x(density), 5), round(2.860749, 5))
+    expect_equal(round(get.min.x(density), 5), round(-3.480168, 5))
+    expect_equal(round(get.max.y(density), 5), round(0.4420556, 5))
+    expect_equal(round(get.min.y(density), 5), round(0.0005316588, 5))
+
+    ## Getting columns with not enough data (TRUE if <= 2 data)
+    expect_true(select.nas(c(NA, NA, NA, NA)))
+    expect_true(select.nas(c(1, NA, NA, NA)))
+    expect_true(select.nas(c(1, 2, NA, NA)))
+    expect_false(select.nas(c(1,2,3,NA)))
+
 })

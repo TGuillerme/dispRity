@@ -1,0 +1,24 @@
+---
+title: "Glossary"
+author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+# Glossary
+
+-   **Multidimensional space**. The mathematical multidimensional object that will be analysed with this package.
+    In morphometrics, this is often referred to as the morphospace.
+    However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc.
+    In practice, this term designates a matrix where the columns represent the dimensions of the space (often – but not necessarily - > 3!) and the rows represent the elements within this space.
+
+-   **Elements**. The rows of the multidimensional space matrix. Elements can be taxa, field sites, countries etc.
+
+-   **Dimensions**. The columns of the multidimensional space matrix. The dimensions can be referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA for example.
+
+-   **Subsamples**. Subsamples of the multidimensional space.
+    A subsample (or subsamples) contains the same number of dimensions as the space but may contain a smaller subset of elements.
+    For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.

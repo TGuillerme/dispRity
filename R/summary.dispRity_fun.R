@@ -1,28 +1,26 @@
-## Converts one or more CI into a quantile probabilities
+## Converts one or more CI into quantile probabilities
 CI.converter <- function(CI) {
     sort(c(50-CI/2, 50+CI/2)/100)
 }
 
-# Wrapping function for summarising a single rarefaction
+# Wrapper function for summarising a single rarefaction
 get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
     output <- list()
-    # output$cent_tend <- apply(disparity_subsamples_rare, 1, cent.tend)
     if(!missing(cent.tend)) {
         output$cent_tend <- cent.tend(as.vector(disparity_subsamples_rare))
     }
-    # output$quantiles <- apply(disparity_subsamples_rare, 1, quantile, probs = CI.converter(quantiles))
     if(!missing(quantiles)) {
         output$quantiles <- quantile(as.vector(disparity_subsamples_rare), probs = CI.converter(quantiles))
     }
     return(output)
 }
 
-## Lapply wrapping function for summarising a single subsamples
+## lapply wrapper function for summarising a single subsample
 lapply.summary <- function(disparity_subsamples, cent.tend, quantiles) {
     return(lapply(disparity_subsamples[-1], get.summary, cent.tend, quantiles))
 }
 
-## Lapply wrapper for getting elements
+## lapply wrapper for getting elements
 lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
     if(bootstrapped){
         return(unlist(lapply(subsamples[-1], nrow)))
@@ -31,57 +29,49 @@ lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
     }
 }
 
-## Lapply wrapper for getting the disparity observed values
+## lapply wrapper for getting the disparity observed values
 lapply.observed <- function(disparity) {
     return(c(disparity$elements))
 }
 
-## Mapply wrapper for getting the disparity observed values
+## mapply wrapper for getting the disparity observed values
 mapply.observed <- function(disparity, elements) {
     return(c(disparity, rep(NA, (length(elements)-1))))
 }
 
-## Get digit for table
+## Get digits for table (shifts the decimal point to contain a maximum of four characters)
 get.digit <- function(column) {
     if(max(nchar(round(column)), na.rm = TRUE) <= 4) {
-        return(4-max(nchar(round(column)), na.rm = TRUE))
+        return(4 - max(nchar(round(column)), na.rm = TRUE))
     } else {
         return(0)
     }
 }
 
+
+round.column <- function(column, rounding) {
+    ## Get the rounding value
+    rounding <- ifelse(rounding != "default", rounding, get.digit(as.numeric(column)))
+    ## Round the table
+    if(class(column) != "group") {
+        return(round(as.numeric(column), digits = rounding))
+    } else {
+        return(round(as.numeric(as.character(column)), digits = rounding))
+    }
+}
+
+
 ## Function for rounding the results
 rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 
     ## seq.test
-    if(seq.test != FALSE) {
-        start_column <- 1
-    } else {
-        start_column <- 3
-    }
+    start_column <- ifelse(seq.test, 1, 3)
 
-    if(rounding != "default") {
-        for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
-                results_table[,column] <- round(as.numeric(results_table[,column]), digits = rounding)
-            } else {
-                results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = rounding)
-            }
-        }
+    ## Apply the rounding
+    rounded_table <- as.matrix(results_table[,c(start_column:ncol(results_table))])
+    rounded_table <- apply(rounded_table, 2, round.column, rounding)
+    results_table[,c(start_column:ncol(results_table))] <- rounded_table
 
-    } else {
-        for(column in start_column:ncol(results_table)) {
-            if(class(results_table[,column]) != "group") {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(results_table[,column]), digits = get.digit(as.numeric(results_table[,column])))
-                }
-            } else {
-                if(any(!is.na(results_table[,column]))) {
-                    results_table[,column] <- round(as.numeric(as.character(results_table[,column])), digits = get.digit(as.numeric(as.character(results_table[,column]))))
-                }
-            }
-        }
-    }
     return(results_table)
 }
 

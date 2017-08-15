@@ -13,7 +13,7 @@ get.contrast.matrix(matrix)
 Creates a contrast matrix using the observed character states in an input matrix.
 }
 \examples{
-## A random multi state matrix
+## A random multistate matrix
 matrix <- matrix(sample(c(0,1,2), 100, TRUE), 10, 10)
 
 ## Get the contrast matrix
@@ -27,10 +27,9 @@ matrix[sample(1:100, 10)] <- "-"
 get.contrast.matrix(matrix)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{check.morpho}}
 }
-
+\author{
+Thomas Guillerme
+}

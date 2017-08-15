@@ -25,21 +25,21 @@ proportional.distribution <- function(n, distribution, ..., pass.to.gen.seq.HKY 
     return(output)
 }
 
+## The character generator function for gen.seq.HKY.binary
+HKY.seq.generator <- function(tree, substitution, rate, ...) {
+    return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, stats::runif, pass.to.gen.seq.HKY = TRUE), kappa = abs(sample.distribution(1, substitution)), L = 1, rate.scale = abs(sample.distribution(1, rate)), ...))
+}
+
+## The character selector (isolating the characters) function for gen.seq.HKY.binary
+character.selector <- function(generated_character) {
+    return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1, ]), 1, strsplit, split = " "), recursive = FALSE), function(x) utils::tail(x, 1)))
+}
+
 ## seqgen HKY binary
 gen.seq.HKY.binary <- function(tree, substitution, rates, states, verbose, ...) {
 
     ## States is fixed to 2 (O and 1)
     states <- 1
-    
-    ## The character generator function
-    HKY.seq.generator <- function(tree, substitution, rate, ...) {
-        return(phyclust::gen.seq.HKY(tree, pi = proportional.distribution(4, stats::runif, pass.to.gen.seq.HKY = TRUE), kappa = abs(sample.distribution(1, substitution)), L = 1, rate.scale = abs(sample.distribution(1, rates)), ...))
-    }
-
-    ## The character selector (isolating the characters) function
-    character.selector <- function(generated_character) {
-        return(rapply(unlist(apply(matrix(as.matrix(generated_character)[-1,]), 1, strsplit, split = " "), recursive = FALSE), function(x) utils::tail(x, 1)))
-    }
 
     ## Generating the matrix (with a different parameter for each character)
     character <- character.selector(HKY.seq.generator(tree, substitution, rates, ...))
@@ -62,7 +62,7 @@ k.sampler <- function(states) {
         ## Only binary characters
         return(2)
     } else {
-        return(sample(2:(length(states)+1), 1, prob = states))
+        return(sample(2:(length(states) + 1), 1, prob = states))
     }
 }
 

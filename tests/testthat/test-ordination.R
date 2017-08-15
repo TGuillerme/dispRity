@@ -19,3 +19,43 @@ test_that("Claddis.ordination works", {
     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
     expect_equal(round(as.vector(test), 5) , round(c(7.252259e-17, -5.106645e-01, 5.106645e-01, -3.207162e-16, 4.154578e-01, -4.566150e-16, -8.153839e-16, -4.154578e-01, 2.534942e-01, -2.534942e-01, -2.534942e-01, 2.534942e-01), 5))
 })
+
+
+
+test_that("geomorph.ordination works", {
+
+    ## Internal: make.groups.factors
+    set.seed(1)
+    one_factor_list <- as.factor(sample(LETTERS[1:2], 10, replace = TRUE))
+    expect_equal(make.groups.factors(one_factor_list), list(A = c(1,2,5,10), B = c(3,4,6,7,8,9)))
+
+    set.seed(1)
+    array <- array(rnorm(100), c(5,2,10))
+    dummy_procrustes <- list(coords = array)
+    class(dummy_procrustes) <- "gpagen"
+    dummy_geomorph_df <- list(coords = array, factor1 = as.factor(sample(LETTERS[1:2], 10, replace = TRUE)), factor2 = as.factor(c(rep(1, 5), rep(2, 5))))
+    class(dummy_geomorph_df) <- "geomorph.data.frame"
+
+    ## Sanitizing
+    expect_error(geomorph.ordination(array))
+    expect_error(geomorph.ordination(list(coords = array)))
+    expect_error(geomorph.ordination(dummy_procrustes, center = "no"))
+
+    ## Procrustes to ordination
+    test <- geomorph.ordination(dummy_procrustes)
+    expect_equal(dim(test), c(10,10))
+    expect_equal(colnames(test), paste0("PC", 1:10))
+
+    ## geomorph.data.frame to ordination
+    test <- geomorph.ordination(dummy_geomorph_df)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$subsamples), 4)
+    expect_equal(
+        names(test$subsamples)
+        ,c("factor1.A", "factor1.B", "factor2.1", "factor2.2")
+        )
+    expect_equal(
+        as.vector(unlist(lapply(test$subsamples, lapply, length)))
+        , c(6,4,5,5)
+        )
+})

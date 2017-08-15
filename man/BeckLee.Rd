@@ -2,12 +2,12 @@
 % Please edit documentation in R/dispRity-package.R
 \name{BeckLee}
 \alias{BeckLee}
-\alias{BeckLee_ages}
+\alias{BeckLee_tree}
 \alias{BeckLee_mat50}
 \alias{BeckLee_mat99}
-\alias{BeckLee_tree}
+\alias{BeckLee_ages}
 \title{Beck and Lee 2014 datasets}
-\format{3 matrices and one phylogenetic tree.}
+\format{three matrices and one phylogenetic tree.}
 \source{
 \url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
 }
@@ -19,7 +19,7 @@ Example datasets from Beck and Lee 2014.
   \item \code{BeckLee_tree} A phylogenetic tree with 50 living and fossil taxa
   \item \code{BeckLee_mat50} The ordinated matrix based on the 50 taxa cladistic distances
   \item \code{BeckLee_mat99} The ordinated matrix based on the 50 taxa + 49 nodes cladistic distances
-  \item \code{BeckLee_ages} A lit of first al last occurrence data for fossil taxa
+  \item \code{BeckLee_ages} A list of first and last occurrence data for fossil taxa
 }
 }
 \references{
@@ -30,4 +30,3 @@ Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 \seealso{
 McClean_data disparity
 }
-

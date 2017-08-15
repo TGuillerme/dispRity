@@ -1,20 +1,21 @@
-#' @title Separating ordinated data in custom subsamples.
+#' @title Separating data into custom subsamples.
 #' @aliases cust.series custom.series cust.subsamples
 #'
-#' @description Splits the ordinated data into a customized subsamples list.
+#' @description Splits the data into a customized subsamples list.
 #'
-#' @param data An ordinated matrix of maximal dimensions \eqn{k*(k-1)}.
+#' @param data A \code{matrix}.
 #' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{data}{A \code{list} of the split ordinated data (each element is a \code{matrix}).}
-#' \item{elements}{A \code{vector} containing all the rownames from the input matrix.}
-#' \item{subsamples}{A \code{vector} containing the name of the subsamples.}
-#' \code{dispRity} objects can be summarised using \code{print} (S3).
+#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{call}{A \code{list} containing the called arguments.}
+#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#'
+#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details
-#' Note that every elements from the input data can be assigned to multiple groups!
+#' Note that every element from the input data can be assigned to multiple groups!
 #'
 #' @examples
 #' ## Generating a dummy ordinated matrix
@@ -30,7 +31,7 @@
 #'      list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"),
 #'           "C" = c("a", "c", "d", "f", "h")))
 #' 
-#' ## Splitting the ordinated matrix into four groups using a data frame
+#' ## Splitting the ordinated matrix into four groups using a dataframe
 #' groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
 #'      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
 #' custom.subsamples(ordinated_matrix, groups)
@@ -61,8 +62,7 @@ custom.subsamples <- function(data, group) {
     ## DATA
     ## data must be a matrix
     check.class(data, 'matrix')
-    ## data must be of size k*<=k-1
-    if(ncol(data) > (nrow(data) - 1)) warning("Input data should have at maximum (rows-1) columns.")
+
     ## data must have rownames
     if(is.null(rownames(data))) {
         warning(paste("Rownames generated for ", match_call$data, " as seq(1:", nrow(data) ,")", sep = ""))
@@ -92,7 +92,7 @@ custom.subsamples <- function(data, group) {
         if(!all( as.character(rownames(group)) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
 
         ## Checking if the groups have a list three elements
-        if(any(apply(group, 2, check.elements.data.frame))) stop("There must be at least three elements per subsamples.")
+        if(any(apply(group, 2, check.elements.data.frame))) stop("There must be at least three elements for each subsample.")
 
         ## Creating the subsamples
         subsamples_list <- unlist(apply(group, 2, split.elements.data.frame, data), recursive = FALSE)
@@ -101,7 +101,7 @@ custom.subsamples <- function(data, group) {
 
         if(all(unique(unlist(lapply(group, class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
-            if(max(unlist(group)) > nrow(data)) stop("Rows numbers in group don't match the row numbers in data.")
+            if(max(unlist(group)) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
         } else {
             if(unique(unlist(lapply(group, class))) == "character") {
                 if(!all( as.character(unlist(group)) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
@@ -114,7 +114,7 @@ custom.subsamples <- function(data, group) {
             }
         }
         ## Checking if the groups have a list three elements
-        if(any(unlist(lapply(group, length)) < 3 )) stop("There must be at least three elements per subsamples.")
+        if(any(unlist(lapply(group, length)) < 3 )) stop("There must be at least three elements for each subsample.")
 
         ## Checking if the groups have names
         if(is.null(names(group))) names(group) <- seq(1:length(group))

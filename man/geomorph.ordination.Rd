@@ -4,19 +4,43 @@
 \alias{geomorph.ordination}
 \title{Imports data from geomorph}
 \usage{
-geomorph.ordination(data, k, ...)
+geomorph.ordination(data, ...)
 }
 \arguments{
-\item{data}{An array (p x k x n) containing landmark coordinates for a set of specimens.}
+\item{data}{An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.}
 
-\item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
-
-\item{...}{Any optional arguments to be passed to \code{\link[geomorph]{gpagen}}.}
+\item{...}{Any optional arguments to be passed to \code{\link[stats]{prcomp}}.}
+}
+\value{
+A \code{matrix} or a \code{dispRity} object.
 }
 \description{
-Takes geomorph landmark data and computes both a procrustes analysis and an ordination
+Takes geomorph Procrustes object or a geomorph.data.frame object and ordinates it.
 }
-\seealso{
-\code{\link[geomorph]{gpagen}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\details{
+If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors.
+}
+\examples{
+\dontrun{
+require(geomorph)
+## Loading the plethodon dataset
+data(plethodon)
+
+## Performing a Procrustes transform
+procrustes <- gpagen(plethodon$land,PrinAxes=FALSE)
+
+## Obtaining the ordination matrix
+geomorph.ordination(procrustes)
+
+
+## Using a geomorph.data.frame
+geomorph_df <- geomorph.data.frame(procrustes,
+     species = plethodon$species, site = plethodon$site)
+
+geomorph.ordination(geomorph_df)
 }
 
+}
+\seealso{
+\code{\link[geomorph]{gpagen}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+}

@@ -44,7 +44,7 @@ intercept.estimate <- function(intercept0, slope) {
 #Sets the intercept0 for a model
 set.intercept0 <- function(first_model) {
     #If intercept is significant
-    if(summary(first_model)$coefficients[1,4] < 0.05) {
+    if(summary(first_model)$coefficients[1, 4] < 0.05) {
         #Set intercept0
         intercept0 <- coef(first_model)[1]
     } else {
@@ -60,8 +60,8 @@ set.intercept.next <- function(one_model, intercept0) {
 
     #Check if the model contains an intercept
     if(dim(model_summary)[1] != 1) {
-        p_value <- model_summary[2,4]
-        slope <- model_summary[2,1]
+        p_value <- model_summary[2, 4]
+        slope <- model_summary[2, 1]
     } else {
         p_value <- model_summary[4]
         slope <- model_summary[1]
@@ -72,7 +72,7 @@ set.intercept.next <- function(one_model, intercept0) {
         slope <- 0
     }
 
-    #Calculate the next models intercept
+    #Calculate the next model's intercept
     intercept_next <- intercept.estimate(intercept0, slope)
 
     return(intercept_next)
@@ -81,14 +81,14 @@ set.intercept.next <- function(one_model, intercept0) {
 #Creating the model function
 create.model <- function(data, family, intercept = NULL, ...) {
     if(!is.null(intercept)) {
-        #Estimating only the slope in the model in the model
+        #Estimating only the slope in the model
         if(intercept == "in.data") {
             #Intercept is present in the data
             intercept <- unique(data$intercept)
         } 
         #Estimate the model using the intercept
-        #model <- glm(group ~ data - 1+offset(intercept), data = data, family = family, ...) # For binomial
-        model <- glm(data ~ group - 1+offset(intercept), data = data, family = family, ...) 
+        #model <- glm(group ~ data - 1 + offset(intercept), data = data, family = family, ...) # For binomial
+        model <- glm(data ~ group - 1 + offset(intercept), data = data, family = family, ...) 
     } else {
         #Estimating the intercept and the slope in the model
         #model <- glm(group ~ data, data = data, family = family, ...) # For binomial

@@ -5,7 +5,7 @@
 \alias{dispRity-package}
 \title{Measuring Disparity in R}
 \description{
-A modular package for measuring disparity from ordinated matrices. Disparity can be calculated from any ordinated matrix. The package provides a set of implemented metrics to measure the ordinated space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. time series) as well as visualising the results. Finally, this package provides several basic statistical test for disparity analysis.
+A modular package for measuring disparity from multidimensional matrices. Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. disparity through time) or per groups as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
 }
 \author{
 Thomas Guillerme <guillert@tcd.ie>
@@ -16,4 +16,3 @@ Thomas Guillerme <guillert@tcd.ie>
 \keyword{morphometric,}
 \keyword{ordination,}
 \keyword{phylogeny,}
-

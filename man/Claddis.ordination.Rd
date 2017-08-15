@@ -12,7 +12,7 @@ Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
 
 \item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"Gower"}, \code{"GED"}, \code{"Max"}, \code{"Comp"}}
 
-\item{transform}{Whether to transform the proportional distances (for gower and max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).}
+\item{transform}{Whether to transform the proportional distances (for Gower and Max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).}
 
 \item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
 
@@ -30,10 +30,9 @@ Claddis.ordination(Claddis::Michaux1989)
 }
 
 }
+\seealso{
+\code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphNexus}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+}
 \author{
 Thomas Guillerme
 }
-\seealso{
-\code{\link[Claddis]{MorphDistMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-}
-

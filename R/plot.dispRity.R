@@ -6,7 +6,7 @@
 #' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsamples}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
-#' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
+#' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per subsamples.
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
@@ -15,7 +15,7 @@
 #' @param time.subsamples \code{logical} whether to handle continuous data from the \code{time.subsamples} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsamples are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
-#' @param density the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
+#' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -31,9 +31,10 @@
 #'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
 #'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 #' }
-#' The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-#' \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-#' Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
+#TG: The following is from sequential.test (not implemented yet)
+# The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
+# \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+# Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 #'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -61,6 +62,28 @@
 #' ## Rarefactions plots
 #' plot(disparity, rarefaction = TRUE)
 #' 
+#' \dontrun{
+#' ## Geoscale plots
+#' require(geoscale)
+#' 
+#' ## Converting the data into a list
+#' data_obs <- extract.dispRity(disparity, observed = TRUE)
+#' data_distribution <- extract.dispRity(disparity, observed = FALSE)
+#' ## Removing one list level
+#' data_distribution <- unlist(data_distribution, recursive = FALSE)
+#' data_obs <- as.vector(data_obs)
+#' 
+#' ## Getting the ages
+#' ages <- as.numeric(names(disparity$subsamples))
+#' 
+#' ## Plotting the results median
+#' geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
+#'
+#' ## Plotting the results distribution
+#' geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
+#' }
+#' 
+#' 
 #' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 #'
 #' @author Thomas Guillerme
@@ -76,7 +99,7 @@
 # subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
 # data <- sequential.test(subsamples, family = gaussian, correction = "hommel")
 # data <- sum_of_variances
-# quantiles=c(50,95)
+# quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
 # elements = TRUE
@@ -90,7 +113,7 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -232,7 +255,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## type
     if(length(data$subsamples) == 1) {
         type <- "box"
-        message("Only one subsamples of data available: type is set to \"box\".")
+        message("Only one subsample of data available: type is set to \"box\".")
     }
 
     if(missing(type)) {
@@ -287,6 +310,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
     ## Check class
     silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
     if(class(rarefaction) != "logical") {
+        ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
         ## Check if all subsamples have the appropriate rarefaction level
@@ -320,7 +344,7 @@ plot.dispRity <- function(data, type, quantiles = c(50,95), cent.tend = median, 
         if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
-            if(length(ylab) > 2) stop("ylab can have maximum two elements.")
+            if(length(ylab) > 2) stop("ylab can have maximum of two elements.")
         }
     }
 

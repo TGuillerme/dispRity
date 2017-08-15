@@ -13,6 +13,11 @@ state.selector <- function(character) {
     sort(unique(character))
 }
 
+## Selects a random clade from a tree
+select.clade <- function(tree) {
+    return(extract.clade(tree, node = sample(1:Nnode(tree), 1) + Ntip(tree))$tip.label)
+}
+
 ## mapply function for inap.character
 mapply.inap.character <- function(target_character, pattern_character, matrix, invariant, ...) {
 
@@ -33,11 +38,6 @@ mapply.inap.character <- function(target_character, pattern_character, matrix, i
         new_character <- inap.character(matrix[, target_character], matrix[, pattern_character],  inapplicable_state = state.selector(matrix[, pattern_character])[1])
     }
     return(new_character)
-}
-
-## Selects a random clade from a tree
-select.clade <- function(tree) {
-    return(extract.clade(tree, node = sample(1:Nnode(tree), 1) + Ntip(tree))$tip.label)
 }
 
 ## Apply inapplicable from clade (i.e. setting inapplicable characters states by clade - e.g. every states for clade A become inapplicable for this character)

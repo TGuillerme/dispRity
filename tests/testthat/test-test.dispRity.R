@@ -67,6 +67,9 @@ test_that("convert.to.numeric internal fun", {
 })
 
 test_that("convert.to.character internal fun", {
+
+    expect_equal(names.fun(c(1,2,4), list("a"=1, "b"=1, "c"=1, "d"=1)), c("a", "b", "d"))
+
     expect_true(
     	is.null(unlist(convert.to.character(1,1)))
     	)
@@ -82,9 +85,9 @@ test_that("convert.to.character internal fun", {
 })
 
 test_that("list.to.table internal fun", {
-    # expect_error(
-    # 	is.na(list.to.table(1))
-    # 	)
+
+    expect_equal(rep.names("a", 2), c("a", "a"))
+
     expect_is(
     	list.to.table(list("a"=rnorm(5),"b"=rnorm(5),"c"=rnorm(5)))
         , "data.frame")
@@ -97,6 +100,12 @@ test_that("list.to.table internal fun", {
 })
 
 test_that("htest.to.vector internal fun", {
+
+    set.seed(1)
+    expect_equal(
+        round(get.element("statistic", t.test(rnorm(10), rnorm(10))), digit = 5)
+        , c("t"=-0.27858)) 
+
     expect_error(
     	htest.to.vector(t.test(rnorm(10), rnorm(10)), print="NA")
     	)
@@ -126,9 +135,6 @@ test_that("set.comparisons.list internal fun", {
     expect_error(
         set.comparisons.list("custom", my_data)
         )
-    # expect_error(
-    #     set.comparisons.list(my_data, "custom")
-    #     )
 
     #Custom output
     expect_equal(
@@ -170,15 +176,23 @@ test_that("save.comparison.list internal fun", {
         ,c("X"))
 })
 
+test_that("lapply.lm.type internal fun", {
+
+    ## Dummy lm
+    dummy_matrix <- as.data.frame(matrix(c(c(rep(1, 5), rep(2, 5)), rnorm(10)), ncol = 2))
+    colnames(dummy_matrix) <- c("data", "subsamples")
+    lm_out <- lapply.lm.type(dummy_matrix, test = lm)
+    
+    expect_is(lm_out, "lm")
+})
+
 test_that("get.quantiles.from.table internal fun", {
     my_table <- matrix(rnorm(50), nrow = 5)
 
     expect_error(
         get.quantiles.from.table(1, mean, c(0.45, 0.55))
         )
-    expect_error(
-        get.quantiles.from.table(my_table, 1, c(0.45, 0.55))
-        )
+
     expect_error(
         get.quantiles.from.table(my_table, mean, 2)
         )
@@ -191,7 +205,77 @@ test_that("get.quantiles.from.table internal fun", {
         ,c(5,3))
 })
 
+## Set up data for tests
+data(disparity)
+extracted_data <- extract.dispRity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
+## Set up data for sequential test
+comp_subsamples <- set.comparisons.list("sequential", extracted_data, "sequential")
 
+test_that("output.numeric.results internal fun", {
+    ## Run test
+    details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, bhatt.coeff)
+
+    ## Get results
+    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+
+    expect_is(test_out, "matrix")
+    expect_equal(colnames(test_out), c("bhatt.coeff", "25%", "75%"))
+    expect_equal(rownames(test_out), unlist(lapply(comp_subsamples, paste, collapse = ":")))
+
+})
+
+test_that("output.htest.results internal fun", {
+    ## Run test
+    details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, t.test)
+
+    ## Get results
+    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+
+    expect_is(test_out, "matrix")
+    expect_equal(colnames(test_out), c("statistic", "25%", "75%"))
+    expect_equal(rownames(test_out), unlist(lapply(comp_subsamples, paste, collapse = ":")))
+
+    ## Wrapping function
+    test_out <- output.htest.results(details_out, comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean, correction = "none")
+
+    expect_is(test_out, "list")
+    expect_equal(length(test_out), 3)
+
+    elements_names <- c("statistic", "parameter", "p.value")
+    comp_names <- unlist(lapply(comp_subsamples, paste, collapse = ":"))
+    
+    for(element in 1:3) {
+        expect_equal(colnames(test_out[[element]]), c(elements_names[element], "25%", "75%"))
+        expect_equal(rownames(test_out[[element]]), comp_names)
+    }
+})
+
+# test_that("output.lm.results internal fun", {
+#     ## Set up data for lm test
+#     list_of_data <- list()
+#     for(bootstrap in 1:length(extracted_data[[1]])) {
+#         list_of_data[[bootstrap]] <- lapply(extracted_data, `[[`, bootstrap)
+#     }
+#     list_of_data <- lapply(list_of_data, list.to.table)
+
+#     ## Run test
+#     details_out <- lapply(list_of_data, lapply.lm.type, lm)
+
+#     ## Wrapping function
+#     test_out <- output.lm.results(details_out,  conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+
+#     expect_is(test_out, "list")
+#     expect_equal(length(test_out), 5)
+
+    
+#     elements_names <- c("Df", "Sum Sq", "Mean Sq", "F value", "Pr(>F)")
+#     comp_names <- c("subsamples", "Residuals")
+    
+#     for(element in 1:5) {
+#         expect_equal(colnames(test_out[[element]]), c(elements_names[element], "25%", "75%"))
+#         expect_equal(rownames(test_out[[element]]), comp_names)
+#     }
+# })
 
 test_that("example works fine", {
     set.seed(1)
@@ -257,12 +341,12 @@ test_that("example works fine", {
 
     ## Testing the effect of the groups
     expect_is(
-        test.dispRity(sum_of_ranges, aov, "all")
-        , c("aov", "lm"))
+        test.dispRity(sum_of_ranges, lm, "all")
+        , "lm")
     expect_equal(
-        test.dispRity(sum_of_ranges, aov, "all")$rank
+        test.dispRity(sum_of_ranges, lm, "all")$rank
         , 3)
     expect_equal(
-        as.vector(test.dispRity(sum_of_ranges, aov, "all")$coefficients)
+        as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
         , c(24.048441,2.053728,9.798655))
 })

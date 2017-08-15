@@ -1,0 +1,38 @@
+---
+title: "Future directions and references"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: References.bib
+bst: sysbio.bst
+vignette: >
+  %\VignetteIndexEntry{future directions}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+# Future directions
+
+## More tests!
+
+Some more tests are being developed such as a `sequential.test` to run sequential linear models for testing hypothesis in disparity through time or a `model.test` developed in collaboration with [Mark Puttick](https://puttickbiology.wordpress.com/) to fit modes of evolution to disparity curves.
+Stay tuned!
+
+## Faster disparity calculations
+
+I am slowly implementing parallel disparity calculation as well as C implementations of some disparity metrics to increase significantly improve the speed of the `dispRity` function.
+
+## More modularity
+
+I am equally slowly developing functions to allow more of the options in the package to be modular (in the same way as the `metric` argument in `dispRity`).
+The next arguments to benefit this increased modularity will be `time.subsamples`'s `model` argument and `boot.matrix`'s `type` argument.
+
+
+# References
+
+* Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
+* Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
+* Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
+* Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
+* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130.

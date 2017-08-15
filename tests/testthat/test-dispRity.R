@@ -11,6 +11,84 @@ metric = c(sum, variances)
 verbose = TRUE
 data <- data_subsamples_boot
 
+
+test_that("get.dispRity.metric.handle", {
+    match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
+    
+    ## Level1
+    test <- get.dispRity.metric.handle(sum, match_call)
+    expect_is(test, "list")
+    expect_null(test[[1]])
+    expect_null(test[[2]])
+    expect_is(test[[3]], "function")
+
+    ## Level2
+    test <- get.dispRity.metric.handle(ranges, match_call)
+    expect_is(test, "list")
+    expect_null(test[[1]])
+    expect_is(test[[2]], "function")
+    expect_null(test[[3]])
+
+    ## Level3
+    expect_error(test <- get.dispRity.metric.handle(var, match_call))
+    test <- get.dispRity.metric.handle(c(sd, var), match_call)
+    expect_is(test, "list")
+    expect_is(test[[1]], "function")
+    expect_null(test[[2]])
+    expect_is(test[[3]], "function")
+
+})
+
+
+test_that("get.first.metric", {
+    test1 <- get.dispRity.metric.handle(c(sd, var), match_call)
+    test2 <- get.dispRity.metric.handle(variances, match_call)
+    test3 <- get.dispRity.metric.handle(sd, match_call)
+
+    ## Metrics output is 1: function, 2: list -1 and 3: level
+    ## Remove a level 1
+    res_test1 <- get.first.metric(test1)
+    expect_is(res_test1, "list")
+    expect_equal(length(res_test1), 3)
+    expect_is(res_test1[[1]], "function")
+    expect_null(res_test1[[2]][[1]])
+    expect_equal(res_test1[[3]], 1)
+
+    ## Removing a level 2
+    res_test2 <- get.first.metric(test2)
+    expect_is(res_test2, "list")
+    expect_equal(length(res_test2), 3)
+    expect_is(res_test2[[1]], "function")
+    expect_null(res_test2[[2]][[2]])
+    expect_equal(res_test2[[3]], 2)
+
+    ## Removing a level 3
+    res_test3 <- get.first.metric(test3)
+    expect_is(res_test3, "list")
+    expect_equal(length(res_test3), 3)
+    expect_is(res_test3[[1]], "function")
+    expect_null(res_test3[[2]][[3]])
+    expect_equal(res_test3[[3]], 3)
+})
+
+test_that("apply.decompose.matrix", {
+    data(disparity)
+    ## Shortening the matrix for the example
+    data <- disparity
+    data$call$dimensions <- 7
+    one_bs_matrix <- data$subsamples[[1]][[5]]
+    bs_max <- 5
+
+    decomp_array <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
+    decomp_matrix <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
+
+    expect_is(decomp_array, "array")
+    expect_equal(dim(decomp_array), c(data$call$dimensions, data$call$dimensions, bs_max))
+    expect_is(decomp_matrix, "matrix")
+    expect_equal(dim(decomp_matrix), c(data$call$dimensions, bs_max))
+})
+
+
 test_that("disparity.bootstraps internal works", {
     data(BeckLee_mat50)
     data <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
@@ -18,6 +96,7 @@ test_that("disparity.bootstraps internal works", {
     matrix_decomposition = TRUE
     ## With matrix decomposition
     test0 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    expect_message(test0v <- disparity.bootstraps.verbose(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition))
 
     ## Should be a array
     expect_is(
@@ -31,12 +110,14 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test0)
         ,as.numeric(c(data$call$dimensions,data$call$dimensions, data$call$bootstrap[[1]])))
-
+    ## test0 and test0v are the same
+    expect_true(all(test0 == test0v))
 
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
     test1 <- disparity.bootstraps.silent(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition)
+    expect_message(test1v <- disparity.bootstraps.verbose(data$subsamples[[1]][[2]], metrics_list, data, matrix_decomposition))
 
     ## Should be a matrix
     expect_is(
@@ -50,12 +131,14 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test1)
         ,as.numeric(c(data$call$dimensions, data$call$bootstrap[[1]])))
-
+    ## test1 and test1v are the same
+    expect_true(all(test1 == test1v))
 
     ## Without matrix decomposition
     matrix_decomposition = FALSE
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = NULL, "level1.fun" = mean)
     test2 <- disparity.bootstraps.silent(test1, metrics_list, data, matrix_decomposition)
+    expect_message(test2v <- disparity.bootstraps.verbose(test1, metrics_list, data, matrix_decomposition))
 
     ## Should be a matrix
     expect_is(
@@ -65,6 +148,8 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test2)
         , c(1, 11))
+    ## test2 and test2v are the same
+    expect_true(all(test2 == test2v))
 })
 
 

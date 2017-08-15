@@ -2,13 +2,13 @@
 % Please edit documentation in R/boot.matrix.R
 \name{boot.matrix}
 \alias{boot.matrix}
-\title{Bootstraps and rarefies ordinated data.}
+\title{Bootstraps and rarefies data.}
 \usage{
 boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
-  verbose = FALSE, boot.type = "full", parallel)
+  verbose = FALSE, boot.type = "full")
 }
 \arguments{
-\item{data}{An ordinated matrix of maximal dimensions \eqn{k*(k-1)} or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).}
+\item{data}{A matrix or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).}
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
@@ -19,19 +19,17 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
-
-\item{parallel}{An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{data}{A \code{list} of the observed and bootstrapped matrices.}
-\item{elements}{A \code{vector} containing all the names of the elements from the original matrix.}
-\item{subsamples}{A \code{vector} containing the name of the subsamples (is \code{"1"} if the input was a single \code{matrix}).}
-\item{call}{A \code{vector} containing the arguments used for the bootstrapping.}
-\code{dispRity} objects can be summarised using \code{print} (S3).
+\item{matrix}{the multidimensional space (a \code{matrix}).}
+\item{call}{A \code{list} containing the called arguments.}
+\item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+
+Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Bootstraps and rarefies either a single ordinated matrix or a list of ordinated matrices.
+Bootstraps and rarefies either a matrix or a list of matrices.
 }
 \details{
 \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsamples have fewer elements than the rarefaction value, the subsamples is not rarefied.
@@ -63,20 +61,10 @@ matrix_list <- custom.subsamples(ordinated_matrix, list(A = 1:5, B = 6:10))
 ## Bootstrapping the subsamples of matrices 20 times (each)
 boot.matrix(matrix_list, bootstraps = 20)
 
-\dontrun{
-## Bootstrapping a subsamples of matrices using a single CPU
-system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE))
-## Bootstrapping a subsamples of matrices using 4 CPUs
-system.time(boot.matrix(matrix.list, bootstraps = 10000, rarefaction = TRUE,
-                        parallel = c(4, "SOCK")))
-## System time is three times shorter with parallel.
-}
-
-}
-\author{
-Thomas Guillerme
 }
 \seealso{
 \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

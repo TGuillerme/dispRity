@@ -15,26 +15,26 @@ check.morpho(matrix, orig.tree, parsimony = "fitch",
 
 \item{parsimony}{Either the parsimony algorithm to be passed to \code{\link[phangorn]{optim.parsimony}} or a parsimony function that can take a \code{\link[phangorn]{phyDat}} object as an input (\code{default = "fitch"}).}
 
-\item{first.tree}{A list of functions to generate the first parsimonious tree (default = \code{c(\link[phangorn]{dist.hamming}, \link[phangorn]{NJ})}; see details).}
+\item{first.tree}{A list of functions to generate the first most parsimonious tree (default = \code{c(\link[phangorn]{dist.hamming}, \link[phangorn]{NJ})}; see details).}
 
-\item{distance}{Optional, if orig.tree is provide, the function to use for measuring distance between the trees (default = \code{link[phangorn]{RF.dist}}).}
+\item{distance}{Optional, if orig.tree is provided, the function to use for measuring distance between the trees (default = \code{link[phangorn]{RF.dist}}).}
 
 \item{...}{Any additional arguments to be passed to the parsimony algorithm.}
 
-\item{contrast.matrix}{An optional contrast matrix. By default, the function recognises any character states token as different apart from \code{?} that is treated as a all characters.}
+\item{contrast.matrix}{An optional contrast matrix. By default, the function recognises any character state token as different apart from \code{?} that is treated as all characters.}
 
 \item{verbose}{Whether to be verbose or not (\code{default = FALSE}).}
 }
 \value{
-Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \\code{\link[phangorn]{RI}}) from quick most parsimonious tree obtained from the matrix.
+Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \\code{\link[phangorn]{RI}}) from the most parsimonious tree obtained from the matrix.
 Can also return the topological distance from the original tree if provided.
 }
 \description{
-Performs a fast checking of the phylogenetic signal in a morphological matrix using parsimony.
+Performs a fast check of the phylogenetic signal in a morphological matrix using parsimony.
 }
 \details{
 \itemize{
-\item The \code{first.tree} argument must be a list of functions to be use in a cascade to transform the matrix (as a \code{\link[phangorn]{phyDat}} object) into a tree using the functions iteratively.
+\item The \code{first.tree} argument must be a list of functions to be used in a cascade to transform the matrix (as a \code{\link[phangorn]{phyDat}} object) into a tree using the functions iteratively.
 For example the default \code{c(\link[phangorn]{dist.hamming}, \link[phangorn]{NJ})} will apply the following to the matrix: \code{\link[phangorn]{NJ}(\link[phangorn]{dist.hamming}(matrix))}
 }
 }
@@ -50,10 +50,9 @@ random.matrix <- sim.morpho(random.tree, characters = 50, model = "ER",
 check.morpho(random.matrix, orig.tree = random.tree)
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{sim.morpho}}, \code{\link{get.contrast.matrix}}, \code{\link[phangorn]{optim.parsimony}}
 }
-
+\author{
+Thomas Guillerme
+}

@@ -21,12 +21,12 @@
 # ' ## Generating the subsamples
 # ' groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
 # '      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# ' customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
+# ' customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 # ' ## Bootstrapping the data
 # ' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
 # ' ## Calculating variances of each dimension
 # ' dim_variances <- dispRity(bootstrapped_data, metric = variances)
-# ' ## Extracting the disparity values of each subsamples
+# ' ## Extracting the disparity values of each subsample
 # ' subsamples <- extract.dispRity(dim_variances, observed = FALSE,
 # '      keep.structure = TRUE, concatenate = TRUE)
 # '
@@ -37,7 +37,7 @@
 # ' ## Simple plotting the results
 # ' plot(results)
 # ' 
-# ' ## Running a gaussian sequential test on multiple subsamples
+# ' ## Running a Gaussian sequential test on multiple subsamples
 # ' ## (i.e. non- concatenated)
 # ' subsamples <- extract.dispRity(dim_variances, observed = FALSE,
 # '      keep.structure = TRUE, concatenate = FALSE)
@@ -63,7 +63,7 @@
 # source("test.dispRity_fun.R")
 # data(BeckLee_mat50)
 # groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_subsamples <- cust.subsamples(BeckLee_mat50, groups)
+# customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
 # bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3)
 # data_single <- dispRity(bootstrapped_data, metric = c(sum, variances))
 # data_multi <- dispRity(bootstrapped_data, metric = variances)

@@ -9,7 +9,7 @@
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{decreasing}{\code{logical}. Should the sort be increasing or decreasing? Is ignored if \code{sort} is used.}
+\item{decreasing}{\code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.}
 
 \item{sort}{An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsamples.}
 
@@ -28,10 +28,9 @@ summary(sort(disparity, decreasing = TRUE))
 summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsamples}}, \code{\link{extract.dispRity}}.
 }
-
+\author{
+Thomas Guillerme
+}

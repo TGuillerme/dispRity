@@ -6,6 +6,12 @@ context("make.metric")
 #load("test_data.Rda")
 #data<-test_data$ord_data_tips
 
+test_that("check.metric works", {
+    expect_error(check.metric(1))
+    expect_equal(check.metric(sum), "summary.metric")
+    expect_equal(check.metric(var), "class.metric")
+})
+
 test_that("Output is correct", {
     expect_error(
     	make.metric("a")

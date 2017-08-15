@@ -18,7 +18,7 @@
 
 \item{cent.tend}{A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).}
 
-\item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; an \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
+\item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
 \item{elements}{\code{logical} whether to plot the number of elements per subsamples.}
 
@@ -36,7 +36,7 @@
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
-\item{density}{the density of shading lines to be passed to \code{link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
+\item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
@@ -55,9 +55,6 @@ The different \code{type} arguments are:
   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 }
-The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-\code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
@@ -85,11 +82,32 @@ plot(disparity, type = "continuous", time.subsamples = FALSE,
 ## Rarefactions plots
 plot(disparity, rarefaction = TRUE)
 
+\dontrun{
+## Geoscale plots
+require(geoscale)
+
+## Converting the data into a list
+data_obs <- extract.dispRity(disparity, observed = TRUE)
+data_distribution <- extract.dispRity(disparity, observed = FALSE)
+## Removing one list level
+data_distribution <- unlist(data_distribution, recursive = FALSE)
+data_obs <- as.vector(data_obs)
+
+## Getting the ages
+ages <- as.numeric(names(disparity$subsamples))
+
+## Plotting the results median
+geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
+
+## Plotting the results distribution
+geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
 }
-\author{
-Thomas Guillerme
+
+
 }
 \seealso{
 \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
 }
-
+\author{
+Thomas Guillerme
+}

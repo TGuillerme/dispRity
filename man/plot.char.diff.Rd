@@ -5,8 +5,8 @@
 \title{Plots character differences}
 \usage{
 \method{plot}{char.diff}(matrix, type = "matrix", legend = TRUE,
-  legend.title = "Difference", legend.pos = "topleft", axis = TRUE, xlim,
-  ylim, xlab, ylab, col, main, ...)
+  legend.title = "Difference", legend.pos = "topleft", legend.round = 0,
+  axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...)
 }
 \arguments{
 \item{matrix}{A discrete matrix or an already computed character difference matrix of class \code{char.diff}.}
@@ -18,6 +18,8 @@
 \item{legend.title}{A \code{character} string to be displayed as the title of the legend (default = \code{Difference}).}
 
 \item{legend.pos}{The position of the legend. Can be two \code{numeric}. Default is \code{"topleft"}.}
+
+\item{legend.round}{A \code{numeric} value for rounding up legend values. Default is \code{0}.}
 
 \item{axis}{A logical value stating whether to print the axis or not (default = \code{TRUE}).}
 
@@ -53,10 +55,9 @@ char.diff_matrix <- char.diff(morpho_matrix)
 plot(char.diff_matrix, type = "density")
 
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{char.diff}}
 }
-
+\author{
+Thomas Guillerme
+}

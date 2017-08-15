@@ -72,6 +72,21 @@ test_that("proportional.distribution works", {
 
 #Testing gen.seq.HKY.binary
 test_that("gen.seq.HKY.binary works", {
+
+    ## Internal HKY.seq.generator
+    set.seed(1)
+    tree <- rcoal(15)
+    HKY_seq <- HKY.seq.generator(tree, substitution = c(runif, 2, 2), rate = c(rgamma, rate = 10, shape = 5))
+    expect_is(HKY_seq, "seqgen")
+    expect_equal(length(as.list(HKY_seq)), Ntip(tree) + 1)
+
+    ## Character selector
+    char_seq <- character.selector(HKY_seq)
+    expect_is(char_seq, "character")
+    expect_equal(length(char_seq), Ntip(tree))
+    expect_equal(char_seq, c("T", "T", "T", "T", "T", "C", "C", "C", "C", "C", "C", "C", "T", "C", "C"))
+
+
     verbose = FALSE
     #errors
     expect_error(
@@ -97,7 +112,7 @@ test_that("gen.seq.HKY.binary works", {
     set.seed(1)
     expect_equal(
         unique(as.vector(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose))), c("1", "0")
-        )
+        )   
 })
 
 #Testing k.sampler
@@ -160,4 +175,65 @@ test_that("is.invariant works", {
     expect_false(
         is.invariant(c(rep("A", 5), "b"))
         )
+})
+
+## Testing mixed model
+test_that("MIXED.model works", {
+    verbose = FALSE
+    expect_error(
+        MIXED.model("a", c(runif,1,1), c(runif,2,2), c(0.5, 0.5), verbose)
+        )
+    expect_error(
+        MIXED.model(rtree(5), c(runif,1,1), rates = "a", c(0.5, 0.5), verbose)
+        )
+
+    set.seed(1)
+    Mk <- MIXED.model(rtree(5), c(runif,1,1), c(runif,2,2), c(0, 1), verbose)
+    Mk_or_HKY <- MIXED.model(rtree(5), c(runif,1,1), c(runif,2,2), c(1, 0), verbose)
+
+    expect_is(Mk, "character")
+    expect_is(Mk_or_HKY, "character")
+    expect_equal(Mk, c("1", "2", "0", "0", "2"))
+    expect_equal(Mk_or_HKY, c("0", "0", "0", "0", "0"))
+
+})
+
+## Testing the overall function
+test_that("sim.morpho works", {
+    set.seed(4)
+    tree <- rcoal(15)
+    my_rates = c(rgamma, rate = 10, shape = 5)
+    my_substitutions = c(runif, 2, 2)
+
+    ## Sanitising works
+    expect_error(
+        sim.morpho("tree", characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = "50", model = "HKY", rates = my_rates, substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = 50, model = 3, rates = my_rates, substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = 50, model = "HKY", rates = "my_rates", substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = "my_substitutions")
+        )
+
+    ## Some examples
+    matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions)
+    matrixMk1 <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates) 
+    matrixMk2 <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates, invariant = FALSE)
+    matrixMixed <- sim.morpho(tree, characters = 50, model = "MIXED", rates = my_rates, substitution = my_substitutions,  invariant = FALSE, verbose = FALSE)
+
+    expect_is(matrixHKY, "matrix")
+    expect_is(matrixMk1, "matrix")
+    expect_is(matrixMk2, "matrix")
+    expect_is(matrixMixed, "matrix")
+    expect_equal(dim(matrixHKY), c(15,50))
+    expect_equal(dim(matrixMk1), c(15,50))
+    expect_equal(dim(matrixMk2), c(15,50))
+    expect_equal(dim(matrixMixed), c(15,50))
 })

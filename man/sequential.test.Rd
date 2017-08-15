@@ -9,10 +9,9 @@ sequential.test()
 \description{
 Function still in development.
 }
-\author{
-Thomas Guillerme
-}
 \seealso{
 \code{\link{test.dispRity}}, \code{\link{bhatt.coeff}}, \code{\link{null.test}}.
 }
-
+\author{
+Thomas Guillerme
+}

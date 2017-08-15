@@ -40,9 +40,6 @@ test_that("slice.tree_parent.node picks up the parent node", {
 })
 
 #Testing slice.tree_offspring.node
-#example
-tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
-tree$node.label <- as.character(seq(1:5))
 
 #Test
 test_that("slice.tree_offspring.node picks up the offspring tip.node", {
@@ -100,12 +97,7 @@ test_that("DELTRAN picks up the parent node", {
 })
 
 #Testing ACCTRAN
-#example
-tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
-tree$node.label <- as.character(seq(1:5))
-slice_tree <- suppressMessages(tree_slice <- paleotree::timeSliceTree(tree, 3, drop.extinct = TRUE, plot = FALSE))
 test <- slice.tree_ACCTRAN(tree, 'A', tree_slice)
-
 #Test
 test_that("ACCTRAN picks up the offspring tip/node", {
     #class
@@ -121,6 +113,28 @@ test_that("ACCTRAN picks up the offspring tip/node", {
         test, '4'
         )
 })
+
+
+#Testing GRADUAL
+#example
+test <- slice.tree_GRADUAL(tree, 'A', tree_slice)
+
+#Test
+test_that("GRADUAL picks up the right tip/node", {
+    #class
+    expect_is(
+        test, 'character'
+        )
+    #length
+    expect_equal(
+        length(test), 1
+        )
+    #result (node 4)
+    expect_equal(
+        test, '4'
+        )
+})
+
 
 #Testing slice.tree
 tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")

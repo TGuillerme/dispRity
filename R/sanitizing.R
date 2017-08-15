@@ -1,4 +1,4 @@
-## SANITYZING FUNCTIONS
+## SANITIZING FUNCTIONS
 ## Checking the class of an object and returning an error message if != class
 check.class <- function(object, class, msg, errorif = FALSE) {
     ## Get call
@@ -39,7 +39,7 @@ check.class <- function(object, class, msg, errorif = FALSE) {
                 }
             }
         }
-        ## If function did not returned, class is not matching
+        ## If function did not return, class is not matching
         if(!any(!error)) {
             stop(match_call$object, msg, call. = FALSE)
         } else {
@@ -76,75 +76,75 @@ check.length <- function(object, length, msg, errorif = FALSE) {
     }
 }
 
-## Checking if a method match the authorized method
+## Checking if a method matches the authorized method
 check.method <- function(argument, all_arguments, msg) {
     if(all(is.na(match(argument, all_arguments)))) {
         stop(paste(msg, " must be one of the following: ", paste(all_arguments, collapse = ", "), ".", sep = ""),  call. = FALSE)
     }
 }
 
-## Transforming a tree to binary with no 0 branch length.
-bin.tree <- function(tree){
-    if(!is.binary.tree(tree)) {
-        tree <- multi2di(tree)
-        warning('tree is now binary.' , call.=FALSE)
-    }
-    ## Null branch length?
-    if(any(tree$edge.length == 0)){
-        tree$edge.length[which(tree$edge.length == 0)] <- min(tree$edge.length[-which(tree$edge.length == 0)])*0.01
-        warning('New branches length generated are set to 1% of the minimum branch length.' , call. = FALSE)
-    }
-    return(tree)
-}
+## Transforming a tree to binary with no zero length branches.
+# bin.tree <- function(tree){
+#     if(!is.binary.tree(tree)) {
+#         tree <- multi2di(tree)
+#         warning('tree is now binary.' , call.=FALSE)
+#     }
+#     ## Null branch length?
+#     if(any(tree$edge.length == 0)){
+#         tree$edge.length[which(tree$edge.length == 0)] <- min(tree$edge.length[-which(tree$edge.length == 0)])*0.01
+#         warning('New branches length generated are set to 1% of the minimum branch length.' , call. = FALSE)
+#     }
+#     return(tree)
+# }
 
 ## Replacing a value to be NA
-replace.na<-function(x, y="?") {
-    x[which(x == y)]  <-  NA
-    return(x)
-}
+# replace.na <- function(x, y="?") {
+#     x[which(x == y)]  <-  NA
+#     return(x)
+# }
 
-make.nexus <- function(matrix, header, ordering, weights) {
-    ## SANITIZING
-    ## matrix
-    check.class(matrix, "matrix")
+# make.nexus <- function(matrix, header, ordering, weights) {
+#     ## SANITIZING
+#     ## matrix
+#     check.class(matrix, "matrix")
 
-    ## header
-    if(missing(header)) {
-        header <- NA
-    } else {
-        check.class(header, "character")
-        check.length(header, 1, " must be a single character string.", errorif=FALSE)
-    }
+#     ## header
+#     if(missing(header)) {
+#         header <- NA
+#     } else {
+#         check.class(header, "character")
+#         check.length(header, 1, " must be a single character string.", errorif=FALSE)
+#     }
 
-    ## ordering
-    if(missing(ordering)) {
-        ordering <- rep("unord", ncol(matrix))
-    } else {
-        check.class(ordering, "character")
-        check.length(ordering, ncol(matrix), " must be the same length as the matrix.", errorif = FALSE)
-        options(warn = -1)
-        if(any(ordering != c("unord", "ord"))) {
-            stop("Ordering vector must contain only 'unord' or/and 'ord' values.")
-        }
-        options(warn = 0)
-    }
+#     ## ordering
+#     if(missing(ordering)) {
+#         ordering <- rep("unord", ncol(matrix))
+#     } else {
+#         check.class(ordering, "character")
+#         check.length(ordering, ncol(matrix), " must be the same length as the matrix.", errorif = FALSE)
+#         options(warn = -1)
+#         if(any(ordering != c("unord", "ord"))) {
+#             stop("Ordering vector must contain only 'unord' or/and 'ord' values.")
+#         }
+#         options(warn = 0)
+#     }
 
-    ## weights
-    if(missing(weights)) {
-        weights <- rep(1, ncol(matrix))
-    } else {
-        check.class(weights, "integer")
-        check.length(weights, ncol(matrix), " must be the same length as the matrix.", errorif = FALSE)
-    }
+#     ## weights
+#     if(missing(weights)) {
+#         weights <- rep(1, ncol(matrix))
+#     } else {
+#         check.class(weights, "integer")
+#         check.length(weights, ncol(matrix), " must be the same length as the matrix.", errorif = FALSE)
+#     }
 
-    ## BUILD THE NEXUS OBJECT
-    nexus <- list()
-    nexus$header <- header
-    nexus$matrix <- matrix
-    nexus$ordering <- ordering
-    nexus$weights <- weights
-    nexus$max.vals <- apply(matrix, 2, max, na.rm=TRUE)
-    nexus$min.vals <- apply(matrix, 2, min, na.rm=TRUE)
+#     ## BUILD THE NEXUS OBJECT
+#     nexus <- list()
+#     nexus$header <- header
+#     nexus$matrix <- matrix
+#     nexus$ordering <- ordering
+#     nexus$weights <- weights
+#     nexus$max.vals <- apply(matrix, 2, max, na.rm=TRUE)
+#     nexus$min.vals <- apply(matrix, 2, min, na.rm=TRUE)
 
-    return(nexus)
-}
+#     return(nexus)
+# }

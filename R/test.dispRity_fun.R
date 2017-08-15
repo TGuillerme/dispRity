@@ -1,15 +1,6 @@
-## Mapply function for applying the tests to distribution data
+## mapply function for applying the tests to distribution data
 test.mapply <- function(pair_comparison, data, test, ...) {
-    ## Check if any is constant
-    ##  uniques1 <- which(unlist(lapply(data[[pair_comparison[[1]]]], function(X) return(length(unique(X))))) == 1)
-    ##  uniques2 <- which(unlist(lapply(data[[pair_comparison[[2]]]], function(X) return(length(unique(X))))) == 1)
-
-    ##  if(is.na(any(match(uniques1, uniques2)))) {
-        tests <- mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE)
-        return(tests)
-    ##  } else {
-    ##      warning("Pair of subsamples ", paste(pair_comparison, collapse = " and "), " contains not enough unique values.")
-    ##  }
+    return(mapply(test, data[[pair_comparison[[1]]]], data[[pair_comparison[[2]]]], MoreArgs = ..., SIMPLIFY = FALSE))
 }
 
 ## transforming test into a lapply from a given list of comp for multiple distributions
@@ -20,12 +11,12 @@ test.list.lapply.distributions <- function(list_of_comp, data, test, ...) {
 
 ## Creating a list of sequences
 set.sequence <- function(length) {
-    ## Sequence of only 2
-    if(length==2) {
-        output <- matrix(data=c(1,2), nrow=2, byrow=TRUE)
+    ## Sequence of only two
+    if(length == 2) {
+        output <- matrix(data = c(1, 2), nrow = 2, byrow = TRUE)
     } else {
     ## sequence of more
-        output <- matrix(data=c(1:(length-1), 2:length), nrow=2, byrow=TRUE)
+        output <- matrix(data = c(1:(length - 1), 2:length), nrow = 2, byrow = TRUE)
     }
     return(output)
 }
@@ -35,23 +26,26 @@ convert.to.numeric <- function(list, object) {
     return(lapply(list, match, names(object)))
 }
 
+## Getting the names (character) (convert.to.character internal)
+names.fun <- function(list, object) {
+    return(names(object[c(list)]))
+}
+
 ## convert a list from numeric to character
 convert.to.character <- function(list, object) {
-    ## Getting the names (character)
-    names.fun <- function(list, object) {
-        return(names(object[c(list)]))
-    }
     ## Applying to the list
     return(lapply(list, names.fun, object))
 }
 
 
+## function for repeating the extracted_data names (list to table internal)
+rep.names <- function(name, subsamples) {
+    return(rep(name, subsamples))
+}
+
+
 ## Convert a list into a table (for aov)
 list.to.table <- function(extracted_data, style = "group") {
-    ## function for repeating the extracted_data names
-    rep.names <- function(name, subsamples) {
-        return(rep(name, subsamples))
-    }
 
     ## Get the list of names
     names_list <- as.list(names(extracted_data))
@@ -72,12 +66,14 @@ list.to.table <- function(extracted_data, style = "group") {
     return(output)
 }
 
+## lapply function for htest.to.vector
+get.element <- function(print, htest) {
+    return(htest[grep(print, names(htest))][[1]])
+}
+
+## Converts an htest into a vector
 htest.to.vector <- function(htest, print) {
     ## print is a vector of htest elements to print
-    ## lapply fun
-    get.element <- function(print, htest) {
-        return(htest[grep(print, names(htest))][[1]])
-    }
     return(unlist(lapply(print, get.element, htest)))
 }
 
@@ -85,21 +81,21 @@ htest.to.vector <- function(htest, print) {
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
     options(warn = -1)
     if(comp == "custom") {
-        ## get the lit of subsamples to compare
+        ## get the list of subsamples to compare
         comp_subsamples <- comparisons
     }
 
     if(comp == "pairwise") {
         ## Get the pairs of subsamples
         comp_subsamples <- combn(1:length(extracted_data), 2)
-        ## convert pair subsamples table in a list of pairs
+        ## convert pair subsamples table into a list of pairs
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
 
     if(comp == "sequential") {
         ## Set the list of sequences
         comp_subsamples <- set.sequence(length(extracted_data))
-        ## convert seq subsamples in a list of sequences
+        ## convert seq subsamples into a list of sequences
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
 
@@ -107,7 +103,7 @@ set.comparisons.list <- function(comp, extracted_data, comparisons) {
         ## Set the list of comparisons as a matrix
         matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
         comp_subsamples <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
-        ## convert pair subsamples table in a list of pairs
+        ## convert pair subsamples table into a list of pairs
         comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
     }
     options(warn = 0)
@@ -124,7 +120,7 @@ save.comparison.list <- function(comp_subsamples, extracted_data) {
 }
 
 ## Function for lapplying aov type functions
-lapply.aov.type <- function(data, test, ...) {
+lapply.lm.type <- function(data, test, ...) {
     return(test(data ~ subsamples, data = data, ...))
 }
 
@@ -146,7 +142,7 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
         table_out <- table_temp
     }
 
-    ## Getting col names
+    ## Getting column names
     colnames(table_out)[1] <- name
     ## Getting row names (the comparisons)
     row.names(table_out) <- comparisons_list
@@ -154,8 +150,19 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     return(table_out)
 }
 
+
+
+## lapply function for getting the test elements (output.htest.results internal)
+lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+    if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
+        return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))
+    } else {
+        return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list))
+    }
+}
+
 ## Returning a table for htests
-output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend) {
+output.htest.results <- function(details_out, comparisons_list, conc.quantiles, con.cen.tend, correction) {
     ## Getting the test elements
     test_elements <- unique(unlist(lapply(details_out, lapply, names)))
     ## Selecting the numeric (or) integer elements only
@@ -168,15 +175,6 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
     if(length(remove) > 0) {
         test_elements <- test_elements[-remove]
     }
-
-    ## Lapply function for getting the test elements
-    lapply.output.test.elements <- function(test_element, details_out, comparisons_list, conc.quantiles, con.cen.tend) {
-        if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
-            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list, conc.quantiles, con.cen.tend))
-        } else {
-            return(output.numeric.results(lapply(lapply(details_out, lapply, htest.to.vector, print = test_element), unlist), test_element, comparisons_list))
-        }
-    }
     
     ## Get the results
     if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
@@ -185,28 +183,38 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
         table_out <- lapply(as.list(test_elements), lapply.output.test.elements, details_out, comparisons_list)
     }
 
+    ## Applying the correction
+    if(correction != "none") {
+        ## Find which element contains the p-values
+        pvalues <- unlist(lapply(lapply(lapply(table_out, colnames), function(X) X == "p.value"), any))
+        if(any(pvalues)) {
+            table_out[pvalues][[1]] <- apply(table_out[pvalues][[1]], 2, p.adjust, method = correction, n = nrow(table_out[pvalues][[1]]))
+        }
+    }
+
     return(table_out)
 }
 
-## Handling output for aov multiple tests
-output.aov.results <- function(details_out, conc.quantiles, con.cen.tend) {
-    ## Getting the summaries
-    summaries <- lapply(details_out, summary)
+# ## Handling output for lm multiple tests
+# output.lm.results <- function(details_out, conc.quantiles, con.cen.tend) {
+
+#     ## Getting the summaries
+#     summaries <- lapply(details_out, summary)
     
-    ## Transforming the list 
-    list_of_results <- list()
-    for(element in 1:length(summaries[[1]][[1]])) {
-        list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
-            dimnames = list(c("subsamples", "Residuals")))
-    }
+#     ## Transforming the list 
+#     list_of_results <- list()
+#     for(element in 1:length(summaries[[1]][[1]])) {
+#         list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
+#             dimnames = list(c("subsamples", "Residuals")))
+#     }
 
-    ## Get the quantiles
-    list_of_results <- lapply(list_of_results, get.quantiles.from.table, con.cen.tend, conc.quantiles, na.rm = TRUE)
+#     ## Get the quantiles
+#     list_of_results <- lapply(list_of_results, get.quantiles.from.table, con.cen.tend, conc.quantiles, na.rm = TRUE)
 
-    ## Name the elements
-    for(element in 1:length(summaries[[1]][[1]])) {
-        colnames(list_of_results[[element]])[[1]] <- names(summaries[[1]][[1]])[[element]]
-    }    
+#     ## Name the elements
+#     for(element in 1:length(summaries[[1]][[1]])) {
+#         colnames(list_of_results[[element]])[[1]] <- names(summaries[[1]][[1]])[[element]]
+#     }    
 
-    return(list_of_results)
-}
+#     return(list_of_results)
+# }

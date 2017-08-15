@@ -8,7 +8,7 @@ importFrom("ade4", "randtest", "as.randtest")
 importFrom("grDevices", "colorRampPalette", "grey")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend")
 importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median", "cmdscale")
-importFrom("utils", "combn", "data")
+importFrom("utils", "combn", "data", "capture.output")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 # importFrom("Claddis", "MorphDistMatrix")
@@ -21,7 +21,7 @@ useDynLib(dispRity)
 
 ## Data utilities
 export(Claddis.ordination)
-# export(geomorph.ordination)
+export(geomorph.ordination)
 
 ##Functions
 export(time.subsamples)
@@ -48,8 +48,9 @@ export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)
-export(sequential.test)
 export(null.test)
+#export(sequential.test)
+#export(model.test)
 
 ##dispRity object utilities
 export(make.dispRity)
@@ -60,6 +61,7 @@ export(scale.dispRity)
 export(sort.dispRity)
 export(get.subsamples)
 export(merge.subsamples)
+export(size.subsamples)
 
 ##Package utilities
 export(tree.age)

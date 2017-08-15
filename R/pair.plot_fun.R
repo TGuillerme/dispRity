@@ -18,7 +18,7 @@ find.num.elements <- function(x) {
 
     # Warning if equation is not fully solved
     if(solution != x) {
-        stop(paste("The number of elements to plot is not function of an entire number.",
+        stop(paste("The number of elements to plot is not a function of an entire number.",
             "To get the right number of combinations, you must satisfy:",
             "    ncol(combn(seq(1:n_elements), 2)) == nrow(data)",
             "where 'n_elements' is the number of elements compared pairwise.", sep = "\n"))

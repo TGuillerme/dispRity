@@ -32,7 +32,7 @@
 #' @param matrix a discrete morphological character matrix.
 #' 
 #' @examples
-#' ## A random multi state matrix
+#' ## A random multistate matrix
 #' matrix <- matrix(sample(c(0,1,2), 100, TRUE), 10, 10)
 #' 
 #' ## Get the contrast matrix
@@ -51,24 +51,24 @@
 
 get.contrast.matrix <- function(matrix) {
     
-    # Extracting the states
+    ## Extracting the states
     states <- sort(unique(as.vector(matrix)))
     
-    # Check if there is a "?" token
+    ## Check if there is a "?" token
     if(any(states == "?")) {
-        # remove the "?" state
+        ## remove the "?" state
         states_num <- states[-which(states == "?")]
-        # Create a simple square matrix with 0s...
+        ## Create a simple square matrix with 0s...
         contrast_matrix <- matrix(data = rep(0, length(states_num)*length(states_num)), ncol = length(states_num), dimnames = list(as.character(states_num), as.character(states_num)))
-        # Set the diagonal to 0 
+        ## Set the diagonal to 1
         diag(contrast_matrix) <- 1
-        # Add the joker character as a row full of 1s
+        ## Add the joker character as a row full of 1s
         joker_matrix <- matrix(data = rep(1, length(states_num)), ncol = length(states_num), dimnames = list("?", as.character(states_num)))
         contrast_matrix <- rbind(contrast_matrix, joker_matrix)
     } else {
-        # Create a simple square matrix with 0s...
+        ## Create a simple square matrix with 0s...
         contrast_matrix <- matrix(data = rep(0, length(states)*length(states)), ncol = length(states), dimnames = list(as.character(states), as.character(states)))
-        # Set the diagonal to 0 
+        ## Set the diagonal to 0 
         diag(contrast_matrix) <- 1
     }
 
@@ -85,7 +85,7 @@ get.contrast.matrix <- function(matrix) {
 #' @param tree If any inapplicable source is \code{"clade"}, a tree from where to select the clades.
 #' @param invariant Whether to allow invariant sites among the characters with inapplicable data. If \code{invariant = FALSE} the algorithm will try to remove such characters (if possible).
 #' @param verbose Whether to be verbose or not.
-#' @param ... Any additional arguments.
+##' @param ... Any additional arguments.
 #' 
 #' @details
 #' If the \code{NAs} argument is a numeric value n, generates n characters with inapplicable data based on the \code{"clade"} source.
@@ -120,7 +120,7 @@ get.contrast.matrix <- function(matrix) {
 #' 
 #' @author Thomas Guillerme
 
-apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE, ...) {
+apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, ...) {
 
     ## SANITIZING
     ## matrix
@@ -149,7 +149,7 @@ apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE, ...)
         if(any(NAs == "clade")) {
             ## tree must be same size as the matrix
             if(any(sort(row.names(matrix)) != sort(tree$tip.label))) {
-                stop("Provided tree has not the same taxa as the matrix.")
+                stop("Provided tree doe not have the same taxa as the matrix.")
             }
         }
     }

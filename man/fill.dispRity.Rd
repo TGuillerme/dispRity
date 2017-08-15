@@ -10,7 +10,7 @@ fill.dispRity(data)
 \item{data}{A \code{dispRity} object.}
 }
 \description{
-Fills a \code{dispRity} object using the data from it's matrix
+Fills a \code{dispRity} object using the data from its matrix
 }
 \examples{
 ## An empty dispRity object (with a matrix)
@@ -23,4 +23,3 @@ fill.dispRity(empty)
 \author{
 Thomas Guillerme
 }
-
