@@ -8,7 +8,7 @@ output:
 ---
 
 
-# The guts of the dispRity package
+# The guts of the `dispRity` package
 
 ## Manipulating `dispRity` objects
 

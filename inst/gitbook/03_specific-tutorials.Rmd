@@ -14,6 +14,15 @@ The following section contains information specific to some functions.
 If any of your questions are not covered in these sections, please refer to the function help files in R, send me an email (<guillert@tcd.ie>), or raise an issue on GitHub.
 The several tutorials below describe specific functionalities of certain functions; please always refer to the function help files for the full function documentation!
 
+Before each section, make sure you loaded the Beck and Lee (2014) data (see [example data](#example-data) for more details).
+
+```{r}
+## Loading the data
+data(BeckLee_mat50) ; data(BeckLee_mat99)
+data(BeckLee_tree) ; data(BeckLee_ages)
+```
+
+
 ## Time slicing
 
 The function `time.subsamples` allows users to divide the matrix into different time subsamples or slices given a dated phylogeny that contains all the elements (i.e. taxa) from the matrix.
@@ -24,7 +33,7 @@ Two types of time subsamples can be performed by using the `method` option:
  *  Discrete time subsamples (or time-binning) using `method = discrete`
  *  Continuous time subsamples (or time-slicing) using `method = continuous`
 
-For the time-slicing method details see @GuillermeSTD. <!-- @@@ Change cite appropriately! -->
+For the time-slicing method details see Cooper and Guillerme (in prep.). <!-- @@@ Change cite appropriately! -->
 <!-- NC: Or potentially this paper we are writing for the PalAss? TG: totally!-->
 For both methods, the function takes the `time` argument which can be a vector of `numeric` values for:
 
@@ -187,7 +196,7 @@ boot.matrix(time_slices, bootstraps = 100)
 
 There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
-For example, one can look at ellipsoid hyper-volume of the ordinated space @DonohueDim, the sum and the product of the ranges and variances @Wills1994 or the median position of the elements relative to their centroid @Wills1994. 
+For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue _et al._ 2013), the sum and the product of the ranges and variances (Wills _et al._ 1994) or the median position of the elements relative to their centroid (Wills _et al._ 1994). 
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
 
 Because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
@@ -332,11 +341,11 @@ The detailed list can be found in `?dispRity.metric` along with some description
 
 Level | Name | Description | Source | 
 ------|------|---------------------------------------------------|--------|
-3 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | [@DonohueDim] |
-3 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
-3 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
-3 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |
-3 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
+1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
+1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+1 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |
+1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
 2 | `variances` | The variance of each dimension | `dispRity` |
 2 | `centroids`<sup>2</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
@@ -484,9 +493,6 @@ To actually see what is in a dispRity object, one can either use the `summary` f
 
 ### Summarising `dispRity` data
 This function is an S3 function (`summary.dispRity`) allowing users to summarise the content of `dispRity` objects that contain disparity calculations.
-
-<!-- DATA LOADER -->
-
 
 ```{r}
 ## Example data from previous sections
@@ -686,6 +692,8 @@ This argument can be empty (no correction applied) or can contain one of the cor
 Note that the `test.dispRity` algorithm deals with some classical test outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
 It is, however, possible to get the full detailed output by using the options `details = TRUE`.
 
+Here we are using the variables generated in the [section above](#summarising-dispRity-data-plots):
+
 ```{r}
 ## T-test to test for a difference in disparity between crown and stem mammals
 test.dispRity(disparity_crown_stem, test = t.test)
@@ -693,7 +701,8 @@ test.dispRity(disparity_crown_stem, test = t.test)
 ## Performing the same test but with the detailed t.test output
 test.dispRity(disparity_crown_stem, test = t.test, details = TRUE)
 
-## Wilcoxon test applied to time sliced disparity with sequential comparisons, with Bonferroni correction
+## Wilcoxon test applied to time sliced disparity with sequential comparisons,
+## with Bonferroni correction
 test.dispRity(disparity_time_slices, test = wilcox.test,
               comparisons = "sequential", correction = "bonferroni")
 
@@ -730,7 +739,8 @@ This value can be pseudo-replicated (bootstrapped) to obtain a distribution of t
 However, another way to perform disparity analysis is to use the *whole distribution* rather than just a summary metric (e.g. the variances or the ranges).
 
 This is possible in the `dispRity` package by calculating disparity as a dimension-level 2 metric only!
-Let's have a look using our previous example of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.
+Let's have a look using our [previous example](#summarising-dispRity-data-plots) of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.
+
 
 ```{r}
 ## Measuring disparity as a whole distribution
@@ -807,141 +817,6 @@ In other words, when two distributions are compared, they are now compared for e
 For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50\% of the pseudo-replicates.
 Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option.
 
-## Ecological studies of disparity
-<!-- NC: I wonder if this might be better just as a "hey we can do ecology stuff too and here is a link to a demo" rather than a new section? The manual is loooooooooong so splitting some stuff out might be good? -->
-
-Disparity analyses are not restricted to palaeobiology analysis.
-This package is designed for dealing with ordinated matrices, no matter which data was used in the ordination.
-Here is an short example of disparity analysis using ecological data from Deirdre McClean (unpubl.).
-
-The dataset contains an ordinated matrix of 20 dimensions (columns) for 40 elements (rows).
-The elements are different experimental plots with discrete variations of nutrient enrichment, depth, and freshwater benthic invertebrates.
-<!-- NC: Explain a little more about what the data are here as I don't entirely get it. EG what's a treatement etc? Just a really simple explanataion is perfect -->
-
-```{r}
-## Loading the data
-data(McClean_data)
-
-## Ordinated matrix
-ordinated_matrix <- McClean_data$ordination
-
-## Treatments and depths
-treatments <- McClean_data$treatment
-depth <- McClean_data$depth
-```
-
-### Classic ecological "disparity" analysis
-
-A classical way to represent this ordinated data would be to use two dimensional plots to look at how the different experimental plots differ in their values for nutrient enrichment, depth, and freshwater benthic invertebrates. 
-<!-- NC: or similar just to make it clearer -->
-
-```{r, fig.width=6, fig.height=6}
-## Setting the colors that will represent the treatments
-cols <- sub("a", "red", treatments)
-cols <- sub("b", "blue", cols)
-## Setting the symbols that will represent the depth
-pchs <- sub(1, 16, depth)
-pchs <- as.numeric(sub(2, 17, pchs))
-
-## Graphical option
-op <- par(bty = "n")
-## A classic 2D ordination plot
-plot(ordinated_matrix[, 1:2], col = cols, pch = pchs,
-     xlab = "PC 1", ylab = "PC 2",
-     xlim = range(ordinated_matrix[, 1:2]) + c(0, 100))
-par(op)
-```
-
-This shows the distribution of the experimental plots along the two first axis of variation of the ordinated distance matrix (i.e. the first two dimensions).
-At a first glance, it seems difficult to see a clear effect of the treatments (blue or red) or the depth (rounds or triangles) as the different experimental plots with the same parameters don't seem to cluster together.
-However, this may be because this plot ignores the 18 other dimensions of the ordination!
-Additionally, these two represented dimensions do not represent a biological reality *per se*; i.e. the values on the first dimension do not represent a continuous trait (e.g. depth), instead they just represent the ordinations of correlations between the data and some factors.
-
-Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a *n*-dimensional object.
-
-### Multidimensional analysis with `dispRity`
-
-#### Splitting the data with respect to the different factors
-
-The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
-Each of these subsamples will contain a certain number of elements (i.e. a subset of the 40 experimental field plots) that have some attributes in common.
-In our example, we are going to group the elements according to their depth and treatment.
-
-```{r}
-## Creating a table that contain the elements and their attributes
-factors <- as.data.frame(matrix(data = c(treatments, depth),
-          nrow = nrow(ordinated_matrix), ncol = 2, byrow = FALSE,
-          dimnames = list(rownames(ordinated_matrix))))
-names(factors) <- c("Treat", "Depth")
-head(factors)
-```
-
-Second, let’s split the data according by depth and treatment to create the subsamples of the ordinated space by using the `custom.subsamples` function:
-
-```{r}
-## Splitting the ordinated space into four subsamples
-(customised_subsamples <- custom.subsamples(ordinated_matrix, factors))
-```
-
-#### Calculating disparity
-
-In this example, we are going to define disparity as the n-dimensional ellipsoid volume (see `?hyper.volume`).
-
-```{r}
-## Calculating disparity as the ellipsoid volume of each group
-disparity <- dispRity(customised_subsamples, metric = diagonal)
-summary(disparity)
-```
-
-We can also bootstrap the data to test the robustness of the measured disparity to outliers.
-Also, as we can see, each subsample has different numbers of elements.
-It might also be interesting to rarefy the data to have only subsamples with the same number of elements.
-
-```{r}
-## Bootstrapping the subsamples and using rarefaction
-## (i.e. only re-sampling 17 elements each time)
-bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100,
-                                 rarefaction = 17)
-```
-
-We can now run a more robust disparity analysis using the bootstrapped data:
-
-```{r}
-## Calculating the bootstrapped disparity
-disparity <- dispRity(bootstrapped_data, metric = diagonal)
-```
-
-#### Summarising and displaying the results
-
-Now let's summarise this data:
-
-```{r, fig.width=12, fig.height=6, eval=TRUE}
-## Summary table of the data
-summary(disparity)
-
-## Graphical options
-op <- par(mfrow = (c(1, 2)), bty = "n")
-
-## Plotting the bootstrapped disparity
-plot(disparity, main = "Bootstrapped", las = 2, xlab = "")
-
-## Plotting the rarefied disparity
-plot(disparity, rarefaction = 17, main = "Rarefied", las = 2, xlab = "")
-
-par(op)
-```
-
-As we can see, there seems to be no strong effect of the number of experimental plots in each subsample (i.e. the rarefied plot is really similar to the bootstrapped plot) which is a good thing!
-
-#### Testing our hypotheses
-
-Finally, we can test our hypothesis (whether the water treatment at certain depths alters invertebrate communities and composition in natural habitats) by using the `test.dispRity` function.
-<!-- Ah so this is what you are testing! Make this clearer in the intro bit to this section -->
-
-```{r}
-## Testing the effect of treatment and depth on the bootstrapped data
-summary(test.dispRity(disparity, test = aov, comparisons = "all"))
-```
 
 ## Simulating discrete morphological data
 

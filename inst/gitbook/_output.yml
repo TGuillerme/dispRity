@@ -12,5 +12,5 @@ bookdown::gitbook:
       before: |
         <li><a href="./">dispRity manual</a></li>
       after: |
-        <li><a href="https://github.com/TGuillerme/dispRity/gitbook" target="blank">Published with bookdown</a></li>
-    edit: https://github.com/TGuillerme/dispRity/gitbook/edit/master/%s
+        <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
+    edit: https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/%s

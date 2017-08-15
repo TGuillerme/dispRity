@@ -15,12 +15,11 @@ description: "dispRity R package vignette"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 # `dispRity`
 
 This is a package for measuring disparity in `R`.
-It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) into single values so they can easily be compared.
-This manual is based on the version `1.0`.
+It allows users to summarise matrices as representations as multidimensional spaces (namely from ordinated matrices from MDS, PCA, PCO, PCoA) into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
+This manual is based on the version `0.4`.
 
 ## What is `dispRity`?
 This is a package for measuring disparity in `R`.
@@ -44,8 +43,7 @@ library(dispRity)
 ```
 
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
-## Checking if Claddis is installed BUILD ONLY
-# NC: this isn't checking Claddis...
+## loading the package and setting up the start seed.
 library(dispRity)
 ## Setting the random seed for repeatability
 set.seed(123)
@@ -60,11 +58,13 @@ For the piping-hot (but potentially unstable) version, you can change the argume
 This package is not available on CRAN.
 This is mainly because some parts are still in development and that the reactivity of GitHub is better for implementing new suggestions from users.
 However, the package follows the strict (and useful!) CRAN standards via Travis.
-<!-- badges out start
+
+<!-- badges out start -->
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-badges out end   -->
+<!-- badges out end   -->
+
 ## Help
 
 If you need help with the package, hopefully the following manual will be useful.
@@ -76,8 +76,6 @@ Thus if you have suggestions or comments on on what has already been developed o
 You can cite both the package or this manual with the following citation:
 
 > Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
-
-<!-- TG: I'm gonna change that to a newest version with the submission -->
 
 Note that this citation is only temporary (but can still be used!).
 A future proper version of the latest package release, this manual and an associated methods paper should be submitted soon(ish!).

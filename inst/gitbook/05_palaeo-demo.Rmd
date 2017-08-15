@@ -10,32 +10,18 @@ output:
 
 # Palaeobiology demo: disparity-through-time and within groups
 
-This demo aims to give quick overview of the `dispRity` package (v.0.3) for palaeobiology analyses of disparity, including disparity through time analyses.
-Please refer to my [GitHub page](https://github.com/TGuillerme/dispRity) for other vignettes, namely the [`dispRity` manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html) that explains the functions in more detail.
+This demo aims to give quick overview of the `dispRity` package (v.0.4) for palaeobiology analyses of disparity, including disparity through time analyses.
 
-In brief, this package allows users to easily perform **disparity-through-time** analysis.
-This type of analysis often starts by ordinating **morphometric** or **cladistic** data into a multidimensional object hereafter called the **morphospace**.
-One might be interested in studying how the occupancy of the morphospace has changed through time by measuring a summary metric of this morphospace through time, called **disparity**.
-Disparity can then be seen as a value or a distribution of values summarising the diversity of morphologies.
-
-This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years.
+This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).
 
 ## Before starting
 
-### Installing `dispRity` 
-
-You can install this package easily if you are using the latest version of `R` and `devtools`.
-
-```{r, eval = FALSE}
-if(!require(devtools)) install.packages("devtools")
-install_github("TGuillerme/dispRity", ref = "release")
-library(dispRity)
-```
-
 ### The morphospace
 
-In this example, we are going to use a subset of the data from [@beckancient2014]. 
-This dataset contains an ordinated matrix of 50 discrete characters from mammals (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
+
+In this example, we are going to use a subset of the data from Beck and Lee (2014).
+See the [example data](#example-data) description for more details.
+Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).
 
 ```{r, fig.width=6, fig.height=6}
@@ -64,10 +50,9 @@ axisPhylo(root = 140)
 
 > You can have an even nicer looking tree if you use the `strap` package!
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 if(!require(strap)) install.packages("strap")
-library(strap)
-geoscalePhylo(BeckLee_tree, cex.tip = 0.7, cex.ts = 0.6)
+strap::geoscalePhylo(BeckLee_tree, cex.tip = 0.7, cex.ts = 0.6)
 ```
 
 ## A disparity-through-time analysis
@@ -91,8 +76,7 @@ We will also provide to the function a table containing the first and last occur
     FADLAD = BeckLee_ages))
 ```
 
-The output object is a `dispRity` object.
-For details about this object class, please refer to the [`dispRity` manual](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-manual.html).
+The output object is a `dispRity` object (see more about that [here](#The-guts-of-the-dispRity-package).
 In brief, however, `dispRity` objects are lists of different elements (i.e. disparity results, morphospace time subsamples, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the `R` console with superfluous output.
 
 ```{r}
@@ -116,11 +100,11 @@ The bootstrapping allows us to make each subsample more robust to outliers and t
 The `boot.matrix` function bootstraps the `dispRity` object and the `rarefaction` option within performs rarefaction.
 
 ```{r}
-## Bootstrapping each time subsample 100 times
-(boot_bin_morphospace <- boot.matrix(binned_morphospace, bootstraps = 100))
+## Bootstrapping each time subsample 100 times (default)
+(boot_bin_morphospace <- boot.matrix(binned_morphospace))
 
 ## Getting the minimum number of rows (i.e. taxa) in the time subsamples
-min(unlist(lapply(boot_bin_morphospace$subsamples, lapply, nrow)))
+min(size.subsamples(boot_bin_morphospace))
 
 ## Bootstrapping each time subsample 100 times and rarefying them 
 (rare_bin_morphospace <- boot.matrix(binned_morphospace, bootstraps = 100,
@@ -131,13 +115,12 @@ min(unlist(lapply(boot_bin_morphospace$subsamples, lapply, nrow)))
 
 We can now calculate the disparity within each time subsamples along with some confidence intervals generated by the pseudoreplication step above (bootstraps/rarefaction).
 Disparity can be calculated in many ways and this package allows users to come up with their own disparity metrics.
-For more details, please refer to the [`dispRity` metric vignette](http://htmlpreview.github.com/?https://github.com/TGuillerme/dispRity/blob/master/doc/dispRity-metrics.html).
+For more details, please refer to the [`dispRity` metric section](#disparity-metrics).
 
 In this example, we are going to calculate the spread of the data in each time subsample by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subsample using the `dispRity` function.
 Thus, in this example, disparity is defined by the multi-dimensional variance of each time subsample (i.e. the spread of the taxa within the morphospace).
 Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace.
-We use this here because it is a standard metric used in disparity-through-time analysis.
-<!-- NC: reference? -->
+We use this here because it is a standard metric used in disparity-through-time analysis (Wills _et al._ 1994).
 
 ```{r}
 ## Calculating disparity for the bootstrapped data
@@ -194,6 +177,3 @@ test.dispRity(rare_disparity, test = wilcox.test, comparison = "sequential",
 
 Here our results show significant changes in disparity through time between all time bins (all p-values < 0.05).
 However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.
-
-### References 
-<!-- Add these -->
