@@ -403,3 +403,12 @@ test_that("merge.subsamples", {
             ,expected_elements[[test]])
     }
 })
+
+
+test_that("size.subsamples works", {
+    data(disparity)
+    expect_equal(
+        size.subsamples(disparity)
+        , c("90"=18, "80"=22, "70"=23, "60"=21, "50"=18, "40"=15, "30"=10))
+
+})

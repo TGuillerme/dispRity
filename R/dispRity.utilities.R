@@ -606,3 +606,34 @@ merge.subsamples <- function(data, subsamples) {
         return(data)
     }
 }
+
+
+
+#' @title Size subsamples.
+#'
+#' @description Getting the size (number of elements) from each subsamples of a dispRity object.
+#'
+#' @param data A \code{dispRity} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' 
+#' ## What are the number of elements per subsamples?
+#' size.subsamples(disparity)
+#' 
+#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+#For testing
+# source("sanitizing.R")
+# source("dispRity.utilities_fun.R")
+
+# data(disparity)
+# data <- disparity
+
+size.subsamples <- function(data) {
+    ## Getting the size of subsamples
+    return(unlist(lapply(data$subsamples, function(x) nrow(x$elements))))
+}

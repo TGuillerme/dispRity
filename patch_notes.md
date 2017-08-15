@@ -5,7 +5,8 @@ Patch notes
   * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: >2sec for 5k taxa and 10k bootstraps!)
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
-  * *New* function: `merge.subsamples` for... merging subsamples!
+  * *New* utility function: `merge.subsamples` for... merging subsamples!
+  * *New* utility function: `size.subsamples` for... getting the size of subsamples in a disparity object!
   * *New* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
   * Input ordinated matrices do not need to be of maximum size `n*(n-1)`. Bigger matrices now only trigger a warning.
   * **Changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.

@@ -48,8 +48,9 @@ export(diagonal)
 
 ##disparity tests
 export(bhatt.coeff)
-#export(sequential.test)
 export(null.test)
+#export(sequential.test)
+#export(model.test)
 
 ##dispRity object utilities
 export(make.dispRity)
@@ -60,6 +61,7 @@ export(scale.dispRity)
 export(sort.dispRity)
 export(get.subsamples)
 export(merge.subsamples)
+export(size.subsamples)
 
 ##Package utilities
 export(tree.age)
