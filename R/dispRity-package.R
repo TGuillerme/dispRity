@@ -24,6 +24,20 @@
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony 
 #' @importFrom RCurl getURL url.exists 
+#' 
+#' 
+# import(ape)
+# importFrom("paleotree", "timeSliceTree")
+# importFrom("snow", "makeCluster", "stopCluster", "parLapply")
+# importFrom("geometry", "convhulln")
+# importFrom("hypervolume", "hypervolume", "estimate_bandwidth", "get_volume")
+# importFrom("ade4", "randtest", "as.randtest")
+# importFrom("grDevices", "colorRampPalette", "grey")
+# importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend")
+# importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "rnorm", "var", "median", "cmdscale")
+# importFrom("utils", "combn", "data", "capture.output")
+# importFrom("phyclust", "gen.seq.HKY")
+# importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 
 NULL
 
@@ -48,20 +62,20 @@ NULL
 #' @seealso McClean_data disparity
 NULL
 
-#' McClean dataset
-#'
-#' Example datasets from McClean (unpublished).
-#'
-#' \itemize{
-#'   \item \code{ordination} The ordinated matrix based on 40 sites and 20 dimensions
-#'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
-#'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
-#' }
-#'
-#' @format one matrix and two vectors.
-#' @name McClean_data
-#' @seealso BeckLee_data disparity
-NULL
+# #' McClean dataset
+# #'
+# #' Example datasets from McClean (unpublished).
+# #'
+# #' \itemize{
+# #'   \item \code{ordination} The ordinated matrix based on 40 sites and 20 dimensions
+# #'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
+# #'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
+# #' }
+# #'
+# #' @format one matrix and two vectors.
+# #' @name McClean_data
+# #' @seealso BeckLee_data disparity
+# NULL
 
 #' disparity
 #'

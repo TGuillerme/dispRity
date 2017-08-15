@@ -90,7 +90,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     ## alter
     alternative_hypothesis <- c("greater", "less", "two-sided")
-    check.method(alter, alternative_hypothesis, "Alternative hypothesis")
+    check.method(alter, alternative_hypothesis, "Alternative hypothesis (alter)")
 
     ## scaling
     check.class(scale, "logical")

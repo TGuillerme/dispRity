@@ -88,7 +88,7 @@
 # source("dispRity.utilities.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
 # source("time.subsamples.R") ; source("time.subsamples_fun.R")
-# source("cust.subsamples.R") ; source("cust.subsamples_fun.R")
+# source("custom.subsamples.R") ; source("custom.subsamples_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50

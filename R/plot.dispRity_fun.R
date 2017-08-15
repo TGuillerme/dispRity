@@ -473,22 +473,22 @@ transpose.box <- function(data, rarefaction) {
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
-    obs <- data_sub$obs
-    sim <- data_sub$sim
-    r0 <- c(sim, obs)
-    l0 <- max(sim) - min(sim)
-    w0 <- l0/(log(length(sim), base = 2) + 1)
-    w0 <- w0 * coeff
-    xlim0 <- range(r0) + c(-w0, w0)
-    h0 <- hist(sim, plot = FALSE, nclass = nclass)
-    y0 <- max(h0$counts)
+    
+    ## Observed data
+    observed <- data_sub$obs
+    ## Hist info
+    histogram <- data_sub$plot$hist
+    ## Plot info
+    xlim <- data_sub$plot$xlim
+    ylim <- c(0, max(data_sub$plot$hist$count))
 
-    hist(sim, plot = TRUE, nclass = nclass, xlim = xlim0, col = grey(0.8), 
-        ...)
-    lines(c(obs, obs), c(y0/2, 0))
-    points(obs, y0/2, pch = 18, cex = 2)
+    ## Plotting the simulated data
+    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
 
-##     hist(sim, plot = TRUE, nclass = nclass, xlim = xlim0, col = grey(0.8)) ; warning("DEBUG plot.randtest")
+    ## Adding the observed data
+    lines(c(observed, observed), c(ylim[2]/2, 0))
+    points(observed, ylim[2]/2, pch = 18, cex = 2)
+
+    ## Adding the legend (test results)
     legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
-
 }
