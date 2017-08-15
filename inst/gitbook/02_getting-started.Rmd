@@ -119,13 +119,15 @@ These functions allow users to either calculate the disparity through time (`dis
 **IMPORTANT**
 
 Note that `disparity.through.time` and `disparity.per.group` are wrapper functions (i.e. they incorporate lots of other functions) that allow users to run a basic disparity-through-time, or disparity among groups, analysis without too much effort.
-As such they have a lot of defaults. 
+As such they use a lot of default options. 
 These are described in the help files for the functions that are used to make the wrapper functions, and not described in the help files for `disparity.through.time` and `disparity.per.group`. 
-These defaults are perfect for **data exploration**, but for a proper analysis you should consider the **best parameters for your question and data**. 
-For example, which metric should you use? How many bootstraps do you require? What model of evolution is most appropriate if you are time slicing? Should you rarefy the data?
-See `custom.subsamples`, `boot.matrix`, `dispRity.metric`, \code{\link{summary.dispRity}}, `plot.dispRity` for more details of the defaults used in each of these functions.
-Note that any of these defaults can be changed within the `disparity.through.time` or `disparity.per.group` functions.
-<!-- NC: Add links to these sections of the manual -->
+These defaults are good enough for **data exploration**, but for a proper analysis you should consider the **best parameters for your question and data**. 
+For example, which metric should you use?
+How many bootstraps do you require?
+What model of evolution is most appropriate if you are time slicing?
+Should you rarefy the data?
+See [`time.subsamples`](#time-slicing), [`custom.subsamples`](#customised-subsamples), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
+Note that any of these default arguments can be changed within the `disparity.through.time` or `disparity.per.group` functions.
 
 ### Example data
 

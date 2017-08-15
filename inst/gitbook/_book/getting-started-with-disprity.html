@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-12">
+<meta name="date" content="2017-08-15">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -199,6 +199,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Disparity can be estimated from pretty much any matrix. Classically, however, it is measured from ordinated matrices. These matrices can be from any type of ordination (PCO, PCA, PCoA, MDS, etc.) as long as they have your element names as rows (taxa, experiments, countries etc.) and your ordination axes as columns (the dimensions of your dataset).</p>
 <div id="ordination-matrices-from-claddis" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> Ordination matrices from <code>Claddis</code></h3>
+<pre><code>## Warning: package &#39;phytools&#39; was built under R version 3.4.1</code></pre>
 <p><code>dispRity</code> package can easily take data from <code>Claddis</code> using the <code>Claddis.ordination</code> function. For this, simply input a matrix in the <code>Claddis</code> format to the function and it will automatically calculate and ordinate the distances among taxa:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(Claddis)
 

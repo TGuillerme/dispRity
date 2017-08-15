@@ -60,11 +60,11 @@ For the piping-hot (but potentially unstable) version, you can change the argume
 This package is not available on CRAN.
 This is mainly because some parts are still in development and that the reactivity of GitHub is better for implementing new suggestions from users.
 However, the package follows the strict (and useful!) CRAN standards via Travis.
-
+<!-- badges out start
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-
+badges out end   -->
 ## Help
 
 If you need help with the package, hopefully the following manual will be useful.

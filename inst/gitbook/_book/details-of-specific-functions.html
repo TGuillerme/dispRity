@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-12">
+<meta name="date" content="2017-08-15">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -482,66 +482,66 @@ disparity1 ==<span class="st"> </span>disparity2</code></pre></div>
 </colgroup>
 <thead>
 <tr class="header">
-<th>Level</th>
-<th>Name</th>
-<th>Description</th>
-<th>Source</th>
+<th align="left">Level</th>
+<th align="left">Name</th>
+<th align="left">Description</th>
+<th align="left">Source</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>3</td>
-<td><code>ellipse.volume</code><sup>1</sup></td>
-<td>The volume of the ellipsoid of the space</td>
-<td><span class="citation">[@DonohueDim]</span></td>
+<td align="left">3</td>
+<td align="left"><code>ellipse.volume</code><sup>1</sup></td>
+<td align="left">The volume of the ellipsoid of the space</td>
+<td align="left"><span class="citation">[@DonohueDim]</span></td>
 </tr>
 <tr class="even">
-<td>3</td>
-<td><code>convhull.surface</code></td>
-<td>The surface of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td align="left">3</td>
+<td align="left"><code>convhull.surface</code></td>
+<td align="left">The surface of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
 </tr>
 <tr class="odd">
-<td>3</td>
-<td><code>convhull.volume</code></td>
-<td>The volume of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td align="left">3</td>
+<td align="left"><code>convhull.volume</code></td>
+<td align="left">The volume of the convex hull formed by all the elements</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
 </tr>
 <tr class="even">
-<td>3</td>
-<td><code>hypervolume</code></td>
-<td>The volume of the ordinated space</td>
-<td><a href="https://cran.r-project.org/web/packages/hypervolume/index.html"><code>hypervolume</code></a><code>::hypervolume</code></td>
+<td align="left">3</td>
+<td align="left"><code>hypervolume</code></td>
+<td align="left">The volume of the ordinated space</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/hypervolume/index.html"><code>hypervolume</code></a><code>::hypervolume</code></td>
 </tr>
 <tr class="odd">
-<td>3</td>
-<td><code>diagonal</code></td>
-<td>The longest distance in the ordinated space (like the diagonal in two dimensions)</td>
-<td><code>dispRity</code></td>
+<td align="left">3</td>
+<td align="left"><code>diagonal</code></td>
+<td align="left">The longest distance in the ordinated space (like the diagonal in two dimensions)</td>
+<td align="left"><code>dispRity</code></td>
 </tr>
 <tr class="even">
-<td>2</td>
-<td><code>ranges</code></td>
-<td>The range of each dimension</td>
-<td><code>dispRity</code></td>
+<td align="left">2</td>
+<td align="left"><code>ranges</code></td>
+<td align="left">The range of each dimension</td>
+<td align="left"><code>dispRity</code></td>
 </tr>
 <tr class="odd">
-<td>2</td>
-<td><code>variances</code></td>
-<td>The variance of each dimension</td>
-<td><code>dispRity</code></td>
+<td align="left">2</td>
+<td align="left"><code>variances</code></td>
+<td align="left">The variance of each dimension</td>
+<td align="left"><code>dispRity</code></td>
 </tr>
 <tr class="even">
-<td>2</td>
-<td><code>centroids</code><sup>2</sup></td>
-<td>The distance between each element and the centroid of the ordinated space</td>
-<td><code>dispRity</code></td>
+<td align="left">2</td>
+<td align="left"><code>centroids</code><sup>2</sup></td>
+<td align="left">The distance between each element and the centroid of the ordinated space</td>
+<td align="left"><code>dispRity</code></td>
 </tr>
 <tr class="odd">
-<td>1</td>
-<td><code>mode.val</code></td>
-<td>The modal value</td>
-<td><code>dispRity</code></td>
+<td align="left">1</td>
+<td align="left"><code>mode.val</code></td>
+<td align="left">The modal value</td>
+<td align="left"><code>dispRity</code></td>
 </tr>
 </tbody>
 </table>
@@ -551,25 +551,25 @@ disparity1 ==<span class="st"> </span>disparity2</code></pre></div>
 <div id="equations-and-implementations" class="section level3">
 <h3><span class="header-section-number">4.4.5</span> Equations and implementations</h3>
 <p>Some of the functions described below are implemented in the <code>dispRity</code> package and do not require any other packages to calculate (<a href="https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R">see implementation here</a>).</p>
-<span class="math display">\[\begin{equation}
+\begin{equation}
     ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
-\end{equation}\]</span>
+\end{equation}
 <p>Where <em>k</em> is the number of dimensions, and <span class="math inline">\(\lambda_i\)</span> is the eigenvalue of each dimension.</p>
-<span class="math display">\[\begin{equation}
+\begin{equation}
     diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
-\end{equation}\]</span>
+\end{equation}
 <p>Where <em>k</em> is the number of dimensions.</p>
-<span class="math display">\[\begin{equation}
+\begin{equation}
     ranges = |max(k_i) - min(k_i)|
-\end{equation}\]</span>
+\end{equation}
 <p>Where <em>k</em> is the number of dimensions.</p>
-<span class="math display">\[\begin{equation}
+\begin{equation}
     variances = \sigma^{2}{k_i}
-\end{equation}\]</span>
+\end{equation}
 <p>Where <em>k</em> is the number of dimensions, and <span class="math inline">\(\sigma^{2}\)</span> is their variance.</p>
-<span class="math display">\[\begin{equation}
+\begin{equation}
     centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
-\end{equation}\]</span>
+\end{equation}
 <p>Where <em>n</em> is each element in the ordinated space, <em>k</em> is the number of dimensions, and <span class="math inline">\(Centroid_{k}\)</span> is their mean (or can be set to another value).</p>
 </div>
 <div id="using-the-different-disparity-metrics" class="section level3">
@@ -1187,9 +1187,9 @@ morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_t
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
 op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
 ## Visualising 3D spaces
-<span class="kw">require</span>(scatterplot3d)
-
-## A cube space
+<span class="kw">require</span>(scatterplot3d)</code></pre></div>
+<pre><code>## Loading required package: scatterplot3d</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A cube space
 <span class="kw">scatterplot3d</span>(<span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, runif), <span class="dt">pch =</span> <span class="dv">20</span>,
               <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,
               <span class="dt">main =</span> <span class="st">&quot;Uniform cube space&quot;</span>)

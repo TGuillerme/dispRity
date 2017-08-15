@@ -792,8 +792,8 @@ test.dispRity(disparity_centroids, test = bhatt.coeff)
 ```
 
 These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps.
-For example, when comparing the slices 120 and 80, we are effectively comparing the 5 \times 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 \times 100 distances from slice 80.
-However, this can also be problematic for some specific tests since the _n_ \times 100 distances are also pseudo-replicates and thus are still not independent.
+For example, when comparing the slices 120 and 80, we are effectively comparing the 5 $\times$ 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 $\times$ 100 distances from slice 80.
+However, this can also be problematic for some specific tests since the _n_ $\times$ 100 distances are also pseudo-replicates and thus are still not independent.
 
 A second solution is to compare the distributions to each other _for each replicate_:
 
