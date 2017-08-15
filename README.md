@@ -23,7 +23,7 @@ The following installs the latest release of dispRity (see patch notes below). F
 
 #### Vignettes
 
-See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or download the pdf version [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html)
+See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or download the pdf version [here](https://github.com/TGuillerme/dispRity/raw/master/inst/gitbook/_book/dispRity_manual.pdf).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
