@@ -10,6 +10,11 @@ branches:
 branches:
   only:
     - release
+    
+ # Devtools install
+ r_github_packages:
+    hadley/devtools
+
 
 # Code coverage
 r_packages:
