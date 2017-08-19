@@ -5,17 +5,9 @@ warnings_are_errors: false
 branches:
   except:
     - master
-
-# whitelist
-branches:
   only:
     - release
-    
- # Devtools install
- r_github_packages:
-    hadley/devtools
-
-
+ 
 # Code coverage
 r_packages:
   - covr
