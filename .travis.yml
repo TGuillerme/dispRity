@@ -6,12 +6,9 @@ warnings_are_errors: false
 branches:
   except:
     - master
-
-# whitelist
-branches:
   only:
     - release
-
+ 
 # Code coverage
 r_packages:
   - covr
