@@ -259,7 +259,6 @@ Some metrics are implemented in the package
         \texttt{ellipse.volume}$^1$ & The volume of the ellipsoid around the elements & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
         \texttt{convhull.surface} & The surface of the convex hull formed by the elements & 1 & NA & \texttt{geometry::convhulln} \\
         \texttt{convhull.volume} & The volume of the convex hull formed by the elements & 1 & NA & \texttt{geometry::convhulln} \\
-        \texttt{hypervolume} & The volume of the multidimensional space space  & 1 & NA & \texttt{hypervolume::hypervolume} \\
         \texttt{diagonal} & The longest Eucliden distance between any pair of elements & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & \texttt{dispRity::diagonal} \\
         \texttt{mode.val} & The modal value of a vector or a matrix & 1 & NA & \texttt{dispRity::mode.val}\\
         \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & \texttt{dispRity::ranges} \\
@@ -380,138 +379,186 @@ The package contains a dataset that is a subset from \cite{beckancient2014} incl
     \item \texttt{disparity}: a pre-made \disp object based on the data above.
 \end{itemize}
 
-\subsubsection{Typical disparity through type analysis}
+\subsection{Typical disparity per groups analysis}
 
 As an example, one can define their multidimensional space as being the morphospace of an ordination of the distance between discrete morphological characters for 50 mammals species \citep[from][]{beckancient2014}.
 Then, one can define disparity as the sum of the variances on each dimensions \citep{Wills1994} that will represent an aspect of the the volume of the morphospace (i.e. a large sum of variances approximates a large morphospace).
-One can then be interested in how this approximation of the volume of the morphospace changes throughout different time periods (say from the end of the Cretaceous to the end of the Palaeogene).
+One can then be interested in whether the approximation of this volume is different in the living mammals and their descendants (crown) or the fossil mammals with no living descendants (stem).
+These two groups can be defined as follow (where the integers are the row number of the species in the matrix):
 
-\texttt{disparity <- dispRity.through.time(data = BeckLee\_mat50, time = c(90, 70, 50, 30), metric = c(sum, variances))}
-+ method = discrete
-+ tree = tree
+\texttt{> mammal\_groups <- list("crown" = c(16, 19:41, 45:50), "stem" = c(1:15, 17:18, 42:44))}
+
+\noindent It is then possible to measure the disparity between the two groups as follow:
+
+\texttt{> disparity <- dispRity.per.group(data = BeckLee\_mat50, group = mammal\_groups, metric = c(sum, variances))}
 
 \noindent Note that this function is a wrapping function that is the equivalent to:
 
-\texttt{disparity <- dispRity(boot.matrix(time.subsamples(data = BeckLee\_mat50, time = c(90, 70, 50, 30))), metric = c(sum, variances))}
+\texttt{> subsamples <- custom.subsamples(data = BeckLee\_mat50, group = mammal\_groups)}\\
+\texttt{> bootstraps <- boot.matrix(subsamples)}\\
+\texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
-\noindent Which allows a finer tuning of each optional argument in each of the three functions \texttt{time.subsamples}, \texttt{boot.matrix} and \disp.
-The three arguments here are pretty self explanatory: \texttt{data = BeckLee\_mat50} is our definition of the multidimensional space, \texttt{time = c(90, 70, 50, 30)} indicates the boundaries of the different time bins and \texttt{metric = c(sum, variances)} is our definition of disparity.
+
+\noindent Which allows a finer tuning of each optional argument in each of the three functions \texttt{custom.subsamples}, \texttt{boot.matrix} and \disp.
+The three arguments here are pretty self explanatory: \texttt{data = BeckLee\_mat50} is our definition of the multidimensional space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity. 
 
 This function returns a \disp object that does not directly gives us the results (the disparity in each time bin) but rather summarises the content of the \disp object.
-To visualise the disparity values, one can use the \texttt{summary} or/and \texttt{plot} options:
 
-\texttt{summary(disparity)}
+\noindent \texttt{ ---- dispRity object ---- }\\
+\noindent \texttt{2 customised subsamples for 50 elements with 48 dimensions:}\\
+\noindent \texttt{    crown, stem.}\\
+\noindent \texttt{Data was bootstrapped 100 times (method:"full").}\\
+\noindent \texttt{Disparity was calculated as: c(sum, variances).}\\
 
-\texttt{plot(disparity)}
+\bigskip
+As indicated, the \disp object contains 2 customised subsamples (called ``crown'' and ``stem'') from a morphospace made of 48 dimensions and 50 elements.
+The \disp object also displays information on the number and method of bootstrap replicates as well as how disparity was measured.
+To visualise the actual disparity values, one can use the \texttt{summary} or/and \texttt{plot} options (table \ref{Tab:summary_group} and figure \ref{Fig:plot_group}):
 
-% The `dispRity.through.time` function calculates disparity through time, a common analysis in palaeontology.
-% This function (and the following one) uses an analysis pipeline with a lot of default parameters to make the analysis as simple as possible. 
-% Of course all the defaults can be changed if required, more on this later.
+\texttt{> summary(disparity)}
 
-% For a disparity through time analysis, you will need:
-  
-%   * An ordinated matrix (we covered that above)
-%   * A phylogenetic tree: this must be a `phylo` object (from the `ape` package) and needs a `root.time` element. To give your tree a root time (i.e. an age for the root), you can simply do `my_tree\$root.time <- my\_age`.
-%   * The required number of time subsamples (here `time = 3`)
-%   * Your favourite disparity metric (here the sum of variances)
-
-% Using the @beckancient2014 data described [above](#example-data):
-
-% ## Measuring disparity through time
-% disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
-%                                         time = 3, metric = c(sum, variances))
-% ```
-
-% This generates a `dispRity` object (see [here](#manipulating-dispRity-objects) for technical details).
-% When displayed, these `dispRity` objects provide us with information on the operations done to the matrix:
-
-% ```{r}
-% ## Print the disparity_data object
-% disparity_data
-% ```
-
-% We asked for three subsamples (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.
-
-% We can now summarise or plot the `disparity_data` object, or perform statistical tests on it (e.g. a simple `lm`): 
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrrrrrr}
+  \hline
+ & subsamples & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
+  \hline
+1 & crown &  30 & 2.00 & 1.93 & 1.87 & 1.92 & 1.95 & 1.98 \\ 
+  2 & stem &  20 & 1.72 & 1.63 & 1.53 & 1.60 & 1.66 & 1.69 \\ 
+   \hline
+\end{tabular}
+\caption{Summarising a \disp object (disparity per groups)}
+\label{Tab:summary_group}
+\end{table}
 
 
-% ```{r, fig.width=7, fig.height=7}
-% ## Summarising disparity through time
-% summary(disparity_data)
+\texttt{> plot(disparity)}
 
-% ## Plotting the results
-% plot(disparity_data, type = "continuous")
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=1\textwidth]{plot_example_group.pdf} 
+\caption{\disp plot of disparity differences between groups}
+\label{Fig:plot_group}
+\end{figure}
 
-% ## Testing for an difference among the time bins
-% disp_lm <- test.dispRity(disparity_data, test = lm, comparisons = "all")
-% summary(disp_lm)
+As we can see from the summary table and the plot, there seems to be a significant difference in morphospace volume occupation between the two groups.
+It is possible to test this hypothesis by using, for example, a non-parametric Wilcoxon test (\texttt{stats::wilcox.test}):
 
-% ## Note that ANOVA assumptions were not checked here!
-% ```
+\texttt{> test.dispRity(disparity, test = wilcox.test)}
 
-% Please refer to the [specific tutorials](#specific-tutorial) for (much!) more information on the nuts and bolts of the package.
-% You can also directly explore the specific function help files within R and navigate to related functions.
+\noindent \texttt{[[1]]}\\
+\noindent \texttt{             statistic}\\
+\noindent \texttt{crown : stem     10000}\\
+\noindent \texttt{ }\\
+\noindent \texttt{[[2]]}\\
+\noindent \texttt{                  p.value}\\
+\noindent \texttt{crown : stem 2.562144e-34}\\
+
+\bigskip
+As indicated by the p.value, there is a significant difference in disparity between both groups.
+
+\subsubsection{Typical disparity through type analysis}
+
+Another type of disparity analysis can be disparity through time analysis.
+Using the same definition of the multidimensional space and disparity as in the previous example, one can be interested in how disparity changed through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
+
+\texttt{> time\_bins <- c(100.5, 66, 56, 33.9)}
+
+It is then possible to measure disparity through time using the following function:
+
+\texttt{> disparity <- dispRity.through.time(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, metric = c(sum, variances))}
+
+\noindent Note that this function is a wrapping function that is the equivalent to:
+
+\texttt{> subsamples <- time.subsamples(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins)}\\
+\texttt{> bootstraps <- boot.matrix(subsamples)}\\
+\texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
+
+\noindent Which allows a finer tuning of each optional argument in each of the three functions \texttt{time.subsamples}, \texttt{boot.matrix} and \disp.
+The arguments \texttt{data = BeckLee\_mat50} and \texttt{metric = c(sum, variances)} are the same as in the example above.
+However, in this type of analysis, one also needs to have additional arguments: the \texttt{time = time\_bins} indicates the boundaries of the different time bins and the \texttt{tree = BeckLee\_tree} argument provides information on the age of each element.
+
+Again, the resulting \disp object can be summarised and plotted (table \ref{Tab:summary_time} and figure \ref{Fig:plot_time}):
+
+\texttt{> summary(disparity)}
+
+% latex table generated in R 3.4.1 by xtable 1.8-2 package
+% Mon Aug 21 12:21:36 2017
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrrrrrr}
+  \hline
+ & subsamples & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
+  \hline
+1 & 100.5 - 66 &  15 & 1.67 & 1.55 & 1.40 & 1.51 & 1.58 & 1.65 \\ 
+  2 & 66 - 56 &   9 & 1.88 & 1.69 & 1.43 & 1.63 & 1.77 & 1.83 \\ 
+  3 & 56 - 33.9 &  13 & 1.96 & 1.83 & 1.62 & 1.77 & 1.86 & 1.90 \\ 
+   \hline
+\end{tabular}
+\caption{Summarising a \disp object (disparity through time)}
+\label{Tab:summary_time}
+\end{table}
+
+\texttt{> plot(disparity, type = 'countinuous')}
+
+\noindent Note that many plot options specific to \disp objects are available such as plotting disparity in a ``continuous'' fashion (inferring disparity between the time bins).
+
+\begin{figure}[!htbp]
+\centering
+   \includegraphics[width=1\textwidth]{plot_example_time.pdf} 
+\caption{\disp plot of disparity through time}
+\label{Fig:plot_time}
+\end{figure}
+
+From the plot and the summary, disparity seems to increase through time from the Cretaceous to the Eocene. Similarly to the example above, it is also possible to statistically test this hypothesis by running a simple ANOVA for example (Table \ref{Tab:anova}): 
+
+\texttt{> anova(test.dispRity(disparity, test = lm, comparisons = "all"))}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrrrr}
+  \hline
+ & Df & Sum Sq & Mean Sq & F value & Pr($>$F) \\ 
+  \hline
+subsamples & 2 & 3.14 & 1.57 & 177.84 & 0.0000 \\ 
+  Residuals & 297 & 2.62 & 0.01 &  &  \\ 
+   \hline
+\end{tabular}
+\caption{Anova performed on a \disp object}
+\label{Tab:anova}
+\end{table}
 
 
-\subsection{Typical disparity per groups analysis}
+\section{Additional informations}
+\subsection{Manuals and vignette}
+Supplementary information about the package is readily available on the project page \url{https://TGuillerme/dispRity}.
+Additionally, information concerning each functions can be found in R in the individual function manuals an a vignette with more detailed information is available online at \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}.
+This vignette contains substantial information on the functionalities of the package not described in this succinct description.
+It also contains a more detailed tutorial of a ``classic'' disparity analysis in palaeobiology as well as an introduction to the use of this package in ecology or other disciplines. 
 
-% The `dispRity.per.group` function is used if you are interested in looking at disparity among groups rather than through time.
-% For example, you could ask if there is a difference in disparity between two groups?
+\subsection{Data simulations}
+This package also contains a series of simulation functionality for generating random discrete morphological matrices (\texttt{sim.morpho}) or random multidimensional spaces (\texttt{space.maker}).
+This functions are based on a similar modular architecture as the \disp functions allowing users to provide their own distribution descriptions as function as parameters for the simulation.
+For example \texttt{stats::rnorm} can be provided for drawing normal characters rates with \texttt{sim.morpho} or normally distributed multidimensional space with \texttt{space.maker}.
+The discrete morphological data simulations are based on protocols from \cite{GuillermeCooper}, \cite{OReilly20160081} and \cite{puttick2017uncertain}. 
+The multidimensional space simulations are based on the methods from \cite{diaz2016global}.
+Both functionalities are described in more details in the package vignette.
 
-% To perform such an analysis, you will need:
- 
-%  * An matrix with rows as elements and columns as dimensions (always!)
-%  * A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example `list("a" = c(1,2), "b" = c(3,4))` will create a group _a_ containing elements 1 and 2 from the matrix and a group _b_ containing elements 3 and 4. Note that elements can be present in multiple groups at once.
-%  * Your favourite disparity metric (here the sum of variances)
-
-% Using the @beckancient2014 data described [above](#example-data):
-
-% ```{r}
-% ## Creating the two groups (crown versus stem) as a list
-% mammal_groups <- list("crown" = c(16, 19:41, 45:50),
-%                       "stem" = c(1:15, 17:18, 42:44))
-
-% ## Measuring disparity for each group
-% disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,
-%                                      metric = c(sum, variances))
-% ```
-
-% We can display the disparity of both groups by simply looking at the output variable (`disparity_data`) and then summarising the `disparity_data` object and plotting it, and/or by performing a statistical test to compare disparity across the groups (here a Wilcoxon test).
-
-% ```{r, fig.width=7, fig.height=7}
-% ## Print the disparity_data object
-% disparity_data
-
-% ## Summarising disparity in the different groups
-% summary(disparity_data)
-
-% ## Plotting the results
-% plot(disparity_data)
-
-% ## Testing for a difference between the groups
-% test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
-% ```
+\subsection{Further directions}
+Further functionalities and improvement on current functionalities will be implemented in future versions.
+In fact, optimised architecture and C implementations are being currently developed for faster calculations and lower memory footprints for most computational heavy functions (e.g. \disp or \texttt{time.subsamples}).
+New functionalities currently being developed will include time sequential linear models (for accurately measuring directionality in disparity changes between time slices) or mode of disparity evolution testing (allowing to fit different models such as Brownian Motion or Ornstein-Uhlenbeck to disparity curves).
 
 
 
-
-\section{Supplementary informations}
-Supplementary information concerning each function's functionalities can be found in R in the individual function manuals as well as in the vignettes available online at @@@.
-
-
--Miscellaneous (maybe conclusion)
-Simulations
-Future directions
+\section{Conclusion}
+The \disp package is based on a highly modular architecture allowing researchers to simply define both their multidimensional space and their disparity metric for efficiently analysing multivariate data.
+The \disp object allows to easily pipeline disparity analysis from the data input (the matrix) to publication standard results (tables, plots, hypothesis testing).
+With the help of this package, researchers will thus be able to run multivariate analysis in an easy way while still allowing a maximum of plasticity necessary to the specificity of such analysis.
 
 
-
-
-Conclusion
-
-
-% \section{Data availability and reproducibility}
-% Data are available on Dryad or Figshare.
-% Code for reproducing the analyses is available on GitHub (\url{github.com/TGuillerme/SpatioTemporal_Disparity}).
+\section{Data availability and reproducibility}
+All the code and the data for using the package and it's vignette examples is readily available in the package or on GitHub \url{github.com/TGuillerme/dispRity}.
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging the development of this package and helping for the redaction of this paper and the package manuals.
