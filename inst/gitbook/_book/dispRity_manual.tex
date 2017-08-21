@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-08-15}
+  \date{2017-08-21}
 
 \usepackage{booktabs}
 
@@ -1557,64 +1557,19 @@ The volume of the convex hull formed by all the elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
 \href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln}\strut
 \end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{hypervolume}\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The volume of the ordinated space\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\href{https://cran.r-project.org/web/packages/hypervolume/index.html}{\texttt{hypervolume}}\texttt{::hypervolume}\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{diagonal}\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The longest distance in the ordinated space (like the diagonal in two
-dimensions)\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\texttt{dispRity}\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{ranges}\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The range of each dimension\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\texttt{dispRity}\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{variances}\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The variance of each dimension\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\texttt{dispRity}\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{centroids}2\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The distance between each element and the centroid of the ordinated
-space\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\texttt{dispRity}\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{mode.val}\strut
-\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The modal value\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\texttt{dispRity}\strut
-\end{minipage}\tabularnewline
 \bottomrule
 \end{longtable}
+
+1 \textbar{} \texttt{diagonal} \textbar{} The longest distance in the
+ordinated space (like the diagonal in two dimensions) \textbar{}
+\texttt{dispRity} \textbar{} 2 \textbar{} \texttt{ranges} \textbar{} The
+range of each dimension \textbar{} \texttt{dispRity} \textbar{} 2
+\textbar{} \texttt{variances} \textbar{} The variance of each dimension
+\textbar{} \texttt{dispRity} \textbar{} 2 \textbar{} \texttt{centroids}2
+\textbar{} The distance between each element and the centroid of the
+ordinated space \textbar{} \texttt{dispRity} \textbar{} 1 \textbar{}
+\texttt{mode.val} \textbar{} The modal value \textbar{}
+\texttt{dispRity} \textbar{}
 
 1: This function uses an estimation of the eigenvalue that only works
 for MDS or PCoA ordinations (not PCA).
@@ -1689,9 +1644,9 @@ We will use this simulated space to demonstrate the different metrics.
 \subsubsection{Volumes and surface
 metrics}\label{volumes-and-surface-metrics}
 
-The functions \texttt{ellipse.volume}, \texttt{convhull.surface},
-\texttt{convhull.volume} and \texttt{hyper.volume} all measure the
-surface or the volume of the ordinated space occupied:
+The functions \texttt{ellipse.volume}, \texttt{convhull.surface} and
+\texttt{convhull.volume} all measure the surface or the volume of the
+ordinated space occupied:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1736,34 +1691,7 @@ object, this operation is the equivalent of
 \end{verbatim}
 
 The convex hull functions make a (good) estimation of the
-multidimensional properties of the ordinated space. For the full and
-correct calculation of the volume of the ordinated space, it is possible
-to use the \texttt{hyper.volume} function that has more options but
-takes longer to calculate.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{## Calculating the true multidimensional volume}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ hyper.volume))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning in hypervolume::hypervolume(matrix, method = method, ...): Log number of observations (1.61) is less than or equal to the number of dimensions (4).
-## You may not have enough data to accurately estimate a hypervolume with this dimensionality.
-## Consider reducing the dimensionality of the analysis.
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in hypervolume::hypervolume(matrix, method = method, ...): Log number of observations (2.30) is less than or equal to the number of dimensions (5).
-## You may not have enough data to accurately estimate a hypervolume with this dimensionality.
-## Consider reducing the dimensionality of the analysis.
-\end{verbatim}
-
-\begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 408.2
-\end{verbatim}
+multidimensional properties of the ordinated space.
 
 \begin{quote}
 Cautionary note: measuring volumes in a high number of dimensions can be
@@ -2015,10 +1943,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 2.823     2.295 1.292 2.039 2.598 2.829
-## 2         80 19 3.233     3.079 2.834 2.996 3.138 3.278
-## 3         40 15 3.421     3.211 2.909 3.103 3.309 3.518
-## 4          0 10 4.055     3.684 3.247 3.557 3.783 3.940
+## 1        120  5 2.823     2.341 1.376 1.964 2.582 2.823
+## 2         80 19 3.233     3.064 2.790 2.957 3.152 3.224
+## 3         40 15 3.421     3.197 2.771 3.034 3.313 3.506
+## 4          0 10 4.055     3.664 3.282 3.565 3.788 3.924
 \end{verbatim}
 
 Information about the number of elements in each subsample and the
@@ -2033,12 +1961,12 @@ specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1      crown 30 1.995     1.926 1.863 1.912 1.948 1.965
-## 2      crown 29    NA     1.931 1.878 1.909 1.944 1.967
-## 3      crown 28    NA     1.931 1.882 1.908 1.948 1.978
-## 4      crown 27    NA     1.930 1.859 1.908 1.946 1.966
-## 5      crown 26    NA     1.928 1.867 1.907 1.948 1.978
-## 6      crown 25    NA     1.934 1.853 1.904 1.948 1.974
+## 1      crown 30 1.995     1.930 1.866 1.909 1.950 1.970
+## 2      crown 29    NA     1.932 1.871 1.915 1.953 1.974
+## 3      crown 28    NA     1.926 1.852 1.903 1.942 1.978
+## 4      crown 27    NA     1.935 1.860 1.908 1.954 1.982
+## 5      crown 26    NA     1.931 1.859 1.908 1.953 1.977
+## 6      crown 25    NA     1.933 1.855 1.909 1.954 1.978
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2069,10 +1997,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.sd    6%   94%
-## 1        120  5 2.823 0.398 1.658 2.705
-## 2         80 19 3.233 0.116 2.896 3.243
-## 3         40 15 3.421 0.161 2.967 3.485
-## 4          0 10 4.055 0.184 3.342 3.907
+## 1        120  5 2.823 0.404 1.658 2.672
+## 2         80 19 3.233 0.121 2.841 3.203
+## 3         40 15 3.421 0.201 2.886 3.452
+## 4          0 10 4.055 0.176 3.423 3.889
 \end{verbatim}
 
 \begin{Shaded}
@@ -2092,10 +2020,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsamples  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1        120  5 2.82292   2.29498 1.29247 2.03886 2.59781 2.82881
-## 2         80 19 3.23312   3.07949 2.83426 2.99627 3.13758 3.27800
-## 3         40 15 3.42091   3.21071 2.90858 3.10280 3.30911 3.51829
-## 4          0 10 4.05457   3.68433 3.24678 3.55676 3.78275 3.93967
+## 1        120  5 2.82292   2.34070 1.37637 1.96358 2.58235 2.82292
+## 2         80 19 3.23312   3.06388 2.78953 2.95651 3.15168 3.22359
+## 3         40 15 3.42091   3.19699 2.77094 3.03428 3.31260 3.50645
+## 4          0 10 4.05457   3.66433 3.28211 3.56532 3.78844 3.92372
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2166,7 +2094,7 @@ the results for a certain number of elements) by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-48-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-47-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2197,7 +2125,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-49-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-48-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2226,7 +2154,7 @@ central tendency.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2257,7 +2185,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2280,7 +2208,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2353,15 +2281,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##              statistic
-## crown : stem  55.60162
+## crown : stem  57.80615
 ## 
 ## [[2]]
 ##              parameter
-## crown : stem  164.6932
+## crown : stem  168.7267
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 1.201122e-108
+## crown : stem 3.927248e-113
 \end{verbatim}
 
 \begin{Shaded}
@@ -2378,13 +2306,13 @@ Here we are using the variables generated in the
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 55.602, df = 164.69, p-value < 2.2e-16
+## t = 57.806, df = 168.73, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2849688 0.3059530
+##  0.2843010 0.3044058
 ## sample estimates:
 ## mean of x mean of y 
-##  1.926163  1.630702
+##  1.926709  1.632356
 \end{verbatim}
 
 \begin{Shaded}
@@ -2399,15 +2327,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##          statistic
-## 120 : 80        13
-## 80 : 40       2497
-## 40 : 0         426
+## 120 : 80        30
+## 80 : 40       2683
+## 40 : 0         333
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 1.130227e-33
-## 80 : 40  2.904335e-09
-## 40 : 0   1.624453e-28
+## 120 : 80 1.878222e-33
+## 80 : 40  4.538271e-08
+## 40 : 0   1.224822e-29
 \end{verbatim}
 
 \begin{Shaded}
@@ -2422,7 +2350,7 @@ Here we are using the variables generated in the
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.4195376
+## 80 - 40 : 40 - 0     0.3961442
 \end{verbatim}
 
 It is also possible to apply some more \emph{complex} tests that have
@@ -2446,7 +2374,7 @@ The results can then be analysed as usual using the associated
 ## 
 ## Coefficients:
 ##   (Intercept)  subsamples120   subsamples40   subsamples80  
-##        3.6571        -1.4046        -0.4481        -0.5863
+##        3.6607        -1.4176        -0.4820        -0.6138
 \end{verbatim}
 
 \begin{Shaded}
@@ -2474,20 +2402,20 @@ The results can then be analysed as usual using the associated
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.26522 -0.10976  0.01515  0.13109  0.58161 
+## -1.32553 -0.12305  0.02008  0.14801  0.59102 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)    3.65712    0.02406  151.99   <2e-16 ***
-## subsamples120 -1.40459    0.03403  -41.28   <2e-16 ***
-## subsamples40  -0.44812    0.03403  -13.17   <2e-16 ***
-## subsamples80  -0.58634    0.03403  -17.23   <2e-16 ***
+## (Intercept)    3.66072    0.02497  146.60   <2e-16 ***
+## subsamples120 -1.41761    0.03531  -40.14   <2e-16 ***
+## subsamples40  -0.48195    0.03531  -13.65   <2e-16 ***
+## subsamples80  -0.61382    0.03531  -17.38   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2406 on 396 degrees of freedom
-## Multiple R-squared:  0.818,  Adjusted R-squared:  0.8166 
-## F-statistic: 593.1 on 3 and 396 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.2497 on 396 degrees of freedom
+## Multiple R-squared:  0.808,  Adjusted R-squared:  0.8066 
+## F-statistic: 555.6 on 3 and 396 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 Of course, due to the modular design of the package, tests can always be
@@ -2549,10 +2477,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsamples  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1        120  5      1.508     1.324 0.536 1.069 1.562 1.868
-## 2         80 19      1.790     1.702 1.393 1.597 1.815 1.943
-## 3         40 15      1.719     1.703 1.387 1.581 1.857 2.076
-## 4          0 10      1.910     1.807 1.366 1.700 1.971 2.085
+## 1        120  5      1.508     1.313 0.690 1.109 1.554 1.843
+## 2         80 19      1.790     1.692 1.373 1.589 1.813 1.942
+## 3         40 15      1.719     1.700 1.321 1.564 1.860 2.053
+## 4          0 10      1.910     1.815 1.390 1.705 1.961 2.096
 \end{verbatim}
 
 \begin{Shaded}
@@ -2564,10 +2492,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 1.508     1.354 0.508 0.915 1.481 1.615
-## 2         80 19 1.790     1.703 1.581 1.664 1.738 1.794
-## 3         40 15 1.719     1.706 1.545 1.646 1.761 1.832
-## 4          0 10 1.910     1.809 1.594 1.784 1.857 1.940
+## 1        120  5 1.508     1.354 0.690 0.883 1.475 1.508
+## 2         80 19 1.790     1.690 1.577 1.645 1.734 1.782
+## 3         40 15 1.719     1.696 1.559 1.648 1.755 1.824
+## 4          0 10 1.910     1.818 1.579 1.786 1.860 1.921
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -2591,7 +2519,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2612,12 +2540,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80  0.15380832
-## 120 : 40  0.23690683
-## 120 : 0   0.09196152
-## 80 : 40   0.92367172
-## 80 : 0    0.46576289
-## 40 : 0    0.65992821
+## 120 : 80  0.02645751
+## 120 : 40  0.07348469
+## 120 : 0   0.03162278
+## 80 : 40   0.91611371
+## 80 : 0    0.46010984
+## 40 : 0    0.62247224
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -2641,12 +2569,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.6401042
-## 120 : 40   0.6402923
-## 120 : 0    0.5787247
-## 80 : 40    0.9423481
-## 80 : 0     0.8444910
-## 40 : 0     0.9392977
+## 120 : 80   0.6565552
+## 120 : 40   0.6767954
+## 120 : 0    0.5410092
+## 80 : 40    0.9355145
+## 80 : 0     0.8571521
+## 40 : 0     0.9303364
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -2669,13 +2597,13 @@ A second solution is to compare the distributions to each other
 \end{Shaded}
 
 \begin{verbatim}
-##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2534144 0.0000000 0.1450953 0.3554093 0.5615906
-## 120 : 40   0.2726082 0.0000000 0.1632993 0.3942394 0.6435771
-## 120 : 0    0.2172550 0.0000000 0.0000000 0.3464102 0.5913591
-## 80 : 40    0.6016956 0.3097953 0.4779726 0.7208207 0.8306227
-## 80 : 0     0.4770117 0.1382736 0.3964076 0.5772107 0.7169318
-## 40 : 0     0.5327868 0.1724549 0.3887699 0.6761873 0.8781747
+##          bhatt.coeff       2.5%       25%       75%     97.5%
+## 120 : 80   0.2818787 0.00000000 0.1450953 0.4304156 0.6375038
+## 120 : 40   0.3195364 0.00000000 0.2000000 0.4238587 0.7079195
+## 120 : 0    0.2427199 0.00000000 0.1500000 0.3464102 0.5464102
+## 80 : 40    0.6168602 0.34464773 0.5178144 0.7152871 0.8620129
+## 80 : 0     0.4666682 0.04873397 0.3547815 0.6142885 0.7343247
+## 40 : 0     0.5410387 0.19542869 0.4302200 0.6531298 0.8145697
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -2853,7 +2781,7 @@ distributions!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3204,7 +3132,7 @@ through time (for this dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -3218,7 +3146,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -3514,7 +3442,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -3677,7 +3605,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -3696,7 +3624,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -3830,7 +3758,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -3908,7 +3836,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3919,7 +3847,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.

@@ -344,7 +344,7 @@ Level | Name | Description | Source |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
-1 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |
+<!-- 1 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |-->
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
 2 | `variances` | The variance of each dimension | `dispRity` |
@@ -398,7 +398,7 @@ dummy_space <- space.maker(10, 5, rnorm)
 We will use this simulated space to demonstrate the different metrics.
 
 #### Volumes and surface metrics
-The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `hyper.volume` all measure the surface or the volume of the ordinated space occupied:
+The functions `ellipse.volume`, `convhull.surface` and `convhull.volume`  all measure the surface or the volume of the ordinated space occupied:
 
 ```{r}
 ## Calculating the ellipsoid volume
@@ -415,13 +415,7 @@ summary(dispRity(dummy_space, metric = convhull.volume))
 ```
 
 The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space.
-For the full and correct calculation of the volume of the ordinated space, it is possible to use the `hyper.volume` function that has more options but takes longer to calculate.
 
-```{r}
-## Calculating the true multidimensional volume
-summary(dispRity(dummy_space, metric = hyper.volume))
-
-```
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values.
 
 #### Ranges, variances and diagonal
