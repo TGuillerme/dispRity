@@ -12,7 +12,6 @@ Imports:
   ade4,
   geometry,
   grDevices,
-  hypervolume,
   paleotree,
   phangorn,
   phyclust,
