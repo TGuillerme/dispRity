@@ -1,5 +1,6 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume hyper.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun
+# hyper.volume
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -27,11 +28,11 @@
 #'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive!
 #'      }
-#'   \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
-#'      \itemize{
-#'          \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
-#'          \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
-#'      }
+#   \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
+#      \itemize{
+#          \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
+#          \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
+#      }
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
@@ -81,8 +82,8 @@
 #' ## Convex hull volume of a matrix
 #' convhull.volume(dummy_matrix)
 #' 
-#' ## Matrix hypervolume
-#' hyper.volume(dummy_matrix)
+# ## Matrix hypervolume
+# hyper.volume(dummy_matrix)
 #' 
 #' ## Matrix diagonal
 #' diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
@@ -183,32 +184,18 @@ convhull.volume <- function(matrix) {
 }
 
 ## Calculate the hypervolume using hypervolume::hypervolume
-hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
-    ## Calculate the volume
-    output <- utils::capture.output(volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method, ...)))
-    # volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method)) ; warning("DEBUG hyper.volume")
-    names(volume) <- NULL
+# hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
+#     ## Calculate the volume
+#     output <- utils::capture.output(volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method, ...)))
+#     # volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method)) ; warning("DEBUG hyper.volume")
+#     names(volume) <- NULL
 
-    if(print.output) {
-        cat(output)
-    }
+#     if(print.output) {
+#         cat(output)
+#     }
 
-    return(volume)
-}
-
-# # Hypervolume testing
-# data <- space.maker(20, 5, rnorm)
-# # estimating the bandwith
-# bw <- estimate_bandwidth(data,method="silverman")
-# # Calculating the hyper.volume (with 1000 replicates)
-# vol <- hypervolume(data, repsperpoint = 1000, bandwidth = bw, quantile = 0.95)
-
-# # Calculate the ellipsoid perimeter of an eigen matrix
-# ellipse.perime <- function(matrix)
-
-# # Calculate the volume of an eigen matrix (modified from Blonder et al 2014, Macroecological methods) #http://onlinelibrary.wiley.com/doi/10.1111/geb.12146/pdf
-# hyper.volume <- function(matrix)
-
+#     return(volume)
+# }
 
 # Hypervolume distances
 # hypervolume_distance

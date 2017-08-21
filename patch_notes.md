@@ -1,7 +1,8 @@
 Patch notes
 ----
-* 2017/08/15 - v0.4.0 *users are friends*
+* 2017/08/21 - v0.4.0 *users are friends*
   * Entirely rewritten manual (in GitBook)!
+  * **Removed** `hyper.volume` metric for dependencies reasons
   * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: >2sec for 5k taxa and 10k bootstraps!)
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)

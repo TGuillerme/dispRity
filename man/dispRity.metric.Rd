@@ -10,7 +10,6 @@
 \alias{ellipse.volume}
 \alias{convhull.surface}
 \alias{convhull.volume}
-\alias{hyper.volume}
 \alias{diagonal}
 \alias{dimension.level3.fun}
 \alias{dimension.level2.fun}
@@ -45,11 +44,6 @@ The currently implemented dimension-level 1 metrics are:
      \itemize{
          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
          \item WARNING: both \code{convhull} functions can be computationally intensive!
-     }
-  \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
-     \itemize{
-         \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
-         \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
      }
   \item \code{diagonal}: calculates the longest distance in the ordinated space.
      \itemize{
@@ -100,8 +94,6 @@ convhull.surface(dummy_matrix)
 ## Convex hull volume of a matrix
 convhull.volume(dummy_matrix)
 
-## Matrix hypervolume
-hyper.volume(dummy_matrix)
 
 ## Matrix diagonal
 diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal

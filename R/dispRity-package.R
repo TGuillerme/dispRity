@@ -14,7 +14,7 @@
 #' @importFrom paleotree timeSliceTree 
 #' @importFrom snow makeCluster stopCluster parLapply 
 #' @importFrom geometry convhulln 
-#' @importFrom hypervolume hypervolume estimate_bandwidth get_volume 
+# @importFrom hypervolume hypervolume estimate_bandwidth get_volume 
 #' @importFrom ade4 randtest as.randtest 
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 

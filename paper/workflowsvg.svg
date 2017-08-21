@@ -278,10 +278,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.6743285"
-     inkscape:cx="352.34514"
+     inkscape:cx="265.146"
      inkscape:cy="768.79951"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer2"
      showgrid="false"
      showguides="false"
      inkscape:guide-bbox="true"
@@ -402,7 +402,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -826,17 +826,17 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:100%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="298.90414"
-       y="161.48653"
+       y="155.51398"
        id="text11981-8"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          x="298.90414"
-         y="161.48653"
+         y="155.51398"
          id="tspan11985-8"
-         style="font-size:15px;line-height:100%;text-align:center;text-anchor:middle">ordinated</tspan><tspan
+         style="font-size:15px;line-height:100%;text-align:center;text-anchor:middle" /><tspan
          sodipodi:role="line"
          x="298.90414"
-         y="176.48653"
+         y="170.51398"
          id="tspan11987-4"
          style="font-size:15px;line-height:100%;text-align:center;text-anchor:middle">matrix</tspan></text>
     <text
@@ -996,13 +996,13 @@
          y="463.64774"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:sans-serif;-inkscape-font-specification:sans-serif">test</tspan></text>
     <rect
-       style="opacity:1;fill:#d9d9d9;fill-opacity:1;stroke:#a6a6a6;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#d9d9d9;fill-opacity:1;stroke:#a6a6a6;stroke-width:1.01402009;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect12749"
-       width="95.050095"
-       height="41.583416"
-       x="140.08366"
-       y="142.68944"
-       ry="11.880977" />
+       width="95.036072"
+       height="42.763905"
+       x="140.09067"
+       y="141.50194"
+       ry="12.218259" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:100%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -1157,5 +1157,17 @@
          y="481.84836"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:100%;font-family:courier;-inkscape-font-specification:courier"
          id="tspan12578-8-5-6">test.dispRity</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="149.09526"
+       y="139.6225"
+       id="text12431-17"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan12433-6"
+         x="149.09526"
+         y="139.6225"
+         style="font-size:12.5px">Ordinations:</tspan></text>
   </g>
 </svg>

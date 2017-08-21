@@ -290,38 +290,38 @@ test_that("convhull.volume metric", {
 })
 
 
-test_that("hyper.volume metric", {
+# test_that("hyper.volume metric", {
 
-    #Create a small dummy matrix
-    set.seed(1)
-    matrix <- space.maker(5, 3, rnorm)
+#     #Create a small dummy matrix
+#     set.seed(1)
+#     matrix <- space.maker(5, 3, rnorm)
 
-    #errors
-    expect_warning(
-    expect_error(
-        hyper.volume(1)
-        ))
-    expect_error(
-        hyper.volume("a")
-        )
-    expect_error(
-        hyper.volume(list(matrix))
-        )
+#     #errors
+#     expect_warning(
+#     expect_error(
+#         hyper.volume(1)
+#         ))
+#     expect_error(
+#         hyper.volume("a")
+#         )
+#     expect_error(
+#         hyper.volume(list(matrix))
+#         )
 
-    #Works fine!
-    output <- capture.output(
-    expect_warning(
-        volume <- hyper.volume(matrix, verbose = FALSE)
-        )
-    )
+#     #Works fine!
+#     output <- capture.output(
+#     expect_warning(
+#         volume <- hyper.volume(matrix, verbose = FALSE)
+#         )
+#     )
 
-    expect_is(
-        volume
-        ,"numeric")
-    expect_equal(
-        round(volume, 3)
-        ,91.863)
-})
+#     expect_is(
+#         volume
+#         ,"numeric")
+#     expect_equal(
+#         round(volume, 3)
+#         ,91.863)
+# })
 
 test_that("diagonal", {
     matrix <- matrix(seq(1:25), 5, 5)
