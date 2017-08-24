@@ -77,5 +77,7 @@ You can cite both the package or this manual with the following citation:
 
 > Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
 
+<!-- > Guillerme, T. & Cooper, N. (2016). The dispRity R package manual. Fighsare XXXX -->
+
 Note that this citation is only temporary (but can still be used!).
 A future proper version of the latest package release, this manual and an associated methods paper should be submitted soon(ish!).
