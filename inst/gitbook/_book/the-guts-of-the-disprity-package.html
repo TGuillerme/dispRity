@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-23">
+<meta name="date" content="2017-08-24">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -151,6 +151,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>5.1</b> Manipulating <code>dispRity</code> objects</a></li>
 <li class="chapter" data-level="5.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>5.2</b> <code>dispRity</code> utilities</a><ul>
 <li class="chapter" data-level="5.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>5.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>5.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>5.3.1</b> <code>$matrix</code></a></li>
+<li class="chapter" data-level="5.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>5.3.2</b> <code>$call</code></a></li>
+<li class="chapter" data-level="5.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsamples"><i class="fa fa-check"></i><b>5.3.3</b> <code>$subsamples</code></a></li>
+<li class="chapter" data-level="5.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>5.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>6</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
@@ -315,6 +321,71 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 
 ## Customised sorting
 <span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</code></pre></div>
+</div>
+</div>
+</div>
+<div id="the-disprity-object-content" class="section level2">
+<h2><span class="header-section-number">5.3</span> The <code>dispRity</code> object content</h2>
+<p>The functions above are utilities to easily and safely access different elements in the <code>dispRity</code> object. Alternatively, of course, each elements can be accessed manually. Here is an explanation on how it works. The <code>dispRity</code> object is a <code>list</code> of two to four elements, each of which are detailed below:</p>
+<ul>
+<li><code>$matrix</code>: an object of class <code>matrix</code>, the full multidimensional space.</li>
+<li><code>$call</code>: an object of class <code>list</code> containing information on the <code>dispRity</code> object content.</li>
+<li><code>$subsamples</code>: an object of class <code>list</code> containing the subsamples of the multidimensional space.</li>
+<li><code>$disparity</code>: an object of class <code>list</code> containing the disparity values.</li>
+</ul>
+<p>The <code>dispRity</code> object is loosely based on <code>C</code> structure objects. In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via “pointers” to only a certain number of elements and/or dimensions of this matrix. This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix is present in the <code>R</code> environment rather than multiple copies of it for each subsample.</p>
+<div id="matrix" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> <code>$matrix</code></h3>
+<p>This is the multidimensional space, stored in the <code>R</code> environment as a <code>matrix</code> object. It requires row names but not column names. By default, if the row names are missing, <code>dispRity</code> function will arbitrarily generate them in numeric order (i.e. <code>rownames(matrix) &lt;- 1:nrow(matrix)</code>). This element of the <code>dispRity</code> object is never modified.</p>
+</div>
+<div id="call" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> <code>$call</code></h3>
+<p>This element contains the information on the <code>dispRity</code> object content. It is a <code>list</code> that can contain the following:</p>
+<ul>
+<li><code>$call$subsamples</code>: a vector of <code>character</code> with information on the subsamples type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>) and their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;punctuated&quot;</code>, <code>&quot;gradual&quot;</code>). This element generated only once via <code>time.subsamples()</code> and <code>custom.subsamples()</code>.</li>
+<li><code>$call$dimensions</code>: either a single <code>numeric</code> value indicating how many dimensions to use or a vector of <code>numeric</code> values indicating which specific dimensions to use. This element is by default the number of columns in <code>$matrix</code> but can be modified through <code>boot.matrix()</code> or <code>dispRity()</code>.</li>
+<li><code>$call$bootstrap</code>: this is a <code>list</code> containing three elements:
+<ul>
+<li><code>[[1]]</code>: the number of bootstrap replicates (<code>numeric</code>)</li>
+<li><code>[[2]]</code>: the bootstrap method (<code>character</code>)</li>
+<li><code>[[3]]</code>: the rarefaction levels (<code>numeric</code> vector)</li>
+</ul></li>
+<li><code>$call$disparity</code>: this is a <code>list</code> containing one element, <code>$metric</code>, that is a <code>list</code> containing the different functions passed to the <code>metric</code> argument in <code>dispRity</code>. These are <code>call</code> elements and get modified each time the <code>dispRity</code> function is used (the first element is the first metric(s), the second, the second metric(s), etc.).</li>
+</ul>
+</div>
+<div id="subsamples" class="section level3">
+<h3><span class="header-section-number">5.3.3</span> <code>$subsamples</code></h3>
+<p>This element contain the eventual subsamples of the multidimensional space. It is a <code>list</code> of subsample names. Each subsample name is in turn a <code>list</code> of at least one element called <code>elements</code> which is in turn a <code>matrix</code>. This <code>elements</code> matrix is the raw (observed) elements in the subsamples. The <code>elements</code> matrix is composed of <code>numeric</code> values in one column and <em>n</em> rows (the number of elements in the subsample). Each of these values are a “pointer” (<code>C</code> inspired) to the element of the <code>$matrix</code>. For example, lets assume a <code>dispRity</code> object called <code>disparity</code>, composed of at least one subsamples called <code>sub1</code>:</p>
+<pre><code> disparity$subsamples$sub1$elements
+      [,1]
+ [1,]    5
+ [2,]    4
+ [3,]    6
+ [4,]    7</code></pre>
+<p>The values in the matrix “point” to the elements in <code>$matrix</code>: here, the multidimensional space with only the 4th, 5th, 6th and 7th elements. The following elements in <code>diparity$subsamples$sub1</code> will correspond to the same “pointers” but drawn from the bootstrap replicates. The columns will correspond to different bootstrap replicates. For example:</p>
+<pre><code> disparity$subsamples$sub1[[2]]
+      [,1] [,2] [,3] [,4]
+ [1,]   57   43   70    4
+ [2,]   43   44    4    4
+ [3,]   42   84   44    1
+ [4,]   84    7    2   10</code></pre>
+<p>This signifies that we have four bootstrap pseudo-replicates pointing each time to four elements in <code>$matrix</code>. The next element (<code>[[3]]</code>) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have <em>m</em> rows where <em>m</em> is the number of elements for this rarefaction level). The next element after that (<code>[[4]]</code>) will be the same for with an other rarefaction level and so forth…</p>
+</div>
+<div id="disparity" class="section level3">
+<h3><span class="header-section-number">5.3.4</span> <code>$disparity</code></h3>
+<p>The <code>$disparity</code> element is identical to the <code>$subsamples</code> element structure (a list of list(s) containing matrices) but the matrices don’t contain “pointers” to <code>$matrix</code> but the disparity result of the disparity metric applied to the “pointers”. For example, in our first example (<code>$elements</code>) from above, if the disparity metric is of dimensions level 1, we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    1.82</code></pre>
+<p>This is the observed disparity (1.82) for the subsample called <code>sub1</code>. If the disparity metric is of dimension level 2 (say the function <code>range</code> that outputs two values), we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    0.82
+ [2,]    2.82</code></pre>
+<p>The following elements in the list follow the same logic as before: rows are disparity values (one row for a dimension level 1 metric, multiple for a dimensions level 2 metric) and columns are the bootstrap replicates (the bootstrap with all elements followed by the eventual rarefaction levels). For example for the bootstrap without rarefaction (second element of the list):</p>
+<pre><code> disparity$disparity$sub1[[2]]
+         [,1]     [,2]     [,3]     [,4]
+[1,] 1.744668 1.777418 1.781624 1.739679 </code></pre>
 <!-- ## Modularity
 
 ### Making your own metrics
@@ -329,7 +400,6 @@ The computationally intensive function `dispRity` have a `parallel` option to sp
 
 This option requires the package `snow` and takes arguments that are to be passed to  -->
 
-</div>
 </div>
 </div>
 </div>

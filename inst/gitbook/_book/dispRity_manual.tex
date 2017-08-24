@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-08-23}
+  \date{2017-08-24}
 
 \usepackage{booktabs}
 
@@ -3039,6 +3039,182 @@ alphabetically (default) or following a specific pattern.
 \KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{sort}\NormalTok{(disparity, }\DataTypeTok{sort =} \KeywordTok{c}\NormalTok{(}\DecValTok{7}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{6}\NormalTok{))))}
 \end{Highlighting}
 \end{Shaded}
+
+\section{\texorpdfstring{The \texttt{dispRity} object
+content}{The dispRity object content}}\label{the-disprity-object-content}
+
+The functions above are utilities to easily and safely access different
+elements in the \texttt{dispRity} object. Alternatively, of course, each
+elements can be accessed manually. Here is an explanation on how it
+works. The \texttt{dispRity} object is a \texttt{list} of two to four
+elements, each of which are detailed below:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\$matrix}: an object of class \texttt{matrix}, the full
+  multidimensional space.
+\item
+  \texttt{\$call}: an object of class \texttt{list} containing
+  information on the \texttt{dispRity} object content.
+\item
+  \texttt{\$subsamples}: an object of class \texttt{list} containing the
+  subsamples of the multidimensional space.
+\item
+  \texttt{\$disparity}: an object of class \texttt{list} containing the
+  disparity values.
+\end{itemize}
+
+The \texttt{dispRity} object is loosely based on \texttt{C} structure
+objects. In fact, it is composed of one unique instance of a matrix (the
+multidimensional space) upon which the metric function is called via
+``pointers'' to only a certain number of elements and/or dimensions of
+this matrix. This allows for: (1) faster and easily tractable execution
+time: the metric functions are called through apply family function and
+can be parallelised; and (2) a really low memory footprint: at any time,
+only one matrix is present in the \texttt{R} environment rather than
+multiple copies of it for each subsample.
+
+\subsection{\texorpdfstring{\texttt{\$matrix}}{\$matrix}}\label{matrix}
+
+This is the multidimensional space, stored in the \texttt{R} environment
+as a \texttt{matrix} object. It requires row names but not column names.
+By default, if the row names are missing, \texttt{dispRity} function
+will arbitrarily generate them in numeric order (i.e.
+\texttt{rownames(matrix)\ \textless{}-\ 1:nrow(matrix)}). This element
+of the \texttt{dispRity} object is never modified.
+
+\subsection{\texorpdfstring{\texttt{\$call}}{\$call}}\label{call}
+
+This element contains the information on the \texttt{dispRity} object
+content. It is a \texttt{list} that can contain the following:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\$call\$subsamples}: a vector of \texttt{character} with
+  information on the subsamples type (either \texttt{"continuous"},
+  \texttt{"discrete"} or \texttt{"custom"}) and their eventual model
+  (\texttt{"acctran"}, \texttt{"deltran"}, \texttt{"punctuated"},
+  \texttt{"gradual"}). This element generated only once via
+  \texttt{time.subsamples()} and \texttt{custom.subsamples()}.
+\item
+  \texttt{\$call\$dimensions}: either a single \texttt{numeric} value
+  indicating how many dimensions to use or a vector of \texttt{numeric}
+  values indicating which specific dimensions to use. This element is by
+  default the number of columns in \texttt{\$matrix} but can be modified
+  through \texttt{boot.matrix()} or \texttt{dispRity()}.
+\item
+  \texttt{\$call\$bootstrap}: this is a \texttt{list} containing three
+  elements:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{{[}{[}1{]}{]}}: the number of bootstrap replicates
+    (\texttt{numeric})
+  \item
+    \texttt{{[}{[}2{]}{]}}: the bootstrap method (\texttt{character})
+  \item
+    \texttt{{[}{[}3{]}{]}}: the rarefaction levels (\texttt{numeric}
+    vector)
+  \end{itemize}
+\item
+  \texttt{\$call\$disparity}: this is a \texttt{list} containing one
+  element, \texttt{\$metric}, that is a \texttt{list} containing the
+  different functions passed to the \texttt{metric} argument in
+  \texttt{dispRity}. These are \texttt{call} elements and get modified
+  each time the \texttt{dispRity} function is used (the first element is
+  the first metric(s), the second, the second metric(s), etc.).
+\end{itemize}
+
+\subsection{\texorpdfstring{\texttt{\$subsamples}}{\$subsamples}}\label{subsamples}
+
+This element contain the eventual subsamples of the multidimensional
+space. It is a \texttt{list} of subsample names. Each subsample name is
+in turn a \texttt{list} of at least one element called \texttt{elements}
+which is in turn a \texttt{matrix}. This \texttt{elements} matrix is the
+raw (observed) elements in the subsamples. The \texttt{elements} matrix
+is composed of \texttt{numeric} values in one column and \emph{n} rows
+(the number of elements in the subsample). Each of these values are a
+``pointer'' (\texttt{C} inspired) to the element of the
+\texttt{\$matrix}. For example, lets assume a \texttt{dispRity} object
+called \texttt{disparity}, composed of at least one subsamples called
+\texttt{sub1}:
+
+\begin{verbatim}
+ disparity$subsamples$sub1$elements
+      [,1]
+ [1,]    5
+ [2,]    4
+ [3,]    6
+ [4,]    7
+\end{verbatim}
+
+The values in the matrix ``point'' to the elements in \texttt{\$matrix}:
+here, the multidimensional space with only the 4th, 5th, 6th and 7th
+elements. The following elements in \texttt{diparity\$subsamples\$sub1}
+will correspond to the same ``pointers'' but drawn from the bootstrap
+replicates. The columns will correspond to different bootstrap
+replicates. For example:
+
+\begin{verbatim}
+ disparity$subsamples$sub1[[2]]
+      [,1] [,2] [,3] [,4]
+ [1,]   57   43   70    4
+ [2,]   43   44    4    4
+ [3,]   42   84   44    1
+ [4,]   84    7    2   10
+\end{verbatim}
+
+This signifies that we have four bootstrap pseudo-replicates pointing
+each time to four elements in \texttt{\$matrix}. The next element
+(\texttt{{[}{[}3{]}{]}}) will be the same for the eventual first
+rarefaction level (i.e.~the resulting bootstrap matrix will have
+\emph{m} rows where \emph{m} is the number of elements for this
+rarefaction level). The next element after that (\texttt{{[}{[}4{]}{]}})
+will be the same for with an other rarefaction level and so
+forth\ldots{}
+
+\subsection{\texorpdfstring{\texttt{\$disparity}}{\$disparity}}\label{disparity}
+
+The \texttt{\$disparity} element is identical to the
+\texttt{\$subsamples} element structure (a list of list(s) containing
+matrices) but the matrices don't contain ``pointers'' to
+\texttt{\$matrix} but the disparity result of the disparity metric
+applied to the ``pointers''. For example, in our first example
+(\texttt{\$elements}) from above, if the disparity metric is of
+dimensions level 1, we would have:
+
+\begin{verbatim}
+ disparity$disparity$sub1$elements
+      [,1]
+ [1,]    1.82
+\end{verbatim}
+
+This is the observed disparity (1.82) for the subsample called
+\texttt{sub1}. If the disparity metric is of dimension level 2 (say the
+function \texttt{range} that outputs two values), we would have:
+
+\begin{verbatim}
+ disparity$disparity$sub1$elements
+      [,1]
+ [1,]    0.82
+ [2,]    2.82
+\end{verbatim}
+
+The following elements in the list follow the same logic as before: rows
+are disparity values (one row for a dimension level 1 metric, multiple
+for a dimensions level 2 metric) and columns are the bootstrap
+replicates (the bootstrap with all elements followed by the eventual
+rarefaction levels). For example for the bootstrap without rarefaction
+(second element of the list):
+
+\begin{verbatim}
+ disparity$disparity$sub1[[2]]
+         [,1]     [,2]     [,3]     [,4]
+[1,] 1.744668 1.777418 1.781624 1.739679 
+\end{verbatim}
 
 \chapter{Palaeobiology demo: disparity-through-time and within
 groups}\label{palaeobiology-demo-disparity-through-time-and-within-groups}
