@@ -13,16 +13,16 @@ Studying multivariate data as an alternative to univariate data has become incre
 This includes, for example, studying form and function (e.g. Diaz et al., 2016, \textit{Nature}) or morphological diversity (i.e. disparity - e.g. Brusatte et al. 2012, \textit{Science}).
 These methods have in common to use a multidimensional space (through ordination or other techniques) representing the combination of all possible observed traits and then measuring some aspect of the space (e.g. its hyper-volume) for different groups and compare them between each other or to a null hypothesis.
 
-Hence there exist a multitude of ways to define a multidimensional space, a metric measuring a specific aspect thereof and a test for many hypothesis.
-In theory this vast tool-kit should allow evolutionary biologists and ecologists to do many things.
-There are numerous implementation of such analysis pipeline in numerous R packages (e.g. \texttt{Claddis}, \texttt{geomorph}, \texttt{ade4}, \texttt{vegan}, etc.) or even in other languages (e.g. \texttt{GINGKO} in javascript).
+There exist a multitude of ways to define a multidimensional space, a metric measuring a specific aspect thereof and a test for many hypothesis.
+There are numerous implementation of such analysis pipeline in several R packages (e.g. \texttt{Claddis}, \texttt{geomorph}, \texttt{ade4}, \texttt{vegan}, etc.) or even in other languages (e.g. \texttt{GINGKO} in javascript).
 However, each of these implementations are particular to the software/package author's definition of the multidimensional space, metric and test.
-This leads researchers to often use these tool-kits by default hampering them to use the best definitions of the space/metric/test fitted to their particular question.
-At worst this leads in turn to wrong statistic claims, and, at best to time consuming code retro-engineering.
+This leads researchers to often use these tool-kits by default, thus hampering them to use the best definitions of the space/metric/test fitted to their particular question.
+At worst this leads to wrong statistic claims, and, at best to time consuming code retro-engineering.
 
-In this application manuscript entitled ``dispRity: an R package for measuring disparity'', I present a complete and flexible R package allowing to run multidimensional analysis where each parameter (the space, the metric and the test) can be easily defined by the user.
+In this application manuscript entitled ``dispRity: an R package for measuring disparity'', I present a complete and flexible R package allowing to run multidimensional analysis where each parameter can be easily defined by the user (the space, the metric and the test).
 In fact, this package provides a tidy and modular environment where users can use their own multidimensional space defined as a matrix and apply to it any metric and any test (provided as functions).
 This allows for highly modular multidimensional analysis and the tidy interface allows easily reproducible analysis.
+Finally, this package comes with an in depth gitbook manual covering most functionalities and being updated regularly following users requests.
 
 I look forward to hearing from you soon,
 
