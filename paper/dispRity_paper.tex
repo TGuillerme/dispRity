@@ -101,19 +101,19 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 %---------------------------------------------
 
 \newpage
-\begin{abstract}
+\begin{abstract} % NC: This needs some work, I think it could be a little longer. Really need to sell the problem the package solves, what questions are asked with it etc. Remember editors ONLY see this initially, so if it is crap it won't go out to review.
 
 \begin{enumerate}
-    \item We present \disp, an \texttt{R} package in for multidimensional spaces analysis.
+    \item I present \disp, an \texttt{R} package for summarising multidimensional spaces.
     \item Multidimensional spaces (e.g. morpho/eco/etc.-space) can described using a suit of metrics (e.g. disparity metrics) an many statistical tests.
-    \item The package provides a flexible framework were the space, metric and test can be easily defined by the user to analyse their specific ecological or evolutionary hypothesis.
+    \item The package provides a flexible framework where the space, metric and test can be easily defined by the user to analyse their specific ecological or evolutionary hypothesis.
     \item Its architecture is based on the \disp object with a variety of tools for modifying, summarising or plotting it.
-    \item The package's modularity and simple interface allows to run easily reproducible multidimensional analysis.
+    \item The package's modularity and simple interface allows users to easily run reproducible multidimensional analyses.
 \end{enumerate}
 
 \end{abstract}
 
-\noindent (Keywords: disparity, ordination, multidimensionality, disparity through time, palaeobiology, ecology)\\
+\noindent (Keywords: disparity, ordination, multidimensionality, disparity-through-time, palaeobiology, ecology)\\
 
 \vspace{1.5in}
 
@@ -130,40 +130,44 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 % Multidimensionality
 Biological data are complex.
 To understand the ecology and evolution of species we must use multiple variables that inevitably covary with each other through time and space.
-One solution to this problem is to analyse this data in a multivariate framework \citep[e.g.][]{price2015predation,diaz2016global}.
-Such analysis aim to capture complex biological multidimensionality while still providing outputs that are interpretable in our physical world restricted to three dimensions.
-These biological variables are as diverse as morphological traits (discrete, e.g. \citealt{brusattedinosaur2012}; or continuous, e.g. \citealt{price2015predation}), life history traits \citep[e.g.][]{diaz2016global}, ecosystem properties \citep[e.g.][]{DonohueDim}, etc.
-And can be used to answer specific questions such as changes in morphological diversity through time \citep{Close2015}, testing competitive replacement scenarios \citep{Brusatte12092008}, what is the relation between form and function in organisms \citep{diaz2016global} or even describing the entirety of possible shapes for a group of organisms \citep{raup1966geometric}.
+One solution to this problem is to analyse these data in a multivariate framework \citep[e.g.][]{price2015predation,diaz2016global}.
+Such analyses aim to capture the complex multidimensionality of biological data, while still providing outputs that are interpretable in our physical world restricted to three dimensions.
+These multivariate analyses can be used to investigate changes in morphological diversity through time \citep{Close2015}, competitive replacement scenarios \citep{Brusatte12092008}, relationships among form and function \citep{diaz2016global} and even to describe the entirety of possible shapes for a group of organisms \citep{raup1966geometric}.
+The biological variables in such analyses are equally diverse, including morphological traits (discrete traits like the presence or absence of a character, e.g. \citealt{brusattedinosaur2012}; and continuous traits such as lengths, e.g. \citealt{price2015predation}), life history traits \citep[e.g.][]{diaz2016global}, and even ecosystem properties \citep[e.g.][]{DonohueDim}. % NC: Best to avoid etc. where possible
 
 % Variety of multidimensional spaces, metrics and tests
-In all these analysis, each of these multivariate traits form different multidimensional spaces represented as matrices where the columns are the dimensions (or some transformation thereof) and each rows are the elements available within this space.
-These multidimensional spaces can be defined in many ways such as a pairwise distance matrix \citep{Close2015}, a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, a multidimensional scaling \citep[MDS;][]{DonohueDim}, etc.
-Once this multidimensional space is defined, say morphospace (if its variables are base on morphology), it is then possible to measure a specific aspect of it, say its morphological diversity (more commonly by as disparity; \citealt{Hopkins2017}).
-This specific measurement (hereafter referred to as disparity metrics) can in turn be defined in many different ways depending on the specific question \citep[e.g.][or combinations thereof]{Wills2001,Ciampaglio2001,foth2012different,DonohueDim,Hughes20082013,finlay2015morphological,Close2015}.
-Finally, all these different multidimensional spaces and their associated disparity metrics can be used in an equal variety of statistical test such as non-parametric multivariate analyses of variance \citep[e.g.][]{Brusatte12092008}, multidimensional permutation test \citep[e.g.][]{diaz2016global} or even simply by looking at the confidence interval overlap between disparity measurements \citep[e.g.][]{halliday2016eutherian}.
+In all these analysis, each set of multivariate traits forms a multidimensional space, usually represented as matrices where the columns are the dimensions (or some transformation thereof) and rows are the elements (often species or individuals) within this space.
+These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix \citep{Close2015}, or as outputs from a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric},or a multidimensional scaling \citep[MDS;][]{DonohueDim}, among others.
+The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
+For example, when using morphological traits the multivariate space will be a morphospace, when using ecological traits it may be referred to as an ecospace or trait space.
+Once the multidimensional space is defined it is then possible to measure a specific aspect of it.
+This specific measurement (hereafter referred to as a 'disparity metric') can in turn be defined in many different ways depending on the specific question being investigated \citep[e.g.][or combinations thereof]{Wills2001,Ciampaglio2001,foth2012different,DonohueDim,Hughes20082013,finlay2015morphological,Close2015}.
+Finally, all these different multidimensional spaces and their associated disparity metrics can be used in an equal variety of statistical tests such as non-parametric multivariate analyses of variance \citep[e.g.][]{Brusatte12092008}, multidimensional permutation tests \citep[e.g.][]{diaz2016global} or even simply by looking at the confidence interval overlaps between disparity measurements \citep[e.g.][]{halliday2016eutherian}.
+In summary, there are many different ways to perform each step of a multidimensional analysis, making analyses of complexity ever more complex.
 
 % Problems with this variety
-In theory, this multitude of ways to generate multidimensional spaces, measure disparity within and analyse these metrics is not an issue, in fact, it allows researchers to choose both the most appropriate method for their question or data, or even to test their question using multiple methods \citep[such as][for biogreography]{matzke2013biogeobears}.
+In theory, this multitude of ways to generate and define multidimensional spaces, measure disparity within and analyse these metrics is not an issue, in fact, it allows researchers to choose both the most appropriate method for their question or data, or even to test their question using multiple methods \citep[such as][for biogeography]{matzke2013biogeobears}.
 In practice, however, this is hampered by existing software implementations.
-Even though many software exist for multidimensional analysis \citep[e.g.][]{bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,adams2013geomorph,Claddis,adams2017geometric}, package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric and then enforce this on users by allowing few to no flexibility.
-For example, in the excellent and widely used \texttt{geomorph} package morphological disparity analysis can be ran using the \texttt{morphol.disparity} function defining the multidimensional space as the ordination of the Procrustes transform of morphometric data, the disparity metric as the Procrustes variance and permutation tests can be used \citep{zelditch2012geometric,adams2013geomorph,adams2017geometric}.
-This can lead to a chain of inappropriate analyses led by users just using the existing software when their question/data is not appropriate. %Oh no!
+Although many software packages exist for multidimensional analysis \citep[e.g.][]{bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,adams2013geomorph,Claddis,adams2017geometric}, package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric and then enforce this on users by allowing little to no flexibility.
+For example, in the excellent and widely used \texttt{geomorph} package, morphological disparity analysis uses the \texttt{morphol.disparity} function that defines the multidimensional space as the ordination of the Procrustes transform of morphometric data, the disparity metric as the Procrustes variance, and using permutation tests to test hypotheses \citep{zelditch2012geometric,adams2013geomorph,adams2017geometric}.
+This is ideal in some cases, but in others may not be the most appropriate analysis.
+This can lead to inappropriate analyses by users confined by the existing software implementations. %Oh no!
 
 % Here comes the solution!
 The aim of the \disp package is to solve such problems by providing a completely flexible framework for studying multidimensional data.
-In fact, this package is based on a highly modular architecture where each crucial decision in multidimensional analysis (which data, which metric and which test) can be provided by the user.
-It implements many commonly used metrics and definitions of disparity as well as providing a simple interface for users to implement their own disparity functions.
+This package is based on a highly modular architecture where each crucial decision in multidimensional analysis (which data, which metric and which test) can be provided by the user.
+It implements many commonly used metrics and definitions of disparity, as well as providing a simple interface for users to implement their own disparity functions.
 The package is described here for the use of discrete morphological data diversity analysis but can be generalised to any type of multidimensional data (see the package vignette for more examples).
 
 \section{Description}
-In brief, the package intakes a \texttt{matrix} object (the multidimensional space), calculates some aspect of it (the disparity metric) and allows to analyse the resulting \disp object (see Manuals and Vignettes below).
-Some additional functions allow to modify the multidimensional space such as dividing it per group or through time or/and bootstrapping it (see Fig. \ref{Fig:workflow} and Table \ref{Tab:main_fun}).
-See below for a more detailed description of features.
+In brief, the package takes a \texttt{matrix} object (the multidimensional space), calculates some aspect of it (the disparity metric) and allows users to analyse the resulting \disp object (see Manuals and Vignettes below).
+Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow} and Table \ref{Tab:main_fun}).
+See below for a more detailed description of the package features.
 
 \begin{figure}[!htbp]
 \centering
    \includegraphics[width=1\textwidth]{workflowsvg.pdf} 
-\caption{\disp package workflow: rectangles represent matrices; ellipse represent functions; plain black arrows indicate input/output; dashed grey arrows indicate output (though the summary, plot, and test function can not be applied if no disparity has been calculated).}
+\caption{\disp package workflow: rectangles represent matrices; ellipses represent functions; plain black arrows indicate input/output; dashed grey arrows indicate output (though the summary, plot, and test function cannot be applied if no disparity has been calculated).}
 \label{Fig:workflow}
 \end{figure}
 
@@ -174,15 +178,15 @@ See below for a more detailed description of features.
         \hline
         \texttt{geomorph.ordination} & Imports data from the \texttt{geomorph} package. \\
         \texttt{Claddis.ordination} & Imports data from the \texttt{Claddis} package. \\
-        \texttt{custom.subsamples} & Separates data in custom subsamples. \\
-        \texttt{time.subsamples} & Separates data in time subsamples. \\
+        \texttt{custom.subsamples} & Separates data into custom subsamples. \\
+        \texttt{time.subsamples} & Separates data into time subsamples. \\
         \texttt{boot.matrix} & Bootstraps and rarefies data or a \disp object. \\
         \disp & Calculates disparity from an matrix or a \disp object. \\
         \texttt{summary.dispRity} & Summarises a \disp object. \\
         \texttt{plot.dispRity} & Plots a \disp object. \\
         \texttt{test.dispRity} & Applies statistical tests to a \disp object.\\
-        \texttt{dispRity.per.group} & Pipelined disparity per groups analysis. \\
-        \texttt{dispRity.through.time} & Pipelined disparity through time analysis. \\
+        \texttt{dispRity.per.group} & Pipeline for disparity within groups analysis. \\
+        \texttt{dispRity.through.time} & Pipeline for disparity-through-time analysis. \\
         \hline
     \end{tabular}
     \caption{Main functions in the \disp package.}
@@ -190,26 +194,26 @@ See below for a more detailed description of features.
 \end{table}
 
 \subsection{Measuring disparity}
-The \disp function allows to measure disparity from any multidimensional space (of class \texttt{matrix} or \texttt{data.frame}) where the columns correspond dimensions and the rows correspond to the elements present in the space.
+The \disp function measures disparity of any multidimensional space (of class \texttt{matrix} or \texttt{data.frame}) where the columns correspond to the dimensions and the rows correspond to the elements present in the space.
 The disparity metric (i.e. the aspect of interest of the space) is passed through the \texttt{metric} argument and is defined by the user as any function or combination of functions that can either transform the matrix into:
 
 \begin{itemize}
-    \item Another matrix (a dimensions-level 3 function - e.g. a variance-covariance matrix; \texttt{stats::cor})
-    \item A vector (a dimensions-level 2 function - e.g. the variance of each dimension; \texttt{dispRity::variances} - see below)
-    \item A single value (a dimensions-level 1 function - e.g. the overall standard deviation; \texttt{stats::sd})
+    \item Another matrix (a dimension-level 3 function - e.g. a variance-covariance matrix; \texttt{stats::cor})
+    \item A vector (a dimension-level 2 function - e.g. the variance of each dimension; \texttt{dispRity::variances} - see below)
+    \item A single value (a dimension-level 1 function - e.g. the overall standard deviation; \texttt{stats::sd})
 \end{itemize}
 
 \begin{figure}[!htbp]
 \centering
    \includegraphics[width=0.8\textwidth]{../inst/gitbook/dispRity_fun.pdf} 
-\caption{Illustration of the different metric dimensions levels in the \disp package. In this example, each cell correspond to a single value (e.g. a 8 $\times$ 7 matrix or a vector of 8 elements)}.
+\caption{Illustration of the different metric dimension-levels in the \disp package. In this example, each cell correspond to a single value (e.g. a 8 $\times$ 7 matrix or a vector of eight elements)}.
 \label{Fig:levels}
 \end{figure}
 
-The metrics can be functions from previous packages, defined by the user or from the \disp package (see Table \ref{Tab:metrics} for the currently implemented metrics).
-When multiple functions are passed the \texttt{metric} argument, the functions are sorted per dimension level and applied in decreasing order to the data.
-For example, if the metric is defined as \texttt{metric = c(mean, range)}, the \texttt{range} function (dimension level 2) is first applied to the data and the function \texttt{mean} is then applied to the result (e.g. \texttt{mean(range(data))}).
-There is no limitation on the metric dimensions only that at least one dimensions level 2 or 1 are present in the metric definition (i.e. disparity can only be defined as distribution or a single value).
+The disparity metrics can be functions from other packages, defined by the user or from the \disp package (see Table \ref{Tab:metrics} for the currently implemented metrics).
+When multiple functions are passed to the \texttt{metric} argument, the functions are sorted by dimension-level and applied in decreasing order to the data.
+For example, if the metric is defined as \texttt{metric = c(mean, range)}, the \texttt{range} function (dimension-level 2) is first applied to the data and the function \texttt{mean} is then applied to the result (e.g. \texttt{mean(range(data))}).
+There is no limitation on the metric dimensions only that at least one dimension-level 2 or 1 function must be present in the metric definition (i.e. disparity can only be defined as distribution or a single value).
 
 \begin{table}
 \resizebox{\textwidth}{!}
@@ -220,7 +224,7 @@ There is no limitation on the metric dimensions only that at least one dimension
         \texttt{ellipse. volume}$^1$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
         \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
         \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
-        \texttt{diagonal} & The longest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & \texttt{dispRity::diagonal} \\
+        \texttt{diagonal} & The greatest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & \texttt{dispRity::diagonal} \\
         \texttt{mode.val} & The modal value & 1 & NA & \texttt{dispRity::mode.val}\\
         \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & \texttt{dispRity::ranges} \\
         \texttt{variances} & The variance of each dimension & 2 & $\sigma^{2}{k_i}$ & \texttt{dispRity::variances} \\
@@ -233,16 +237,16 @@ There is no limitation on the metric dimensions only that at least one dimension
 
 \subsection{Splitting the multidimensional space into subsets}
 Prior to calculating disparity, the multidimensional space can be subdivided into subsamples, typically to be compared to each other.
-For example, one can be interested in looking how the disparity of a specific subsample of the space compared to another (e.g. difference among groups) or, how different sub-samples change sequentially (e.g. through time).
+For example, one may be interested in seeing how the disparity of a specific subsample of the space compares to another (e.g. difference among groups) or, how different subsamples change sequentially (e.g. through time).
 In essence, the original space corresponds to overall space (e.g. a morphospace contains all the possible observed morphologies).
 Conversely, subsamples correspond to parts of the space with pooled characteristics (i.e. only a subset of the total morphospace).
 
-This can be done using the \texttt{custom.subsamples} or \texttt{time.subsamples} functions.
-The first takes as argument the matrix defining the multidimensional space and a list of elements to group into different sub-samples.
-The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time sub-samples for example) and which subsamples to create: (1) discrete time subsamples (or time-binning) or (2) continuous time subsamples (or time-slicing).
+This splitting can be done using the \texttt{custom.subsamples} or \texttt{time.subsamples} functions.
+The first takes as argument the matrix defining the multidimensional space and a list of elements to group into different subsamples.
+The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time subsamples for example) and which subsamples to create: (1) discrete time subsamples (or time-binning) or (2) continuous time subsamples (or time-slicing).
 
-The time-bining method groups elements by specific age range.
-The time slicing method works by using a phylogeny and looking at which taxa are present at any specific point in time.
+The time-binning method groups elements by specific age range.
+The time-slicing method works by using a phylogeny and looking at which taxa are present at any specific point in time.
 This method thus requires the nodes to be part of the multidimensional space, a dated phylogeny (chronogram) and which model to use when slicing through branches rather than tips and nodes.
 When a slice occurs not on a tip or a node, four methods are available to select either the descendent or the ancestor's node/tip as an element for this time slice:
 \begin{itemize}
@@ -254,76 +258,74 @@ When a slice occurs not on a tip or a node, four methods are available to select
 
 \subsection{Bootstrapping and rarefying}
 Disparity measurement can be influenced by sampling \citep{Butler2012}.
-To take this source of bias into account, it is common practice to bootstrap the multidimensional space (to minimise the effect of outliers) or/and to rarefy the data (to minimise the effect of different sample sizes in different sub-samples).
-Additionally, if disparity is defined as a dimension-level 1 metric, it can be useful to measure it on bootstrapped data in order to have a distribution on which to perform statistical analysis.
+To take this source of bias into account, it is common practice to bootstrap the multidimensional space (to minimise the effect of outliers) or/and to rarefy the data (to minimise the effect of different sample sizes in different subsamples).
+Additionally, if disparity is defined as a dimension-level 1 metric, it can be useful to measure it on bootstrapped data to obtain a distribution on which to perform statistical analyses.
 
-Bootstrapping can be achieved by using the \texttt{boot.matrix} function which pseudo-replicates the multidimensional space following two algorithms (1) the ``full'' algorithm where the bootstrapping is entirely stochastic ($n$ elements are replaced by any $m$ elements drawn from the data) and (2) the ``single'' one where only one random element is replaced for each pseudo-replicate (somewhat akin to jackknife resampling).
+Bootstrapping can be achieved by using the \texttt{boot.matrix} function which pseudo-replicates the multidimensional space following two algorithms (1) the ``full'' algorithm where the bootstrapping is entirely stochastic ($n$ elements are replaced by any $m$ elements drawn from the data) and (2) the ``single'' algorithm where only one random element is replaced for each pseudo-replicate (somewhat akin to jackknife resampling).
 
 % In the case of disparity being a dimension-level 1 metric, it is important to note that the distribution resulting from a bootstrap will be a pseudo-replicated one and thus might not be suitable for some specific parametric statistical tests.
 % Conversely, it is possible to use a dimension-level 2 metric on a bootstrapped multidimensional space to avoid this problem: the disparity metric is then measured on a pseudo-replicated multidimensional space rather than the metric itself being pseudo-replicated.
 
 Similarly, rarefaction can be achieved through the same \texttt{boot.matrix} function.
-Rarefaction can be useful when looking at the effect of reducing the number of elements on the results of an analysis or for allowing the comparisons of sub-samples wit the same number of elements in each.
+Rarefaction can be useful when looking at the effect of reducing the number of elements on the results of an analysis or for allowing the comparisons of subsamples with the same number of elements in each.
 In practice, rarefaction limits the number of elements to be drawn for each bootstrap replication: only $n-x$ elements are selected at each bootstrap replicate (where $x$ is the number of non-sampled elements).
 
 \subsection{Interpreting results}
 The functions above all generate a \disp object that can be summarised or plotted using the \texttt{S3} method functions \texttt{summary.dispRity} and \texttt{plot.dispRity} (provided disparity was calculated).
-These results can then be analysed using the \texttt{test.dispRity} function for comparing sub-samples or testing hypothesis.
+These results can then be analysed using the \texttt{test.dispRity} function for comparing subsamples or testing hypotheses.
 
-\subsubsection{Summary and plot}
-These \texttt{summary.dispRity} and \texttt{plot.dispRity} functions allow to set which central tendency and which quantiles should be represented.
+\subsubsection{Summarising and plotting}
+The \texttt{summary.dispRity} and \texttt{plot.dispRity} functions allow users to set which central tendency and which quantiles should be represented.
 % as common arguments which central tendency (e.g. if central tendency is the mean and disparity was calculated as the sum of the variances for each dimensions, the central disparity tendency would be the mean of the sum of the variances) and the quantiles to represent (in the same example, if the quantile chosen is the 50th, these functions will also display 50\% of the sum of variances around the mean).
-Additionally, the \texttt{plot.dispRity} function allows to graphically represent the summarised results using different representations: (1) ``continuous'' for displaying continuous disparity curves (in the case of disparity through time analysis for example) and (2) ``box'', ``lines'', or ``polygons'' to display them using boxplots, confidence interval lines or polygons respectively.
-Additional arguments specific to \disp objects can also be used such as \texttt{observed} to display the observed disparity (i.e. non-bootstrapped) or \texttt{rarefaction} to only plot the disparity for 
-The function can also take any additional graphic arguments (\texttt{main}, \texttt{xlab}, \texttt{col}, etc...).
+Additionally, the \texttt{plot.dispRity} function graphically represents the summarised results using different representations: (1) ``continuous'' for displaying continuous disparity curves (in the case of disparity-through-time analysis for example) and (2) ``box'', ``lines'', or ``polygons'' to display them using boxplots, confidence interval lines or polygons respectively.
+Additional arguments specific to \disp objects can also be used such as \texttt{observed} to display the observed disparity (i.e. non-bootstrapped) or \texttt{rarefaction} to only plot the disparity for % NC: for...what????
+The function can also take any additional graphic arguments (\texttt{main}, \texttt{xlab}, \texttt{col}, etc...) from base R.
 % Note that if the disparity has been calculated on fully rarefied data (using \texttt{boot.matrix(data, rarefaction = TRUE)} prior to calculating disparity), the rarefaction curves for the whole multidimensional space (or its sub-samples) can be plotted using \texttt{rarefaction = ``plot''}.
 
-\subsubsection{testing hypothesis}
-The \texttt{test.dispRity} function allows to test hypothesis on the disparity data (e.g. by comparing the different sub-samples between each other).
-Similarly to the \disp function described above, this one can take any test defined by the user.
-The \texttt{comparison} arguments allows to indicate in which order (if any) should the tests be applied to the subsamples: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subsample to all the others; (3) ``sequential'' for comparing subsamples sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsamples simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsamples} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of sub-samples to compare,
+\subsubsection{Testing hypotheses}
+The \texttt{test.dispRity} function allows users to test hypotheses on the disparity data (e.g. by comparing the different subsamples to each other).
+Similarly to the \disp function described above, this function can take any test defined by the user or built into base R.
+The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsamples: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subsample to all the others; (3) ``sequential'' for comparing subsamples sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsamples simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsamples} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of subsamples to compare.
 
 Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff}][]{Bhattacharyya,GuillermeCooper} or a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}).
-Additionally, this function also allows additionally argument such as \texttt{rarefaction} (as described above) or \texttt{correction} to adjust eventual p-values when multiple parametric tests are ran.
+Additionally, this function also allows additional arguments such as \texttt{rarefaction} (as described above) or \texttt{correction} to adjust p-values when using multiple parametric tests.
 
-
-
-\section{Examples}
-For brevity reason, the following example is based on a classical palaeobiology morphological disparity analysis.
-Note the more examples are available in the package manual \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}.
+\section{Examples} % NC: I think it would be nice to add a short paragraph describing the cool science question you are asking here, why it is interesting etc. Otherwise this is quite a dry software example that doesn't really convince me I need your cool new package.
+The following example is based on a classical palaeobiology morphological disparity analysis.
+Note more examples are available in the package manual \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}.
 
 \subsubsection{\disp data}
-The package contains a dataset that is a subset from \cite{beckancient2014} including:
+The package contains a dataset that is a subset from \cite{beckancient2014} and includes:
 
 \begin{itemize}
     \item \texttt{BeckLee\_mat50}: an ordinated matrix for 50 mammals based on the distance between discrete morphological characters.
     \item \texttt{BeckLee\_mat99}: the same matrix \texttt{BeckLee\_mat50} but also containing the reconstruction of their 49 ancestors.
-    \item \texttt{BeckLee\_tree}: a chronogram with the 50 mammals species present in \texttt{BeckLee\_mat50} and \texttt{BeckLee\_mat99}.
-    \item \texttt{BeckLee\_ages}: the first and last occurrence data for 14 of the mammals species present in \texttt{BeckLee\_mat50} and \texttt{BeckLee\_mat99}.
+    \item \texttt{BeckLee\_tree}: a chronogram with the 50 mammal species present in \texttt{BeckLee\_mat50} and \texttt{BeckLee\_mat99}.
+    \item \texttt{BeckLee\_ages}: the first and last occurrence data for 14 of the mammal species present in \texttt{BeckLee\_mat50} and \texttt{BeckLee\_mat99}.
     \item \texttt{disparity}: a pre-made \disp object based on the data above.
 \end{itemize}
 
-In this example, the multidimensional space is thus defined as a morphospace: the ordination of the distance between discrete morphological characters for 50 mammals species \citep[from][]{beckancient2014}.
-Additionally, we can define disparity as the sum of the variances on each dimensions \citep{Wills1994} that will represent an aspect of the the volume of the morphospace (i.e. a large sum of variances approximates a large morphospace and vice versa).
+In this example, the multidimensional space is defined as a morphospace: the ordination of the distances among discrete morphological characters for 50 mammal species \citep[from][]{beckancient2014}.
+Additionally, we can define disparity as the sum of the variances on each dimension \citep{Wills1994} that will represent an aspect of the the volume of the morphospace (i.e. a large sum of variances approximates a large morphospace and vice versa).
 
-\subsection{Typical disparity per groups analysis}
-Here, we can be interested in whether the approximation of the volume within the morphospace (the disparity as defined above) is different in the living mammals and their descendants (crown) or the fossil mammals with no living descendants (stem).
-These two groups can be defined as follow (where the integers are the row number of the species in the matrix):
+\subsection{Typical disparity among groups analysis}
+Here, we may be interested in whether the approximation of the volume within the morphospace (the disparity as defined above) is different in living mammals and their descendants (crown) comparaed to the fossil mammals with no living descendants (stem).
+These two groups can be defined as follows (where the integers are the row number of the species in the matrix):
 
 \noindent \texttt{> mammal\_groups <- list("crown" = c(16, 19:41, 45:50), "stem" = c(1:15, 17:18, 42:44))}
 
-\noindent It is then possible to measure the disparity between the two groups as follow:
+\noindent It is then possible to measure the disparity between the two groups as follows:
 
 \noindent \texttt{> disparity <- dispRity.per.group(data = BeckLee\_mat50, group = mammal\_groups, metric = c(sum, variances))}
 
-\noindent Note that this function is a wrapping function that is the equivalent to:
+\noindent Note that this function is a wrapper function that is the equivalent to:
 
 \noindent \texttt{> subsamples <- custom.subsamples(data = BeckLee\_mat50, group = mammal\_groups)}\\
 \noindent \texttt{> bootstraps <- boot.matrix(subsamples)}\\
 \noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
-\noindent Which allows a finer tuning of the optional argument in each functions.
-The three arguments here are defined as follow: \texttt{data = BeckLee\_mat50} is our definition of the multidimensional space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity. 
+\noindent Which allows a finer tuning of the optional arguments in each function.
+The three arguments here are defined as follows: \texttt{data = BeckLee\_mat50} is our definition of the multidimensional space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity. 
 
 This function returns a \disp object that summarises the disparity analysis:
 
@@ -335,7 +337,7 @@ This function returns a \disp object that summarises the disparity analysis:
 \noindent \texttt{Disparity was calculated as: c(sum, variances).}\\
 
 \bigskip
-As indicated, the \disp object contains 2 customised subsamples (called ``crown'' and ``stem'') from a morphospace made of 50 elements for 48 dimensions.
+As indicated, the \disp object contains two customised subsamples (called ``crown'' and ``stem'') from a morphospace made of 50 elements for 48 dimensions.
 The \disp object also displays information on the number and method of the bootstrap replicates as well as the definition of disparity.
 To visualise the actual disparity values, one can use the \texttt{summary} or/and \texttt{plot} options (Table \ref{Tab:summary_group} and Fig. \ref{Fig:plot_group}):
 
@@ -365,7 +367,7 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
 \label{Fig:plot_group}
 \end{figure}
 
-As we can see from the summary table and the plot, there seems to be a significant difference in morphospace volume occupation between the two groups.
+As we can see from the summary table and the plot, there seems to be a significant difference in morphospace volume occupied between the two groups.
 It is possible to test this hypothesis by using, for example, a non-parametric Wilcoxon test (\texttt{stats::wilcox.test}):
 
 \noindent \texttt{> test.dispRity(disparity, test = wilcox.test)}
@@ -379,27 +381,28 @@ It is possible to test this hypothesis by using, for example, a non-parametric W
 \noindent \texttt{crown : stem 2.562144e-34}\\
 
 \bigskip
-As indicated by the p.value, there is a significant difference in disparity between both groups.
+As indicated by the p value, there is a significant difference in disparity between the groups.
 
-\subsubsection{Typical disparity through type analysis}
+\subsubsection{Typical disparity-through-time analysis}
 
-Another type of disparity analysis can be a disparity through time analysis.
-Using the same definition of the multidimensional space and disparity as in the previous example, one can be interested in how disparity changes through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
+% NC: Again a short description of the actual question being asked here and why it is cool.
+Another common type of disparity analysis is a disparity-through-time analysis.
+Using the same definition of the multidimensional space and disparity as in the previous example, we may be interested in how disparity changes through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
 
 \noindent \texttt{> time\_bins <- c(100.5, 66, 56, 33.9)}
 
-It is then possible to measure disparity through time using the following function:
+It is then possible to measure disparity-through-time using the following function:
 
 \noindent \texttt{> disparity <- dispRity.through.time(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, metric = c(sum, variances))}
 
-\noindent Note that this function is a wrapping function that is the equivalent to:
+\noindent Note that this function is a wrapper function that is the equivalent to:
 
 \noindent \texttt{> subsamples <- time.subsamples(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = 'discrete')}\\
 \noindent \texttt{> bootstraps <- boot.matrix(subsamples)}\\
 \noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
 \noindent The arguments \texttt{data = BeckLee\_mat50} and \texttt{metric = c(sum, variances)} are the same as in the example above.
-However, in this type of analysis, we also needs to have additional arguments: the \texttt{time = time\_bins} indicates the boundaries of the different time bins, the \texttt{tree = BeckLee\_tree} argument provides information on the age of each element and \texttt{method = 'discrete'} indicates that the data is time-binned.
+However, in this type of analysis, we also need to have additional arguments: the \texttt{time = time\_bins} indicates the boundaries of the different time bins, the \texttt{tree = BeckLee\_tree} argument provides information on the age of each element and \texttt{method = 'discrete'} indicates that the data is time-binned.
 
 Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:summary_time} and Fig. \ref{Fig:plot_time}):
 
@@ -420,19 +423,19 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \label{Tab:summary_time}
 \end{table}
 
-\texttt{> plot(disparity, type = 'countinuous')}
+\texttt{> plot(disparity, type = 'continuous')}
 
 \noindent Note that many plot options specific to \disp objects are available such as plotting disparity in a ``continuous'' fashion (inferring disparity between the time bins).
 
 \begin{figure}[!htbp]
 \centering
    \includegraphics[width=1\textwidth]{plot_example_time.pdf} 
-\caption{\disp plot of disparity through time}
+\caption{\disp plot of disparity-through-time}
 \label{Fig:plot_time}
 \end{figure}
 
 From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
-Similarly to the example above, it is also possible to statistically test this hypothesis by running an ANOVA for example (Table \ref{Tab:anova}): 
+Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, an ANOVA (Table \ref{Tab:anova}): 
 
 \texttt{> anova(test.dispRity(disparity, test = lm, comparisons = 'all'))}
 
@@ -446,20 +449,20 @@ subsamples & 2 & 3.14 & 1.57 & 177.84 & 0.0000 \\
   Residuals & 297 & 2.62 & 0.01 &  &  \\ 
    \hline
 \end{tabular}
-\caption{Anova performed on a \disp object}
+\caption{ANOVA performed on a \disp object}
 \label{Tab:anova}
 \end{table}
 
 
-\section{Additional informations}
+\section{Additional information}
 \subsection{Manuals and vignette}
 Supplementary information about the package is available on the project page \url{https://TGuillerme/dispRity}.
-Information concerning each functions can be found in R in the individual function manuals and a package manual with more detailed information is available online at \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}.
-This manual contains substantially more information and detailed example including a tutorial for a ``classic'' disparity analysis in palaeobiology as well as an introduction to the use of this package in ecology or other disciplines. 
+Information concerning each function can be found in R in the individual function manuals and a package manual with more detailed information is available online at \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}.
+This manual contains substantially more information and detailed examples including a tutorial for a ``classic'' disparity analysis in palaeobiology as well as an introduction to the use of this package in ecology or other disciplines. 
 
 \subsection{Data simulations}
-This package also contains a series of simulation functionality for generating random discrete morphological matrices (\texttt{sim.morpho}) or random multidimensional spaces (\texttt{space.maker}).
-These functions are based on a similar modular architecture as the \disp functions allowing users to provide their own distribution descriptions as parameters for the simulation.
+This package also contains functions for simulating random discrete morphological matrices (\texttt{sim.morpho}) or random multidimensional spaces (\texttt{space.maker}).
+These functions are based on a similar modular architecture as that used by the \disp functions, allowing users to provide their own distribution parameters for the simulations.
 For example, \texttt{stats::rnorm} can be provided as an argument for drawing normal characters rates with \texttt{sim.morpho} or normally distributed multidimensional space with \texttt{space.maker}.
 The discrete morphological data simulations are based on protocols from \cite{GuillermeCooper}, \cite{OReilly20160081} and \cite{puttick2017uncertain}. 
 The multidimensional space simulations are based on the methods from \cite{diaz2016global}.
@@ -471,15 +474,15 @@ Both functionalities are described in more details in the package manual.
 % New functionalities currently being developed will include time sequential linear models (for accurately measuring directionality in disparity changes between time slices) or mode of disparity evolution testing (allowing to fit different models such as Brownian Motion or Ornstein-Uhlenbeck to disparity curves).
 
 \section{Conclusion}
-The \disp package is based on a highly modular architecture allowing researchers to simply define both their multidimensional space and their disparity metric for efficiently analysing multivariate data.
-The \disp object allows to easily pipeline disparity analysis from the data input (the matrix) to publication standard results (tables, plots, hypothesis testing).
-With the help of this package, researchers will thus be able to run multivariate analysis in an easy way while still allowing a maximum of plasticity necessary to the specificity of such analysis.
+The \disp package is based on a highly modular architecture allowing researchers to simply define both their multidimensional space and their disparity metric to efficiently analyse multivariate data.
+The \disp object allows users to easily pipeline disparity analysis from the data input (the matrix) to publication standard results (tables, plots, hypothesis testing).
+With the help of this package, researchers will be able to run multivariate analysis in an easy way while still allowing the flexibility necessary to such analyses.
 
 \section{Data availability and reproducibility}
-All the code and the data for using the package and it's vignette examples is readily available in the package or on GitHub \url{github.com/TGuillerme/dispRity}.
+All the code and the data for using the package and its vignette with examples are available in the R package help files or on GitHub \url{github.com/TGuillerme/dispRity}.
 
 \section{Acknowledgments}
-Many thanks to Natalie Cooper for encouraging the development of this package and helping for the redaction of this paper and the package manuals.
+Many thanks to Natalie Cooper for encouraging the development of this package and helping with the writing of this paper and the package manuals.
 Thanks to Dave Bapst, Martin Brazeau, Andrew Jackson, Graeme Lloyd and Emma Sherratt for specific implementation ideas.
 I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau.
 
