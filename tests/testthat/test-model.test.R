@@ -22,8 +22,28 @@ test_that("select.model.list internal", {
 match_call <- model.test(1, models = c(mean, c(mean, median), c(mean, mean, mean)))
 
 test_that("get.models.names internal", {
-    expect_equal(get.models.names(match_call, time.split = NULL), c("mean", "mean:median", "multimean"))
-    expect_equal(get.models.names(match_call, time.split = list(NULL, 88)), c("mean", "mean:median88", "multimean"))
-    expect_equal(get.models.names(match_call, time.split = 88), c("mean", "mean:median88", "multimean"))
+    expect_equal(
+        get.models.names(match_call, time.shifts = NULL)
+        , c("mean", "mean:median", "multimean"))
+    expect_equal(
+        get.models.names(match_call, time.shifts = list(NULL, 88))
+        , c("mean", "mean:median88", "multimean"))
+    expect_equal(
+        get.models.names(match_call, time.shifts = 88)
+        , c("mean", "mean:median88", "multimean"))
 })
 
+## check.shift.length
+subsamples <- seq(1:10)
+
+
+test_that("check.shift.length internal", {
+    expect_is(check.shift.length(5, subsamples), "list")
+    expect_equal(
+        check.shift.length(5, subsamples)
+        , list(c(5,5)))
+
+    expect_equal(
+        check.shift.length(c(2,8), subsamples)
+        , list(c(2,8), c(8,2)))
+})

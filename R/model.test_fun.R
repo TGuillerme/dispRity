@@ -60,22 +60,22 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
 ## Get the match_call model names
 get.models.names <- function(match_call, time.split) {
 
-	## Lapply wrapper
-	lapply.combine.name <- function(one_model_name) {
-		if(length(grep(",", one_model_name)) > 0) {
-			## Combine model names
-			one_model_name <- strsplit(strsplit(strsplit(one_model_name, split = "c\\(")[[1]][2], "\\)")[[1]][1], split = ",")[[1]]
-			## Remove spaces
-			one_model_name <- gsub(" ", "", one_model_name)
-			## Combine multi model names
-			if(length(unique(one_model_name)) == 1) {
-				one_model_name <- paste0("multi", unique(one_model_name))
-			} else {
-				one_model_name <- paste(one_model_name, collapse = ":")
-			}
-		}
-		return(one_model_name)
-	}
+    ## Lapply wrapper
+    lapply.combine.name <- function(one_model_name) {
+        if(length(grep(",", one_model_name)) > 0) {
+            ## Combine model names
+            one_model_name <- strsplit(strsplit(strsplit(one_model_name, split = "c\\(")[[1]][2], "\\)")[[1]][1], split = ",")[[1]]
+            ## Remove spaces
+            one_model_name <- gsub(" ", "", one_model_name)
+            ## Combine multi model names
+            if(length(unique(one_model_name)) == 1) {
+                one_model_name <- paste0("multi", unique(one_model_name))
+            } else {
+                one_model_name <- paste(one_model_name, collapse = ":")
+            }
+        }
+        return(one_model_name)
+    }
 
     ## Get the model names (raw)
     model_names <- as.character(match_call$models)
@@ -84,23 +84,44 @@ get.models.names <- function(match_call, time.split) {
     }
 
     ## Transform the model names
-	model_names <- unlist(lapply(as.list(model_names), lapply.combine.name))
+    model_names <- unlist(lapply(as.list(model_names), lapply.combine.name))
 
-	## Add the eventual time.split
-	if(!is.null(time.split)) {
-		if(class(time.split) == "list") {
-			## Match the time.split list and the models
-			model_names <- gsub("NULL", "", paste0(model_names, time.split))
-		} else {
-			## Match the time.split to the model names with ":"
-			time_models <- grep(":", model_names)
-			model_names[time_models] <- paste0(model_names[time_models], time.split)
-		}
-	}
+    ## Add the eventual time.split
+    if(!is.null(time.split)) {
+        if(class(time.split) == "list") {
+            ## Match the time.split list and the models
+            model_names <- gsub("NULL", "", paste0(model_names, time.split))
+        } else {
+            ## Match the time.split to the model names with ":"
+            time_models <- grep(":", model_names)
+            model_names[time_models] <- paste0(model_names[time_models], time.split)
+        }
+    }
 
     return(model_names)
 }
 
+## Checking the number of subsamples between each shifts
+check.shift.length <- function(one_time_shift, subsamples) {
+
+    if(is.null(one_time_shift)) {
+        ## If no shift, return null
+        return(NULL)
+    } else {
+        lengths <- list()
+
+        ## Loop through the shifts
+        for(shift in 1:length(one_time_shift)) {
+            ## Select elements before
+            before <- length(which(subsamples <= one_time_shift[shift]))
+            ## Select elements after
+            after <- length(which(subsamples > one_time_shift[shift]))
+            ## Save the results
+            lengths[[shift]] <- c(before, after)
+        }
+        return(lengths)
+    }
+}
 
 ## pooled variance of all data.model.test in time series (modified from PaleoTS::pool.var)
 pooled.variance <- function(data.model.test, rescale.variance=FALSE)  {

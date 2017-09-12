@@ -4,9 +4,9 @@
 #'
 #' @param data A \code{dispRity} object used to test models of evolution through time
 #' @param named.model The named model of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model (See \bold{Details}) 
-#' @param custom.model The custom model of evolution to describe the change in disparity-through-time using a hetergenous model with two distinct modes of evolution. This argument requires a time.split argument (See \bold{Details}) 
+#' @param custom.model The custom model of evolution to describe the change in disparity-through-time using a hetergenous model with two distinct modes of evolution. This argument requires a time.shifts argument (See \bold{Details}) 
 #' @param pool.variance If NULL the difference in variances will be calculated using Bartlett's Test of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument TRUE or FALSE are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances
-#' @param time.split The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}) 
+#' @param time.shifts The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}) 
 #' @param return.model.full Logical argument to return full parameter values from each tested model (default = FALSE)
 #' @param plot.disparity Logical argument to plot the measure of disparity through time and a barplot of the relative support for each model (default = FALSE)
 #' @param fixed.optima Logical to use an estimated optimum value in OU models (fixed.optima = FALSE), or whether to set the OU optimum to the ancestral value (fixed.optima = TRUE)
@@ -47,7 +47,7 @@
 # data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
 # data <- dispRity(data_bootstrapped, c(sum, variances))
 # models <- list(BM, c(BM,OU), c(OU,OU,OU))
-# time.split <- 66
+# time.shifts <- 65
 # pool.variance <- NULL
 # return.model.full <- FALSE
 # plot.disparity <- TRUE
@@ -56,10 +56,10 @@
 # verbose <- TRUE
 
 
-# model.test <- function(data, named.model = c("BM", "OU", "Stasis", "EB", "Trend", "multiOU", "multiStasis", "BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis"), custom.model = NULL, pool.variance = NULL, time.split = NULL, return.model.full = FALSE, plot.disparity = TRUE, fixed.optima = FALSE, control.list = list(fnscale = -1)) {
+# model.test <- function(data, named.model = c("BM", "OU", "Stasis", "EB", "Trend", "multiOU", "multiStasis", "BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis"), custom.model = NULL, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, plot.disparity = TRUE, fixed.optima = FALSE, control.list = list(fnscale = -1)) {
 
 
-model.test <- function(data, models, pool.variance = NULL, time.split = NULL, return.model.full = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     
     match_call <- match.call()
 
@@ -68,7 +68,10 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
     ## convert dispRity to model.test object
     model_test_input <- select.model.list(data)
 
-    ## Model #TG: model argument becomes a list of functions e.g. list(BM, OU, c(OU,OU,OU), c(BM, OU))
+    ## Model
+    #~~~~~~
+    #TG: For modularity and architecture (speeding time) reasons, I've merged the named.model and custome.model arguments into models. Users can now write their own models (or modify yours) and run the thing by passing a list of models for example: models = list(BM, OU, c(OU,OU,OU), c(BM, OU)) will run a BM, and OU, a multi OU (with two shifts) and BM.to.OU. This way, it would allow users to run for example c(OU, BM, OU, BM, myModel) for example for a model with 4 shifts equivalent to BM.to.OU.to.BM.to.OU.to.myModel (where myModel is, say, a model straight from the user's imagination!).
+    #~~~~~~
     ## Checking the number of models
     if(class(models) == "function") {
         one_model <- TRUE
@@ -81,6 +84,8 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             one_model <- TRUE
             warning("Only one model is tested, no comparison will be available.")
         }
+        ## Length of each model (i.e. number of shifts per model)
+        model_lengths <- as.vector(unlist(lapply(models, length)))
     }
 
     ## Checking if all models are functions
@@ -88,20 +93,38 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
         stop("The models provided must be functions.")
     }
 
-    ## Checking time.split
-    if(class(time.split) == "list") {
-        check.length(time.split, length(models), msg = "must be a unique numeric value or a list of the same length as the models argument.", errorif = FALSE)
-        ## All arguments must be numeric or null
-        if(!all(unlist(lapply(time.split, class)) %in% c("NULL", "numeric"))) {
-            stop("time.split list must contain only NULL or \"numeric\" values.")
+    ## Checking time.shifts (if at least one model has one shift)
+    any_shift_model <- any(model_lengths > 1)
+
+    if(any_shift_model) {
+        if(class(time.shifts) == "list") {
+            check.length(time.shifts, length(models), msg = "must be a unique numeric value or a list of the same length as the models argument.", errorif = FALSE)
+            ## All arguments must be numeric or null
+            if(!all(unlist(lapply(time.shifts, class)) %in% c("NULL", "numeric"))) {
+                stop("time.shifts list must contain only NULL or \"numeric\" values.")
+            }
+        } else {
+            ## Error if some models need more than one shift
+            if(any(model_lengths - 1 > length(time.shifts))) {
+                stop("The number of time.shifts doesn't match the number of model shifts.")
+            }
+            ## time.shift is a unique numeric value, this won't work if some models have more than one shift!
+            check.class(time.shifts, "numeric", msg = "must be a unique numeric value or a list of the same length as the models argument.")
+
+            ## Transform the time.shifts into a list (for consistency)
+            time.shifts <- lapply(as.list(model_lengths-1), function(x, time.shifts) if(x == 0) {return(NULL)} else {return(time.shifts[1:x])}, time.shifts)
         }
-    } else {
-        check.class(time.split, "numeric", msg = "must be a unique numeric value or a list of the same length as the models argument.")
-        check.length(time.split, 1, msg = "must be a unique numeric value or a list of the same length as the models argument.", errorif = FALSE)
+        ## Check if the time shifts exist in the subsamples!
+        non_matching_subsamples <- is.na(match(unique(unlist(time.shifts)), model_test_input$subsamples))
+        if(any(non_matching_subsamples)) {
+            ## Stop if no matching (detects singular or plural)
+            stop(paste0(ifelse(length(which(non_matching_subsamples)) == 1, "Subsample ", "Subsamples "), paste(unique(unlist(time.shifts))[non_matching_subsamples]), collapse = ", "), " don't match with any available subsample name in the data.")
+            }
+        }
     }
 
     ## Getting the true model names (regardless of user input)
-    true_model_names <- get.models.names(match_call, time.split)
+    true_model_names <- get.models.names(match_call, time.shifts)
 
     ## Naming the models (if necessary)
     if(is.null(names(models))) {
@@ -139,28 +162,39 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
     ## Checking control.list
     check.class(control.list, "list")
 
-    ## identify models to run
-    # model.test.names <- c("BM", "OU", "Stasis", "EB", "Trend", "multiOU", "multiStasis", "BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis")
-    # test.model <- match(named.model, model.test.names)
-    # try.models <- model.test.names[test.model]
-    
-    ## Check if they are any shit models
-    any_shift_model <- any(grep("multi", true_model_names)) || any(grep(":", true_model_names))
-    
-    ## identify shifts that allow at least 10 samples before or after shift. The model will not run (with a warning) if there are too few samples for ten samples before/after shift
+    #~~~~~~~
+    #TG: I've changed the bit where you test the number of changes by simply using the provided time.shifts list. Basically a model defined as c(OU, OU) is a multi OU with a shift passed through the time.shifts argument. It can also be something applied to a c(OU, BM) for a shift from OU to BM (at the same time.shifts). If the model contains more shifts (e.g. c(OU, OU, OU) - two time shifts here), the time.shifts argument should have two numeric arguments. The following bit now only checks the amount of data available between each shift. I've set the minimum to 3 but tell me if we should up it to 10!
+    #~~~~~~~
+
+    ## Checking the number of subsamples per regimes (between shifts)    
     if(any_shift_model) {
-        all.times <- max(model_test_input[[4]]) - model_test_input[[4]]
-        if(length(all.times) > 31) {
-            ten_times <- 9 : (length(all.times) - 11)
-            run_time_split <- TRUE
-            cat("\n")
-            cat("Time split models will be tested on", length(ten_times), "shift times")
-        } else {
-            warning("fewer than 30 samples - time split models not run")
-            run_time_split <- FALSE
+
+        ## Set up the minimum of subsamples
+        minimum_subsamples <- 3
+
+        ## Check the number of elements per list
+        check_shifts <- lapply(lapply(time.shifts, check.shift.length, model_test_input$subsamples), unlist)
+
+        ## Check which shifts are wrong
+        wrong_shifts <- unlist(lapply(check_shifts, function(x, min) if(!is.null(x)) {return(ifelse(any(x < min), TRUE, FALSE))} else {return(FALSE)}, minimum_subsamples))
+
+        ## Send a warning message if any is below the minimum (detects plurals)
+        if(any(wrong_shifts)) {
+            warning(paste0(ifelse(length(which(wrong_shifts)) == 1, "Model ", "Models "), paste(names(models)[wrong_shifts], collapse = ", "), ifelse(length(which(wrong_shifts)) == 1, " has ", " have "), "not enough subsamples for at least one shift."))
         }
+
+        # if(length(all_times) > 31) {
+        #     ten_times <- 9 : (length(all_times) - 11)
+        #     run_time_split <- TRUE
+        #     cat("Time split models will be tested on", length(ten_times), "shift times")
+        # } else {
+        #     warning("fewer than 30 samples - time split models not run")
+        #     run_time_split <- FALSE
+        # }
     }
     
+
+
     ## run models
     model_list <- list()
     
@@ -198,14 +232,14 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
     
     if(any(try.models == "multiOU")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "multiOU model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.ou <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
                 #flush.console()
-                model.test.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], n.optima=2, fixed.optima=fixed.optima)
+                model.test.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], n.optima=2, fixed.optima=fixed.optima)
             })
             
             cat(". Finished.")
@@ -214,24 +248,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$multi.ou <- out.best.model.ou
         }
         
-        ## if time.split supplied, test that time only    
-        if(!is.null(time.split)) {
-            cat("\n", "multiOU model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$multi.ou <- model.test.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, n.optima=n.split, fixed.optima=fixed.optima)
+        ## if time.shifts supplied, test that time only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "multiOU model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$multi.ou <- model.test.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, n.optima=n.split, fixed.optima=fixed.optima)
         }    
         cat("\n", "AICc =", model_list$multi.ou["AICc"])    
     }
     
     if(any(try.models == "multiStasis")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "multiStasis model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.stasis <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], n.optima=2)
+                model.test.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], n.optima=2)
             })
             
             cat(". Finished.")
@@ -240,24 +274,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$multi.stasis <- out.best.model.stasis
         }
         
-        ## if time.split supplied, test that time only    
-        if(!is.null(time.split)) {
-            cat("\n", "multiStasis model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$multi.stasis <- model.test.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, n.optima=n.split)
+        ## if time.shifts supplied, test that time only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "multiStasis model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$multi.stasis <- model.test.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, n.optima=n.split)
         }
         cat("\n", "AICc =", model_list$multi.stasis["AICc"])    
     }
 
     if(any(try.models == "BM.to.Trend")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "BM.to.Trend model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.bm.to.trend <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.bm.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.bm.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -266,24 +300,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$bm.to.trend <- out.best.model.bm.to.trend
         }
         
-        ## if time.split supplied, test that time only    
-        if(!is.null(time.split)) {
-            cat("\n", "BM.to.Trend model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$bm.to.trend <- model.test.bm.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test that time only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "BM.to.Trend model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$bm.to.trend <- model.test.bm.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$bm.to.trend["AICc"])    
     }
     
     if(any(try.models == "BM.to.EB")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "BM.to.EB model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.bm.to.eb <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.bm.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.bm.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -292,24 +326,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$bm.to.eb <- out.best.model.bm.to.eb
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "BM.to.EB model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$bm.to.eb <- model.test.bm.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "BM.to.EB model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$bm.to.eb <- model.test.bm.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$bm.to.eb["AICc"])
     }
     
     if(any(try.models == "BM.to.Stasis")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "BM.to.Stasis model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.bm.to.stasis <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.bm.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.bm.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -318,24 +352,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$bm.to.stasis <- out.best.model.bm.to.stasis
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "BM.to.Stasis model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$bm.to.stasis <- model.test.bm.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "BM.to.Stasis model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$bm.to.stasis <- model.test.bm.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$bm.to.stasis["AICc"])
     }
     
     if(any(try.models == "BM.to.OU")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "BM.to.OU model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.bm.to.ou <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.bm.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], fixed.optima = fixed.optima)
+                model.test.bm.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], fixed.optima = fixed.optima)
             })
             
             cat(". Finished.")
@@ -344,24 +378,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$bm.to.ou <- out.best.model.bm.to.ou
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "BM.to.OU model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$bm.to.ou <- model.test.bm.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, fixed.optima = fixed.optima)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "BM.to.OU model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$bm.to.ou <- model.test.bm.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, fixed.optima = fixed.optima)
         }
         cat("\n", "AICc =", model_list$bm.to.ou["AICc"])
     }
     
     if(any(try.models == "OU.to.BM")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "OU.to.BM model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.ou.to.bm <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.ou.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], fixed.optima = fixed.optima)
+                model.test.ou.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], fixed.optima = fixed.optima)
             })
             
             cat(". Finished.")
@@ -370,23 +404,23 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$ou.to.bm <- out.best.model.ou.to.bm
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "OU.to.BM model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$ou.to.bm <- model.test.ou.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, fixed.optima = fixed.optima)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "OU.to.BM model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$ou.to.bm <- model.test.ou.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, fixed.optima = fixed.optima)
         }
     }
     
     if(any(try.models == "OU.to.Trend")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "OU.to.Trend model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.ou.to.trend <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.ou.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], fixed.optima = fixed.optima)
+                model.test.ou.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], fixed.optima = fixed.optima)
             })
             
             cat(". Finished.")
@@ -395,24 +429,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$ou.to.trend <- out.best.model.ou.to.trend
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "OU.to.Trend model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$ou.to.trend <- model.test.ou.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, fixed.optima = fixed.optima)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "OU.to.Trend model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$ou.to.trend <- model.test.ou.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, fixed.optima = fixed.optima)
         }
         cat("\n", "AICc =", model_list$ou.to.trend["AICc"])
     }
     
     if(any(try.models == "OU.to.EB")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "OU.to.EB model. Running ", length(ten_times), " time split models:")
             cat("\n", "")
             model.test.all.ou.to.eb <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.ou.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x], fixed.optima = fixed.optima)
+                model.test.ou.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x], fixed.optima = fixed.optima)
             })
             
             cat(". Finished.")
@@ -421,24 +455,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$ou.to.eb <- out.best.model.ou.to.eb
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "OU.to.EB model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$ou.to.eb <- model.test.ou.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split, fixed.optima = fixed.optima)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "OU.to.EB model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$ou.to.eb <- model.test.ou.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts, fixed.optima = fixed.optima)
         }
         cat("\n", "AICc =", model_list$ou.to.eb["AICc"])    
     }
     
     if(any(try.models == "Stasis.to.BM")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "Stasis.to.EB model. Running ", length(ten_times), " time split models:")
             cat("\n", "\n", "")
             model.test.all.stasis.to.bm <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.stasis.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.stasis.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -447,24 +481,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$stasis.to.bm <- out.best.model.stasis.to.bm
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "Stasis.to.BM model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$stasis.to.bm <- model.test.stasis.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "Stasis.to.BM model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$stasis.to.bm <- model.test.stasis.to.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$stasis.to.bm["AICc"])
     }
 
     if(any(try.models == "Stasis.to.EB")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "Stasis.to.EB model. Running ", length(ten_times), "models:")
             cat("\n", "")
             model.test.all.stasis.to.eb <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.stasis.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.stasis.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -473,24 +507,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$stasis.to.eb <- out.best.model.stasis.to.eb
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "Stasis.to.EB model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$stasis.to.eb <- model.test.stasis.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "Stasis.to.EB model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$stasis.to.eb <- model.test.stasis.to.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$stasis.to.eb["AICc"])    
     }
     
     if(any(try.models == "Stasis.to.Trend")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "Stasis.to.Trend model. Running ", length(ten_times), "models:")
             cat("\n", "")
             model.test.all.stasis.to.trend <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.stasis.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.stasis.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             
             cat(". Finished.")
@@ -499,24 +533,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$stasis.to.trend <- out.best.model.stasis.to.trend
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "Stasis.to.Trend model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$stasis.to.trend <- model.test.stasis.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "Stasis.to.Trend model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$stasis.to.trend <- model.test.stasis.to.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$stasis.to.trend["AICc"])    
     }
     
     if(any(try.models == "Trend.to.OU")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "Trend.to.OU model. Running ", length(ten_times), "models:")
             cat("\n", "")
             model.test.all.trend.to.ou <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.trend.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.trend.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             cat(". Finished.")
             high.mod.trend.to.ou <- which(model.test.all.trend.to.ou[1, ] == max(model.test.all.trend.to.ou[1, ]))
@@ -524,24 +558,24 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$trend.to.ou <- out.best.model.trend.to.ou
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "Trend.to.OU model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$trend.to.ou <- model.test.trend.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "Trend.to.OU model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$trend.to.ou <- model.test.trend.to.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$trend.to.ou["AICc"])
     }
     
     if(any(try.models == "Trend.to.Stasis")) {
         
-        ## if no time.split supplied, test all times (with both modes having at least 10 samples)
-        if(is.null(time.split) && run_time_split) {
+        ## if no time.shifts supplied, test all times (with both modes having at least 10 samples)
+        if(is.null(time.shifts) && run_time_split) {
             cat("\n", "Trend.to.Stasis model. Running ", length(ten_times), "models:")
             cat("\n", "")
             model.test.all.trend.to.stasis <- sapply(ten_times, function(x) {
                 cat("\r", "model ", x - 8, " of ", length(ten_times))
-                model.test.trend.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=all.times[x])
+                model.test.trend.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=all.times[x])
             })
             cat(". Finished.")
             high.mod.trend.to.stasis <- which(model.test.all.trend.to.stasis[1, ] == max(model.test.all.trend.to.stasis[1, ]))
@@ -549,27 +583,27 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
             model_list$trend.to.stasis <- out.best.model.trend.to.stasis
         }
         
-        ## if time.split supplied, test those times only    
-        if(!is.null(time.split)) {
-            cat("\n", "Trend.to.Stasis model. Time split at", time.split)
-            n.split <- length(time.split)  + 1
-            model_list$trend.to.stasis <- model.test.trend.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.split=time.split)
+        ## if time.shifts supplied, test those times only    
+        if(!is.null(time.shifts)) {
+            cat("\n", "Trend.to.Stasis model. Time split at", time.shifts)
+            n.split <- length(time.shifts)  + 1
+            model_list$trend.to.stasis <- model.test.trend.to.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, time.shifts=time.shifts)
         }
         cat("\n", "AICc =", model_list$trend.to.stasis["AICc"])
     }
     
     ## run custom models if user-supplied
     
-    if(is.null(time.split) && !is.null(custom.model)) {
-        warning("custom model with no time.split - custom model not run")
+    if(is.null(time.shifts) && !is.null(custom.model)) {
+        warning("custom model with no time.shifts - custom model not run")
     }
     
-    if(!is.null(custom.model) && !is.null(time.split)) {
+    if(!is.null(custom.model) && !is.null(time.shifts)) {
         cat("\n", "running custom models")
         model.one <- custom.model[,1]
         model.two <- custom.model[,2]
         n.models <- length(custom.model[,1])
-        custom.model.out <- lapply(1:n.models, function(x) model.test.shift.mode(data.model.test = model_test_input, time.split=time.split, mode.one=model.one[x], mode.two=model.two[x], pool.variance = pool.variance, cl=control.list))
+        custom.model.out <- lapply(1:n.models, function(x) model.test.shift.mode(data.model.test = model_test_input, time.shifts=time.shifts, mode.one=model.one[x], mode.two=model.two[x], pool.variance = pool.variance, cl=control.list))
         custom.model.names <- apply(custom.model, 1, function(x) paste0(x, collapse="_"))
         model_list <- c(model_list, custom.model.out)
         names(model_list)[-c(1:length(test.model))] <- custom.model.names
@@ -592,7 +626,7 @@ model.test <- function(data, models, pool.variance = NULL, time.split = NULL, re
         varDown <- model_test_input[[1]] - model_test_input[[2]]
         polygon(x=c(xAxis, rev(xAxis)), c(varUp, rev(varDown)), col="grey", border=F)
         lines(xAxis, model_test_input[[1]], col="grey50")
-        abline(v=time.split, lty=2, lwd=2)
+        abline(v=time.shifts, lty=2, lwd=2)
         plotcor <- barplot(weight.aicc[order.aicc], las=1, ylim=c(0, 1), col="grey30", border=F, ylab="Akaike weights", names=F)
         mtext(names(aic.out)[order.aicc], 1, las=2, at=plotcor[,1], line=1)
     }
