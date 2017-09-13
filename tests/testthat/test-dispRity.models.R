@@ -51,8 +51,8 @@ test_that("BM works", {
     model_input <- select.model.list(data)
     control.list <- list(fnscale = -1)
 
-    expected_input_parameters <- c(2.5924895 0.0025335)
-    expected_control_list <- list(fnscale = -1, ndeps = c(2.592489e-04 2.533500e-07))
+    expected_input_parameters <- c(2.5924895, 0.0025335)
+    expected_control_list <- list(fnscale = -1, ndeps = c(2.592489e-04, 2.533500e-07))
     expected_output <- c("log_likelihood" = 11.438161231,
                          "ancestral_state" = 2.615795319,
                          "sigma_squared" = 0.003873534,
@@ -71,11 +71,11 @@ test_that("BM works", {
     expect_is(control_up, "list")
     expect_equal(names(control_up), c("fnscale", "ndeps"))
     expect_equal(
-        precision(control_up$ndeps, digit = 8))
+        precision(control_up$ndeps, digit = 8)
         , precision(expected_control_list$ndeps, digit = 8))
 
     ## Run the model
-    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control_list, method = "L-BFGS-B", lower = c(NA, 1e-6), data.model.test = model_input)
+    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control_up, method = "L-BFGS-B", lower = c(NA, 1e-6), data.model.test = model_input)
 
     ## Get the arguments out
 
@@ -99,19 +99,19 @@ test_that("OU works", {
 
     expected_input_parameters <- c(2.59248947, 0.00025335, 0.02310491, 4.05457455 )
     expected_control_list <- list(fnscale = -1, ndeps = c(2.592489e-04, 2.533500e-08, 2.310491e-06, 4.054575e-04))
-    expected_output <- c("log_likelihood" = 11.438159155,
-                         "ancestral_state" = 2.615795801,
-                         "sigma_squared" = 0.003873499,
+    expected_output <- c("log_likelihood" = 10.088996276,
+                         "ancestral_state" = 2.664797195,
+                         "sigma_squared" = 0.003803996,
                          "alpha" = 0.000000010,
-                         "optima" = 4.054574548,
+                         "optimum" = 4.054574548,
                          "sample_size" = 25.000000000,
                          "n_parameters" = 4.000000000, 
-                         "AIC" = -14.876318310,
-                         "AICc" = -12.876318310)
+                         "AIC" = -12.177992552,
+                         "AICc" = -10.177992552)
 
     ## Input works for OU
     expect_equal(
-        precision(input_parameters <- get.input.parameters(model_input, model.name = model_name))
+        precision(input_parameters <- get.input.parameters(model_input, model.name = model_name, fixed.optima = FALSE, n.optima = n.optima))
         , precision(expected_input_parameters))
 
     ## Control works for OU
@@ -119,16 +119,19 @@ test_that("OU works", {
     expect_is(control_up, "list")
     expect_equal(names(control_up), c("fnscale", "ndeps"))
     expect_equal(
-        precision(control_up$ndeps, digit = 8))
+        precision(control_up$ndeps, digit = 8)
         , precision(expected_control_list$ndeps, digit = 8))
 
+
+    lower_model <- c(NA, 1e-10, 1e-08, rep(NA, n.optima))
+
     ## Run the model
-    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control_list, method = "L-BFGS-B", lower = c(NA, 1e-6), data.model.test = model_input)
+    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control.list, method = "L-BFGS-B", lower = lower_model, hessian = FALSE, data.model.test = model_input, time.split = 0, n.optima = n.optima, fixed.optima = FALSE)
 
     ## Get the arguments out
-
-    output <- extract.argument(optimised_model, model_input, model_name)
-    expect_equal(output, expected_output)
+    output <- extract.argument(optimised_model, model_input, model_name, fixed.optima = FALSE)
+    expect_equal(precision(output), precision(expected_output))
+    expect_equal(names(output), names(expected_output))
 })
 
 ## Testing if EB works
@@ -163,7 +166,7 @@ test_that("EB works", {
     expect_is(control_up, "list")
     expect_equal(names(control_up), c("fnscale", "ndeps"))
     expect_equal(
-        precision(control_up$ndeps, digit = 8))
+        precision(control_up$ndeps, digit = 8)
         , precision(expected_control_list$ndeps, digit = 8))
 
     ## Run the model
@@ -206,7 +209,7 @@ test_that("Stasis works", {
     expect_is(control_up, "list")
     expect_equal(names(control_up), c("fnscale", "ndeps"))
     expect_equal(
-        precision(control_up$ndeps, digit = 8))
+        precision(control_up$ndeps, digit = 8)
         , precision(expected_control_list$ndeps, digit = 8))
 
     ## Run the model
@@ -250,7 +253,7 @@ test_that("Trend works", {
     expect_is(control_up, "list")
     expect_equal(names(control_up), c("fnscale", "ndeps"))
     expect_equal(
-        precision(control_up$ndeps, digit = 8))
+        precision(control_up$ndeps, digit = 8)
         , precision(expected_control_list$ndeps, digit = 8))
 
     ## Run the model
