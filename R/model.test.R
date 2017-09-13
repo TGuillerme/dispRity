@@ -41,25 +41,35 @@
 
 
 # DEBUG
-# source("sanitizing.R")
-# source("model.test_fun.R")
-# data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
-# data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
-# data <- dispRity(data_bootstrapped, c(sum, variances))
-# models <- list(BM, c(BM,OU), c(OU,OU,OU))
-# time.shifts <- 65
-# pool.variance <- NULL
-# return.model.full <- FALSE
-# plot.disparity <- TRUE
-# fixed.optima <- FALSE
-# control.list <- list(fnscale = -1)
-# verbose <- TRUE
+source("sanitizing.R")
+source("model.test_fun.R")
+data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
+data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
+data <- dispRity(data_bootstrapped, c(sum, variances))
+
+
+OU <- BM <- function(x) return(x)
+models <- list(BM, OU, c(BM,OU), c(OU,OU,OU))
+
+get.call <- function(data, models, ...) {
+    match_call <- match.call()
+    return(match_call)
+}
+match_call <- get.call(1, models = list(BM, OU, c(BM,OU), c(OU,OU,OU)))
+
+time.shifts <- list(NULL, NULL, 65, c(30,90))
+pool.variance <- NULL
+return.model.full <- FALSE
+plot.disparity <- TRUE
+fixed.optima <- FALSE
+control.list <- list(fnscale = -1)
+verbose <- TRUE
 
 
 # model.test <- function(data, named.model = c("BM", "OU", "Stasis", "EB", "Trend", "multiOU", "multiStasis", "BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis"), custom.model = NULL, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, plot.disparity = TRUE, fixed.optima = FALSE, control.list = list(fnscale = -1)) {
 
 
-model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE) {
     
     match_call <- match.call()
 
@@ -93,6 +103,14 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         stop("The models provided must be functions.")
     }
 
+    ## Transforming all models into lists (i.e. simple models)
+    to_list <- which(unlist(lapply(models, class)) != "list")
+    if(length(to_list) > 0) {
+        for(listing in 1:length(to_list)) {
+            models[to_list[listing]] <- list(models[to_list[listing]])
+        }
+    }
+
     ## Checking time.shifts (if at least one model has one shift)
     any_shift_model <- any(model_lengths > 1)
 
@@ -119,9 +137,9 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         if(any(non_matching_subsamples)) {
             ## Stop if no matching (detects singular or plural)
             stop(paste0(ifelse(length(which(non_matching_subsamples)) == 1, "Subsample ", "Subsamples "), paste(unique(unlist(time.shifts))[non_matching_subsamples]), collapse = ", "), " don't match with any available subsample name in the data.")
-            }
         }
     }
+    
 
     ## Getting the true model names (regardless of user input)
     true_model_names <- get.models.names(match_call, time.shifts)
@@ -129,6 +147,11 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
     ## Naming the models (if necessary)
     if(is.null(names(models))) {
         names(models) <- true_model_names
+    }
+
+    ## Adding the model name component
+    for(model in 1:length(models)) {
+        models[[model]]$name <- true_model_names[model]
     }
 
     ## Checking verbose
@@ -193,11 +216,16 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         # }
     }
     
-
+    ## Adding the time.shifts components
+    for(model in 1:length(models)) {
+        models[[model]]$shift <- time.shifts[model]
+    }
 
     ## run models
-    model_list <- list()
+    model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list, fixed.optima, ..., verbose)
     
+
+
     if(any(try.models == "BM")) {
         cat("\n", "testing BM model")
         model_list$bm <- model.test.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list)
