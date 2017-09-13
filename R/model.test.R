@@ -43,21 +43,21 @@
 # DEBUG
 source("sanitizing.R")
 source("model.test_fun.R")
+source("dispRity.models.R")
+source("dispRity.models_fun.R")
 data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
 data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
 data <- dispRity(data_bootstrapped, c(sum, variances))
 
-
-OU <- BM <- function(x) return(x)
-models <- list(BM, OU, c(BM,OU), c(OU,OU,OU))
+models <- list(BM, OU, EB, Stasis, Trend)#, c(BM,OU), c(OU,OU,OU))
 
 get.call <- function(data, models, ...) {
     match_call <- match.call()
     return(match_call)
 }
-match_call <- get.call(1, models = list(BM, OU, c(BM,OU), c(OU,OU,OU)))
+match_call <- get.call(1, models = list(BM, OU, EB, Stasis, Trend))#, c(BM,OU), c(OU,OU,OU)))
 
-time.shifts <- list(NULL, NULL, 65, c(30,90))
+time.shifts <- NULL #list(NULL, NULL, 65, c(30,90))
 pool.variance <- NULL
 return.model.full <- FALSE
 plot.disparity <- TRUE
@@ -214,16 +214,33 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         #     warning("fewer than 30 samples - time split models not run")
         #     run_time_split <- FALSE
         # }
-    }
     
-    ## Adding the time.shifts components
-    for(model in 1:length(models)) {
-        models[[model]]$shift <- time.shifts[model]
+        ## Adding the time.shifts components
+        for(model in 1:length(models)) {
+            models[[model]]$shift <- time.shifts[model]
+        }
     }
 
     ## run models
-    model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list, fixed.optima, ..., verbose)
-    
+    # model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list = control.list, fixed.optima = fixed.optima, verbose = verbose, ...)
+    model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list = control.list, fixed.optima = fixed.optima, verbose = verbose) ; warning("DEBUG model.test")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     if(any(try.models == "BM")) {
