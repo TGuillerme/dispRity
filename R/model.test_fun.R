@@ -58,7 +58,7 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
 }
 
 ## Get the match_call model names
-get.models.names <- function(match_call, time.split) {
+get.models.names <- function(match_call, time.shifts) {
 
     ## Lapply wrapper
     lapply.combine.name <- function(one_model_name) {
@@ -79,22 +79,28 @@ get.models.names <- function(match_call, time.split) {
 
     ## Get the model names (raw)
     model_names <- as.character(match_call$models)
-    if(model_names[[1]] == "c") {
+    if(model_names[[1]] == "c" || model_names[[1]] == "list") {
         model_names <- model_names[-1]
     }
 
     ## Transform the model names
     model_names <- unlist(lapply(as.list(model_names), lapply.combine.name))
 
-    ## Add the eventual time.split
-    if(!is.null(time.split)) {
-        if(class(time.split) == "list") {
-            ## Match the time.split list and the models
-            model_names <- gsub("NULL", "", paste0(model_names, time.split))
+    ## Add the eventual time.shifts
+    if(!is.null(time.shifts)) {
+        if(class(time.shifts) == "list") {
+            ## Match the time.shifts list and the models
+            model_names <- gsub("NULL", "", paste0(model_names, time.shifts))
+            ## Remove multi model names
+            multis <- grep("c\\(", model_names)
+            if(length(multis) > 0) {
+                model_names[multis] <- gsub(" ", "", gsub(",", ":", gsub("\\)", "", gsub("c\\(", "", model_names[multis]))))
+            }
+
         } else {
-            ## Match the time.split to the model names with ":"
+            ## Match the time.shifts to the model names with ":"
             time_models <- grep(":", model_names)
-            model_names[time_models] <- paste0(model_names[time_models], time.split)
+            model_names[time_models] <- paste0(model_names[time_models], time.shifts[1])
         }
     }
 
@@ -147,6 +153,33 @@ bartlett.variance <- function(model.test_input) {
     test.statistic <- numerator / denominator
     return(pchisq(test.statistic, df = total.group.n - 1, lower.tail = FALSE))
 }
+
+## Lapply wrapper for testing a model.
+lapply.model.test <- function(one_model, data.model.test, pool.variance, control.list, fixed.optima, ..., verbose) {
+    ## Verbose
+    if(verbose) cat("Running model", one_model$name, "\n")
+
+    ## Run the model
+    if(length(one_model)-2 == 1) { #TG: -2 is for the $name and the $time.shift components
+        ## Simple model
+        model_out <- one_model(data.model.test, pool.variance, control.list, fixed.optima, ...)
+    } else {
+        ## Complex model
+    }
+
+    ## Verbose
+    if(verbose) cat(", AICc =", model_out["AICc"], "\n")
+
+    return(model_out)
+}
+
+
+
+
+
+
+
+
 
 
 # plot models
