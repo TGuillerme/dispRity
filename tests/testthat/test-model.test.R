@@ -19,7 +19,12 @@ test_that("select.model.list internal", {
 
 
 ## get.models.names
-match_call <- model.test(1, models = c(mean, c(mean, median), c(mean, mean, mean)))
+get.call <- function(data, models, ...) {
+    match_call <- match.call()
+    return(match_call)
+}
+
+match_call <- get.call(1, models = list(mean, c(mean, median), c(mean, mean, mean)))
 
 test_that("get.models.names internal", {
     expect_equal(
@@ -36,7 +41,6 @@ test_that("get.models.names internal", {
 ## check.shift.length
 subsamples <- seq(1:10)
 
-
 test_that("check.shift.length internal", {
     expect_is(check.shift.length(5, subsamples), "list")
     expect_equal(
@@ -47,3 +51,17 @@ test_that("check.shift.length internal", {
         check.shift.length(c(2,8), subsamples)
         , list(c(2,8), c(8,2)))
 })
+
+## lapply.model.test
+# subsamples <- seq(1:10)
+
+# test_that("check.shift.length internal", {
+#     expect_is(check.shift.length(5, subsamples), "list")
+#     expect_equal(
+#         check.shift.length(5, subsamples)
+#         , list(c(5,5)))
+
+#     expect_equal(
+#         check.shift.length(c(2,8), subsamples)
+#         , list(c(2,8), c(8,2)))
+# })
