@@ -1,4 +1,5 @@
 #' @title Models for changes in disparity
+#' @aliases dispRity.models BM OU EB Stasis Trend
 #' 
 #' @usage
 #' BM(data.model.test, pool.variance, control.list)
@@ -70,8 +71,8 @@ BM <- function(data.model.test, pool.variance, control.list, fixed.optima = NULL
 OU <- function(data.model.test, pool.variance, control.list, fixed.optima, n.optima, ...) { 
 
     ## Extra arguments: #TG: to be dealt with properly!
-    n.optima = 1
-    time_split = NULL
+    # n.optima = 1
+    time_split <- NULL
     time_split <- ifelse(is.null(time_split), 0, time_split)
     time_split <- which.min(abs(data.model.test$subsamples - time_split))
     
@@ -93,7 +94,7 @@ OU <- function(data.model.test, pool.variance, control.list, fixed.optima, n.opt
     optimised_model <- stats::optim(input_parameters, fn = optim.ou.ml, control = control_list, method = "L-BFGS-B", lower = lower_model, hessian = FALSE, data.model.test = data.model.test, time.split = time_split, n.optima = n.optima, fixed.optima = fixed.optima)
 
     ## Return the parameters list
-    parameter_return <- extract.argument(optimised_model, data.model.test, model.name = "OU", fixed.optima = fixed.optima)
+    parameter_return <- extract.argument(optimised_model, data.model.test, model.name = "OU", fixed.optima = fixed.optima, n.optima)
 
     ## Adding the time splits
     if(n.optima > 1) { 

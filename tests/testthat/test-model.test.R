@@ -51,9 +51,7 @@ test_that("check.shift.length internal", {
         , list(c(2,8), c(8,2)))
 })
 
-## lapply.model.test
-# subsamples <- seq(1:10)
-
+# lapply.model.test
 # test_that("check.shift.length internal", {
 #     expect_is(check.shift.length(5, subsamples), "list")
 #     expect_equal(

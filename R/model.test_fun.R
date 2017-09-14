@@ -163,15 +163,16 @@ lapply.model.test <- function(one_model, data.model.test, pool.variance, control
 
     if(length(model_funs) == 1) {
         ## Simple model
-        # model_out <- one_model[[1]](data.model.test, pool.variance, control.list, fixed.optima, ...)
-        model_out <- one_model[[1]](data.model.test, pool.variance, control.list, fixed.optima) ; warning("DEBUG")
+        n.optima <- 1
+        model_out <- one_model[[1]](data.model.test, pool.variance, control.list, fixed.optima, n.optima, ...)
+        # model_out <- one_model[[1]](data.model.test, pool.variance, control.list, fixed.optima, n.optima) ; warning("DEBUG lapply.model.test")
     } else {
         ## Complex model
-        model_out <- one_model()
+        model_out <- model.test.shift.mode()
     }
 
     ## Verbose
-    if(verbose) cat("Done.\nAICc = ", model_out["AICc"], "\n\n", sep = "")
+    if(verbose) cat("Done.\nAICc = ", model_out["AICc"], "\n", sep = "")
 
     return(model_out)
 }

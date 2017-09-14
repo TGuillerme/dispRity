@@ -2,6 +2,11 @@
 % Please edit documentation in R/dispRity.models.R
 \name{dispRity.models}
 \alias{dispRity.models}
+\alias{BM}
+\alias{OU}
+\alias{EB}
+\alias{Stasis}
+\alias{Trend}
 \title{Models for changes in disparity}
 \usage{
 BM(data.model.test, pool.variance, control.list)

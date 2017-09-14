@@ -5,56 +5,40 @@
 \title{Model Test}
 \usage{
 model.test(data, models, pool.variance = NULL, time.shifts = NULL,
-  return.model.full = FALSE, fixed.optima = FALSE,
-  control.list = list(fnscale = -1), verbose = FALSE)
+  return.raw.models = FALSE, fixed.optima = FALSE,
+  control.list = list(fnscale = -1), verbose = FALSE, ...)
 }
 \arguments{
-\item{data}{A \code{dispRity} object used to test models of evolution through time}
+\item{data}{A \code{dispRity} object used to test models of evolution through time.}
 
-\item{pool.variance}{If NULL the difference in variances will be calculated using Bartlett's Test of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument TRUE or FALSE are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances}
+\item{models}{A \code{list} of models for changes in disparity-through-time (see the currently implemented models in \code{\link{dipRity.models}} and the \code{details} below).}
 
-\item{time.shifts}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details})}
+\item{pool.variance}{Either \code{NULL} (default) to use a Bartlett Test (\code{\link[stats]{bartlett.test}}) of equal variance. If there is no significant difference variances, then variance in samples will be pooled and the same variance will be used for all samples. Else a \code{logical} value to force the variance to be pooled or not.}
 
-\item{return.model.full}{Logical argument to return full parameter values from each tested model (default = FALSE)}
+\item{time.shifts}{A \code{list} of ages for eventual changes in mode of evolution to be passed to each model (default is \code{NULL} for no changes).}
 
-\item{fixed.optima}{Logical to use an estimated optimum value in OU models (fixed.optima = FALSE), or whether to set the OU optimum to the ancestral value (fixed.optima = TRUE)}
+\item{return.raw.models}{\code{logical}, whether to return the full parameter values from each tested model (\code{TRUE}) or just the comparisons between the models (\code{FALSE} - default). Note that the later object can be plot using \code{\link{plot.dispRity}}.}
 
-\item{control.list}{Fine-tune control inputs to be passed to the optim function.}
+\item{fixed.optima}{\code{logical}, whether to use an estimated optimum value in the \code{\link{OU}} or \code{\link{Stasis}} models (\code{FALSE}; default), or to set the optimum to the ancestral value (\code{TRUE}).}
 
-\item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+\item{control.list}{A fine-tune control \code{list} of inputs to be passed to \code{\link[stats]{optim}}.}
 
-\item{named.model}{The named model of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model (See \bold{Details})}
+\item{verbose}{A \code{logical} value indicating whether to be verbose or not (default is \code{TRUE}).}
 
-\item{custom.model}{The custom model of evolution to describe the change in disparity-through-time using a hetergenous model with two distinct modes of evolution. This argument requires a time.shifts argument (See \bold{Details})}
-
-\item{plot.disparity}{Logical argument to plot the measure of disparity through time and a barplot of the relative support for each model (default = FALSE)}
+\item{...}{Any additional argument to be passed to the models.}
 }
 \description{
 Fit models of disparity change through time
 }
 \details{
-The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For the time split model if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). The following homogenous models can be fit to the data.
-
-\itemize{
- \item{""BM""}{Fits a unbiased random walk model of evolution (Felsenstein 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
-
- \item{""OU""}{The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values. If this is the case the model is similar to a trend model. If the argument, fixed.optima is set to TRUE, the model will not estimate optima but constrain it to the first value in the sequence}
-
- \item{""Trend""}{Fits a Brownian motion model with a directional component. This model is also known as the General Random Walk (Hunt 2006). This model has three parameters: the ancestral state, the 'step-variance' (sigma-squared), and the trend component}
-
- \item{""Stasis""}{Fits a model in which traits evolve with variance (omega) around a mean (theta). This model is time-independent in that the model is guided only by the variance and attraction to the mean (Hunt 2006)}
-
- \item{""Early Burst""}{Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease}
-
- \item{""multiOU""}{Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples}
- 
- \item{""multiStasis""}{Fits a model in which the value of the mean stasis value (theta) shifts at one or more time splits. The value of the noise around these mean values (omega) is shared across the entire sequence}
- 
- \item{""BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis""}{In these models the ancestral state is taken as from the mode in the first sequence and is used as the starting ancestral state in the second sequence}
-}
+The models are fit using maximum likelihood optimisation using the function \code{\link[stats]{optim}} Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For time split models if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). The following homogenous models can be fit to the data.
 }
 \examples{
-## To Add
+## Loading data
+data(disparity)
+
+## Testing which model fits the disparity curve
+model.test(disparity, models = list(BM, OU, EB, Stasis, Trend))
 
 }
 \references{

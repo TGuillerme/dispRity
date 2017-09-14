@@ -2,39 +2,28 @@
 #'
 #' @description Fit models of disparity change through time
 #'
-#' @param data A \code{dispRity} object used to test models of evolution through time
-#' @param named.model The named model of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model (See \bold{Details}) 
-#' @param custom.model The custom model of evolution to describe the change in disparity-through-time using a hetergenous model with two distinct modes of evolution. This argument requires a time.shifts argument (See \bold{Details}) 
-#' @param pool.variance If NULL the difference in variances will be calculated using Bartlett's Test of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument TRUE or FALSE are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances
-#' @param time.shifts The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}) 
-#' @param return.model.full Logical argument to return full parameter values from each tested model (default = FALSE)
-#' @param plot.disparity Logical argument to plot the measure of disparity through time and a barplot of the relative support for each model (default = FALSE)
-#' @param fixed.optima Logical to use an estimated optimum value in OU models (fixed.optima = FALSE), or whether to set the OU optimum to the ancestral value (fixed.optima = TRUE)
-#' @param control.list Fine-tune control inputs to be passed to the optim function.
-#' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#' @param data A \code{dispRity} object used to test models of evolution through time.
+#' @param models A \code{list} of models for changes in disparity-through-time (see the currently implemented models in \code{\link{dipRity.models}} and the \code{details} below).
+#' @param pool.variance Either \code{NULL} (default) to use a Bartlett Test (\code{\link[stats]{bartlett.test}}) of equal variance. If there is no significant difference variances, then variance in samples will be pooled and the same variance will be used for all samples. Else a \code{logical} value to force the variance to be pooled or not.
+#' @param time.shifts A \code{list} of ages for eventual changes in mode of evolution to be passed to each model (default is \code{NULL} for no changes).
+# 
+#TG: Need to reimplement this bit!
+# If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}) 
+# 
+#' @param return.raw.models \code{logical}, whether to return the full parameter values from each tested model (\code{TRUE}) or just the comparisons between the models (\code{FALSE} - default). Note that the later object can be plot using \code{\link{plot.dispRity}}.
+#' @param fixed.optima \code{logical}, whether to use an estimated optimum value in the \code{\link{OU}} or \code{\link{Stasis}} models (\code{FALSE}; default), or to set the optimum to the ancestral value (\code{TRUE}).
+#' @param control.list A fine-tune control \code{list} of inputs to be passed to \code{\link[stats]{optim}}.
+#' @param verbose A \code{logical} value indicating whether to be verbose or not (default is \code{TRUE}).
+#' @param ... Any additional argument to be passed to the models.
 #' 
-#' @details The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For the time split model if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). The following homogenous models can be fit to the data.
-#' 
-#' \itemize{
-#'  \item{""BM""}{Fits a unbiased random walk model of evolution (Felsenstein 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
-#' 
-#'  \item{""OU""}{The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values. If this is the case the model is similar to a trend model. If the argument, fixed.optima is set to TRUE, the model will not estimate optima but constrain it to the first value in the sequence}
-#' 
-#'  \item{""Trend""}{Fits a Brownian motion model with a directional component. This model is also known as the General Random Walk (Hunt 2006). This model has three parameters: the ancestral state, the 'step-variance' (sigma-squared), and the trend component}
-#' 
-#'  \item{""Stasis""}{Fits a model in which traits evolve with variance (omega) around a mean (theta). This model is time-independent in that the model is guided only by the variance and attraction to the mean (Hunt 2006)}
-#' 
-#'  \item{""Early Burst""}{Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease}
-#' 
-#'  \item{""multiOU""}{Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples}
-#'  
-#'  \item{""multiStasis""}{Fits a model in which the value of the mean stasis value (theta) shifts at one or more time splits. The value of the noise around these mean values (omega) is shared across the entire sequence}
-#'  
-#'  \item{""BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis""}{In these models the ancestral state is taken as from the mode in the first sequence and is used as the starting ancestral state in the second sequence}
-#' }
+#' @details The models are fit using maximum likelihood optimisation using the function \code{\link[stats]{optim}} Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For time split models if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). The following homogenous models can be fit to the data.
 #'
 #' @examples
-#' ## To Add
+#' ## Loading data
+#' data(disparity)
+#' 
+#' ## Testing which model fits the disparity curve
+#' model.test(disparity, models = list(BM, OU, EB, Stasis, Trend))
 #' 
 #' @seealso \code{\link{model.test.sim}}.
 #'
@@ -74,7 +63,7 @@
 
 # model.test <- function(data, named.model = c("BM", "OU", "Stasis", "EB", "Trend", "multiOU", "multiStasis", "BM.to.Trend", "BM.to.EB", "BM.to.Stasis", "BM.to.OU", "OU.to.BM", "OU.to.Trend", "OU.to.EB", "Stasis.to.BM", "Stasis.to.EB", "Stasis.to.Trend", "Trend.to.OU", "Trend.to.Stasis"), custom.model = NULL, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, plot.disparity = TRUE, fixed.optima = FALSE, control.list = list(fnscale = -1)) {
 
-model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, return.model.full = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE) {
+model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, return.raw.models = FALSE, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE, ...) {
     
     match_call <- match.call()
 
@@ -170,10 +159,10 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         p_test <- bartlett.variance(model_test_input)
         if(p_test < 0.05) {
             pool.variance <- FALSE
-            if(verbose) cat("Evidence of unequal variance, Bartlett's test of equal variances (p = ", signif(p_test, 3), "). Variance was not pooled.\n", sep = "")
+            if(verbose) cat("Evidence of unequal variance, Bartlett's test of equal variances (p = ", signif(p_test, 3), ").\nVariance is not pooled.\n", sep = "")
         } else {
             pool.variance <- TRUE
-            if(verbose) cat("Evidence of equal variance, Bartlett's test of equal variances (p = ", signif(p_test, 3), "). Variance was pooled.\n", sep = "")
+            if(verbose) cat("Evidence of equal variance, Bartlett's test of equal variances (p = ", signif(p_test, 3), ").\nVariance is pooled.\n", sep = "")
         }
     }
     ## Pool the variance if necessary
@@ -181,8 +170,8 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
         model_test_input <- pooled.variance(model_test_input, TRUE) #TG: why is the variance rescaled here and not in the bartlett.variance function? If ideally we'd like to recycle this pooled.variance function from the bartlett.variance function if p_test < 0.05 (rather than recalculate it).
     }
 
-    ## Checking return.model.full
-    check.class(return.model.full, "logical")
+    ## Checking return.raw.models
+    check.class(return.raw.models, "logical")
 
     ## Checking fixed.optima
     check.class(fixed.optima, "logical")
@@ -227,56 +216,10 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
     }
 
     ## run models
-    # model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list = control.list, fixed.optima = fixed.optima, verbose = verbose, ...)
+    model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list = control.list, fixed.optima = fixed.optima, verbose = verbose, ...)
     # model_out_list <- lapply(models, lapply.model.test, data.model.test = model_test_input, pool.variance = pool.variance, control.list = control.list, fixed.optima = fixed.optima, verbose = verbose) ; warning("DEBUG model.test")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # if(any(try.models == "BM")) {
-    #     cat("\n", "testing BM model")
-    #     model_list$bm <- model.test.bm(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list)
-    #     cat(", AICc =", model_list$bm["AICc"])
-    # }
-    
-    # if(any(try.models == "OU")) {
-    #     cat("\n", "testing OU model")
-    #     model_list$ou <- model.test.ou(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list, fixed.optima=fixed.optima)
-    #     cat(", AICc =", model_list$ou["AICc"])
-    # }
-    
-    # if(any(try.models == "Stasis")) {
-    #     cat("\n", "testing Stasis model")
-    #     model_list$stasis <- model.test.stasis(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list)
-    #     cat(", AICc =", model_list$stasis["AICc"])
-    # }
-    
-    # if(any(try.models == "EB")) {
-    #     cat("\n", "testing Early Burst model")
-    #     model_list$eb <- model.test.eb(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list)
-    #     cat(", AICc =", model_list$eb["AICc"])
-    # }
-    
-    # if(any(try.models == "Trend")) {
-    #     cat("\n", "testing Trend model")
-    #     model_list$trend <- model.test.trend(data.model.test = model_test_input, pool.variance = pool.variance, cl = control.list)
-    #     cat(", AICc =", model_list$trend["AICc"])
-    # }
     
     # ## For multi-mode and shift models if the user supplies a shift time a priori only that shift time is test. If shift time is not supplied, the fit of a shift is tested at all time points and returns the model with the highest likelihood
     
@@ -642,8 +585,15 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
     #     cat("\n", "AICc =", model_list$trend.to.stasis["AICc"])
     # }
     
-    # ## run custom models if user-supplied
-    
+
+
+
+
+
+
+
+    ## run custom models if user-supplied #TG: this bit will be the architecture for the combined models!
+
     # if(is.null(time.shifts) && !is.null(custom.model)) {
     #     warning("custom model with no time.shifts - custom model not run")
     # }
@@ -660,14 +610,49 @@ model.test <- function(data, models, pool.variance = NULL, time.shifts = NULL, r
     #     cat(" .Done.")
     # }
 
-    # ## judge all models using AICc values
-    # aic.out <- sapply(    model_list, function(x) x["AICc"])
-    # names(aic.out) <- names(model_list)
-    # delta.aicc <- aic.out - min(aic.out)
-    # weight.aicc <- exp(-0.5 * delta.aicc) / sum(exp(-0.5 * delta.aicc))
-    # order.aicc <- order(weight.aicc, decreasing=T)
+
+
+
+    ## Sorting the results
+
+
+    if(!return.raw.models) {
+        ## Get all the corrected AIC
+        aic_out <- sapply(model_out_list, function(x) x["AICc"])
+        ## Calculate the Delta and weighted AIC
+        delta_aicc <- aic_out - min(aic_out)
+        weight_aicc <- exp(-0.5 * delta_aicc) / sum(exp(-0.5 * delta_aicc))
+
+        ## Ordering the results
+        order_aicc <- order(weight_aicc, decreasing = TRUE)
+
+        ## Output matrix
+        output_table <- cbind(aic_out, delta_aicc, weight_aicc,
+                              sapply(model_out_list, function(x) x["log_likelihood"]),
+                              sapply(model_out_list, function(x) x["n_parameters"]),
+                              sapply(model_out_list, function(x) x["sample_size"]))
+
+        ## Adding the likelihood and sample columns
+        colnames(output_table)[4:6] <- c("log(lik)", "param", "sample")
+        rownames(output_table) <- true_model_names
+
+        ## Output object #TG: this needs to be thought through (to know what we need for plots, etc...)
+        output <- list()
+        # output$call <- data$call
+        # output$data <- model_test_input
+        output$results <- output_table
+        # output$results <- model_out_list
+
+        ## Naming the output class #TG: To deal with later
+        #class(output) <- c("dispRity", "model.test")
+
+        return(output)
+    } else {
+        return(model_out_list)
+    }
+
     
-    # if(plot.disparity) {
+    # if(plot.disparity) { #TG: This bit should be dealt properly in plot.dispRity
     
     #     par(mfrow=c(1, 2), mar=c(4,4,2,2), oma=c(10, 4, 4, 4))
     #     xAxis <- max(model_test_input[[4]]) - model_test_input[[4]]
