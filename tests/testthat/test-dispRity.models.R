@@ -3,15 +3,11 @@
 context("dispRity.models")
 
 ## Test data
-data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
-data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
-data <- dispRity(data_bootstrapped, c(sum, variances))
-
-model_test_input <- select.model.list(data)
+load("model_test_data.Rda")
 
 ## Selecting parameters
 test_that("select.parameters internal", {
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
 
     expect_null(select.parameters(model_input, "bob"))
 
@@ -49,7 +45,7 @@ test_that("BM function failed", {
     model_name <- "BM"
     model_fun <- optim.bm.ml
 
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
     control.list <- list(fnscale = -1)
 
     expected_input_parameters <- c(2.592489466, 0.000799266)
@@ -94,7 +90,7 @@ test_that("OU function failed", {
     time.split <- 0
     n.optima <- 1
 
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
     model_input <- pooled.variance(model_input, rescale.variance = TRUE)
     control.list <- list(fnscale = -1)
 
@@ -142,7 +138,7 @@ test_that("EB function failed", {
     model_name <- "EB"
     model_fun <- optim.eb.ml
 
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
     model_input <- pooled.variance(model_input, rescale.variance = TRUE)
     control.list <- list(fnscale = -1)
 
@@ -185,10 +181,10 @@ test_that("Stasis function failed", {
     model_name <- "Stasis"
     model_fun <- optim.stasis.ml
 
-    time.split <- 0
+    time.split <- 1
     n.optima <- 1
 
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
     model_input <- pooled.variance(model_input, rescale.variance = TRUE)
     control.list <- list(fnscale = -1)
 
@@ -216,7 +212,7 @@ test_that("Stasis function failed", {
         , precision(expected_control_list$ndeps))
 
     ## Run the model
-    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control_up, method = "L-BFGS-B", lower = c(0, rep(NA, n.optima)), data.model.test = model_input, time.split = time_split, n.optima = n.optima)
+    optimised_model <- stats::optim(input_parameters, fn = model_fun, control = control_up, method = "L-BFGS-B", lower = c(0, rep(NA, n.optima)), data.model.test = model_input, time.split = time.split, n.optima = n.optima)
 
     ## Get the arguments out
     output <- extract.argument(optimised_model, model_input, model_name, n.optima = n.optima)
@@ -230,7 +226,7 @@ test_that("Trend function failed", {
     model_name <- "Trend"
     model_fun <- optim.trend.ml
 
-    model_input <- select.model.list(data)
+    model_input <- select.model.list(model_test_data)
     model_input <- pooled.variance(model_input, rescale.variance = TRUE)
     control.list <- list(fnscale = -1)
 
