@@ -84,14 +84,16 @@ get.input.parameters <- function(data.model.test, model.name, fixed.optima = NUL
         input_parameters <- c(input_parameters, rep(data.model.test$central_tendency[length(data.model.test$central_tendency)], n.optima))
     }
 
-    ## Adding a 0 tolerance
-    # zeros <- which(input_parameters[-1] <= 0)
-    # if(length(zeros) > 0) {
-    #     for(zero in 1:length(zeros)) {
-    #         input_parameters[-1][zeros[zero]] <- 1e-04
-    #     }
-    # }
-    input_parameters[2] <- ifelse(input_parameters[2] <= 0, 1e-04, input_parameters[2])
+    ## Stasis parameter selection
+    if(model.name == "Stasis") {
+        ## Remove the central tendency
+        input_parameters <- input_parameters[-1]
+
+        ## Repeat the theta per number of optima
+        input_parameters <- c(input_parameters, rep(input_parameters[2], n.optima - 1))
+    }
+
+    input_parameters[2] <- ifelse(input_parameters[2] <= 0 || is.na(input_parameters[2]), 1e-04, input_parameters[2])
 
     return(input_parameters)
 }
@@ -108,7 +110,7 @@ update.control.list <- function(control.list, input_parameters) {
 }
 
 ## Extracting the results for a model
-extract.argument <- function(optimised_model, data.model.test, model.name, fixed.optima = NULL) {
+extract.argument <- function(optimised_model, data.model.test, model.name, fixed.optima = NULL, n.optima = NULL) {
     ## Ancestral states
     ancestral_state <- as.vector(optimised_model$par[1])
     ## Sigma squared
@@ -155,9 +157,42 @@ extract.argument <- function(optimised_model, data.model.test, model.name, fixed
     ## EB output
     if(model.name == "EB") {
         ## Getting the early burst rate
-        eb_rate <- optimised_model$par[3]
+        eb_rate <- as.vector(optimised_model$par[3])
         ## Output
         return(c("log_likelihood" = log_likelihood, "ancestral_state" = ancestral_state, "sigma_squared" = sigma_squared, "eb_rate" = eb_rate, "sample_size" = sample_size, "n_parameters" = n_parameters, "AIC" = aics[1], "AICc" = aics[2]))
+    }
+
+    ## Stasis output
+    if(model.name == "Stasis") {
+        ## Extracting omega
+        omega <- optimised_model$par[1]
+
+        ## Extracting theta (can be multiple)
+        theta <- optimised_model$par[-1]
+
+        ## Selecting theta display
+        if(n.optima == 1) {
+            theta_text <- "theta"
+        } else {
+            theta_text <- paste0("theta:", 1:n.optima)
+        }
+
+        ## Selecting the output parameters
+        parameter_return <- c(log_likelihood, omega, theta, sample_size, n_parameters, aics[1], aics[2])
+        ## Naming the output parameters
+        names(parameter_return) <- c("log_likelihood", "omega", theta_text, "sample_size", "n_parameters", "AIC", "AICc")
+      
+        ## Output
+        return(parameter_return)
+    }
+
+    ## Trend output
+    if(model.name == "Trend") {
+        ## Get the trend
+        trend <- as.vector(optimised_model$par[3])
+        
+        ## Output
+        return(c("log_likelihood" = log_likelihood, "ancestral_state" = ancestral_state, "sigma_squared" = sigma_squared, "trend" = trend, "sample_size" = sample_size, "n_parameters" = n_parameters, "AIC" = aics[1], "AICc" = aics[2]))
     }
 
     ## Else, not implemented

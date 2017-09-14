@@ -13,8 +13,10 @@ source('model.test.sim.R', chdir = TRUE)
 	
 	continuousData <- time.subsamples(BeckLee_mat99, BeckLee_tree, method="continuous", time=seq(120, 0, length.out=120), model="gradual")
 	data_bootstrapped <- boot.matrix(continuousData)
-	trueMedian <- sapply(data_bootstrapped[[3]], function(x)   median(data_bootstrapped[[1]][x[[1]]] ))
 	sumVar <- dispRity(data_bootstrapped, c(sum, variances))
+	
+	trueMedian <- sapply(data_bootstrapped[[3]], function(x)   median(data_bootstrapped[[1]][x[[1]]] ))
+	
 
 	# my_model_testings <- model.test(input_disparity, models = c(“OU”, “BM”)) - your suggestion is called 'model.test'
 
