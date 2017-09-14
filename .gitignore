@@ -10,6 +10,7 @@ doc/*.fls
 null.test/*
 #Other drafts
 drafts/*
+R/MarkOrig/*
 
 # Oldies
 inst/old/*
