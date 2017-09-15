@@ -230,25 +230,25 @@ When multiple functions are passed to the \texttt{metric} argument, the function
 For example, if the metric is defined as \texttt{metric = c(mean, range)}, the \texttt{range} function (dimension-level 2) is first applied to the data and the function \texttt{mean} is then applied to the result (e.g. \texttt{mean(range(data))}).
 There is no limitation on the metric dimensions only that at least one dimension-level 2 or 1 function must be present in the metric definition (i.e. disparity can only be defined as distribution or a single value).
 
-% \begin{table}
-% \resizebox{\textwidth}{!}
-% {%
-%     \begin{tabular}{p{2cm}|p{5cm}|p{1cm}|p{5cm}|p{5cm}}
-%         name & description & dimen-sion level & definition & source \\
-%         \hline
-%         \texttt{ellipse. volume}$^1$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
-%         \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
-%         \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
-%         \texttt{diagonal} & The greatest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & \texttt{dispRity::diagonal} \\
-%         \texttt{mode.val} & The modal value & 1 & NA & \texttt{dispRity::mode.val}\\
-%         \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & \texttt{dispRity::ranges} \\
-%         \texttt{variances} & The variance of each dimension & 2 & $\sigma^{2}{k_i}$ & \texttt{dispRity::variances} \\
-%         \texttt{centroids} & The distance between each element and a fixed point$^2$ of the space & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}$ & \texttt{dispRity::centroids} \\
-%     \end{tabular}
-% }%
-%     \caption{\small{Where $k$ is the number of dimensions, $n$ the number of elements, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean. $^1$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA); $^2$ by default that point is the centroid of the elements.}}
-%     \label{Tab:metrics}
-% \end{table}
+\begin{table}
+\resizebox{\textwidth}{!}
+{%
+    \begin{tabular}{p{2cm}|p{5cm}|p{1cm}|p{5cm}|p{5cm}}
+        name & description & dimen-sion level & definition & source \\
+        \hline
+        \texttt{ellipse. volume}$^1$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
+        \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
+        \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
+        \texttt{diagonal} & The greatest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & \texttt{dispRity::diagonal} \\
+        \texttt{mode.val} & The modal value & 1 & NA & \texttt{dispRity::mode.val}\\
+        \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & \texttt{dispRity::ranges} \\
+        \texttt{variances} & The variance of each dimension & 2 & $\sigma^{2}{k_i}$ & \texttt{dispRity::variances} \\
+        \texttt{centroids} & The distance between each element and a fixed point$^2$ of the space & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}$ & \texttt{dispRity::centroids} \\
+    \end{tabular}
+}%
+    \caption{\small{Where $k$ is the number of dimensions, $n$ the number of elements, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean. $^1$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA); $^2$ by default that point is the centroid of the elements.}}
+    \label{Tab:metrics}
+\end{table}
 
 \subsection{Splitting the multidimensional space into subsets}
 Prior to calculating disparity, the multidimensional space can be subdivided into subsamples, typically to be compared to each other.
