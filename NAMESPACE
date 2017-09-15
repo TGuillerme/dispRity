@@ -11,6 +11,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn", "data", "capture.output")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
+# importFrom("geoscale", "timescales") #TG: somehow doesn't loads
 # importFrom("Claddis", "MorphDistMatrix")
 # importFrom("geomorph", "gpagen")
 # importFrom("methods", "hasArg")
@@ -70,6 +71,7 @@ export(space.maker)
 export(pair.plot)
 export(slice.tree)
 export(clean.data)
+export(get.bin.ages)
 
 ##Morphological data analysis
 export(sim.morpho)

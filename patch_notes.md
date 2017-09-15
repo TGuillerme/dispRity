@@ -1,5 +1,7 @@
 Patch notes
 ----
+* 2017/09/15 - v0.4.1 
+  * *New* function: `get.bin.ages` for getting the geological timescale of a tree (based on `geoscale`).
 * 2017/08/21 - v0.4.0 *user friendly*
   * Entirely rewritten manual (in GitBook)!
   * **Removed** `hyper.volume` metric for dependencies reasons
