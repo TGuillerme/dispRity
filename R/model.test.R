@@ -93,11 +93,11 @@ model.test <- function(input_disparity, model, pool.variance=NULL, time.split.mo
 					model.test.lik(model.test_input, model.type, time.split=x, control.list, fixed.optima=fixed.optima)
 				})
 				best.model <- which.max(sapply(model.test.all.times, function(x) x[[2]]))
-				cat("best split time found at", model.test.all.times[best.model])
+				model.return <- model.test.all.times[best.model][[1]]	
+				cat(" best split time found at", ten.times[best.model])
 				cat(" log-likelihood: ", model.return$value)
 				cat(". Finished.")
-				cat("\n")
-				model.return <- model.test.all.times[best.model][[1]]				
+				cat("\n")		
 			} else {
 				warning("fewer than 30 samples - time split models not run")
 				run.time.split <- FALSE
