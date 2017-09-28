@@ -84,7 +84,6 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
             #Check if the age of the tip is not in between the FAD/LAD
             if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
 
-
                 #Chose the tip/node following the given model
                 if(model == "punctuated") {
                     selected_model <- sample(c("deltran", "acctran"), 1)
