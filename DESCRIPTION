@@ -3,7 +3,7 @@ Title: Measuring disparity in R
 Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 0.4.1
-Date: 2017-08-21
+Date: 2017-09-15
 Description: A modular package for measuring disparity from multidimensional matrices. Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. disparity through time) or per groups as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
 Depends:
     R (>= 3.0.0),
@@ -15,6 +15,7 @@ Imports:
   paleotree,
   phangorn,
   phyclust,
+  geoscale,
   snow
 License: GPL-3
 VignetteBuilder: knitr

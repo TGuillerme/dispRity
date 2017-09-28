@@ -81,7 +81,6 @@ export(space.maker)
 export(pair.plot)
 export(slice.tree)
 export(clean.data)
-export(make.dispRity.models)
 export(get.bin.ages)
 
 ##Morphological data analysis
