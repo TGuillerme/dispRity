@@ -4,42 +4,33 @@
 \alias{model.test}
 \title{Model Test}
 \usage{
-model.test(data, models, pool.variance = NULL, time.shifts = NULL,
-  return.raw.models = FALSE, fixed.optima = FALSE,
-  control.list = list(fnscale = -1), verbose = FALSE, ...)
+model.test(input_disparity, model, pool.variance = NULL,
+  time.split.model = NULL, return.model.full = FALSE,
+  plot.disparity = TRUE, fixed.optima = FALSE, control.list = list(fnscale
+  = -1))
 }
 \arguments{
-\item{data}{A \code{dispRity} object used to test models of evolution through time.}
+\item{input_disparity}{A dispRity object used to test models of evolution through time}
 
-\item{models}{A \code{list} of models for changes in disparity-through-time (see the currently implemented models in \code{\link{dipRity.models}} and the \code{details} below).}
+\item{model}{The named model of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model. A single model can be used as input or multiple modes can be supplied in a vector. If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by 'time.split'. If a list is supplied different models will be fit to the data (See \bold{Details})}
 
-\item{pool.variance}{Either \code{NULL} (default) to use a Bartlett Test (\code{\link[stats]{bartlett.test}}) of equal variance. If there is no significant difference variances, then variance in samples will be pooled and the same variance will be used for all samples. Else a \code{logical} value to force the variance to be pooled or not.}
+\item{pool.variance}{If NULL the difference in variances will be calculated using Bartlett's Test of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument TRUE or FALSE are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances}
 
-\item{time.shifts}{A \code{list} of ages for eventual changes in mode of evolution to be passed to each model (default is \code{NULL} for no changes).}
+\item{return.model.full}{Logical argument to return full parameter values from each tested model (default = FALSE)}
 
-\item{return.raw.models}{\code{logical}, whether to return the full parameter values from each tested model (\code{TRUE}) or just the comparisons between the models (\code{FALSE} - default). Note that the later object can be plot using \code{\link{plot.dispRity}}.}
+\item{plot.disparity}{Logical argument to plot the measure of disparity through time and a barplot of the relative support for each model (default = FALSE)}
 
-\item{fixed.optima}{\code{logical}, whether to use an estimated optimum value in the \code{\link{OU}} or \code{\link{Stasis}} models (\code{FALSE}; default), or to set the optimum to the ancestral value (\code{TRUE}).}
+\item{fixed.optima}{Logical to use an estimated optimum value in OU models (fixed.optima = FALSE), or whether to set the OU optimum to the ancestral value (fixed.optima = TRUE)}
 
-\item{control.list}{A fine-tune control \code{list} of inputs to be passed to \code{\link[stats]{optim}}.}
+\item{control.list}{Fine-tune control inputs for the optim function}
 
-\item{verbose}{A \code{logical} value indicating whether to be verbose or not (default is \code{TRUE}).}
-
-\item{...}{Any additional argument to be passed to the models.}
+\item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details})}
 }
 \description{
 Fit models of disparity change through time
 }
-\details{
-The models are fit using maximum likelihood optimisation using the function \code{\link[stats]{optim}} Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For time split models if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). The following homogenous models can be fit to the data.
-}
 \examples{
-## Loading data
-data(disparity)
-
-## Testing which model fits the disparity curve
-model.test(disparity, models = list(BM, OU, EB, Stasis, Trend))
-
+## To Add
 }
 \references{
 To Add: Hunt 2006, Hunt 2008, Harmon 2010,
