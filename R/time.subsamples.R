@@ -69,6 +69,14 @@
 # inc.nodes = TRUE
 # FADLAD = BeckLee_ages
 
+# data <- matrix_ord_Hall
+# tree <- tree_Hall
+# method = "continuous"
+# model = "gradual"
+# time <- c(120, 44)
+# verbose <- TRUE
+
+
 time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE) {
     
     ## ----------------------

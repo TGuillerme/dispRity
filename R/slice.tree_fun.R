@@ -3,7 +3,7 @@
 #Select the parent node of a tip
 slice.tree_parent.node <- function(tree, tip) {
     #Selecting parent edge in the full tree
-    parent.edge <- tree$edge[which(tree$edge[,2] == grep(tip, c(tree$tip.label, tree$node.label))[1]), 1]
+    parent.edge <- tree$edge[which(tree$edge[,2] == which(tip == c(tree$tip.label, tree$node.label))), 1]
     #Selecting parent node in the full tree
     parent_node <- tree$node.label[parent.edge-Ntip(tree)]
     #error if not working
@@ -23,18 +23,20 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
         stop('Parent node is a tip!')
     }
     #Extracting the subtrees connected to the parent node
-    offsprings <- tree$edge[which(tree$edge[,1] == (match(parent_node, tree$node.label)+Ntip_tree)), 2]
+    offsprings <- tree$edge[which(tree$edge[,1] == (which(parent_node == tree$node.label)+Ntip_tree)), 2]
     #Testing which subtree contains tip
     for (node in 1:length(offsprings)) {
         #Check if the "node" is a node or a tip
         if(offsprings[node] > Ntip_tree) {
             subtree <- extract.clade(tree, offsprings[node])
-            if(length(grep(tip, subtree$tip.label)) == 1) {
+            if(tip %in% subtree$tip.label) {
+            # if(length(grep(tip, subtree$tip.label)) == 1) {
                 offspring.edge <- offsprings[node]
             }
         } else {
             subtree <- tree$tip.label[offsprings[node]]
-            if(length(grep(tip, subtree)) == 1) {
+            if(tip %in% subtree) {
+            # if(length(grep(tip, subtree)) == 1) {
                 offspring.edge <- offsprings[node]
             }
         }
