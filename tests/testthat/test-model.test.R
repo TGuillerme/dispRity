@@ -6,59 +6,61 @@ context("model.test")
 load("model_test_data.Rda")
 data <- model_test_data
 
-test_that("select.model.list internal", {
-    model_input <- select.model.list(data)
+test_that("simple models work", {
+    set.seed(1)
+    test <- model.test(data, model = "BM", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
 
-    expect_is(model_input, "list")
-    expect_equal(names(model_input), c("central_tendency", "variance", "sample_size", "subsamples"))
-    expect_equal(unique(unlist(lapply(model_input, class))), "numeric")
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), 10.0892)
 
-    ## MISSING OPTIONAL ARGUMENTS TEST!
+    set.seed(1)
+    test <- model.test(data, model = "Stasis", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(-15.11164, digit = 4))
+
+    set.seed(1)
+    test <- model.test(data, model = "Trend", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(12.77702, digit = 4))
+
+    set.seed(1)
+    test <- model.test(data, model = "OU", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(13.36439, digit = 4))
+
+    set.seed(1)
+    test <- model.test(data, model = "multi.OU", pool.variance = NULL, time.split = c(45, 65), fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
+
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(10.08924, digit = 4))
+
 })
 
+test_that("multiple.models work", {
+    models.to.test <- list("BM", "OU", "Stasis", "EB", "Trend", "multi.OU", c("Stasis", "Stasis"), c("BM", "Trend"), c("BM", "EB"), c("OU", "Trend"), c("OU", "EB"), c("Stasis", "EB"), c("Stasis", "Trend"))
 
-## get.models.names
-get.call <- function(data, models, ...) {
-    match_call <- match.call()
-    return(match_call)
-}
+    test <- model.test(data, model = models.to.test, control.list=list(fnscale = -1), time.split = 65, verbose = FALSE) 
 
-match_call <- get.call(1, models = list(mean, c(mean, median), c(mean, mean, mean)))
-
-test_that("get.models.names internal", {
-    expect_equal(
-        get.models.names(match_call, time.shifts = NULL)
-        , c("mean", "mean:median", "multimean"))
-    expect_equal(
-        get.models.names(match_call, time.shifts = list(NULL, 88))
-        , c("mean", "mean:median88", "multimean"))
-    expect_equal(
-        get.models.names(match_call, time.shifts = 88)
-        , c("mean", "mean:median88", "multimean"))
+    expect_equal(class(test), c("dispRity", "model.test"))
+    expect_equal(names(test), c("aic.models", "full.details", "call"))
+    expect_is(test[[1]], c("matrix"))
+    expect_is(test[[2]], c("list"))
 })
-
-## check.shift.length
-subsamples <- seq(1:10)
-
-test_that("check.shift.length internal", {
-    expect_is(check.shift.length(5, subsamples), "list")
-    expect_equal(
-        check.shift.length(5, subsamples)
-        , list(c(5,5)))
-
-    expect_equal(
-        check.shift.length(c(2,8), subsamples)
-        , list(c(2,8), c(8,2)))
-})
-
-# lapply.model.test
-# test_that("check.shift.length internal", {
-#     expect_is(check.shift.length(5, subsamples), "list")
-#     expect_equal(
-#         check.shift.length(5, subsamples)
-#         , list(c(5,5)))
-
-#     expect_equal(
-#         check.shift.length(c(2,8), subsamples)
-#         , list(c(2,8), c(8,2)))
-# })
