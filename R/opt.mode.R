@@ -110,5 +110,5 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, ou.split, fi
 	total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
 	total_mean <-  c(total_mean, output.mean)
 	}
-	dmnorm(t(data.model.test$central_tendency), mean =  total_mean, varcov = total_VCV, log = TRUE)
+	mnormt::dmnorm(t(data.model.test$central_tendency), mean =  total_mean, varcov = total_VCV, log = TRUE)
 }
