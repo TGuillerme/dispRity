@@ -44,7 +44,6 @@
 
 print.dispRity <- function(x, all = FALSE, ...) {
 
-
     if(all) {
         ## Print everything
         tmp <- x
@@ -64,7 +63,6 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 x <- lapply(x, remove.call)
 
-
                 if(length(x) == 1) {
                     print(x[[1]])
                 } else {
@@ -72,6 +70,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     class(tmp) <- "list"
                     print(tmp) 
                 }
+                return()
+            } 
+            if(class(x)[2] == "model.test") {
+                cat("Disparity evolution model fitting:\n")
+                print(x$aic.models)
                 return()
             }
         }

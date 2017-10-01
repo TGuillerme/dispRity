@@ -31,6 +31,7 @@
 #'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
 #'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
 #' }
+#' 
 #TG: The following is from sequential.test (not implemented yet)
 # The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
 # \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
@@ -118,72 +119,9 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     #SANITIZING
     #DATA
 
-    #Plot sequential.test shortcut
-    # if(length(class(data)) == 2) {
-    #     if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
-
-    #         #lines.args sanitizing
-    #         if(!is.null(lines.args)) check.class(lines.args, "list")
-
-    #         #token.args sanitizing
-    #         if(!is.null(token.args)) check.class(token.args, "list")
-
-    #         #Creating the table results
-    #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
-
-    #         #Checking if distribution
-    #         is_distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
-
-    #         #significance sanitizing
-    #         if(is_distribution == TRUE) {
-    #             if(class(significance) == "character") {
-    #                 if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
-    #                 significance = 1
-    #             } else {
-    #                 check.class(significance, "numeric", " must be either 'cent.tend' or a single 'numeric' value.")
-    #                 check.length(significance, 1, " must be either 'cent.tend' or a single 'numeric' value.")
-    #                 if(is.na(match(significance, seq(from = 1, to = length(quantiles)*2)))) {
-    #                     stop("significance argument must be the number of the quantile (e.g. 1 for the first quantile).")
-    #                 } else {
-    #                     significance = significance + 1
-    #                 }
-    #             }
-    #         }
-
-
-    #         #Plotting the results
-    #         if(add != TRUE) {
-    #             #subsamples
-    #             subsamples <- unique(unlist(strsplit(names(data$models), split = " - ")))
-    #             #Get the all the intercepts estimate
-    #             if(is_distribution == TRUE) {
-    #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(subsamples)-2),significance]), unlist(results_out$Slopes$Estimate[(length(subsamples)-1),significance]))))
-    #             } else {
-    #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(subsamples)-1),1], results_out$Slopes[(length(subsamples)-1),1]))
-    #             }
-                
-    #             if(missing(xlab)) {
-    #                 xlab <- "subsamples"
-    #             }
-    #             if(missing(ylab)) {
-    #                 ylab <- "Estimated disparity"
-    #             }
-
-    #             #Empty plot
-    #             subsamples_length <- length(subsamples)
-    #             plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
-    #             #plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
-    #             axis(1, at = 1:subsamples_length, labels = subsamples)
-    #         }
-
-    #         plot.seq.test(results_out, is_distribution, significance, lines.args, token.args)
-
-    #     }
-
-
-    ## ----
-    ## Modified randtest plot
-    ## ----
+    #----------------------
+    # SPECIAL SHORTCUTS (dual classes)
+    #----------------------
 
     if(length(class(data)) > 1) {
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
@@ -211,7 +149,18 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
                 plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
                 ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
-        }
+        } 
+
+         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+            ## Colours
+            if(missing(col)) {
+                col <- "grey"
+            }
+
+            ## Plotting the model support
+            plot.model.test.support(data, col, ...)
+         }
+
         return(invisible())
     }
 
