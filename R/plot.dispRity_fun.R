@@ -494,7 +494,7 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
 }
 
 ## Plotting model tests results
-plot.model.test.support <- function(data, col, ...) {
+plot.model.test.support <- function(data, col, ylab, ...) {
 
         ## Extracting the weighted aicc
         weight_aicc <- data$aic.models[,3]
@@ -503,7 +503,7 @@ plot.model.test.support <- function(data, col, ...) {
         ordered_aicc <- weight_aicc[order(weight_aicc, decreasing = TRUE)]
 
         ## Plot
-        plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights", ...)
+        plotcoords <- barplot(ordered_aicc, col = col, ...)
         # plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights") ; warning("DEBUG model.test plot")
 }
 
