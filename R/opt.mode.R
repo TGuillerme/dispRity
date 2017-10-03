@@ -12,9 +12,9 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, ou.split, fi
 
 	if(any(any.model, na.rm=T)) {
 			split.here.vcv <- split.here.2.vcv <- NULL
-			ou.mean <- c(1, time.split, max(data.model.test$subsamples))
+			ou.mean <- c(1, time.split, length(data.model.test$subsamples))
 			split.here.vcv <- c(1, split.here.vcv)
-			split.here.2.vcv <- c(split.here.2.vcv, max(data.model.test$subsamples))
+			split.here.2.vcv <- c(split.here.2.vcv, length(data.model.test$subsamples))
 		}
 
 	total_VCV <- matrix(0, nrow=total.n, ncol=total.n)

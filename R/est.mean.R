@@ -56,9 +56,10 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
 	      
 	    ou.mean.fun <- function (anc.state, optima, alpha, time) optima * (1 - exp(-alpha * time)) + anc.state * exp(-alpha * time)
 	    ou.mean.splits <- sapply(1: n.optima, function(x) ou.mean.fun(anc.state, optima[x], alpha, data.model.test.in$subsamples))
-	mean.ou <- c()
-	for(x in 1:n.optima) mean.ou <- c(mean.ou, ou.mean.splits[start.split[x] : end.split[x] , x])  
-	return(mean.ou)
+	    	    
+		mean.ou <- c()
+		for(x in 1:n.optima) mean.ou <- c(mean.ou, ou.mean.splits[start.split[x] : end.split[x] , x])  
+		return(mean.ou)
 	}	
 	
 	if(model.type == "Stasis")  {
