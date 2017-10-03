@@ -158,11 +158,15 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
             }
             ## Ylab
             if(missing(ylab)) {
-                ylab = "Akaike weights"
+                ylab <- "Akaike weights"
+            }
+            ## Ylim
+            if(missing(ylim)) {
+                ylim <- NULL
             }
 
             ## Plotting the model support
-            plot.model.test.support(data = data, col= col, ylab = ylab, ...)
+            plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
          }
 
         return(invisible())
