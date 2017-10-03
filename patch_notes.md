@@ -1,8 +1,10 @@
 Patch notes
 ----
-* 2017/09/25 - v0.4.1 
+* 2017/10/03 - v0.4.1 
   * *New* function: `get.bin.ages` for getting the geological timescale of a tree (based on `geoscale`).
-  * Fixed fuzzy match issues in `slice.tree`
+  * Added a `t0` argument to `time.subsamples` allowing to set the start age of the first subsample.
+<!--   * Allowing subsamples to contain less than three elements (up to 0!) -->
+  * Fixed fuzzy match issues in `slice.tree`  
 * 2017/08/21 - v0.4.0 *user friendly*
   * Entirely rewritten manual (in GitBook)!
   * **Removed** `hyper.volume` metric for dependencies reasons

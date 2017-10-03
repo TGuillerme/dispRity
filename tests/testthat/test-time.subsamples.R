@@ -219,6 +219,20 @@ test_that("Sanitizing works for time.subsamples (wrapper)", {
     expect_error(
         time.subsamples(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE)
         )
+
+    ## t0
+    expect_error(
+        time.subsamples(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE, t0 = "a")
+        )
+    expect_error(
+        time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
+        )
+    expect_error(
+        time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = 140)
+        )
+    expect_error(
+        time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = -1)
+        )
 })
 
 ## Output
@@ -336,3 +350,8 @@ test_that("time.subsamples works without tree", {
     }
 })
 
+
+
+test_that("time.subsamples works with subsamples with < 3 elements", {
+
+})
