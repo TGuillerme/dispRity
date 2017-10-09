@@ -43,7 +43,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     check.class(data, "data.frame")
     #getting the column names
     if(length(grep("-", rownames(data))) != 0 | length(grep(":", rownames(data))) != 0) {
-        elements <- unique(unlist(strsplit(rownames(data), split = " - ")))
+        elements <- unique(unlist(strsplit(rownames(data), split = " : ")))
     } else {
         #inferring the number of columns
         elements <- seq(1:find.num.elements(nrow(data)))
