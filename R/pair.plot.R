@@ -125,6 +125,11 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     }
 
     if(missing(add)) {
+        ## Correction if all results = 1
+        if(all(matrix_plot[!is.na(matrix_plot)] == 1)) {
+            col_grad <- rev(col_grad)
+        }
+
         #Plotting the matrix
         image(matrix_plot, col = col_grad, axes = FALSE, ...)
         #image(matrix_plot, col = col_grad, axes = FALSE) ; warning("DEBUG")
