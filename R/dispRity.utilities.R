@@ -68,9 +68,6 @@ fill.dispRity <- function(data) {
     ## Data have a matrix
     if(!is.null(data$matrix)) {
         check.class(data$matrix, "matrix")
-        if(ncol(data$matrix) > nrow(data$matrix)) {
-            stop("An ordinated matrix cannot have more columns than rows!")
-        }
     } else {
         stop("dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
     }
