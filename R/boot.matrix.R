@@ -119,7 +119,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## Is it logical?
     if(class(rarefaction) != "logical") {
         ## Is it numeric?
-        check.class(rarefaction, "numeric", " must be either numeric or logical.")
+        check.class(rarefaction, c("numeric", "integer"), " must be either numeric or logical.")
         rare_out <- rarefaction
     } else {
         if(rarefaction) {
