@@ -163,3 +163,18 @@ test_that("Example works", {
         names(unlist(lapply(dataframe$subsamples, lapply, length)))
         , c("g1.1.elements", "g1.2.elements", "g2.1.elements", "g2.2.elements"))
 })
+
+## Subsample works with an empty element
+test_that("empty custom.subsamples", {
+    data <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+    group4 <- list("A" = NULL, "B" = c(1,2), "C" = c(3,4,5), "D" = 1, "E" = NA)
+    group5 <- list("B" = c(1,2), "C" = c(3,4,5), "D" = 1, "E" = NA)
+
+    warning <- capture_warnings(test <- custom.subsamples(data, group4))
+
+    expect_equal(warning, "Subsamples A, E are empty.")
+    expect_is(test, "dispRity")
+    expect_equal(length(test$subsamples), 5)
+
+    expect_equal(capture_warnings(custom.subsamples(data, group5)), "Subsample E is empty.")
+}) 
