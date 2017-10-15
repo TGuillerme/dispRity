@@ -108,7 +108,7 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     if(is.null(elements[[1]])) {
         elements <- list(nrow(data$subsamples[[1]]$elements))
     }
-
+    
     ## Get the names of the subsamples
     names <- names(data$subsamples)
     if(is.null(names)) {
@@ -147,6 +147,17 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     ## Round the results (number of decimals = maximum number of digits in the output)
     summary_results <- rounding.fun(summary_results, rounding)
+
+    ## If any elements is equal to one, check if not NA
+    if(any(summary_results$n == 1)) {
+        to_check <- which(summary_results$n == 1)
+        subsamples_check <- match(summary_results$subsamples[to_check], names(data$subsamples))
+        for(subsample in subsamples_check) {
+            if(is.na(data$subsamples[subsamples_check[subsample]][[1]]$elements[1,1])) {
+                summary_results$n[which(summary_results$subsamples == summary_results$subsamples[to_check][subsample])] <- 0
+            }
+        }
+    }
 
     #----------------------
     # OUTPUT

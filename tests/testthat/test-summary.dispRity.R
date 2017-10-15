@@ -274,6 +274,22 @@ test_that("Test with disparity as a distribution", {
         )
 })
 
+## summary.dispRity works with empty or small (<3 subsamples)
+test_that("summary.dispRity works with small, empty/subsamples", {
+
+    load("test_data.Rda")
+    tree <- test_data$tree_data
+    data <- test_data$ord_data_tips_nodes
+    FADLAD <- test_data$FADLAD_data
+
+    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
+
+    test <- summary(data)
+    expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))
+    expect_equal(as.numeric(test[2,]), c(4, 1, rep(NA, 6)))
+    expect_false(all(is.na(test[3,])))
+})
+
 
 # test_that("Test seq.test object management", {
 #     data(BeckLee_mat50)
