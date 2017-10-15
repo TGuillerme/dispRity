@@ -43,7 +43,7 @@ model = NULL
 inc.nodes = FALSE
 verbose = FALSE
 
-time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
+time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
 test_that("time.subsamples.discrete works properly without nodes", {
@@ -77,7 +77,7 @@ test_that("time.subsamples.discrete works properly without nodes", {
 inc.nodes = TRUE
 data <- test_data$ord_data_tips_nodes
 
-time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
+time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
 test_that("time.subsamples.discrete works properly with nodes", {
@@ -207,9 +207,6 @@ test_that("Sanitizing works for time.subsamples (wrapper)", {
         )
     ## model
     expect_error(
-        time.subsamples(data, tree, method, time, model = "ACCTRAN", inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
         time.subsamples(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
@@ -226,12 +223,6 @@ test_that("Sanitizing works for time.subsamples (wrapper)", {
         )
     expect_error(
         time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
-        )
-    expect_error(
-        time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = 140)
-        )
-    expect_error(
-        time.subsamples(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = -1)
         )
 })
 
@@ -350,8 +341,20 @@ test_that("time.subsamples works without tree", {
     }
 })
 
+test_that("t0 works", {
+    data <- test_data$ord_data_tips_nodes
+    test <- time.subsamples(data, tree, method = "continuous", model = "acctran", inc.nodes = TRUE, FADLAD = FADLAD, t0 = 100, time = 11)
+    expect_is(test, "dispRity")
+    expect_equal(names(test$subsamples), as.character(rev(seq(from = 0, to = 100, by = 10))))
+})
 
+test_that("time.subsamples works for empty subsamples", {
+    data <- test_data$ord_data_tips
+    time <- c(145, 140, 139, 0)
 
-test_that("time.subsamples works with subsamples with < 3 elements", {
-
+    warnings <- capture_warnings(test <- time.subsamples(data, tree, method = "discrete", time = c(145, 140, 139, 0)))
+    expect_equal(warnings, c("The interval 145 - 140 is empty.", "The interval 140 - 139 is empty."))
+    expect_equal(test$subsamples[[1]][[1]][,1], NA)
+    expect_equal(test$subsamples[[2]][[1]][,1], NA)
+    expect_equal(test$subsamples[[3]][[1]][,1], c(5, 4, 6, 7, 8, 9, 1, 43, 2, 3, 10, 11, 42, 12, 13, 14, 15, 44, 17, 18, 36, 37, 38, 41, 32, 39, 40, 33, 34, 35, 49, 50, 24, 25, 26, 27, 28, 48, 16, 21, 22, 23, 47, 45, 19, 20, 46, 29, 30, 31))
 })

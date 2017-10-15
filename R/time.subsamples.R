@@ -134,8 +134,8 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
 
     ##t0
     if(class(t0) != "logical") {
-        silent <- check.class(t0, c("numeric", "integer"), msg = "t0 must be logical or a single numeric value.")
-        check.lenth(t0, 1, errorif = FALSE, msg = "t0 must be logical or a single numeric value.")
+        silent <- check.class(t0, c("numeric", "integer"), msg = " must be logical or a single numeric value.")
+        check.length(t0, 1, errorif = FALSE, msg = " must be logical or a single numeric value.")
     } 
 
     ## TIME
@@ -182,8 +182,6 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         if(method == "continuous") time <- seq(from = tmax, to = t0, length.out = time)
     }
 
-    ## time cannot be older than the root age
-    if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")
     ## time vector must go from past to present
     if(time[1] < time[2]) time <- rev(time)
 
@@ -193,6 +191,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         model <- NULL
     } else {
         ## else model must be one of the following
+        model <- tolower(model)
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
@@ -215,10 +214,10 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## TREE (2)
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
-        ## check if the tree and the table are the same length
-        if(nrow_data != Ntip_tree) stop("The labels in the matrix and in the tree do not match!")
-        ## Also check if the names are identical
-        if(any(is.na(match(rownames(data), tree$tip.label)))) stop("The labels in the matrix and in the tree do not match!")        
+        ## Check if at least all the data in the table are present in the tree
+        if(any(is.na(match(rownames(data), tree$tip.label)))) {
+            stop("The labels in the matrix and in the tree do not match!")
+        }
     } else {
         ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
@@ -263,7 +262,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## -------------------------------
 
     if(method == "discrete") {
-        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
+        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
     }
 
     if(method == "continuous") {
