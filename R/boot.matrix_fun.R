@@ -19,14 +19,14 @@ boot.single <- function(elements, rarefaction) {
 replicate.bootstraps.verbose <- function(rarefaction, bootstraps, subsamples, boot.type.fun, verbose) {
     message(".", appendLF = FALSE)
     if(length(subsamples$elements) == 1) {
-        return(rep(subsamples$elements[[1]], bootstraps))
+        return(matrix(rep(subsamples$elements[[1]], bootstraps), nrow = 1))
     } else {
         return(replicate(bootstraps, boot.type.fun(subsamples$elements, rarefaction)))
     }
 }
 replicate.bootstraps.silent <- function(rarefaction, bootstraps, subsamples, boot.type.fun) {
     if(length(subsamples$elements) == 1) {
-        return(rep(subsamples$elements[[1]], bootstraps))
+        return(matrix(rep(subsamples$elements[[1]], bootstraps), nrow = 1))
     } else {
         return(replicate(bootstraps, boot.type.fun(subsamples$elements, rarefaction)))
     }

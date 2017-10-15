@@ -245,6 +245,7 @@ test_that("Boot.matrix works with small, empty/subsamples", {
     warnings <- capture_warnings(test <- boot.matrix(data))
     expect_equal(warnings, "The following subsamples have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
 
-    expect_equal(test$subsamples[[1]][[2]], rep(NA, 100))
-    expect_equal(test$subsamples[[2]][[2]], rep(51, 100))
+    expect_equal(test$subsamples[[1]][[2]], matrix(rep(NA, 100), nrow = 1))
+    expect_equal(test$subsamples[[2]][[2]], matrix(rep(51, 100), nrow = 1))
 })
+
