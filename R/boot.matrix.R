@@ -88,19 +88,19 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     } else {
         ## Must be correct format
-        check.length(data, 3, " must be either a matrix or an output from the time.subsamples or cust.subsamples functions.")
+        check.length(data, 3, " must be either a matrix or an output from the time.subsamples or custom.subsamples functions.")
         
         ## With the correct names
         data_names <- names(data)
         if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsamples") {
-            stop(paste(match_call$data, "must be either a matrix or an output from the time.subsamples or cust.subsamples functions."))
+            stop(paste(match_call$data, "must be either a matrix or an output from the time.subsamples or custom.subsamples functions."))
         }
 
         if(length(data$subsamples) > 1) {
             ## Check if any subsamples has at least three rows
             elements_check <- unlist(lapply(unlist(data$subsamples, recursive = FALSE), function(X) length(X) < 3))
             if(any(elements_check)) {
-                stop(paste("The following subsamples have less than 3 elements: ", paste(unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , "." , sep = ""))
+                warning(paste("The following subsamples have less than 3 elements: ", paste(unlist(strsplit(names(elements_check)[which(elements_check)], split = ".elements")), collapse = ", ") , ".\nThis might effect the bootstrap/rarefaction output." , sep = ""))
             }
         }
     }
@@ -123,7 +123,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         rare_out <- rarefaction
     } else {
         if(rarefaction) {
-            #rarefaction <- lapply(unlist(lapply(data$subsamples, lapply, nrow), recursive = FALSE), seq, to = 3)
             rarefaction <- seq(from = nrow(data$matrix), to = 3)
             rare_out <- "full"
         } else {

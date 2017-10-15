@@ -232,3 +232,19 @@ test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
         ,c(nrow(test$subsamples[[2]]$elements), 2))
 })
 
+
+## Bootstrap works with empty or small (<3 subsamples)
+test_that("Boot.matrix works with small, empty/subsamples", {
+
+    tree <- test_data$tree_data
+    data <- test_data$ord_data_tips_nodes
+    FADLAD <- test_data$FADLAD_data
+
+    silent <- capture_warnings(data <- time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+
+    warnings <- capture_warnings(test <- boot.matrix(data))
+    expect_equal(warnings, "The following subsamples have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
+
+    expect_equal(test$subsamples[[1]][[2]], rep(NA, 100))
+    expect_equal(test$subsamples[[2]][[2]], rep(51, 100))
+})
