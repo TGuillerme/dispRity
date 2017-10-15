@@ -81,8 +81,13 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbos
 
 ## Continuous time subsamples
 time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose) {
+
+        ## Verbose
+        if(verbose) message(".", appendLF = FALSE)
+
         ## Get the subtree
         if(time[slice] == 0) {
             ## Select the tips to drop
@@ -94,16 +99,16 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
             sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
         }
 
+        if(class(sub_tree) !=  "phylo" && is.na(sub_tree)) {
+            warning("The slice ", time[slice], " is empty.", call. = FALSE)
+            return(list("elements" = matrix(NA)))
+        }
+
         ## Select the tips 
         tips <- sub_tree$tip.label
 
         ## Add any missed taxa from the FADLAD
         taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
-
-        ## Verbose
-        if(verbose) {
-            message(".", appendLF = FALSE)
-        }
 
         ## Getting the list of elements
         return( list("elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ))

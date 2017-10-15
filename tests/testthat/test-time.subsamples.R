@@ -202,9 +202,6 @@ test_that("Sanitizing works for time.subsamples (wrapper)", {
     expect_error(
         time.subsamples(data, tree, method, time = "time", model, inc.nodes, FADLAD, verbose = FALSE)
         )
-    expect_error(
-        time.subsamples(data, tree, method, time = c(140,88,0), model, inc.nodes, FADLAD, verbose = FALSE)
-        )
     ## model
     expect_error(
         time.subsamples(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE)
@@ -352,9 +349,19 @@ test_that("time.subsamples works for empty subsamples", {
     data <- test_data$ord_data_tips
     time <- c(145, 140, 139, 0)
 
+    ## Discrete
     warnings <- capture_warnings(test <- time.subsamples(data, tree, method = "discrete", time = c(145, 140, 139, 0)))
     expect_equal(warnings, c("The interval 145 - 140 is empty.", "The interval 140 - 139 is empty."))
     expect_equal(test$subsamples[[1]][[1]][,1], NA)
     expect_equal(test$subsamples[[2]][[1]][,1], NA)
     expect_equal(test$subsamples[[3]][[1]][,1], c(5, 4, 6, 7, 8, 9, 1, 43, 2, 3, 10, 11, 42, 12, 13, 14, 15, 44, 17, 18, 36, 37, 38, 41, 32, 39, 40, 33, 34, 35, 49, 50, 24, 25, 26, 27, 28, 48, 16, 21, 22, 23, 47, 45, 19, 20, 46, 29, 30, 31))
+
+    ## Continuous
+    data <- test_data$ord_data_tips_nodes
+    warnings <- capture_warnings(test <- time.subsamples(data, tree, model = "acctran", method = "continuous", time = c(145, 140, 139, 0)))
+    expect_equal(warnings, c("The slice 145 is empty.", "The slice 140 is empty."))
+    expect_equal(test$subsamples[[1]][[1]][,1], NA)
+    expect_equal(test$subsamples[[2]][[1]][,1], NA)
+    expect_equal(test$subsamples[[3]][[1]][,1], c(52,54))
+    expect_equal(test$subsamples[[4]][[1]][,1], c(36, 37, 38, 32, 33, 34, 50, 48, 29, 30))
 })
