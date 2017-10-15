@@ -115,6 +115,8 @@ custom.subsamples <- function(data, group) {
                 group[which(null_groups)] <- NA
             }
         } 
+        ## Select the groups for sanitising
+        group_select <- which(empty_groups != TRUE)
 
         ###
         #
@@ -124,12 +126,12 @@ custom.subsamples <- function(data, group) {
         ####
 
         ## Cleaning groups
-        if(all(unique(unlist(lapply(group[-which(empty_groups)], class))) %in% c("numeric", "integer"))) {
+        if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
-            if(max(unlist(group[-which(empty_groups)])) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
+            if(max(unlist(group[group_select])) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
         } else {
-            if(unique(unlist(lapply(group[-which(empty_groups)], class))) == "character") {
-                if(!all( as.character(unlist(group[-which(empty_groups)])) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
+            if(unique(unlist(lapply(group[group_select], class))) == "character") {
+                if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
                 
                 ## Convert the row names into row numbers
                 group <- lapply(group, convert.name.to.numbers, data)
