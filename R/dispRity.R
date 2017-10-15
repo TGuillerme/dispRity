@@ -140,7 +140,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         data$call$dimensions <- dimensions
     }
 
@@ -167,8 +166,15 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     if(length(data$call$disparity$metrics) == 0) {
         ## Data call had no metric calculated yet
         matrix_decomposition <- TRUE
+
+        ## Remove empty subsamples or with only one data point
+        elements <- unlist(lapply(lapply(data$subsamples, lapply, length), `[[`, 1))
+        elements_keep <- which(elements > 1)
+        removed_elements <- ifelse(length(elements_keep) != length(elements), TRUE, FALSE)
+
         ## Lapply through the subsamples
-        lapply_loop <- data$subsamples
+        lapply_loop <- data$subsamples[elements_keep]
+
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
@@ -185,6 +191,21 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     #     disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
     #     stopCluster(cluster)
     # }
+
+    ## Adding the removed elements as NAs
+    if(removed_elements) {
+        ## Creating empty disparity subsamples
+        empty_disparity <- lapply(data$subsamples[which(elements <= 1)], lapply, function(x) return(matrix(NA)))
+
+        ## Merging the two subsamples
+        disparity <- c(disparity, empty_disparity)
+        disparity <- disparity[match(names(data$subsamples), names(disparity))]
+
+        ## Prepare a warning message
+        empty_group_names <- paste(names(which(elements <= 1)), collapse = ", ")
+        subsample <- ifelse(length(which(elements <=1)) > 1, "subsamples", "subsample")
+        warning(paste("Disparity not calculated for", subsample, empty_group_names, "(not enough data)."))
+    }
 
     ## Update the disparity
     data$disparity <- disparity

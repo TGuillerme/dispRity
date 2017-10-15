@@ -337,103 +337,62 @@ test_that("dispRity works with a bootstrapped, rarefied, custom subsamples", {
 test <- NULL ; data<-test_data$ord_data_tips
 
 
+#testing example
+test_that("Example works", {
+    data(BeckLee_mat50)
+    sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
+    ex1<-summary(sum_of_ranges)
+    expect_is(
+        ex1, "data.frame"
+        )
+    expect_equal(
+        dim(ex1), c(1,3)
+        )
 
+    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
+    ex2<-dispRity(bootstrapped_data, metric=c(sum, ranges))
+    expect_is(
+        ex2, "dispRity"
+        )
+    expect_equal(
+        dim(ex2[[1]]), c(50,48)
+        )
 
-# #testing example
-# test_that("Example works", {
-#     data(BeckLee_mat50)
-#     sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
-#     ex1<-summary(sum_of_ranges)
-#     expect_is(
-#         ex1, "data.frame"
-#         )
-#     expect_equal(
-#         dim(ex1), c(1,3)
-#         )
+    groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+    set.seed(1)
+    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-#     bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
-#     ex2<-dispRity(bootstrapped_data, metric=c(sum, ranges))
-#     expect_is(
-#         ex2, "dispRity"
-#         )
-#     expect_equal(
-#         dim(ex2[[1]][[1]][[1]][[1]][[1]]), c(50,48)
-#         )
+    ex3 <- summary(sum_of_ranges, rounding = 2)
 
-#     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-#     customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-#     set.seed(1)
-#     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
-#     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+    expect_is(
+        ex3
+        , "data.frame")
+    expect_equal(
+        dim(ex3)
+        , c(2,8))
+})
+#Reset
+test <- NULL ; data<-test_data$ord_data_tips
 
-#     ex3 <- summary(sum_of_ranges, rounding = 2)
+## dispRity works with empty or small (<3 subsamples)
+test_that("dispRity works with small, empty/subsamples", {
 
-#     expect_is(
-#         ex3
-#         , "data.frame")
-#     expect_equal(
-#         dim(ex3)
-#         , c(2,8))
-#     expect_equal(
-#         sum(ex3[,4])
-#         , sum(c(32.67,33.85)))
-# })
-# #Reset
-# test <- NULL ; data<-test_data$ord_data_tips
+    load("test_data.Rda")
+    tree <- test_data$tree_data
+    data <- test_data$ord_data_tips_nodes
+    FADLAD <- test_data$FADLAD_data
 
-# #testing with distributions as output (level2 functions outputs)
-# test_that("dispRity works with level2 functions", {
-#     data(BeckLee_mat50)
-#     ranges_test <- dispRity(BeckLee_mat50, metric = ranges)
-#     #Output is a distribution of ncol(data) ranges
-#     expect_equal(
-#         ncol(ranges_test$data[[1]][[1]]), length(ranges_test$disparity$observed[[1]][[1]][[1]])
-#         )
-#     #Output is a distribution of ncol(data) ranges (works for bootstraps as well)
-#     ranges_test <- dispRity(boot.matrix(BeckLee_mat50, 2), metric = ranges)
-#     expect_equal(
-#         ncol(ranges_test$data[[1]][[1]][[1]][[1]]), length(ranges_test$disparity$bootstrapped[[1]][[1]][[1]])
-#         )
-#     expect_equal(
-#         ncol(ranges_test$data[[1]][[1]][[1]][[1]]), length(ranges_test$disparity$bootstrapped[[1]][[1]][[2]])
-#         )
-# })
+    silent <- capture_warnings(data <- time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+    silent <- capture_warnings(data <- boot.matrix(data))
 
-# #testing with disparity inputs
-# test_that("dispRity works with disparity inputs", {
-#     ranges_test <- dispRity(data, metric = ranges)
-#     set.seed(1)
-#     ranges_test_bs <- dispRity(boot.matrix(data, 10), metric = ranges)
-#     ranges_test_subsamples <- dispRity(custom.subsamples(data, group), metric = ranges)
-#     set.seed(1)
-#     ranges_test_subsamples_bs <- dispRity(boot.matrix(custom.subsamples(data, group), 10), metric = ranges)
+    warnings <- capture_warnings(test <- dispRity(data, metric = c(sum, variances), verbose = TRUE))
 
-#     mean_ranges_test <- dispRity(ranges_test, metric = mean)
-#     set.seed(1)
-#     mean_ranges_test_bs <- dispRity(ranges_test_bs, metric = mean)
-#     mean_ranges_test_subsamples <- dispRity(ranges_test_subsamples, metric = mean)
-#     set.seed(1)
-#     mean_ranges_test_subsamples_bs <- dispRity(ranges_test_subsamples_bs, metric = mean)
+    expect_equal(warnings, "Disparity not calculated for subsamples 140, 138 (not enough data).")
 
-#     #The calculated mean in mean_ranges_test must be equal to the mean in range_test summary
-#     expect_equal(
-#         summary(ranges_test)[1,3], summary(mean_ranges_test)[1,3]
-#         )
-#     expect_equal(
-#         summary(ranges_test_bs)[1,3], summary(mean_ranges_test_bs)[1,3]
-#         )
-#     expect_equal(
-#         summary(ranges_test_subsamples)[c(1:2),3], summary(mean_ranges_test_subsamples)[c(1:2),3]
-#         )
-#     expect_equal(
-#         summary(ranges_test_subsamples_bs)[c(1:2),3], summary(mean_ranges_test_subsamples_bs)[c(1:2),3]
-#         )
-
-#     #Same for the bs values
-#     expect_equal(
-#         summary(ranges_test_bs)[1,4], summary(mean_ranges_test_bs)[1,4]
-#         )
-#     expect_equal(
-#         summary(ranges_test_subsamples_bs)[c(1:2),4], summary(mean_ranges_test_subsamples_bs)[c(1:2),4]
-#         )
-# })
+    expect_equal(test$disparity[[1]][[1]][,1], NA)
+    expect_equal(test$disparity[[1]][[2]][,1], NA)
+    expect_equal(test$disparity[[2]][[1]][,1], NA)
+    expect_equal(test$disparity[[2]][[2]][,1], NA)
+})
