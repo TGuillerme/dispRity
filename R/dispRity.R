@@ -180,6 +180,9 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         matrix_decomposition <- FALSE
         ## Lapply through the disparity scores (serried)
         lapply_loop <- data$disparity
+
+        ## No removed elements
+        removed_elements <- FALSE
     }
     
     # if(!do_parallel) {

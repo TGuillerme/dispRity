@@ -24,7 +24,7 @@ data(BeckLee_tree)
 data(BeckLee_mat50)
 
 ## Getting the stratigraphic data
-stratigraphy <- get.bin.ages(tree)
+stratigraphy <- get.bin.ages(BeckLee_tree)
 
 ## Making stratigraphic time subsamples
 time.subsamples(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",

@@ -113,6 +113,17 @@ test_that("split.summary.data works", {
     }
 })
 
-split.summary.data <- function(subsamples_levels, summarised_data) {
-    return(summarised_data[which(summarised_data$subsamples == subsamples_levels),])
-}
+
+test_that("plot.dispRity examples work", {
+
+    data(disparity)
+
+    ## Discrete plotting
+    expect_null(plot(disparity, type = "box"))
+    expect_null(plot(disparity, type = "polygon", quantiles = c(10, 50, 95),cent.tend = mode.val))
+    expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
+    expect_null(plot(disparity, type = "continuous"))
+    expect_null(plot(disparity, type = "continuous", time.subsamples = FALSE,elements = TRUE, col = c("red", "orange", "yellow")))
+    expect_null(plot(disparity, rarefaction = TRUE))
+    
+})

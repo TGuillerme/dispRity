@@ -5,7 +5,7 @@
 \alias{time.series}
 \title{Separating data in time subsamples.}
 \usage{
-time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
+time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 }
 \arguments{
 \item{data}{A matrix.}
