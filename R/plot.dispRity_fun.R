@@ -56,12 +56,28 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
 ### what is the column of the table (or, if "rows", the rows numbers)
 ### rarefaction is the rarefaction value (FALSE == none)
 extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
+
+    ## Internal function for checking true NAs
+    check.na <- function(row, extract, summarised_data) {
+        if(!extract[row]) {
+            extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+        }
+        return(extract[row])
+    }
+
     ## No rarefaction level
-    if(rarefaction == FALSE) {
+    if(!rarefaction) {
+        ## Values to extract
+        extract <- !is.na(summarised_data$obs)
+        ## Check if any of the values to extract are NAs from rarefaction or from missing data
+        if(any(!extract)) {
+            extract <- sapply(1:nrow(summarised_data), check.na, extract, summarised_data)
+        }
+
         if(what != "rows") {
-            return(summarised_data[which(!is.na(summarised_data$obs)), what])
+            return(summarised_data[which(extract), what])
         } else {
-            return(which(!is.na(summarised_data$obs)))
+            return(which(extract))
         }
     } else {
         ## Rarefaction level

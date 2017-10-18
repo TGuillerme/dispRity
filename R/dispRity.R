@@ -195,7 +195,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     ## Adding the removed elements as NAs
     if(removed_elements) {
         ## Creating empty disparity subsamples
-        empty_disparity <- lapply(data$subsamples[which(elements <= 1)], lapply, function(x) return(matrix(NA)))
+        empty_disparity <- lapply(data$subsamples[which(elements <= 1)], lapply, function(x) ifelse(x, NA, NA))
 
         ## Merging the two subsamples
         disparity <- c(disparity, empty_disparity)
