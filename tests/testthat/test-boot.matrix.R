@@ -92,6 +92,16 @@ test_that("Sanitizing works correctly", {
     expect_error(
         boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
         )
+    ## Wrong data input
+    dutu <- list(1,2,3) ; class(dutu) <- "dispRity"
+    expect_error(
+        boot.matrix(dutu)
+        )
+
+    names(dutu) <- letters[1:3]
+    expect_error(
+        boot.matrix(dutu)
+        )
 })
 
 ## No bootstrap (is equal to the matrix)
@@ -230,6 +240,15 @@ test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
     expect_equal(
         dim(test$subsamples[[2]][[2]])
         ,c(nrow(test$subsamples[[2]]$elements), 2))
+})
+
+
+## Verbose bootstrap
+test_that("verbose bootstrap works", {
+    data <- matrix(rnorm(25), 5, 5)
+    out <- capture_messages(boot.matrix(data, verbose = TRUE))
+    expect_equal(out,
+        c("Bootstrapping", ".", "Done."))
 })
 
 

@@ -30,7 +30,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     check.class(data, "list", msg = error_msg)
     ## Must have at least one matrix
     if(!any(names(data) %in% "matrix")) {
-        stop(error_msg)
+        stop(error_msg, call. = FALSE)
     }
     ## Matrix must be a matrix
     check.class(data$matrix, "matrix", msg = error_msg)

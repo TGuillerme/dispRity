@@ -92,8 +92,12 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         
         ## With the correct names
         data_names <- names(data)
-        if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsamples") {
+        if(is.null(data_names)) {
             stop(paste(match_call$data, "must be either a matrix or an output from the time.subsamples or custom.subsamples functions."))
+        } else {
+            if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsamples") {
+                stop(paste(match_call$data, "must be either a matrix or an output from the time.subsamples or custom.subsamples functions."))
+            }
         }
 
         if(length(data$subsamples) > 1) {

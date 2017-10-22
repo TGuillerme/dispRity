@@ -13,6 +13,7 @@ test_that("Claddis.ordination works", {
     expect_error(Claddis.ordination(data, distance = "bob", transform = "none", k = 2))
     expect_error(Claddis.ordination(data, distance = "Gower", transform = 1, k = 2))
     expect_error(Claddis.ordination(data, distance = "Gower", transform = "none", k = 10))
+    expect_error(Claddis.ordination("blob", distance = "Gower", transform = "none", k = 10))
 
     test <- Claddis.ordination(data)
     expect_equal(dim(test), c(4,3))
