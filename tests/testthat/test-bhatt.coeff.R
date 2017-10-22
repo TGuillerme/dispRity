@@ -17,6 +17,10 @@ test_that("bhatt.coeff works", {
     expect_error(
         bhatt.coeff(rnorm(10), rnorm(10), bw = "a")
         )
+    expect_error(
+        bhatt.coeff(rnorm(10), rnorm(10), bw = c(1,2))
+        )
+
     #Works well
     set.seed(1)
     disA <- rnorm(100)
@@ -37,5 +41,10 @@ test_that("bhatt.coeff works", {
     expect_equal(
         round(bhatt.coeff(disA, disB, bw = bw.SJ, nb = 20, method = "ste"), 3)
         ,0.931)
+
+    set.seed(1)
+    expect_equal(
+        round(bhatt.coeff(rnorm(1000), rnorm(1000), bw = 10.5), digit = 3)
+        ,1)
 
 })
