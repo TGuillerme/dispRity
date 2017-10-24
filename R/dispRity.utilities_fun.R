@@ -40,3 +40,32 @@ merge.two.subsamples <- function(subs1, subs2, data) {
     data$subsamples[[subs1]] <- NULL
     return(data)
 }
+
+## Check subsample availability
+check.subsamples <- function(subsamples, data) {
+    if(length(subsamples) > length(data$subsamples)) {
+        stop("Not enough subsamples in the original data.")
+    } else {
+        if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
+            if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
+
+                subsamples <- subsamples[which(is.na(match(subsamples, 1:length(data$subsamples))))]
+                orthograph <- ifelse(length(subsamples) == 1, "Subsample", "Subsamples")
+                stop(paste(orthograph, paste(subsamples, collapse = ", "), "not found."))
+
+            }
+        } else {
+            if(class(subsamples) == "character") {
+                if(any(is.na(match(subsamples, names(data$subsamples))))) {
+
+                    subsamples <- subsamples[which(is.na(match(subsamples, names(data$subsamples))))]
+                    orthograph <- ifelse(length(subsamples) == 1, "Subsample", "Subsamples")
+                    stop(paste(orthograph, paste(subsamples, collapse = ", "), "not found."))
+
+                }
+            } else {
+                stop("subsamples argument must be of class \"numeric\" or \"character\".")
+            }
+        }
+    }
+}

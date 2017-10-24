@@ -171,24 +171,7 @@ get.subsamples <- function(data, subsamples) {
     check.class(data, "dispRity")
 
     ## subsamples
-    if(length(subsamples) > length(data$subsamples)) {
-        stop("Not enough subsamples in the original data.")
-    } else {
-        if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
-            if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
-                stop("subsamples not found.")
-            }
-        } else {
-            if(class(subsamples) == "character") {
-                subsamples <- match(subsamples, names(data$subsamples))
-                if(any(is.na(subsamples))) {
-                    stop("subsamples not found.")
-                }
-            } else {
-                stop("subsamples argument must be of class \"numeric\" or \"character\".")
-            }
-        }
-    }
+    check.subsamples(subsamples, data)
 
     ## create the new data set
     data_out <- list("matrix" = data$matrix, "call" = data$call, "subsamples" = data$subsamples[subsamples])
@@ -238,7 +221,7 @@ get.subsamples <- function(data, subsamples) {
 # data <- dispRity(bootstrapped_data, c(sum,variances))
 # extract.dispRity(data, observed = FALSE, rarefaction = 5,subsamples = 2)
 
-extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamples, concatenate = TRUE) {
+extract.dispRity <- function(data, subsamples, observed = TRUE, rarefaction = FALSE, concatenate = TRUE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -257,24 +240,7 @@ extract.dispRity <- function(data, observed = TRUE, rarefaction = FALSE, subsamp
     if(missing(subsamples)) {
         subsamples <- seq(1:length(data$subsamples))
     } else {
-        if(length(subsamples) > length(data$subsamples)) {
-            stop("Not enough subsamples in the original data.")
-        } else {
-            if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
-                if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
-                    stop("subsamples not found.")
-                }
-            } else {
-                if(class(subsamples) == "character") {
-                    subsamples <- match(subsamples, names(data$subsamples))
-                    if(any(is.na(subsamples))) {
-                        stop("subsamples not found.")
-                    }
-                } else {
-                    stop("subsamples argument must be of class \"numeric\" or \"character\".")
-                }
-            }
-        }
+        check.subsamples(subsamples, data)
     }
 
     ## Rarefaction

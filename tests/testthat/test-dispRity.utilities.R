@@ -43,6 +43,29 @@ test_that("utilities internal: merge.two.subsamples", {
     expect_equal(names(test$subsamples)[1], paste(names(data$subsamples)[1:2], collapse = "-"))
 })
 
+test_that("utilities internal: check.subsamples", {
+    data(disparity)
+    data <- disparity
+
+    ## Testing if subsamples work
+    expect_error(
+        check.subsamples(1:20, data)
+        )
+    expect_error(
+        check.subsamples(8, data)
+        )
+    expect_error(
+        check.subsamples(c(1,2,8), data)
+        )
+    expect_error(
+        check.subsamples(c("8", "0"), data)
+        )
+    expect_error(
+        check.subsamples(matrix(NA), data)
+        )
+})
+
+
 ## make.dispRity
 test_that("make.matrix", {
     test1 <- make.dispRity()
@@ -168,6 +191,9 @@ test_that("get.subsamples", {
     expect_error(
         get.subsamples(disparity_data, 1:10)
         )
+    expect_error(
+        get.subsamples(disparity_data, 6)
+        )
 
     test <- get.subsamples(subsamples_full, subsamples = c(1,2))
     expect_is(
@@ -227,6 +253,12 @@ test_that("extract.dispRity", {
     expect_error(
         extract.dispRity(subsamples_full)
         )
+
+    expect_error(
+        extract.dispRity(data, 1, rarefaction = 4, observed = FALSE)
+        )
+
+
     test <- extract.dispRity(data)
     expect_is(
         test
@@ -278,6 +310,8 @@ test_that("extract.dispRity", {
     expect_equal(
         names(test)
         ,names(data$subsamples)[c(1,5)])
+
+
 })
 
 test_that("scale.dispRity", {
@@ -288,11 +322,18 @@ test_that("scale.dispRity", {
     data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
     expect_error(
+        scale.dispRity(bootstrapped_data)
+        )
+    expect_error(
         scale.dispRity(data, scale = "yes")
         )
     expect_error(
         scale.dispRity(data, center = "yes")
         )
+    expect_error(
+        scale.dispRity(data, center = c(1,2))
+        )
+
     expect_is(
         scale.dispRity(data, scale = TRUE)
         ,"dispRity")
@@ -322,6 +363,11 @@ test_that("sort.dispRity", {
     expect_error(
         sort.dispRity("yes")
         )
+
+    expect_error(
+        sort.dispRity(data, sort = c(6,5,1,2,3))
+        )
+
 
     sorted <- sort(data, decreasing = TRUE)
     expect_true(
@@ -371,6 +417,12 @@ test_that("merge.subsamples", {
     expect_error(
         merge.subsamples(data_test2, c("a", "x"))
         )
+
+    dummy_data1 <- dummy_data2 <- data_test1
+    dummy_data1$call$bootstrap <- NULL
+    test1 <- capture_warnings(garbage <-merge.subsamples(dummy_data1, c(1,2)))
+
+    expect_equal(test1, "dummy_data1 contained disparity data that has been discarded in the output.")
 
 
     ## Warnings

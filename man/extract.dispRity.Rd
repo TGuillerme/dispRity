@@ -4,17 +4,17 @@
 \alias{extract.dispRity}
 \title{Extracting disparity values.}
 \usage{
-extract.dispRity(data, observed = TRUE, rarefaction = FALSE, subsamples,
+extract.dispRity(data, subsamples, observed = TRUE, rarefaction = FALSE,
   concatenate = TRUE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object containing disparity results.}
 
+\item{subsamples}{Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).}
+
 \item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
 
 \item{rarefaction}{Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).}
-
-\item{subsamples}{Optional, a \code{numeric} or \code{character} for which subsamples to get (if missing, the value for all subsamples are given).}
 
 \item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.}
 }
