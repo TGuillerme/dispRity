@@ -182,6 +182,30 @@ test_that("Sanitizing works", {
     expect_error(
         dispRity(data, c(sum, ranges), verbose="yes")
         )
+    test <- fill.dispRity(make.dispRity(data = data))
+    test$matrix <- NULL
+    expect_error(
+        dispRity(test, c(sum, ranges))
+        )
+    test <- dispRity(data, ranges)
+    expect_error(
+        dispRity(test, c(var, sd))
+        )
+
+    ## Dimensions
+    expect_error(
+        dispRity(data, c(sum, ranges), dimensions = -1)
+    )
+    expect_equal(
+        dispRity(data, c(sum, ranges), dimensions = 0.533333)$call$dimensions
+        , 26
+    )
+
+    warn <- capture_warnings(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
+    expect_equal(dim, 48)
+    expect_equal(warn , "Dimension number too high: set to 48.")
+
+
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
@@ -372,6 +396,18 @@ test_that("Example works", {
     expect_equal(
         dim(ex3)
         , c(2,8))
+
+    ranges <- dispRity(BeckLee_mat50, metric = ranges)
+    sum_of_ranges <- dispRity(ranges, metric = sum)
+    ex1<-summary(sum_of_ranges)
+    expect_is(
+        ex1, "data.frame"
+        )
+    expect_equal(
+        dim(ex1), c(1,3)
+        )
+
+    
 })
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips

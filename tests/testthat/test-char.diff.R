@@ -98,7 +98,7 @@ test_that("char.diff matrix", {
     set.seed(1)
     matrix_alpha <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
     matrix_alpha <- apply(matrix_alpha, 2, as.character)
-    test <- char.diff(matrix_alpha)
+    capture_warnings(test <- char.diff(matrix_alpha))
     expect_is(test, c("matrix", "char.diff"))
 })
 
@@ -128,13 +128,13 @@ test_that("char.diff plot (graphic)", {
     morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 
     ## Plotting a matrix
-    test <- plot.char.diff(morpho_matrix)
+    capture_warnings(test <- plot.char.diff(morpho_matrix))
     expect_equal(names(test), c("rect", "text"))
-    expect_is(unique(unlist(lapply(test, lapply, class))), "numeric")
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 
     ## Plotting the density profile of a char.diff object
-    char.diff_matrix <- char.diff(morpho_matrix)
+    capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
     test <- plot(char.diff_matrix, type = "density")
     expect_equal(names(test), c("rect", "text"))
-    expect_is(unique(unlist(lapply(test, lapply, class))), "numeric")
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })

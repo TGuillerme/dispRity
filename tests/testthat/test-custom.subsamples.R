@@ -130,7 +130,13 @@ test_that("Different group inputs gives the same output", {
 
 ## Example
 test_that("Example works", {
+
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+
+    expect_error(
+        custom.subsamples(ordinated_matrix, list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"), "C" = sum))
+        )
+
     ## Splitting the ordinated matrix into two groups using row numbers
     numbers <- custom.subsamples(ordinated_matrix, list("A" = c(1:4), "B" = c(5:10)))
     ## Splitting the ordinated matrix into three groups using row names

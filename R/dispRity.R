@@ -136,10 +136,14 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     ## Dimensions
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)
-        check.class(dimensions, "numeric", " must be logical or a proportional threshold value.")
-        check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
+        silent <- check.class(dimensions, c("numeric", "integer"), " must be a number or proportion of dimensions to keep.")
+        check.length(dimensions, 1, " must be a number or proportion of dimensions to keep.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
+        if(dimensions > ncol(data$matrix)) {
+            warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))
+            dimensions <- ncol(data$matrix)
+        }
         data$call$dimensions <- dimensions
     }
 

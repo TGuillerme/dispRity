@@ -118,19 +118,12 @@ custom.subsamples <- function(data, group) {
         ## Select the groups for sanitising
         group_select <- which(empty_groups != TRUE)
 
-        ###
-        #
-        # make sure the -which(empty_groups) works all time
-        #
-        #
-        ####
-
         ## Cleaning groups
         if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
             if(max(unlist(group[group_select])) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
         } else {
-            if(unique(unlist(lapply(group[group_select], class))) == "character") {
+            if(all(unique(unlist(lapply(group[group_select], class))) == "character")) {
                 if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
                 
                 ## Convert the row names into row numbers
