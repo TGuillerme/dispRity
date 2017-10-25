@@ -80,7 +80,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
     ## is_distribution?
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     if(is_distribution) {
-        stop(paste("null.test cannot take disparity distributions yet. Try averaging disparity to a dimension-level 1 using:\n",
+        stop(paste("null.test cannot take disparity distributions yet.\nTry averaging disparity to a dimension-level 1 using:\n",
             paste("  ", match_call$data, " <- dispRity(", match_call$data, ", metric = median)\n", sep = "")))
     }
 

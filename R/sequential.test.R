@@ -1,10 +1,10 @@
-#' @name sequential.test
-#'
-#' @title Sequential linear regressions
-#'
-#' @description Function still in development.
+# ' @name sequential.test
+# '
+# ' @title Sequential linear regressions
+# '
+# ' @description Function still in development.
 # ' @description Performs a sequential \code{\link[stats]{glm}} on the subsamples by correcting for time autocorrelation. 
-#'
+# '
 # ' @param subsamples time subsamples of which to estimate the slopes sequentially.
 # ' @param family the family of the \code{\link[stats]{glm}}.
 # ' @param correction optional, which p-value correction to apply (see \code{\link[stats]{p.adjust}}). If missing, no correction is applied.
@@ -73,10 +73,10 @@
 # family = gaussian
 # data <- sequential.test(subsamples_multi, family = gaussian)
 
-sequential.test <- function(){ #function(subsamples, family, correction, call = NULL, ...)
+# sequential.test <- function(){ #function(subsamples, family, correction, call = NULL, ...)
 
     #Warning
-    stop("The sequential.test function is still under development!")
+    # stop("The sequential.test function is still under development!")
 
     # #SANITIZING
     # match_call <- match.call()
@@ -155,4 +155,4 @@ sequential.test <- function(){ #function(subsamples, family, correction, call = 
 
     # class(output_raw) <- c("dispRity", "seq.test")
     # return(output_raw)
-}
+# }

@@ -41,6 +41,9 @@ test_that("geomorph.ordination works", {
     expect_error(geomorph.ordination(array))
     expect_error(geomorph.ordination(list(coords = array)))
     expect_error(geomorph.ordination(dummy_procrustes, center = "no"))
+    dummy_procrustes2 <- dummy_procrustes
+    dummy_procrustes2$coords <- NULL
+    expect_error(geomorph.ordination(dummy_procrustes2))
 
     ## Procrustes to ordination
     test <- geomorph.ordination(dummy_procrustes)
@@ -59,4 +62,12 @@ test_that("geomorph.ordination works", {
         as.vector(unlist(lapply(test$subsamples, lapply, length)))
         , c(6,4,5,5)
         )
+    
+    dummy_geomorph_df2 <- dummy_geomorph_df
+    dimnames(dummy_geomorph_df2$coords)[[3]] <- letters[1:10]
+
+    test <- geomorph.ordination(dummy_geomorph_df2)
+    expect_equal(dimnames(test$matrix)[[1]], letters[1:10])
+    expect_equal(dimnames(test$matrix)[[2]], paste0("PC", 1:10))
+
 })

@@ -82,7 +82,7 @@ geomorph.ordination <- function(data, ...) {
             if(is.null(names(data$coords))) {
                 rownames(ordination) <- seq_along(1:nrow(ordination))
             } else {
-                rownames(ordination) <- names(data$coords)
+                rownames(ordination) <- dimnames(data$coords)[[3]]
             }
         }
         return(custom.subsamples(ordination, group = group_list))

@@ -123,6 +123,14 @@ test_that("null.test works", {
     expect_error(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "something", scale = FALSE)
         )
+
+    test <- dispRity(BeckLee_mat50, metric = variances)
+    expect_error(
+        null.test(test, replicates = 10, null.distrib = rnorm, null.args = NULL, scale = FALSE)
+        )
+
+
+
     #Right output
     expect_is(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)

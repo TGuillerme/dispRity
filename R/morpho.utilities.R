@@ -180,7 +180,7 @@ apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, .
         if(invariant == FALSE) {
             invariants <- length(which(apply(matrix_inapplicable, 2, function(X) length(unique(X))) <= 1))
             if(invariants != 0) {
-                message(paste(invariants, "characters are now invariant due inapplicable data."))
+                warning(paste(invariants, "characters are now invariant due inapplicable data."))
             }
         }
 
