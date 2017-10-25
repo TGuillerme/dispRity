@@ -123,7 +123,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     if(!is.null(cor.matrix)) {
         check.class(cor.matrix, "matrix")
         if(any(dim(cor.matrix) != dimensions)) {
-            stop("cor.matrix must be a square matrix of size 'dimensions' * 'dimensions'.")
+            stop(paste0("cor.matrix must be a square matrix of size ", dimensions, "x", dimensions, "."))
         }
     }
 

@@ -93,6 +93,15 @@ test_that("rounding.fun", {
 #Testing
 #######################
 
+# Errors
+data(disparity)
+test_that("Correct error management", {
+    expect_error(summary(disparity, cent.tend = var))
+    expect_error(summary(make.dispRity()))
+    expect_error(summary(disparity, quantiles = c(0.1, 10)))
+    expect_error(summary(disparity, quantiles = c(10, 101)))
+})
+
 #Case 1, no bootstrap
 data <- test_data$ord_data_tips
 data <- dispRity(data, metric = c(sum, ranges))

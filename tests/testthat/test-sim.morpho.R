@@ -216,10 +216,25 @@ test_that("sim.morpho works", {
         sim.morpho(tree, characters = 50, model = 3, rates = my_rates, substitution = my_substitutions)
         )
     expect_error(
+        sim.morpho(tree, characters = 50, model = sum, rates = my_rates, substitution = my_substitutions)
+        )
+    expect_error(
         sim.morpho(tree, characters = 50, model = "HKY", rates = "my_rates", substitution = my_substitutions)
         )
     expect_error(
         sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = "my_substitutions")
+        )
+    expect_error(
+         sim.morpho(tree, states = c(0.6, 0.6), characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions)
+         )
+    expect_warning(
+        sim.morpho(tree, states = c(0.6, 0.4), characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = 50, model = "HKY", rates = c(rgamma, mean) , substitution = my_substitutions)
+        )
+    expect_error(
+        sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates , substitution = c(rgamma, mean))
         )
 
     ## Some examples

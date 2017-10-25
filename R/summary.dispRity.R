@@ -63,7 +63,7 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     check.class(cent.tend, "function")
     #The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop(paste(match_call$cent.tend), "can not be used for measuring the central tendency.")
+        stop(paste(match_call$cent.tend), " cannot be used for measuring the central tendency.")
     }
     ## Update match_call if argument is empty
     if(is.null(match_call$cent.tend)) match_call$cent.tend <- "median"

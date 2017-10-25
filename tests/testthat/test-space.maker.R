@@ -85,6 +85,10 @@ test_that("correlation works", {
     space_cor <- space.maker(1000, 3, rnorm, cor.matrix = cor_pre)
     cor_post <- cor(space_cor)
 
+    expect_error(
+        space.maker(1000, 3, norm, cor.matrix = matrix(1))
+        )
+
     #dim
     expect_equal(
         ncol(space_cor)
@@ -107,6 +111,10 @@ test_that("scree works", {
     set.seed(1)
     scre <- c(0.8,0.15, 0.05)
     space_scre <- space.maker(1000, 3, rnorm, scree = scre)
+
+    expect_error(
+        space.maker(1000, 3, norm, scree = c(1,2,3))
+        )
 
     expect_equal(
         round(apply(space_no_scre, 2, var), digit = 1)

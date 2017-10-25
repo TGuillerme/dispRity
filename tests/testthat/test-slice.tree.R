@@ -157,6 +157,12 @@ test_that("slice.tree works properly", {
     expect_equal(
         sort(slice.tree(tree, 0, 'DELTRAN')$tip.label), LETTERS[c(1:3,5)]
         )
+    expect_is(
+        slice.tree(tree, 0, 'gradual'), 'phylo'
+        )
+    expect_is(
+        slice.tree(tree, 0, 'punCTUAted'), 'phylo'
+        )
 })
 
 
