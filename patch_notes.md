@@ -1,6 +1,8 @@
 Patch notes
 ----
-* 2017/10/18 - v0.4.1 
+<!-- * 2017/10/18 - v1.0 *got you covered*  -->
+* 2017/10/26 - v0.4.1 
+  * *New* function: `random.circle` for generating random circle coordinates (see example in `space.maker` for creating doughnut spaces!).
   * *New* function: `get.bin.ages` for getting the geological timescale of a tree (based on `geoscale`).
   * Added a `t0` argument to `time.subsamples` allowing to set the start age of the first subsample.
   * Allowing subsamples to contain less than three elements (up to 0!).

@@ -60,7 +60,12 @@
 #'
 #' ## A 3D cylindrical space
 #' scatterplot3d(space.maker(5000, 3, c(rnorm, rnorm, runif)), pch = 20)
-#'
+#' 
+#' ## Generating a doughnut space
+#' doughnut <- space.maker(5000, 3, c(rnorm, random.circle),
+#'      arguments = list(list(mean = 0), list(runif, inner = 0.5, outer = 1)))
+#' ## Reodering the axis for projecting the dougnut in 2D
+#' scatterplot3d(doughnut[,c(2,1,3)], pch = 20)
 #' }
 #'
 #' @seealso \code{\link{null.test}}, \code{\link{test.dispRity}}.
@@ -77,6 +82,20 @@
 # cor.matrix = matrix(cbind(1,0.8,0.2, 0.8,1,0.7, 0.2,0.7,1), nrow = 3)
 # scree = c(0.6, 0.3, 0.1)
 
+
+# elements <- 5
+# dimensions <- 3
+# distribution <- c(random.circle, runif)
+# arguments = list(list(distribution = runif, inner = 0.5, outer = 1), list(min = 0, max = 1))
+
+
+# elements <- 5
+# dimensions <- 3
+# distribution <- random.circle
+# arguments = list(list(distribution = runif, inner = 0.5, outer = 1))
+
+
+
 # space <- space.maker(1000, 3, rnorm, cor.matrix = cor_matrix)
 # space2 <- space.maker(1000, 3, rnorm, cor.matrix = NULL)
 
@@ -85,6 +104,8 @@
 
 space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL, scree = NULL) {
     ## SANITZING
+
+    match_call <- match.call()
 
     ## elements
     check.class(elements, c("numeric", "integer")) -> silent
@@ -107,6 +128,26 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         if(length(distribution) > dimensions) warning(paste("There are more distributions than dimensions.\nOnly the first ", dimensions, "distributions will be used.", sep=""))
     }
 
+    ## Random circle checks
+    circle_fun <- ifelse(length(grep("random.circle", match_call$distribution)), TRUE, FALSE)
+
+    ## Single function
+    if(circle_fun && uni_distribution && dimensions %% 2 == 1) {
+        dimensions <- dimensions - 1
+        warning(paste0("random.circle function requires only an even number of dimensions.\nNumber of dimensions has been change to ", dimensions, "."))
+    }
+
+    ## Multiple functions
+    if(circle_fun && !uni_distribution) {
+        number_circle <- length(grep("random.circle", match_call$distribution))
+        number_other <- length(distribution) - number_circle
+        tmp <- number_circle * 2
+        if((tmp + number_other) != dimensions) {
+            dimensions <- tmp + number_other
+            warning(paste0("random.circle function requires an even number of dimensions.\nNumber of dimensions has been change to ", dimensions, "."))
+        }
+    }
+
     ## arguments
     if(!is.null(arguments)) {
         # Must be a list
@@ -116,6 +157,10 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         # Add the $n elements to the list
         for(n in 1:length(arguments)) {
             arguments[[n]]$n <- elements
+        }
+    } else {
+        if(circle_fun) {
+            stop("random.circle requires arguments!")
         }
     }
 
@@ -144,7 +189,12 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
             ## Setting the n argument
             arguments <- unlist(arguments, recursive = FALSE)
             ## Generating the space
-            space <- replicate(dimensions, do.call(distribution, arguments))
+            if(!circle_fun) {
+                space <- replicate(dimensions, do.call(distribution, arguments))
+            } else {
+                space <- replicate(dimensions/2, do.call(distribution, arguments), simplify = FALSE)
+                space <- do.call(cbind, space)
+            }
         } else {
             ## Generate the space without arguments
             space <- replicate(dimensions, distribution(elements))    
@@ -155,6 +205,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         if(!is.null(arguments)) {
             ## Mapply the distribution with the arguments
             space <- mapply(do.call, distribution, arguments)
+            if(circle_fun) {space <- do.call(cbind, space)}
         } else {
             ## Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))
@@ -183,3 +234,32 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     #output
     return(space)
 }
+
+#' @title Random circle
+#'
+#' @description Creates coordinates for a random circle
+#'
+#' @param n The number of pairs x,y of coordinates.
+#' @param distribution The distribution from which the coordinates are sampled.
+#' @param inner Optional, the radius for an empty inner circle.
+#' @param outer Optional, the maximum radius for the circle.
+#' @param ... Any additional argument to be passed to \code{distribution}.
+#' 
+#' @examples
+#' ## A simple uniform circle
+#' plot(random.circle(1000, runif), pch = 20)
+#' 
+#' ## A normal ring with inner and outer boundaries
+#' plot(random.circle(1000, rnorm, inner = 0.5, outer = 5), pch = 20)
+#'
+#' @seealso 
+#' \code{\link{space.maker}}
+#' 
+#' @author Thomas Guillerme
+#' @export
+
+## Function for creating a rand
+random.circle <- function(n, distribution, inner = 0, outer = Inf, ...) {
+    return(t(replicate(n = n, rand.circle(distribution = distribution, inner = inner, outer = outer, ...))))
+}
+

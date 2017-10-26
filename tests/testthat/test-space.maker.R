@@ -124,3 +124,31 @@ test_that("scree works", {
         round(apply(space_scre, 2, var), digit = 1)
         , c(0.8, 0.0, 0.0))
 })
+
+
+test_that("random.circle works", {
+
+    set.seed(1)
+    test <- round(rand.circle(runif), digit = 5)
+    expect_equal(test, c(-0.03620, 0.37036))
+    set.seed(1)
+    test <- round(rand.circle(rnorm, inner = 0.5, outer = 0.6), digit = 5)
+    expect_equal(test, c(-0.40340, -0.41084))
+    test <- random.circle(rnorm, n = 10)
+    expect_equal(dim(test), c(10, 2))
+
+
+    ## Test if it works with space maker
+    test <- space.maker(elements = 10, dimensions = 2, distribution = random.circle, arguments = list(list(distribution = runif)))
+    expect_equal(dim(test), c(10, 2))
+    expect_warning(test <- space.maker(elements = 10, dimensions = 5, distribution = random.circle, arguments = list(list(distribution = runif))))
+    expect_equal(dim(test), c(10, 4))
+
+    ## Test if it works with space maker (mixed distributions)
+    test <- space.maker(elements = 10, dimensions = 3, distribution = c(random.circle, runif), arguments = list(list(distribution = runif, inner = 0.5, outer = 1), list(min = 0, max = 1)))
+    expect_equal(dim(test), c(10, 3))
+
+    test <- space.maker(elements = 10, dimensions = 4, distribution = c(random.circle, runif, runif), arguments = list(list(distribution = runif, inner = 0.5, outer = 1), list(min = 0, max = 1), list(min = 0, max = 1)))
+    expect_equal(dim(test), c(10, 4))
+
+})
