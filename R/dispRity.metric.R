@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun
+#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun ancestral.distance
 # hyper.volume
 #' @title Disparity metrics
 #'

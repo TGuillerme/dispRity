@@ -14,6 +14,7 @@
 \alias{dimension.level3.fun}
 \alias{dimension.level2.fun}
 \alias{dimension.level1.fun}
+\alias{ancestral.distance}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
