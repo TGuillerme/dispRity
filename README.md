@@ -21,6 +21,8 @@ If you're using the `master` branch, see the [patch notes](https://github.com/TG
 
 > Installation problems? Make sure you're using the latest R version (or at least `> 4.0`) and try again.
 
+> To optimise your `dispRity` usage and speed, make sure you have the last version of `ape` installed (`4.1` - [download here](https://cran.r-project.org/web/packages/ape/index.html))!
+
 #### Vignettes
 
 See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or download the pdf version [here](https://github.com/TGuillerme/dispRity/raw/master/inst/gitbook/_book/dispRity_manual.pdf).

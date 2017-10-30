@@ -46,6 +46,7 @@ export(ellipse.volume)
 export(convhull.volume)
 export(convhull.surface)
 export(diagonal)
+export(ancestral.distance)
 
 ##disparity tests
 export(bhatt.coeff)
@@ -65,6 +66,7 @@ export(merge.subsamples)
 export(size.subsamples)
 
 ##Package utilities
+export(nodes.coordinates)
 export(tree.age)
 export(make.metric)
 export(space.maker)

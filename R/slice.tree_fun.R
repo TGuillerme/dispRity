@@ -3,15 +3,16 @@
 #Select the parent node of a tip
 slice.tree_parent.node <- function(tree, tip) {
     #Selecting parent edge in the full tree
-    parent.edge <- tree$edge[which(tree$edge[,2] == which(tip == c(tree$tip.label, tree$node.label))), 1]
+    parent_edge <- tree$edge[which(tree$edge[,2] == which(tip == c(tree$tip.label, tree$node.label))), 1]
     #Selecting parent node in the full tree
-    parent_node <- tree$node.label[parent.edge-Ntip(tree)]
+    parent_node <- tree$node.label[parent_edge-Ntip(tree)]
     #error if not working
     if (length(parent_node) != 1) {
         stop('No parent node found!')
     }
     return(parent_node)
 }
+
 
 #Select the offspring node/tip of a node towards a tip
 slice.tree_offspring.node <- function(tree, parent_node, tip) {

@@ -47,6 +47,8 @@
 #'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
 #'   \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
+#'   \item \code{ancestral.distance}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{node.centroids}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
+#'
 #' }
 #'
 #' @examples
@@ -88,6 +90,23 @@
 #' ## Matrix diagonal
 #' diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
 #'
+#' ## A random matrix
+#' matrix <- matrix(rnorm(90), 9, 10)
+#' ## A random treee with node labels
+#' tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+#' ## Adding the tip and node names to the matris
+#' rownames(matrix) <- c(tree$tip.label, tree$node.label)
+#' 
+#' ## Calculating the direct ancestral nodes
+#' direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+#' ## Calculating all the ancestral nodes
+#' all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+#' 
+#' ## Calculating the distances from the direct ancestral nodes
+#' ancestral.distance(matrix, nodes.coordinates = direct_anc_centroids)
+#' ## Calculating the distances from all the ancestral nodes
+#' ancestral.distance(matrix, nodes.coordinates = all_anc_centroids)
+#' 
 #' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @author Thomas Guillerme
@@ -125,6 +144,11 @@ ranges <- function(matrix, k.root) {
     }
 }
 
+## Euclidean distance from the centroid
+fun.dist <- function(row, centroid) {
+    return(sqrt(sum((row-centroid)^2)))
+}
+
 ## Calculating the distance from centroid
 centroids <- function(matrix, centroid) {
 
@@ -134,17 +158,13 @@ centroids <- function(matrix, centroid) {
     if(missing(centroid)) {
         ## Calculating the centroid point
         centroid <- apply(matrix, 2, mean)
-    }
+    } 
 
-    ## Euclidean distance from the centroid
-    fun.dist <- function(row, centroid) {
-        return(sqrt(sum((row-centroid)^2)))
-    }
-
+    ## Calculate centroid distance with a single centroid
     cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
-
     return(cent.dist)
 }
+
 
 ## Calculate the mode of a vector
 mode.val <- function(X){
@@ -208,3 +228,159 @@ diagonal <- function(matrix) {
     ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras' theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimension.
     return(sqrt(sum(ranges(matrix))))
 }
+
+## Calculating the distance from the ancestral nodes
+ancestral.distance <- function(matrix, nodes.coordinates, tree, full,...) {
+
+    ## Checking if the nodes.coordinates is available
+    if(missing(nodes.coordinates)) {
+        if(!missing(tree) && !missing(full)) {
+            nodes.coordinates <- nodes.coordinates(matrix, tree, full)
+        } else {
+            stop("Missing tree and full argument for node.centroid.\nSee ?node.centroid manual.")
+        }
+    }
+    
+    if(class(nodes.coordinates) == "matrix") {
+        ## Converting both matrix and nodes.coordinates in lists
+        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
+        nodes.coordinates <- unlist(apply(nodes.coordinates, 1, list), recursive = FALSE)
+
+        ## Calculate nodes.coordinates distance with multiple nodes.coordinates
+        cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coordinates)
+        return(cent.dist)
+    }
+
+    if(class(nodes.coordinates) == "list") {
+        ## Wrapper function
+        mapply.fun.dist <- function(nodes.coordinates, matrix) {
+            ## Converting the matrix into a list
+            nodes.coordinates <- unlist(apply(nodes.coordinates, 1, list), recursive = FALSE)
+            ## Calculate nodes.coordinates distance with multiple nodes.coordinates
+            cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coordinates)
+            return(cent.dist)
+        }
+
+        ## Convert the matrix into a list
+        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
+
+        ## Calculate nodes.coordinates distance with multiple centroids
+        cent.dist <- lapply(nodes.coordinates, mapply.fun.dist, matrix)
+        cent.dist <- do.call(rbind, cent.dist)
+        
+        ## Calculate the cumulative distances
+        cent.dist <- apply(cent.dist, 2, sum, na.rm = TRUE)
+        return(cent.dist)
+    }
+
+    if(class(nodes.coordinates) == "numeric") {
+        ## Apply the normal centroid function
+        return(centroids(matrix, ...))
+    }
+}
+
+#' @title Nodes coordinates
+#'
+#' @description Calculates ancestral nodes coordinates in a format that can be passed to \code{\link{ancestral.distance}}
+#'
+#' @param matrix The \code{matrix} on which \code{\link{centroids}} will be applied
+#' @param tree A tree topology of class \code{"phylo"}.
+#' @param full Whether to get the centroids for all ancestors down to the root (\code{TRUE} - default) or only the direct ancestors (\code{FALSE})
+#' 
+#' @return
+#' A \code{matrix} if \code{full = FALSE} or a \code{list} of matrices if \code{full = TRUE}.
+#' 
+#' @examples
+#' ## A random matrix
+#' matrix <- matrix(rnorm(90), 9, 10)
+#' ## A random treee with node labels
+#' tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+#' ## Adding the tip and node names to the matris
+#' rownames(matrix) <- c(tree$tip.label, tree$node.label)
+#' 
+#' ## Calculating the direct ancestral nodes
+#' direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+#' ## Calculating all the ancestral nodes
+#' all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+#' 
+#' ## Calculating the distances from the direct ancestral nodes
+#' ancestral.distance(matrix, nodes.coordinates = direct_anc_centroids)
+#' ## Calculating the distances from all the ancestral nodes
+#' ancestral.distance(matrix, nodes.coordinates = all_anc_centroids)
+#'
+#' @seealso \code{\link{ancestral.distance}}, \code{\link{dispRity.metrics}}, \code{\link{dispRity}}
+#' 
+#' @author Thomas Guillerme
+#' @export
+#' 
+## Getting the centroid matrix for ancestor.centroids
+nodes.coordinates <- function(matrix, tree, full = TRUE) {
+    if(!full) {
+        ## Get the direct ancestors only (if no matrix provided)
+        centroids <- matrix[sapply(1:(Ntip(tree) + (Nnode(tree))), get.ancestors, tree, full = FALSE), ]
+    } else {
+        ## Calculate the multiple matrices
+        centroids <- lapply(get.ancestors.list(tree), function(X) return(matrix[c(X), ]))
+    }
+    return(centroids)
+}
+
+## Applies get.ancestor to all tips and nodes and outputs a list
+get.ancestors.list <- function(tree) {
+
+    ## Get all the ancestors
+    ancestors <- sapply(1:(Ntip(tree) + (Nnode(tree))), get.ancestors, tree, full = TRUE)
+
+    ## Get the tree depth
+    depth <- max(unlist(lapply(ancestors, length)))
+
+    ## Fill NAs were necessary
+    lapply.fill.NA <- function(X, depth) {
+        length_X <- length(X)
+        if(length_X == depth) {
+            return(X)
+        } else {
+            return(c(X, rep(NA, depth - length_X)))
+        }
+    }
+    ancestors <- lapply(ancestors, lapply.fill.NA, depth)
+
+    ## Transform into a matrix
+    ancestors <- matrix(unlist(ancestors), nrow = length(ancestors), byrow = TRUE)
+
+    ## And back into a list
+    return(unlist(apply(ancestors, 2, list), recursive = FALSE))
+}
+
+
+## get the list of ancestors (modified from phytools::getParent)
+get.ancestors <- function(tip, tree, full = TRUE) {
+
+    ## Getting the tree root (first node in ape edge table)
+    root <- tree$edge[1,1]
+
+    if(tip == root) {
+        ## If the tip is the root, simply return
+        return(root)
+    }
+
+    ## Function for getting one ancestor
+    get.one.ancestor <- function(tip, tree) {
+        return(ancestor <- tree$edge[which(tree$edge[, 2] == tip), 1])
+    }
+
+    ## Get the first ancestor
+    ancestors <- get.one.ancestor(tip, tree)
+
+    if(full) {
+        ## If the last ancestor is not the root, continue down the tree
+        while(ancestors[length(ancestors)] != root) {
+            ancestors <- c(ancestors, get.one.ancestor(ancestors[length(ancestors)], tree))
+        }
+    }
+
+    ## Output
+    return(ancestors)
+}
+
+
