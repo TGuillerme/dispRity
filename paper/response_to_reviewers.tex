@@ -114,15 +114,47 @@ Similarly, the R package ‘diverse’ has a function called disparity, and the 
 \begin{enumerate}
 
 \item{\textcolor{blue}{The paper keywords are narrow and suggest a very particular use of disparity analyses (morphological disparity). The paper suggests there are broader applications and so these should be revised to include the diverse applications that the paper suggests. }}
+
+%Increase keywords
+
 \item{\textcolor{blue}{Line 4 – changes ‘in’ to ‘to}}
+
+I have fixed this typo and removed ``variables'' (reviewer 2).
+
 \item{\textcolor{blue}{Line 6 – changes ‘axis’ to ‘axes’}}
+
+I have fixed this typo and remove ``of this space'' (reviewer 2).
+
 \item{\textcolor{blue}{Line 84 – Explain what the Procrustes variance is. And when is it appropriate and when is not appropriate? Be more specific.}}
+
+% Define Procrustes variance
+
 \item{\textcolor{blue}{Lines 98-100 – Suggest changing this to be specific: “calculates a disparity metric from the space”, and “analyse the resulting disparity object through hypothesis testing and visualisation”}}
+
+I have changed the sentence following the reviewer's suggestion.
+
 \item{\textcolor{blue}{Line 116 – “Table ??” = should have been caught during proofreading. Furthermore, there is no table included in the manuscript that details the implemented metrics, and this is an important part of the paper sadly omitted in this submission.}}
+
+I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the proper implemented metrics description.
+
 \item{\textcolor{blue}{Lines 356-357 – This final sentence of the conclusion section is vague and does not add to the manuscript.}}
+
+I removed the last sentence.
+
 \item{\textcolor{blue}{Figure 1 – Procrustes is a proper noun and requires a capital p. Is the Procrustes matrix a “Procrustes distance matrix” or a “Procrustes residuals matrix”? i.e. is it the shape variables after a Procrustes superimposition (latter) or the distances between individuals after a Procrustes superimposition (former)? Both are suitable inputs for ordination.}}
+
+I meant both matrices (as this reviewers rightly points our they are suitable for ordination). I have made this more clear in the figure.
+
 \item{\textcolor{blue}{Figure 2 makes little sense without a summary of the kinds of disparity metrics available to the user, and needs more explanation with examples for each dimension level.}}
+
+I've added a longer explanation of the different dimension-levels in the caption of the figure:
+
+\textit{A dimension-level 3 matrix would be a metric resulting in a matrix (e.g. the function \texttt{stats::cor} to calculate the correlation between each dimension), a dimension-level 2 metric would result in a vector (i.e. a distribution, e.g. \texttt{dispRity::variances} which calculates the variance within each dimension) and a dimension-level 1 metric would result in a single value (e.g. \texttt{stats::sd} which calculates the standard deviation of the input matrix).}
+
 \item{\textcolor{blue}{Table 1 – change to disparity-within-groups with hyphens as DTT below. Also add “shape” before data for geomorph.ordination, and perhaps a similar qualifier for Claddis.ordination.}}
+
+I've added hyphens to disparity-within-group and ``\textit{shape data}'' and ``\textit{discrete morphological data}'' for the two ordinations functions in the table.
+
 
 \end{enumerate}
 
@@ -167,6 +199,10 @@ Without this option data are likely to be biased, e.g., towards generating more 
 
 \item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package), and options for the user to only use a limited set of ordination axes (matrix columns), e.g., to avoid using higher axes with negative eigenvalues.}}
 
+This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} functions allowing users to set a \texttt{dimensions} argument to either a proportion or a value of dimensions to use (e.g. \texttt{0.95} or \texttt{10} to use only the 95\% of the dimensions or the 10 first ones respectively). I've added a line highlighting this feature that is indeed often used:
+
+l. @@@: \textit{Note that this function also allows to work on only a subset of dimensions via the \texttt{dimensions} argument (e.g. if only the $n$ first dimensions must be considered).}
+
 \end{enumerate}
 
 \subsection{Reviewer 2 - Minor comments}
@@ -175,24 +211,71 @@ Without this option data are likely to be biased, e.g., towards generating more 
 
 \item{\textcolor{blue}{L4 - "in" should be "to"? "of variables" is then redundant and can be removed.}}
 \item{\textcolor{blue}{L6 - "are the axis of this space" could just be "are the axes".}}
+
+See response to reviewer 1, minor comment 2 and 3.
+
 \item{\textcolor{blue}{L7 - "a" here should be removed.}}
 \item{\textcolor{blue}{L17 - "suits best" should be "best suits".}}
 \item{\textcolor{blue}{L23 - "allowing to" should be "allowing users to".}}
 \item{\textcolor{blue}{L28 - "suit" should be "suite".}}
+
+I've fixed these typos.
+
+
 \item{\textcolor{blue}{L54 - Technically a principal coordinates analysis *is* classic multidimensional scaling (CMDS). The author may also want to cite use of non-metric multidimensional scaling (e.g., Liow 2004, American Naturalist, 164, 431–).}}
+
+%TG: check paper and cite
+
 \item{\textcolor{blue}{L80 - I'm not sure I would use the term "enforce" here. I think many of us write packages that serve our own needs, but the great thing about languages like R is that it is flexible and code can be borrowed and appropriated etc. Essentially I think the author may unintentionally disparage other package authors here. Besides which, I do not feel that dispRity is competing with other packages, rather it is supplemental to them. I.e., to repeat my comment from above I see dispRity as sitting at the end of a range of data analysis pipelines with other packages sitting in front of it.}}
+
+%TG: done this down
+
 \item{\textcolor{blue}{L84 - Redundant "a".}}
+
+I've fixed this typo.
+
 \item{\textcolor{blue}{L116 - "??"!}}
+
+Sincerest apologies! See reviewer 1 minor comment 6.
+
 \item{\textcolor{blue}{L130 - I don't think the term "possible observed" makes sense. Either the author means all the observed morphologies *or* all the possible morphologies. I suggest the former is safer as I think it likely that possible morphologies introduce sufficient complexity we can never really say this is true. For example, if we alter the number of elements in our sample (removing a species say) the ordination/morphospace we produce will differ, but the range of possible morphologies should not.}}
+
+I agree and have changed it to ``\textit{all the observed morphologies}'' line @@@.
+
 \item{\textcolor{blue}{L134 - Should probably be "an argument".}}
+
+I have changed the start of the sentence to ``\textit{The first argument is the matrix}'' line @@@.
+
 \item{\textcolor{blue}{L136 - It is not immediately obvious to me why a phylogeny is required here. This only becomes clearer later (time-slicing) so maybe a "heads up" parenthetic (i.e., "see below") could be added here.}}
+
+I've added ``\textit{see below}'' to the sentence (line @@@).
+Following this comment, I've also changed the code since, indeed, a phylogeny should not always be required!
+The function can now works without it as long as First/Last occurrence data are provided for each taxa.
+
 \item{\textcolor{blue}{L208 - "looking at"?}}
 \item{\textcolor{blue}{L213 - Should be "altitudinal"?}}
+
+I've fixed these typos.
+
 \item{\textcolor{blue}{L245-247 - I don't think these definitions for crown and stem are quite right. However, for the audience of MEE I suspect there is no need to define them so these parenthetic statements can just be cut.}}
+
+I've removed the inaccurate definitions in parenthesis.
+
 \item{\textcolor{blue}{L252 - It might be more helpful to define these using the phylogeny as this is a more generally applicable approach than manually delimiting row numbers (where human error can easily creep in or the inclusion of exclusion of data can mess things up). I.e., something that identifies descendants of the crown node and then a simple setdiff() between these and all possible names to get the non-crown (stem) taxa).}}
+
+%Implement a crown/stem phylo function
+
 \item{\textcolor{blue}{L296 - Should be "increase".}}
+
+I've fixed this typo.
+
 \item{\textcolor{blue}{L324 - Figure 4 caption should be "elements per subsample" and "50\% and 95\%".}}
+
+%Check! fixed and already
+
 \item{\textcolor{blue}{L357 - Should be "for such analyses".}}
+
+I've removed this last sentence (see Reviewer 1 - minor comment 7).
 
 \end{enumerate}
 
