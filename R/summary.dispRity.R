@@ -56,7 +56,7 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     #Get call
     match_call <- match.call()
-    #return(match_call)
+    # warning("DEBUG summary.dispRity") ; return(match_call)
 
     #cent.tend
     #Must be a function
@@ -150,13 +150,19 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     ## If any elements is equal to one, check if not NA
     if(any(summary_results$n == 1)) {
+        ## Select the values to check
         to_check <- which(summary_results$n == 1)
-        subsamples_check <- match(summary_results$subsamples[to_check], names(data$subsamples))
-        for(subsample in subsamples_check) {
-            if(is.na(data$subsamples[subsamples_check[subsample]][[1]]$elements[1,1])) {
-                summary_results$n[which(summary_results$subsamples == summary_results$subsamples[to_check][subsample])] <- 0
-            }
+        ## Get their replacement values
+
+        check.elements.NA <- function(row, summary_results, data) {
+            ## Check if the subsample contains NA elements
+            ifelse(is.na(data$subsamples[[as.character(summary_results[row, 1])]]$elements[1,1]), 0, 1)
         }
+
+        replace_vals <- sapply(to_check, check.elements.NA, summary_results, data)
+        ## Replace them in the results
+        summary_results[to_check, 2] <- replace_vals
+
     }
 
     #----------------------
