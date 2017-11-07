@@ -63,5 +63,5 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     }
 
     ## Extract the stratigraphic data
-    return(rev(stratigraphy[strats, what]))
+    return(rev(unique(stratigraphy[strats, what])))
 }
