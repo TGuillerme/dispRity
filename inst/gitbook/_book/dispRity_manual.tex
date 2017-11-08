@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-08-24}
+  \date{2017-11-08}
 
 \usepackage{booktabs}
 
@@ -224,8 +224,10 @@ Zenodo. 10.5281/zenodo.55646
 \end{quote}
 
 Note that this citation is only temporary (but can still be used!). A
-future proper version of the latest package release, this manual and an
-associated methods paper should be submitted soon(ish!).
+proper description of the package is currently in review in Methods in
+Ecology and Evolution and should be re-submitted this winter. Upon
+acceptance (hopefully!), a proper DOI will be released for this manual
+and the package description.
 
 \chapter{Glossary}\label{glossary}
 
@@ -664,6 +666,16 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 \begin{Highlighting}[]
 \NormalTok{## Testing for an difference among the time bins}
 \NormalTok{disp_lm <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(disparity_data, }\DataTypeTok{test =}\NormalTok{ lm, }\DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in test.dispRity(disparity_data, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{summary}\NormalTok{(disp_lm)}
 \end{Highlighting}
 \end{Shaded}
@@ -784,6 +796,11 @@ test).
 \KeywordTok{test.dispRity}\NormalTok{(disparity_data, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{details =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in test.dispRity(disparity_data, test = wilcox.test, details = TRUE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
 
 \begin{verbatim}
 ## $`crown : stem`
@@ -2279,6 +2296,11 @@ Here we are using the variables generated in the
 \end{Shaded}
 
 \begin{verbatim}
+## Warning in test.dispRity(disparity_crown_stem, test = t.test): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{verbatim}
 ## [[1]]
 ##              statistic
 ## crown : stem  57.80615
@@ -2298,6 +2320,11 @@ Here we are using the variables generated in the
 \KeywordTok{test.dispRity}\NormalTok{(disparity_crown_stem, }\DataTypeTok{test =}\NormalTok{ t.test, }\DataTypeTok{details =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in test.dispRity(disparity_crown_stem, test = t.test, details = TRUE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
 
 \begin{verbatim}
 ## $`crown : stem`
@@ -2347,6 +2374,11 @@ Here we are using the variables generated in the
 \end{Shaded}
 
 \begin{verbatim}
+## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{verbatim}
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
@@ -2366,6 +2398,11 @@ The results can then be analysed as usual using the associated
                             \DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in test.dispRity(disparity_time_slices, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
 
 \begin{verbatim}
 ## 
@@ -2539,6 +2576,11 @@ above.
 \end{Shaded}
 
 \begin{verbatim}
+## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{verbatim}
 ##          bhatt.coeff
 ## 120 : 80  0.02645751
 ## 120 : 40  0.07348469
@@ -2568,6 +2610,11 @@ One solution, therefore, is to look at the full distribution:
 \end{Shaded}
 
 \begin{verbatim}
+## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{verbatim}
 ##          bhatt.coeff
 ## 120 : 80   0.6565552
 ## 120 : 40   0.6767954
@@ -2595,6 +2642,11 @@ A second solution is to compare the distributions to each other
 \KeywordTok{test.dispRity}\NormalTok{(disparity_centroids, }\DataTypeTok{test =}\NormalTok{ bhatt.coeff, }\DataTypeTok{concatenate =} \OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
 
 \begin{verbatim}
 ##          bhatt.coeff       2.5%       25%       75%     97.5%
@@ -2899,7 +2951,8 @@ This function creates empty \texttt{dispRity} objects.
 \end{Shaded}
 
 \begin{verbatim}
-## Empty dispRity object.
+##  ---- dispRity object ---- 
+## Contains only a matrix 5x4.
 \end{verbatim}
 
 \subsubsection{\texorpdfstring{\texttt{fill.dispRity}}{fill.dispRity}}\label{fill.disprity}
@@ -3951,7 +4004,16 @@ using the \texttt{test.dispRity} option.
 \begin{Highlighting}[]
 \NormalTok{## Fitting a linear model to our data}
 \NormalTok{disparity_lm <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(petal_disparity, }\DataTypeTok{test =}\NormalTok{ lm, }\DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Warning in test.dispRity(petal_disparity, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Testing whether there is a difference in disparity between the different species}
 \KeywordTok{summary}\NormalTok{(}\KeywordTok{aov}\NormalTok{(disparity_lm))}
 \end{Highlighting}

@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-24">
+<meta name="date" content="2017-11-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -388,8 +388,10 @@ disparity_data</code></pre></div>
 <span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing for an difference among the time bins
-disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)
-<span class="kw">summary</span>(disp_lm)</code></pre></div>
+disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_data, test = lm, comparisons = &quot;all&quot;): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_lm)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## test(formula = data ~ subsamples, data = data)
@@ -446,6 +448,8 @@ disparity_data</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing for a difference between the groups
 <span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> wilcox.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_data, test = wilcox.test, details = TRUE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 

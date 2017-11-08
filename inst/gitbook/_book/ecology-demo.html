@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-24">
+<meta name="date" content="2017-11-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -326,9 +326,10 @@ petal_subsamples</code></pre></div>
 <h3><span class="header-section-number">7.3.4</span> Testing hypothesis</h3>
 <p>Finally we can test our hypothesis that we guessed from the disparity plot (that some groups occupy different volume of the petal-space) by using the <code>test.dispRity</code> option.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Fitting a linear model to our data
-disparity_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)
-
-## Testing whether there is a difference in disparity between the different species
+disparity_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</code></pre></div>
+<pre><code>## Warning in test.dispRity(petal_disparity, test = lm, comparisons = &quot;all&quot;): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing whether there is a difference in disparity between the different species
 <span class="kw">summary</span>(<span class="kw">aov</span>(disparity_lm))</code></pre></div>
 <pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)    
 ## subsamples    2  5.387  2.6935   705.5 &lt;2e-16 ***

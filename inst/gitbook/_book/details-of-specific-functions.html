@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-24">
+<meta name="date" content="2017-11-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -835,6 +835,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>Here we are using the variables generated in the <a href="#summarising-dispRity-data-plots">section above</a>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## T-test to test for a difference in disparity between crown and stem mammals
 <span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_crown_stem, test = t.test): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>## [[1]]
 ##              statistic
 ## crown : stem  57.80615
@@ -848,6 +850,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## crown : stem 3.927248e-113</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Performing the same test but with the detailed t.test output
 <span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_crown_stem, test = t.test, details = TRUE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 
@@ -879,6 +883,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring the overlap between distributions in the time bins (using the
 ## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
 <span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
@@ -888,6 +894,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Performing and linear model applied to the same data
 (slice_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_time_slices, <span class="dt">test =</span> lm,
                             <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>))</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_time_slices, test = lm, comparisons = &quot;all&quot;): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>## 
 ## Call:
 ## test(formula = data ~ subsamples, data = data)
@@ -961,6 +969,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap in the distribution of medians
 <span class="kw">test.dispRity</span>(disparity_centroids_median, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
 ## 120 : 80  0.02645751
 ## 120 : 40  0.07348469
@@ -972,6 +982,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>One solution, therefore, is to look at the full distribution:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap for the full distributions
 <span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
 ## 120 : 80   0.6565552
 ## 120 : 40   0.6767954
@@ -983,6 +995,8 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>A second solution is to compare the distributions to each other <em>for each replicate</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Boostrapped probability of overlap for the full distributions
 <span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff, <span class="dt">concatenate =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
+## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff       2.5%       25%       75%     97.5%
 ## 120 : 80   0.2818787 0.00000000 0.1450953 0.4304156 0.6375038
 ## 120 : 40   0.3195364 0.00000000 0.2000000 0.4238587 0.7079195
