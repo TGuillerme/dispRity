@@ -170,11 +170,23 @@ The biological variables in such analyses are equally diverse, including morphol
 % Variety of multidimensional spaces, metrics and tests
 In all these analysis, each set of multivariate traits forms a multidimensional space.
 \hl{This space is represented as a matrix where rows are regarded as samples or observations (e.g. a specimen, field sites, etc.) and columns are variables or some transformation thereof (e.g. an embedding, scaling, ordination, etc. of the variables).}
-These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix \citep{Close2015}, or as outputs from a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, or a multidimensional scaling \citep[MDS;][]{DonohueDim}, among others.
+These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix \citep[][and references therein]{lloyd2016estimating}, or as outputs from a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, or a multidimensional scaling \citep[MDS;][]{DonohueDim}, among others.
 The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
 For example, when using morphological traits the multivariate space will be a morphospace, when using ecological traits it may be referred to as an ecospace or trait space.
-Once the multidimensional space is defined it is then possible to measure a specific aspect of it.
-This specific measurement (hereafter referred to as a ``disparity metric'') can in turn be defined in many different ways depending on the specific question being investigated \citep[e.g.][or combinations thereof]{Wills2001,Ciampaglio2001,foth2012different,DonohueDim,Hughes20082013,finlay2015morphological,Close2015}.
+
+\hl{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupies more space than group B?'').
+This requires the definition of a proxy for space occupancy: the disparity metric}
+\citep[or index;][]{Hopkins2017}
+\hl{which can be measured in a multitude of ways.}
+\hl{For example, one could use a metric based on the variance or the range of each axis of space}
+\citep{Wills2001, Ciampaglio2001}
+\hl{, a distance (e.g. Euclidean) measured between observations}
+\citep{foote1993contributions,Foote29111996}
+\hl{, a more direct approximation of the hyper volume }
+\citep{cornwell2006trait,DonohueDim}
+\hl{, or many more }
+\citep[e.g.][]{Navarrro2003MDA}.
+
 Finally, all these different multidimensional spaces and their associated disparity metrics can be used in an equal variety of statistical tests such as non-parametric multivariate analyses of variance \citep[e.g.][]{Brusatte12092008}, multidimensional permutation tests \citep[e.g.][]{diaz2016global} or even simply by looking at the confidence interval overlaps between disparity measurements \citep[e.g.][]{halliday2016eutherian}.
 In summary, there are many different ways to perform each step of a multidimensional analysis, making analyses of complexity ever more complex.
 
@@ -194,7 +206,9 @@ It implements many commonly used metrics and definitions of disparity, as well a
 The package is described here for the use of discrete morphological data diversity analysis but can be generalised to any type of multidimensional data (see the package vignette for more examples).
 
 \section{Description}
-In brief, the package takes a \texttt{matrix} object (the multidimensional space), \hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation} (see Manuals and Vignettes below).
+In brief, the package takes a \texttt{matrix} object (the multidimensional space), 
+\hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}
+(see Manuals and Vignettes below).
 Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow} and Table \ref{Tab:main_fun}).
 
 \begin{figure}[!htbp]
@@ -239,7 +253,8 @@ The disparity metric (i.e. the aspect of interest of the space) is passed throug
 \begin{figure}[!htbp]
 \centering
    \includegraphics[width=0.8\textwidth]{../inst/gitbook/dispRity_fun.pdf} 
-\caption{Illustration of the different metric dimension-levels in the \disp package. In this example, each cell correspond to a single value (e.g. a 8 $\times$ 7 matrix or a vector of eight elements). \hl{A dimension-level 3 matrix would be a metric resulting in a matrix (e.g. the function \texttt{stats::cor} to calculate the correlation between each dimension), a dimension-level 2 metric would result in a vector (i.e. a distribution, e.g. \texttt{dispRity::variances} which calculates the variance within each dimension) and a dimension-level 1 metric would result in a single value (e.g. \texttt{stats::sd} which calculates the standard deviation of the input matrix)}}.
+\caption{Illustration of the different metric dimension-levels in the \disp package. In this example, each cell correspond to a single value (e.g. a 8 $\times$ 7 matrix or a vector of eight elements).
+\hl{A dimension-level 3 matrix would be a metric resulting in a matrix (e.g. the function \texttt{stats::cor} to calculate the correlation between each dimension), a dimension-level 2 metric would result in a vector (i.e. a distribution, e.g. \texttt{dispRity::variances} which calculates the variance within each dimension) and a dimension-level 1 metric would result in a single value (e.g. \texttt{stats::sd} which calculates the standard deviation of the input matrix)}}.
 \label{Fig:levels}
 \end{figure}
 
@@ -279,8 +294,11 @@ In essence, the original space corresponds to the overall space (e.g. a morphosp
 Conversely, subsamples correspond to parts of the space with pooled characteristics (i.e. only a subset of the total morphospace).
 
 This splitting can be done using the \texttt{custom.subsamples} or \texttt{time.subsamples} functions.
-\hl{The first argument is the matrix} defining the multidimensional space and a list of elements to group into different subsamples.
-The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time subsamples for example, \hl{see below}) and which subsamples to create: (1) discrete time subsamples (or time-binning) or (2) continuous time subsamples (or time-slicing).
+\hl{The first argument is the matrix}
+defining the multidimensional space and a list of elements to group into different subsamples.
+The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time subsamples for example, 
+\hl{see below}
+) and which subsamples to create: (1) discrete time subsamples (or time-binning) or (2) continuous time subsamples (or time-slicing).
 
 The time-binning method groups elements by specific age range.
 The time-slicing method works by using a phylogeny and looking at which taxa are present at any specific point in time.
@@ -328,14 +346,20 @@ Some tests are implemented within the package such as the Bhattacharrya Coeffici
 Additionally, this function also allows additional arguments such as \texttt{rarefaction} (as described above) or \texttt{correction} to adjust p-values when using multiple parametric tests.
 
 \section{Examples}
-Multivariate analysis can be really useful for looking \hl{at} multiple aspects of organisms diversity together.
+Multivariate analysis can be really useful for looking
+ \hl{at} 
+ multiple aspects of organisms diversity together.
 For example, one classic univariate trait used in ecology and evolution can be the number of species present in a ecosystem or/and through time.
 This trait can be useful to test whether some ecosystems or/and time periods have more species diversity than others.
-In this case one can then test some hypothesis such as: environments with \hl{longer altitudinal} gradients contain more species.
+In this case one can then test some hypothesis such as: environments with
+ \hl{longer altitudinal} 
+ gradients contain more species.
 
 Conversely, in the case of species diversity, one can also look at another independent multivariate trait: the diversity of morphologies \citep[or disparity;][]{ruta2013}.
 Using disparity, it is then also possible to assess whether one ecosystem or/and time period display more morphological variation.
-Following the previous example, if disparity is also higher with \hl{longer altitudinal} gradients, one could argue that the species richness is caused by an increased number of morphologies adapted to more ecological niches (or something akin).
+Following the previous example, if disparity is also higher with
+ \hl{longer altitudinal} 
+ gradients, one could argue that the species richness is caused by an increased number of morphologies adapted to more ecological niches (or something akin).
 
 The following example is based on a classical palaeobiology morphological disparity analysis.
 Note that more examples are available in the package manual (\url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}).
@@ -439,7 +463,9 @@ As indicated by the p value, there is a significant difference in disparity betw
 Relating back to our question: yes, crown mammals display a higher diversity in morphologies than their stem counterparts (in this example and dataset!).
 
 \subsubsection{Typical disparity-through-time analysis}
-A \hl{subsequent} question to this observation could be to test whether this difference is due to an overall change in disparity through time or not.
+A 
+\hl{subsequent} 
+question to this observation could be to test whether this difference is due to an overall change in disparity through time or not.
 In other words, did disparity increase through time in mammals globally or is it only between stem and crown mammals.
 Using the same definition of the multidimensional space and disparity as in the previous example, we can measure, for example, changes in disparity through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
 
@@ -537,12 +563,15 @@ The \disp object allows users to easily pipeline disparity analysis from the dat
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging the development of this package and helping with the writing of this paper and the package manuals.
-Thanks to Martin Brazeau and Andrew Jackson for specific implementation ideas \hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive comments on the earlier version of this manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
-I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau \hl{and from the Discovery Project Grant DP170103227 awarded to Vera Weisbecker}.
+Thanks to Martin Brazeau and Andrew Jackson for specific implementation ideas 
+\hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive comments on the earlier version of this manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
+I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau 
+\hl{and from the Discovery Project Grant DP170103227 awarded to Vera Weisbecker}.
 
 
 \section{Funding}
-This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092 \hl{and the Discovery Project Grant number DP170103227}.
+This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092 
+\hl{and the Discovery Project Grant number DP170103227}.
 
 \bibliographystyle{sysbio}
 \bibliography{References}

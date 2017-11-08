@@ -87,19 +87,30 @@ For example, the line in the abstract “It is then possible to use a summary me
 
 I have changed the terms used in the abstract and proposed more specific examples for clarity:
 
-\tesxtit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not.}
+\textit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} line @@@
 
 The changes have also been made throughout the manuscript as generally suggested by all four reviewers.
 %TODO: link to other clarity changes
 
 \item{\textcolor{blue}{My main concern is that what disparity actually means is left to the reader’s imagination – it is not defined or discussed anywhere.
-Disparity simply means lack of similarity or equality. While the author is probably considering the dispersion of points in a multidimensional space as a measure of dissimilarity, it is important to realise the ambiguity of the word and more explanation is needed early in the introduction (and foremost in the abstract).
+Disparity simply means lack of similarity or equality.
+While the author is probably considering the dispersion of points in a multidimensional space as a measure of dissimilarity, it is important to realise the ambiguity of the word and more explanation is needed early in the introduction (and foremost in the abstract).
+%TODO improve disparity definition in the abstract
 Specifically, the lines 58-61 need to be revised, as they simply don’t convey to the reader what is being presented here as disparity.
 Say what “specific aspect of it [multidimensional space]” you are referring to.
 Also, the different definitions of disparity alluded to on lines 61-63 should be summarised.
 Furthermore, the manuscript is lacking a table summarising the metrics of disparity that this package can work with (which I suspect it was supposed to have).}}
 
 %Precision up on what is disparity
+
+As Reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
+This observation was the genesis for this package and I am currently working on a collaborative review to define the borders (or the absence thereof) of this concept.
+I feel that explaining this would be out of the scope of this software description paper.
+However, I have tried to give specific examples each time I refer to disparity as a way to measure these ``specific aspect of the space'' and I have also added a clearer definition of what I mean by disparity throughout this manuscript.
+
+I rewrote the part in the introducing disparity as follows:
+
+\textit{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. “does group A occupies more space than group B?”). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001) , a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996) , a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013) , or many more (e.g. Navarro, 2003).} lines @@@
 
 \item{\textcolor{blue}{Another concern I have is about how this R package sits within the current analytical toolkit available.
 How does this new package relate to existing packages available for R?
@@ -131,6 +142,14 @@ I have fixed these typos.
 
 % Define Procrustes variance
 
+Procrustes variance = Sum of the diagonal covariance matrix between each elements divided by the number of elements.
+This is appropriate when looking simply at the volume in the multidimensional space. Howver, does not work if we want to look at the distance between two groups or if we want to use another proxy than the procrustes variance for the space occupancy (e.g. the ellipsoid volume might and direction might be more appropriate in XXX case).
+
+%From the manual: Procrustes variance is the same sum of the diagonal elements of the group covariance matrix divided by the number of observations in the group
+
+
+%From Michael Collyer: As the author indicates, in geomorph we limit our disparity measure to Procrustes variance (same as the disparity metric used in dispRity) and hypothesis tests to use randomization tests that randomly permute residuals (not data) over many permutations to generate pairwise differences in disparity.
+
 \item{\textcolor{blue}{Lines 98-100 – Suggest changing this to be specific: “calculates a disparity metric from the space”, and “analyse the resulting disparity object through hypothesis testing and visualisation”}}
 
 I have changed the sentence following the reviewer's suggestion.
@@ -138,15 +157,24 @@ I have changed the sentence following the reviewer's suggestion.
 \item{\textcolor{blue}{Line 116 – “Table ??” = should have been caught during proofreading. Furthermore, there is no table included in the manuscript that details the implemented metrics, and this is an important part of the paper sadly omitted in this submission.}}
 \label{table_missing}
 
-I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the proper implemented metrics description.
+I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the currently implemented metrics description.
+I would also like to underline that although not all usual disparity metrics are not represented in the table and in the package (by far!) the idea of the \texttt{dispRity} package and specifically the \texttt{metric} argument in the \texttt{dispRity} function is to allow users to come up with their \textit{own} metric.
+
+For example, if one decides to use the relative ellipsoid hyper volume to the number of elements per group as a disparity metric (i.e. this metric could be used as a proxy for the average space occupancy per unit element - e.g. per taxon).
+This would not be doable directly by using the implemented \texttt{ellipse.volume} function but would require the user to use a function like:\\
+\texttt{dispRity(my\_data, metric = function(X) ellipse.volume(X)/nrows(X))}\\
+
 
 \item{\textcolor{blue}{Lines 356-357 – This final sentence of the conclusion section is vague and does not add to the manuscript.}}
 \label{remove_last_sentence}
+
 I removed the last sentence.
 
 \item{\textcolor{blue}{Figure 1 – Procrustes is a proper noun and requires a capital p. Is the Procrustes matrix a “Procrustes distance matrix” or a “Procrustes residuals matrix”? i.e. is it the shape variables after a Procrustes superimposition (latter) or the distances between individuals after a Procrustes superimposition (former)? Both are suitable inputs for ordination.}}
 
-I meant both matrices (as this reviewers rightly points our they are suitable for ordination). I have made this more clear in the figure.
+I meant both matrices (as this reviewers rightly points out they are suitable for ordination).
+I have made this more clear in the figure.
+On a more general note, the package now allows users to input any matrix (although the package does not provide warranty that the provided matrix is meaningful to the user's specific analysis).
 
 \item{\textcolor{blue}{Figure 2 makes little sense without a summary of the kinds of disparity metrics available to the user, and needs more explanation with examples for each dimension level.}}
 
@@ -440,6 +468,7 @@ If you are unfamiliar with developments in ideas beyond your particular field, I
 \item{\textcolor{blue}{You don't really define disparity anywhere, except in very loose terms.
 This needs making more explicit; I appreciate that disparity is a broad, nebulous concept, but you need to help the reader that may not be familiar with your subject area.
 Either that or as mentioned above, refocus the paper on those readers already versed in this particular type of analysis.}}
+\label{nebulous}
 
 %TG: explain disparity
 
