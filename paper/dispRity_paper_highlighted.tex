@@ -42,6 +42,8 @@
 \usepackage{lineno}
 \usepackage{dcolumn}
 \usepackage{hyphenat}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
 
 \pagenumbering{arabic}
@@ -123,13 +125,13 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
         \item Biological data is multivariate in essence: many traits in organisms co-vary with each other in space and time.
         This causes biologists to either reduce these \hl{to} a manageable number of variables or, increasingly, to use multivariate toolkits.
         One such toolkit is based on creating a multidimensional space where the variables are the \hl{axes}.
-        It is then possible to use summary metrics for measuring some properties of this space for some group of species and compare them.
-        For example, if studying morphology, one can create a morphospace for two groups of species, measure some aspect of these groups (such as their spread in the space - often termed disparity) and then test whether they have a different disparity.
+        It is then possible to \hl{measure divers aspects of the distribution of some observation (e.g. species) in this space}.
+        For example, if studying morphology, one can create a morphospace for two groups of species, measure \hl{the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not}.
 
         \item There are as many definition of these multidimensional spaces, metrics and tests as there are questions that can be tackled with such methods.
         Many of these methods are implemented in specific software or R packages.
         However, the definition of the space, metric and test is often dependent on the software/package's author's point of view or specific question.
-        This can unfortunately hamper researchers to apply different methods that \hl{best suits} their specific questions.
+        This can unfortunately hamper researchers \hl{ability} to apply different methods that \hl{best suits} their specific questions.
 
         \item Here I present the \disp package, a flexible R package for running multidimensional analysis.
         This package allows users to define each step of the analysis (whether it is the space, the metric or the test) through a highly modular architecture where each definition can be passed as a function.
@@ -166,7 +168,8 @@ These multivariate analyses can be used to investigate changes in morphological 
 The biological variables in such analyses are equally diverse, including morphological traits (discrete traits like the presence or absence of a character, e.g. \citealt{brusattedinosaur2012}; and continuous traits such as lengths, e.g. \citealt{price2015predation}), life history traits \citep[e.g.][]{diaz2016global}, or even ecosystem properties \citep[e.g.][]{DonohueDim}. 
 
 % Variety of multidimensional spaces, metrics and tests
-In all these analysis, each set of multivariate traits forms a multidimensional space, usually represented as matrices where the columns are the dimensions (or some transformation thereof) and rows are the elements (often species or individuals) within this space.
+In all these analysis, each set of multivariate traits forms a multidimensional space.
+\hl{This space is represented as a matrix where rows are regarded as samples or observations (e.g. a specimen, field sites, etc.) and columns are variables or some transformation thereof (e.g. an embedding, scaling, ordination, etc. of the variables).}
 These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix \citep{Close2015}, or as outputs from a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, or a multidimensional scaling \citep[MDS;][]{DonohueDim}, among others.
 The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
 For example, when using morphological traits the multivariate space will be a morphospace, when using ecological traits it may be referred to as an ecospace or trait space.
@@ -326,13 +329,13 @@ Additionally, this function also allows additional arguments such as \texttt{rar
 
 \section{Examples}
 Multivariate analysis can be really useful for looking \hl{at} multiple aspects of organisms diversity together.
-For example, one classic univariate trait used in ecology and evolution can be the sheer number of species present in a ecosystem or/and through time.
+For example, one classic univariate trait used in ecology and evolution can be the number of species present in a ecosystem or/and through time.
 This trait can be useful to test whether some ecosystems or/and time periods have more species diversity than others.
-In this case one can then test some hypothesis such as: environments with bigger \hl{altitudinal} gradients contain more species.
+In this case one can then test some hypothesis such as: environments with \hl{longer altitudinal} gradients contain more species.
 
 Conversely, in the case of species diversity, one can also look at another independent multivariate trait: the diversity of morphologies \citep[or disparity;][]{ruta2013}.
 Using disparity, it is then also possible to assess whether one ecosystem or/and time period display more morphological variation.
-Following the previous example, if disparity is also higher with bigger \hl{altitudinal} gradients, one could argue that the species richness is caused by an increased number of morphologies adapted to more ecological niches (or something akin).
+Following the previous example, if disparity is also higher with \hl{longer altitudinal} gradients, one could argue that the species richness is caused by an increased number of morphologies adapted to more ecological niches (or something akin).
 
 The following example is based on a classical palaeobiology morphological disparity analysis.
 Note that more examples are available in the package manual (\url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html}).
@@ -358,7 +361,7 @@ In other words, whether the approximation of the volume within the morphospace (
 
 \noindent These two groups can be defined as follows (where the integers are the row number of the species in the matrix):
 
-\noindent \texttt{> mammal\_groups <- list('crown' = c(16, 19:41, 45:50), 'stem' = c(1:15, 17:18, 42:44))}
+\noindent \texttt{> mammal\_groups <- list(\textquotedbl crown\textquotedbl = c(16, 19:41, 45:50), \textquotedbl stem\textquotedbl = c(1:15, 17:18, 42:44))}
 
 \noindent It is then possible to measure the disparity between the two groups as follows:
 
@@ -436,7 +439,7 @@ As indicated by the p value, there is a significant difference in disparity betw
 Relating back to our question: yes, crown mammals display a higher diversity in morphologies than their stem counterparts (in this example and dataset!).
 
 \subsubsection{Typical disparity-through-time analysis}
-A following up question to this observation could be to test whether this difference is due to an overall change in disparity through time or not.
+A \hl{subsequent} question to this observation could be to test whether this difference is due to an overall change in disparity through time or not.
 In other words, did disparity increase through time in mammals globally or is it only between stem and crown mammals.
 Using the same definition of the multidimensional space and disparity as in the previous example, we can measure, for example, changes in disparity through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
 
@@ -448,7 +451,7 @@ It is then possible to measure disparity-through-time using the following functi
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> subsamples <- time.subsamples(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = 'discrete')}\\
+\noindent \texttt{> subsamples <- time.subsamples(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
 \noindent \texttt{> bootstraps <- boot.matrix(subsamples)}\\
 \noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
@@ -474,7 +477,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \label{Tab:summary_time}
 \end{table}
 
-\noindent \texttt{> plot(disparity, type = 'continuous')}
+\noindent \texttt{> plot(disparity, type = \textquotedbl continuous\textquotedbl)}
 
 \noindent Note that many plot options specific to \disp objects are available such as plotting disparity in a ``continuous'' fashion (inferring disparity between the time bins).
 
@@ -488,7 +491,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
 Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, an ANOVA (Table \ref{Tab:anova}): 
 
-\noindent \texttt{> anova(test.dispRity(disparity, test = lm, comparisons = 'all'))}
+\noindent \texttt{> anova(test.dispRity(disparity, test = lm, comparisons = \textquotedbl all\textquotedbl))}
 
 \begin{table}[ht]
 \centering
@@ -535,11 +538,11 @@ The \disp object allows users to easily pipeline disparity analysis from the dat
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging the development of this package and helping with the writing of this paper and the package manuals.
 Thanks to Martin Brazeau and Andrew Jackson for specific implementation ideas \hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive comments on the earlier version of this manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
-I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau.
+I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau \hl{and from the Discovery Project Grant DP170103227 awarded to Vera Weisbecker}.
 
 
 \section{Funding}
-This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092.
+This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092 \hl{and the Discovery Project Grant number DP170103227}.
 
 \bibliographystyle{sysbio}
 \bibliography{References}

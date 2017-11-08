@@ -85,7 +85,12 @@ Also, I've uploaded two versions of the revised manuscript: both have the exact 
 For example, the line in the abstract “It is then possible to use a summary metrics for measuring some properties of this space for some group of species and compare them.”.
 “Some properties” is too vague without any qualifiers to be useful. But I believe that with revision, taking into account the issues of clarity, this will be an important addition to the available analytical tools for Biologists.}}
 
-%Increase precision in the abstract
+I have changed the terms used in the abstract and proposed more specific examples for clarity:
+
+\tesxtit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not.}
+
+The changes have also been made throughout the manuscript as generally suggested by all four reviewers.
+%TODO: link to other clarity changes
 
 \item{\textcolor{blue}{My main concern is that what disparity actually means is left to the reader’s imagination – it is not defined or discussed anywhere.
 Disparity simply means lack of similarity or equality. While the author is probably considering the dispersion of points in a multidimensional space as a measure of dissimilarity, it is important to realise the ambiguity of the word and more explanation is needed early in the introduction (and foremost in the abstract).
@@ -117,13 +122,10 @@ Similarly, the R package ‘diverse’ has a function called disparity, and the 
 
 %Increase keywords
 
-\item{\textcolor{blue}{Line 4 – changes ‘in’ to ‘to}}
+\item{\textcolor{blue}{Line 4 – changes ``in'' to ``to''. Line 6 – changes ``axis'' to ``axes''}}
+\label{abstract_typo}
 
-I have fixed this typo and removed ``variables'' (reviewer 2).
-
-\item{\textcolor{blue}{Line 6 – changes ‘axis’ to ‘axes’}}
-
-I have fixed this typo and remove ``of this space'' (reviewer 2).
+I have fixed these typos.
 
 \item{\textcolor{blue}{Line 84 – Explain what the Procrustes variance is. And when is it appropriate and when is not appropriate? Be more specific.}}
 
@@ -134,11 +136,12 @@ I have fixed this typo and remove ``of this space'' (reviewer 2).
 I have changed the sentence following the reviewer's suggestion.
 
 \item{\textcolor{blue}{Line 116 – “Table ??” = should have been caught during proofreading. Furthermore, there is no table included in the manuscript that details the implemented metrics, and this is an important part of the paper sadly omitted in this submission.}}
+\label{table_missing}
 
 I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the proper implemented metrics description.
 
 \item{\textcolor{blue}{Lines 356-357 – This final sentence of the conclusion section is vague and does not add to the manuscript.}}
-
+\label{remove_last_sentence}
 I removed the last sentence.
 
 \item{\textcolor{blue}{Figure 1 – Procrustes is a proper noun and requires a capital p. Is the Procrustes matrix a “Procrustes distance matrix” or a “Procrustes residuals matrix”? i.e. is it the shape variables after a Procrustes superimposition (latter) or the distances between individuals after a Procrustes superimposition (former)? Both are suitable inputs for ordination.}}
@@ -209,15 +212,11 @@ l. @@@: \textit{Note that this function also allows to work on only a subset of 
 
 \begin{enumerate}
 
-\item{\textcolor{blue}{L4 - "in" should be "to"? "of variables" is then redundant and can be removed.}}
-\item{\textcolor{blue}{L6 - "are the axis of this space" could just be "are the axes".}}
+\item{\textcolor{blue}{L4 - "in" should be "to"? "of variables" is then redundant and can be removed. L6 - "are the axis of this space" could just be "are the axes".}}
 
-See response to reviewer 1, minor comment 2 and 3.
+See Reviewer 1 minor comment \ref{abstract_typo}.
 
-\item{\textcolor{blue}{L7 - "a" here should be removed.}}
-\item{\textcolor{blue}{L17 - "suits best" should be "best suits".}}
-\item{\textcolor{blue}{L23 - "allowing to" should be "allowing users to".}}
-\item{\textcolor{blue}{L28 - "suit" should be "suite".}}
+\item{\textcolor{blue}{L7 - "a" here should be removed. L17 - "suits best" should be "best suits". L23 - "allowing to" should be "allowing users to". L28 - "suit" should be "suite".}}
 
 I've fixed these typos.
 
@@ -236,7 +235,7 @@ I've fixed this typo.
 
 \item{\textcolor{blue}{L116 - "??"!}}
 
-Sincerest apologies! See reviewer 1 minor comment 6.
+Sincerest apologies! See Reviewer 1 minor comment \ref{table_missing}.
 
 \item{\textcolor{blue}{L130 - I don't think the term "possible observed" makes sense. Either the author means all the observed morphologies *or* all the possible morphologies. I suggest the former is safer as I think it likely that possible morphologies introduce sufficient complexity we can never really say this is true. For example, if we alter the number of elements in our sample (removing a species say) the ordination/morphospace we produce will differ, but the range of possible morphologies should not.}}
 
@@ -252,8 +251,8 @@ I've added ``\textit{see below}'' to the sentence (line @@@).
 Following this comment, I've also changed the code since, indeed, a phylogeny should not always be required!
 The function can now works without it as long as First/Last occurrence data are provided for each taxa.
 
-\item{\textcolor{blue}{L208 - "looking at"?}}
-\item{\textcolor{blue}{L213 - Should be "altitudinal"?}}
+\item{\textcolor{blue}{L208 - "looking at"? L213 - Should be "altitudinal"?}}
+\label{altitude}
 
 I've fixed these typos.
 
@@ -275,7 +274,7 @@ I've fixed this typo.
 
 \item{\textcolor{blue}{L357 - Should be "for such analyses".}}
 
-I've removed this last sentence (see Reviewer 1 - minor comment 7).
+I've removed this last sentence (see Reviewer 1 minor comment \ref{remove_last_sentence}).
 
 \end{enumerate}
 
@@ -442,6 +441,8 @@ If you are unfamiliar with developments in ideas beyond your particular field, I
 This needs making more explicit; I appreciate that disparity is a broad, nebulous concept, but you need to help the reader that may not be familiar with your subject area.
 Either that or as mentioned above, refocus the paper on those readers already versed in this particular type of analysis.}}
 
+%TG: explain disparity
+
 \item{\textcolor{blue}{Something that I did miss, which is at the forefront of my mind as a lot of work has gone into **vegan** in this area, is how you handle negative eigenvalues and their eigenvectors?
 Typically, one needs to account for these issues, which readily arise when embedding data in an Euclidean space (via PCO) using a non-metric dissimilarity.
 Does **dispaRity** handle such problems, and if so how?
@@ -449,6 +450,8 @@ If not, is this because those steps are left up to the user to deal with?
 If so, there are some issues that cannot be corrected by the user without strongly biasing the results of the analysis.
 This is one area where there is the potential for the ideal of being accommodating of users can cause problems downstream if you are not in control of issues like non-metric dissimilarities.
 An example where it needs specific handling is in multivariate dispersions (distances around centroids), but even simple ordinations based on dissimilarities require special handling.}}
+
+%TG: negative egein values explnations
 
 \end{enumerate}
 
@@ -458,9 +461,17 @@ An example where it needs specific handling is in multivariate dispersions (dist
 
 \item{\textcolor{blue}{L17: insert "ability" between "researchers" and "to", and swap order of "suits" and "best" to read "best suits".}}
 
+I've fixed these typos.
+
 \item{\textcolor{blue}{L50: Here is an opportunity to bridge to the community ecology field and make more general statements regarding multivariate data; rows and samples or observations, columns are variables or some function of variables such as an embedding (PCO) or an ordination.}}
 
+I've changed the sentence to:
+
+\textit{In all these analysis, each set of multivariate traits forms a multidimensional space. This space is represented as a matrix where rows are regarded as samples or observations (e.g. a specimen, field sites, etc.) and columns are variables or some transformation thereof (e.g. an embedding, scaling, ordination, etc. of the variables).}
+
 \item{\textcolor{blue}{L51--54: here referencing is very poor. Please cite relevant original research. Also, expand on what you mean by MDS; is this different from PCO, which also goes by this name --- do you mean NMDS here?}}
+
+%TODO
 
 \item{\textcolor{blue}{L65--64 here are additional areas where referencing is poor. Consider Marti Anderson's work on multivariate ANOVA \& dispersions as earlier work, for example:
 \begin{itemize}
@@ -469,32 +480,43 @@ An example where it needs specific handling is in multivariate dispersions (dist
 \item Anderson, M. J., Ellingsen, K. E. \& McArdle, B. H. Multivariate dispersion as a measure of beta diversity. Ecol. Lett. 9, 683–693 (2006).
 \end{itemize}
 }}
+\textcolor{blue}{For permutation tests, significant work has been done in this area by Cajo ter Braak, principally in his Canoco software and related publications.
+Also comparing overlap in CIs is a terrible way to perform inference; for 95\% confidence intervals, if the intervals for two estimated means are as close as possible but not overlapping, the p value of the difference means test is 0.005, not 0.05. To achieve 0.05 you can allow considerable overlap, but how much is tricky to discern by eye.
+As such you are at risk of making poor choices on the basis of perceived significance.}
 
-\item{\textcolor{blue}{For permutation tests, significant work has been done in this area by Cajo ter Braak, principally in his Canoco software and related publications.}}
-
-\item{\textcolor{blue}{Also comparing overlap in CIs is a terrible way to perform inference; for 95\% confidence intervals, if the intervals for two estimated means are as close as possible but not overlapping, the p value of the difference means test is 0.005, not 0.05. To achieve 0.05 you can allow considerable overlap, but how much is tricky to discern by eye. As such you are at risk of making poor choices on the basis of perceived significance.}}
+%TODO I agree with the last point of this comment (that comparing CI's overlap is a terrible method!) -> change to "has been done in variable ways, sometimes leading to inaccuracies,"
 
 \item{\textcolor{blue}{L116 There is either a missing reference or a missing table, I presume the latter as no existing table matches the textual description in and around this line.}}
 
-\item{\textcolor{blue}{L134 Needs "an" between "as" and "argument"}}
+Sincerest apologies! See Reviewer 1 minor comment \ref{table_missing}.
 
-\item{\textcolor{blue}{L210 delete "sheer"}}
+\item{\textcolor{blue}{L134 Needs "an" between "as" and "argument". L210 delete "sheer". L213 "longer" not "bigger" and "altitude" not "altitudes". L218 "longer" not "bigger"}}
 
-\item{\textcolor{blue}{L213 "longer" not "bigger" and "altitude" not "altitudes"}}
-
-\item{\textcolor{blue}{L218 "longer" not "bigger"}}
+I've fixed these typos (see also Reviewer 2 minor comment \ref{altitude}).
 
 \item{\textcolor{blue}{L252 and throughout the code: insert straight quotes. There is a good chance these curly quotes will get replaced with some non-ASCII character and be impossible to paste into R.}}
 
+I've converted all quotes in quoted code lines as ASCII straight quotes.
+
 \item{\textcolor{blue}{In the example around L236--249, can you justify the metric used here? Is the sum of variances along components of an ordination a valid measure of the dispersion in multivariate space of samples? You don't, or I didn't see, reference to original work that justifies this, and it's not something I have come across despite implementing some approaches for testing multivariate dispersion in the **vegan** package. Doesn't this suffer the same problem as confidence bars in an x-y scatterplot where the bars have been defined with reference to only one axis at a time? The solution is a confidence ellipse, which is often quite different to the interval implied by separate confidence interval bars for each axis.}}
+
+%TG: justify from palaeo litterature? + add a note "One of the caveats of such method is that it implicitely ignores the covariance between the ordination axis."
 
 \item{\textcolor{blue}{L294 replace "following up" with "subsequent"}}
 
+I've changed the sentence following this suggestion.
+
 \item{\textcolor{blue}{L323 This statement seems overly vague. What level of confidence is there in this test? The 95\% intervals overlap throughout, and although you don't show then, one can infer that say the 0.2 probability quantile of subsample 2 overlaps with the 0.975 quantile of sub sample 1.}}
+
+%TODO
 
 \item{\textcolor{blue}{L326 Where do the 300 samples come from as implied by the residual degrees of freedom. Table 3 suggests 15 + 9 + 13 = 37 samples in this analysis. I'm clearly missing something here. Also, this is an omnibus test, which if we believe the printed values (see previous re DF) only says there is some effect of `subsamples`. Can this analysis be extended to point estimates for mean variance (again assuming you can justify this sum of individual variances method) and post-hoc comparisons of pairwise `subsample` differences, which would be quite useful?}}
 
+%TODO correct/explain this 300 subsamples + add a posthoc t-test.
+
 \item{\textcolor{blue}{If you need to save space to add an ecological example, cut the *Manuals and vignettes* section and also the *Data simulations* section. The later is somewhat tangential to the main thrust of the paper and you cover this in the vignette/bookdown resources.}}
+
+%TODO cut down the manual and vignette part + simulation part: just link to it?
 
 \end{enumerate}
 
