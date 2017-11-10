@@ -3,6 +3,9 @@
 \name{dispRity.metric}
 \alias{dispRity.metric}
 \alias{k.root}
+\alias{dimension.level3.fun}
+\alias{dimension.level2.fun}
+\alias{dimension.level1.fun}
 \alias{variances}
 \alias{ranges}
 \alias{centroids}
@@ -11,9 +14,6 @@
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
-\alias{dimension.level3.fun}
-\alias{dimension.level2.fun}
-\alias{dimension.level1.fun}
 \alias{ancestral.distance}
 \title{Disparity metrics}
 \usage{

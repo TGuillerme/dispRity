@@ -18,20 +18,32 @@
 #' data(plethodon)
 #' 
 #' ## Performing a Procrustes transform
-#' procrustes <- gpagen(plethodon$land,PrinAxes=FALSE)
+#' procrustes <- geomorph::gpagen(plethodon$land,PrinAxes=FALSE)
 #' 
 #' ## Obtaining the ordination matrix
 #' geomorph.ordination(procrustes)
 #'
 #' 
 #' ## Using a geomorph.data.frame
-#' geomorph_df <- geomorph.data.frame(procrustes,
-#'      species = plethodon$species, site = plethodon$site)
+#' geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species)
 #' 
 #' geomorph.ordination(geomorph_df)
+#' 
+#' ## Calculating disparity from dispRity or geomorph::morphol.disparity
+#' geomorph_disparity <- geomorph::morphol.disparity(coords ~ 1,
+#'                       groups= ~ species, data = geomorph_df)
+#' dispRity_disparity <- dispRity(geomorph.ordination(geomorph_df),
+#'                       metric = function(X) return(sum(X^2)/nrow(X)))
+#' 
+#' ## Extracting the raw disparity values
+#' geomorph_val <- round(as.numeric(geomorph_disparity$Procrustes.var), 15)
+#' dispRity_val <- as.vector(summary(dispRity_disparity, round = 15)$obs)
+#' 
+#' ## Comparing the values (to the 15th decimal!)
+#' geomorph_val == dispRity_val # all TRUE
 #' }
 #'
-#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 
 # require(geomorph)
