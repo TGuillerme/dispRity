@@ -1,10 +1,9 @@
 language: r
 warnings_are_errors: false
 
-# blacklist
 branches:
   only:
-    - master  
+#    - master  #(deactivated for revisions)
     - release
  
 # Code coverage
