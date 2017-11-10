@@ -69,6 +69,19 @@ I have taken all of their comments on board, and respond to their points below.
 For improving clarity in this document, reviewers comments are displayed in blue, my responses in normal text and the changes to the manuscript in italic.
 Also, I've uploaded two versions of the revised manuscript: both have the exact same content but one has all the changes and additions to the main text highlighted in yellow to help with reviewing.
 
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 1
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
 \section{Reviewer 1}
 
 \begin{enumerate}
@@ -176,8 +189,21 @@ I've added a longer explanation of the different dimension-levels in the caption
 
 I've added hyphens to disparity-within-group and ``\textit{shape data}'' and ``\textit{discrete morphological data}'' for the two ordinations functions in the table.
 
-
 \end{enumerate}
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 2
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
 
 \section{Reviewer 2}
 
@@ -187,7 +213,16 @@ Really the only major omission here is a more detailed description of the tools 
 I suspect many users will find this the *most* useful feature of the package and the author should consider unpacking this section a bit more.
 Perhaps adding an additional multipanel figure exhibitng some simulated spaces.}}
 
-% Add simulation description
+Reviewer 4 (minor comment \ref{remove_simulations}) suggested completely removing this section which conflicts directly with this suggestion.
+The simulation protocols implemented here are already developed (and tested) in details in previous publications with new novel features attached to future publication.
+For example the discrete data simulation protocol is described and detailed in Guillerme \& Cooper 2016 \textit{Mol Phyl Evol}, O’Reilly et al. 2016 \textit{Biol Let}, O'Reilly et al. 2017 \textit{Palaeontology} and Guillerme \& Brazeau \textit{in review}.
+The implemented ordinated space simulations are theoretically described in Diaz et al. 2016 \textit{Nature} and will be used along with additional simulation features not implemented yet (including shape evolution) as part of a project currently in progress.
+I am therefore inclined to follow reviewer's 4 suggestion rather than this one.
+% TODO change this sentence below:
+However, encouraged by the present reviewer's enthusiastic highlighting of the importance of these features, I've developed the description of these simulation in the package manual and should Reviewer 2 and the editor request it, I am willing to add this description directly to some supplementary materials of the current package description.
+
+% TODO add pdf of simulations description
+
 
 \item{\textcolor{blue}{Secondly, problematic implementations.
 Here there is again only one major issue, and that concerns the time-slicing options.
@@ -222,7 +257,7 @@ Without this option data are likely to be biased, e.g., towards generating more 
 
 This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} functions allowing users to set a \texttt{dimensions} argument to either a proportion or a value of dimensions to use (e.g. \texttt{0.95} or \texttt{10} to use only the 95\% of the dimensions or the 10 first ones respectively). I've added a line highlighting this feature that is indeed often used:
 
-l. @@@: \textit{Note that this function also allows to work on only a subset of dimensions via the \texttt{dimensions} argument (e.g. if only the $n$ first dimensions must be considered).}
+l. @@@: \textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).}
 
 \end{enumerate}
 
@@ -295,6 +330,22 @@ I've fixed this typo.
 I've removed this last sentence (see Reviewer 1 minor comment \ref{remove_last_sentence}).
 
 \end{enumerate}
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 3
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
 
 \section{Reviewer 3 (Michael Collyer)}
 
@@ -420,6 +471,25 @@ Cleaning up some of these details now will make it easier to remain dedicated la
 % Teyah 0.876 1.000
 
 
+
+
+
+
+
+
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 4
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
 \section{Reviewer 4 (Gavin Simpson)}
 
 \begin{enumerate}
@@ -534,6 +604,7 @@ I've changed the sentence following this suggestion.
 %TODO correct/explain this 300 subsamples + add a posthoc t-test.
 
 \item{\textcolor{blue}{If you need to save space to add an ecological example, cut the *Manuals and vignettes* section and also the *Data simulations* section. The later is somewhat tangential to the main thrust of the paper and you cover this in the vignette/bookdown resources.}}
+\label{remove_simulations}
 
 %TODO cut down the manual and vignette part + simulation part: just link to it?
 
