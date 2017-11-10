@@ -69,14 +69,6 @@ I have taken all of their comments on board, and respond to their points below.
 For improving clarity in this document, reviewers comments are displayed in blue, my responses in normal text and the changes to the manuscript in italic.
 Also, I've uploaded two versions of the revised manuscript: both have the exact same content but one has all the changes and additions to the main text highlighted in yellow to help with reviewing.
 
-
-% \item{\textcolor{blue}{\textbf{Graphical abstract:} Current graphical abstract does not capture the content of the article for readers in a single glance.
-% The authors should not use red and green together.
-% Figure 5 illustrates topology distance with different inference methods and varying proportions of missing data in rows vs columns and would make a better graphical abstract.
-% For the graphical abstract, Fig 5 needs to be made clearer in one glance what is going on.
-% More details are given in the comments on that figure below.}}
-
-
 \section{Reviewer 1}
 
 \begin{enumerate}
@@ -90,18 +82,16 @@ I have changed the terms used in the abstract and proposed more specific example
 \textit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} line @@@
 
 The changes have also been made throughout the manuscript as generally suggested by all four reviewers.
-%TODO: link to other clarity changes
 
 \item{\textcolor{blue}{My main concern is that what disparity actually means is left to the reader’s imagination – it is not defined or discussed anywhere.
 Disparity simply means lack of similarity or equality.
 While the author is probably considering the dispersion of points in a multidimensional space as a measure of dissimilarity, it is important to realise the ambiguity of the word and more explanation is needed early in the introduction (and foremost in the abstract).
-%TODO improve disparity definition in the abstract
 Specifically, the lines 58-61 need to be revised, as they simply don’t convey to the reader what is being presented here as disparity.
 Say what “specific aspect of it [multidimensional space]” you are referring to.
 Also, the different definitions of disparity alluded to on lines 61-63 should be summarised.
 Furthermore, the manuscript is lacking a table summarising the metrics of disparity that this package can work with (which I suspect it was supposed to have).}}
 
-%Precision up on what is disparity
+%TODO improve disparity definition in the abstract
 
 As Reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
 This observation was the genesis for this package and I am currently working on a collaborative review to define the borders (or the absence thereof) of this concept.
@@ -121,6 +111,7 @@ Within there are metrics for community dissimilarity, metrics from ordinations e
 Vegan is a popular package for analysis of multivariate datasets and seems to be relevant here with similar functionalities but not discussed.
 Similarly, the R package ‘diverse’ has a function called disparity, and the ‘geiger’ function disparity implements the disparity-through-time. }}
 
+%TODO
 %TG: add more functions cross over with vegan and geiger
 
 \end{enumerate}
@@ -131,6 +122,7 @@ Similarly, the R package ‘diverse’ has a function called disparity, and the 
 
 \item{\textcolor{blue}{The paper keywords are narrow and suggest a very particular use of disparity analyses (morphological disparity). The paper suggests there are broader applications and so these should be revised to include the diverse applications that the paper suggests. }}
 
+%TODO
 %Increase keywords
 
 \item{\textcolor{blue}{Line 4 – changes ``in'' to ``to''. Line 6 – changes ``axis'' to ``axes''}}
@@ -140,15 +132,13 @@ I have fixed these typos.
 
 \item{\textcolor{blue}{Line 84 – Explain what the Procrustes variance is. And when is it appropriate and when is not appropriate? Be more specific.}}
 
-% Define Procrustes variance
+In \texttt{geomorph}, the procrustes variance is defined as the sum of the diagonal covariance matrix between each elements divided by the number of elements (or effectively the sum of the squared ordination values divided by the number of elements - see example in \texttt{R} for \texttt{?dispRity::geomorph.ordination}).
+Using this disparity metric is appropriate for testing volume based hypothesis (e.g. Does group A occupies more morphospace than group B?) but does not allow to test position based hypothesis (e.g. Does group A occupies a different part of the morphospace than group B).
+For example, one might find out that group A and B have the same volume but that doesn't tell us if they occupy the same position in the morphospace.
 
-Procrustes variance = Sum of the diagonal covariance matrix between each elements divided by the number of elements.
-This is appropriate when looking simply at the volume in the multidimensional space. Howver, does not work if we want to look at the distance between two groups or if we want to use another proxy than the procrustes variance for the space occupancy (e.g. the ellipsoid volume might and direction might be more appropriate in XXX case).
+I've highlighted this in the text:
 
-%From the manual: Procrustes variance is the same sum of the diagonal elements of the group covariance matrix divided by the number of observations in the group
-
-
-%From Michael Collyer: As the author indicates, in geomorph we limit our disparity measure to Procrustes variance (same as the disparity metric used in dispRity) and hypothesis tests to use randomization tests that randomly permute residuals (not data) over many permutations to generate pairwise differences in disparity.
+\textit{For example, in the excellent and widely used} \texttt{geomorph} \textit{package, morphological disparity analysis uses the} \texttt{morphol.disparity} \textit{function that defines the multidimensional space as the ordination of the Procrustes transform of the morphometric data, the disparity metric as the relative sum of the diagonal of the covariance of the ordination scores (Procrustes variance), and uses permutation tests(Zelditch et al., 2012; Adams and Otarola-Castillo, 2013; Adams et al., 2017). This is ideal for testing volume based hypothesis (e.g. does groups A and B have the same volume?), but in other cases may not be appropriate in non-volume based hypothesis, e.g. does groups A and B occupy the same location?).}
 
 \item{\textcolor{blue}{Lines 98-100 – Suggest changing this to be specific: “calculates a disparity metric from the space”, and “analyse the resulting disparity object through hypothesis testing and visualisation”}}
 
