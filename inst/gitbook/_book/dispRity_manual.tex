@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-11-08}
+  \date{2017-11-13}
 
 \usepackage{booktabs}
 
@@ -161,18 +161,31 @@ version \texttt{0.4}.
 \section{\texorpdfstring{What is
 \texttt{dispRity}?}{What is dispRity?}}\label{what-is-disprity}
 
-This is a package for measuring disparity in \texttt{R}. It allows users
-to summarise ordinated matrices (e.g.~MDS, PCA, PCO, PCoA) to perform
-some multidimensional analysis. Typically, these analysis are used in
-palaeobiology and evolutionary biology to study the changes in
+This is a modular package for measuring disparity in \texttt{R}. It
+allows users to summarise ordinated matrices (e.g.~MDS, PCA, PCO, PCoA)
+to perform some multidimensional analysis. Typically, these analysis are
+used in palaeobiology and evolutionary biology to study the changes in
 morphology through time. However, there are many more applications in
 ecology, evolution and beyond.
+
+\subsection{Modular?}\label{modular}
+
+Because their exist a multitude of ways to measure disparity, each
+adapted to every specific question, this package uses an easy to modify
+modular architecture. In coding, each module is simply a function or a
+modification of a function that can be passed to the main functions of
+the package to tweak it to your proper needs! In practice, you will
+notice throughout this manual that some function can take other
+functions as arguments: the modular architecture of this package allows
+you to use any function for these arguments (with some restrictions
+explained for each specific cases). This will allow you to finely tune
+your multidimensional analysis to the needs of your specific question!
 
 \section{Installing and running the
 package}\label{installing-and-running-the-package}
 
 You can install this package easily if you use the latest version of
-\texttt{R} (\textgreater{} 4.0) and \texttt{devtools}.
+\texttt{R} (\textgreater{} 3.4.0) and \texttt{devtools}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2669,17 +2682,30 @@ between 0.18 and 0.43 in 50\% of the pseudo-replicates. Note that the
 quantiles and central tendencies can be modified via the
 \texttt{conc.quantiles} option.
 
+\chapter{Making stuff up!}\label{making-stuff-up}
+
+The \texttt{dispRity} package also offers some advanced data simulation
+features to allow to test hypothesis, explore ordinate-spaces or metrics
+properties or simply playing around with data! All the following
+functions are based on the same modular architecture of the package and
+therefore can be used with most of the functions of the package.
+
 \section{Simulating discrete morphological
 data}\label{simulating-discrete-morphological-data}
 
-The \texttt{dispRity} package also allows users to simulate discrete
-morphological data matrices. In brief, the function \texttt{sim.morpho}
-takes a phylogenetic tree, the number of required characters, the
-evolutionary model, and a function from which to draw the rates. The
-package also contains a function for quickly checking the matrix's
-phylogenetic signal (as defined in systematics not phylogenetic
-comparative methods) using parsimony. To understand these methods please
-refer to the phylogenetics literature.
+The function \texttt{sim.morpho} allows to simulate discrete
+morphological data matrices (sometimes referred to as ``cladistic''
+matrices). It allows to evolve multiple discrete characters on a given
+phylogenetic trees, given different models, rates, and states. It even
+allows to include proper inapplicable data to make datasets as messy as
+in real life!
+
+In brief, the function \texttt{sim.morpho} takes a phylogenetic tree,
+the number of required characters, the evolutionary model, and a
+function from which to draw the rates. The package also contains a
+function for quickly checking the matrix's phylogenetic signal (as
+defined in systematics not phylogenetic comparative methods) using
+parsimony. The methods are described in details below
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2729,36 +2755,196 @@ to be true\ldots{}
 \subsection{A more detailed
 description}\label{a-more-detailed-description}
 
-\texttt{sim.morpho} is really flexible and takes many different
-arguments to allow users to simulate realistic matrices. It has three
-implemented models: \texttt{"ER"} for Equal Rates (the M\emph{k} model);
-\texttt{"HKY"}, the molecular HKY model but transforms pyrines in 0's
-and pyrimidines in 1's; or the \texttt{"mixed"} model that randomly uses
-an \texttt{"ER"} and/or \texttt{"HKY"} for the binary characters and
-\texttt{"ER"} for the multistate (\textgreater{}2) characters. Both
-models take specific distributions for their rate or substitution
-models. These distributions should be passed to these arguments in the
-format of \texttt{c(sampler\_function,\ distribution\_parameters)} where
-the the sampler function is a the random generation function of that
-distribution (e.g. \texttt{rnorm}, \texttt{runif}, etc\ldots{}) and the
-parameters are any parameters to be passed to this function.
+The protocol implemented here to generate discrete morphological
+matrices is based on the ones developed in
+{[}\citet{GuillermeCooper};\citet{OReilly2016};\citet{puttick2017uncertain};OReilly2017{]}.
 
-\texttt{check.morpho} runs a quick Maximum Parsimony tree search using
-the \texttt{phangorn} parsimony algorithm. It quickly calculates the
-parsimony score, the consistency and retention indices and, if a tree is
-provided (e.g.~the tree used to generate the matrix) it calculates the
-Robinson-Foulds distance between the most parsimonious tree and the
-provided tree to determine how different they are.
+\begin{itemize}
+\tightlist
+\item
+  The first \texttt{tree} argument will be the tree on which to
+  ``evolve'' the characters and therefore requires branch length. You
+  can generate quick and easy random Yule trees using
+  \texttt{ape::rtree(number\_of\_taxa)} but I would advise to use more
+  realistic trees for more realistic simulations based on more realistic
+  models (really realistic then) using the function \texttt{tree.bd}
+  from the
+  \href{http://www.zoology.ubc.ca/prog/diversitree/}{\texttt{diversitree}}
+  package \citep{fitzjohndiversitree2012}.
+\item
+  The second argument, \texttt{character} is the number of characters.
+  Pretty straight forward.
+\item
+  The third, \texttt{states} is the proportion of characters states
+  above two (yes, the minimum number of states is two). This argument
+  intakes the proportion of \emph{n}-states characters, for example
+  \texttt{states\ =\ c(0.5,0.3,0.2)} will generate 50\% of binary-state
+  characters, 30\% of three-state characters and 20\% of four-state
+  characters. There is no limit in the number of state characters
+  proportion as long as the total makes up 100\%.
+\item
+  The forth, \texttt{model} is the evolutionary model for generating the
+  character(s). More about this below.
+\item
+  The fifth and sixth, \texttt{rates} and \texttt{substitution} are the
+  model parameters described below as well.
+\item
+  Finally, the two logical arguments, are self explanatory:
+  \texttt{invariant} whether to allow invariant characters
+  (i.e.~characters that don't change) and \texttt{verbose} whether to
+  print the simulation progress on your console.
+\end{itemize}
+
+\subsubsection{Available evolutionary
+models}\label{available-evolutionary-models}
+
+There are currently three evolutionary models implemented in
+\texttt{sim.morpho} but more will come in the future. Note also that
+they allow fine tuning parameters making them pretty plastic!
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{"ER"}: this model allows any number of character states and is
+  based on the Mk model \citep{lewisa2001}. It assumes a unique overall
+  evolutionary rate equal substitution rate between character states.
+  This model is based on the \texttt{ape::rTraitDisc} function.
+\item
+  \texttt{"HKY"}: this is binary state character model based on the
+  molecular HKY model \citep{HKY85}. It uses the four molecular states
+  (A,C,G,T) with a unique overall evolutionary rate and a biased
+  substitution rate towards transitions (A \textless{}-\textgreater{} G
+  or C \textless{}-\textgreater{} T) against transvertions (A
+  \textless{}-\textgreater{} C and G \textless{}-\textgreater{} T).
+  After evolving the nucleotide, this model transforms them into binary
+  states by converting the purines (A and G) into state 0 and the
+  pyrimidines (C and T) into state 1. This method is based on the
+  \texttt{phyclust::seq.gen.HKY} function and was first proposed by
+  \citet{OReilly2016}.
+\item
+  \texttt{"MIXED"}: this model uses a random (uniform) mix between both
+  the \texttt{"ER"} and the \texttt{"HKY"} models.
+\end{itemize}
+
+The models can take the following parameters: (1) \texttt{rates} is the
+evolutionary rate (i.e.~the rate of changes along a branch: the
+evolutionary speed) and (2) \texttt{substitution} is the frequency of
+changes between one state or another. For example if a character can
+have high probability of changing (the \emph{evolutionary} rate) with,
+each time a change occurs a probability of changing from state \emph{X}
+to state \emph{Y} (the \emph{substitution} rate). Note that in the
+\texttt{"ER"} model, the substitution rate is ignore because\ldots{} by
+definition this (substitution) rate is equal!
+
+The parameters arguments \texttt{rates} and \texttt{substitution} takes
+a distributions from which to draw the parameters values for each
+character. For example, if you want an \texttt{"HKY"} model with an
+evolutionary rate (i.e.~speed) drawn from a uniform distribution bounded
+between 0.001 and 0.005, you can define it as
+\texttt{rates\ =\ c(runif,\ min\ =\ 0.001,\ max\ =\ 0.005)},
+\texttt{runif} being the function for random draws from a uniform
+distribution and \texttt{max} and \texttt{min} being the distribution
+parameters. These distributions should always be passed in the format
+\texttt{c(random\_distribution\_function,\ distribution\_parameters)}
+with the names of the distribution parameters arguments.
+
+\subsubsection{Checking the results}\label{checking-the-results}
+
+An additional function, \texttt{check.morpho} runs a quick Maximum
+Parsimony tree search using the \texttt{phangorn} parsimony algorithm.
+It quickly calculates the parsimony score, the consistency and retention
+indices and, if a tree is provided (e.g.~the tree used to generate the
+matrix) it calculates the Robinson-Foulds distance between the most
+parsimonious tree and the provided tree to determine how different they
+are.
+
+\subsubsection{Adding inapplicable
+characters}\label{adding-inapplicable-characters}
+
+Once a matrix is generated, it is possible to apply inapplicable
+characters to it for increasing realism! Inapplicable characters are
+commonly designated as \texttt{NA} or simply \texttt{-}. They differ
+from missing characters \texttt{?} in their nature by being inapplicable
+rather than unknown. For example, considering a binary character defined
+as ``colour of the tail'' with the following states ``blue'' and
+``red''; on a taxa with no tail, the character should be coded as
+inapplicable (``\texttt{-}'') since the state of the character ``colour
+of tail'' is \emph{known}: it's neither ``blue'' or ``red'', it's just
+not there! It contrasts with coding it as missing (``\texttt{?}'' - also
+called as ambiguous) where the state is \emph{unknown}, for example, the
+taxon of interest is a fossil where the tail has no colour preserved or
+is not present at all due to bad conservation!
+
+This type of characters can be added to the simulated matrices using the
+\texttt{apply.NA} function/ It takes, as arguments, the \texttt{matrix},
+the source of inapplicability (\texttt{NAs} - more below), the
+\texttt{tree} used to generate the matrix and the two same
+\texttt{invariant} and \texttt{verbose} arguments as defined above. The
+\texttt{NAs} argument allows two types of sources of inapplicability:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{"character"} where the inapplicability is due to the character
+  (e.g.~coding a character tail for species with no tail). In practice,
+  the algorithm chooses a character \emph{X} as the underlying character
+  (e.g. ``presence and absence of tail''), arbitrarily chooses one of
+  the states as ``absent'' (e.g.~0 = absent) and changes in the next
+  character \emph{Y} any state next to character \emph{X} state 0 into
+  an inapplicable token (``\texttt{-}''). This simulates the
+  inapplicability induced by coding the characters (i.e.~not always
+  biological).
+\item
+  \texttt{"clade"} where the inapplicability is due to evolutionary
+  history (e.g.~a clade loosing its tail). In practice, the algorithm
+  chooses a random clade in the tree and a random character \emph{Z} and
+  replaces the state of the taxa present in the clade by the
+  inapplicable token (``\texttt{-}''). This simulates the
+  inapplicability induced by evolutionary biology (e.g.~the lose of a
+  feature in a clade).
+\end{itemize}
+
+To apply these sources of inapplicability, simply repeat the number of
+inapplicable sources for the desired number of characters with
+inapplicable data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Generating 5 "character" NAs and 10 "clade" NAs}
+\NormalTok{my_matrix_NA <-}\StringTok{ }\KeywordTok{apply.NA}\NormalTok{(my_matrix, }\DataTypeTok{tree =}\NormalTok{ my_tree,}
+                         \DataTypeTok{NAs =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"character"}\NormalTok{, }\DecValTok{5}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\StringTok{"clade"}\NormalTok{, }\DecValTok{10}\NormalTok{)))}
+
+\NormalTok{## The first few lines of the resulting matrix}
+\NormalTok{my_matrix_NA[}\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{, }\DecValTok{90}\OperatorTok{:}\DecValTok{100}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
+## t15 "0"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
+## t12 "1"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
+## t14 "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
+## t6  "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
+## t3  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
+## t2  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
+## t11 "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
+## t7  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
+## t1  "0"  "0"  "0"  "0"  "-"  "0"  "0"  "0"  "-"  "2"   "1"  
+## t5  "0"  "0"  "0"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"
+\end{verbatim}
 
 \subsection{Parameters for a realistic(ish)
 matrix}\label{parameters-for-a-realisticish-matrix}
 
-There are many parameters that can create a
-\texttt{realistic\textquotesingle{}\textquotesingle{}\ matrix\ (i.e.\ not\ too\ different\ from\ the\ input\ tree\ with\ a\ consistency\ and\ retention\ index\ close\ to\ what\ is\ seen\ in\ the\ literature)\ but\ because\ of\ the\ randomness\ of\ the\ matrix\ generation\ not\ all\ end\ up\ creating\ "good"\ matrices.\ The\ following\ parameters\ however,\ seem\ to\ generate\ fairly}realistic''
-matrices with a starting coalescent tree, equal rates model with 0.85
-binary characters and 0.15 three state characters, a gamma distribution
-with a shape parameter (\(\alpha\)) of 5 and no scaling (\(\beta\) = 1)
-with a rate of 100.
+There are many parameters that can create a ``realistic'' matrix
+(i.e.~not too different from the input tree with a consistency and
+retention index close to what is seen in the literature) but because of
+the randomness of the matrix generation not all parameters combination
+end up creating ``good'' matrices. The following parameters however,
+seem to generate fairly ``realist'' matrices with a starting coalescent
+tree, equal rates model with 0.85 binary characters and 0.15 three state
+characters, a gamma distribution with a shape parameter (\(\alpha\)) of
+5 and no scaling (\(\beta\) = 1) with a rate of 100.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2785,13 +2971,144 @@ spaces}\label{simulating-multidimensional-spaces}
 
 Another way to simulate data is to directly simulate an ordinated space
 with the \texttt{space.maker} function. This function allows users to
-simulate multidimensional spaces with a certain number of properties. It
-takes as arguments the number of elements (data points)~and dimensions
-to create the space but also permits more fine tuning in the data
-simulation: it is possible to give a specific distribution to each
-dimension, provide a correlation matrix to link the dimensions or even
-provide an \emph{a priori} distribution of the variance for each
-distributions!
+simulate multidimensional spaces with a certain number of properties.
+For example, it is possible to design a multidimensional space with a
+specific distribution on each axis, a correlation between the axes and a
+specific cumulative variance per axis. This can be useful for creating
+ordinated spaces for null hypothesis, for example if you're using the
+function \texttt{null.test} \citep{diaz2016global}.
+
+This function takes as arguments the number of elements (data points -
+\texttt{elements} argument)~and dimensions (\texttt{dimensions}
+argument) to create the space and the distribution functions to be used
+for each axis. The distributions are passed through the
+\texttt{distribution} argument as\ldots{} modular functions! You can
+either pass a single distribution function for all the axes (for example
+\texttt{distribution\ =\ runif} for all the axis being uniform) or a
+specific distribution function for each specific axis (for example
+\texttt{distribution\ =\ c(runif,\ rnorm,\ rgamma))} for the first axis
+being uniform, the second normal and the third gamma). You can of course
+use your very own functions or use the ones implemented in
+\texttt{dispRity} for more complex ones (see below). Specific optional
+arguments for each of these distributions can be passed as a list via
+the \texttt{arguments} argument.
+
+Furthermore, it is possible to add a correlation matrix to add a
+correlation between the axis via the \texttt{cor.matrix} argument or
+even a vector of proportion of variance to be bear by each axis via the
+\texttt{scree} argument to simulate realistic ordinated spaces.
+
+Here is a simple two dimensional example:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Graphical options}
+\NormalTok{op <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
+
+\NormalTok{## A square space}
+\NormalTok{square_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{, runif)}
+
+\NormalTok{## The resulting 2D matrix}
+\KeywordTok{head}\NormalTok{(square_space)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           [,1]       [,2]
+## [1,] 0.9548679 0.55645395
+## [2,] 0.3721235 0.53218069
+## [3,] 0.3229877 0.25041834
+## [4,] 0.8404244 0.46840450
+## [5,] 0.2839796 0.07466592
+## [6,] 0.2627652 0.24523019
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Visualising the space}
+\KeywordTok{plot}\NormalTok{(square_space, }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Uniform 2D space"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+
+Of course, more complex spaces can be created by changing the
+distributions, their arguments or adding a correlation matrix or a
+cumulative variance vector:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## A plane space: uniform with one dimensions equal to 0}
+\NormalTok{plane_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{(runif, runif, runif),}
+                           \DataTypeTok{arguments =} \KeywordTok{list}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{min =} \DecValTok{0}\NormalTok{, }\DataTypeTok{max =} \DecValTok{0}\NormalTok{), }\OtherTok{NULL}\NormalTok{, }\OtherTok{NULL}\NormalTok{))}
+
+\NormalTok{## Correlation matrix for a 3D space}
+\NormalTok{(cor_matrix <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.8}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.8}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.7}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.7}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow =} \DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]  1.0  0.8  0.2
+## [2,]  0.8  1.0  0.7
+## [3,]  0.2  0.7  1.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## An ellipsoid space (normal space with correlation)}
+\NormalTok{ellipse_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, rnorm, }\DataTypeTok{cor.matrix =}\NormalTok{ cor_matrix)}
+
+\NormalTok{## A cylindrical space with decreasing axes variance}
+\NormalTok{cylindrical_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{(rnorm, rnorm, runif),}
+                                 \DataTypeTok{scree =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.7}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Personalised dimensions
+distributions}\label{personalised-dimensions-distributions}
+
+Following the modular architecture of the package, it is of course
+possible to pass home made distribution functions to the
+\texttt{distribution} argument. For example, the \texttt{random.circle}
+function is a personalised one implemented in \texttt{dispRity}. This
+function allows to create circles based on basic trigonometry allowing
+to axis to covary to produce circle coordinates. By default, this
+function generates two sets of coordinates with a \texttt{distribution}
+argument and a minimum and maximum boundary (\texttt{inner} and
+\texttt{outer} respectively) to create nice sharp edges to the circle.
+The maximum boundary is equivalent to the radius of the circle (it
+removes coordinates beyond the circle radius) and the minimum is
+equivalent to the radius of a smaller circle with no data (it removes
+coordinates below this inner circle radius).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Graphical options}
+\NormalTok{op <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
+
+\NormalTok{## Generating coordinates for a normal circle with a upper boundary of 1}
+\NormalTok{circle <-}\StringTok{ }\KeywordTok{random.circle}\NormalTok{(}\DecValTok{1000}\NormalTok{, rnorm, }\DataTypeTok{inner =} \DecValTok{0}\NormalTok{, }\DataTypeTok{outer =} \DecValTok{1}\NormalTok{)}
+
+\NormalTok{## Plotting the circle}
+\KeywordTok{plot}\NormalTok{(circle, }\DataTypeTok{xlab =} \StringTok{"x"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"y"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"A normal circle"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Creating doughnut space (a spherical space with a hole)}
+\NormalTok{doughnut_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{5000}\NormalTok{, }\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{(rnorm, random.circle),}
+     \DataTypeTok{arguments =} \KeywordTok{list}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{mean =} \DecValTok{0}\NormalTok{), }\KeywordTok{list}\NormalTok{(runif, }\DataTypeTok{inner =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{outer =} \DecValTok{1}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Visualising the space}\label{visualising-the-space}
+
+I suggest using the excellent \texttt{scatterplot3d} package to play
+around and visualise the simulated spaces:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2808,39 +3125,129 @@ distributions!
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## A cube space}
-\KeywordTok{scatterplot3d}\NormalTok{(}\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, runif), }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{,}
-              \DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
-              \DataTypeTok{main =} \StringTok{"Uniform cube space"}\NormalTok{)}
+\NormalTok{## The plane space}
+\KeywordTok{scatterplot3d}\NormalTok{(plane_space, }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
+              \DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\OperatorTok{-}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{), }\DataTypeTok{main =} \StringTok{"Plane space"}\NormalTok{)}
 
-\NormalTok{## A plane space}
-\KeywordTok{scatterplot3d}\NormalTok{(}\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{(runif, runif, runif),}
-              \DataTypeTok{arguments =} \KeywordTok{list}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DataTypeTok{min =} \DecValTok{0}\NormalTok{, }\DataTypeTok{max =} \DecValTok{0}\NormalTok{), }\OtherTok{NULL}\NormalTok{, }\OtherTok{NULL}\NormalTok{)), }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{,}
-              \DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
-              \DataTypeTok{main =} \StringTok{"Uniform plane space"}\NormalTok{)}
-
-\NormalTok{## An ellipsoid space (=a spheric space with correlation)}
-\NormalTok{cor_matrix <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.8}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.8}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.7}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.7}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{nrow =} \DecValTok{3}\NormalTok{)}
-\KeywordTok{scatterplot3d}\NormalTok{(}\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, rnorm, }\DataTypeTok{cor.matrix =}\NormalTok{ cor_matrix), }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{,}
-              \DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
+\NormalTok{## The ellipsoid space}
+\KeywordTok{scatterplot3d}\NormalTok{(ellipse_space, }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
               \DataTypeTok{main =} \StringTok{"Normal ellipsoid space"}\NormalTok{)}
 
 \NormalTok{## A cylindrical space with a decreasing variance per axis}
-\KeywordTok{scatterplot3d}\NormalTok{(}\KeywordTok{space.maker}\NormalTok{(}\DecValTok{2500}\NormalTok{, }\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{(rnorm, rnorm, runif),}
-              \DataTypeTok{scree =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.7}\NormalTok{, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.1}\NormalTok{)), }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{,}
-              \DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
+\KeywordTok{scatterplot3d}\NormalTok{(cylindrical_space, }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{zlab =} \StringTok{""}\NormalTok{,}
               \DataTypeTok{main =} \StringTok{"Normal cylindrical space"}\NormalTok{)}
+\NormalTok{## Axes have different orders of magnitude}
+
+\NormalTok{## Plotting the doughnut space}
+\KeywordTok{scatterplot3d}\NormalTok{(doughnut_space[,}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)], }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{""}\NormalTok{,}
+              \DataTypeTok{zlab =} \StringTok{""}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Doughnut space"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Resetting the graphic parameters}
 \KeywordTok{par}\NormalTok{(op)}
 \end{Highlighting}
 \end{Shaded}
+
+\subsection{Generating realistic
+spaces}\label{generating-realistic-spaces}
+
+It is possible to generate ``realistic'' spaces by simply extracting the
+parameters of an existing space and scaling it up to the simulated
+space. For example, we can extract the parameters of the
+\texttt{BeckLee\_mat50} ordinated space and simulate a similar space.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Loading the data}
+\KeywordTok{data}\NormalTok{(BeckLee_mat50)}
+
+\NormalTok{## Number of dimensions}
+\NormalTok{obs_dim <-}\StringTok{ }\KeywordTok{ncol}\NormalTok{(BeckLee_mat50)}
+
+\NormalTok{## Observed correlation between the dimensions}
+\NormalTok{obs_correlations <-}\StringTok{ }\KeywordTok{cor}\NormalTok{(BeckLee_mat50)}
+
+\NormalTok{## Observed mean and standard deviation per axis}
+\NormalTok{obs_mu_sd_axis <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(x,y) }\KeywordTok{list}\NormalTok{(}\StringTok{"mean"}\NormalTok{ =}\StringTok{ }\NormalTok{x, }\StringTok{"sd"}\NormalTok{ =}\StringTok{ }\NormalTok{y),}
+                         \KeywordTok{as.list}\NormalTok{(}\KeywordTok{apply}\NormalTok{(BeckLee_mat50, }\DecValTok{2}\NormalTok{, mean)),}
+                         \KeywordTok{as.list}\NormalTok{(}\KeywordTok{apply}\NormalTok{(BeckLee_mat50, }\DecValTok{2}\NormalTok{, sd)), }\DataTypeTok{SIMPLIFY =} \OtherTok{FALSE}\NormalTok{)}
+
+\NormalTok{## Observed overall mean and standard deviation}
+\NormalTok{obs_mu_sd_glob <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"mean"}\NormalTok{ =}\StringTok{ }\KeywordTok{mean}\NormalTok{(BeckLee_mat50), }\StringTok{"sd"}\NormalTok{ =}\StringTok{ }\KeywordTok{sd}\NormalTok{(BeckLee_mat50))}
+
+\NormalTok{## Scaled observed variance per axis (scree plot)}
+\NormalTok{obs_scree <-}\StringTok{ }\KeywordTok{variances}\NormalTok{(BeckLee_mat50)}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(}\KeywordTok{variances}\NormalTok{(BeckLee_mat50))}
+
+\NormalTok{## Generating our simulated space}
+\NormalTok{simulated_space <-}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DecValTok{1000}\NormalTok{, }\DataTypeTok{dimensions =}\NormalTok{ obs_dim, }
+                               \DataTypeTok{distribution =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{list}\NormalTok{(rnorm), obs_dim),}
+                               \DataTypeTok{arguments =}\NormalTok{ obs_mu_sd_axis,}
+                               \DataTypeTok{cor.matrix =}\NormalTok{ obs_correlations)}
+
+\NormalTok{## Visualising the fit of our data in the space (in the two first dimensions)}
+\KeywordTok{plot}\NormalTok{(simulated_space[,}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{], }\DataTypeTok{xlab =} \StringTok{"PC1"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"PC2"}\NormalTok{)}
+\KeywordTok{points}\NormalTok{(BeckLee_mat50[,}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{], }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{20}\NormalTok{)}
+\KeywordTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\DataTypeTok{legend =} \KeywordTok{c}\NormalTok{(}\StringTok{"observed"}\NormalTok{, }\StringTok{"simulated"}\NormalTok{),}
+        \DataTypeTok{pch =} \KeywordTok{c}\NormalTok{(}\DecValTok{20}\NormalTok{,}\DecValTok{21}\NormalTok{), }\DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"black"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
+
+It is now possible to simulate a space using these observed arguments to
+test several hypothesis:
+
+\begin{itemize}
+\tightlist
+\item
+  Is the space uniform or normal?
+\item
+  If the space is normal, is the mean and variance global or specific
+  for each axis?
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Measuring disparity as the sum of variance}
+\NormalTok{observed_disp <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(BeckLee_mat50, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+
+\NormalTok{## Is the space uniform?}
+\NormalTok{test_unif <-}\StringTok{ }\KeywordTok{null.test}\NormalTok{(observed_disp, }\DataTypeTok{null.distrib =}\NormalTok{ runif)}
+
+\NormalTok{## Is the space normal with a mean of 0 and a sd of 1?}
+\NormalTok{test_norm1 <-}\StringTok{ }\KeywordTok{null.test}\NormalTok{(observed_disp, }\DataTypeTok{null.distrib =}\NormalTok{ rnorm)}
+
+\NormalTok{## Is the space normal with the observed mean and sd and cumulative variance}
+\NormalTok{test_norm2 <-}\StringTok{ }\KeywordTok{null.test}\NormalTok{(observed_disp, }\DataTypeTok{null.distrib =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{list}\NormalTok{(rnorm), obs_dim),}
+                        \DataTypeTok{null.args =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{list}\NormalTok{(obs_mu_sd_glob), obs_dim),}
+                        \DataTypeTok{null.scree =}\NormalTok{ obs_scree)}
+
+\NormalTok{## Is the space multiple normal with multiple means and sds and a correlation?}
+\NormalTok{test_norm3 <-}\StringTok{ }\KeywordTok{null.test}\NormalTok{(observed_disp, }\DataTypeTok{null.distrib =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{list}\NormalTok{(rnorm), obs_dim),}
+                        \DataTypeTok{null.args =}\NormalTok{ obs_mu_sd_axis, }\DataTypeTok{null.cor =}\NormalTok{ obs_correlations)}
+
+
+\NormalTok{## Graphical options}
+\NormalTok{op <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =}\NormalTok{ (}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{)), }\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\NormalTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(test_unif, }\DataTypeTok{main =} \StringTok{"Uniform (0,1)"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(test_norm1, }\DataTypeTok{main =} \StringTok{"Normal (0,1)"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(test_norm2, }\DataTypeTok{main =} \KeywordTok{paste0}\NormalTok{(}\StringTok{"Normal ("}\NormalTok{, }\KeywordTok{round}\NormalTok{(obs_mu_sd_glob[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{3}\NormalTok{),}
+                              \StringTok{","}\NormalTok{, }\KeywordTok{round}\NormalTok{(obs_mu_sd_glob[[}\DecValTok{2}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{3}\NormalTok{), }\StringTok{")"}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(test_norm3, }\DataTypeTok{main =} \StringTok{"Normal (variable + correlation)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+
+If we measure disparity as the median distance from the morphospace
+centroid, we can explain the distribution of the data as normal with the
+variable observed mean and standard deviation and with a correlation
+between the dimensions.
 
 \chapter{\texorpdfstring{The guts of the \texttt{dispRity}
 package}{The guts of the dispRity package}}\label{the-guts-of-the-disprity-package}
@@ -3361,7 +3768,7 @@ through time (for this dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -3375,7 +3782,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -3671,7 +4078,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -3834,7 +4241,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-85-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -3853,7 +4260,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -3987,7 +4394,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -4074,7 +4481,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4085,7 +4492,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.

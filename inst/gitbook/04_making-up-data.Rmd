@@ -231,6 +231,7 @@ scatterplot3d(doughnut_space[,c(2,1,3)], pch = 20, xlab = "", ylab = "",
 par(op)
 ```
 
+
 ### Generating realistic spaces
 
 It is possible to generate "realistic" spaces by simply extracting the parameters of an existing space and scaling it up to the simulated space.
@@ -259,9 +260,9 @@ obs_mu_sd_glob <- list("mean" = mean(BeckLee_mat50), "sd" = sd(BeckLee_mat50))
 obs_scree <- variances(BeckLee_mat50)/sum(variances(BeckLee_mat50))
 
 ## Generating our simulated space
-simulated_space <- space.maker(1000, dimensions = obs_dimensions, 
-                               distribution = obs_distributions,
-                               arguments = obs_arguments,
+simulated_space <- space.maker(1000, dimensions = obs_dim, 
+                               distribution = rep(list(rnorm), obs_dim),
+                               arguments = obs_mu_sd_axis,
                                cor.matrix = obs_correlations)
 
 ## Visualising the fit of our data in the space (in the two first dimensions)
@@ -303,7 +304,7 @@ plot(test_unif, main = "Uniform (0,1)")
 plot(test_norm1, main = "Normal (0,1)")
 plot(test_norm2, main = paste0("Normal (", round(obs_mu_sd_glob[[1]], digit = 3),
                               ",", round(obs_mu_sd_glob[[2]], digit = 3), ")"))
-plot(test_norm4, main = "Normal (variable + correlation)")
+plot(test_norm3, main = "Normal (variable + correlation)")
 
 ```
 

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>dispRity manual</title>
+  <meta name="description" content="dispRity R package vignette">
+  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="dispRity manual" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="dispRity R package vignette" />
+  <meta name="github-repo" content="TGuillerme/dispRity" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="dispRity manual" />
+  
+  <meta name="twitter:description" content="dispRity R package vignette" />
+  
+
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+
+
+<meta name="date" content="2017-11-13">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="details-of-specific-functions.html">
+<link rel="next" href="the-guts-of-the-disprity-package.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">dispRity manual</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dispRity</code></a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-disprity"><i class="fa fa-check"></i><b>1.1</b> What is <code>dispRity</code>?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#why-not-cran"><i class="fa fa-check"></i><b>1.3</b> Why not CRAN?</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a></li>
+<li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a><ul>
+<li class="chapter" data-level="3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#what-sort-of-data-does-disprity-work-with"><i class="fa fa-check"></i><b>3.1</b> What sort of data does <code>dispRity</code> work with?</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-claddis"><i class="fa fa-check"></i><b>3.1.1</b> Ordination matrices from <code>Claddis</code></a></li>
+<li class="chapter" data-level="3.1.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.1.2</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.1.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#other-kinds-of-ordination-matrices"><i class="fa fa-check"></i><b>3.1.3</b> Other kinds of ordination matrices</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#performing-a-simple-disprity-analysis"><i class="fa fa-check"></i><b>3.2</b> Performing a simple dispRity analysis</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#example-data"><i class="fa fa-check"></i><b>3.2.1</b> Example data</a></li>
+<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-through-time"><i class="fa fa-check"></i><b>3.2.2</b> Disparity through time</a></li>
+<li class="chapter" data-level="3.2.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-among-groups"><i class="fa fa-check"></i><b>3.2.3</b> Disparity among groups</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
+<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
+<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsamples"><i class="fa fa-check"></i><b>4.2</b> Customised subsamples</a></li>
+<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
+<li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
+<li class="chapter" data-level="4.4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#make.metric"><i class="fa fa-check"></i><b>4.4.2</b> <code>make.metric</code></a></li>
+<li class="chapter" data-level="4.4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-in-the-disprity-function"><i class="fa fa-check"></i><b>4.4.3</b> Metrics in the <code>dispRity</code> function</a></li>
+<li class="chapter" data-level="4.4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-implemented-in-disprity"><i class="fa fa-check"></i><b>4.4.4</b> Metrics implemented in <code>dispRity</code></a></li>
+<li class="chapter" data-level="4.4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#equations-and-implementations"><i class="fa fa-check"></i><b>4.4.5</b> Equations and implementations</a></li>
+<li class="chapter" data-level="4.4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#using-the-different-disparity-metrics"><i class="fa fa-check"></i><b>4.4.6</b> Using the different disparity metrics</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
+<li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
+</ul></li>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
+<li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#a-more-detailed-description"><i class="fa fa-check"></i><b>5.1.1</b> A more detailed description</a></li>
+<li class="chapter" data-level="5.1.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#parameters-for-a-realisticish-matrix"><i class="fa fa-check"></i><b>5.1.2</b> Parameters for a realistic(ish) matrix</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-multidimensional-spaces"><i class="fa fa-check"></i><b>5.2</b> Simulating multidimensional spaces</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#personalised-dimensions-distributions"><i class="fa fa-check"></i><b>5.2.1</b> Personalised dimensions distributions</a></li>
+<li class="chapter" data-level="5.2.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#visualising-the-space"><i class="fa fa-check"></i><b>5.2.2</b> Visualising the space</a></li>
+<li class="chapter" data-level="5.2.3" data-path="making-stuff-up.html"><a href="making-stuff-up.html#generating-realistic-spaces"><i class="fa fa-check"></i><b>5.2.3</b> Generating realistic spaces</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>6</b> The guts of the <code>dispRity</code> package</a><ul>
+<li class="chapter" data-level="6.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>6.1</b> Manipulating <code>dispRity</code> objects</a></li>
+<li class="chapter" data-level="6.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>6.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>6.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
+<li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
+<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsamples"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsamples</code></a></li>
+<li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>7</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
+<li class="chapter" data-level="7.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>7.1</b> Before starting</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>7.1.1</b> The morphospace</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>7.2</b> A disparity-through-time analysis</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>7.2.1</b> Splitting the morphospace through time</a></li>
+<li class="chapter" data-level="7.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>7.2.2</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="7.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity"><i class="fa fa-check"></i><b>7.2.3</b> Calculating disparity</a></li>
+<li class="chapter" data-level="7.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>7.2.4</b> Plotting the results</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>7.3</b> Testing differences</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a><ul>
+<li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
+<li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
+<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
+<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity-1"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
+<li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>9</b> Future directions</a><ul>
+<li class="chapter" data-level="9.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>9.1</b> More tests!</a></li>
+<li class="chapter" data-level="9.2" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>9.2</b> Faster disparity calculations</a></li>
+<li class="chapter" data-level="9.3" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.3</b> More modularity</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dispRity manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="making-stuff-up" class="section level1">
+<h1><span class="header-section-number">5</span> Making stuff up!</h1>
+<p>The <code>dispRity</code> package also offers some advanced data simulation features to allow to test hypothesis, explore ordinate-spaces or metrics properties or simply playing around with data! All the following functions are based on the same modular architecture of the package and therefore can be used with most of the functions of the package.</p>
+<div id="simulating-discrete-morphological-data" class="section level2">
+<h2><span class="header-section-number">5.1</span> Simulating discrete morphological data</h2>
+<p>The function <code>sim.morpho</code> allows to simulate discrete morphological data matrices (sometimes referred to as “cladistic” matrices). It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states. It even allows to include proper inapplicable data to make datasets as messy as in real life!</p>
+<p>In brief, the function <code>sim.morpho</code> takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates. The package also contains a function for quickly checking the matrix’s phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony. The methods are described in details below</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">3</span>)
+## Simulating a starting tree with 15 taxa as a random coalescent tree
+my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
+
+## Generating a matrix with 100 characters (85% binary and 15% three state) and
+## an equal rates model with a gamma rate distribution (0.5, 1) with no 
+## invariant characters.
+my_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="dt">tree =</span> my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">states =</span> <span class="kw">c</span>(<span class="fl">0.85</span>,
+    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
+
+## The first few lines of the matrix
+my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</code></pre></div>
+<pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+## t15 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
+## t12 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
+## t14 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
+## t6  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
+## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Checking the matrix properties with a quick Maximum Parsimony tree search
+<span class="kw">check.morpho</span>(my_matrix, my_tree)</code></pre></div>
+<pre><code>##                                     
+## Maximum parsimony        139.0000000
+## Consistency index          0.7625899
+## Retention index            0.8881356
+## Robinson-Foulds distance   0.0000000</code></pre>
+<p>Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree! Nearly too good to be true…</p>
+<div id="a-more-detailed-description" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> A more detailed description</h3>
+<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in [<span class="citation">@GuillermeCooper</span>;<span class="citation">@OReilly2016</span>;<span class="citation">@puttick2017uncertain</span>;OReilly2017].</p>
+<ul>
+<li>The first <code>tree</code> argument will be the tree on which to “evolve” the characters and therefore requires branch length. You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">[@fitzjohndiversitree2012]</span>.</li>
+<li>The second argument, <code>character</code> is the number of characters. Pretty straight forward.</li>
+<li>The third, <code>states</code> is the proportion of characters states above two (yes, the minimum number of states is two). This argument intakes the proportion of <em>n</em>-states characters, for example <code>states = c(0.5,0.3,0.2)</code> will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%.</li>
+<li>The forth, <code>model</code> is the evolutionary model for generating the character(s). More about this below.</li>
+<li>The fifth and sixth, <code>rates</code> and <code>substitution</code> are the model parameters described below as well.</li>
+<li>Finally, the two logical arguments, are self explanatory: <code>invariant</code> whether to allow invariant characters (i.e. characters that don’t change) and <code>verbose</code> whether to print the simulation progress on your console.</li>
+</ul>
+<div id="available-evolutionary-models" class="section level4">
+<h4><span class="header-section-number">5.1.1.1</span> Available evolutionary models</h4>
+<p>There are currently three evolutionary models implemented in <code>sim.morpho</code> but more will come in the future. Note also that they allow fine tuning parameters making them pretty plastic!</p>
+<ul>
+<li><code>&quot;ER&quot;</code>: this model allows any number of character states and is based on the Mk model <span class="citation">[@lewisa2001]</span>. It assumes a unique overall evolutionary rate equal substitution rate between character states. This model is based on the <code>ape::rTraitDisc</code> function.</li>
+<li><code>&quot;HKY&quot;</code>: this is binary state character model based on the molecular HKY model <span class="citation">[@HKY85]</span>. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A &lt;-&gt; G or C &lt;-&gt; T) against transvertions (A &lt;-&gt; C and G &lt;-&gt; T). After evolving the nucleotide, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the <code>phyclust::seq.gen.HKY</code> function and was first proposed by <span class="citation">@OReilly2016</span>.</li>
+<li><code>&quot;MIXED&quot;</code>: this model uses a random (uniform) mix between both the <code>&quot;ER&quot;</code> and the <code>&quot;HKY&quot;</code> models.</li>
+</ul>
+<p>The models can take the following parameters: (1) <code>rates</code> is the evolutionary rate (i.e. the rate of changes along a branch: the evolutionary speed) and (2) <code>substitution</code> is the frequency of changes between one state or another. For example if a character can have high probability of changing (the <em>evolutionary</em> rate) with, each time a change occurs a probability of changing from state <em>X</em> to state <em>Y</em> (the <em>substitution</em> rate). Note that in the <code>&quot;ER&quot;</code> model, the substitution rate is ignore because… by definition this (substitution) rate is equal!</p>
+<p>The parameters arguments <code>rates</code> and <code>substitution</code> takes a distributions from which to draw the parameters values for each character. For example, if you want an <code>&quot;HKY&quot;</code> model with an evolutionary rate (i.e. speed) drawn from a uniform distribution bounded between 0.001 and 0.005, you can define it as <code>rates = c(runif, min = 0.001, max = 0.005)</code>, <code>runif</code> being the function for random draws from a uniform distribution and <code>max</code> and <code>min</code> being the distribution parameters. These distributions should always be passed in the format <code>c(random_distribution_function, distribution_parameters)</code> with the names of the distribution parameters arguments.</p>
+</div>
+<div id="checking-the-results" class="section level4">
+<h4><span class="header-section-number">5.1.1.2</span> Checking the results</h4>
+<p>An additional function, <code>check.morpho</code> runs a quick Maximum Parsimony tree search using the <code>phangorn</code> parsimony algorithm. It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree to determine how different they are.</p>
+</div>
+<div id="adding-inapplicable-characters" class="section level4">
+<h4><span class="header-section-number">5.1.1.3</span> Adding inapplicable characters</h4>
+<p>Once a matrix is generated, it is possible to apply inapplicable characters to it for increasing realism! Inapplicable characters are commonly designated as <code>NA</code> or simply <code>-</code>. They differ from missing characters <code>?</code> in their nature by being inapplicable rather than unknown. For example, considering a binary character defined as “colour of the tail” with the following states “blue” and “red”; on a taxa with no tail, the character should be coded as inapplicable (“<code>-</code>”) since the state of the character “colour of tail” is <em>known</em>: it’s neither “blue” or “red”, it’s just not there! It contrasts with coding it as missing (“<code>?</code>” - also called as ambiguous) where the state is <em>unknown</em>, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!</p>
+<p>This type of characters can be added to the simulated matrices using the <code>apply.NA</code> function/ It takes, as arguments, the <code>matrix</code>, the source of inapplicability (<code>NAs</code> - more below), the <code>tree</code> used to generate the matrix and the two same <code>invariant</code> and <code>verbose</code> arguments as defined above. The <code>NAs</code> argument allows two types of sources of inapplicability:</p>
+<ul>
+<li><code>&quot;character&quot;</code> where the inapplicability is due to the character (e.g. coding a character tail for species with no tail). In practice, the algorithm chooses a character <em>X</em> as the underlying character (e.g. “presence and absence of tail”), arbitrarily chooses one of the states as “absent” (e.g. 0 = absent) and changes in the next character <em>Y</em> any state next to character <em>X</em> state 0 into an inapplicable token (“<code>-</code>”). This simulates the inapplicability induced by coding the characters (i.e. not always biological).</li>
+<li><code>&quot;clade&quot;</code> where the inapplicability is due to evolutionary history (e.g. a clade loosing its tail). In practice, the algorithm chooses a random clade in the tree and a random character <em>Z</em> and replaces the state of the taxa present in the clade by the inapplicable token (“<code>-</code>”). This simulates the inapplicability induced by evolutionary biology (e.g. the lose of a feature in a clade).</li>
+</ul>
+<p>To apply these sources of inapplicability, simply repeat the number of inapplicable sources for the desired number of characters with inapplicable data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating 5 &quot;character&quot; NAs and 10 &quot;clade&quot; NAs
+my_matrix_NA &lt;-<span class="st"> </span><span class="kw">apply.NA</span>(my_matrix, <span class="dt">tree =</span> my_tree,
+                         <span class="dt">NAs =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">5</span>), <span class="kw">rep</span>(<span class="st">&quot;clade&quot;</span>, <span class="dv">10</span>)))
+
+## The first few lines of the resulting matrix
+my_matrix_NA[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">90</span><span class="op">:</span><span class="dv">100</span>]</code></pre></div>
+<pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
+## t15 &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
+## t12 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
+## t14 &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
+## t6  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
+## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
+## t2  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
+## t11 &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
+## t7  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
+## t1  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;2&quot;   &quot;1&quot;  
+## t5  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;</code></pre>
+<!--TG: Add inapplicable paper here -->
+</div>
+</div>
+<div id="parameters-for-a-realisticish-matrix" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Parameters for a realistic(ish) matrix</h3>
+<p>There are many parameters that can create a “realistic” matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all parameters combination end up creating “good” matrices. The following parameters however, seem to generate fairly “realist” matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 5 and no scaling (<span class="math inline">\(\beta\)</span> = 1) with a rate of 100.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">0</span>)
+## tree
+my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
+## matrix
+morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>,
+    <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">5</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
+<span class="kw">check.morpho</span>(morpho_mat, my_tree)</code></pre></div>
+<pre><code>##                                     
+## Maximum parsimony        104.0000000
+## Consistency index          0.0000000
+## Retention index            0.7886179
+## Robinson-Foulds distance   0.0000000</code></pre>
+<!-- ## Simulating continuous morphological data -->
+<!-- TG: Add tutorial for evolving "morpho" shapes -->
+</div>
+</div>
+<div id="simulating-multidimensional-spaces" class="section level2">
+<h2><span class="header-section-number">5.2</span> Simulating multidimensional spaces</h2>
+<p>Another way to simulate data is to directly simulate an ordinated space with the <code>space.maker</code> function. This function allows users to simulate multidimensional spaces with a certain number of properties. For example, it is possible to design a multidimensional space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis. This can be useful for creating ordinated spaces for null hypothesis, for example if you’re using the function <code>null.test</code> <span class="citation">[@diaz2016global]</span>.</p>
+<p>This function takes as arguments the number of elements (data points - <code>elements</code> argument) and dimensions (<code>dimensions</code> argument) to create the space and the distribution functions to be used for each axis. The distributions are passed through the <code>distribution</code> argument as… modular functions! You can either pass a single distribution function for all the axes (for example <code>distribution = runif</code> for all the axis being uniform) or a specific distribution function for each specific axis (for example <code>distribution = c(runif, rnorm, rgamma))</code> for the first axis being uniform, the second normal and the third gamma). You can of course use your very own functions or use the ones implemented in <code>dispRity</code> for more complex ones (see below). Specific optional arguments for each of these distributions can be passed as a list via the <code>arguments</code> argument.</p>
+<p>Furthermore, it is possible to add a correlation matrix to add a correlation between the axis via the <code>cor.matrix</code> argument or even a vector of proportion of variance to be bear by each axis via the <code>scree</code> argument to simulate realistic ordinated spaces.</p>
+<p>Here is a simple two dimensional example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
+op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
+
+## A square space
+square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">100</span>, <span class="dv">2</span>, runif)
+
+## The resulting 2D matrix
+<span class="kw">head</span>(square_space)</code></pre></div>
+<pre><code>##           [,1]       [,2]
+## [1,] 0.9548679 0.55645395
+## [2,] 0.3721235 0.53218069
+## [3,] 0.3229877 0.25041834
+## [4,] 0.8404244 0.46840450
+## [5,] 0.2839796 0.07466592
+## [6,] 0.2627652 0.24523019</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Visualising the space
+<span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-64-1.png" width="768" /></p>
+<p>Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A plane space: uniform with one dimensions equal to 0
+plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),
+                           <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">0</span>), <span class="ot">NULL</span>, <span class="ot">NULL</span>))
+
+## Correlation matrix for a 3D space
+(cor_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>))</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]  1.0  0.8  0.2
+## [2,]  0.8  1.0  0.7
+## [3,]  0.2  0.7  1.0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## An ellipsoid space (normal space with correlation)
+ellipse_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, rnorm, <span class="dt">cor.matrix =</span> cor_matrix)
+
+## A cylindrical space with decreasing axes variance
+cylindrical_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, rnorm, runif),
+                                 <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))</code></pre></div>
+<div id="personalised-dimensions-distributions" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Personalised dimensions distributions</h3>
+<p>Following the modular architecture of the package, it is of course possible to pass home made distribution functions to the <code>distribution</code> argument. For example, the <code>random.circle</code> function is a personalised one implemented in <code>dispRity</code>. This function allows to create circles based on basic trigonometry allowing to axis to covary to produce circle coordinates. By default, this function generates two sets of coordinates with a <code>distribution</code> argument and a minimum and maximum boundary (<code>inner</code> and <code>outer</code> respectively) to create nice sharp edges to the circle. The maximum boundary is equivalent to the radius of the circle (it removes coordinates beyond the circle radius) and the minimum is equivalent to the radius of a smaller circle with no data (it removes coordinates below this inner circle radius).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
+op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
+
+## Generating coordinates for a normal circle with a upper boundary of 1
+circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span class="dv">1000</span>, rnorm, <span class="dt">inner =</span> <span class="dv">0</span>, <span class="dt">outer =</span> <span class="dv">1</span>)
+
+## Plotting the circle
+<span class="kw">plot</span>(circle, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;A normal circle&quot;</span>)</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-66-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating doughnut space (a spherical space with a hole)
+doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),
+     <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>), <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))</code></pre></div>
+</div>
+<div id="visualising-the-space" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Visualising the space</h3>
+<p>I suggest using the excellent <code>scatterplot3d</code> package to play around and visualise the simulated spaces:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
+op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
+## Visualising 3D spaces
+<span class="kw">require</span>(scatterplot3d)</code></pre></div>
+<pre><code>## Loading required package: scatterplot3d</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The plane space
+<span class="kw">scatterplot3d</span>(plane_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,
+              <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>), <span class="dt">main =</span> <span class="st">&quot;Plane space&quot;</span>)
+
+## The ellipsoid space
+<span class="kw">scatterplot3d</span>(ellipse_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,
+              <span class="dt">main =</span> <span class="st">&quot;Normal ellipsoid space&quot;</span>)
+
+## A cylindrical space with a decreasing variance per axis
+<span class="kw">scatterplot3d</span>(cylindrical_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,
+              <span class="dt">main =</span> <span class="st">&quot;Normal cylindrical space&quot;</span>)
+## Axes have different orders of magnitude
+
+## Plotting the doughnut space
+<span class="kw">scatterplot3d</span>(doughnut_space[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
+              <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Doughnut space&quot;</span>)</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-67-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
+</div>
+<div id="generating-realistic-spaces" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> Generating realistic spaces</h3>
+<p>It is possible to generate “realistic” spaces by simply extracting the parameters of an existing space and scaling it up to the simulated space. For example, we can extract the parameters of the <code>BeckLee_mat50</code> ordinated space and simulate a similar space.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the data
+<span class="kw">data</span>(BeckLee_mat50)
+
+## Number of dimensions
+obs_dim &lt;-<span class="st"> </span><span class="kw">ncol</span>(BeckLee_mat50)
+
+## Observed correlation between the dimensions
+obs_correlations &lt;-<span class="st"> </span><span class="kw">cor</span>(BeckLee_mat50)
+
+## Observed mean and standard deviation per axis
+obs_mu_sd_axis &lt;-<span class="st"> </span><span class="kw">mapply</span>(<span class="cf">function</span>(x,y) <span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span>x, <span class="st">&quot;sd&quot;</span> =<span class="st"> </span>y),
+                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, mean)),
+                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, sd)), <span class="dt">SIMPLIFY =</span> <span class="ot">FALSE</span>)
+
+## Observed overall mean and standard deviation
+obs_mu_sd_glob &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span><span class="kw">mean</span>(BeckLee_mat50), <span class="st">&quot;sd&quot;</span> =<span class="st"> </span><span class="kw">sd</span>(BeckLee_mat50))
+
+## Scaled observed variance per axis (scree plot)
+obs_scree &lt;-<span class="st"> </span><span class="kw">variances</span>(BeckLee_mat50)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">variances</span>(BeckLee_mat50))
+
+## Generating our simulated space
+simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">1000</span>, <span class="dt">dimensions =</span> obs_dim, 
+                               <span class="dt">distribution =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),
+                               <span class="dt">arguments =</span> obs_mu_sd_axis,
+                               <span class="dt">cor.matrix =</span> obs_correlations)
+
+## Visualising the fit of our data in the space (in the two first dimensions)
+<span class="kw">plot</span>(simulated_space[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">xlab =</span> <span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;PC2&quot;</span>)
+<span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)
+<span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),
+        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>))</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-68-1.png" width="768" /></p>
+<p>It is now possible to simulate a space using these observed arguments to test several hypothesis:</p>
+<ul>
+<li>Is the space uniform or normal?</li>
+<li>If the space is normal, is the mean and variance global or specific for each axis?</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring disparity as the sum of variance
+observed_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))
+
+## Is the space uniform?
+test_unif &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> runif)
+
+## Is the space normal with a mean of 0 and a sd of 1?
+test_norm1 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> rnorm)
+
+## Is the space normal with the observed mean and sd and cumulative variance
+test_norm2 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),
+                        <span class="dt">null.args =</span> <span class="kw">rep</span>(<span class="kw">list</span>(obs_mu_sd_glob), obs_dim),
+                        <span class="dt">null.scree =</span> obs_scree)
+
+## Is the space multiple normal with multiple means and sds and a correlation?
+test_norm3 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),
+                        <span class="dt">null.args =</span> obs_mu_sd_axis, <span class="dt">null.cor =</span> obs_correlations)
+
+
+## Graphical options
+op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
+## Plotting the results
+<span class="kw">plot</span>(test_unif, <span class="dt">main =</span> <span class="st">&quot;Uniform (0,1)&quot;</span>)
+<span class="kw">plot</span>(test_norm1, <span class="dt">main =</span> <span class="st">&quot;Normal (0,1)&quot;</span>)
+<span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Normal (&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">3</span>),
+                              <span class="st">&quot;,&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">2</span>]], <span class="dt">digit =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>))
+<span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable + correlation)&quot;</span>)</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
+<p>If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="details-of-specific-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="the-guts-of-the-disprity-package.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/04_making-up-data.Rmd",
+"text": "Edit"
+},
+"download": ["dispRity_manual.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
