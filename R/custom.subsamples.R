@@ -99,12 +99,32 @@ custom.subsamples <- function(data, group) {
     } else {
         ## Using a list
 
-        if(all(unique(unlist(lapply(group, class))) %in% c("numeric", "integer"))) {
+        ## Check for empty groups
+        empty_groups <- is.na(group) | unlist(lapply(group, is.null))
+        if(any(empty_groups)) {
+            ## Prepare a warning message
+            empty_groups_names <- ifelse(!is.null(names(empty_groups)), paste(names(which(empty_groups)), collapse = ", "), paste(which(empty_groups), collapse = ", "))
+            being <- ifelse(length(which(empty_groups)) == 1, "is", "are")
+            subsample <- ifelse(length(which(empty_groups)) == 1, "Subsample", "Subsamples")
+            ## Send a warning messages
+            warning(paste(subsample, empty_groups_names, being, "empty."))
+
+            ## Replace NULL groups by NAs
+            null_groups <- unlist(lapply(group, is.null))
+            if(any(null_groups)) {
+                group[which(null_groups)] <- NA
+            }
+        } 
+        ## Select the groups for sanitising
+        group_select <- which(empty_groups != TRUE)
+
+        ## Cleaning groups
+        if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
-            if(max(unlist(group)) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
+            if(max(unlist(group[group_select])) > nrow(data)) stop("Row numbers in group don't match the row numbers in data.")
         } else {
-            if(unique(unlist(lapply(group, class))) == "character") {
-                if(!all( as.character(unlist(group)) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
+            if(all(unique(unlist(lapply(group[group_select], class))) == "character")) {
+                if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
                 
                 ## Convert the row names into row numbers
                 group <- lapply(group, convert.name.to.numbers, data)
@@ -113,8 +133,6 @@ custom.subsamples <- function(data, group) {
                 stop("group argument must be a list of row names or row numbers.")
             }
         }
-        ## Checking if the groups have a list three elements
-        if(any(unlist(lapply(group, length)) < 3 )) stop("There must be at least three elements for each subsample.")
 
         ## Checking if the groups have names
         if(is.null(names(group))) names(group) <- seq(1:length(group))

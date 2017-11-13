@@ -47,10 +47,10 @@ test_that("make.null.model works", {
 
     #Right output
     expect_is(
-        make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE)
+        make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL)
         , "numeric")
     expect_equal(
-        length(make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE))
+        length(make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL))
         , 5)
 
     #Handling args properly
@@ -61,15 +61,15 @@ test_that("make.null.model works", {
     my_cor.matrix <- matrix(c(unlist(replicate(47, c(1, rep(0, 48)), simplify = FALSE)),1), nrow = 48, ncol = 48, byrow = FALSE)
 
     set.seed(1)
-    test1 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = FALSE)
+    test1 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL)
     set.seed(1)
-    test2 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = NULL, scale = FALSE)
+    test2 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = NULL, scale = FALSE, null.scree = NULL)
     set.seed(1)
-    test3 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = FALSE)
+    test3 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = FALSE, null.scree = NULL)
     set.seed(1)
-    test4 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE)
+    test4 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL)
     set.seed(1)
-    test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = TRUE)
+    test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = TRUE, null.scree = NULL)
 
     expect_is(
         test1
@@ -123,6 +123,14 @@ test_that("null.test works", {
     expect_error(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "something", scale = FALSE)
         )
+
+    test <- dispRity(BeckLee_mat50, metric = variances)
+    expect_error(
+        null.test(test, replicates = 10, null.distrib = rnorm, null.args = NULL, scale = FALSE)
+        )
+
+
+
     #Right output
     expect_is(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)

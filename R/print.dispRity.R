@@ -77,7 +77,13 @@ print.dispRity <- function(x, all = FALSE, ...) {
         }
 
         if(length(x$call) == 0) {
-            cat("Empty dispRity object.\n")
+            if(!is.null(x$matrix) && class(x$matrix) == "matrix") {
+                cat(" ---- dispRity object ---- \n")
+                dims <- dim(x$matrix)
+                cat(paste0("Contains only a matrix ", dims[1], "x", dims[2], "."))
+            } else {
+                cat("Empty dispRity object.\n")
+            }
             return()
         }
 

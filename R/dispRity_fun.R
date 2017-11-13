@@ -162,7 +162,7 @@ disparity.bootstraps.verbose <- function(one_subsamples_bootstrap, metrics_list,
     ## 1 - Decomposing the matrix (if necessary)
     if(matrix_decomposition) {
         ## Find out whether to output an array
-        use_array <- !is.null(metrics_list$level3.fun)        
+        use_array <- !is.null(metrics_list$level3.fun)
         ## Getting the first metric
         first_metric <- get.first.metric(metrics_list)
         level <- first_metric[[3]]
@@ -205,44 +205,44 @@ lapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition,
 }
 
 ## parallel lapply wrapper for disparity.bootstraps function
-parLapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition, verbose, ...) {
+# parLapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition, verbose, ...) {
 
-    disparity.bootstraps <- function(one_subsamples_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
-        ## 1 - Decomposing the matrix (if necessary)
-        if(matrix_decomposition) {
-            ## Find out whether to output an array
-            use_array <- !is.null(metrics_list$level3.fun)        
-            ## Getting the first metric
-            first_metric <- get.first.metric(metrics_list)
-            level <- first_metric[[3]]
-            metrics_list <- first_metric[[2]]
-            first_metric <- first_metric[[1]]
-            ## Decompose the metric using the first metric
-            disparity_out <- apply.decompose.matrix(one_subsamples_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
-        } else {
-            disparity_out <- one_subsamples_bootstrap
-        }
+#     disparity.bootstraps <- function(one_subsamples_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+#         ## 1 - Decomposing the matrix (if necessary)
+#         if(matrix_decomposition) {
+#             ## Find out whether to output an array
+#             use_array <- !is.null(metrics_list$level3.fun)        
+#             ## Getting the first metric
+#             first_metric <- get.first.metric(metrics_list)
+#             level <- first_metric[[3]]
+#             metrics_list <- first_metric[[2]]
+#             first_metric <- first_metric[[1]]
+#             ## Decompose the metric using the first metric
+#             disparity_out <- apply.decompose.matrix(one_subsamples_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+#         } else {
+#             disparity_out <- one_subsamples_bootstrap
+#         }
 
-        ## 2 - Applying the metrics to the decomposed matrix
-        if(!is.null(metrics_list$level3.fun)) {
-            disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
-        }
+#         ## 2 - Applying the metrics to the decomposed matrix
+#         if(!is.null(metrics_list$level3.fun)) {
+#             disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
+#         }
 
-        if(!is.null(metrics_list$level2.fun)) {
-            disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
-        }
+#         if(!is.null(metrics_list$level2.fun)) {
+#             disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
+#         }
 
-        if(!is.null(metrics_list$level1.fun)) {
-            margin <- ifelse(class(disparity_out) != "array", 2, 3)
-            disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
-            disparity_out <- t(as.matrix(disparity_out))
-        }
+#         if(!is.null(metrics_list$level1.fun)) {
+#             margin <- ifelse(class(disparity_out) != "array", 2, 3)
+#             disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
+#             disparity_out <- t(as.matrix(disparity_out))
+#         }
 
-        return(disparity_out)
-    }
+#         return(disparity_out)
+#     }
 
-    return(lapply(subsamples, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
-}
+#     return(lapply(subsamples, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+# }
 
 
 # ## Calculating the disparity for a bootstrap matrix (older version)

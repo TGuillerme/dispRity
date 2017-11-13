@@ -25,14 +25,14 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-08-21">
+<meta name="date" content="2017-11-13">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="details-of-specific-functions.html">
+<link rel="prev" href="making-stuff-up.html">
 <link rel="next" href="palaeobiology-demo-disparity-through-time-and-within-groups.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -104,7 +104,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dispRity</code></a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-disprity"><i class="fa fa-check"></i><b>1.1</b> What is <code>dispRity</code>?</a></li>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-disprity"><i class="fa fa-check"></i><b>1.1</b> What is <code>dispRity</code>?</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
+</ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#why-not-cran"><i class="fa fa-check"></i><b>1.3</b> Why not CRAN?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
@@ -141,46 +143,58 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
-<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>4.8</b> Simulating discrete morphological data</a><ul>
-<li class="chapter" data-level="4.8.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#a-more-detailed-description"><i class="fa fa-check"></i><b>4.8.1</b> A more detailed description</a></li>
-<li class="chapter" data-level="4.8.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#parameters-for-a-realisticish-matrix"><i class="fa fa-check"></i><b>4.8.2</b> Parameters for a realistic(ish) matrix</a></li>
 </ul></li>
-<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simulating-multidimensional-spaces"><i class="fa fa-check"></i><b>4.9</b> Simulating multidimensional spaces</a></li>
+<li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
+<li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#a-more-detailed-description"><i class="fa fa-check"></i><b>5.1.1</b> A more detailed description</a></li>
+<li class="chapter" data-level="5.1.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#parameters-for-a-realisticish-matrix"><i class="fa fa-check"></i><b>5.1.2</b> Parameters for a realistic(ish) matrix</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>5</b> The guts of the <code>dispRity</code> package</a><ul>
-<li class="chapter" data-level="5.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>5.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="5.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>5.2</b> <code>dispRity</code> utilities</a><ul>
-<li class="chapter" data-level="5.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>5.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>6</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
-<li class="chapter" data-level="6.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>6.1</b> Before starting</a><ul>
-<li class="chapter" data-level="6.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>6.1.1</b> The morphospace</a></li>
-</ul></li>
-<li class="chapter" data-level="6.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>6.2</b> A disparity-through-time analysis</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>6.2.1</b> Splitting the morphospace through time</a></li>
-<li class="chapter" data-level="6.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>6.2.2</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="6.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity"><i class="fa fa-check"></i><b>6.2.3</b> Calculating disparity</a></li>
-<li class="chapter" data-level="6.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>6.2.4</b> Plotting the results</a></li>
-</ul></li>
-<li class="chapter" data-level="6.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>6.3</b> Testing differences</a></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>7</b> Ecology demo</a><ul>
-<li class="chapter" data-level="7.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>7.1</b> Data</a></li>
-<li class="chapter" data-level="7.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>7.2</b> Classic analysis</a></li>
-<li class="chapter" data-level="7.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>7.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
-<li class="chapter" data-level="7.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>7.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="7.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity-1"><i class="fa fa-check"></i><b>7.3.2</b> Calculating disparity</a></li>
-<li class="chapter" data-level="7.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>7.3.3</b> Summarising the results (plot)</a></li>
-<li class="chapter" data-level="7.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>7.3.4</b> Testing hypothesis</a></li>
+<li class="chapter" data-level="5.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-multidimensional-spaces"><i class="fa fa-check"></i><b>5.2</b> Simulating multidimensional spaces</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#personalised-dimensions-distributions"><i class="fa fa-check"></i><b>5.2.1</b> Personalised dimensions distributions</a></li>
+<li class="chapter" data-level="5.2.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#visualising-the-space"><i class="fa fa-check"></i><b>5.2.2</b> Visualising the space</a></li>
+<li class="chapter" data-level="5.2.3" data-path="making-stuff-up.html"><a href="making-stuff-up.html#generating-realistic-spaces"><i class="fa fa-check"></i><b>5.2.3</b> Generating realistic spaces</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>8</b> Future directions</a><ul>
-<li class="chapter" data-level="8.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>8.1</b> More tests!</a></li>
-<li class="chapter" data-level="8.2" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>8.2</b> Faster disparity calculations</a></li>
-<li class="chapter" data-level="8.3" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>8.3</b> More modularity</a></li>
+<li class="chapter" data-level="6" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>6</b> The guts of the <code>dispRity</code> package</a><ul>
+<li class="chapter" data-level="6.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>6.1</b> Manipulating <code>dispRity</code> objects</a></li>
+<li class="chapter" data-level="6.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>6.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>6.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>9</b> References</a></li>
+<li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
+<li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
+<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsamples"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsamples</code></a></li>
+<li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>7</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
+<li class="chapter" data-level="7.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>7.1</b> Before starting</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>7.1.1</b> The morphospace</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>7.2</b> A disparity-through-time analysis</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>7.2.1</b> Splitting the morphospace through time</a></li>
+<li class="chapter" data-level="7.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>7.2.2</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="7.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity"><i class="fa fa-check"></i><b>7.2.3</b> Calculating disparity</a></li>
+<li class="chapter" data-level="7.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>7.2.4</b> Plotting the results</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>7.3</b> Testing differences</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a><ul>
+<li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
+<li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
+<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
+<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity-1"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
+<li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>9</b> Future directions</a><ul>
+<li class="chapter" data-level="9.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>9.1</b> More tests!</a></li>
+<li class="chapter" data-level="9.2" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>9.2</b> Faster disparity calculations</a></li>
+<li class="chapter" data-level="9.3" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.3</b> More modularity</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -202,9 +216,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="the-guts-of-the-disprity-package" class="section level1">
-<h1><span class="header-section-number">5</span> The guts of the <code>dispRity</code> package</h1>
+<h1><span class="header-section-number">6</span> The guts of the <code>dispRity</code> package</h1>
 <div id="manipulating-disprity-objects" class="section level2">
-<h2><span class="header-section-number">5.1</span> Manipulating <code>dispRity</code> objects</h2>
+<h2><span class="header-section-number">6.1</span> Manipulating <code>dispRity</code> objects</h2>
 <p>Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your <code>R</code> console. Even the simple Beck and Lee 2014 example above produces an object with &gt; 72 lines of lists of lists of matrices!</p>
 <p>Therefore <code>dispRity</code> uses a specific class of object called a <code>dispRity</code> object. These objects allow users to use S3 method functions such as <code>summary.dispRity</code>, <code>plot.dispRity</code> and <code>print.dispRity</code>. <code>dispRity</code> also contains various utility functions that manipulate the <code>dispRity</code> object (e.g. <code>sort.dispRity</code>, <code>extract.dispRity</code> see the full list in the next section). These functions modify the <code>dispRity</code> object without having to delve into its complex structure! The full structure of a <code>dispRity</code> object is detailed <a href="https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the example data
@@ -229,23 +243,24 @@ disparity</code></pre></div>
 ## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</code></pre></div>
 </div>
 <div id="disprity-utilities" class="section level2">
-<h2><span class="header-section-number">5.2</span> <code>dispRity</code> utilities</h2>
+<h2><span class="header-section-number">6.2</span> <code>dispRity</code> utilities</h2>
 <p>The package also provides some utility functions to facilitate multidimensional analysis.</p>
 <div id="disprity-object-utilities" class="section level3">
-<h3><span class="header-section-number">5.2.1</span> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></h3>
+<h3><span class="header-section-number">6.2.1</span> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></h3>
 <p>The first set of utilities are functions for manipulating <code>dispRity</code> objects:</p>
 <div id="make.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.1</span> <code>make.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.1</span> <code>make.dispRity</code></h4>
 <p>This function creates empty <code>dispRity</code> objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating an empty dispRity object
 <span class="kw">make.dispRity</span>()</code></pre></div>
 <pre><code>## Empty dispRity object.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating an &quot;empty&quot; dispRity object with a matrix
 (disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</code></pre></div>
-<pre><code>## Empty dispRity object.</code></pre>
+<pre><code>##  ---- dispRity object ---- 
+## Contains only a matrix 5x4.</code></pre>
 </div>
 <div id="fill.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.2</span> <code>fill.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.2</span> <code>fill.dispRity</code></h4>
 <p>This function initialises a <code>dispRity</code> object and generates its call properties.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The dispRity object&#39;s call is indeed empty
 disparity_obj<span class="op">$</span>call</code></pre></div>
@@ -260,7 +275,7 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 ## [1] 4</code></pre>
 </div>
 <div id="matrix.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.3</span> <code>matrix.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.3</span> <code>matrix.dispRity</code></h4>
 <p>This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the matrix containing the coordinates of the elements at time 50
 <span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="st">&quot;50&quot;</span>))</code></pre></div>
@@ -277,7 +292,7 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 ##   ..$ : NULL</code></pre>
 </div>
 <div id="get.subsamples.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.4</span> <code>get.subsamples.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.4</span> <code>get.subsamples.dispRity</code></h4>
 <p>This function creates a dispRity object that contains only elements from one specific subsamples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting all the data for the crown mammals
 (crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsamples.dispRity</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))
@@ -286,7 +301,7 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 <span class="kw">length</span>(crown_mammals<span class="op">$</span>subsamples)</code></pre></div>
 </div>
 <div id="extract.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.5</span> <code>extract.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.5</span> <code>extract.dispRity</code></h4>
 <p>This function extracts the calculated disparity values of a specific matrix.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the observed disparity (default)
 <span class="kw">extract.dispRity</span>(disparity)
@@ -296,7 +311,7 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 <span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsamples =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</code></pre></div>
 </div>
 <div id="scale.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.6</span> <code>scale.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.6</span> <code>scale.dispRity</code></h4>
 <p>This is the S3 method of <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the disparity values of the time subsamples
 <span class="kw">head</span>(<span class="kw">summary</span>(disparity))
@@ -308,13 +323,78 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 <span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</code></pre></div>
 </div>
 <div id="sort.disprity" class="section level4">
-<h4><span class="header-section-number">5.2.1.7</span> <code>sort.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.7</span> <code>sort.dispRity</code></h4>
 <p>This is the S3 method of <code>sort</code> for sorting the subsamples alphabetically (default) or following a specific pattern.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Sorting the disparity subsamples in inverse alphabetic order
 <span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))
 
 ## Customised sorting
 <span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</code></pre></div>
+</div>
+</div>
+</div>
+<div id="the-disprity-object-content" class="section level2">
+<h2><span class="header-section-number">6.3</span> The <code>dispRity</code> object content</h2>
+<p>The functions above are utilities to easily and safely access different elements in the <code>dispRity</code> object. Alternatively, of course, each elements can be accessed manually. Here is an explanation on how it works. The <code>dispRity</code> object is a <code>list</code> of two to four elements, each of which are detailed below:</p>
+<ul>
+<li><code>$matrix</code>: an object of class <code>matrix</code>, the full multidimensional space.</li>
+<li><code>$call</code>: an object of class <code>list</code> containing information on the <code>dispRity</code> object content.</li>
+<li><code>$subsamples</code>: an object of class <code>list</code> containing the subsamples of the multidimensional space.</li>
+<li><code>$disparity</code>: an object of class <code>list</code> containing the disparity values.</li>
+</ul>
+<p>The <code>dispRity</code> object is loosely based on <code>C</code> structure objects. In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via “pointers” to only a certain number of elements and/or dimensions of this matrix. This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix is present in the <code>R</code> environment rather than multiple copies of it for each subsample.</p>
+<div id="matrix" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> <code>$matrix</code></h3>
+<p>This is the multidimensional space, stored in the <code>R</code> environment as a <code>matrix</code> object. It requires row names but not column names. By default, if the row names are missing, <code>dispRity</code> function will arbitrarily generate them in numeric order (i.e. <code>rownames(matrix) &lt;- 1:nrow(matrix)</code>). This element of the <code>dispRity</code> object is never modified.</p>
+</div>
+<div id="call" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> <code>$call</code></h3>
+<p>This element contains the information on the <code>dispRity</code> object content. It is a <code>list</code> that can contain the following:</p>
+<ul>
+<li><code>$call$subsamples</code>: a vector of <code>character</code> with information on the subsamples type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>) and their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;punctuated&quot;</code>, <code>&quot;gradual&quot;</code>). This element generated only once via <code>time.subsamples()</code> and <code>custom.subsamples()</code>.</li>
+<li><code>$call$dimensions</code>: either a single <code>numeric</code> value indicating how many dimensions to use or a vector of <code>numeric</code> values indicating which specific dimensions to use. This element is by default the number of columns in <code>$matrix</code> but can be modified through <code>boot.matrix()</code> or <code>dispRity()</code>.</li>
+<li><code>$call$bootstrap</code>: this is a <code>list</code> containing three elements:
+<ul>
+<li><code>[[1]]</code>: the number of bootstrap replicates (<code>numeric</code>)</li>
+<li><code>[[2]]</code>: the bootstrap method (<code>character</code>)</li>
+<li><code>[[3]]</code>: the rarefaction levels (<code>numeric</code> vector)</li>
+</ul></li>
+<li><code>$call$disparity</code>: this is a <code>list</code> containing one element, <code>$metric</code>, that is a <code>list</code> containing the different functions passed to the <code>metric</code> argument in <code>dispRity</code>. These are <code>call</code> elements and get modified each time the <code>dispRity</code> function is used (the first element is the first metric(s), the second, the second metric(s), etc.).</li>
+</ul>
+</div>
+<div id="subsamples" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> <code>$subsamples</code></h3>
+<p>This element contain the eventual subsamples of the multidimensional space. It is a <code>list</code> of subsample names. Each subsample name is in turn a <code>list</code> of at least one element called <code>elements</code> which is in turn a <code>matrix</code>. This <code>elements</code> matrix is the raw (observed) elements in the subsamples. The <code>elements</code> matrix is composed of <code>numeric</code> values in one column and <em>n</em> rows (the number of elements in the subsample). Each of these values are a “pointer” (<code>C</code> inspired) to the element of the <code>$matrix</code>. For example, lets assume a <code>dispRity</code> object called <code>disparity</code>, composed of at least one subsamples called <code>sub1</code>:</p>
+<pre><code> disparity$subsamples$sub1$elements
+      [,1]
+ [1,]    5
+ [2,]    4
+ [3,]    6
+ [4,]    7</code></pre>
+<p>The values in the matrix “point” to the elements in <code>$matrix</code>: here, the multidimensional space with only the 4th, 5th, 6th and 7th elements. The following elements in <code>diparity$subsamples$sub1</code> will correspond to the same “pointers” but drawn from the bootstrap replicates. The columns will correspond to different bootstrap replicates. For example:</p>
+<pre><code> disparity$subsamples$sub1[[2]]
+      [,1] [,2] [,3] [,4]
+ [1,]   57   43   70    4
+ [2,]   43   44    4    4
+ [3,]   42   84   44    1
+ [4,]   84    7    2   10</code></pre>
+<p>This signifies that we have four bootstrap pseudo-replicates pointing each time to four elements in <code>$matrix</code>. The next element (<code>[[3]]</code>) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have <em>m</em> rows where <em>m</em> is the number of elements for this rarefaction level). The next element after that (<code>[[4]]</code>) will be the same for with an other rarefaction level and so forth…</p>
+</div>
+<div id="disparity" class="section level3">
+<h3><span class="header-section-number">6.3.4</span> <code>$disparity</code></h3>
+<p>The <code>$disparity</code> element is identical to the <code>$subsamples</code> element structure (a list of list(s) containing matrices) but the matrices don’t contain “pointers” to <code>$matrix</code> but the disparity result of the disparity metric applied to the “pointers”. For example, in our first example (<code>$elements</code>) from above, if the disparity metric is of dimensions level 1, we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    1.82</code></pre>
+<p>This is the observed disparity (1.82) for the subsample called <code>sub1</code>. If the disparity metric is of dimension level 2 (say the function <code>range</code> that outputs two values), we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    0.82
+ [2,]    2.82</code></pre>
+<p>The following elements in the list follow the same logic as before: rows are disparity values (one row for a dimension level 1 metric, multiple for a dimensions level 2 metric) and columns are the bootstrap replicates (the bootstrap with all elements followed by the eventual rarefaction levels). For example for the bootstrap without rarefaction (second element of the list):</p>
+<pre><code> disparity$disparity$sub1[[2]]
+         [,1]     [,2]     [,3]     [,4]
+[1,] 1.744668 1.777418 1.781624 1.739679 </code></pre>
 <!-- ## Modularity
 
 ### Making your own metrics
@@ -332,13 +412,12 @@ This option requires the package `snow` and takes arguments that are to be passe
 </div>
 </div>
 </div>
-</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="details-of-specific-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="making-stuff-up.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="palaeobiology-demo-disparity-through-time-and-within-groups.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
@@ -368,7 +447,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/04_guts.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/05_guts.Rmd",
 "text": "Edit"
 },
 "download": ["dispRity_manual.pdf"],

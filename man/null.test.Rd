@@ -5,7 +5,8 @@
 \title{Testing a null hypothesis on multidimensional data.}
 \usage{
 null.test(data, replicates = 100, null.distrib, null.args = NULL,
-  null.cor = NULL, alter = "two-sided", scale = FALSE, ...)
+  null.cor = NULL, null.scree = NULL, alter = "two-sided",
+  scale = FALSE, ...)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}
@@ -23,6 +24,8 @@ null.test(data, replicates = 100, null.distrib, null.args = NULL,
 \item{scale}{whether to scale the simulated and the observed data.}
 
 \item{...}{optional arguments to be passed to \code{\link[ade4]{as.randtest}}.}
+
+\item{null.test}{an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).}
 }
 \description{
 Testing the difference between the observed disparity and disparity under a null model.

@@ -5,7 +5,21 @@ CI.converter <- function(CI) {
 
 # Wrapper function for summarising a single rarefaction
 get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
+
     output <- list()
+
+    ## Summarising NA
+    if(is.na(disparity_subsamples_rare[[1]])) {
+        if(!missing(cent.tend)) {
+            output$cent.tend <- NA
+        }
+        if(!missing(quantiles)) {
+            output$quantiles <- rep(NA, length(quantiles) * 2)
+        }
+        return(output)
+    }
+
+    ## Summarising normal data
     if(!missing(cent.tend)) {
         output$cent_tend <- cent.tend(as.vector(disparity_subsamples_rare))
     }

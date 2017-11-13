@@ -92,6 +92,16 @@ test_that("Sanitizing works correctly", {
     expect_error(
         boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
         )
+    ## Wrong data input
+    dutu <- list(1,2,3) ; class(dutu) <- "dispRity"
+    expect_error(
+        boot.matrix(dutu)
+        )
+
+    names(dutu) <- letters[1:3]
+    expect_error(
+        boot.matrix(dutu)
+        )
 })
 
 ## No bootstrap (is equal to the matrix)
@@ -230,5 +240,31 @@ test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
     expect_equal(
         dim(test$subsamples[[2]][[2]])
         ,c(nrow(test$subsamples[[2]]$elements), 2))
+})
+
+
+## Verbose bootstrap
+test_that("verbose bootstrap works", {
+    data <- matrix(rnorm(25), 5, 5)
+    out <- capture_messages(boot.matrix(data, verbose = TRUE))
+    expect_equal(out,
+        c("Bootstrapping", ".", "Done."))
+})
+
+
+## Bootstrap works with empty or small (<3 subsamples)
+test_that("Boot.matrix works with small, empty/subsamples", {
+
+    tree <- test_data$tree_data
+    data <- test_data$ord_data_tips_nodes
+    FADLAD <- test_data$FADLAD_data
+
+    silent <- capture_warnings(data <- time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+
+    warnings <- capture_warnings(test <- boot.matrix(data))
+    expect_equal(warnings, "The following subsamples have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
+
+    expect_equal(test$subsamples[[1]][[2]], matrix(rep(NA, 100), nrow = 1))
+    expect_equal(test$subsamples[[2]][[2]], matrix(rep(51, 100), nrow = 1))
 })
 

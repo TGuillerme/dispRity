@@ -153,10 +153,10 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         comp <- comparisons
 
         ## Set specific comparisons if needed
-        if(as.character(match_call$test) == "sequential.test") {
-            comp <- "sequential.test"
-            comparisons <- "all"
-        }
+        # if(as.character(match_call$test) == "sequential.test") {
+        #     comp <- "sequential.test"
+        #     comparisons <- "all"
+        # }
 
         if(as.character(match_call$test) == "null.test") {
             comp <- "null.test"
@@ -203,8 +203,8 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## correction
     check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-    if(length(data$data$bootstrap) > 2 & correction == "none") {
-        message("Multiple p-values will be calculated without adjustment!\nThis will inflate Type I error!")
+    if(!is.null(data$call$bootstrap) && correction == "none") {
+        warning("Multiple p-values will be calculated without adjustment!\nThis will inflate Type I error!")
     }
 
     ## ----------------------
@@ -246,13 +246,13 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     }
 
     ## Sequential.test comparisons (one to each other)
-    if(comp == "sequential.test") {
-        ## Applying the test to the list of extracted data
-        details_out <- test(extracted_data, correction, call = data$call, ...)
-        ## details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
-        details_out <- test(extracted_data, call = data$call, ...)
-        ## details_out <- test(extracted_data, call = data$call, family = gaussian)
-    }
+    # if(comp == "sequential.test") {
+    #     ## Applying the test to the list of extracted data
+    #     details_out <- test(extracted_data, correction, call = data$call, ...)
+    #     ## details_out <- test(extracted_data, correction, call = data$call, family = gaussian)
+    #     details_out <- test(extracted_data, call = data$call, ...)
+    #     ## details_out <- test(extracted_data, call = data$call, family = gaussian)
+    # }
 
     ## Null testing
     if(comp == "null.test") {
@@ -318,10 +318,10 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         }
 
         ## Sequential test results
-        if(details == FALSE && comp == "sequential.test") {
-            ## Sequential test already formated
-            return(details_out)
-        }
+        # if(details == FALSE && comp == "sequential.test") {
+        #     ## Sequential test already formated
+        #     return(details_out)
+        # }
 
         ## Null.test results
         if(details == FALSE && comp == "null.test") {

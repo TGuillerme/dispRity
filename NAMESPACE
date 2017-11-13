@@ -11,6 +11,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn", "data", "capture.output")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
+# importFrom("geoscale", "timescales") #TG: somehow doesn't loads
 # importFrom("Claddis", "MorphDistMatrix")
 # importFrom("geomorph", "gpagen")
 # importFrom("methods", "hasArg")
@@ -45,6 +46,7 @@ export(ellipse.volume)
 export(convhull.volume)
 export(convhull.surface)
 export(diagonal)
+export(ancestral.distance)
 
 ##disparity tests
 export(bhatt.coeff)
@@ -64,12 +66,15 @@ export(merge.subsamples)
 export(size.subsamples)
 
 ##Package utilities
+export(nodes.coordinates)
 export(tree.age)
 export(make.metric)
 export(space.maker)
+export(random.circle)
 export(pair.plot)
 export(slice.tree)
 export(clean.data)
+export(get.bin.ages)
 
 ##Morphological data analysis
 export(sim.morpho)

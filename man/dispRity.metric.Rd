@@ -3,6 +3,9 @@
 \name{dispRity.metric}
 \alias{dispRity.metric}
 \alias{k.root}
+\alias{dimension.level3.fun}
+\alias{dimension.level2.fun}
+\alias{dimension.level1.fun}
 \alias{variances}
 \alias{ranges}
 \alias{centroids}
@@ -11,9 +14,7 @@
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
-\alias{dimension.level3.fun}
-\alias{dimension.level2.fun}
-\alias{dimension.level1.fun}
+\alias{ancestral.distance}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -59,6 +60,8 @@ The currently implemented dimension-level 2 metrics are:
   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
   \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
+  \item \code{ancestral.distance}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{node.centroids}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
+
 }
 }
 \examples{
@@ -97,6 +100,23 @@ convhull.volume(dummy_matrix)
 
 ## Matrix diagonal
 diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
+
+## A random matrix
+matrix <- matrix(rnorm(90), 9, 10)
+## A random treee with node labels
+tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+## Adding the tip and node names to the matris
+rownames(matrix) <- c(tree$tip.label, tree$node.label)
+
+## Calculating the direct ancestral nodes
+direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+## Calculating all the ancestral nodes
+all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+
+## Calculating the distances from the direct ancestral nodes
+ancestral.distance(matrix, nodes.coordinates = direct_anc_centroids)
+## Calculating the distances from all the ancestral nodes
+ancestral.distance(matrix, nodes.coordinates = all_anc_centroids)
 
 }
 \seealso{

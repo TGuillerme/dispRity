@@ -34,6 +34,10 @@ test_that("check.class works", {
     expect_error(
             check.class(class_3, class_list, 'test')
             )
+
+    expect_that(
+            check.class(class_2, class_list, 'test', errorif = TRUE), equals("class_2"))
+
 })
 
 ## Check class function

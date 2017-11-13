@@ -40,6 +40,7 @@
 
 #DEBUG
 # stop("DEBUG check.morpho")
+# source("sanitizing.R")
 # random.tree <- rcoal(10)
 # matrix <- sim.morpho(random.tree, characters = 50, model = "ER", rates = c(rgamma, 1, 1))
 # orig.tree = random.tree
@@ -66,9 +67,9 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         parsimony.algorithm <- phangorn::optim.parsimony
         method <- parsimony
     } else {
-        stop("User functions not implemented yet for model argument.")
-        use.optim.parsimony <- FALSE
-        parsimony.algorithm <- phangorn::parsimony
+        stop("User functions not implemented yet for parsimony argument.")
+        # use.optim.parsimony <- FALSE
+        # parsimony.algorithm <- phangorn::parsimony
     }
 
     #first.tree
@@ -97,6 +98,9 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     #verbose
     check.class(verbose, "logical")
 
+    #distance
+    check.class(distance, "function")
+
 
     #CHECKING THE MATRIX
 
@@ -122,12 +126,12 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     }
 
     #Get the quick and dirty most parsimonious tree
-    if(use.optim.parsimony == TRUE) {
+    # if(use.optim.parsimony == TRUE) {
         verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat, method = method, ...))
         #verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat, method = method)) ; warning("DEBUG")
-    } else {
-        verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat))
-    }
+    # } else {
+    #     verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat))
+    # }
 
     if(verbose != FALSE) {
         cat("Most parsimonious tree search:\n")
@@ -141,11 +145,11 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     consistency_index <- phangorn::CI(MP_tree, matrix_phyDat)
 
     #Get the retention Index
-    retention_index <- phangorn::RI(MP_tree, matrix_phyDat)    
-
+    retention_index <- phangorn::RI(MP_tree, matrix_phyDat)
+    
     if(!missing(orig.tree)) {
         #Get the distance between the trees
-        tree_distance <- phangorn::RF.dist(MP_tree, unroot(orig.tree))
+        tree_distance <- distance(MP_tree, unroot(orig.tree))
 
         #Get the data out vectors (with distance)
         data_out <- c(parsimony_score, consistency_index, retention_index, tree_distance)

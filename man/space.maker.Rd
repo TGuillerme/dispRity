@@ -72,6 +72,11 @@ scatterplot3d(space.maker(5000, 3, rnorm), pch = 20)
 ## A 3D cylindrical space
 scatterplot3d(space.maker(5000, 3, c(rnorm, rnorm, runif)), pch = 20)
 
+## Generating a doughnut space
+doughnut <- space.maker(5000, 3, c(rnorm, random.circle),
+     arguments = list(list(mean = 0), list(runif, inner = 0.5, outer = 1)))
+## Reodering the axis for projecting the dougnut in 2D
+scatterplot3d(doughnut[,c(2,1,3)], pch = 20)
 }
 
 }

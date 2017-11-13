@@ -31,32 +31,48 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 
 ## Discrete time subsamples
-time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
+time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
     
     ## lapply function for getting the interval
-    get.interval <- function(interval, time, ages_tree, inc.nodes) {
-        if(inc.nodes != FALSE) {
+    get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
+        if(verbose) message(".", appendLF = FALSE)
+        if(inc.nodes) {
             return( list("elements" = as.matrix(which(ages_tree$FAD$ages >= time[interval+1] & ages_tree$LAD$ages <= time[interval]) )))
         } else {
             one_interval <- which(ages_tree$FAD$ages >= time[interval+1] & ages_tree$LAD$ages <= time[interval])
             matching <- match(tree$tip.label, rownames(data[one_interval,]))
-            return( list("elements" = as.matrix(one_interval[matching[-which(is.na(matching))]]) ))
+            ## Only remove NAs if present
+            if(any(is.na(matching))) {
+                elements_out <- list("elements" = as.matrix(one_interval[matching[-which(is.na(matching))]]) )
+            } else {
+                elements_out <- list("elements" = as.matrix(one_interval[matching]))
+            }
+            return(elements_out)
         }
+    }
+
+    ## Verbose
+    if(verbose) {
+        message("Creating ", length(time)-1, " time bins through time:", appendLF = FALSE)
     }
 
     ## ages of tips/nodes + FAD/LAD
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
 
     ## Attribute each taxa/node to its interval
-    interval_elements <- lapply(as.list(seq(1:(length(time)-1))), get.interval, time, ages_tree, inc.nodes)
+    interval_elements <- lapply(as.list(seq(1:(length(time)-1))), get.interval, time, ages_tree, inc.nodes, verbose)
 
     ## Get the names of the intervals
     names(interval_elements) <- paste(time[-length(time)], time[-1], sep = " - ")
 
+    if(verbose) message("Done.\n", appendLF = FALSE)
+
+
     ## If interval is empty, send warning and delete the interval
     for (interval in 1:length(interval_elements)) {
-        if(length(interval_elements[[interval]]) == 0) {
-            message("The following interval is empty: ", names(interval_elements)[interval], ".")
+        if(nrow(interval_elements[[interval]]$elements) == 0) {
+            warning("The interval ", names(interval_elements)[interval], " is empty.", call. = FALSE)
+            interval_elements[[interval]]$elements <- matrix(NA)
         }
     }
 
@@ -65,8 +81,13 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes) {
 
 ## Continuous time subsamples
 time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose) {
+
+        ## Verbose
+        if(verbose) message(".", appendLF = FALSE)
+
         ## Get the subtree
         if(time[slice] == 0) {
             ## Select the tips to drop
@@ -78,16 +99,16 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
             sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
         }
 
+        if(class(sub_tree) !=  "phylo" && is.na(sub_tree)) {
+            warning("The slice ", time[slice], " is empty.", call. = FALSE)
+            return(list("elements" = matrix(NA)))
+        }
+
         ## Select the tips 
         tips <- sub_tree$tip.label
 
         ## Add any missed taxa from the FADLAD
         taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
-
-        ## Verbose
-        if(verbose) {
-            message(".", appendLF = FALSE)
-        }
 
         ## Getting the list of elements
         return( list("elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ))
@@ -97,7 +118,7 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
     
     ## verbose
-    if(verbose != FALSE) {
+    if(verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
@@ -105,7 +126,7 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
     slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose)
 
     ## verbose
-    if(verbose != FALSE) {
+    if(verbose) {
         message("Done.\n", appendLF = FALSE)
     }
 

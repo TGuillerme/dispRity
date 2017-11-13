@@ -56,14 +56,14 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     #Get call
     match_call <- match.call()
-    #return(match_call)
+    # warning("DEBUG summary.dispRity") ; return(match_call)
 
     #cent.tend
     #Must be a function
     check.class(cent.tend, "function")
     #The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop(paste(match_call$cent.tend), "can not be used for measuring the central tendency.")
+        stop(paste(match_call$cent.tend), " cannot be used for measuring the central tendency.")
     }
     ## Update match_call if argument is empty
     if(is.null(match_call$cent.tend)) match_call$cent.tend <- "median"
@@ -108,7 +108,7 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     if(is.null(elements[[1]])) {
         elements <- list(nrow(data$subsamples[[1]]$elements))
     }
-
+    
     ## Get the names of the subsamples
     names <- names(data$subsamples)
     if(is.null(names)) {
@@ -147,6 +147,23 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     ## Round the results (number of decimals = maximum number of digits in the output)
     summary_results <- rounding.fun(summary_results, rounding)
+
+    ## If any elements is equal to one, check if not NA
+    if(any(summary_results$n == 1)) {
+        ## Select the values to check
+        to_check <- which(summary_results$n == 1)
+        ## Get their replacement values
+
+        check.elements.NA <- function(row, summary_results, data) {
+            ## Check if the subsample contains NA elements
+            ifelse(is.na(data$subsamples[[as.character(summary_results[row, 1])]]$elements[1,1]), 0, 1)
+        }
+
+        replace_vals <- sapply(to_check, check.elements.NA, summary_results, data)
+        ## Replace them in the results
+        summary_results[to_check, 2] <- replace_vals
+
+    }
 
     #----------------------
     # OUTPUT

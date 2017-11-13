@@ -3,7 +3,7 @@
 #'
 #' @description Splits the data into a time subsamples list.
 #' 
-#' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
+#' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A matrix.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
@@ -13,6 +13,7 @@
 #' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
+#' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -69,7 +70,15 @@
 # inc.nodes = TRUE
 # FADLAD = BeckLee_ages
 
-time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE) {
+# data <- matrix_ord_Hall
+# tree <- tree_Hall
+# method = "continuous"
+# model = "gradual"
+# time <- c(120, 44)
+# verbose <- TRUE
+
+
+time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -86,7 +95,10 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         check.class(tree, "phylo")
         ## tree must be dated
         if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
+        ## tree.age_tree variable declaration
+        tree.age_tree <- tree.age(tree, age = tree$root.time)
     }
+
 
     ## METHOD
     all_methods <- c("discrete", "d", "continuous", "c")
@@ -103,12 +115,14 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(method == "c") method <- "continuous"
 
     ## If the tree is missing, the method can intake a star tree (i.e. no phylogeny)
-    if(missing(tree) && method == "discrete" && !missing(FADLAD)) {
+    if(missing(tree)) {
+        if(missing(FADLAD)) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
+        if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".")
+
+        ## Checking FADLAD disponibilities
         names_data <- rownames(data)
         ## All names must be present in the data
-        if(!all(names_data %in% rownames(FADLAD))) {
-            stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
-        }
+        if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         ## Generating the star tree
         tree <- stree(nrow_data)
         tree$tip.label <- names_data
@@ -118,6 +132,11 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## Ntip_tree variable declaration
     Ntip_tree <- Ntip(tree)
 
+    ##t0
+    if(class(t0) != "logical") {
+        silent <- check.class(t0, c("numeric", "integer"), msg = " must be logical or a single numeric value.")
+        check.length(t0, 1, errorif = FALSE, msg = " must be logical or a single numeric value.")
+    } 
 
     ## TIME
     ## time must be numeric or integer
@@ -125,24 +144,44 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
         ## time must be at least three if discrete
-        if(method == "discrete" && time < 3) stop("If method is discrete, time must have at least 3 elements.")
-        ## or at least two if continuous
-        if(method == "continuous" && time < 2) stop("If method is discrete, time must have at least 2 elements.")
-        ## Create the time vector
-        ## Make sure the oldest slice has at least three taxa:
-        ## Set the oldest slice at 1% of tree height
-        percent <- 0.01
-        while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - percent * tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
-            ## Increase percentage until slice has three elements
-            percent <- percent + 0.01
+        if(time < 2) stop("Time must be greater or equal than 2.")
+
+        if(missing(tree)) {
+            ## Set tmax
+            tmax <- min(FADLAD$LAD)
+            ## Set t0
+            t0 <- max(FADLAD$FAD)
+        } else {
+            ## Set tmax
+            tmax <- min(tree.age_tree[,1])
+        
+            ## Set up t0
+            if(class(t0) == "logical") {
+                if(t0 == FALSE ) {
+                    ## Set the percentage for reaching the first sample containing three elements
+                    percent <- 0.01
+                    while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - percent * tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
+                        ## Increase percentage until slice has three elements
+                        percent <- percent + 0.01
+                    }
+                    ## Set t0 to root time +/- some age
+                    t0 <- tree$root.time - percent * tree$root.time
+                } else {
+                    ## Set t0 to root time
+                    t0 <- tree$root.time
+                }
+            } else {
+                if(t0 > max(tree.age_tree[,1]) || t0 < min(tree.age_tree[,1])) {
+                    stop("t0 is out of the tree age range.")
+                }
+            }
         }
+
         ## Set up time
-        if(method == "discrete") time <- seq(from = 0, to = tree$root.time - percent * tree$root.time, length.out = time + 1)
-        if(method == "continuous") time <- seq(from = 0, to = tree$root.time - percent * tree$root.time, length.out = time)    
+        if(method == "discrete") time <- seq(from = tmax, to = t0, length.out = time + 1)
+        if(method == "continuous") time <- seq(from = tmax, to = t0, length.out = time)
     }
 
-    ## time cannot be older than the root age
-    if(any(time >= tree$root.time)) stop("Time cannot be older or equal to the tree's root age.")
     ## time vector must go from past to present
     if(time[1] < time[2]) time <- rev(time)
 
@@ -152,6 +191,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         model <- NULL
     } else {
         ## else model must be one of the following
+        model <- tolower(model)
         all_models <- c("acctran", "deltran", "punctuated", "gradual")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
@@ -174,10 +214,10 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## TREE (2)
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
-        ## check if the tree and the table are the same length
-        if(nrow_data != Ntip_tree) stop("The labels in the matrix and in the tree do not match!")
-        ## Also check if the names are identical
-        if(any(is.na(match(rownames(data), tree$tip.label)))) stop("The labels in the matrix and in the tree do not match!")        
+        ## Check if at least all the data in the table are present in the tree
+        if(any(is.na(match(rownames(data), tree$tip.label)))) {
+            stop("The labels in the matrix and in the tree do not match!")
+        }
     } else {
         ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
@@ -191,8 +231,6 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     }
 
     ## FADLAD
-    ## tree.age_tree variable declaration
-    tree.age_tree <- tree.age(tree)
     if(missing(FADLAD)) {
         ## If missing, create the FADLAD table
         FADLAD <- data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2])
@@ -224,7 +262,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     ## -------------------------------
 
     if(method == "discrete") {
-        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes)
+        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
     }
 
     if(method == "continuous") {

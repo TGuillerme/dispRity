@@ -93,6 +93,15 @@ test_that("rounding.fun", {
 #Testing
 #######################
 
+# Errors
+data(disparity)
+test_that("Correct error management", {
+    expect_error(summary(disparity, cent.tend = var))
+    expect_error(summary(make.dispRity()))
+    expect_error(summary(disparity, quantiles = c(0.1, 10)))
+    expect_error(summary(disparity, quantiles = c(10, 101)))
+})
+
 #Case 1, no bootstrap
 data <- test_data$ord_data_tips
 data <- dispRity(data, metric = c(sum, ranges))
@@ -272,6 +281,22 @@ test_that("Test with disparity as a distribution", {
     expect_equal(
         dim(summary(sum_of_ranges2)), c(2,8)
         )
+})
+
+## summary.dispRity works with empty or small (<3 subsamples)
+test_that("summary.dispRity works with small, empty/subsamples", {
+
+    load("test_data.Rda")
+    tree <- test_data$tree_data
+    data <- test_data$ord_data_tips_nodes
+    FADLAD <- test_data$FADLAD_data
+
+    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
+
+    test <- summary(data)
+    expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))
+    expect_equal(as.numeric(test[2,]), c(4, 1, rep(NA, 6)))
+    expect_false(all(is.na(test[3,])))
 })
 
 

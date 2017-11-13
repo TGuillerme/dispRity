@@ -130,7 +130,13 @@ test_that("Different group inputs gives the same output", {
 
 ## Example
 test_that("Example works", {
+
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+
+    expect_error(
+        custom.subsamples(ordinated_matrix, list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"), "C" = sum))
+        )
+
     ## Splitting the ordinated matrix into two groups using row numbers
     numbers <- custom.subsamples(ordinated_matrix, list("A" = c(1:4), "B" = c(5:10)))
     ## Splitting the ordinated matrix into three groups using row names
@@ -163,3 +169,18 @@ test_that("Example works", {
         names(unlist(lapply(dataframe$subsamples, lapply, length)))
         , c("g1.1.elements", "g1.2.elements", "g2.1.elements", "g2.2.elements"))
 })
+
+## Subsample works with an empty element
+test_that("empty custom.subsamples", {
+    data <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+    group4 <- list("A" = NULL, "B" = c(1,2), "C" = c(3,4,5), "D" = 1, "E" = NA)
+    group5 <- list("B" = c(1,2), "C" = c(3,4,5), "D" = 1, "E" = NA)
+
+    warning <- capture_warnings(test <- custom.subsamples(data, group4))
+
+    expect_equal(warning, "Subsamples A, E are empty.")
+    expect_is(test, "dispRity")
+    expect_equal(length(test$subsamples), 5)
+
+    expect_equal(capture_warnings(custom.subsamples(data, group5)), "Subsample E is empty.")
+}) 

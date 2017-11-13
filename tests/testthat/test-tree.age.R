@@ -51,6 +51,12 @@ tree_age <- tree.age(rtree(10), age = 1)
 
 ## Test
 test_that("tree.age works", {
+
+    ## Errors
+    expect_error(
+        tree.age(rtree(10), order = "bla")
+        )
+
     ## table
     expect_is(
     	tree_age, 'data.frame'

@@ -63,13 +63,13 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     tree_age <- tree.age(tree)
 
     #Running the timeSliceTree function (remove warning, called as a message in the original function)
-    suppressMessages(
-        tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
-    )
-
-    #Error with trees with two taxa
-    if(Ntip(tree_slice) < 3) {
-        stop('Too few taxa in the tree at age ', age, '!')
+    if(age > max(tree_age[,1])) {
+        ## Don't slice the tree if age is too old
+        return(NA)
+    } else {
+        suppressMessages(
+            tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
+        )
     }
 
     #renaming the tree_slice
@@ -83,7 +83,6 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
             #Check if the age of the tip is not in between the FAD/LAD
             if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
-
 
                 #Chose the tip/node following the given model
                 if(model == "punctuated") {

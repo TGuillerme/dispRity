@@ -277,6 +277,57 @@ test_that("output.htest.results internal fun", {
 #     }
 # })
 
+
+test_that("test.dispRity works fine", {
+    set.seed(1)
+    ## Load the Beck & Lee 2014 data
+    data(BeckLee_mat50)
+
+    ## Calculating the disparity from a customised subsamples
+    ## Generating the subsamples
+    groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+    ## Bootstrapping the data
+    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    ## Caculating the sum of ranges
+    sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+
+
+    ## Correction
+    expect_warning(test <- test.dispRity(sum_of_ranges, t.test, correction = "none"))
+    expect_equal(length(test), 3)
+    expect_equal(unlist(lapply(test, colnames)), c("statistic", "parameter", "p.value"))
+    expect_equal(unique(unlist(lapply(test, rownames))), c("V1.1 : V1.2", "V1.1 : V1.3", "V1.2 : V1.3"))
+
+    ## Custom comparisons errors management
+    expect_error(
+        test.dispRity(sum_of_ranges, t.test, comparisons = c(1,2), c(2,1))
+        )
+    expect_error(
+        test.dispRity(sum_of_ranges, t.test, comparisons = list(c(1,2,3), c(2,1)))
+        )
+    expect_error(
+        test.dispRity(sum_of_ranges, t.test, comparisons = list(c("V1.1", "V1.8")))
+        )
+    expect_error(
+        test.dispRity(sum_of_ranges, t.test, comparisons = list(c(1,8)))
+        )
+
+    data(disparity)
+
+    ## Rarefaction error management
+    expect_error(
+        test.dispRity(disparity, t.test, comparisons = list(c(1,2), c(2,1)), rarefaction = 1)
+        )
+
+    ## Correction warning
+    expect_warning(
+        test.dispRity(disparity, t.test, comparisons = "sequential", correction = "none")
+    )
+
+
+})
+
 test_that("example works fine", {
     set.seed(1)
     ## Load the Beck & Lee 2014 data
@@ -292,33 +343,33 @@ test_that("example works fine", {
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
     ## Measuring the subsamples overlap
-    expect_is(
+    expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
-        , "data.frame")
-    expect_equal(
+        , "data.frame"))
+    expect_warning(expect_equal(
     	dim(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
-        , c(3,1))
-    expect_equal(
+        , c(3,1)))
+    expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
-        , 0.67027)
+        , 0.67027))
 
     ## Measuring differences from a reference_subsamples
-    expect_is(
+    expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
-        , "list")
-    expect_equal(
+        , "list"))
+    expect_warning(expect_equal(
     	length(test.dispRity(sum_of_ranges, wilcox.test, "referential"))
-        , 2)
-    expect_equal(
+        , 2))
+    expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[1]][,1])
-        , 1543)
-    expect_equal(
+        , 1543))
+    expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[2]][,1])
-        , 3.025477e-17)
+        , 3.025477e-17))
 
     ## Measuring disparity as a distribution
     disparity_var <- dispRity(bootstrapped_data, metric = variances)
-    test1 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE)
+    expect_warning(test1 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE))
     expect_is(
         test1
         ,"list")
@@ -328,7 +379,7 @@ test_that("example works fine", {
     expect_equal(
         unique(unlist(lapply(test1, dim)))
         ,c(3,1))
-    test2 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE)
+    expect_warning(test2 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE))
     expect_is(
         test2
         ,"list")
@@ -340,13 +391,13 @@ test_that("example works fine", {
         ,c(3,5))
 
     ## Testing the effect of the groups
-    expect_is(
+    expect_warning(expect_is(
         test.dispRity(sum_of_ranges, lm, "all")
-        , "lm")
-    expect_equal(
+        , "lm"))
+    expect_warning(expect_equal(
         test.dispRity(sum_of_ranges, lm, "all")$rank
-        , 3)
-    expect_equal(
+        , 3))
+    expect_warning(expect_equal(
         as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
-        , c(24.048441,2.053728,9.798655))
+        , c(24.048441,2.053728,9.798655)))
 })

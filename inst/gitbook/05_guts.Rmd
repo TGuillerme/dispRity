@@ -1,0 +1,249 @@
+---
+title: "The guts of the dispRity package"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+# The guts of the `dispRity` package
+
+## Manipulating `dispRity` objects
+
+Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your `R` console.
+Even the simple Beck and Lee 2014 example above produces an object with > 72 lines of lists of lists of matrices!
+
+Therefore `dispRity` uses a specific class of object called a `dispRity` object.
+These objects allow users to use S3 method functions such as `summary.dispRity`, `plot.dispRity` and `print.dispRity`. 
+`dispRity` also contains various utility functions that manipulate the `dispRity` object (e.g. `sort.dispRity`, `extract.dispRity` see the full list in the next section).
+These functions modify the `dispRity` object without having to delve into its complex structure!
+The full structure of a `dispRity` object is detailed [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
+
+```{r}
+## Loading the example data
+data(disparity)
+
+## What is the class of the median_centroids object?
+class(disparity)
+
+## What does the object contain?
+names(disparity)
+
+## Summarising it using the S3 method print.dispRity
+disparity
+```
+
+Note that it is always possible to recall the full object using the argument `all = TRUE` in `print.dispRity`:
+
+```{r, eval=FALSE}
+## Display the full object
+print(disparity, all = TRUE)
+## This is more nearly ~ 5000 lines on my 13 inch laptop screen!
+```
+
+## `dispRity` utilities
+
+The package also provides some utility functions to facilitate multidimensional analysis.
+
+### `dispRity` object utilities  <a name="dispRity.utilities"></a>
+The first set of utilities are functions for manipulating `dispRity` objects:
+
+#### `make.dispRity`
+This function creates empty `dispRity` objects.
+
+```{r}
+## Creating an empty dispRity object
+make.dispRity()
+
+## Creating an "empty" dispRity object with a matrix
+(disparity_obj <- make.dispRity(matrix(rnorm(20), 5, 4)))
+```
+
+####  `fill.dispRity`
+This function initialises a `dispRity` object and generates its call properties.
+
+```{r}
+## The dispRity object's call is indeed empty
+disparity_obj$call
+
+## Filling an empty disparity object (that needs to contain at least a matrix)
+(disparity_obj <- fill.dispRity(disparity_obj))
+
+## The dipRity object has now the correct minimal attributes
+disparity_obj$call
+```
+
+####  `matrix.dispRity`
+This function extracts a specific matrix from a disparity object.
+The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
+
+```{r}
+## Extracting the matrix containing the coordinates of the elements at time 50
+str(matrix.dispRity(disparity, "50"))
+
+## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
+## (15 elements) from the second group (80 Mya)
+str(matrix.dispRity(disparity, subsamples = 1, bootstrap = 3, rarefaction = 2))
+```
+
+#### `get.subsamples.dispRity`
+This function creates a dispRity object that contains only elements from one specific subsamples.
+
+```{r, eval=FALSE}
+## Extracting all the data for the crown mammals
+(crown_mammals <- get.subsamples.dispRity(disp_crown_stemBS, "Group.crown"))
+
+## The object keeps the properties of the parent object but is composed of only one subsamples
+length(crown_mammals$subsamples)
+```
+
+#### `extract.dispRity`
+This function extracts the calculated disparity values of a specific matrix.
+
+```{r, eval=FALSE}
+## Extracting the observed disparity (default)
+extract.dispRity(disparity)
+
+## Extracting the disparity from the bootstrapped values from the
+## 10th rarefaction level from the second subsamples (80 Mya)
+extract.dispRity(disparity, observed = FALSE, subsamples = 2, rarefaction = 10)
+```
+
+#### `scale.dispRity`
+This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
+
+```{r, eval=FALSE}
+## Getting the disparity values of the time subsamples
+head(summary(disparity))
+
+## Scaling the same disparity values
+head(summary(scale(disparity, scale = TRUE)))
+
+## Scaling and centering:
+head(summary(scale(disparity, scale = TRUE, center = TRUE)))
+```
+
+#### `sort.dispRity`
+This is the S3 method of `sort` for sorting the subsamples alphabetically (default) or following a specific pattern.
+
+```{r, eval=FALSE}
+## Sorting the disparity subsamples in inverse alphabetic order
+head(summary(sort(disparity, decreasing = TRUE)))
+
+## Customised sorting
+head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
+```
+
+## The `dispRity` object content
+The functions above are utilities to easily and safely access different elements in the `dispRity` object.
+Alternatively, of course, each elements can be accessed manually.
+Here is an explanation on how it works.
+The `dispRity` object is a `list` of two to four elements, each of which are detailed below:
+
+ * `$matrix`: an object of class `matrix`, the full multidimensional space.
+ * `$call`: an object of class `list` containing information on the `dispRity` object content.
+ * `$subsamples`: an object of class `list` containing the subsamples of the multidimensional space.
+ * `$disparity`: an object of class `list` containing the disparity values.
+
+The `dispRity` object is loosely based on `C` structure objects.
+In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via "pointers" to only a certain number of elements and/or dimensions of this matrix.
+This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint:  at any time, only one matrix is present in the `R` environment rather than multiple copies of it for each subsample.
+
+### `$matrix`
+This is the multidimensional space, stored in the `R` environment as a `matrix` object.
+It requires row names but not column names.
+By default, if the row names are missing, `dispRity` function will arbitrarily generate them in numeric order (i.e. `rownames(matrix) <- 1:nrow(matrix)`).
+This element of the `dispRity` object is never modified.
+
+### `$call`
+This element contains the information on the `dispRity` object content.
+It is a `list` that can contain the following:
+
+ * `$call$subsamples`: a vector of `character` with information on the subsamples type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"punctuated"`, `"gradual"`). This element generated only once via `time.subsamples()` and `custom.subsamples()`.
+ * `$call$dimensions`: either a single `numeric` value indicating how many dimensions to use or a vector of `numeric` values indicating which specific dimensions to use. This element is by default the number of columns in `$matrix` but can be modified through `boot.matrix()` or `dispRity()`.
+ * `$call$bootstrap`: this is a `list` containing three elements:
+    * `[[1]]`: the number of bootstrap replicates (`numeric`)
+    * `[[2]]`: the bootstrap method (`character`)
+    * `[[3]]`: the rarefaction levels (`numeric` vector)
+ * `$call$disparity`: this is a `list` containing one element, `$metric`, that is a `list` containing the different functions passed to the `metric` argument in `dispRity`. These are `call` elements and get modified each time the `dispRity` function is used (the first element is the first metric(s), the second, the second metric(s), etc.).
+
+### `$subsamples`
+This element contain the eventual subsamples of the multidimensional space.
+It is a `list` of subsample names.
+Each subsample name is in turn a `list` of at least one element called `elements` which is in turn a `matrix`.
+This `elements` matrix is the raw (observed) elements in the subsamples.
+The `elements` matrix is composed of `numeric` values in one column and _n_ rows (the number of elements in the subsample).
+Each of these values are a "pointer" (`C` inspired) to the element of the `$matrix`.
+For example, lets assume a `dispRity` object called `disparity`, composed of at least one subsamples called `sub1`:
+
+```
+ disparity$subsamples$sub1$elements
+      [,1]
+ [1,]    5
+ [2,]    4
+ [3,]    6
+ [4,]    7
+```
+
+The values in the matrix "point" to the elements in `$matrix`: here, the multidimensional space with only the 4th, 5th, 6th and 7th elements.
+The following elements in `diparity$subsamples$sub1` will correspond to the same "pointers" but drawn from the bootstrap replicates.
+The columns will correspond to different bootstrap replicates.
+For example:
+
+```
+ disparity$subsamples$sub1[[2]]
+      [,1] [,2] [,3] [,4]
+ [1,]   57   43   70    4
+ [2,]   43   44    4    4
+ [3,]   42   84   44    1
+ [4,]   84    7    2   10
+```
+This signifies that we have four bootstrap pseudo-replicates pointing each time to four elements in `$matrix`.
+The next element (`[[3]]`) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have _m_ rows where _m_ is the number of elements for this rarefaction level).
+The next element after that (`[[4]]`) will be the same for with an other rarefaction level and so forth...
+
+### `$disparity`
+The `$disparity` element is identical to the `$subsamples` element structure (a list of list(s) containing matrices) but the matrices don't contain "pointers" to `$matrix` but the disparity result of the disparity metric applied to the "pointers".
+For example, in our first example (`$elements`) from above, if the disparity metric is of dimensions level 1, we would have:
+
+```
+ disparity$disparity$sub1$elements
+      [,1]
+ [1,]    1.82
+```
+
+This is the observed disparity (1.82) for the subsample called `sub1`.
+If the disparity metric is of dimension level 2 (say the function `range` that outputs two values), we would have:
+
+```
+ disparity$disparity$sub1$elements
+      [,1]
+ [1,]    0.82
+ [2,]    2.82
+```
+
+The following elements in the list follow the same logic as before: rows are disparity values (one row for a dimension level 1 metric, multiple for a dimensions level 2 metric) and columns are the bootstrap replicates (the bootstrap with all elements followed by the eventual rarefaction levels).
+For example for the bootstrap without rarefaction (second element of the list):
+
+```
+ disparity$disparity$sub1[[2]]
+         [,1]     [,2]     [,3]     [,4]
+[1,] 1.744668 1.777418 1.781624 1.739679 
+```
+
+
+<!-- ## Modularity
+
+### Making your own metrics
+
+### Making your own tests
+
+## Where is this going?
+ -->
+<!-- ## Running `dispRity` in parallel
+
+The computationally intensive function `dispRity` have a `parallel` option to speed up their calculations.
+
+This option requires the package `snow` and takes arguments that are to be passed to  -->

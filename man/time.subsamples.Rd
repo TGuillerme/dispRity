@@ -5,7 +5,7 @@
 \alias{time.series}
 \title{Separating data in time subsamples.}
 \usage{
-time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE)
+time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 }
 \arguments{
 \item{data}{A matrix.}
@@ -23,6 +23,8 @@ time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verb
 \item{FADLAD}{An optional \code{data.frame} containing the first and last occurrence data.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.}
+
+\item{t0}{If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

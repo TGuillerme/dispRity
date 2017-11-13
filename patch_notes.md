@@ -1,9 +1,17 @@
 Patch notes
 ----
+<!-- * 2017/10/18 - v1.0 *got you covered*  -->
+* 2017/11/13 - v0.4.1
+  * *New* disparity metric: `ancestral.distance` to get the distance from taxa/nodes to their ancestors.
+  * *New* function: `random.circle` for generating random circle coordinates (see example in `space.maker` for creating doughnut spaces!).
+  * *New* function: `get.bin.ages` for getting the geological timescale of a tree (based on `geoscale`).
+  * Added a `t0` argument to `time.subsamples` allowing to set the start age of the first subsample.
+  * Allowing subsamples to contain less than three elements (up to 0!).
+  * Fixed fuzzy match issues in `slice.tree`.
 * 2017/08/21 - v0.4.0 *user friendly*
   * Entirely rewritten manual (in GitBook)!
   * **Removed** `hyper.volume` metric for dependencies reasons
-  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: >2sec for 5k taxa and 10k bootstraps!)
+  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: <2sec for 5k taxa and 10k bootstraps!)
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
   * *New* utility function: `merge.subsamples` for... merging subsamples!
