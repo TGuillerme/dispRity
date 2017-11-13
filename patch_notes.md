@@ -1,6 +1,9 @@
 Patch notes
 ----
 <!-- * 2017/10/18 - v1.0 *got you covered*  -->
+* 2017/11/13 - v0.4.2
+  * **Changed argument** in `time.subsamples`, `model = "gradual"` is now replaced by `model = "proximity"`.
+
 * 2017/11/13 - v0.4.1
   * *New* disparity metric: `ancestral.distance` to get the distance from taxa/nodes to their ancestors.
   * *New* function: `random.circle` for generating random circle coordinates (see example in `space.maker` for creating doughnut spaces!).

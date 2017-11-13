@@ -16,7 +16,7 @@ time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verb
 
 \item{time}{Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.}
 
-\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.}
+\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"pro"}. Is ignored if \code{method = "discrete"}.}
 
 \item{inc.nodes}{A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.}
 
@@ -42,8 +42,8 @@ If \code{method = "continuous"} and when the sampling is done along an edge of t
 \itemize{
   \item \code{"acctran"}: always the value from the ancestral node.
   \item \code{"deltran"}: always the value from the descendant node or tip.
-  \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip.
-  \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the descendant node or tip.
+  \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+  \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
 }
 }
 \examples{
@@ -60,7 +60,7 @@ time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 
 ## Time slicing (continuous method)
-## Generate five equidistant time slices in the dataset assuming a gradual
+## Generate five equidistant time slices in the dataset assuming a proximity
 ## evolutionary model
 time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
      method = "continuous", model = "acctran", time = 5,

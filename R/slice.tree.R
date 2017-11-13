@@ -6,7 +6,7 @@
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"proximity"}. Is ignored if \code{method = "discrete"}.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
 #' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
@@ -46,9 +46,9 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     check.class(tree, "phylo")
     check.class(age, c("numeric", "integer"), " must be a single numeric value.")
     check.length(age, 1, " must be a single numeric value.")
-    check.class(model, "character", " must be one of the following: acctran, deltran, punctuated, gradual.")
+    check.class(model, "character", " must be one of the following: acctran, deltran, punctuated, proximity.")
     model <- tolower(model)
-    check.method(model, c("acctran", "deltran", "punctuated", "gradual"), "Slicing model")
+    check.method(model, c("acctran", "deltran", "punctuated", "proximity"), "Slicing model")
 
     #FAD/LAD
     if(missing(FAD)) {
@@ -101,7 +101,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
                     tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
                 }
 
-                if(selected_model == "gradual") {
+                if(selected_model == "proximity") {
                     #Closest
                     tree_sliced$tip.label[tip] <- slice.tree_GRADUAL(tree, tree_slice$tip.label[tip], tree_slice)
                 }              
