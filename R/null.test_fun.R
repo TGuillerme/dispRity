@@ -7,15 +7,16 @@ get.metric.from.call <- function(data) {
     }
 }
 
-#Generating the null model
-make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, scale) {
+#Generating the null model§
+make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, null.scree, scale) {
     if(!scale) {
         null_models_result <- replicate(replicates, summary(dispRity(
             space.maker(nrow(data$matrix),
                         dimensions = data$call$dimensions,
                         distribution = null.distrib,
                         arguments = null.args,
-                        cor.matrix = null.cor)
+                        cor.matrix = null.cor,
+                        scree = null.scree)
             , metric = get.metric.from.call(data)), cent.tend = mean, quantiles = 1)$obs )
     } else {
         null_models_result <- replicate(replicates, summary(dispRity(
@@ -24,7 +25,8 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
                         dimensions = data$call$dimensions,
                         distribution = null.distrib,
                         arguments = null.args,
-                        cor.matrix = null.cor)
+                        cor.matrix = null.cor,
+                        scree = null.scree)
                 )
         , metric = get.metric.from.call(data)), cent.tend = mean, quantiles = 1)$obs )
     }

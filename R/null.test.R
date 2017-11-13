@@ -9,6 +9,7 @@
 #' @param null.distrib one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.
 #' @param null.args any additional distribution arguments to be passed to \code{\link{space.maker}} (see \code{arguments} within; \code{default = NULL}).
 #' @param null.cor an additional correlation matrix to be passed to \code{\link{space.maker}} (see \code{cor.matrix} within; \code{default = NULL}).
+#' @param null.test an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).
 #' @param alter the type of alternative hypothesis (H1) as used in \code{\link[ade4]{randtest}} (\code{default = "two-sided"}).
 #' @param scale whether to scale the simulated and the observed data.
 #' @param ... optional arguments to be passed to \code{\link[ade4]{as.randtest}}.
@@ -69,7 +70,7 @@
 # null.cor = NULL
 # scale = FALSE
 
-null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, null.cor = NULL, alter = "two-sided", scale = FALSE, ...) {
+null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, null.cor = NULL, null.scree = NULL, alter = "two-sided", scale = FALSE, ...) {
     
     match_call <- match.call()
 
@@ -102,10 +103,10 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         ## Subdivide the data per subsamples
         sub_data <- lapply(as.list(seq(1:length(data$subsamples))), function(X) get.subsamples(data, X))
         ## Apply the data to all subsamples
-        null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, scale)
+        null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, null.scree, scale)
     } else {
         ## Apply the data to one subsamples
-        null_models_results <- make.null.model(data, replicates, null.distrib, null.args, null.cor, scale)
+        null_models_results <- make.null.model(data, replicates, null.distrib, null.args, null.cor, null.scree, scale)
     }
 
     ## testing the null hypothesis
