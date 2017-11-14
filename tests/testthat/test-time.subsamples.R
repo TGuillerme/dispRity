@@ -365,3 +365,25 @@ test_that("time.subsamples works for empty subsamples", {
     expect_equal(test$subsamples[[3]][[1]][,1], c(52,54))
     expect_equal(test$subsamples[[4]][[1]][,1], c(36, 37, 38, 32, 33, 34, 50, 48, 29, 30))
 })
+
+
+test_that("probability models work", {
+    data(BeckLee_mat99)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+    
+    test1 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test2 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "punctuated", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+
+    expect_is(test1, "dispRity")
+    expect_is(test1$subsamples[[1]][[1]], "matrix")
+    expect_equal(dim(test1$subsamples[[1]][[1]]), c(6,3))
+    expect_true(all(test1$subsamples[[1]][[1]][,1:2] >= 1))
+    expect_true(all(test1$subsamples[[1]][[1]][,3] < 1))
+
+    expect_is(test2, "dispRity")
+    expect_is(test2$subsamples[[1]][[1]], "matrix")
+    expect_equal(dim(test2$subsamples[[1]][[1]]), c(6,3))
+    expect_true(all(test2$subsamples[[1]][[1]][,1:2] >= 1))
+    expect_true(all(test2$subsamples[[1]][[1]][,3] < 1))
+})

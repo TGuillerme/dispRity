@@ -83,35 +83,48 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbos
 time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
     ## lapply function for getting the slices
-    get.slice <- function(slice, time, model, ages_tree, data, verbose) {
+    get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {
 
         ## Verbose
         if(verbose) message(".", appendLF = FALSE)
 
-        ## Get the subtree
-        if(time[slice] == 0) {
-            ## Select the tips to drop
-            taxa_to_drop <- ages_tree$LAD[which(ages_tree$LAD[1:Ntip(tree),1] != 0),2]
-            ## drop the tips
-            sub_tree <- drop.tip(tree, tip = as.character(taxa_to_drop))
-        } else {
-            ## Subtree
-            sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
-        }
+        ## Slicing the tree
+        sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
 
-        if(class(sub_tree) !=  "phylo" && is.na(sub_tree)) {
+        ## Empty subsample
+        if(class(sub_tree) != "phylo" && is.na(sub_tree)) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
         }
 
-        ## Select the tips 
-        tips <- sub_tree$tip.label
+        ## Output are single trees
+        if(class(sub_tree) == "phylo") {
+            ## Select the tips 
+            tips <- sub_tree$tip.label
 
-        ## Add any missed taxa from the FADLAD
-        taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            ## Add any missed taxa from the FADLAD
+            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
 
-        ## Getting the list of elements
-        return( list("elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ))
+            ## Getting the list of elements
+            return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
+        
+        } else {
+        ## Output are "probability tables" 
+
+            ## Add any missed taxa from the FADLAD
+            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            if(length(taxa) > 0) {
+                ## Combine the taxa, their ancestor and their probability to the sub_tree table
+                ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
+                sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
+            }
+
+            ## Convert the tips into row numbers
+            tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
+
+            ## Returning the tips with the probabilities
+            return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
+        }
     }
 
     ## ages of tips/nodes + FAD/LAD
@@ -123,7 +136,7 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
     }
 
     ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose)
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
 
     ## verbose
     if(verbose) {
