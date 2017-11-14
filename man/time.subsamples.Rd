@@ -16,7 +16,7 @@ time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verb
 
 \item{time}{Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.}
 
-\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"pro"}. Is ignored if \code{method = "discrete"}.}
+\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.}
 
 \item{inc.nodes}{A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.}
 
@@ -42,9 +42,12 @@ If \code{method = "continuous"} and when the sampling is done along an edge of t
 \itemize{
   \item \code{"acctran"}: always the value from the ancestral node.
   \item \code{"deltran"}: always the value from the descendant node or tip.
-  \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+  \item \code{"random"}: randomly selected from the ancestral node or the descendant node or tip.
   \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
+  \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+  \item \code{"gradual"}: selects the ancestral node or the descendant with a probability relative to branch length.
 }
+N.B. \code{"punctuated"} and \code{"gradual"} differ from \code{"random"} and \code{"proximity"} by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
 }
 \examples{
 ## Load the Beck & Lee 2014 data

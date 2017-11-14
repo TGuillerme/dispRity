@@ -60,7 +60,8 @@
 #'      concatenate = FALSE, correction = "bonferroni",
 #'      conc.quantiles = c(mean, c(95, 5)))
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
+# \code{\link{sequential.test}}
 #'
 #' @author Thomas Guillerme
 

@@ -9,7 +9,7 @@
 #' @param null.distrib one or more distribution functions to generate the null model to be passed to \code{\link{space.maker}}.
 #' @param null.args any additional distribution arguments to be passed to \code{\link{space.maker}} (see \code{arguments} within; \code{default = NULL}).
 #' @param null.cor an additional correlation matrix to be passed to \code{\link{space.maker}} (see \code{cor.matrix} within; \code{default = NULL}).
-#' @param null.test an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).
+#' @param null.scree an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).
 #' @param alter the type of alternative hypothesis (H1) as used in \code{\link[ade4]{randtest}} (\code{default = "two-sided"}).
 #' @param scale whether to scale the simulated and the observed data.
 #' @param ... optional arguments to be passed to \code{\link[ade4]{as.randtest}}.
@@ -38,7 +38,8 @@
 #' results ; plot(results)
 #' }
 #' 
-#' @seealso \code{\link{space.maker}}, \code{\link{test.dispRity}}, \code{\link{sequential.test}}.
+#' @seealso \code{\link{space.maker}}, \code{\link{test.dispRity}}
+# \code{\link{sequential.test}}.
 #'
 #' @references
 #' Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.

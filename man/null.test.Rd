@@ -19,13 +19,13 @@ null.test(data, replicates = 100, null.distrib, null.args = NULL,
 
 \item{null.cor}{an additional correlation matrix to be passed to \code{\link{space.maker}} (see \code{cor.matrix} within; \code{default = NULL}).}
 
+\item{null.scree}{an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).}
+
 \item{alter}{the type of alternative hypothesis (H1) as used in \code{\link[ade4]{randtest}} (\code{default = "two-sided"}).}
 
 \item{scale}{whether to scale the simulated and the observed data.}
 
 \item{...}{optional arguments to be passed to \code{\link[ade4]{as.randtest}}.}
-
-\item{null.test}{an additional vector of variance per axis (equivalent to \link[stats]{screeplot} output); \code{default = NULL}).}
 }
 \description{
 Testing the difference between the observed disparity and disparity under a null model.
@@ -58,7 +58,7 @@ results ; plot(results)
 Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
 }
 \seealso{
-\code{\link{space.maker}}, \code{\link{test.dispRity}}, \code{\link{sequential.test}}.
+\code{\link{space.maker}}, \code{\link{test.dispRity}}
 }
 \author{
 Thomas Guillerme

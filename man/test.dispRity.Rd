@@ -78,7 +78,7 @@ test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
 
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
+\code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}.
 }
 \author{
 Thomas Guillerme

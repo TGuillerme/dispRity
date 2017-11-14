@@ -15,7 +15,8 @@
 #' ## What is the probability of overlap of these distributions?
 #' bhatt.coeff(x, y)
 #'
-#' @seealso \code{\link{test.dispRity}}, \code{\link{sequential.test}}, \code{\link{null.test}}.
+#' @seealso \code{\link{test.dispRity}}, \code{\link{null.test}}.
+# \code{\link{sequential.test}}
 #'
 #' @references
 #' Bhattacharyya A. \bold{1943}. On a measure of divergence between two statistical populations defined by their probability distributions. Bull. Calcutta Math. Soc., 35, pp. 99-109
