@@ -110,7 +110,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     }
 
     ## Data must contain a first "bootstrap" (empty list)
-    if(length(data$subsamples) == 0) data <- fill.dispRity(data)
+    if(length(data$subsamples) == 0) {
+        data <- fill.dispRity(data)
+        probabilistic_subsamples <- FALSE
+    } else {
+        ## Check if the subsamples have probabilistic data
+        probabilistic_subsamples <- ifelse(all(unique(unlist(lapply(data$subsamples, lapply, ncol))) > 1), TRUE, FALSE)
+    }
 
     ## BOOTSTRAP
     ## Must be a numeric value
@@ -145,9 +151,24 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     
     ## Must be one of these methods
     check.method(boot.type, c("full", "single", "rangers"))
+    
+    ## Check whether the subsamples (if any)
+
     ## Set up the bootstrap type function
-    if(boot.type == "full") boot.type.fun <- boot.full
-    if(boot.type == "single") boot.type.fun <- boot.single
+    if(boot.type == "full") {
+        if(probabilistic_subsamples) {
+            boot.type.fun <- boot.full.proba
+        } else {
+            boot.type.fun <- boot.full
+        }
+    }
+    if(boot.type == "single") {
+        if(probabilistic_subsamples) {
+            boot.type.fun <- boot.single.proba
+        } else {
+            boot.type.fun <- boot.single
+        }
+    }
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~

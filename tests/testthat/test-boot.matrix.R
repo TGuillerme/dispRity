@@ -268,3 +268,34 @@ test_that("Boot.matrix works with small, empty/subsamples", {
     expect_equal(test$subsamples[[2]][[2]], matrix(rep(51, 100), nrow = 1))
 })
 
+
+test_that("boot.matrix deals with probabilities subsamples", {
+    data(BeckLee_mat99)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+    
+
+    data1 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+
+    set.seed(1)
+    test1 <- boot.matrix(data1, bootstraps = 10)
+    set.seed(1)
+    test2 <- boot.matrix(data2, bootstraps = 10)
+    set.seed(1)
+    test3 <- boot.matrix(data2, bootstraps = 10)
+
+     for(sub in 1:2) {
+        ## Difference
+        expect_true(
+            !all(test1$subsamples[[sub]][[2]] == test2$subsamples[[sub]][[2]])
+            )
+        ## Control
+        expect_false(
+            !all(test3$subsamples[[sub]][[2]] == test2$subsamples[[sub]][[2]])
+            )
+        ## More sampled
+        expect_gt(length(unique(as.vector(test1$subsamples[[sub]][[2]])))
+        ,length(unique(as.vector(test2$subsamples[[sub]][[2]]))))
+     }
+})
