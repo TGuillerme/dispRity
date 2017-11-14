@@ -1,4 +1,38 @@
 #FUNCTIONS FOR slice.tree
+## Get the node IDs
+get.node.ID <- function(node, tree) {
+    ## Check if it's a node
+    is_node <- which(tree$node.label == node)
+    ## Return the node or the tip
+    return(ifelse(length(is_node) > 0, is_node + Ntip(tree), which(tree$tip.label == node)))
+}
+
+## Get the node ID out of a tree (i.e. from a parent tree)
+get.node.ID.expand <- function(node, tree, full_tree) {
+    ## Get the expanded tree
+    tree_expand <- extract.clade(full_tree, node = node)
+    ## Expanded labels
+    labels_expand <- c(tree_expand$tip.label, tree_expand$node.label)
+    ## Get all the node IDs matching with the expanded labels
+    labels_expand_match <- sapply(labels_expand, get.node.ID, tree = tree)
+    ## Get the first match
+    return(as.numeric(labels_expand_match[!is.na(labels_expand_match)][1]))
+}
+
+## Get the branch length
+get.branch.length <- function(node1, node2, tree, full_tree) {
+
+    ## Get the node IDs
+    node1_ID <- get.node.ID(node1, tree)
+    node2_ID <- get.node.ID(node2, tree)
+
+    ## Check node IDs (if NAs)
+    node1_ID <- ifelse(is.na(node1_ID), get.node.ID.expand(node1, tree, full_tree), node1_ID)
+    node2_ID <- ifelse(is.na(node2_ID), get.node.ID.expand(node2, tree, full_tree), node2_ID)
+
+    ## Return branch length
+    return(tree$edge.length[which(tree$edge[,1] == node1_ID & tree$edge[,2] == node2_ID)])
+}
 
 #Select the parent node of a tip
 slice.tree_parent.node <- function(tree, tip) {
@@ -90,65 +124,30 @@ slice.tree_ACCTRAN <- function(tree, tip, tree_slice) {
 }
 
 #Modify the tree slicing by replacing the tips that are not at the cut by the offspring node towards the tip
-slice.tree_GRADUAL <- function(tree, tip, tree_slice) {
+slice.tree_PROXIMITY <- function(tree, tip, tree_slice, probability = FALSE) {
     #Calculating both the DELTRAN and the ACCTRAN node
     DEL_node <- slice.tree_DELTRAN(tree, tip, tree_slice)
     ACC_node <- slice.tree_ACCTRAN(tree, tip, tree_slice)
 
     #If both nodes are the same (i.e slicing through the actual species), just return one
     if(DEL_node == ACC_node) {
-        return(DEL_node)
-    } else {
-        #Extract the distance between DEL_node and ACC_node on tree
-        #Creating the two sub clades
-        del_tree  <- extract.clade(tree, DEL_node)
-
-        if(any(tree$tip.label == ACC_node)) {
-            #Subclade irrelevant if ACC_node is a tip
-            ACC_tip <- TRUE
-            acc_tree <- list() ; acc_tree$tip.label <- ACC_node
+        if(probability) {
+            return(c(DEL_node, ACC_node, "1"))
         } else {
-            ACC_tip <- FALSE
-            acc_tree <- extract.clade(tree, ACC_node)
-        }
-        #Tips to drop (-1)
-        if(Ntip(del_tree) > 3) {
-            drop <- del_tree$tip.label[which(is.na(match(del_tree$tip.label, acc_tree$tip.label)))]
-            #keep one species
-            drop <- drop[-1]
-            del_tree <- drop.tip(del_tree, drop)
-        }
-
-        #Selecting the DEL_edge (root in del_tree) and the ACC_edge
-        DEL_edge <- Ntip(del_tree)+1
-        if(ACC_tip != TRUE) {
-            ACC_edge <- which(del_tree$node.label == ACC_node)+Ntip(del_tree)
-        } else {
-            ACC_edge <- which(del_tree$tip.label == ACC_node)
-        }
-
-        #Extracting the total edge length from DEL to ACC
-        total.edge.length <- del_tree$edge.length[which(apply(del_tree$edge, 1, function(x) all(x == c(DEL_edge, ACC_edge))))] #edge connecting DEL_node to ACC_node
-
-        #Calculate the terminal elements branch length and check if the tip is closer to the parent or offspring node.
-        terms <- tree_slice$edge[, 2] <= Ntip(tree_slice)
-        terminal.elements <- tree_slice$edge.length[terms]
-        names(terminal.elements) <- tree_slice$tip.label[tree_slice$edge[terms, 2]]
-
-        #Select the terminal edge for tip
-        terminal.edge <- sort(terminal.elements[match(acc_tree$tip.label, names(terminal.elements))])
-        names(terminal.edge) <- NULL
-
-        #Choose ACC or DEL node
-        if(terminal.edge < total.edge.length/2) {
-            #cat(i, "-", tip, "\n", sep=" ")
-            #print(DEL_node)
             return(DEL_node)
-        } else {
-            #cat(i, "-", tip, "\n", sep=" ")
-            #print(ACC_node)
-            return(ACC_node)
         }
+    } else {
+        ## Get branch lengths
+        full_edge <- get.branch.length(DEL_node, ACC_node, tree, full_tree = tree)
+        slice_edge <- get.branch.length(DEL_node, ACC_node, tree_slice, full_tree = tree)
 
+
+        if(probability) {
+            prob <- 1-slice_edge/full_edge
+            prob <- as.character(round(prob, digits = 10))
+            return(c(DEL_node, ACC_node, prob))
+        } else {
+            return(ifelse(full_edge < slice_edge/2, DEL_node, ACC_node))
+        }
     }
 }

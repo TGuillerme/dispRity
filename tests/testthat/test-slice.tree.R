@@ -115,12 +115,12 @@ test_that("ACCTRAN picks up the offspring tip/node", {
 })
 
 
-#Testing GRADUAL
+#Testing PROXIMITY
 #example
-test <- slice.tree_GRADUAL(tree, 'A', tree_slice)
+test <- slice.tree_PROXIMITY(tree, 'A', tree_slice)
 
 #Test
-test_that("GRADUAL picks up the right tip/node", {
+test_that("PROXIMITY picks up the right tip/node", {
     #class
     expect_is(
         test, 'character'
@@ -135,10 +135,28 @@ test_that("GRADUAL picks up the right tip/node", {
         )
 })
 
+test <- slice.tree_PROXIMITY(tree, 'A', tree_slice, probability = TRUE)
+
+#Test
+test_that("PROXIMITY probability right output", {
+    #class
+    expect_is(
+        test, 'character'
+        )
+    #length
+    expect_equal(
+        length(test), 3
+        )
+    #result (node 4)
+    expect_equal(
+        test, c("3", "4", "0")
+        )
+})
+
 
 #Testing slice.tree
 tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
-tree$node.label <- as.character(seq(1:5))
+tree$node.label <- as.character(paste0("n",seq(1:5)))
 
 #Test
 test_that("slice.tree works properly", {
@@ -161,8 +179,43 @@ test_that("slice.tree works properly", {
         slice.tree(tree, 0, 'proximity'), 'phylo'
         )
     expect_is(
-        slice.tree(tree, 0, 'punCTUAted'), 'phylo'
+        slice.tree(tree, 0, 'randOM'), 'phylo'
         )
+    expect_is(
+        slice.tree(tree, 0, 'gradual'), 'matrix'
+        )
+    expect_is(
+        slice.tree(tree, 0, 'punctuated'), 'matrix'
+        )
+})
+
+test_that("slice.tree proba works", {
+
+    tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
+    tree$node.label <- as.character(paste0("n",seq(1:5)))
+
+    test0g <- slice.tree(tree, 0, "gradual")
+    test0p <- slice.tree(tree, 0, "punctuated")
+
+    LAD <- FAD <- tree.age(tree)
+
+    LAD[10,1] <- LAD[4,1] <- 2.5
+    FAD[10,1] <- FAD[4,1] <- 3.5
+
+    ## Both have the same results
+    expect_equal(test0g, test0p)
+
+    ## Different results (no FADLAD)
+    test0g_1 <- slice.tree(tree, 2.8, "gradual")
+    test0p_1 <- slice.tree(tree, 2.8, "punctuated")
+    expect_equal(round(as.numeric(test0g_1[,3]), digit = 3), c(0.900, 0.933, 0.560))
+    expect_equal(round(as.numeric(test0p_1[,3]), digit = 3), c(0.500, 0.500, 0.500))
+
+    ## Different results (with FADLAD)
+    test0g_2 <- slice.tree(tree, 2.8, "gradual", FAD, LAD)
+    test0p_2 <- slice.tree(tree, 2.8, "punctuated", FAD, LAD)
+    expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(1.000, 1.000, 0.560))
+    expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
 })
 
 

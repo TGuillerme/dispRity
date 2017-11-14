@@ -6,7 +6,7 @@
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"proximity"}. Is ignored if \code{method = "discrete"}.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsamples}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
 #' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
@@ -46,9 +46,9 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     check.class(tree, "phylo")
     check.class(age, c("numeric", "integer"), " must be a single numeric value.")
     check.length(age, 1, " must be a single numeric value.")
-    check.class(model, "character", " must be one of the following: acctran, deltran, punctuated, proximity.")
+    check.class(model, "character", " must be one of the following: acctran, deltran, random, proximity.")
     model <- tolower(model)
-    check.method(model, c("acctran", "deltran", "punctuated", "proximity"), "Slicing model")
+    check.method(model, c("acctran", "deltran", "random", "proximity", "punctuated", "gradual"), "Slicing model")
 
     #FAD/LAD
     if(missing(FAD)) {
@@ -72,41 +72,82 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         )
     }
 
-    #renaming the tree_slice
-    tree_sliced <- tree_slice
+    
+  if(model == "gradual" || model == "punctuated") {
+        
+        ## Running the probability models      
+        tree_sliced <- matrix(NA, ncol = 3)
 
-    #Correcting the sliced tree
-    for (tip in 1:Ntip(tree_slice)) {
+        for (tip in 1:Ntip(tree_slice)) {
+            ## Both with probability
+            tips_probabilities <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice, probability = TRUE)
+            ## Combine the results with previous tips
+            tree_sliced <- rbind(tree_sliced, tips_probabilities)
+        }
 
-        #Check if the tree is not sliced at the exact age of a tip (e.g. time=0)
-        if(tree_age[which(tree_age[, 2] == tree_slice$tip.label[tip]), 1] != age) {
+        ## Removing the first row (NAs)
+        tree_sliced <- tree_sliced[-1,]
 
-            #Check if the age of the tip is not in between the FAD/LAD
-            if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
+        ## Removing the rownames
+        rownames(tree_sliced) <- NULL
 
-                #Chose the tip/node following the given model
-                if(model == "punctuated") {
-                    selected_model <- sample(c("deltran", "acctran"), 1)
-                } else {
-                    selected_model <- model
-                }
-
-                if(selected_model == "deltran") {
-                    #Parent
-                    tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                }
-
-                if(selected_model == "acctran") {
-                    #Offspring
-                    tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                }
-
-                if(selected_model == "proximity") {
-                    #Closest
-                    tree_sliced$tip.label[tip] <- slice.tree_GRADUAL(tree, tree_slice$tip.label[tip], tree_slice)
-                }              
+        ## Adjusting the FADLAD
+        adjust.prob <- function(one_proba, FAD, LAD, age) {
+            ## If age is lower (more recent) than FAD of descendant, set probability of ancestor to 0
+            if(age < FAD[which(FAD[,2] == one_proba[2]), 1]) {
+                one_proba[3] <- "0"
             }
-        } 
+            ## If age is higher (more ancient) than LAD of ancestor, set probability of ancestor to 1
+            if(age > LAD[which(LAD[,2] == one_proba[1]), 1]) {
+                one_proba[3] <- "1"
+            }
+            return(one_proba)
+        }
+        tree_sliced <- t(apply(tree_sliced, 1, adjust.prob, FAD, LAD, age))
+
+        ## Correcting probabilities if punctuated
+        if(model == "punctuated") {
+            tree_sliced[,3] <- sapply(tree_sliced[,3], function(X) ifelse(X == "0" || X == "1", X, "0.5"))
+        }
+
+    } else {
+
+        ## Running the discrete models
+        tree_sliced <- tree_slice
+
+        #Correcting the sliced tree
+        for (tip in 1:Ntip(tree_slice)) {
+
+            #Check if the tree is not sliced at the exact age of a tip (e.g. time=0)
+            if(tree_age[which(tree_age[, 2] == tree_slice$tip.label[tip]), 1] != age) {
+
+                #Check if the age of the tip is not in between the FAD/LAD
+                if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
+
+                    #Chose the tip/node following the given model
+                    if(model == "random") {
+                        selected_model <- sample(c("deltran", "acctran"), 1)
+                    } else {
+                        selected_model <- model
+                    }
+
+                    if(selected_model == "deltran") {
+                        #Parent
+                        tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                    }
+
+                    if(selected_model == "acctran") {
+                        #Offspring
+                        tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                    }
+
+                    if(selected_model == "proximity") {
+                        #Closest
+                        tree_sliced$tip.label[tip] <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice)
+                    }
+                }
+            } 
+        }
     }
 
     return(tree_sliced)
