@@ -73,7 +73,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     }
 
     
-  if(model == "gradual" || model == "punctuated") {
+    if(model == "gradual" || model == "punctuated") {
         
         ## Running the probability models      
         tree_sliced <- matrix(NA, ncol = 3)
@@ -107,7 +107,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
         ## Correcting probabilities if punctuated
         if(model == "punctuated") {
-            tree_sliced[,3] <- sapply(tree_sliced[,3], function(X) ifelse(X == "0" || X == "1", X, "0.5"))
+            tree_sliced[,3] <- sapply(tree_sliced[,3], function(X) ifelse(round(as.numeric(X), digits = 5) == 0 || round(as.numeric(X), digits = 5) == 1, X, "0.5"))
         }
 
     } else {
