@@ -432,3 +432,30 @@ test_that("dispRity works with small, empty/subsamples", {
     expect_equal(test$disparity[[2]][[1]][,1], NA)
     expect_equal(test$disparity[[2]][[2]][,1], NA)
 })
+
+
+test_that("dispRity deals with probabilities subsamples", {
+    data(BeckLee_mat99)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+    
+
+    data1 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+
+    set.seed(1)
+    test1 <- dispRity(data1, metric = mean)
+    set.seed(1)
+    test2 <- dispRity(data2, metric = mean)
+    set.seed(2)
+    test3 <- dispRity(data1, metric = mean)
+
+    expect_equal(summary(test1)$n, c(15,21))
+    expect_equal(summary(test2)$n, c(15,21))
+    expect_equal(summary(test3)$n, c(15,21))
+
+    expect_equal(as.vector(summary(test1)$obs), c(-0.010, 0.007))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.007, 0.004))
+    expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
+
+})

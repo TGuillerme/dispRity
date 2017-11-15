@@ -188,6 +188,16 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         ## No removed elements
         removed_elements <- FALSE
     }
+
+
+    ## Select the elements if probabilities are used
+    if(ncol(data$subsamples[[1]]$elements) > 1) {
+        ## Sample the elements
+        selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
+        for(subsample in 1:length(selected_elements)) {
+            lapply_loop[[subsample]]$elements <- matrix(selected_elements[[subsample]], ncol = 1)
+        }
+    }
     
     # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)

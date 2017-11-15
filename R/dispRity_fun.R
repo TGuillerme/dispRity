@@ -126,7 +126,7 @@ disparity.bootstraps.silent <- function(one_subsamples_bootstrap, metrics_list, 
     ## 1 - Decomposing the matrix (if necessary)
     if(matrix_decomposition) {
         ## Find out whether to output an array
-        use_array <- !is.null(metrics_list$level3.fun)        
+        use_array <- !is.null(metrics_list$level3.fun)
         ## Getting the first metric
         first_metric <- get.first.metric(metrics_list)
         level <- first_metric[[3]]
