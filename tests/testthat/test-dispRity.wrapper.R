@@ -11,9 +11,9 @@ test_that("Wrapping works", {
     expect_is(
         result, 'dispRity')
 
-    ## Correct subsetss    
+    ## Correct subsets    
     expect_equal(
-        names(result$subsetss)
+        names(result$subsets)
         , c("133.51104 - 89.00736", "89.00736 - 44.50368", "44.50368 - 0"))
     
     ## Correct values
@@ -32,9 +32,9 @@ test_that("Wrapping works", {
     expect_is(
         result, 'dispRity')
 
-    ## Correct subsetss    
+    ## Correct subsets    
     expect_equal(
-        names(result$subsetss)
+        names(result$subsets)
         , c("crown", "stem"))
     
     ## Correct values

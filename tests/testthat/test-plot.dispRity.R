@@ -91,10 +91,10 @@ test_that("transpose.box works", {
         ,c(100, 7))
 
     test <- transpose.box(disparity, rarefaction = FALSE)
-    for(subsetss in 1:length(disparity$subsetss)) {
+    for(subsets in 1:length(disparity$subsets)) {
         expect_equal(
-            test[,subsetss]
-            ,as.vector(disparity$disparity[[subsetss]][[2]]))
+            test[,subsets]
+            ,as.vector(disparity$disparity[[subsets]][[2]]))
     }
 })
 
@@ -102,14 +102,14 @@ test_that("split.summary.data works", {
 
     data(disparity)
     sum_data <- summary(disparity)
-    subsetss <- unique(sum_data$subsetss)
+    subsets <- unique(sum_data$subsets)
 
-    for(sub in 1:length(subsetss)) {
+    for(sub in 1:length(subsets)) {
         ## Create a split
-        split <- split.summary.data(subsetss[sub], sum_data)
+        split <- split.summary.data(subsets[sub], sum_data)
         ## test
         expect_is(split, "data.frame")
-        expect_equal(dim(split), c(length(which(sum_data$subsetss == subsetss[sub])),8))
+        expect_equal(dim(split), c(length(which(sum_data$subsets == subsets[sub])),8))
     }
 })
 
@@ -123,7 +123,7 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, type = "polygon", quantiles = c(10, 50, 95),cent.tend = mode.val))
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
     expect_null(plot(disparity, type = "continuous"))
-    expect_null(plot(disparity, type = "continuous", time.subsetss = FALSE,elements = TRUE, col = c("red", "orange", "yellow")))
+    expect_null(plot(disparity, type = "continuous", time.subsets = FALSE,elements = TRUE, col = c("red", "orange", "yellow")))
     expect_null(plot(disparity, rarefaction = TRUE))
     
 })

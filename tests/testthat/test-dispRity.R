@@ -5,11 +5,11 @@ context("dispRity")
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-data_subsetss_simple <- time.subsetss(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-data_subsetss_boot <- boot.matrix(data_subsetss_simple, bootstraps = 11, rarefaction = c(5,6))
+data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 metric = c(sum, variances)
 verbose = TRUE
-data <- data_subsetss_boot
+data <- data_subsets_boot
 
 
 test_that("get.dispRity.metric.handle", {
@@ -76,7 +76,7 @@ test_that("apply.decompose.matrix", {
     ## Shortening the matrix for the example
     data <- disparity
     data$call$dimensions <- 7
-    one_bs_matrix <- data$subsetss[[1]][[5]]
+    one_bs_matrix <- data$subsets[[1]][[5]]
     bs_max <- 5
 
     decomp_array <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
@@ -95,8 +95,8 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps.silent(data$subsetss[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test0v <- disparity.bootstraps.verbose(data$subsetss[[1]][[2]], metrics_list, data, matrix_decomposition))
+    test0 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
+    expect_message(test0v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
 
     ## Should be a array
     expect_is(
@@ -116,8 +116,8 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps.silent(data$subsetss[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test1v <- disparity.bootstraps.verbose(data$subsetss[[1]][[2]], metrics_list, data, matrix_decomposition))
+    test1 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
+    expect_message(test1v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
 
     ## Should be a matrix
     expect_is(
@@ -312,11 +312,11 @@ test_that("dispRity works with a bootstrapped and rarefied matrix", {
 test <- NULL ; data<-test_data$ord_data_tips
 
 
-#one matrix with subsetss
+#one matrix with subsets
 data<-test_data$ord_data_tips
-data<-custom.subsetss(data, group)
+data<-custom.subsets(data, group)
 test<-dispRity(data, metric=c(sum, ranges))
-test_that("dispRity works with custom subsetss", {
+test_that("dispRity works with custom subsets", {
     expect_is(
         test, "dispRity"
         )
@@ -333,14 +333,14 @@ test_that("dispRity works with custom subsetss", {
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
-#bootstrapped + rarefied + subsetss
+#bootstrapped + rarefied + subsets
 group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
 rownames(group)<-rownames(data)
-data<-custom.subsetss(data, group)
+data<-custom.subsets(data, group)
 data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
 test<-dispRity(data, metric=c(sum, ranges))
 
-test_that("dispRity works with a bootstrapped, rarefied, custom subsetss", {
+test_that("dispRity works with a bootstrapped, rarefied, custom subsets", {
     expect_is(
         test, "dispRity"
         )
@@ -383,9 +383,9 @@ test_that("Example works", {
         )
 
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
     set.seed(1)
-    bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps=100)
+    bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
     ex3 <- summary(sum_of_ranges, rounding = 2)
@@ -412,20 +412,20 @@ test_that("Example works", {
 #Reset
 test <- NULL ; data<-test_data$ord_data_tips
 
-## dispRity works with empty or small (<3 subsetss)
-test_that("dispRity works with small, empty/subsetss", {
+## dispRity works with empty or small (<3 subsets)
+test_that("dispRity works with small, empty/subsets", {
 
     load("test_data.Rda")
     tree <- test_data$tree_data
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- time.subsetss(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+    silent <- capture_warnings(data <- time.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
     silent <- capture_warnings(data <- boot.matrix(data))
 
     warnings <- capture_warnings(test <- dispRity(data, metric = c(sum, variances), verbose = TRUE))
 
-    expect_equal(warnings, "Disparity not calculated for subsetss 140, 138 (not enough data).")
+    expect_equal(warnings, "Disparity not calculated for subsets 140, 138 (not enough data).")
 
     expect_equal(test$disparity[[1]][[1]][,1], NA)
     expect_equal(test$disparity[[1]][[2]][,1], NA)
@@ -434,14 +434,14 @@ test_that("dispRity works with small, empty/subsetss", {
 })
 
 
-test_that("dispRity deals with probabilities subsetss", {
+test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
     data(BeckLee_tree)
     
 
-    data1 <- time.subsetss(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    data2 <- time.subsetss(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     set.seed(1)
     test1 <- dispRity(data1, metric = mean)
