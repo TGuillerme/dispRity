@@ -16,7 +16,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         if(rarefaction == TRUE) {
             xlab <- "Elements"
         } else {
-            xlab <- "Subsamples"
+            xlab <- "Subsets"
         }
     }
     
