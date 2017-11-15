@@ -85,18 +85,24 @@ The model can be one of the following:
 
  *  `acctran` where the data chosen along the branch is always the one of the descendant
  *  `deltran` where the data chosen along the branch is always the one of the ancestor
- *  `punctuated` where the data chosen along the branch is randomly chosen between the descendant or the ancestor
- *  `gradual` where the data chosen along the branch is either the descendant or the ancestor depending on branch length
+ *  `random` where the data chosen along the branch is randomly chosen between the descendant or the ancestor
+ *  `proximity` where the data chosen along the branch is either the descendant or the ancestor depending on branch length
+ *  `punctuated` where the data chosen along the branch is both the descendant and the ancestor with an even probability
+ *  `gradual` where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length
+
+> Note that the four first models are "fixed": the selected data is always either the one of the descendant or the ancestor.
+The two last models are "probabilistic": the data from both the descendant and the ancestor is used with an associate probability.
+These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants.
 
 ```{r, eval=TRUE}
-## Generating four time slices every 40 million years under a model of gradual evolution
+## Generating four time slices every 40 million years under a model of proximity evolution
 time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
+    method = "continuous", model = "proximity", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages)
 
 ## Generating four time slices automatically
 time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
-    method = "continuous", model = "gradual", time = 4, FADLAD = BeckLee_ages)
+    method = "continuous", model = "proximity", time = 4, FADLAD = BeckLee_ages)
 ```
 
 ## Customised subsamples
@@ -184,7 +190,7 @@ boot.matrix(crown_stem, bootstraps = 200, rarefaction = TRUE)
 
 ## Creating time slice subsamples
 time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
-                               method = "continuous", model = "gradual", 
+                               method = "continuous", model = "proximity", 
                                time = c(120, 80, 40, 0),
                                FADLAD = BeckLee_ages)
 
@@ -500,7 +506,7 @@ disparity_crown_stem <- dispRity(boot_crown_stem, metric = c(sum, variances))
 
 ## Creating time slice subsamples
 time_slices <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "continuous", model = "gradual", time = c(120, 80, 40, 0),
+    method = "continuous", model = "proximity", time = c(120, 80, 40, 0),
     FADLAD = BeckLee_ages)
 ## Bootstrapping the time slice subsamples
 boot_time_slices <- boot.matrix(time_slices, bootstraps = 100)

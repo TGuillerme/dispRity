@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-13">
+<meta name="date" content="2017-11-15">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -271,21 +271,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <ul>
 <li><code>acctran</code> where the data chosen along the branch is always the one of the descendant</li>
 <li><code>deltran</code> where the data chosen along the branch is always the one of the ancestor</li>
-<li><code>punctuated</code> where the data chosen along the branch is randomly chosen between the descendant or the ancestor</li>
-<li><code>gradual</code> where the data chosen along the branch is either the descendant or the ancestor depending on branch length</li>
+<li><code>random</code> where the data chosen along the branch is randomly chosen between the descendant or the ancestor</li>
+<li><code>proximity</code> where the data chosen along the branch is either the descendant or the ancestor depending on branch length</li>
+<li><code>punctuated</code> where the data chosen along the branch is both the descendant and the ancestor with an even probability</li>
+<li><code>gradual</code> where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices every 40 million years under a model of gradual evolution
+<blockquote>
+<p>Note that the four first models are “fixed”: the selected data is always either the one of the descendant or the ancestor. The two last models are “probabilistic”: the data from both the descendant and the ancestor is used with an associate probability. These later models perform better when bootstrapped, effectively approximating the “intermediate” state between and the ancestor and the descendants.</p>
+</blockquote>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices every 40 million years under a model of proximity evolution
 <span class="kw">time.subsamples</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
-    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;gradual&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
+    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
     <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsamples for 99 elements:
 ##     120, 80, 40, 0.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices automatically
 <span class="kw">time.subsamples</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree,
-    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;gradual&quot;</span>, <span class="dt">time =</span> <span class="dv">4</span>, <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
+    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">4</span>, <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsamples for 99 elements:
 ##     133.51104, 89.00736, 44.50368, 0.</code></pre>
 </div>
 <div id="customised-subsamples" class="section level2">
@@ -360,14 +365,14 @@ crown_stem &lt;-<span class="st"> </span><span class="kw">custom.subsamples</spa
 ## Data was bootstrapped 200 times (method:&quot;full&quot;) and fully rarefied.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating time slice subsamples
 time_slices &lt;-<span class="st"> </span><span class="kw">time.subsamples</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
-                               <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;gradual&quot;</span>, 
+                               <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, 
                                <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
                                <span class="dt">FADLAD =</span> BeckLee_ages)
 
 ## Bootstrapping the time slice subsamples
 <span class="kw">boot.matrix</span>(time_slices, <span class="dt">bootstraps =</span> <span class="dv">100</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
 </div>
@@ -396,9 +401,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 
 ## Example of dimension-level 1 functions
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.3227241</code></pre>
+<pre><code>## [1] 0.3873238</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.2690165</code></pre>
+<pre><code>## [1] 0.8189937</code></pre>
 <p>Any summary metric such as mean or median are good examples of dimension-level 1 functions as they reduce the matrix to a single dimension (i.e. one value).</p>
 </div>
 <div id="dimension-level-2-functions" class="section level4">
@@ -409,7 +414,7 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 
 ## A dimension-level 2 metric
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790</code></pre>
+<pre><code>## [1] -8.0595618 -0.5106728 -1.3381023  0.1982694</code></pre>
 <p>Several dimension-level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> or <code>ranges</code> functions that calculate the variance or the range of each dimension of the ordinated matrix respectively.</p>
 </div>
 <div id="dimension-level-3-functions" class="section level4">
@@ -417,17 +422,17 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 <p>Finally a dimension-level 3 function will transform the matrix into another matrix. Note that the dimension of the output matrix doesn’t need to match the the input matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##          [,1]      [,2]      [,3]
-## [1,] 1.916420 1.9501955 0.2907060
-## [2,] 1.950196 3.2948635 0.3958234
-## [3,] 0.290706 0.3958234 0.6704976</code></pre>
+<pre><code>##            [,1]      [,2]       [,3]
+## [1,]  0.7722329 -1.232395  0.5044684
+## [2,] -1.2323952  5.258134 -2.5675598
+## [3,]  0.5044684 -2.567560  1.8322537</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric with a forced matrix output
 <span class="kw">as.matrix</span>(<span class="kw">dist</span>(dummy_matrix))</code></pre></div>
 <pre><code>##          1        2        3        4
-## 1 0.000000 5.140790 4.005068 3.120827
-## 2 5.140790 0.000000 2.179318 2.982267
-## 3 4.005068 2.179318 0.000000 2.174896
-## 4 3.120827 2.982267 2.174896 0.000000</code></pre>
+## 1 0.000000 5.096201 5.831904 4.944653
+## 2 5.096201 0.000000 2.058924 1.534373
+## 3 5.831904 2.058924 0.000000 1.823741
+## 4 4.944653 1.534373 1.823741 0.000000</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level3">
@@ -676,7 +681,7 @@ disparity_crown_stem &lt;-<span class="st"> </span><span class="kw">dispRity</sp
 
 ## Creating time slice subsamples
 time_slices &lt;-<span class="st"> </span><span class="kw">time.subsamples</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
-    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;gradual&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
+    <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
     <span class="dt">FADLAD =</span> BeckLee_ages)
 ## Bootstrapping the time slice subsamples
 boot_time_slices &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(time_slices, <span class="dt">bootstraps =</span> <span class="dv">100</span>)
@@ -695,10 +700,10 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Default summary
 <span class="kw">summary</span>(disparity_time_slices)</code></pre></div>
 <pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 2.823     2.341 1.376 1.964 2.582 2.823
-## 2         80 19 3.233     3.064 2.790 2.957 3.152 3.224
-## 3         40 15 3.421     3.197 2.771 3.034 3.313 3.506
-## 4          0 10 4.055     3.664 3.282 3.565 3.788 3.924</code></pre>
+## 1        120  6 2.899     2.399 1.749 2.202 2.642 2.794
+## 2         80 22 3.558     3.414 3.127 3.314 3.463 3.557
+## 3         40 15 4.032     3.764 3.569 3.694 3.842 3.954
+## 4          0 10 4.055     3.661 3.282 3.564 3.771 3.927</code></pre>
 <p>Information about the number of elements in each subsample and the observed (i.e. non-bootstrapped) disparity are also calculated. This is specifically handy when rarefying the data for example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">summary</span>(disparity_crown_stem))</code></pre></div>
 <pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
@@ -719,22 +724,22 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Same as above but using the 88th quantile and the standard deviation as the summary 
 <span class="kw">summary</span>(disparity_time_slices, <span class="dt">quantile =</span> <span class="dv">88</span>, <span class="dt">cent.tend =</span> sd)</code></pre></div>
 <pre><code>##   subsamples  n   obs bs.sd    6%   94%
-## 1        120  5 2.823 0.404 1.658 2.672
-## 2         80 19 3.233 0.121 2.841 3.203
-## 3         40 15 3.421 0.201 2.886 3.452
-## 4          0 10 4.055 0.176 3.423 3.889</code></pre>
+## 1        120  6 2.899 0.293 1.917 2.762
+## 2         80 22 3.558 0.113 3.208 3.542
+## 3         40 15 4.032 0.109 3.612 3.918
+## 4          0 10 4.055 0.169 3.387 3.882</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the details of the object and rounding the values to the 5th decimal place
 <span class="kw">summary</span>(disparity_time_slices, <span class="dt">recall =</span> <span class="ot">TRUE</span>, <span class="dt">rounding =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(sum, variances).</code></pre>
 <pre><code>##   subsamples  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1        120  5 2.82292   2.34070 1.37637 1.96358 2.58235 2.82292
-## 2         80 19 3.23312   3.06388 2.78953 2.95651 3.15168 3.22359
-## 3         40 15 3.42091   3.19699 2.77094 3.03428 3.31260 3.50645
-## 4          0 10 4.05457   3.66433 3.28211 3.56532 3.78844 3.92372</code></pre>
+## 1        120  6 2.89926   2.39864 1.74855 2.20230 2.64153 2.79428
+## 2         80 22 3.55782   3.41432 3.12737 3.31353 3.46313 3.55661
+## 3         40 15 4.03191   3.76393 3.56890 3.69427 3.84171 3.95368
+## 4          0 10 4.05457   3.66131 3.28211 3.56431 3.77130 3.92706</code></pre>
 <p>Note that the summary table is a <code>data.frame</code>, hence it is as easy to modify as any dataframe using <code>dplyr</code>. You can also export it in <code>csv</code> format using <code>write.csv</code> or <code>write_csv</code> or even directly export into <code>LaTeX</code> format using the following;</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the xtable package
 <span class="kw">require</span>(xtable)
@@ -879,15 +884,15 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
               <span class="dt">comparisons =</span> <span class="st">&quot;sequential&quot;</span>, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
 <pre><code>## [[1]]
 ##          statistic
-## 120 : 80        30
-## 80 : 40       2683
-## 40 : 0         333
+## 120 : 80         0
+## 80 : 40         74
+## 40 : 0        7076
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 1.878222e-33
-## 80 : 40  4.538271e-08
-## 40 : 0   1.224822e-29</code></pre>
+## 120 : 80 7.673885e-34
+## 80 : 40  6.986470e-33
+## 40 : 0   1.185611e-06</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring the overlap between distributions in the time bins (using the
 ## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
 <span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
@@ -896,7 +901,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.3961442</code></pre>
+## 80 - 40 : 40 - 0     0.4800631</code></pre>
 <p>It is also possible to apply some more <em>complex</em> tests that have their own output classes (like <code>stats::lm</code>).</p>
 <p>The results can then be analysed as usual using the associated <code>summary</code> S3 method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Performing and linear model applied to the same data
@@ -910,7 +915,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## 
 ## Coefficients:
 ##   (Intercept)  subsamples120   subsamples40   subsamples80  
-##        3.6607        -1.4176        -0.4820        -0.6138</code></pre>
+##        3.6517        -1.2627         0.1145        -0.2634</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The output is a regular `lm` output
 <span class="kw">class</span>(slice_lm)</code></pre></div>
 <pre><code>## [1] &quot;lm&quot;</code></pre>
@@ -922,20 +927,20 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.32553 -0.12305  0.02008  0.14801  0.59102 
+## -0.91282 -0.08285  0.00993  0.10745  0.56989 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    3.66072    0.02497  146.60   &lt;2e-16 ***
-## subsamples120 -1.41761    0.03531  -40.14   &lt;2e-16 ***
-## subsamples40  -0.48195    0.03531  -13.65   &lt;2e-16 ***
-## subsamples80  -0.61382    0.03531  -17.38   &lt;2e-16 ***
+## (Intercept)    3.65169    0.01865 195.810  &lt; 2e-16 ***
+## subsamples120 -1.26273    0.02637 -47.878  &lt; 2e-16 ***
+## subsamples40   0.11452    0.02637   4.342 1.79e-05 ***
+## subsamples80  -0.26339    0.02637  -9.987  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.2497 on 396 degrees of freedom
-## Multiple R-squared:  0.808,  Adjusted R-squared:  0.8066 
-## F-statistic: 555.6 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.1865 on 396 degrees of freedom
+## Multiple R-squared:  0.8954, Adjusted R-squared:  0.8946 
+## F-statistic:  1130 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Of course, due to the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made). The only condition is that the test can be applied to at least two distributions. In practice, the <code>test.dispRity</code> function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the <code>comparisons</code> argument is set to <code>pairwise</code>, <code>referential</code> or <code>sequential</code>) or a table containing all the distributions (<code>comparisons = all</code>; this should be in the same format as data passed to <code>lm</code> for example).</p>
 </div>
 <div id="disparity-as-a-distribution" class="section level2">
@@ -952,17 +957,17 @@ disparity_centroids_median &lt;-<span class="st"> </span><span class="kw">dispRi
 ## The distributions:
 <span class="kw">summary</span>(disparity_centroids)</code></pre></div>
 <pre><code>##   subsamples  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1        120  5      1.508     1.313 0.690 1.109 1.554 1.843
-## 2         80 19      1.790     1.692 1.373 1.589 1.813 1.942
-## 3         40 15      1.719     1.700 1.321 1.564 1.860 2.053
-## 4          0 10      1.910     1.815 1.390 1.705 1.961 2.096</code></pre>
+## 1        120  6      1.536     1.375 0.864 1.187 1.611 1.886
+## 2         80 22      1.871     1.807 1.481 1.681 1.904 2.075
+## 3         40 15      1.943     1.885 1.529 1.777 1.989 2.097
+## 4          0 10      1.910     1.802 1.463 1.687 1.960 2.095</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The summary of the distributions (as median)
 <span class="kw">summary</span>(disparity_centroids_median)</code></pre></div>
 <pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 1.508     1.354 0.690 0.883 1.475 1.508
-## 2         80 19 1.790     1.690 1.577 1.645 1.734 1.782
-## 3         40 15 1.719     1.696 1.559 1.648 1.755 1.824
-## 4          0 10 1.910     1.818 1.579 1.786 1.860 1.921</code></pre>
+## 1        120  6 1.536     1.313 0.822 1.260 1.464 1.592
+## 2         80 22 1.871     1.803 1.700 1.774 1.830 1.864
+## 3         40 15 1.943     1.887 1.764 1.847 1.928 1.968
+## 4          0 10 1.910     1.814 1.593 1.773 1.844 1.917</code></pre>
 <p>We can see that the summary message for the distribution is slightly different than before. Here <code>summary</code> also displays the observed central tendency (i.e. the central tendency of the measured distributions). Note that, as expected, this central tendency is the same in both metrics!</p>
 <p>Another, maybe more intuitive way, to compare both approaches for measuring disparity is to plot the distributions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical parameters
@@ -980,12 +985,12 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
-## 120 : 80  0.02645751
-## 120 : 40  0.07348469
-## 120 : 0   0.03162278
-## 80 : 40   0.91611371
-## 80 : 0    0.46010984
-## 40 : 0    0.62247224</code></pre>
+## 120 : 80  0.00000000
+## 120 : 40  0.05537319
+## 120 : 0   0.12649111
+## 80 : 40   0.55897558
+## 80 : 0    0.87452867
+## 40 : 0    0.73959979</code></pre>
 <p>In this case, we are looking at the probability of overlap of the distribution of median distances from centroids among each pair of time slices. In other words, we are measuring whether the medians from each bootstrap pseudo-replicate for each time slice overlap. But of course, we might be interested in the actual distribution of the distances from the centroid rather than simply their central tendencies. This can be problematic depending on the research question asked since we are effectively comparing non-independent medians distributions (because of the pseudo-replication).</p>
 <p>One solution, therefore, is to look at the full distribution:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap for the full distributions
@@ -993,25 +998,25 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
-## 120 : 80   0.6565552
-## 120 : 40   0.6767954
-## 120 : 0    0.5410092
-## 80 : 40    0.9355145
-## 80 : 0     0.8571521
-## 40 : 0     0.9303364</code></pre>
+## 120 : 80   0.5876931
+## 120 : 40   0.4929308
+## 120 : 0    0.6023832
+## 80 : 40    0.9466307
+## 80 : 0     0.9461665
+## 40 : 0     0.9418949</code></pre>
 <p>These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps. For example, when comparing the slices 120 and 80, we are effectively comparing the 5 <span class="math inline">\(\times\)</span> 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 <span class="math inline">\(\times\)</span> 100 distances from slice 80. However, this can also be problematic for some specific tests since the <em>n</em> <span class="math inline">\(\times\)</span> 100 distances are also pseudo-replicates and thus are still not independent.</p>
 <p>A second solution is to compare the distributions to each other <em>for each replicate</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Boostrapped probability of overlap for the full distributions
 <span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff, <span class="dt">concatenate =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
-<pre><code>##          bhatt.coeff       2.5%       25%       75%     97.5%
-## 120 : 80   0.2818787 0.00000000 0.1450953 0.4304156 0.6375038
-## 120 : 40   0.3195364 0.00000000 0.2000000 0.4238587 0.7079195
-## 120 : 0    0.2427199 0.00000000 0.1500000 0.3464102 0.5464102
-## 80 : 40    0.6168602 0.34464773 0.5178144 0.7152871 0.8620129
-## 80 : 0     0.4666682 0.04873397 0.3547815 0.6142885 0.7343247
-## 40 : 0     0.5410387 0.19542869 0.4302200 0.6531298 0.8145697</code></pre>
+<pre><code>##          bhatt.coeff      2.5%       25%       75%     97.5%
+## 120 : 80   0.2744178 0.0000000 0.1507557 0.3810388 0.5463043
+## 120 : 40   0.1687997 0.0000000 0.0000000 0.2981424 0.4854356
+## 120 : 0    0.2717451 0.0000000 0.1825742 0.3872983 0.6652158
+## 80 : 40    0.6113891 0.2752409 0.5316275 0.7309501 0.8414439
+## 80 : 0     0.5707989 0.2452170 0.4876771 0.6732360 0.8162527
+## 40 : 0     0.5599584 0.1807321 0.3641941 0.7392429 0.9509206</code></pre>
 <p>These results show the median overlap among pairs of distributions in the first column (<code>bhatt.coeff</code>) and then the distribution of these overlaps among each pair of bootstraps. In other words, when two distributions are compared, they are now compared for each bootstrap pseudo-replicate, thus effectively creating a distribution of probabilities of overlap. For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50% of the pseudo-replicates. Note that the quantiles and central tendencies can be modified via the <code>conc.quantiles</code> option.</p>
 
 </div>

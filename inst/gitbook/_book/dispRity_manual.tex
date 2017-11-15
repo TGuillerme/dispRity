@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-11-13}
+  \date{2017-11-15}
 
 \usepackage{booktabs}
 
@@ -989,25 +989,41 @@ model can be one of the following:
   \texttt{deltran} where the data chosen along the branch is always the
   one of the ancestor
 \item
-  \texttt{punctuated} where the data chosen along the branch is randomly
+  \texttt{random} where the data chosen along the branch is randomly
   chosen between the descendant or the ancestor
 \item
-  \texttt{gradual} where the data chosen along the branch is either the
-  descendant or the ancestor depending on branch length
+  \texttt{proximity} where the data chosen along the branch is either
+  the descendant or the ancestor depending on branch length
+\item
+  \texttt{punctuated} where the data chosen along the branch is both the
+  descendant and the ancestor with an even probability
+\item
+  \texttt{gradual} where the data chosen along the branch is both the
+  descendant and the ancestor with a probability depending on branch
+  length
 \end{itemize}
+
+\begin{quote}
+Note that the four first models are ``fixed'': the selected data is
+always either the one of the descendant or the ancestor. The two last
+models are ``probabilistic'': the data from both the descendant and the
+ancestor is used with an associate probability. These later models
+perform better when bootstrapped, effectively approximating the
+``intermediate'' state between and the ancestor and the descendants.
+\end{quote}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Generating four time slices every 40 million years under a model of gradual evolution}
+\NormalTok{## Generating four time slices every 40 million years under a model of proximity evolution}
 \KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
-    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"gradual"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsamples for 99 elements:
 ##     120, 80, 40, 0.
 \end{verbatim}
 
@@ -1015,13 +1031,13 @@ model can be one of the following:
 \begin{Highlighting}[]
 \NormalTok{## Generating four time slices automatically}
 \KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree,}
-    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"gradual"}\NormalTok{, }\DataTypeTok{time =} \DecValTok{4}\NormalTok{, }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
+    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \DecValTok{4}\NormalTok{, }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsamples for 99 elements:
 ##     133.51104, 89.00736, 44.50368, 0.
 \end{verbatim}
 
@@ -1211,7 +1227,7 @@ function.
 \begin{Highlighting}[]
 \NormalTok{## Creating time slice subsamples}
 \NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
-                               \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"gradual"}\NormalTok{, }
+                               \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }
                                \DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
                                \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 
@@ -1222,7 +1238,7 @@ function.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
@@ -1298,7 +1314,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -0.3227241
+## [1] 0.3873238
 \end{verbatim}
 
 \begin{Shaded}
@@ -1308,7 +1324,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -0.2690165
+## [1] 0.8189937
 \end{verbatim}
 
 Any summary metric such as mean or median are good examples of
@@ -1332,7 +1348,7 @@ A dimension-level 2 function will decompose a \texttt{matrix} into a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790
+## [1] -8.0595618 -0.5106728 -1.3381023  0.1982694
 \end{verbatim}
 
 Several dimension-level 2 functions are implemented in \texttt{dispRity}
@@ -1355,10 +1371,10 @@ need to match the the input matrix:
 \end{Shaded}
 
 \begin{verbatim}
-##          [,1]      [,2]      [,3]
-## [1,] 1.916420 1.9501955 0.2907060
-## [2,] 1.950196 3.2948635 0.3958234
-## [3,] 0.290706 0.3958234 0.6704976
+##            [,1]      [,2]       [,3]
+## [1,]  0.7722329 -1.232395  0.5044684
+## [2,] -1.2323952  5.258134 -2.5675598
+## [3,]  0.5044684 -2.567560  1.8322537
 \end{verbatim}
 
 \begin{Shaded}
@@ -1370,10 +1386,10 @@ need to match the the input matrix:
 
 \begin{verbatim}
 ##          1        2        3        4
-## 1 0.000000 5.140790 4.005068 3.120827
-## 2 5.140790 0.000000 2.179318 2.982267
-## 3 4.005068 2.179318 0.000000 2.174896
-## 4 3.120827 2.982267 2.174896 0.000000
+## 1 0.000000 5.096201 5.831904 4.944653
+## 2 5.096201 0.000000 2.058924 1.534373
+## 3 5.831904 2.058924 0.000000 1.823741
+## 4 4.944653 1.534373 1.823741 0.000000
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{make.metric}}{make.metric}}\label{make.metric}
@@ -1944,7 +1960,7 @@ disparity calculations.
 
 \NormalTok{## Creating time slice subsamples}
 \NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
-    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"gradual"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \NormalTok{## Bootstrapping the time slice subsamples}
 \NormalTok{boot_time_slices <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(time_slices, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{)}
@@ -1973,10 +1989,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 2.823     2.341 1.376 1.964 2.582 2.823
-## 2         80 19 3.233     3.064 2.790 2.957 3.152 3.224
-## 3         40 15 3.421     3.197 2.771 3.034 3.313 3.506
-## 4          0 10 4.055     3.664 3.282 3.565 3.788 3.924
+## 1        120  6 2.899     2.399 1.749 2.202 2.642 2.794
+## 2         80 22 3.558     3.414 3.127 3.314 3.463 3.557
+## 3         40 15 4.032     3.764 3.569 3.694 3.842 3.954
+## 4          0 10 4.055     3.661 3.282 3.564 3.771 3.927
 \end{verbatim}
 
 Information about the number of elements in each subsample and the
@@ -2027,10 +2043,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.sd    6%   94%
-## 1        120  5 2.823 0.404 1.658 2.672
-## 2         80 19 3.233 0.121 2.841 3.203
-## 3         40 15 3.421 0.201 2.886 3.452
-## 4          0 10 4.055 0.176 3.423 3.889
+## 1        120  6 2.899 0.293 1.917 2.762
+## 2         80 22 3.558 0.113 3.208 3.542
+## 3         40 15 4.032 0.109 3.612 3.918
+## 4          0 10 4.055 0.169 3.387 3.882
 \end{verbatim}
 
 \begin{Shaded}
@@ -2042,7 +2058,7 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (gradual) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: c(sum, variances).
@@ -2050,10 +2066,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsamples  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1        120  5 2.82292   2.34070 1.37637 1.96358 2.58235 2.82292
-## 2         80 19 3.23312   3.06388 2.78953 2.95651 3.15168 3.22359
-## 3         40 15 3.42091   3.19699 2.77094 3.03428 3.31260 3.50645
-## 4          0 10 4.05457   3.66433 3.28211 3.56532 3.78844 3.92372
+## 1        120  6 2.89926   2.39864 1.74855 2.20230 2.64153 2.79428
+## 2         80 22 3.55782   3.41432 3.12737 3.31353 3.46313 3.55661
+## 3         40 15 4.03191   3.76393 3.56890 3.69427 3.84171 3.95368
+## 4          0 10 4.05457   3.66131 3.28211 3.56431 3.77130 3.92706
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2367,15 +2383,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##          statistic
-## 120 : 80        30
-## 80 : 40       2683
-## 40 : 0         333
+## 120 : 80         0
+## 80 : 40         74
+## 40 : 0        7076
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 1.878222e-33
-## 80 : 40  4.538271e-08
-## 40 : 0   1.224822e-29
+## 120 : 80 7.673885e-34
+## 80 : 40  6.986470e-33
+## 40 : 0   1.185611e-06
 \end{verbatim}
 
 \begin{Shaded}
@@ -2395,7 +2411,7 @@ Here we are using the variables generated in the
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.3961442
+## 80 - 40 : 40 - 0     0.4800631
 \end{verbatim}
 
 It is also possible to apply some more \emph{complex} tests that have
@@ -2424,7 +2440,7 @@ The results can then be analysed as usual using the associated
 ## 
 ## Coefficients:
 ##   (Intercept)  subsamples120   subsamples40   subsamples80  
-##        3.6607        -1.4176        -0.4820        -0.6138
+##        3.6517        -1.2627         0.1145        -0.2634
 \end{verbatim}
 
 \begin{Shaded}
@@ -2452,20 +2468,20 @@ The results can then be analysed as usual using the associated
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.32553 -0.12305  0.02008  0.14801  0.59102 
+## -0.91282 -0.08285  0.00993  0.10745  0.56989 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)    3.66072    0.02497  146.60   <2e-16 ***
-## subsamples120 -1.41761    0.03531  -40.14   <2e-16 ***
-## subsamples40  -0.48195    0.03531  -13.65   <2e-16 ***
-## subsamples80  -0.61382    0.03531  -17.38   <2e-16 ***
+## (Intercept)    3.65169    0.01865 195.810  < 2e-16 ***
+## subsamples120 -1.26273    0.02637 -47.878  < 2e-16 ***
+## subsamples40   0.11452    0.02637   4.342 1.79e-05 ***
+## subsamples80  -0.26339    0.02637  -9.987  < 2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2497 on 396 degrees of freedom
-## Multiple R-squared:  0.808,  Adjusted R-squared:  0.8066 
-## F-statistic: 555.6 on 3 and 396 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.1865 on 396 degrees of freedom
+## Multiple R-squared:  0.8954, Adjusted R-squared:  0.8946 
+## F-statistic:  1130 on 3 and 396 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 Of course, due to the modular design of the package, tests can always be
@@ -2527,10 +2543,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsamples  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1        120  5      1.508     1.313 0.690 1.109 1.554 1.843
-## 2         80 19      1.790     1.692 1.373 1.589 1.813 1.942
-## 3         40 15      1.719     1.700 1.321 1.564 1.860 2.053
-## 4          0 10      1.910     1.815 1.390 1.705 1.961 2.096
+## 1        120  6      1.536     1.375 0.864 1.187 1.611 1.886
+## 2         80 22      1.871     1.807 1.481 1.681 1.904 2.075
+## 3         40 15      1.943     1.885 1.529 1.777 1.989 2.097
+## 4          0 10      1.910     1.802 1.463 1.687 1.960 2.095
 \end{verbatim}
 
 \begin{Shaded}
@@ -2542,10 +2558,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  5 1.508     1.354 0.690 0.883 1.475 1.508
-## 2         80 19 1.790     1.690 1.577 1.645 1.734 1.782
-## 3         40 15 1.719     1.696 1.559 1.648 1.755 1.824
-## 4          0 10 1.910     1.818 1.579 1.786 1.860 1.921
+## 1        120  6 1.536     1.313 0.822 1.260 1.464 1.592
+## 2         80 22 1.871     1.803 1.700 1.774 1.830 1.864
+## 3         40 15 1.943     1.887 1.764 1.847 1.928 1.968
+## 4          0 10 1.910     1.814 1.593 1.773 1.844 1.917
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -2595,12 +2611,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80  0.02645751
-## 120 : 40  0.07348469
-## 120 : 0   0.03162278
-## 80 : 40   0.91611371
-## 80 : 0    0.46010984
-## 40 : 0    0.62247224
+## 120 : 80  0.00000000
+## 120 : 40  0.05537319
+## 120 : 0   0.12649111
+## 80 : 40   0.55897558
+## 80 : 0    0.87452867
+## 40 : 0    0.73959979
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -2629,12 +2645,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.6565552
-## 120 : 40   0.6767954
-## 120 : 0    0.5410092
-## 80 : 40    0.9355145
-## 80 : 0     0.8571521
-## 40 : 0     0.9303364
+## 120 : 80   0.5876931
+## 120 : 40   0.4929308
+## 120 : 0    0.6023832
+## 80 : 40    0.9466307
+## 80 : 0     0.9461665
+## 40 : 0     0.9418949
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -2662,13 +2678,13 @@ A second solution is to compare the distributions to each other
 \end{verbatim}
 
 \begin{verbatim}
-##          bhatt.coeff       2.5%       25%       75%     97.5%
-## 120 : 80   0.2818787 0.00000000 0.1450953 0.4304156 0.6375038
-## 120 : 40   0.3195364 0.00000000 0.2000000 0.4238587 0.7079195
-## 120 : 0    0.2427199 0.00000000 0.1500000 0.3464102 0.5464102
-## 80 : 40    0.6168602 0.34464773 0.5178144 0.7152871 0.8620129
-## 80 : 0     0.4666682 0.04873397 0.3547815 0.6142885 0.7343247
-## 40 : 0     0.5410387 0.19542869 0.4302200 0.6531298 0.8145697
+##          bhatt.coeff      2.5%       25%       75%     97.5%
+## 120 : 80   0.2744178 0.0000000 0.1507557 0.3810388 0.5463043
+## 120 : 40   0.1687997 0.0000000 0.0000000 0.2981424 0.4854356
+## 120 : 0    0.2717451 0.0000000 0.1825742 0.3872983 0.6652158
+## 80 : 40    0.6113891 0.2752409 0.5316275 0.7309501 0.8414439
+## 80 : 0     0.5707989 0.2452170 0.4876771 0.6732360 0.8162527
+## 40 : 0     0.5599584 0.1807321 0.3641941 0.7392429 0.9509206
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -3555,9 +3571,10 @@ content. It is a \texttt{list} that can contain the following:
   \texttt{\$call\$subsamples}: a vector of \texttt{character} with
   information on the subsamples type (either \texttt{"continuous"},
   \texttt{"discrete"} or \texttt{"custom"}) and their eventual model
-  (\texttt{"acctran"}, \texttt{"deltran"}, \texttt{"punctuated"},
-  \texttt{"gradual"}). This element generated only once via
-  \texttt{time.subsamples()} and \texttt{custom.subsamples()}.
+  (\texttt{"acctran"}, \texttt{"deltran"}, \texttt{"random"},
+  \texttt{"proximity"}, \texttt{"punctuated"}, \texttt{"gradual"}). This
+  element generated only once via \texttt{time.subsamples()} and
+  \texttt{custom.subsamples()}.
 \item
   \texttt{\$call\$dimensions}: either a single \texttt{numeric} value
   indicating how many dimensions to use or a vector of \texttt{numeric}
