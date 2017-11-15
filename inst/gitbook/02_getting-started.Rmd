@@ -62,7 +62,7 @@ geomorph.ordination(procrustes)[1:5,1:5]
 
 Options for the ordination (from `?prcomp`) can be directly passed to this function to perform customised ordinations.
 Additionally you can give the function a `geomorph.data.frame` object.
-If the latter contains sorting information (i.e. factors), they can be directly used to make a customised `dispRity` object [customised `dispRity` object](#customised-subsamples)!
+If the latter contains sorting information (i.e. factors), they can be directly used to make a customised `dispRity` object [customised `dispRity` object](#customised-subsets)!
 
 ```{r}
 ## Using a geomorph.data.frame
@@ -126,7 +126,7 @@ For example, which metric should you use?
 How many bootstraps do you require?
 What model of evolution is most appropriate if you are time slicing?
 Should you rarefy the data?
-See [`time.subsamples`](#time-slicing), [`custom.subsamples`](#customised-subsamples), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
+See [`time.subsets`](#time-slicing), [`custom.subsets`](#customised-subsets), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
 Note that any of these default arguments can be changed within the `disparity.through.time` or `disparity.per.group` functions.
 
 ### Example data
@@ -168,7 +168,7 @@ For a disparity through time analysis, you will need:
   
   * An ordinated matrix (we covered that above)
   * A phylogenetic tree: this must be a `phylo` object (from the `ape` package) and needs a `root.time` element. To give your tree a root time (i.e. an age for the root), you can simply do\\ `my_tree$root.time <- my_age`.
-  * The required number of time subsamples (here `time = 3`)
+  * The required number of time subsets (here `time = 3`)
   * Your favourite disparity metric (here the sum of variances)
 
 Using the Beck and Lee (2014) data described [above](#example-data):
@@ -187,7 +187,7 @@ When displayed, these `dispRity` objects provide us with information on the oper
 disparity_data
 ```
 
-We asked for three subsamples (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.
+We asked for three subsets (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.
 
 We can now summarise or plot the `disparity_data` object, or perform statistical tests on it (e.g. a simple `lm`): 
 

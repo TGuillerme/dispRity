@@ -262,13 +262,13 @@ and the package description.
   The dimensions can be referred to as axes of variation, or principal
   components, for ordinated spaces obtained from a PCA for example.
 \item
-  \textbf{Subsamples}. Subsamples of the multidimensional space. A
-  subsample (or subsamples) contains the same number of dimensions as
-  the space but may contain a smaller subset of elements. For example,
-  if our space is composed of birds and mammals (the elements) and 50
-  principal components of variation (the dimensions), we can create two
-  subsamples containing just mammals or birds, but with the same 50
-  dimensions, to compare disparity in the two clades.
+  \textbf{Subsets}. Subsets of the multidimensional space. A subset (or
+  subsets) contains the same number of dimensions as the space but may
+  contain a smaller subset of elements. For example, if our space is
+  composed of birds and mammals (the elements) and 50 principal
+  components of variation (the dimensions), we can create two subsets
+  containing just mammals or birds, but with the same 50 dimensions, to
+  compare disparity in the two clades.
 \end{itemize}
 
 \chapter{\texorpdfstring{Getting started with
@@ -350,7 +350,7 @@ passed to this function to perform customised ordinations. Additionally
 you can give the function a \texttt{geomorph.data.frame} object. If the
 latter contains sorting information (i.e.~factors), they can be directly
 used to make a customised \texttt{dispRity} object
-\protect\hyperlink{customised-subsamples}{customised \texttt{dispRity}
+\protect\hyperlink{customised-subsets}{customised \texttt{dispRity}
 object}!
 
 \begin{Shaded}
@@ -366,7 +366,7 @@ object}!
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 customised subsamples for 40 elements:
+## 4 customised subsets for 40 elements:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.
 \end{verbatim}
 
@@ -497,8 +497,8 @@ analysis you should consider the \textbf{best parameters for your
 question and data}. For example, which metric should you use? How many
 bootstraps do you require? What model of evolution is most appropriate
 if you are time slicing? Should you rarefy the data? See
-\protect\hyperlink{time-slicing}{\texttt{time.subsamples}},
-\protect\hyperlink{customised-subsamples}{\texttt{custom.subsamples}},
+\protect\hyperlink{time-slicing}{\texttt{time.subsets}},
+\protect\hyperlink{customised-subsets}{\texttt{custom.subsets}},
 \protect\hyperlink{bootstraps-and-rarefactions}{\texttt{boot.matrix}}
 and \protect\hyperlink{disparity-metrics}{\texttt{dispRity.metric}} for
 more details of the defaults used in each of these functions. Note that
@@ -609,7 +609,7 @@ For a disparity through time analysis, you will need:
   do\textbackslash{}
   \texttt{my\_tree\$root.time\ \textless{}-\ my\_age}.
 \item
-  The required number of time subsamples (here \texttt{time\ =\ 3})
+  The required number of time subsets (here \texttt{time\ =\ 3})
 \item
   Your favourite disparity metric (here the sum of variances)
 \end{itemize}
@@ -639,15 +639,15 @@ operations done to the matrix:
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 discrete time subsamples for 50 elements with 48 dimensions:
+## 3 discrete time subsets for 50 elements with 48 dimensions:
 ##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: metric.
 \end{verbatim}
 
-We asked for three subsamples (evenly spread across the age of the
-tree), the data was bootstrapped 100 times (default) and the metric used
-was the sum of variances.
+We asked for three subsets (evenly spread across the age of the tree),
+the data was bootstrapped 100 times (default) and the metric used was
+the sum of variances.
 
 We can now summarise or plot the \texttt{disparity\_data} object, or
 perform statistical tests on it (e.g.~a simple \texttt{lm}):
@@ -660,7 +660,7 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 \end{Shaded}
 
 \begin{verbatim}
-##             subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+##                subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 133.51104 - 89.00736  5 1.575     1.305 0.729 1.118 1.420 1.509
 ## 2  89.00736 - 44.50368 29 1.922     1.867 1.775 1.830 1.889 1.922
 ## 3         44.50368 - 0 16 1.990     1.871 1.716 1.831 1.914 1.942
@@ -696,17 +696,17 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 \begin{verbatim}
 ## 
 ## Call:
-## test(formula = data ~ subsamples, data = data)
+## test(formula = data ~ subsets, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
 ## -0.56623 -0.04160  0.01049  0.05507  0.31886 
 ## 
 ## Coefficients:
-##                               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)                    1.25647    0.01270   98.97   <2e-16 ***
-## subsamples44.50368 - 0         0.60863    0.01795   33.90   <2e-16 ***
-## subsamples89.00736 - 44.50368  0.60169    0.01795   33.51   <2e-16 ***
+##                            Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                 1.25647    0.01270   98.97   <2e-16 ***
+## subsets44.50368 - 0         0.60863    0.01795   33.90   <2e-16 ***
+## subsets89.00736 - 44.50368  0.60169    0.01795   33.51   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -775,7 +775,7 @@ test).
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 2 customised subsamples for 50 elements with 48 dimensions:
+## 2 customised subsets for 50 elements with 48 dimensions:
 ##     crown, stem.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: metric.
@@ -789,9 +789,9 @@ test).
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1      crown 30 1.995     1.936 1.866 1.914 1.947 1.971
-## 2       stem 20 1.715     1.632 1.541 1.604 1.667 1.695
+##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1   crown 30 1.995     1.936 1.866 1.914 1.947 1.971
+## 2    stem 20 1.715     1.632 1.541 1.604 1.667 1.695
 \end{verbatim}
 
 \begin{Shaded}
@@ -850,22 +850,22 @@ Before each section, make sure you loaded the Beck and Lee (2014) data
 
 \hypertarget{time-slicing}{\section{Time slicing}\label{time-slicing}}
 
-The function \texttt{time.subsamples} allows users to divide the matrix
-into different time subsamples or slices given a dated phylogeny that
-contains all the elements (i.e.~taxa) from the matrix. Each subsample
+The function \texttt{time.subsets} allows users to divide the matrix
+into different time subsets or slices given a dated phylogeny that
+contains all the elements (i.e.~taxa) from the matrix. Each subset
 generated by this function will then contain all the elements present at
 a specific point in time or during a specific period in time.
 
-Two types of time subsamples can be performed by using the
-\texttt{method} option:
+Two types of time subsets can be performed by using the \texttt{method}
+option:
 
 \begin{itemize}
 \tightlist
 \item
-  Discrete time subsamples (or time-binning) using
+  Discrete time subsets (or time-binning) using
   \texttt{method\ =\ discrete}
 \item
-  Continuous time subsamples (or time-slicing) using
+  Continuous time subsets (or time-slicing) using
   \texttt{method\ =\ continuous}
 \end{itemize}
 
@@ -894,14 +894,14 @@ Here is an example for \texttt{method\ =\ discrete}:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Generating three time bins containing the taxa present every 40 Ma}
-\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
+\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
                 \DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 discrete time subsamples for 50 elements:
+## 3 discrete time subsets for 50 elements:
 ##     120 - 80, 80 - 40, 40 - 0.
 \end{verbatim}
 
@@ -911,14 +911,14 @@ function that we want three time-bins as follow:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Automatically generate three equal length bins:}
-\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
+\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
                 \DataTypeTok{time =} \DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 discrete time subsamples for 50 elements:
+## 3 discrete time subsets for 50 elements:
 ##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
 \end{verbatim}
 
@@ -951,14 +951,14 @@ last occurrence age:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Generating time bins including taxa that might span between them}
-\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
+\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }\DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{,}
                 \DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 discrete time subsamples for 50 elements:
+## 3 discrete time subsets for 50 elements:
 ##     120 - 80, 80 - 40, 40 - 0.
 \end{verbatim}
 
@@ -1015,7 +1015,7 @@ perform better when bootstrapped, effectively approximating the
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Generating four time slices every 40 million years under a model of proximity evolution}
-\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
+\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
     \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \end{Highlighting}
@@ -1023,29 +1023,29 @@ perform better when bootstrapped, effectively approximating the
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (proximity) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsets for 99 elements:
 ##     120, 80, 40, 0.
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Generating four time slices automatically}
-\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree,}
+\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree,}
     \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \DecValTok{4}\NormalTok{, }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (proximity) time subsamples for 99 elements:
+## 4 continuous (proximity) time subsets for 99 elements:
 ##     133.51104, 89.00736, 44.50368, 0.
 \end{verbatim}
 
-\hypertarget{customised-subsamples}{\section{Customised
-subsamples}\label{customised-subsamples}}
+\hypertarget{customised-subsets}{\section{Customised
+subsets}\label{customised-subsets}}
 
 Another way of separating elements into different categories is to use
-customised subsamples as briefly explained
+customised subsets as briefly explained
 \protect\hyperlink{disparity-among-groups}{above}. This function simply
 takes the list of elements to put in each group (whether they are the
 actual element names or their position in the matrix).
@@ -1057,13 +1057,13 @@ actual element names or their position in the matrix).
                       \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{))}
 
 \NormalTok{## Separating the dataset into two different groups}
-\KeywordTok{custom.subsamples}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ mammal_groups)}
+\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ mammal_groups)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 2 customised subsamples for 50 elements:
+## 2 customised subsets for 50 elements:
 ##     crown, stem.
 \end{verbatim}
 
@@ -1140,8 +1140,8 @@ only \emph{n-x} at each bootstrap replicate (where \emph{x} is the
 number of elements not sampled). The default argument is \texttt{FALSE}
 but it can be set to \texttt{TRUE} to fully rarefy the data (i.e.~remove
 \emph{x} elements for the number of pseudo-replicates, where \emph{x}
-varies from the maximum number of elements present in each subsample to
-a minimum of three elements). It can also be set to one or more
+varies from the maximum number of elements present in each subset to a
+minimum of three elements). It can also be set to one or more
 \texttt{numeric} values to only rarefy to the corresponding number of
 elements.
 
@@ -1201,14 +1201,13 @@ When missing, all dimensions from the ordinated matrix are used.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
 
-Of course, one could directly supply the subsamples generated above
-(using \texttt{time.subsamples} or \texttt{custom.subsamples}) to this
-function.
+Of course, one could directly supply the subsets generated above (using
+\texttt{time.subsets} or \texttt{custom.subsets}) to this function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Creating subsamples of crown and stem mammals}
-\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{custom.subsamples}\NormalTok{(BeckLee_mat50,}
+\NormalTok{## Creating subsets of crown and stem mammals}
+\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50,}
                                 \DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\StringTok{"crown"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{19}\OperatorTok{:}\DecValTok{41}\NormalTok{, }\DecValTok{45}\OperatorTok{:}\DecValTok{50}\NormalTok{), }
                                              \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{)))}
 \NormalTok{## Bootstrapping and rarefying these groups}
@@ -1218,27 +1217,27 @@ function.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 2 customised subsamples for 50 elements with 48 dimensions:
+## 2 customised subsets for 50 elements with 48 dimensions:
 ##     crown, stem.
 ## Data was bootstrapped 200 times (method:"full") and fully rarefied.
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Creating time slice subsamples}
-\NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
+\NormalTok{## Creating time slice subsets}
+\NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
                                \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }
                                \DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
                                \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
 
-\NormalTok{## Bootstrapping the time slice subsamples}
+\NormalTok{## Bootstrapping the time slice subsets}
 \KeywordTok{boot.matrix}\NormalTok{(time_slices, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsets for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
@@ -1491,8 +1490,8 @@ the \texttt{dispRity} function as follows:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 50 0.201
+##   subsets  n   obs
+## 1       1 50 0.201
 \end{verbatim}
 
 \begin{Shaded}
@@ -1504,8 +1503,8 @@ the \texttt{dispRity} function as follows:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 50 0.028
+##   subsets  n   obs
+## 1       1 50 0.028
 \end{verbatim}
 
 \begin{Shaded}
@@ -1517,8 +1516,8 @@ the \texttt{dispRity} function as follows:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n          obs
-## 1          1 50 0.0001025857
+##   subsets  n          obs
+## 1       1 50 0.0001025857
 \end{verbatim}
 
 Note that the order of each function in the metric argument does not
@@ -1544,8 +1543,8 @@ the data in decreasing order (dimension-level 3 \textgreater{} 2
 \end{Shaded}
 
 \begin{verbatim}
-##      subsamples    n  obs
-## [1,]       TRUE TRUE TRUE
+##      subsets    n  obs
+## [1,]    TRUE TRUE TRUE
 \end{verbatim}
 
 In these examples, we considered disparity to be a single value. For
@@ -1702,12 +1701,12 @@ ordinated space occupied:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 257.8
+##   subsets  n   obs
+## 1       1 10 257.8
 \end{verbatim}
 
 \begin{quote}
-Because there is only one subsample (i.e.~one matrix) in the dispRity
+Because there is only one subset (i.e.~one matrix) in the dispRity
 object, this operation is the equivalent of
 \texttt{ellipse.volume(dummy\_space)} (with rounding).
 \end{quote}
@@ -1720,8 +1719,8 @@ object, this operation is the equivalent of
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 11.91
+##   subsets  n   obs
+## 1       1 10 11.91
 \end{verbatim}
 
 \begin{Shaded}
@@ -1732,8 +1731,8 @@ object, this operation is the equivalent of
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 1.031
+##   subsets  n   obs
+## 1       1 10 1.031
 \end{verbatim}
 
 The convex hull functions make a (good) estimation of the
@@ -1776,8 +1775,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median  2.5%   25%   75% 97.5%
-## 1          1 10      2.736 1.673 2.431 2.908 3.645
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      2.736 1.673 2.431 2.908 3.645
 \end{verbatim}
 
 \begin{Shaded}
@@ -1788,8 +1787,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 13.39
+##   subsets  n   obs
+## 1       1 10 13.39
 \end{verbatim}
 
 \begin{Shaded}
@@ -1799,8 +1798,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 114.5
+##   subsets  n   obs
+## 1       1 10 114.5
 \end{verbatim}
 
 \begin{Shaded}
@@ -1822,8 +1821,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median 2.5%   25%   75% 97.5%
-## 1          1 10      0.654 0.38 0.609 0.913 1.121
+##   subsets  n obs.median 2.5%   25%   75% 97.5%
+## 1       1 10      0.654 0.38 0.609 0.913 1.121
 \end{verbatim}
 
 \begin{Shaded}
@@ -1834,8 +1833,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 3.675
+##   subsets  n   obs
+## 1       1 10 3.675
 \end{verbatim}
 
 \begin{Shaded}
@@ -1845,8 +1844,8 @@ and measure the range/variance of each dimension:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 0.148
+##   subsets  n   obs
+## 1       1 10 0.148
 \end{verbatim}
 
 The \texttt{diagonal} function measures the multidimensional diagonal of
@@ -1861,8 +1860,8 @@ five dimensional space):
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 3.659
+##   subsets  n   obs
+## 1       1 10 3.659
 \end{verbatim}
 
 \begin{quote}
@@ -1885,8 +1884,8 @@ their centroid (centre point):
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median  2.5%   25%   75% 97.5%
-## 1          1 10      1.435 0.788 1.267 1.993 3.167
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      1.435 0.788 1.267 1.993 3.167
 \end{verbatim}
 
 \begin{Shaded}
@@ -1897,8 +1896,8 @@ their centroid (centre point):
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs
-## 1          1 10 1.435
+##   subsets  n   obs
+## 1       1 10 1.435
 \end{verbatim}
 
 It is however possible to fix the coordinates of the centroid to a
@@ -1913,8 +1912,8 @@ number of dimensions:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median  2.5% 25%   75% 97.5%
-## 1          1 10      1.487 0.785 1.2 2.044 3.176
+##   subsets  n obs.median  2.5% 25%   75% 97.5%
+## 1       1 10      1.487 0.785 1.2 2.044 3.176
 \end{verbatim}
 
 \begin{Shaded}
@@ -1925,8 +1924,8 @@ number of dimensions:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median  2.5%   25%   75% 97.5%
-## 1          1 10      5.489 4.293 5.032 6.155 6.957
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      5.489 4.293 5.032 6.155 6.957
 \end{verbatim}
 
 \section{Summarising dispRity data
@@ -1950,7 +1949,7 @@ disparity calculations.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Example data from previous sections}
-\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{custom.subsamples}\NormalTok{(BeckLee_mat50,}
+\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50,}
                                 \DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\StringTok{"crown"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{19}\OperatorTok{:}\DecValTok{41}\NormalTok{, }\DecValTok{45}\OperatorTok{:}\DecValTok{50}\NormalTok{), }
                                              \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{)))}
 \NormalTok{## Bootstrapping and rarefying these groups}
@@ -1958,20 +1957,20 @@ disparity calculations.
 \NormalTok{## Calculate disparity}
 \NormalTok{disparity_crown_stem <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(boot_crown_stem, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
 
-\NormalTok{## Creating time slice subsamples}
-\NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
+\NormalTok{## Creating time slice subsets}
+\NormalTok{time_slices <-}\StringTok{ }\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
     \DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{),}
     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
-\NormalTok{## Bootstrapping the time slice subsamples}
+\NormalTok{## Bootstrapping the time slice subsets}
 \NormalTok{boot_time_slices <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(time_slices, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{)}
 \NormalTok{## Calculate disparity}
 \NormalTok{disparity_time_slices <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(boot_time_slices, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
 
-\NormalTok{## Creating time bin subsamples}
-\NormalTok{time_bins <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
+\NormalTok{## Creating time bin subsets}
+\NormalTok{time_bins <-}\StringTok{ }\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree, }
     \DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages,}
     \DataTypeTok{inc.nodes =} \OtherTok{TRUE}\NormalTok{)}
-\NormalTok{## Bootstrapping the time bin subsamples}
+\NormalTok{## Bootstrapping the time bin subsets}
 \NormalTok{boot_time_bins <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(time_bins, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{)}
 \NormalTok{## Calculate disparity}
 \NormalTok{disparity_time_bins <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(boot_time_bins, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
@@ -1988,15 +1987,15 @@ These objects are easy to summarise as follows:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  6 2.899     2.399 1.749 2.202 2.642 2.794
-## 2         80 22 3.558     3.414 3.127 3.314 3.463 3.557
-## 3         40 15 4.032     3.764 3.569 3.694 3.842 3.954
-## 4          0 10 4.055     3.661 3.282 3.564 3.771 3.927
+##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1     120  6 2.899     2.399 1.749 2.202 2.642 2.794
+## 2      80 22 3.558     3.414 3.127 3.314 3.463 3.557
+## 3      40 15 4.032     3.764 3.569 3.694 3.842 3.954
+## 4       0 10 4.055     3.661 3.282 3.564 3.771 3.927
 \end{verbatim}
 
-Information about the number of elements in each subsample and the
-observed (i.e.~non-bootstrapped) disparity are also calculated. This is
+Information about the number of elements in each subset and the observed
+(i.e.~non-bootstrapped) disparity are also calculated. This is
 specifically handy when rarefying the data for example:
 
 \begin{Shaded}
@@ -2006,13 +2005,13 @@ specifically handy when rarefying the data for example:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1      crown 30 1.995     1.930 1.866 1.909 1.950 1.970
-## 2      crown 29    NA     1.932 1.871 1.915 1.953 1.974
-## 3      crown 28    NA     1.926 1.852 1.903 1.942 1.978
-## 4      crown 27    NA     1.935 1.860 1.908 1.954 1.982
-## 5      crown 26    NA     1.931 1.859 1.908 1.953 1.977
-## 6      crown 25    NA     1.933 1.855 1.909 1.954 1.978
+##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1   crown 30 1.995     1.930 1.866 1.909 1.950 1.970
+## 2   crown 29    NA     1.932 1.871 1.915 1.953 1.974
+## 3   crown 28    NA     1.926 1.852 1.903 1.942 1.978
+## 4   crown 27    NA     1.935 1.860 1.908 1.954 1.982
+## 5   crown 26    NA     1.931 1.859 1.908 1.953 1.977
+## 6   crown 25    NA     1.933 1.855 1.909 1.954 1.978
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2042,11 +2041,11 @@ These options can easily be changed from the defaults as follows:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.sd    6%   94%
-## 1        120  6 2.899 0.293 1.917 2.762
-## 2         80 22 3.558 0.113 3.208 3.542
-## 3         40 15 4.032 0.109 3.612 3.918
-## 4          0 10 4.055 0.169 3.387 3.882
+##   subsets  n   obs bs.sd    6%   94%
+## 1     120  6 2.899 0.293 1.917 2.762
+## 2      80 22 3.558 0.113 3.208 3.542
+## 3      40 15 4.032 0.109 3.612 3.918
+## 4       0 10 4.055 0.169 3.387 3.882
 \end{verbatim}
 
 \begin{Shaded}
@@ -2058,18 +2057,18 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 4 continuous (proximity) time subsamples for 99 elements with 97 dimensions:
+## 4 continuous (proximity) time subsets for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: c(sum, variances).
 \end{verbatim}
 
 \begin{verbatim}
-##   subsamples  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1        120  6 2.89926   2.39864 1.74855 2.20230 2.64153 2.79428
-## 2         80 22 3.55782   3.41432 3.12737 3.31353 3.46313 3.55661
-## 3         40 15 4.03191   3.76393 3.56890 3.69427 3.84171 3.95368
-## 4          0 10 4.05457   3.66131 3.28211 3.56431 3.77130 3.92706
+##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
+## 1     120  6 2.89926   2.39864 1.74855 2.20230 2.64153 2.79428
+## 2      80 22 3.55782   3.41432 3.12737 3.31353 3.46313 3.55661
+## 3      40 15 4.03191   3.76393 3.56890 3.69427 3.84171 3.95368
+## 4       0 10 4.05457   3.66131 3.28211 3.56431 3.77130 3.92706
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2110,16 +2109,15 @@ The plots can be of four different types:
 
 \begin{quote}
 This argument can be left empty. In this case, the algorithm will
-automatically detect the type of subsamples from the \texttt{dispRity}
+automatically detect the type of subsets from the \texttt{dispRity}
 object and plot accordingly.
 \end{quote}
 
-It is also possible to display the number of elements in each subsample
-(as a horizontal dotted line) using the option
-\texttt{elements\ =\ TRUE}. Additionally, when the data is rarefied, one
-can indicate which level of rarefaction to display (i.e.~only display
-the results for a certain number of elements) by using the
-\texttt{rarefaction} argument.
+It is also possible to display the number of elements in each subset (as
+a horizontal dotted line) using the option \texttt{elements\ =\ TRUE}.
+Additionally, when the data is rarefied, one can indicate which level of
+rarefaction to display (i.e.~only display the results for a certain
+number of elements) by using the \texttt{rarefaction} argument.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2194,7 +2192,7 @@ central tendency.
 \NormalTok{## Plotting the results with some plot.dispRity arguments}
 \KeywordTok{plot}\NormalTok{(disparity_time_slices, }\DataTypeTok{quantile =} \KeywordTok{c}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{10}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{10}\NormalTok{)),}
     \DataTypeTok{cent.tend =}\NormalTok{ sd, }\DataTypeTok{type =} \StringTok{"c"}\NormalTok{, }\DataTypeTok{elements =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{, }\KeywordTok{rainbow}\NormalTok{(}\DecValTok{10}\NormalTok{)),}
-    \DataTypeTok{ylab =} \KeywordTok{c}\NormalTok{(}\StringTok{"Disparity"}\NormalTok{, }\StringTok{"Diversity"}\NormalTok{), }\DataTypeTok{time.subsamples =} \OtherTok{FALSE}\NormalTok{,}
+    \DataTypeTok{ylab =} \KeywordTok{c}\NormalTok{(}\StringTok{"Disparity"}\NormalTok{, }\StringTok{"Diversity"}\NormalTok{), }\DataTypeTok{time.subsets =} \OtherTok{FALSE}\NormalTok{,}
     \DataTypeTok{xlab =} \StringTok{"Time (in in units from past to present)"}\NormalTok{, }\DataTypeTok{observed =} \OtherTok{TRUE}\NormalTok{,}
     \DataTypeTok{main =} \StringTok{"Many more options..."}\NormalTok{)}
 \end{Highlighting}
@@ -2278,24 +2276,22 @@ applied to the data:
 \begin{itemize}
 \tightlist
 \item
-  \texttt{pairwise} (default): to compare each subsample in a pairwise
+  \texttt{pairwise} (default): to compare each subset in a pairwise
   manner
 \item
-  \texttt{referential}: to compare each subsample to the first subsample
+  \texttt{referential}: to compare each subset to the first subset
 \item
-  \texttt{sequential}: to compare each subsample to the following
-  subsample
+  \texttt{sequential}: to compare each subset to the following subset
 \item
-  \texttt{all}: to compare all the subsamples together (like in analysis
-  of variance)
+  \texttt{all}: to compare all the subsets together (like in analysis of
+  variance)
 \end{itemize}
 
 It is also possible to input a list of pairs of \texttt{numeric} values
-or \texttt{characters} matching the subsample names to create
-personalised tests. Some other tests implemented in \texttt{dispRity}
-such as the \texttt{dispRity::null.test} have a specific way they are
-applied to the data and therefore ignore the \texttt{comparisons}
-argument.
+or \texttt{characters} matching the subset names to create personalised
+tests. Some other tests implemented in \texttt{dispRity} such as the
+\texttt{dispRity::null.test} have a specific way they are applied to the
+data and therefore ignore the \texttt{comparisons} argument.
 
 The \texttt{test} argument can be any statistical or non-statistical
 test to apply to the disparity object. It can be a common statistical
@@ -2436,11 +2432,11 @@ The results can then be analysed as usual using the associated
 \begin{verbatim}
 ## 
 ## Call:
-## test(formula = data ~ subsamples, data = data)
+## test(formula = data ~ subsets, data = data)
 ## 
 ## Coefficients:
-##   (Intercept)  subsamples120   subsamples40   subsamples80  
-##        3.6517        -1.2627         0.1145        -0.2634
+## (Intercept)   subsets120    subsets40    subsets80  
+##      3.6517      -1.2627       0.1145      -0.2634
 \end{verbatim}
 
 \begin{Shaded}
@@ -2464,18 +2460,18 @@ The results can then be analysed as usual using the associated
 \begin{verbatim}
 ## 
 ## Call:
-## test(formula = data ~ subsamples, data = data)
+## test(formula = data ~ subsets, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
 ## -0.91282 -0.08285  0.00993  0.10745  0.56989 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)    3.65169    0.01865 195.810  < 2e-16 ***
-## subsamples120 -1.26273    0.02637 -47.878  < 2e-16 ***
-## subsamples40   0.11452    0.02637   4.342 1.79e-05 ***
-## subsamples80  -0.26339    0.02637  -9.987  < 2e-16 ***
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.65169    0.01865 195.810  < 2e-16 ***
+## subsets120  -1.26273    0.02637 -47.878  < 2e-16 ***
+## subsets40    0.11452    0.02637   4.342 1.79e-05 ***
+## subsets80   -0.26339    0.02637  -9.987  < 2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -2542,11 +2538,11 @@ And we can now compare the differences between these methods:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1        120  6      1.536     1.375 0.864 1.187 1.611 1.886
-## 2         80 22      1.871     1.807 1.481 1.681 1.904 2.075
-## 3         40 15      1.943     1.885 1.529 1.777 1.989 2.097
-## 4          0 10      1.910     1.802 1.463 1.687 1.960 2.095
+##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
+## 1     120  6      1.536     1.375 0.864 1.187 1.611 1.886
+## 2      80 22      1.871     1.807 1.481 1.681 1.904 2.075
+## 3      40 15      1.943     1.885 1.529 1.777 1.989 2.097
+## 4       0 10      1.910     1.802 1.463 1.687 1.960 2.095
 \end{verbatim}
 
 \begin{Shaded}
@@ -2557,11 +2553,11 @@ And we can now compare the differences between these methods:
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1        120  6 1.536     1.313 0.822 1.260 1.464 1.592
-## 2         80 22 1.871     1.803 1.700 1.774 1.830 1.864
-## 3         40 15 1.943     1.887 1.764 1.847 1.928 1.968
-## 4          0 10 1.910     1.814 1.593 1.773 1.844 1.917
+##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1     120  6 1.536     1.313 0.822 1.260 1.464 1.592
+## 2      80 22 1.871     1.803 1.700 1.774 1.830 1.864
+## 3      40 15 1.943     1.887 1.764 1.847 1.928 1.968
+## 4       0 10 1.910     1.814 1.593 1.773 1.844 1.917
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -3310,7 +3306,7 @@ of a \texttt{dispRity} object is detailed
 \end{Shaded}
 
 \begin{verbatim}
-## [1] "matrix"     "call"       "subsamples" "disparity"
+## [1] "matrix"    "call"      "subsets"   "disparity"
 \end{verbatim}
 
 \begin{Shaded}
@@ -3322,7 +3318,7 @@ of a \texttt{dispRity} object is detailed
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 7 continuous (acctran) time subsamples for 99 elements with 97 dimensions:
+## 7 continuous (acctran) time subsets for 99 elements with 97 dimensions:
 ##      90, 80, 70, 60, 50 ...
 ## Data was bootstrapped 100 times (method:"full") and rarefied to 20, 15, 10, 5 elements.
 ## Disparity was calculated as: c(median, centroids).
@@ -3441,7 +3437,7 @@ matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 \begin{Highlighting}[]
 \NormalTok{## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level}
 \NormalTok{## (15 elements) from the second group (80 Mya)}
-\KeywordTok{str}\NormalTok{(}\KeywordTok{matrix.dispRity}\NormalTok{(disparity, }\DataTypeTok{subsamples =} \DecValTok{1}\NormalTok{, }\DataTypeTok{bootstrap =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rarefaction =} \DecValTok{2}\NormalTok{))}
+\KeywordTok{str}\NormalTok{(}\KeywordTok{matrix.dispRity}\NormalTok{(disparity, }\DataTypeTok{subsets =} \DecValTok{1}\NormalTok{, }\DataTypeTok{bootstrap =} \DecValTok{3}\NormalTok{, }\DataTypeTok{rarefaction =} \DecValTok{2}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3452,18 +3448,18 @@ matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 ##   ..$ : NULL
 \end{verbatim}
 
-\subsubsection{\texorpdfstring{\texttt{get.subsamples.dispRity}}{get.subsamples.dispRity}}\label{get.subsamples.disprity}
+\subsubsection{\texorpdfstring{\texttt{get.subsets.dispRity}}{get.subsets.dispRity}}\label{get.subsets.disprity}
 
 This function creates a dispRity object that contains only elements from
-one specific subsamples.
+one specific subsets.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Extracting all the data for the crown mammals}
-\NormalTok{(crown_mammals <-}\StringTok{ }\KeywordTok{get.subsamples.dispRity}\NormalTok{(disp_crown_stemBS, }\StringTok{"Group.crown"}\NormalTok{))}
+\NormalTok{(crown_mammals <-}\StringTok{ }\KeywordTok{get.subsets.dispRity}\NormalTok{(disp_crown_stemBS, }\StringTok{"Group.crown"}\NormalTok{))}
 
-\NormalTok{## The object keeps the properties of the parent object but is composed of only one subsamples}
-\KeywordTok{length}\NormalTok{(crown_mammals}\OperatorTok{$}\NormalTok{subsamples)}
+\NormalTok{## The object keeps the properties of the parent object but is composed of only one subsets}
+\KeywordTok{length}\NormalTok{(crown_mammals}\OperatorTok{$}\NormalTok{subsets)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3478,8 +3474,8 @@ matrix.
 \KeywordTok{extract.dispRity}\NormalTok{(disparity)}
 
 \NormalTok{## Extracting the disparity from the bootstrapped values from the}
-\NormalTok{## 10th rarefaction level from the second subsamples (80 Mya)}
-\KeywordTok{extract.dispRity}\NormalTok{(disparity, }\DataTypeTok{observed =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{subsamples =} \DecValTok{2}\NormalTok{, }\DataTypeTok{rarefaction =} \DecValTok{10}\NormalTok{)}
+\NormalTok{## 10th rarefaction level from the second subsets (80 Mya)}
+\KeywordTok{extract.dispRity}\NormalTok{(disparity, }\DataTypeTok{observed =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{subsets =} \DecValTok{2}\NormalTok{, }\DataTypeTok{rarefaction =} \DecValTok{10}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3490,7 +3486,7 @@ can be applied to the disparity data of a \texttt{dispRity} object.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Getting the disparity values of the time subsamples}
+\NormalTok{## Getting the disparity values of the time subsets}
 \KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(disparity))}
 
 \NormalTok{## Scaling the same disparity values}
@@ -3503,12 +3499,12 @@ can be applied to the disparity data of a \texttt{dispRity} object.
 
 \subsubsection{\texorpdfstring{\texttt{sort.dispRity}}{sort.dispRity}}\label{sort.disprity}
 
-This is the S3 method of \texttt{sort} for sorting the subsamples
+This is the S3 method of \texttt{sort} for sorting the subsets
 alphabetically (default) or following a specific pattern.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Sorting the disparity subsamples in inverse alphabetic order}
+\NormalTok{## Sorting the disparity subsets in inverse alphabetic order}
 \KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{sort}\NormalTok{(disparity, }\DataTypeTok{decreasing =} \OtherTok{TRUE}\NormalTok{)))}
 
 \NormalTok{## Customised sorting}
@@ -3534,8 +3530,8 @@ elements, each of which are detailed below:
   \texttt{\$call}: an object of class \texttt{list} containing
   information on the \texttt{dispRity} object content.
 \item
-  \texttt{\$subsamples}: an object of class \texttt{list} containing the
-  subsamples of the multidimensional space.
+  \texttt{\$subsets}: an object of class \texttt{list} containing the
+  subsets of the multidimensional space.
 \item
   \texttt{\$disparity}: an object of class \texttt{list} containing the
   disparity values.
@@ -3549,7 +3545,7 @@ this matrix. This allows for: (1) faster and easily tractable execution
 time: the metric functions are called through apply family function and
 can be parallelised; and (2) a really low memory footprint: at any time,
 only one matrix is present in the \texttt{R} environment rather than
-multiple copies of it for each subsample.
+multiple copies of it for each subset.
 
 \subsection{\texorpdfstring{\texttt{\$matrix}}{\$matrix}}\label{matrix}
 
@@ -3568,13 +3564,13 @@ content. It is a \texttt{list} that can contain the following:
 \begin{itemize}
 \tightlist
 \item
-  \texttt{\$call\$subsamples}: a vector of \texttt{character} with
-  information on the subsamples type (either \texttt{"continuous"},
+  \texttt{\$call\$subsets}: a vector of \texttt{character} with
+  information on the subsets type (either \texttt{"continuous"},
   \texttt{"discrete"} or \texttt{"custom"}) and their eventual model
   (\texttt{"acctran"}, \texttt{"deltran"}, \texttt{"random"},
   \texttt{"proximity"}, \texttt{"punctuated"}, \texttt{"gradual"}). This
-  element generated only once via \texttt{time.subsamples()} and
-  \texttt{custom.subsamples()}.
+  element generated only once via \texttt{time.subsets()} and
+  \texttt{custom.subsets()}.
 \item
   \texttt{\$call\$dimensions}: either a single \texttt{numeric} value
   indicating how many dimensions to use or a vector of \texttt{numeric}
@@ -3605,22 +3601,22 @@ content. It is a \texttt{list} that can contain the following:
   the first metric(s), the second, the second metric(s), etc.).
 \end{itemize}
 
-\subsection{\texorpdfstring{\texttt{\$subsamples}}{\$subsamples}}\label{subsamples}
+\subsection{\texorpdfstring{\texttt{\$subsets}}{\$subsets}}\label{subsets}
 
-This element contain the eventual subsamples of the multidimensional
-space. It is a \texttt{list} of subsample names. Each subsample name is
-in turn a \texttt{list} of at least one element called \texttt{elements}
-which is in turn a \texttt{matrix}. This \texttt{elements} matrix is the
-raw (observed) elements in the subsamples. The \texttt{elements} matrix
-is composed of \texttt{numeric} values in one column and \emph{n} rows
-(the number of elements in the subsample). Each of these values are a
+This element contain the eventual subsets of the multidimensional space.
+It is a \texttt{list} of subset names. Each subset name is in turn a
+\texttt{list} of at least one element called \texttt{elements} which is
+in turn a \texttt{matrix}. This \texttt{elements} matrix is the raw
+(observed) elements in the subsets. The \texttt{elements} matrix is
+composed of \texttt{numeric} values in one column and \emph{n} rows (the
+number of elements in the subset). Each of these values are a
 ``pointer'' (\texttt{C} inspired) to the element of the
 \texttt{\$matrix}. For example, lets assume a \texttt{dispRity} object
-called \texttt{disparity}, composed of at least one subsamples called
+called \texttt{disparity}, composed of at least one subsets called
 \texttt{sub1}:
 
 \begin{verbatim}
- disparity$subsamples$sub1$elements
+ disparity$subsets$sub1$elements
       [,1]
  [1,]    5
  [2,]    4
@@ -3630,13 +3626,13 @@ called \texttt{disparity}, composed of at least one subsamples called
 
 The values in the matrix ``point'' to the elements in \texttt{\$matrix}:
 here, the multidimensional space with only the 4th, 5th, 6th and 7th
-elements. The following elements in \texttt{diparity\$subsamples\$sub1}
+elements. The following elements in \texttt{diparity\$subsets\$sub1}
 will correspond to the same ``pointers'' but drawn from the bootstrap
 replicates. The columns will correspond to different bootstrap
 replicates. For example:
 
 \begin{verbatim}
- disparity$subsamples$sub1[[2]]
+ disparity$subsets$sub1[[2]]
       [,1] [,2] [,3] [,4]
  [1,]   57   43   70    4
  [2,]   43   44    4    4
@@ -3655,13 +3651,12 @@ forth\ldots{}
 
 \subsection{\texorpdfstring{\texttt{\$disparity}}{\$disparity}}\label{disparity}
 
-The \texttt{\$disparity} element is identical to the
-\texttt{\$subsamples} element structure (a list of list(s) containing
-matrices) but the matrices don't contain ``pointers'' to
-\texttt{\$matrix} but the disparity result of the disparity metric
-applied to the ``pointers''. For example, in our first example
-(\texttt{\$elements}) from above, if the disparity metric is of
-dimensions level 1, we would have:
+The \texttt{\$disparity} element is identical to the \texttt{\$subsets}
+element structure (a list of list(s) containing matrices) but the
+matrices don't contain ``pointers'' to \texttt{\$matrix} but the
+disparity result of the disparity metric applied to the ``pointers''.
+For example, in our first example (\texttt{\$elements}) from above, if
+the disparity metric is of dimensions level 1, we would have:
 
 \begin{verbatim}
  disparity$disparity$sub1$elements
@@ -3669,7 +3664,7 @@ dimensions level 1, we would have:
  [1,]    1.82
 \end{verbatim}
 
-This is the observed disparity (1.82) for the subsample called
+This is the observed disparity (1.82) for the subset called
 \texttt{sub1}. If the disparity metric is of dimension level 2 (say the
 function \texttt{range} that outputs two values), we would have:
 
@@ -3808,15 +3803,15 @@ analysis}\label{a-disparity-through-time-analysis}
 time}\label{splitting-the-morphospace-through-time}
 
 One of the crucial steps in disparity-through-time analysis is to split
-the full morphospace into smaller time subsamples that contain the total
+the full morphospace into smaller time subsets that contain the total
 number of morphologies at certain points in time (time-slicing) or
 during certain periods in time (time-binning). Basically, the full
 morphospace represents the total number of morphologies across all time
-and will be greater than any of the time subsamples of the morphospace.
+and will be greater than any of the time subsets of the morphospace.
 
-The \texttt{dispRity} package provides a \texttt{time.subsamples}
-function that allows users to split the morphospace into time slices
-(using \texttt{method\ =\ continuous}) or into time bins (using
+The \texttt{dispRity} package provides a \texttt{time.subsets} function
+that allows users to split the morphospace into time slices (using
+\texttt{method\ =\ continuous}) or into time bins (using
 \texttt{method\ =\ discrete}). In this example, we are going to split
 the morphospace into five equal time bins of 20 million years long from
 100 million years ago to the present. We will also provide to the
@@ -3837,8 +3832,8 @@ several of our different time bins.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Splitting the morphospace using the time.subsamples function}
-\NormalTok{(binned_morphospace <-}\StringTok{ }\KeywordTok{time.subsamples}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree,}
+\NormalTok{## Splitting the morphospace using the time.subsets function}
+\NormalTok{(binned_morphospace <-}\StringTok{ }\KeywordTok{time.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_mat50, }\DataTypeTok{tree =}\NormalTok{ BeckLee_tree,}
     \DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{, }\DataTypeTok{time =}\NormalTok{ time_bins, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{,}
     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages))}
 \end{Highlighting}
@@ -3846,14 +3841,14 @@ several of our different time bins.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements:
+## 5 discrete time subsets for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 \end{verbatim}
 
 The output object is a \texttt{dispRity} object (see more about that
 \protect\hyperlink{The-guts-of-the-dispRity-package}{here}. In brief,
 however, \texttt{dispRity} objects are lists of different elements
-(i.e.~disparity results, morphospace time subsamples, morphospace
+(i.e.~disparity results, morphospace time subsets, morphospace
 attributes, etc.) that display only a summary of the object when calling
 the object to avoiding filling the \texttt{R} console with superfluous
 output.
@@ -3878,13 +3873,13 @@ output.
 
 \begin{verbatim}
 ## List of 3
-##  $ matrix    : num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
+##  $ matrix : num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
 ##   ..- attr(*, "dimnames")=List of 2
 ##   .. ..$ : chr [1:50] "Cimolestes" "Maelestes" "Batodon" "Bulaklestes" ...
 ##   .. ..$ : NULL
-##  $ call      :List of 1
-##   ..$ subsamples: chr "discrete"
-##  $ subsamples:List of 5
+##  $ call   :List of 1
+##   ..$ subsets: chr "discrete"
+##  $ subsets:List of 5
 ##   ..$ 100 - 80:List of 1
 ##   .. ..$ elements: int [1:8, 1] 5 4 6 8 43 10 11 42
 ##   ..$ 80 - 60 :List of 1
@@ -3905,7 +3900,7 @@ output.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] "matrix"     "call"       "subsamples"
+## [1] "matrix"  "call"    "subsets"
 \end{verbatim}
 
 \begin{Shaded}
@@ -3917,7 +3912,7 @@ output.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements:
+## 5 discrete time subsets for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 \end{verbatim}
 
@@ -3928,32 +3923,32 @@ the following steps in the disparity-through-time analysis.
 
 \subsection{Bootstrapping the data}\label{bootstrapping-the-data}
 
-Once we obtain our different time subsamples, we can bootstrap and
-rarefy them (i.e.~pseudo-replicating the data). The bootstrapping allows
-us to make each subsample more robust to outliers and the rarefaction
-allows us to compare subsamples with the same number of taxa to remove
-sampling biases (i.e.~more taxa in one subsample than the others). The
+Once we obtain our different time subsets, we can bootstrap and rarefy
+them (i.e.~pseudo-replicating the data). The bootstrapping allows us to
+make each subset more robust to outliers and the rarefaction allows us
+to compare subsets with the same number of taxa to remove sampling
+biases (i.e.~more taxa in one subset than the others). The
 \texttt{boot.matrix} function bootstraps the \texttt{dispRity} object
 and the \texttt{rarefaction} option within performs rarefaction.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Bootstrapping each time subsample 100 times (default)}
+\NormalTok{## Bootstrapping each time subset 100 times (default)}
 \NormalTok{(boot_bin_morphospace <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(binned_morphospace))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Getting the minimum number of rows (i.e. taxa) in the time subsamples}
-\KeywordTok{min}\NormalTok{(}\KeywordTok{size.subsamples}\NormalTok{(boot_bin_morphospace))}
+\NormalTok{## Getting the minimum number of rows (i.e. taxa) in the time subsets}
+\KeywordTok{min}\NormalTok{(}\KeywordTok{size.subsets}\NormalTok{(boot_bin_morphospace))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3963,7 +3958,7 @@ and the \texttt{rarefaction} option within performs rarefaction.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Bootstrapping each time subsample 100 times and rarefying them }
+\NormalTok{## Bootstrapping each time subset 100 times and rarefying them }
 \NormalTok{(rare_bin_morphospace <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(binned_morphospace, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{,}
     \DataTypeTok{rarefaction =} \DecValTok{6}\NormalTok{))}
 \end{Highlighting}
@@ -3971,27 +3966,27 @@ and the \texttt{rarefaction} option within performs rarefaction.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:"full") and rarefied to 6 elements.
 \end{verbatim}
 
 \subsection{Calculating disparity}\label{calculating-disparity}
 
-We can now calculate the disparity within each time subsamples along
-with some confidence intervals generated by the pseudoreplication step
-above (bootstraps/rarefaction). Disparity can be calculated in many ways
-and this package allows users to come up with their own disparity
-metrics. For more details, please refer to the
+We can now calculate the disparity within each time subsets along with
+some confidence intervals generated by the pseudoreplication step above
+(bootstraps/rarefaction). Disparity can be calculated in many ways and
+this package allows users to come up with their own disparity metrics.
+For more details, please refer to the
 \protect\hyperlink{disparity-metrics}{\texttt{dispRity} metric section}.
 
 In this example, we are going to calculate the spread of the data in
-each time subsample by calculating disparity as the sum of the variance
-of each dimension of the morphospace in each time subsample using the
+each time subset by calculating disparity as the sum of the variance of
+each dimension of the morphospace in each time subset using the
 \texttt{dispRity} function. Thus, in this example, disparity is defined
-by the multi-dimensional variance of each time subsample (i.e.~the
-spread of the taxa within the morphospace). Note that this metric comes
-with a caveat (not solved here) since it ignores covariances among the
+by the multi-dimensional variance of each time subset (i.e.~the spread
+of the taxa within the morphospace). Note that this metric comes with a
+caveat (not solved here) since it ignores covariances among the
 dimensions of the morphospace. We use this here because it is a standard
 metric used in disparity-through-time analysis (Wills \emph{et al.}
 1994).
@@ -4005,7 +4000,7 @@ metric used in disparity-through-time analysis (Wills \emph{et al.}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: c(sum, variances).
@@ -4020,7 +4015,7 @@ metric used in disparity-through-time analysis (Wills \emph{et al.}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 5 discrete time subsamples for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:"full") and rarefied to 6 elements.
 ## Disparity was calculated as: c(sum, variances).
@@ -4028,8 +4023,8 @@ metric used in disparity-through-time analysis (Wills \emph{et al.}
 
 The \texttt{dispRity} function does not actually display the calculated
 disparity values but rather only the properties of the disparity object
-(size, subsamples, metric, etc.). To display the actual calculated
-scores, we need to summarise the disparity object using the S3 method
+(size, subsets, metric, etc.). To display the actual calculated scores,
+we need to summarise the disparity object using the S3 method
 \texttt{summary} that is applied to a \texttt{dispRity} object (see
 \texttt{?summary.dispRity} for more details).
 
@@ -4044,12 +4039,12 @@ individual function for more details.
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   100 - 80  8 1.675     1.488 1.087 1.389 1.568 1.648
-## 2    80 - 60 15 1.782     1.679 1.538 1.631 1.728 1.792
-## 3    60 - 40 13 1.913     1.772 1.607 1.734 1.826 1.886
-## 4    40 - 20  6 2.022     1.707 1.212 1.537 1.822 1.942
-## 5     20 - 0 10 1.971     1.794 1.598 1.716 1.842 1.890
+##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1 100 - 80  8 1.675     1.488 1.087 1.389 1.568 1.648
+## 2  80 - 60 15 1.782     1.679 1.538 1.631 1.728 1.792
+## 3  60 - 40 13 1.913     1.772 1.607 1.734 1.826 1.886
+## 4  40 - 20  6 2.022     1.707 1.212 1.537 1.822 1.942
+## 5   20 - 0 10 1.971     1.794 1.598 1.716 1.842 1.890
 \end{verbatim}
 
 \begin{Shaded}
@@ -4059,16 +4054,16 @@ individual function for more details.
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   100 - 80  8 1.675     1.484 1.194 1.400 1.547 1.636
-## 2   100 - 80  6    NA     1.477 0.993 1.361 1.569 1.698
-## 3    80 - 60 15 1.782     1.674 1.517 1.600 1.725 1.793
-## 4    80 - 60  6    NA     1.655 1.299 1.532 1.754 1.882
-## 5    60 - 40 13 1.913     1.767 1.601 1.714 1.829 1.861
-## 6    60 - 40  6    NA     1.787 1.314 1.672 1.879 1.984
-## 7    40 - 20  6 2.022     1.736 1.281 1.603 1.822 1.948
-## 8     20 - 0 10 1.971     1.807 1.595 1.729 1.856 1.917
-## 9     20 - 0  6    NA     1.790 1.435 1.718 1.873 1.995
+##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1 100 - 80  8 1.675     1.484 1.194 1.400 1.547 1.636
+## 2 100 - 80  6    NA     1.477 0.993 1.361 1.569 1.698
+## 3  80 - 60 15 1.782     1.674 1.517 1.600 1.725 1.793
+## 4  80 - 60  6    NA     1.655 1.299 1.532 1.754 1.882
+## 5  60 - 40 13 1.913     1.767 1.601 1.714 1.829 1.861
+## 6  60 - 40  6    NA     1.787 1.314 1.672 1.879 1.984
+## 7  40 - 20  6 2.022     1.736 1.281 1.603 1.822 1.948
+## 8   20 - 0 10 1.971     1.807 1.595 1.729 1.856 1.917
+## 9   20 - 0  6    NA     1.790 1.435 1.718 1.873 1.995
 \end{verbatim}
 
 \begin{quote}
@@ -4108,8 +4103,8 @@ in bin \emph{n+1}, and whether this is in turn equal to the disparity in
 bin \emph{n+2}, etc. Because our data is temporally autocorrelated
 (i.e.~what happens in bin \emph{n+1} depends on what happened in bin
 \emph{n}) and pseudoreplicated (i.e.~each bootstrap draw creates
-non-independent time subsamples because they are all based on the same
-time subsamples), we apply a non-parametric mean comparison: the
+non-independent time subsets because they are all based on the same time
+subsets), we apply a non-parametric mean comparison: the
 \texttt{wilcox.test}. Also, we need to apply a p-value correction
 (e.g.~Bonferroni correction) to correct for multiple testing (see
 \texttt{?p.adjust} for more details).
@@ -4292,51 +4287,51 @@ in only two dimensions and consider the whole dataset as a
 \section{\texorpdfstring{A multidimensional approach with
 \texttt{dispRity}}{A multidimensional approach with dispRity}}\label{a-multidimensional-approach-with-disprity}
 
-The first step is to create different subsamples that represent
-subsamples of the ordinated space (i.e.~sub-regions within the
-\emph{n}-dimensional object). Each of these subsamples will contain only
-the individuals of a specific species.
+The first step is to create different subsets that represent subsets of
+the ordinated space (i.e.~sub-regions within the \emph{n}-dimensional
+object). Each of these subsets will contain only the individuals of a
+specific species.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Creating the table that contain the elements and their attributes}
-\NormalTok{petal_subsamples <-}\StringTok{ }\KeywordTok{custom.subsamples}\NormalTok{(petal_space, }\DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}
+\NormalTok{petal_subsets <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(petal_space, }\DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}
                                 \StringTok{"setosa"}\NormalTok{ =}\StringTok{ }\KeywordTok{which}\NormalTok{(species }\OperatorTok{==}\StringTok{ "setosa"}\NormalTok{),}
                                 \StringTok{"versicolor"}\NormalTok{ =}\StringTok{ }\KeywordTok{which}\NormalTok{(species }\OperatorTok{==}\StringTok{ "versicolor"}\NormalTok{),}
                                 \StringTok{"virginica"}\NormalTok{ =}\StringTok{ }\KeywordTok{which}\NormalTok{(species }\OperatorTok{==}\StringTok{ "virginica"}\NormalTok{)))}
 
 \NormalTok{## Visualising the dispRity object content}
-\NormalTok{petal_subsamples}
+\NormalTok{petal_subsets}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements:
+## 3 customised subsets for 150 elements:
 ##     setosa, versicolor, virginica.
 \end{verbatim}
 
 This created a \texttt{dispRity} object (more about that
-\protect\hyperlink{guts}{here}) with three subsamples corresponding to
-each subspecies.
+\protect\hyperlink{guts}{here}) with three subsets corresponding to each
+subspecies.
 
 \subsection{Bootstrapping the data}\label{bootstrapping-the-data-1}
 
-We can the bootstrap the subsamples to be able test the robustness of
-the measured disparity to outliers. We can do that using the default
-options of \texttt{boot.matrix} (more about that
+We can the bootstrap the subsets to be able test the robustness of the
+measured disparity to outliers. We can do that using the default options
+of \texttt{boot.matrix} (more about that
 \protect\hyperlink{bootstraps-and-rarefactions}{here}):
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Bootstrapping the data}
-\NormalTok{(petal_bootstrapped <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(petal_subsamples))}
+\NormalTok{(petal_bootstrapped <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(petal_subsets))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements with 4 dimensions:
+## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
@@ -4368,7 +4363,7 @@ elements and their centroid.
 
 \begin{verbatim}
 ##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements with 4 dimensions:
+## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: c(median, centroids).
@@ -4377,7 +4372,7 @@ elements and their centroid.
 \subsection{Summarising the results
 (plot)}\label{summarising-the-results-plot}
 
-Similarly to the \texttt{custom.subsamples} and \texttt{boot.matrix}
+Similarly to the \texttt{custom.subsets} and \texttt{boot.matrix}
 function, \texttt{dispRity} displays a \texttt{dispRity} object. But we
 are definitely more interested in actually look at the calculated
 values.
@@ -4393,7 +4388,7 @@ First we can summarise the data in a table by simply using
 \end{Shaded}
 
 \begin{verbatim}
-##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+##      subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1     setosa 50 0.421     0.419 0.342 0.401 0.445 0.503
 ## 2 versicolor 50 0.693     0.657 0.530 0.622 0.692 0.733
 ## 3  virginica 50 0.785     0.745 0.577 0.690 0.797 0.880
@@ -4445,7 +4440,7 @@ using the \texttt{test.dispRity} option.
 
 \begin{verbatim}
 ##              Df Sum Sq Mean Sq F value Pr(>F)    
-## subsamples    2  5.387  2.6935   705.5 <2e-16 ***
+## subsets       2  5.387  2.6935   705.5 <2e-16 ***
 ## Residuals   297  1.134  0.0038                   
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -4536,7 +4531,7 @@ improve the speed of the \texttt{dispRity} function.
 I am equally slowly developing functions to allow more of the options in
 the package to be modular (in the same way as the \texttt{metric}
 argument in \texttt{dispRity}). The next arguments to benefit this
-increased modularity will be \texttt{time.subsamples}'s \texttt{model}
+increased modularity will be \texttt{time.subsets}'s \texttt{model}
 argument and \texttt{boot.matrix}'s \texttt{type} argument.
 
 \chapter{References}\label{references}

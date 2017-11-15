@@ -85,29 +85,29 @@ Therefore, we might want to approach this problem without getting stuck in only 
 
 ## A multidimensional approach with `dispRity`
 
-The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
-Each of these subsamples will contain only the individuals of a specific species.
+The first step is to create different subsets that represent subsets of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
+Each of these subsets will contain only the individuals of a specific species.
 
 ```{r}
 ## Creating the table that contain the elements and their attributes
-petal_subsamples <- custom.subsamples(petal_space, group = list(
+petal_subsets <- custom.subsets(petal_space, group = list(
                                 "setosa" = which(species == "setosa"),
                                 "versicolor" = which(species == "versicolor"),
                                 "virginica" = which(species == "virginica")))
 
 ## Visualising the dispRity object content
-petal_subsamples
+petal_subsets
 ```
 
-This created a `dispRity` object (more about that [here](#guts)) with three subsamples corresponding to each subspecies.
+This created a `dispRity` object (more about that [here](#guts)) with three subsets corresponding to each subspecies.
 
 ### Bootstrapping the data
-We can the bootstrap the subsamples to be able test the robustness of the measured disparity to outliers.
+We can the bootstrap the subsets to be able test the robustness of the measured disparity to outliers.
 We can do that using the default options of `boot.matrix` (more about that [here](#bootstraps-and-rarefactions)):
 
 ```{r}
 ## Bootstrapping the data
-(petal_bootstrapped <- boot.matrix(petal_subsamples))
+(petal_bootstrapped <- boot.matrix(petal_subsets))
 ```
 
 ### Calculating disparity
@@ -127,7 +127,7 @@ Here we are going to feed the functions `stats::median` and `dispRity::centroids
 ```
 
 ### Summarising the results (plot)
-Similarly to the `custom.subsamples` and `boot.matrix` function, `dispRity` displays a `dispRity` object.
+Similarly to the `custom.subsets` and `boot.matrix` function, `dispRity` displays a `dispRity` object.
 But we are definitely more interested in actually look at the calculated values.
 
 First we can summarise the data in a table by simply using `summary`:

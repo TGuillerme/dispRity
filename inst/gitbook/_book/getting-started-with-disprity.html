@@ -127,7 +127,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
 <li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
-<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsamples"><i class="fa fa-check"></i><b>4.2</b> Customised subsamples</a></li>
+<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -163,7 +163,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
 <li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsamples"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsamples</code></a></li>
+<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
@@ -253,7 +253,7 @@ procrustes &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodo
 ## [3,]  0.0056004654 0.07419599 -0.0052612103 -0.005034566 -0.002746592
 ## [4,] -0.0134808572 0.06463959 -0.0458436015 -0.007887369  0.009816827
 ## [5,] -0.0334696244 0.06863518  0.0136292041  0.007359409  0.022347225</code></pre>
-<p>Options for the ordination (from <code>?prcomp</code>) can be directly passed to this function to perform customised ordinations. Additionally you can give the function a <code>geomorph.data.frame</code> object. If the latter contains sorting information (i.e. factors), they can be directly used to make a customised <code>dispRity</code> object <a href="details-of-specific-functions.html#customised-subsamples">customised <code>dispRity</code> object</a>!</p>
+<p>Options for the ordination (from <code>?prcomp</code>) can be directly passed to this function to perform customised ordinations. Additionally you can give the function a <code>geomorph.data.frame</code> object. If the latter contains sorting information (i.e. factors), they can be directly used to make a customised <code>dispRity</code> object <a href="details-of-specific-functions.html#customised-subsets">customised <code>dispRity</code> object</a>!</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Using a geomorph.data.frame
 geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(procrustes,
      <span class="dt">species =</span> plethodon<span class="op">$</span>species, <span class="dt">site =</span> plethodon<span class="op">$</span>site)
@@ -261,7 +261,7 @@ geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</
 ## Ordinating this data and making a dispRity object
 <span class="kw">geomorph.ordination</span>(geomorph_df)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 4 customised subsamples for 40 elements:
+## 4 customised subsets for 40 elements:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
 <p>More about these <code>dispRity</code> objects below!</p>
 </div>
@@ -320,7 +320,7 @@ ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(
 <h2><span class="header-section-number">3.2</span> Performing a simple dispRity analysis</h2>
 <p>Two <code>dispRity</code> functions allow users to run an analysis pipeline simply by inputting an ordination matrix. These functions allow users to either calculate the disparity through time (<code>dispRity.through.time</code>) or the disparity of user-defined groups (<code>dispRity.per.group</code>).</p>
 <p><strong>IMPORTANT</strong></p>
-<p>Note that <code>disparity.through.time</code> and <code>disparity.per.group</code> are wrapper functions (i.e. they incorporate lots of other functions) that allow users to run a basic disparity-through-time, or disparity among groups, analysis without too much effort. As such they use a lot of default options. These are described in the help files for the functions that are used to make the wrapper functions, and not described in the help files for <code>disparity.through.time</code> and <code>disparity.per.group</code>. These defaults are good enough for <strong>data exploration</strong>, but for a proper analysis you should consider the <strong>best parameters for your question and data</strong>. For example, which metric should you use? How many bootstraps do you require? What model of evolution is most appropriate if you are time slicing? Should you rarefy the data? See <a href="details-of-specific-functions.html#time-slicing"><code>time.subsamples</code></a>, <a href="details-of-specific-functions.html#customised-subsamples"><code>custom.subsamples</code></a>, <a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><code>boot.matrix</code></a> and <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity.metric</code></a> for more details of the defaults used in each of these functions. Note that any of these default arguments can be changed within the <code>disparity.through.time</code> or <code>disparity.per.group</code> functions.</p>
+<p>Note that <code>disparity.through.time</code> and <code>disparity.per.group</code> are wrapper functions (i.e. they incorporate lots of other functions) that allow users to run a basic disparity-through-time, or disparity among groups, analysis without too much effort. As such they use a lot of default options. These are described in the help files for the functions that are used to make the wrapper functions, and not described in the help files for <code>disparity.through.time</code> and <code>disparity.per.group</code>. These defaults are good enough for <strong>data exploration</strong>, but for a proper analysis you should consider the <strong>best parameters for your question and data</strong>. For example, which metric should you use? How many bootstraps do you require? What model of evolution is most appropriate if you are time slicing? Should you rarefy the data? See <a href="details-of-specific-functions.html#time-slicing"><code>time.subsets</code></a>, <a href="details-of-specific-functions.html#customised-subsets"><code>custom.subsets</code></a>, <a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><code>boot.matrix</code></a> and <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity.metric</code></a> for more details of the defaults used in each of these functions. Note that any of these default arguments can be changed within the <code>disparity.through.time</code> or <code>disparity.per.group</code> functions.</p>
 <div id="example-data" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Example data</h3>
 <p>To illustrate these functions, we will use data from Beck and Lee (2014). This dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).</p>
@@ -369,7 +369,7 @@ BeckLee_mat99[<span class="kw">c</span>(<span class="dv">1</span>, <span class="
 <ul>
 <li>An ordinated matrix (we covered that above)</li>
 <li>A phylogenetic tree: this must be a <code>phylo</code> object (from the <code>ape</code> package) and needs a <code>root.time</code> element. To give your tree a root time (i.e. an age for the root), you can simply do\ <code>my_tree$root.time &lt;- my_age</code>.</li>
-<li>The required number of time subsamples (here <code>time = 3</code>)</li>
+<li>The required number of time subsets (here <code>time = 3</code>)</li>
 <li>Your favourite disparity metric (here the sum of variances)</li>
 </ul>
 <p>Using the Beck and Lee (2014) data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
@@ -380,15 +380,15 @@ disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.through.t
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Print the disparity_data object
 disparity_data</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 3 discrete time subsamples for 50 elements with 48 dimensions:
+## 3 discrete time subsets for 50 elements with 48 dimensions:
 ##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
-<p>We asked for three subsamples (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.</p>
+<p>We asked for three subsets (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.</p>
 <p>We can now summarise or plot the <code>disparity_data</code> object, or perform statistical tests on it (e.g. a simple <code>lm</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summarising disparity through time
 <span class="kw">summary</span>(disparity_data)</code></pre></div>
-<pre><code>##             subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+<pre><code>##                subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 133.51104 - 89.00736  5 1.575     1.305 0.729 1.118 1.420 1.509
 ## 2  89.00736 - 44.50368 29 1.922     1.867 1.775 1.830 1.889 1.922
 ## 3         44.50368 - 0 16 1.990     1.871 1.716 1.831 1.914 1.942</code></pre>
@@ -402,17 +402,17 @@ disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disp
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_lm)</code></pre></div>
 <pre><code>## 
 ## Call:
-## test(formula = data ~ subsamples, data = data)
+## test(formula = data ~ subsets, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
 ## -0.56623 -0.04160  0.01049  0.05507  0.31886 
 ## 
 ## Coefficients:
-##                               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                    1.25647    0.01270   98.97   &lt;2e-16 ***
-## subsamples44.50368 - 0         0.60863    0.01795   33.90   &lt;2e-16 ***
-## subsamples89.00736 - 44.50368  0.60169    0.01795   33.51   &lt;2e-16 ***
+##                            Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                 1.25647    0.01270   98.97   &lt;2e-16 ***
+## subsets44.50368 - 0         0.60863    0.01795   33.90   &lt;2e-16 ***
+## subsets89.00736 - 44.50368  0.60169    0.01795   33.51   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -442,15 +442,15 @@ disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.per.group
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Print the disparity_data object
 disparity_data</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 2 customised subsamples for 50 elements with 48 dimensions:
+## 2 customised subsets for 50 elements with 48 dimensions:
 ##     crown, stem.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summarising disparity in the different groups
 <span class="kw">summary</span>(disparity_data)</code></pre></div>
-<pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1      crown 30 1.995     1.936 1.866 1.914 1.947 1.971
-## 2       stem 20 1.715     1.632 1.541 1.604 1.667 1.695</code></pre>
+<pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1   crown 30 1.995     1.936 1.866 1.914 1.947 1.971
+## 2    stem 20 1.715     1.632 1.541 1.604 1.667 1.695</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(disparity_data)</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>

@@ -127,7 +127,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
 <li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
-<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsamples"><i class="fa fa-check"></i><b>4.2</b> Customised subsamples</a></li>
+<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -163,7 +163,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
 <li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsamples"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsamples</code></a></li>
+<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
@@ -275,26 +275,26 @@ variances &lt;-<span class="st"> </span>variances<span class="op">/</span><span 
 </div>
 <div id="a-multidimensional-approach-with-disprity" class="section level2">
 <h2><span class="header-section-number">8.3</span> A multidimensional approach with <code>dispRity</code></h2>
-<p>The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the <em>n</em>-dimensional object). Each of these subsamples will contain only the individuals of a specific species.</p>
+<p>The first step is to create different subsets that represent subsets of the ordinated space (i.e. sub-regions within the <em>n</em>-dimensional object). Each of these subsets will contain only the individuals of a specific species.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating the table that contain the elements and their attributes
-petal_subsamples &lt;-<span class="st"> </span><span class="kw">custom.subsamples</span>(petal_space, <span class="dt">group =</span> <span class="kw">list</span>(
+petal_subsets &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(petal_space, <span class="dt">group =</span> <span class="kw">list</span>(
                                 <span class="st">&quot;setosa&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;setosa&quot;</span>),
                                 <span class="st">&quot;versicolor&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;versicolor&quot;</span>),
                                 <span class="st">&quot;virginica&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;virginica&quot;</span>)))
 
 ## Visualising the dispRity object content
-petal_subsamples</code></pre></div>
+petal_subsets</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements:
+## 3 customised subsets for 150 elements:
 ##     setosa, versicolor, virginica.</code></pre>
-<p>This created a <code>dispRity</code> object (more about that <a href="#guts">here</a>) with three subsamples corresponding to each subspecies.</p>
+<p>This created a <code>dispRity</code> object (more about that <a href="#guts">here</a>) with three subsets corresponding to each subspecies.</p>
 <div id="bootstrapping-the-data-1" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Bootstrapping the data</h3>
-<p>We can the bootstrap the subsamples to be able test the robustness of the measured disparity to outliers. We can do that using the default options of <code>boot.matrix</code> (more about that <a href="details-of-specific-functions.html#bootstraps-and-rarefactions">here</a>):</p>
+<p>We can the bootstrap the subsets to be able test the robustness of the measured disparity to outliers. We can do that using the default options of <code>boot.matrix</code> (more about that <a href="details-of-specific-functions.html#bootstraps-and-rarefactions">here</a>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping the data
-(petal_bootstrapped &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(petal_subsamples))</code></pre></div>
+(petal_bootstrapped &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(petal_subsets))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements with 4 dimensions:
+## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
 </div>
@@ -306,18 +306,18 @@ petal_subsamples</code></pre></div>
 ## the centroid of the petal-space
 (petal_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(petal_bootstrapped, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids)))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 3 customised subsamples for 150 elements with 4 dimensions:
+## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(median, centroids).</code></pre>
 </div>
 <div id="summarising-the-results-plot" class="section level3">
 <h3><span class="header-section-number">8.3.3</span> Summarising the results (plot)</h3>
-<p>Similarly to the <code>custom.subsamples</code> and <code>boot.matrix</code> function, <code>dispRity</code> displays a <code>dispRity</code> object. But we are definitely more interested in actually look at the calculated values.</p>
+<p>Similarly to the <code>custom.subsets</code> and <code>boot.matrix</code> function, <code>dispRity</code> displays a <code>dispRity</code> object. But we are definitely more interested in actually look at the calculated values.</p>
 <p>First we can summarise the data in a table by simply using <code>summary</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Displaying the summary of the calculated disparity
 <span class="kw">summary</span>(petal_disparity)</code></pre></div>
-<pre><code>##   subsamples  n   obs bs.median  2.5%   25%   75% 97.5%
+<pre><code>##      subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1     setosa 50 0.421     0.419 0.342 0.401 0.445 0.503
 ## 2 versicolor 50 0.693     0.657 0.530 0.622 0.692 0.733
 ## 3  virginica 50 0.785     0.745 0.577 0.690 0.797 0.880</code></pre>
@@ -340,7 +340,7 @@ disparity_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing whether there is a difference in disparity between the different species
 <span class="kw">summary</span>(<span class="kw">aov</span>(disparity_lm))</code></pre></div>
 <pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)    
-## subsamples    2  5.387  2.6935   705.5 &lt;2e-16 ***
+## subsets       2  5.387  2.6935   705.5 &lt;2e-16 ***
 ## Residuals   297  1.134  0.0038                   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>

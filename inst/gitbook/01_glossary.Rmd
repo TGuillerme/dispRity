@@ -19,6 +19,6 @@ output:
 
 -   **Dimensions**. The columns of the multidimensional space matrix. The dimensions can be referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA for example.
 
--   **Subsamples**. Subsamples of the multidimensional space.
-    A subsample (or subsamples) contains the same number of dimensions as the space but may contain a smaller subset of elements.
-    For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
+-   **Subsets**. Subsets of the multidimensional space.
+    A subset (or subsets) contains the same number of dimensions as the space but may contain a smaller subset of elements.
+    For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsets containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
