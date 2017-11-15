@@ -13,7 +13,7 @@ dispRity.per.group(data, group, metric = c(median, centroids), ...)
 
 \item{metric}{A vector containing one to three functions (default = \code{c(median, centroids)}) (see \code{\link{dispRity}} for details).}
 
-\item{...}{Optional arguments to be passed to \code{\link{custom.subsamples}}, \code{\link{boot.matrix}} and \code{\link{dispRity}}.}
+\item{...}{Optional arguments to be passed to \code{\link{custom.subsets}}, \code{\link{boot.matrix}} and \code{\link{dispRity}}.}
 }
 \value{
 A \code{dispRity} object that can be passed to \code{summary} or \code{plot}.
@@ -24,7 +24,7 @@ Performs a disparity analysis between groups.
 \details{
 Note that this is a wrapper function that allows users to run a basic disparity among groups analysis without too much effort. 
 As such it has a lot of defaults described in the functions that make up the analysis. 
-See \code{\link{custom.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}} for more details of the defaults used in each of these functions.
+See \code{\link{custom.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}} for more details of the defaults used in each of these functions.
 Note that any of these defaults can be changed within the \code{disparity.through.time} function.
 For more details see the \code{dispRity} manual.
 }
@@ -39,7 +39,7 @@ summary(result) ; plot(result)
 
 }
 \seealso{
-\code{\link{custom.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+\code{\link{custom.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 \author{
 Thomas Guillerme

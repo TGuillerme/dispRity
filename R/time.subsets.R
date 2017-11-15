@@ -1,16 +1,16 @@
-#' @title Separating data in time subsamples.
+#' @title Separating data in time subsets.
 #' @aliases time.series
 #'
-#' @description Splits the data into a time subsamples list.
+#' @description Splits the data into a time subsets list.
 #' 
-#' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
+#' @usage time.subsets(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A matrix.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
-#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.
+#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
@@ -19,13 +19,13 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{matrix}{the multidimensional space (a \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #'
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #'  
 #' @details
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsamples is:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is:
 #' \itemize{
 #'   \item \code{"acctran"}: always the value from the ancestral node.
 #'   \item \code{"deltran"}: always the value from the descendant node or tip.
@@ -43,26 +43,26 @@
 #'
 #' ## Time binning (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-#' time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' time.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 #' ## Generate the same time bins but including nodes
-#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
+#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #'
 #' ## Time slicing (continuous method)
 #' ## Generate five equidistant time slices in the dataset assuming a proximity
 #' ## evolutionary model
-#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
+#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
 #'
-#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
 ##Testing
-# warning("DEBUG time.subsamples")
+# warning("DEBUG time.subsets")
 # source("sanitizing.R")
-# source("time.subsamples_fun.R")
+# source("time.subsets_fun.R")
 # source("slice.tree_fun.R")
 # data(BeckLee_tree) ; data(BeckLee_mat50)
 # data(BeckLee_mat99) ; data(BeckLee_ages)
@@ -89,7 +89,7 @@
 # abline(v = 40)
 
 
-time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
+time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -269,20 +269,20 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     check.class(verbose, "logical")
 
     ## -------------------------------
-    ##  GENRATING THE TIME subsamples
+    ##  GENRATING THE TIME subsets
     ## -------------------------------
 
     if(method == "discrete") {
-        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
+        time_subsets <- time.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
     }
 
     if(method == "continuous") {
-        time_subsamples <- time.subsamples.continuous(data, tree, time, model, FADLAD, verbose)
+        time_subsets <- time.subsets.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
-    ## Adding the original subsamples
-    #time_subsamples <- c(make.origin.subsamples(data), time_subsamples)
+    ## Adding the original subsets
+    #time_subsets <- c(make.origin.subsets(data), time_subsets)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsamples" = c(method, model)), subsamples = time_subsamples))
+    return(make.dispRity(data = data, call = list("subsets" = c(method, model)), subsets = time_subsets))
 }

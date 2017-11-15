@@ -18,7 +18,7 @@ A \code{matrix} or a \code{dispRity} object.
 Takes geomorph Procrustes object or a geomorph.data.frame object and ordinates it.
 }
 \details{
-If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors.
+If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsets}} using these factors.
 }
 \examples{
 \dontrun{
@@ -54,5 +54,5 @@ geomorph_val == dispRity_val # all TRUE
 
 }
 \seealso{
-\code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }

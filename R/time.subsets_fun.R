@@ -30,8 +30,8 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 }
 
 
-## Discrete time subsamples
-time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+## Discrete time subsets
+time.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
     
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
@@ -79,8 +79,8 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbos
     return(interval_elements)
 }
 
-## Continuous time subsamples
-time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+## Continuous time subsets
+time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {
@@ -91,7 +91,7 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
         ## Slicing the tree
         sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
 
-        ## Empty subsample
+        ## Empty subset
         if(class(sub_tree) != "phylo" && is.na(sub_tree)) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
@@ -149,9 +149,9 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
     return(slices_elements)
 }
 
-## Making the origin subsamples for a disparity_object
-make.origin.subsamples <- function(data) {
+## Making the origin subsets for a disparity_object
+make.origin.subsets <- function(data) {
     origin <- list("elements" = as.matrix(seq(1:nrow(data))))
-    origin_subsamples <- list("origin" = origin)
-    return(origin_subsamples)
+    origin_subsets <- list("origin" = origin)
+    return(origin_subsets)
 }

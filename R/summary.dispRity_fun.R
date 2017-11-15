@@ -4,12 +4,12 @@ CI.converter <- function(CI) {
 }
 
 # Wrapper function for summarising a single rarefaction
-get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
+get.summary <- function(disparity_subsets_rare, cent.tend, quantiles) {
 
     output <- list()
 
     ## Summarising NA
-    if(is.na(disparity_subsamples_rare[[1]])) {
+    if(is.na(disparity_subsets_rare[[1]])) {
         if(!missing(cent.tend)) {
             output$cent.tend <- NA
         }
@@ -21,25 +21,25 @@ get.summary <- function(disparity_subsamples_rare, cent.tend, quantiles) {
 
     ## Summarising normal data
     if(!missing(cent.tend)) {
-        output$cent_tend <- cent.tend(as.vector(disparity_subsamples_rare))
+        output$cent_tend <- cent.tend(as.vector(disparity_subsets_rare))
     }
     if(!missing(quantiles)) {
-        output$quantiles <- quantile(as.vector(disparity_subsamples_rare), probs = CI.converter(quantiles))
+        output$quantiles <- quantile(as.vector(disparity_subsets_rare), probs = CI.converter(quantiles))
     }
     return(output)
 }
 
-## lapply wrapper function for summarising a single subsample
-lapply.summary <- function(disparity_subsamples, cent.tend, quantiles) {
-    return(lapply(disparity_subsamples[-1], get.summary, cent.tend, quantiles))
+## lapply wrapper function for summarising a single subset
+lapply.summary <- function(disparity_subsets, cent.tend, quantiles) {
+    return(lapply(disparity_subsets[-1], get.summary, cent.tend, quantiles))
 }
 
 ## lapply wrapper for getting elements
-lapply.get.elements <- function(subsamples, bootstrapped = TRUE) {
+lapply.get.elements <- function(subsets, bootstrapped = TRUE) {
     if(bootstrapped){
-        return(unlist(lapply(subsamples[-1], nrow)))
+        return(unlist(lapply(subsets[-1], nrow)))
     } else {
-        return(unlist(lapply(subsamples, nrow)))
+        return(unlist(lapply(subsets, nrow)))
     }
 }
 

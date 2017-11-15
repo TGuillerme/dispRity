@@ -25,8 +25,8 @@ export(Claddis.ordination)
 export(geomorph.ordination)
 
 ##Functions
-export(time.subsamples)
-export(custom.subsamples)
+export(time.subsets)
+export(custom.subsets)
 export(boot.matrix)
 export(dispRity)
 export(test.dispRity)
@@ -61,9 +61,9 @@ export(matrix.dispRity)
 export(extract.dispRity)
 export(scale.dispRity)
 export(sort.dispRity)
-export(get.subsamples)
-export(merge.subsamples)
-export(size.subsamples)
+export(get.subsets)
+export(merge.subsets)
+export(size.subsets)
 
 ##Package utilities
 export(nodes.coordinates)

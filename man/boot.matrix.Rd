@@ -8,7 +8,7 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
   verbose = FALSE, boot.type = "full")
 }
 \arguments{
-\item{data}{A matrix or a list of matrices (typically output from \link{time.subsamples} or \link{cust.subsamples}).}
+\item{data}{A matrix or a list of matrices (typically output from \link{time.subsets} or \link{cust.subsets}).}
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
@@ -24,7 +24,7 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 This function outputs a \code{dispRity} object containing:
 \item{matrix}{the multidimensional space (a \code{matrix}).}
 \item{call}{A \code{list} containing the called arguments.}
-\item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+\item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
@@ -32,7 +32,7 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Bootstraps and rarefies either a matrix or a list of matrices.
 }
 \details{
-\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsamples have fewer elements than the rarefaction value, the subsamples is not rarefied.
+\code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
@@ -53,17 +53,17 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 ## Bootstrapping an ordinated matrix with only 3 dimensions
 boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 
-## Bootstrapping a subsamples of matrices
-## Generating a dummy subsamples of matrices
+## Bootstrapping a subsets of matrices
+## Generating a dummy subsets of matrices
 ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9,
                            dimnames = list(letters[1:10]))
-matrix_list <- custom.subsamples(ordinated_matrix, list(A = 1:5, B = 6:10))
-## Bootstrapping the subsamples of matrices 20 times (each)
+matrix_list <- custom.subsets(ordinated_matrix, list(A = 1:5, B = 6:10))
+## Bootstrapping the subsets of matrices 20 times (each)
 boot.matrix(matrix_list, bootstraps = 20)
 
 }
 \seealso{
-\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{dispRity}}.
+\code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{dispRity}}.
 }
 \author{
 Thomas Guillerme

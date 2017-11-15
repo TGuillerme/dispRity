@@ -6,10 +6,10 @@
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsamples}} for the models description.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
-#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
+#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsets}}.
 #'
 #' @examples
 #' set.seed(1)

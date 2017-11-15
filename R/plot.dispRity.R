@@ -3,16 +3,16 @@
 #' @description Plots a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsamples}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
+#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
-#' @param elements \code{logical} whether to plot the number of elements per subsamples.
+#' @param elements \code{logical} whether to plot the number of elements per subsets.
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the graph.
-#' @param time.subsamples \code{logical} whether to handle continuous data from the \code{time.subsamples} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsamples are used for the x axis labels.
+#' @param time.subsets \code{logical} whether to handle continuous data from the \code{time.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
@@ -56,7 +56,7 @@
 #' plot(disparity, type = "continuous")
 #' 
 #' ## Using different options (with non time.slicing option)
-#' plot(disparity, type = "continuous", time.subsamples = FALSE,
+#' plot(disparity, type = "continuous", time.subsets = FALSE,
 #'      elements = TRUE, col = c("red", "orange", "yellow"))
 #' 
 #' ## Rarefactions plots
@@ -74,7 +74,7 @@
 #' data_obs <- as.vector(data_obs)
 #' 
 #' ## Getting the ages
-#' ages <- as.numeric(names(disparity$subsamples))
+#' ages <- as.numeric(names(disparity$subsets))
 #' 
 #' ## Plotting the results median
 #' geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
@@ -93,17 +93,17 @@
 # source("plot.dispRity_fun.R")
 # data(BeckLee_mat50)
 # groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-# bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3)
+# customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 3)
 # sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
-# subsamples <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
-# data <- sequential.test(subsamples, family = gaussian, correction = "hommel")
+# subsets <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
+# data <- sequential.test(subsets, family = gaussian, correction = "hommel")
 # data <- sum_of_variances
 # quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
 # elements = TRUE
-# time.subsamples = TRUE
+# time.subsets = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -113,7 +113,7 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -153,27 +153,27 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
 
     #         #Plotting the results
     #         if(add != TRUE) {
-    #             #subsamples
-    #             subsamples <- unique(unlist(strsplit(names(data$models), split = " - ")))
+    #             #subsets
+    #             subsets <- unique(unlist(strsplit(names(data$models), split = " - ")))
     #             #Get the all the intercepts estimate
     #             if(is_distribution == TRUE) {
-    #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(subsamples)-2),significance]), unlist(results_out$Slopes$Estimate[(length(subsamples)-1),significance]))))
+    #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(subsets)-2),significance]), unlist(results_out$Slopes$Estimate[(length(subsets)-1),significance]))))
     #             } else {
-    #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(subsamples)-1),1], results_out$Slopes[(length(subsamples)-1),1]))
+    #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(subsets)-1),1], results_out$Slopes[(length(subsets)-1),1]))
     #             }
                 
     #             if(missing(xlab)) {
-    #                 xlab <- "subsamples"
+    #                 xlab <- "subsets"
     #             }
     #             if(missing(ylab)) {
     #                 ylab <- "Estimated disparity"
     #             }
 
     #             #Empty plot
-    #             subsamples_length <- length(subsamples)
-    #             plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
-    #             #plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
-    #             axis(1, at = 1:subsamples_length, labels = subsamples)
+    #             subsets_length <- length(subsets)
+    #             plot(seq(from = 1, to = subsets_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
+    #             #plot(seq(from = 1, to = subsets_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
+    #             axis(1, at = 1:subsets_length, labels = subsets)
     #         }
 
     #         plot.seq.test(results_out, is_distribution, significance, lines.args, token.args)
@@ -203,8 +203,8 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
 
                 ## Rarefaction plots
                 for(model in 1:length_data) {
-                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsamples ", names(data)[[model]], sep = ""), ...)
-                    ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsamples ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = ""), ...)
+                    ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
                 }
                 par(op_tmp)
             } else {
@@ -253,14 +253,14 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     }
 
     ## type
-    if(length(data$subsamples) == 1) {
+    if(length(data$subsets) == 1) {
         type <- "box"
-        message("Only one subsample of data available: type is set to \"box\".")
+        message("Only one subset of data available: type is set to \"box\".")
     }
 
     if(missing(type)) {
         ## Set type to default
-        if(any(grep("continuous", data$call$subsamples))) {
+        if(any(grep("continuous", data$call$subsets))) {
             type <- "continuous"
         } else {
             type <- "box"
@@ -283,16 +283,16 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     }
 
     ## If continuous, set time to continuous Ma (default)
-    if(type == "continuous" & time.subsamples) {
+    if(type == "continuous" & time.subsets) {
         ## Check if time.slicing was used (saved in call)
-        if(data$call$subsamples[1] == "continuous") {
-            time_slicing <- names(data$subsamples)
+        if(data$call$subsets[1] == "continuous") {
+            time_slicing <- names(data$subsets)
         }
     } 
-    if(!time.subsamples) {
+    if(!time.subsets) {
         time_slicing <- FALSE
     } else {
-        time_slicing <- names(data$subsamples)
+        time_slicing <- names(data$subsets)
     }
 
     ## elements
@@ -313,12 +313,12 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
         ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
-        ## Check if all subsamples have the appropriate rarefaction level
-        rarefaction_subsamples <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
-        ## Check if subsamples have no rarefaction
-        if(length(unlist(rarefaction_subsamples)) != length(data$subsamples)) {
-            wrong_rarefaction <- lapply(rarefaction_subsamples, function(X) ifelse(length(X) == 0, TRUE, FALSE))
-            stop(paste("The following subsamples do not contain ", rarefaction, " elements: ", paste(names(data$subsamples)[unlist(wrong_rarefaction)], collapse = ", "), ".", sep = "" ))
+        ## Check if all subsets have the appropriate rarefaction level
+        rarefaction_subsets <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
+        ## Check if subsets have no rarefaction
+        if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
+            wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
+            stop(paste("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), ".", sep = "" ))
         }
     }
 
@@ -328,7 +328,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(!is.null(data$call$subsamples) && data$call$subsamples != "customised" && time.subsamples != FALSE && rarefaction != TRUE) {
+        if(!is.null(data$call$subsets) && data$call$subsets != "customised" && time.subsets != FALSE && rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {
@@ -396,18 +396,18 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     ## Rarefaction plot
     if(rarefaction == TRUE) {
         ## How many rarefaction plots?
-        n_plots <- length(data$subsamples)
+        n_plots <- length(data$subsets)
 
         ## Open the multiple plots
         op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
 
         ## Rarefaction plots
 
-        ## Get the list of subsamples
-        subsamples_levels <- unique(summarised_data$subsamples)
+        ## Get the list of subsets
+        subsets_levels <- unique(summarised_data$subsets)
 
         ## Split the summary table
-        sub_summarised_data <- lapply(as.list(subsamples_levels), split.summary.data, summarised_data)
+        sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
 
         ## Plot the rarefaction curves
         for(nPlot in 1:n_plots) {

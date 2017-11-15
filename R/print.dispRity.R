@@ -18,7 +18,7 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity, all = TRUE)
 #'
-#' @seealso \code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -32,15 +32,15 @@
 # source("make.dispRity.R")
 # source("fetch.dispRity.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.subsamples.R") ; source("time.subsamples_fun.R")
-# source("cust.subsamples.R") ; source("cust.subsamples_fun.R")
+# source("time.subsets.R") ; source("time.subsets_fun.R")
+# source("cust.subsets.R") ; source("cust.subsets_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_subsamples_simple <- time.subsamples(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-# data_subsamples_boot <- boot.matrix(data_subsamples_simple, bootstraps = 11, rarefaction = c(5,6))
-# data <- dispRity(data_subsamples_boot, metric = c(variances))
+# data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
+# data <- dispRity(data_subsets_boot, metric = c(variances))
 
 print.dispRity <- function(x, all = FALSE, ...) {
 
@@ -90,29 +90,29 @@ print.dispRity <- function(x, all = FALSE, ...) {
         cat(" ---- dispRity object ---- \n")
 
         ## Print the matrix information
-        if(any(names(x$call) == "subsamples") && length(x$subsamples) != 1) {
-            ## Get the number of subsamples (minus origin)
-            subsamples <- names(x$subsamples)
+        if(any(names(x$call) == "subsets") && length(x$subsets) != 1) {
+            ## Get the number of subsets (minus origin)
+            subsets <- names(x$subsets)
 
-            ## Check if there is more than one subsample
-            if(length(subsamples) != 1) {
+            ## Check if there is more than one subset
+            if(length(subsets) != 1) {
 
                 ## Get the method
-                method <- x$call$subsamples
+                method <- x$call$subsets
                 if(length(method) != 1) {
                     method <- paste(method[1], " (", method[2],")", sep = "")
                 }
                 if(method == "customised") {
-                    cat(paste(length(subsamples), method, "subsamples for", nrow(x$matrix), "elements"))    
+                    cat(paste(length(subsets), method, "subsets for", nrow(x$matrix), "elements"))    
                 } else {
-                    cat(paste(length(subsamples), method, "time subsamples for", nrow(x$matrix), "elements"))
+                    cat(paste(length(subsets), method, "time subsets for", nrow(x$matrix), "elements"))
                 }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
-                if(length(subsamples) > 5) {
-                    cat("    ",paste(subsamples[1:5], collapse=", "),"...\n")
+                if(length(subsets) > 5) {
+                    cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
                 } else {
-                    cat("    ",paste(subsamples, collapse=", "), ".\n", sep="")
+                    cat("    ",paste(subsets, collapse=", "), ".\n", sep="")
                 }
             }
         } else {

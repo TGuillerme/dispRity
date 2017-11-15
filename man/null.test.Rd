@@ -39,13 +39,13 @@ obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
 null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 
 \dontrun{
-## Running the test on multiple subsamples
-## Generating the subsamples
+## Running the test on multiple subsets
+## Generating the subsets
 groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
      rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+customised_subsets <- custom.subsets(BeckLee_mat50, groups)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
 ## Calculating variances of each dimension
 sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 ## Testing against normal distribution

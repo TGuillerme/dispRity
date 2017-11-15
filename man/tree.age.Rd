@@ -24,7 +24,7 @@ tree.age(rtree(10), order = 'present')
 
 }
 \seealso{
-\code{\link{slice.tree}}, \code{\link{time.subsamples}}.
+\code{\link{slice.tree}}, \code{\link{time.subsets}}.
 }
 \author{
 Thomas Guillerme

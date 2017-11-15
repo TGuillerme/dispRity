@@ -1,4 +1,4 @@
-## Transform list of factors into a factor list for custom.subsamples
+## Transform list of factors into a factor list for custom.subsets
 make.groups.factors <- function(one_factor_list) {
 
     ## Separating the list for each level

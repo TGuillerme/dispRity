@@ -67,8 +67,8 @@ get.dispRity.metric.handle <- function(metric, match_call) {
 
 
 ## Combining the disparity results with the elements
-# combine.disparity <- function(one_disparity_subsamples, one_bootstrap_subsamples) {
-#     return(c(one_bootstrap_subsamples[1], one_disparity_subsamples))
+# combine.disparity <- function(one_disparity_subsets, one_bootstrap_subsets) {
+#     return(c(one_bootstrap_subsets[1], one_disparity_subsets))
 # }
 
 ## Getting the first metric
@@ -90,18 +90,18 @@ get.first.metric <- function(metrics_list_tmp) {
 }
 
 # ## Generates the output vector for the decomposition function
-# generate.empty.output <- function(one_subsamples_bootstrap, data, level) {
+# generate.empty.output <- function(one_subsets_bootstrap, data, level) {
 #     if(level == 3) {
 #         ## Return an array
-#         return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsamples_bootstrap))))
+#         return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
 #     }
 #     if(level == 2) {
 #         ## Return a matrix
-#         return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_subsamples_bootstrap)))
+#         return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_subsets_bootstrap)))
 #     }
 #     if(level == 1) {
 #         ## Return a vector
-#         return(numeric(ncol(one_subsamples_bootstrap)))
+#         return(numeric(ncol(one_subsets_bootstrap)))
 #     }
 # }
 
@@ -122,7 +122,7 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
 
 
 ## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps.silent <- function(one_subsamples_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+disparity.bootstraps.silent <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     if(matrix_decomposition) {
         ## Find out whether to output an array
@@ -133,9 +133,9 @@ disparity.bootstraps.silent <- function(one_subsamples_bootstrap, metrics_list, 
         metrics_list <- first_metric[[2]]
         first_metric <- first_metric[[1]]
         ## Decompose the metric using the first metric
-        disparity_out <- apply.decompose.matrix(one_subsamples_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+        disparity_out <- apply.decompose.matrix(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
     } else {
-        disparity_out <- one_subsamples_bootstrap
+        disparity_out <- one_subsets_bootstrap
     }
 
     ## 2 - Applying the metrics to the decomposed matrix
@@ -157,7 +157,7 @@ disparity.bootstraps.silent <- function(one_subsamples_bootstrap, metrics_list, 
 }
 
 
-disparity.bootstraps.verbose <- function(one_subsamples_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+disparity.bootstraps.verbose <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
     message(".", appendLF = FALSE)
     ## 1 - Decomposing the matrix (if necessary)
     if(matrix_decomposition) {
@@ -169,9 +169,9 @@ disparity.bootstraps.verbose <- function(one_subsamples_bootstrap, metrics_list,
         metrics_list <- first_metric[[2]]
         first_metric <- first_metric[[1]]
         ## Decompose the metric using the first metric
-        disparity_out <- apply.decompose.matrix(one_subsamples_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+        disparity_out <- apply.decompose.matrix(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
     } else {
-        disparity_out <- one_subsamples_bootstrap
+        disparity_out <- one_subsets_bootstrap
     }
 
     ## 2 - Applying the metrics to the decomposed matrix
@@ -194,20 +194,20 @@ disparity.bootstraps.verbose <- function(one_subsamples_bootstrap, metrics_list,
 
 
 ## Lapply wrapper for disparity.bootstraps function
-lapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition, verbose, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) {
         disparity.bootstraps <- disparity.bootstraps.verbose
     } else {
         disparity.bootstraps <- disparity.bootstraps.silent
     }
 
-    return(lapply(subsamples, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
 
 ## parallel lapply wrapper for disparity.bootstraps function
-# parLapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition, verbose, ...) {
+# parLapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
 
-#     disparity.bootstraps <- function(one_subsamples_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+#     disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
 #         ## 1 - Decomposing the matrix (if necessary)
 #         if(matrix_decomposition) {
 #             ## Find out whether to output an array
@@ -218,9 +218,9 @@ lapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition,
 #             metrics_list <- first_metric[[2]]
 #             first_metric <- first_metric[[1]]
 #             ## Decompose the metric using the first metric
-#             disparity_out <- apply.decompose.matrix(one_subsamples_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+#             disparity_out <- apply.decompose.matrix(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
 #         } else {
-#             disparity_out <- one_subsamples_bootstrap
+#             disparity_out <- one_subsets_bootstrap
 #         }
 
 #         ## 2 - Applying the metrics to the decomposed matrix
@@ -241,7 +241,7 @@ lapply.wrapper <- function(subsamples, metrics_list, data, matrix_decomposition,
 #         return(disparity_out)
 #     }
 
-#     return(lapply(subsamples, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+#     return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 # }
 
 

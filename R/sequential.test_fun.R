@@ -1,25 +1,25 @@
 # #Getting the data function
-# set.pair.subsamples <- function(subsamples_pair, intercept=NULL) {
-#     subsamples_pair_out <- list()
-#     for(element in 1:length(subsamples_pair[[1]])) {
-#         tmp_list <- lapply(subsamples_pair, `[[`, element)
-#         #Getting the subsamples from the list
-#         subsamples_pair_out[[element]] <- list.to.table(tmp_list)
-#         #Remove subsamples column
-#         subsamples_pair_out[[element]]$subsamples <- NULL
+# set.pair.subsets <- function(subsets_pair, intercept=NULL) {
+#     subsets_pair_out <- list()
+#     for(element in 1:length(subsets_pair[[1]])) {
+#         tmp_list <- lapply(subsets_pair, `[[`, element)
+#         #Getting the subsets from the list
+#         subsets_pair_out[[element]] <- list.to.table(tmp_list)
+#         #Remove subsets column
+#         subsets_pair_out[[element]]$subsets <- NULL
 #         #Setting the group as binomial
-#         subsamples_pair_out[[element]]$group <- c(rep(0, length(subsamples_pair[[1]][[element]])), rep(1, length(subsamples_pair[[2]][[element]])))
+#         subsets_pair_out[[element]]$group <- c(rep(0, length(subsets_pair[[1]][[element]])), rep(1, length(subsets_pair[[2]][[element]])))
 #         #Add intercept (if non-null)
 #         if(!is.null(intercept)) {
 #             #If intercept is a list get the right element!
 #             if(class(intercept) == "list") {
-#                 subsamples_pair_out[[element]]$intercept <- intercept[[element]][[1]]
+#                 subsets_pair_out[[element]]$intercept <- intercept[[element]][[1]]
 #             } else {
-#                 subsamples_pair_out[[element]]$intercept <- intercept
+#                 subsets_pair_out[[element]]$intercept <- intercept
 #             }
 #         }
 #     }
-#     return(subsamples_pair_out)
+#     return(subsets_pair_out)
 # }
 # #Estimating intercept function
 # intercept.estimate <- function(intercept0, slope) {

@@ -4,14 +4,14 @@
 \alias{make.dispRity}
 \title{Creates a \code{dispRity} object.}
 \usage{
-make.dispRity(data, call, subsamples)
+make.dispRity(data, call, subsets)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
 
 \item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 
-\item{subsamples}{Optional, a \code{list} to be a \code{dispRity} subsamples list.}
+\item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
 }
 \description{
 Creating an empty \code{dispRity} object from a matrix

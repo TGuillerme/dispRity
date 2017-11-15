@@ -13,7 +13,7 @@ test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
 
 \item{test}{A test \code{function} to apply to the data.}
 
-\item{comparisons}{If data contains more than two subsamples, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subsample names/number to compare (see details).}
+\item{comparisons}{If data contains more than two subsets, the type of comparisons to apply: either \code{"pairwise"} (default), \code{"referential"}, \code{"sequential"}, \code{"all"} or a list of pairs of subset names/number to compare (see details).}
 
 \item{rarefaction}{A \code{numeric} value indicating whether to use a specific rarefaction level (default = \code{NULL}).}
 
@@ -33,11 +33,11 @@ Applying statistical tests to dispRity objects
 \details{
 The \code{comparison} argument can be:
 \itemize{
-  \item \code{"pairwise"}: pairwise comparisons of all the subsamples (default).
-  \item \code{"referential"}: compares the first subsample to all the others.
-  \item \code{"sequential"}: compares each subsample sequentially (e.g. first against second, second against third, etc.).
-  \item \code{"all"}: compares all the subsamples simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsamples names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
-  \item A list of pairs of number of subsamples to compare. Each element of the list must contain two elements
+  \item \code{"pairwise"}: pairwise comparisons of all the subsets (default).
+  \item \code{"referential"}: compares the first subset to all the others.
+  \item \code{"sequential"}: compares each subset sequentially (e.g. first against second, second against third, etc.).
+  \item \code{"all"}: compares all the subsets simultaneously to the data (i.e. \code{bootstrapped disparity ~ subsets names}). This argument is used for \code{\link[stats]{lm}} or \code{\link[stats]{glm}} type tests.
+  \item A list of pairs of number of subsets to compare. Each element of the list must contain two elements
      (e.g. \code{list(c("a","b"), ("b", "a"))} to compare "a" to "b" and then "b" to "a").
   \item {If the called test is \code{\link[dispRity]{null.test}}, the comparison argument is ignored.} 
 }
@@ -47,20 +47,20 @@ IMPORTANT: if you are performing multiple comparisons (e.g. when using \code{"pa
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 
-## Calculating the disparity from customised subsamples
-## Generating the subsamples
+## Calculating the disparity from customised subsets
+## Generating the subsets
 groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+customised_subsets <- custom.subsets(BeckLee_mat50, groups)
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 
-## Measuring the subsample overlap
+## Measuring the subset overlap
 test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 
-## Measuring differences from a reference subsample
+## Measuring differences from a reference subset
 test.dispRity(sum_of_variances, wilcox.test, "referential")
 
 ## Running a linear model on the data
@@ -68,10 +68,10 @@ test.dispRity(sum_of_variances, lm, "all")
 
 ## Measuring disparity as a distribution
 disparity_var <- dispRity(bootstrapped_data, metric = variances)
-## Differences between the concatenated bootstrapped values of the subsamples
+## Differences between the concatenated bootstrapped values of the subsets
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
      concatenate = TRUE, correction = "bonferroni")
-## Differences between the subsamples bootstrapped
+## Differences between the subsets bootstrapped
 test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
      concatenate = FALSE, correction = "bonferroni",
      conc.quantiles = c(mean, c(95, 5)))
