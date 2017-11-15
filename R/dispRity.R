@@ -191,7 +191,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
 
 
     ## Select the elements if probabilities are used
-    if(ncol(data$subsamples[[1]]$elements) > 1) {
+    if(ncol(data$subsamples[[1]]$elements) > 1 && matrix_decomposition) {
         ## Sample the elements
         selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
         for(subsample in 1:length(selected_elements)) {
