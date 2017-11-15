@@ -53,13 +53,13 @@ test_that("geomorph.ordination works", {
     ## geomorph.data.frame to ordination
     test <- geomorph.ordination(dummy_geomorph_df)
     expect_is(test, "dispRity")
-    expect_equal(length(test$subsamples), 4)
+    expect_equal(length(test$subsetss), 4)
     expect_equal(
-        names(test$subsamples)
+        names(test$subsetss)
         ,c("factor1.A", "factor1.B", "factor2.1", "factor2.2")
         )
     expect_equal(
-        as.vector(unlist(lapply(test$subsamples, lapply, length)))
+        as.vector(unlist(lapply(test$subsetss, lapply, length)))
         , c(6,4,5,5)
         )
     

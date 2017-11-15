@@ -160,7 +160,7 @@ test_that("set.comparisons.list internal fun", {
 test_that("save.comparison.list internal fun", {
     my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
     names(my_data) <- c("X", "Y")
-    my_comp_subsamples <- list(c(1,2), c(2,1))
+    my_comp_subsetss <- list(c(1,2), c(2,1))
 
     expect_equal(
         save.comparison.list(list(c(1,2), c(2,1)), my_data)
@@ -180,7 +180,7 @@ test_that("lapply.lm.type internal fun", {
 
     ## Dummy lm
     dummy_matrix <- as.data.frame(matrix(c(c(rep(1, 5), rep(2, 5)), rnorm(10)), ncol = 2))
-    colnames(dummy_matrix) <- c("data", "subsamples")
+    colnames(dummy_matrix) <- c("data", "subsetss")
     lm_out <- lapply.lm.type(dummy_matrix, test = lm)
     
     expect_is(lm_out, "lm")
@@ -209,40 +209,40 @@ test_that("get.quantiles.from.table internal fun", {
 data(disparity)
 extracted_data <- extract.dispRity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
 ## Set up data for sequential test
-comp_subsamples <- set.comparisons.list("sequential", extracted_data, "sequential")
+comp_subsetss <- set.comparisons.list("sequential", extracted_data, "sequential")
 
 test_that("output.numeric.results internal fun", {
     ## Run test
-    details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, bhatt.coeff)
+    details_out <- test.list.lapply.distributions(comp_subsetss, extracted_data, bhatt.coeff)
 
     ## Get results
-    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsetss, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("bhatt.coeff", "25%", "75%"))
-    expect_equal(rownames(test_out), unlist(lapply(comp_subsamples, paste, collapse = ":")))
+    expect_equal(rownames(test_out), unlist(lapply(comp_subsetss, paste, collapse = ":")))
 
 })
 
 test_that("output.htest.results internal fun", {
     ## Run test
-    details_out <- test.list.lapply.distributions(comp_subsamples, extracted_data, t.test)
+    details_out <- test.list.lapply.distributions(comp_subsetss, extracted_data, t.test)
 
     ## Get results
-    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsetss, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("statistic", "25%", "75%"))
-    expect_equal(rownames(test_out), unlist(lapply(comp_subsamples, paste, collapse = ":")))
+    expect_equal(rownames(test_out), unlist(lapply(comp_subsetss, paste, collapse = ":")))
 
     ## Wrapping function
-    test_out <- output.htest.results(details_out, comp_subsamples, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean, correction = "none")
+    test_out <- output.htest.results(details_out, comp_subsetss, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean, correction = "none")
 
     expect_is(test_out, "list")
     expect_equal(length(test_out), 3)
 
     elements_names <- c("statistic", "parameter", "p.value")
-    comp_names <- unlist(lapply(comp_subsamples, paste, collapse = ":"))
+    comp_names <- unlist(lapply(comp_subsetss, paste, collapse = ":"))
     
     for(element in 1:3) {
         expect_equal(colnames(test_out[[element]]), c(elements_names[element], "25%", "75%"))
@@ -269,7 +269,7 @@ test_that("output.htest.results internal fun", {
 
     
 #     elements_names <- c("Df", "Sum Sq", "Mean Sq", "F value", "Pr(>F)")
-#     comp_names <- c("subsamples", "Residuals")
+#     comp_names <- c("subsetss", "Residuals")
     
 #     for(element in 1:5) {
 #         expect_equal(colnames(test_out[[element]]), c(elements_names[element], "25%", "75%"))
@@ -283,12 +283,12 @@ test_that("test.dispRity works fine", {
     ## Load the Beck & Lee 2014 data
     data(BeckLee_mat50)
 
-    ## Calculating the disparity from a customised subsamples
-    ## Generating the subsamples
+    ## Calculating the disparity from a customised subsetss
+    ## Generating the subsetss
     groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+    customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
     ## Bootstrapping the data
-    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
@@ -333,16 +333,16 @@ test_that("example works fine", {
     ## Load the Beck & Lee 2014 data
     data(BeckLee_mat50)
 
-    ## Calculating the disparity from a customised subsamples
-    ## Generating the subsamples
+    ## Calculating the disparity from a customised subsetss
+    ## Generating the subsetss
     groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)), dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+    customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
     ## Bootstrapping the data
-    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-    ## Measuring the subsamples overlap
+    ## Measuring the subsetss overlap
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
         , "data.frame"))
@@ -353,7 +353,7 @@ test_that("example works fine", {
     	sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
         , 0.67027))
 
-    ## Measuring differences from a reference_subsamples
+    ## Measuring differences from a reference_subsetss
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
         , "list"))

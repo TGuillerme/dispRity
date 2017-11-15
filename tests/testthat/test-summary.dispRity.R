@@ -45,8 +45,8 @@ test_that("lapply.summary", {
 })
 
 test_that("lapply.get.elements", {
-    test_nobs <- as.vector(lapply.get.elements(disparity$subsamples[[1]], bootstrapped = FALSE))
-    test_bs <- as.vector(lapply.get.elements(disparity$subsamples[[1]], bootstrapped = TRUE))
+    test_nobs <- as.vector(lapply.get.elements(disparity$subsetss[[1]], bootstrapped = FALSE))
+    test_bs <- as.vector(lapply.get.elements(disparity$subsetss[[1]], bootstrapped = TRUE))
     expect_is(test_nobs, "integer")
     expect_is(test_bs, "integer")
     expect_equal(test_nobs, c(18,18,15,10,5))
@@ -58,7 +58,7 @@ test_that("lapply.observed", {
 })
 
 test_that("mapply.observed", {
-    elements <- lapply.get.elements(disparity$subsamples[[1]])
+    elements <- lapply.get.elements(disparity$subsetss[[1]])
     disparity_value <- lapply.observed(disparity$disparity[[1]])
     expect_equal(mapply.observed(disparity_value, elements), c(disparity_value, rep(NA,3)))
 })
@@ -161,16 +161,16 @@ test_that("Works with bootstraps and rarefaction", {
         , c(45.36, NA))
 })
 
-#Case 4, time subsamples
+#Case 4, time subsetss
 data <- test_data$ord_data_tips
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
-data <- custom.subsamples(data, group)
+data <- custom.subsetss(data, group)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with subsamples", {
+test_that("Works with subsetss", {
     expect_is(
         test, "data.frame"
         )
@@ -185,18 +185,18 @@ test_that("Works with subsamples", {
         ,c(37.00, 37.97))
 })
 
-#Case 5, time subsamples + bootstraps
+#Case 5, time subsetss + bootstraps
 set.seed(1)
 data <- test_data$ord_data_tips
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
-data <- custom.subsamples(data, group)
+data <- custom.subsetss(data, group)
 data <- boot.matrix(data, bootstrap = 5)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with subsamples and bootstraps", {
+test_that("Works with subsetss and bootstraps", {
     expect_is(
         test, "data.frame"
         )
@@ -211,18 +211,18 @@ test_that("Works with subsamples and bootstraps", {
         ,c(32.65, 34.09))
 })
 
-#Case 5, time subsamples + bootstraps + rarefaction
+#Case 5, time subsetss + bootstraps + rarefaction
 set.seed(1)
 data <- test_data$ord_data_tips
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
-data <- custom.subsamples(data, group)
+data <- custom.subsetss(data, group)
 data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,6))
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
 #Test
-test_that("Works with subsamples, bootstraps and rarefaction", {
+test_that("Works with subsetss, bootstraps and rarefaction", {
     expect_is(
         test, "data.frame"
         )
@@ -243,8 +243,8 @@ test_that("Works with subsamples, bootstraps and rarefaction", {
 #Example
 test_that("Example works", {
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
+    bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
     expect_is(
         summary(sum_of_ranges), "data.frame"
@@ -263,9 +263,9 @@ test_that("Example works", {
 #Testing with distributions
 test_that("Test with disparity as a distribution", {
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-    sum_of_ranges1 <- dispRity(customised_subsamples, metric=ranges)
-    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps=100)
+    customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
+    sum_of_ranges1 <- dispRity(customised_subsetss, metric=ranges)
+    bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps=100)
     sum_of_ranges2 <- dispRity(bootstrapped_data, metric=ranges)
 
     expect_is(
@@ -283,15 +283,15 @@ test_that("Test with disparity as a distribution", {
         )
 })
 
-## summary.dispRity works with empty or small (<3 subsamples)
-test_that("summary.dispRity works with small, empty/subsamples", {
+## summary.dispRity works with empty or small (<3 subsetss)
+test_that("summary.dispRity works with small, empty/subsetss", {
 
     load("test_data.Rda")
     tree <- test_data$tree_data
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
+    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsetss(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 
     test <- summary(data)
     expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))
@@ -303,8 +303,8 @@ test_that("summary.dispRity works with small, empty/subsamples", {
 # test_that("Test seq.test object management", {
 #     data(BeckLee_mat50)
 #     groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-#     customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-#     bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 3)
+#     customised_subsetss <- custom.subsetss(BeckLee_mat50, groups)
+#     bootstrapped_data <- boot.matrix(customised_subsetss, bootstraps = 3)
 #     sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
 #     data_distribution <- sequential.test(extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE), family = gaussian)
 #     data_concatenated <- sequential.test(extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = TRUE), family = gaussian)

@@ -29,21 +29,21 @@ test_that("internal: bootstrap methods", {
 ## Internal functions tests
 test_that("internal: bootstrap replicates", {
     data(disparity)
-    subsamples <- disparity$subsamples[[1]]
+    subsetss <- disparity$subsetss[[1]]
 
     ## Select rarefactions
     expect_equal(
-        select.rarefaction(subsamples, 8)
+        select.rarefaction(subsetss, 8)
         ,list(18, 8))
     expect_equal(
-        select.rarefaction(subsamples, c(3,5))
+        select.rarefaction(subsetss, c(3,5))
         ,list(18, 3, 5))
 
     ## One bootstrap replicate
     set.seed(1)
-    test_silent <- replicate.bootstraps.silent(6, 5, subsamples, boot.full)
+    test_silent <- replicate.bootstraps.silent(6, 5, subsetss, boot.full)
     set.seed(1)
-    expect_message(test_verbose <- replicate.bootstraps.verbose(6, 5, subsamples, boot.full))
+    expect_message(test_verbose <- replicate.bootstraps.verbose(6, 5, subsetss, boot.full))
 
     ## Both are the same!
     expect_is(test_silent, "matrix")
@@ -53,7 +53,7 @@ test_that("internal: bootstrap replicates", {
     expect_true(all(as.vector(test_silent) == as.vector(test_verbose)))
 
     ## Bootstrap replicates wrapper
-    test_boot <- bootstrap.wrapper(subsamples, bootstraps = 6, rarefaction = c(3,5), boot.type.fun = boot.full, verbose = FALSE)
+    test_boot <- bootstrap.wrapper(subsetss, bootstraps = 6, rarefaction = c(3,5), boot.type.fun = boot.full, verbose = FALSE)
     expect_is(test_boot, "list")
     expect_equal(length(test_boot), 3)
     expect_equal(unlist(lapply(test_boot, dim)), c(18, 6, 3, 6, 5, 6))
@@ -114,19 +114,19 @@ test_that("No bootstraps", {
         length(test)
         , 3)
     expect_equal(
-        as.vector(test$subsamples[[1]][[1]])
+        as.vector(test$subsetss[[1]][[1]])
         , seq(1:nrow(test$matrix)))
     expect_equal(
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        length(test$subsamples[[1]])
+        length(test$subsetss[[1]])
         ,1)
     expect_equal(
-        length(test$subsamples)
+        length(test$subsetss)
         ,1)
     expect_is(
-        test$subsamples[[1]][[1]]
+        test$subsetss[[1]][[1]]
         ,"matrix")
 })
 
@@ -155,13 +155,13 @@ test_that("5 bootstraps", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$subsamples[[1]][[1]])
+        dim(test$subsetss[[1]][[1]])
         ,c(50,1))
     expect_equal(
-        dim(test$subsamples[[1]][[2]])
+        dim(test$subsetss[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        length(test$subsamples[[1]])
+        length(test$subsetss[[1]])
         ,2)
 })
 
@@ -178,10 +178,10 @@ test_that("5 bootstraps, rarefaction = 5", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        dim(test$subsamples[[1]][[2]])
+        dim(test$subsetss[[1]][[2]])
         ,c(50,5))
     expect_equal(
-        dim(test$subsamples[[1]][[3]])
+        dim(test$subsetss[[1]][[3]])
         ,c(5,5))
 })
 
@@ -189,11 +189,11 @@ test_that("5 bootstraps, rarefaction = 5", {
 test_that("5 bootstraps, rarefaction = TRUE", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = TRUE)
     expect_equal(
-        length(test$subsamples[[1]])
+        length(test$subsetss[[1]])
         , 49)
     for(rare in 2:49) {
         expect_equal(
-            dim(test$subsamples[[1]][[rare]])
+            dim(test$subsetss[[1]][[rare]])
             ,c(50-(rare-2),5))
     }
 })
@@ -213,11 +213,11 @@ test_that("5 bootstraps, rarefaction = 5,6, boot type", {
 })
 
 
-## Bootstraps = 5 + Rarefaction = c(5,6) + subsamples
-test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
+## Bootstraps = 5 + Rarefaction = c(5,6) + subsetss
+test_that("5 bootstraps, rarefaction = 5,6, subsetss", {
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
     groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
-    matrix_list <- custom.subsamples(ordinated_matrix, groups)
+    matrix_list <- custom.subsetss(ordinated_matrix, groups)
     test <- boot.matrix(matrix_list, bootstraps = 2, rarefaction = c(4,3))
     expect_is(
         test
@@ -229,17 +229,17 @@ test_that("5 bootstraps, rarefaction = 5,6, subsamples", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        length(test$subsamples)
+        length(test$subsetss)
         ,2)
     expect_equal(
-        length(test$subsamples[[1]])
+        length(test$subsetss[[1]])
         ,4)
     expect_equal(
-        length(test$subsamples[[2]])
+        length(test$subsetss[[2]])
         ,4)
     expect_equal(
-        dim(test$subsamples[[2]][[2]])
-        ,c(nrow(test$subsamples[[2]]$elements), 2))
+        dim(test$subsetss[[2]][[2]])
+        ,c(nrow(test$subsetss[[2]]$elements), 2))
 })
 
 
@@ -252,31 +252,31 @@ test_that("verbose bootstrap works", {
 })
 
 
-## Bootstrap works with empty or small (<3 subsamples)
-test_that("Boot.matrix works with small, empty/subsamples", {
+## Bootstrap works with empty or small (<3 subsetss)
+test_that("Boot.matrix works with small, empty/subsetss", {
 
     tree <- test_data$tree_data
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- time.subsamples(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+    silent <- capture_warnings(data <- time.subsetss(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
 
     warnings <- capture_warnings(test <- boot.matrix(data))
-    expect_equal(warnings, "The following subsamples have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
+    expect_equal(warnings, "The following subsetss have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
 
-    expect_equal(test$subsamples[[1]][[2]], matrix(rep(NA, 100), nrow = 1))
-    expect_equal(test$subsamples[[2]][[2]], matrix(rep(51, 100), nrow = 1))
+    expect_equal(test$subsetss[[1]][[2]], matrix(rep(NA, 100), nrow = 1))
+    expect_equal(test$subsetss[[2]][[2]], matrix(rep(51, 100), nrow = 1))
 })
 
 
-test_that("boot.matrix deals with probabilities subsamples", {
+test_that("boot.matrix deals with probabilities subsetss", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
     data(BeckLee_tree)
     
 
-    data1 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    data2 <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- time.subsetss(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- time.subsetss(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     set.seed(1)
     test1 <- boot.matrix(data1, bootstraps = 10)
@@ -288,14 +288,14 @@ test_that("boot.matrix deals with probabilities subsamples", {
      for(sub in 1:2) {
         ## Difference
         expect_true(
-            !all(test1$subsamples[[sub]][[2]] == test2$subsamples[[sub]][[2]])
+            !all(test1$subsetss[[sub]][[2]] == test2$subsetss[[sub]][[2]])
             )
         ## Control
         expect_false(
-            !all(test3$subsamples[[sub]][[2]] == test2$subsamples[[sub]][[2]])
+            !all(test3$subsetss[[sub]][[2]] == test2$subsetss[[sub]][[2]])
             )
         ## More sampled
-        expect_gt(length(unique(as.vector(test1$subsamples[[sub]][[2]])))
-        ,length(unique(as.vector(test2$subsamples[[sub]][[2]]))))
+        expect_gt(length(unique(as.vector(test1$subsetss[[sub]][[2]])))
+        ,length(unique(as.vector(test2$subsetss[[sub]][[2]]))))
      }
 })

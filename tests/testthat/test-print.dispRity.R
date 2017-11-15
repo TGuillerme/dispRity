@@ -22,32 +22,32 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
-    ## Time subsamples
-    test <- time.subsamples(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
+    ## Time subsetss
+    test <- time.subsetss(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsamples for 50 elements:",
+        "2 discrete time subsetss for 50 elements:",
         "    100 - 90, 90 - 50."
     ))
 
-    test <- time.subsamples(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
+    test <- time.subsetss(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
 
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsamples for 99 elements:",
+        "7 continuous (acctran) time subsetss for 99 elements:",
         "     100, 90, 80, 70, 50 ..."
     ))
 
-    ## Custom subsamples
-    expect_warning(test <- custom.subsamples(matrix(data = rnorm(90), nrow = 10), list(c(1:4), c(5:10))))
+    ## Custom subsetss
+    expect_warning(test <- custom.subsetss(matrix(data = rnorm(90), nrow = 10), list(c(1:4), c(5:10))))
 
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 customised subsamples for 10 elements:",
+        "2 customised subsetss for 10 elements:",
         "    1, 2."
     ))
 
@@ -61,13 +61,13 @@ test_that("normal printing", {
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
 
-    ## Bootstrapped + subsamples
-    test <- boot.matrix(time.subsamples(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
+    ## Bootstrapped + subsetss
+    test <- boot.matrix(time.subsetss(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
 
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsamples for 50 elements with 48 dimensions:",
+        "2 discrete time subsetss for 50 elements with 48 dimensions:",
         "    100 - 90, 90 - 50.",
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
@@ -82,12 +82,12 @@ test_that("normal printing", {
         "Disparity was calculated as: mean."
     ))
 
-    ## Bootstrapped + subsamples + rarefaction + disparity
+    ## Bootstrapped + subsetss + rarefaction + disparity
 
     expect_equal(capture.output(disparity), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsamples for 99 elements with 97 dimensions:",
+        "7 continuous (acctran) time subsetss for 99 elements with 97 dimensions:",
         "     90, 80, 70, 60, 50 ...",
         "Data was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
         "Disparity was calculated as: c(median, centroids)."
