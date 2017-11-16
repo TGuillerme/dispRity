@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-11-15}
+  \date{2017-11-16}
 
 \usepackage{booktabs}
 
@@ -152,11 +152,12 @@ Cooper
 \chapter{\texorpdfstring{\texttt{dispRity}}{dispRity}}\label{disprity}
 
 This is a package for measuring disparity in \texttt{R}. It allows users
-to summarise matrices as representations as multidimensional spaces
-(namely from ordinated matrices from MDS, PCA, PCO, PCoA) into a single
-value or distribution describing a specific aspect of this
-multidimensional space (the disparity). This manual is based on the
-version \texttt{0.4}.
+to summarise matrices as representations as multidimensional spaces into
+a single value or distribution describing a specific aspect of this
+multidimensional space (the disparity). Multidimensional spaces can be
+ordinated matrices from MDS, PCA, PCO, PCoA but the package is
+\emph{not} restricted to any type of matrices! This manual is based on
+the version \texttt{0.4.2}.
 
 \section{\texorpdfstring{What is
 \texttt{dispRity}?}{What is dispRity?}}\label{what-is-disprity}
@@ -809,11 +810,6 @@ test).
 \KeywordTok{test.dispRity}\NormalTok{(disparity_data, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{details =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning in test.dispRity(disparity_data, test = wilcox.test, details = TRUE): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
-\end{verbatim}
 
 \begin{verbatim}
 ## $`crown : stem`
@@ -1576,13 +1572,23 @@ Source\strut
 \midrule
 \endhead
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1\strut
+2\strut
 \end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-\texttt{ellipse.volume}1\strut
+\texttt{ancestral.dist}\strut
 \end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
-The volume of the ellipsoid of the space\strut
+The distance between an element and its ancestor\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Donohue \emph{et al.} (2013)\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{centroids}1\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The distance between each element and the centroid of the ordinated
+space\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 1\strut
@@ -1602,28 +1608,99 @@ The volume of the convex hull formed by all the elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
 \href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln}\strut
 \end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{diagonal}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The longest distance in the ordinated space (like the diagonal in two
+dimensions)\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{ellipse.volume}1\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The volume of the ellipsoid of the space\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+Donohue \emph{et al.} (2013)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{mode.val}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The modal value\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{n.ball.volume}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The hyper-spherical (\emph{n}-ball) volume\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{pairwise.dist}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The pairwise distances between elements\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\href{https://cran.r-project.org/web/packages/stats/index.html}{\texttt{stats}}\texttt{::dist}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{radius}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The radius of each dimensions\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{ranges}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The range of each dimension\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{span.tree.length}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The minimal spanning tree length\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\href{https://cran.r-project.org/web/packages/vegan/index.html}{\texttt{vegan}}\texttt{::spantree}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{variances}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The variance of each dimension\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
 \bottomrule
 \end{longtable}
 
-1 \textbar{} \texttt{diagonal} \textbar{} The longest distance in the
-ordinated space (like the diagonal in two dimensions) \textbar{}
-\texttt{dispRity} \textbar{} 2 \textbar{} \texttt{ranges} \textbar{} The
-range of each dimension \textbar{} \texttt{dispRity} \textbar{} 2
-\textbar{} \texttt{variances} \textbar{} The variance of each dimension
-\textbar{} \texttt{dispRity} \textbar{} 2 \textbar{} \texttt{centroids}2
-\textbar{} The distance between each element and the centroid of the
-ordinated space \textbar{} \texttt{dispRity} \textbar{} 1 \textbar{}
-\texttt{mode.val} \textbar{} The modal value \textbar{}
-\texttt{dispRity} \textbar{}
-
-1: This function uses an estimation of the eigenvalue that only works
-for MDS or PCoA ordinations (not PCA).
-
-2: Note that by default, the centroid is the centroid of the elements.
+1: Note that by default, the centroid is the centroid of the elements.
 It can, however, be fixed to a different value by using the
 \texttt{centroid} argument
 \texttt{centroids(space,\ centroid\ =\ rep(0,\ ncol(space)))}, for
 example the origin of the ordinated space.
+
+2: This function uses an estimation of the eigenvalue that only works
+for MDS or PCoA ordinations (\emph{not} PCA).
 
 \subsection{Equations and
 implementations}\label{equations-and-implementations}
@@ -1635,38 +1712,50 @@ calculate
 implementation here}).
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}
 \end{equation}
-
-Where \emph{k} is the number of dimensions, and \(\lambda_i\) is the
-eigenvalue of each dimension.
-
-\begin{equation}
-    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
-\end{equation}
-
-Where \emph{k} is the number of dimensions.
-
-\begin{equation}
-    ranges = |max(k_i) - min(k_i)|
-\end{equation}
-
-Where \emph{k} is the number of dimensions.
-
-\begin{equation}
-    variances = \sigma^{2}{k_i}
-\end{equation}
-
-Where \emph{k} is the number of dimensions, and \(\sigma^{2}\) is their
-variance.
 
 \begin{equation}
     centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
 \end{equation}
 
-Where \emph{n} is each element in the ordinated space, \emph{k} is the
-number of dimensions, and \(Centroid_{k}\) is their mean (or can be set
-to another value).
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+
+\begin{equation}
+    n.ball.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R
+\end{equation}
+
+\begin{equation}
+    radius = |\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|
+\end{equation}
+
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+
+\begin{equation}
+    span.tree.length = \sum(\mathrm{branch\ length})
+\end{equation}
+
+Where \emph{k} is the number of dimensions, \emph{n} the number of
+elements, \(\Gamma\) is the Gamma distribution, \(\lambda_i\) is the
+eigenvalue of each dimensions, \(\sigma^{2}\) is their variance and
+\(Centroid_{k}\) is their mean, \(Ancestor_{n}\) is the coordinates of
+the ancestor of element \(n\), \(f(\mathbf{v}k)\) is function to select
+one value from the vector \(\mathbf{v}\) of the dimension \(k\)
+(e.g.~it's maximum, minimum, mean, etc.), \emph{R} is the radius of the
+sphere or the product of the radii of each dimensions
+(\(\displaystyle\prod_{i=1}^{k}R_{i}\) - for a hyper-ellipsoid).
 
 \subsection{Using the different disparity
 metrics}\label{using-the-different-disparity-metrics}
@@ -1689,9 +1778,9 @@ We will use this simulated space to demonstrate the different metrics.
 \subsubsection{Volumes and surface
 metrics}\label{volumes-and-surface-metrics}
 
-The functions \texttt{ellipse.volume}, \texttt{convhull.surface} and
-\texttt{convhull.volume} all measure the surface or the volume of the
-ordinated space occupied:
+The functions \texttt{ellipse.volume}, \texttt{convhull.surface},
+\texttt{convhull.volume} and \texttt{n.ball.volume} all measure the
+surface or the volume of the ordinated space occupied:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1735,6 +1824,18 @@ object, this operation is the equivalent of
 ## 1       1 10 1.031
 \end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating the convex hull volume}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ n.ball.volume))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n  obs
+## 1       1 10 4.43
+\end{verbatim}
+
 The convex hull functions make a (good) estimation of the
 multidimensional properties of the ordinated space.
 
@@ -1745,16 +1846,18 @@ strongly affected by the
 dimensionality} that often results in near 0 disparity values.
 \end{quote}
 
-\subsubsection{Ranges, variances and
-diagonal}\label{ranges-variances-and-diagonal}
+\subsubsection{Ranges, variances, radius, pairwise distance, modal value
+and
+diagonal}\label{ranges-variances-radius-pairwise-distance-modal-value-and-diagonal}
 
-The functions \texttt{ranges}, \texttt{variances} and \texttt{diagonal}
-all measure properties of the ordinated space based on its dimensional
+The functions \texttt{ranges}, \texttt{variances} \texttt{radius},
+\texttt{pairwise.dist}, \texttt{mode.val} and \texttt{diagonal} all
+measure properties of the ordinated space based on its dimensional
 properties (they are also less affected by the ``curse of
 dimensionality''):
 
-\texttt{ranges} and \texttt{variances} both work on the same principle
-and measure the range/variance of each dimension:
+\texttt{ranges}, \texttt{variances} and \texttt{radius} work on the same
+principle and measure the range/variance/radius of each dimension:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1848,9 +1951,82 @@ and measure the range/variance of each dimension:
 ## 1       1 10 0.148
 \end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating the radius of each dimension in the ordinated space}
+\KeywordTok{radius}\NormalTok{(dummy_space)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.4630780 2.4635449 1.8556785 1.4977898 0.8416318
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## By default the radius is the maximum distance from the centre of}
+\NormalTok{## the dimension. It can however be changed to any function:}
+\KeywordTok{radius}\NormalTok{(dummy_space, }\DataTypeTok{type =}\NormalTok{ min)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.05144054 0.14099827 0.02212226 0.17453525 0.23044528
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{radius}\NormalTok{(dummy_space, }\DataTypeTok{type =}\NormalTok{ mean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6233501 0.7784888 0.7118713 0.6253263 0.5194332
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating disparity as the mean average radius}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(mean, radius), }\DataTypeTok{type =}\NormalTok{ mean))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n   obs
+## 1       1 10 0.652
+\end{verbatim}
+
+The pairwise distances uses the function \texttt{stats::dist} and can
+take the normal \texttt{dist} options:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The average pairwise euclidean distance}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(mean, pairwise.dist)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n   obs
+## 1       1 10 2.539
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The distribution of the Manhattan distances}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ pairwise.dist, }\DataTypeTok{method =} \StringTok{"manhattan"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      4.427 2.566 3.335 5.672  9.63
+\end{verbatim}
+
 The \texttt{diagonal} function measures the multidimensional diagonal of
 the whole space (i.e.~in our case the longest Euclidean distance in our
-five dimensional space):
+five dimensional space). The \texttt{mode.val} function measures the
+modal value of the matrix:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1864,12 +2040,25 @@ five dimensional space):
 ## 1       1 10 3.659
 \end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating the modal value of the matrix}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ mode.val))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n   obs
+## 1       1 10 -2.21
+\end{verbatim}
+
 \begin{quote}
 This metric is only a Euclidean diagonal (mathematically valid) if the
 dimensions within the space are all orthogonal!
 \end{quote}
 
-\subsubsection{Centroids metric}\label{centroids-metric}
+\subsubsection{Centroids and ancestral distance
+metrics}\label{centroids-and-ancestral-distance-metrics}
 
 The \texttt{centroids} metric allows users to measure the position of
 the different elements compared to a fixed point in the ordinated space.
@@ -1927,6 +2116,59 @@ number of dimensions:
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      5.489 4.293 5.032 6.155 6.957
 \end{verbatim}
+
+The \texttt{ancestral.dist} metric works on a similar principle as the
+\texttt{centroids} function but changes the centroid to be the
+coordinates of each element's ancestor. Therefore this functions needs a
+tree and node coordinates as additional arguments:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## A generating a random tree with node labels}
+\NormalTok{tree <-}\StringTok{ }\KeywordTok{rtree}\NormalTok{(}\DecValTok{5}\NormalTok{) ; tree}\OperatorTok{$}\NormalTok{node.label <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"n"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{)}
+\NormalTok{## Adding the tip and node names to the matrix}
+\NormalTok{dummy_space2 <-}\StringTok{ }\NormalTok{dummy_space[}\OperatorTok{-}\DecValTok{1}\NormalTok{,]}
+\KeywordTok{rownames}\NormalTok{(dummy_space2) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(tree}\OperatorTok{$}\NormalTok{tip.label, tree}\OperatorTok{$}\NormalTok{node.label)}
+
+\NormalTok{## Calculating all the ancestral nodes}
+\NormalTok{all_anc_centroids <-}\StringTok{ }\KeywordTok{nodes.coordinates}\NormalTok{(dummy_space2, tree, }\DataTypeTok{full =} \OtherTok{TRUE}\NormalTok{)}
+
+\NormalTok{## Calculating the distances from the ancestral nodes}
+\NormalTok{ancestral_dist <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(dummy_space2, }\DataTypeTok{metric =}\NormalTok{ ancestral.dist,}
+                           \DataTypeTok{nodes.coords =}\NormalTok{ all_anc_centroids)}
+
+\NormalTok{## Calculating disparity as the sum of the distances from all the ancestral nodes}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(ancestral_dist, }\DataTypeTok{metric =}\NormalTok{ sum))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n   obs
+## 1       1 9 36.56
+\end{verbatim}
+
+\subsubsection{Minimal spanning tree
+length}\label{minimal-spanning-tree-length}
+
+The \texttt{span.tree.length} uses the \texttt{vegan::spantree} function
+to heuristically calculate the minimum spanning tree (the shortest
+multidimensional tree connecting each elements) and calculates its
+length as the sum of every branch lengths.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The length of the minimal spanning tree}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ span.tree.length))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n  obs
+## 1       1 10 15.4
+\end{verbatim}
+
+Note that because the solution is heuristic, this metric can take a long
+time to compute for big matrices.
 
 \section{Summarising dispRity data
 (plots)}\label{summarising-disprity-data-plots}
@@ -1988,10 +2230,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 2.899     2.399 1.749 2.202 2.642 2.794
-## 2      80 22 3.558     3.414 3.127 3.314 3.463 3.557
-## 3      40 15 4.032     3.764 3.569 3.694 3.842 3.954
-## 4       0 10 4.055     3.661 3.282 3.564 3.771 3.927
+## 1     120  6 2.899     2.472 1.842 2.276 2.693 2.855
+## 2      80 22 3.558     3.394 3.141 3.297 3.474 3.579
+## 3      40 15 4.032     3.781 3.515 3.692 3.850 3.969
+## 4       0 10 4.055     3.688 3.207 3.509 3.760 3.953
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed
@@ -2006,12 +2248,12 @@ specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 1.995     1.930 1.866 1.909 1.950 1.970
-## 2   crown 29    NA     1.932 1.871 1.915 1.953 1.974
-## 3   crown 28    NA     1.926 1.852 1.903 1.942 1.978
-## 4   crown 27    NA     1.935 1.860 1.908 1.954 1.982
-## 5   crown 26    NA     1.931 1.859 1.908 1.953 1.977
-## 6   crown 25    NA     1.933 1.855 1.909 1.954 1.978
+## 1   crown 30 1.995     1.933 1.873 1.915 1.943 1.972
+## 2   crown 29    NA     1.935 1.861 1.906 1.953 1.976
+## 3   crown 28    NA     1.929 1.872 1.910 1.945 1.970
+## 4   crown 27    NA     1.933 1.852 1.905 1.947 1.981
+## 5   crown 26    NA     1.932 1.867 1.910 1.948 1.971
+## 6   crown 25    NA     1.929 1.847 1.913 1.949 1.975
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2042,10 +2284,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.sd    6%   94%
-## 1     120  6 2.899 0.293 1.917 2.762
-## 2      80 22 3.558 0.113 3.208 3.542
-## 3      40 15 4.032 0.109 3.612 3.918
-## 4       0 10 4.055 0.169 3.387 3.882
+## 1     120  6 2.899 0.319 1.902 2.801
+## 2      80 22 3.558 0.117 3.220 3.552
+## 3      40 15 4.032 0.117 3.570 3.925
+## 4       0 10 4.055 0.194 3.330 3.895
 \end{verbatim}
 
 \begin{Shaded}
@@ -2065,10 +2307,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  6 2.89926   2.39864 1.74855 2.20230 2.64153 2.79428
-## 2      80 22 3.55782   3.41432 3.12737 3.31353 3.46313 3.55661
-## 3      40 15 4.03191   3.76393 3.56890 3.69427 3.84171 3.95368
-## 4       0 10 4.05457   3.66131 3.28211 3.56431 3.77130 3.92706
+## 1     120  6 2.89926   2.47202 1.84236 2.27615 2.69342 2.85486
+## 2      80 22 3.55782   3.39410 3.14102 3.29705 3.47379 3.57925
+## 3      40 15 4.03191   3.78130 3.51518 3.69170 3.84985 3.96858
+## 4       0 10 4.05457   3.68835 3.20652 3.50867 3.76034 3.95260
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2138,7 +2380,7 @@ number of elements) by using the \texttt{rarefaction} argument.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2169,7 +2411,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-48-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2198,7 +2440,7 @@ central tendency.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-49-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2229,7 +2471,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2252,7 +2494,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2321,22 +2563,17 @@ Here we are using the variables generated in the
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in test.dispRity(disparity_crown_stem, test = t.test): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
-\end{verbatim}
-
-\begin{verbatim}
 ## [[1]]
 ##              statistic
-## crown : stem  57.80615
+## crown : stem  66.67693
 ## 
 ## [[2]]
 ##              parameter
-## crown : stem  168.7267
+## crown : stem  169.1446
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 3.927248e-113
+## crown : stem 2.275095e-123
 \end{verbatim}
 
 \begin{Shaded}
@@ -2347,24 +2584,19 @@ Here we are using the variables generated in the
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in test.dispRity(disparity_crown_stem, test = t.test, details = TRUE): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
-\end{verbatim}
-
-\begin{verbatim}
 ## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 57.806, df = 168.73, p-value < 2.2e-16
+## t = 66.677, df = 169.14, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2843010 0.3044058
+##  0.2894967 0.3071619
 ## sample estimates:
 ## mean of x mean of y 
-##  1.926709  1.632356
+##  1.928128  1.629799
 \end{verbatim}
 
 \begin{Shaded}
@@ -2380,14 +2612,14 @@ Here we are using the variables generated in the
 ## [[1]]
 ##          statistic
 ## 120 : 80         0
-## 80 : 40         74
-## 40 : 0        7076
+## 80 : 40         97
+## 40 : 0        6992
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 7.673885e-34
-## 80 : 40  6.986470e-33
-## 40 : 0   1.185611e-06
+## 120 : 80 7.677344e-34
+## 80 : 40  1.378183e-32
+## 40 : 0   3.416199e-06
 \end{verbatim}
 
 \begin{Shaded}
@@ -2407,7 +2639,7 @@ Here we are using the variables generated in the
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.4800631
+## 80 - 40 : 40 - 0     0.5194852
 \end{verbatim}
 
 It is also possible to apply some more \emph{complex} tests that have
@@ -2436,7 +2668,7 @@ The results can then be analysed as usual using the associated
 ## 
 ## Coefficients:
 ## (Intercept)   subsets120    subsets40    subsets80  
-##      3.6517      -1.2627       0.1145      -0.2634
+##      3.6438      -1.2077       0.1261      -0.2571
 \end{verbatim}
 
 \begin{Shaded}
@@ -2464,20 +2696,20 @@ The results can then be analysed as usual using the associated
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -0.91282 -0.08285  0.00993  0.10745  0.56989 
+## -1.45304 -0.10015  0.01867  0.10692  0.46313 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)  3.65169    0.01865 195.810  < 2e-16 ***
-## subsets120  -1.26273    0.02637 -47.878  < 2e-16 ***
-## subsets40    0.11452    0.02637   4.342 1.79e-05 ***
-## subsets80   -0.26339    0.02637  -9.987  < 2e-16 ***
+## (Intercept)  3.64384    0.02041 178.540  < 2e-16 ***
+## subsets120  -1.20770    0.02886 -41.843  < 2e-16 ***
+## subsets40    0.12611    0.02886   4.369 1.59e-05 ***
+## subsets80   -0.25708    0.02886  -8.907  < 2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.1865 on 396 degrees of freedom
-## Multiple R-squared:  0.8954, Adjusted R-squared:  0.8946 
-## F-statistic:  1130 on 3 and 396 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.2041 on 396 degrees of freedom
+## Multiple R-squared:  0.8688, Adjusted R-squared:  0.8678 
+## F-statistic: 874.3 on 3 and 396 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 Of course, due to the modular design of the package, tests can always be
@@ -2539,10 +2771,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  6      1.536     1.375 0.864 1.187 1.611 1.886
-## 2      80 22      1.871     1.807 1.481 1.681 1.904 2.075
-## 3      40 15      1.943     1.885 1.529 1.777 1.989 2.097
-## 4       0 10      1.910     1.802 1.463 1.687 1.960 2.095
+## 1     120  6      1.536     1.388 0.806 1.246 1.597 1.897
+## 2      80 22      1.871     1.811 1.479 1.677 1.903 2.062
+## 3      40 15      1.943     1.886 1.541 1.788 1.986 2.096
+## 4       0 10      1.910     1.804 1.341 1.668 1.960 2.097
 \end{verbatim}
 
 \begin{Shaded}
@@ -2554,10 +2786,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 1.536     1.313 0.822 1.260 1.464 1.592
-## 2      80 22 1.871     1.803 1.700 1.774 1.830 1.864
-## 3      40 15 1.943     1.887 1.764 1.847 1.928 1.968
-## 4       0 10 1.910     1.814 1.593 1.773 1.844 1.917
+## 1     120  6 1.536     1.353 0.790 1.268 1.507 1.576
+## 2      80 22 1.871     1.813 1.716 1.778 1.832 1.874
+## 3      40 15 1.943     1.885 1.794 1.846 1.923 1.968
+## 4       0 10 1.910     1.814 1.601 1.772 1.861 1.918
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -2581,7 +2813,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2607,12 +2839,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80  0.00000000
-## 120 : 40  0.05537319
-## 120 : 0   0.12649111
-## 80 : 40   0.55897558
-## 80 : 0    0.87452867
-## 40 : 0    0.73959979
+## 120 : 80   0.0000000
+## 120 : 40   0.0000000
+## 120 : 0    0.1309300
+## 80 : 40    0.6179184
+## 80 : 0     0.8377968
+## 40 : 0     0.7606357
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -2641,12 +2873,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.5876931
-## 120 : 40   0.4929308
-## 120 : 0    0.6023832
-## 80 : 40    0.9466307
-## 80 : 0     0.9461665
-## 40 : 0     0.9418949
+## 120 : 80   0.5984180
+## 120 : 40   0.4978507
+## 120 : 0    0.6624471
+## 80 : 40    0.9419177
+## 80 : 0     0.9423180
+## 40 : 0     0.9446338
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -2675,12 +2907,12 @@ A second solution is to compare the distributions to each other
 
 \begin{verbatim}
 ##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2744178 0.0000000 0.1507557 0.3810388 0.5463043
-## 120 : 40   0.1687997 0.0000000 0.0000000 0.2981424 0.4854356
-## 120 : 0    0.2717451 0.0000000 0.1825742 0.3872983 0.6652158
-## 80 : 40    0.6113891 0.2752409 0.5316275 0.7309501 0.8414439
-## 80 : 0     0.5707989 0.2452170 0.4876771 0.6732360 0.8162527
-## 40 : 0     0.5599584 0.1807321 0.3641941 0.7392429 0.9509206
+## 120 : 80   0.2831403 0.0000000 0.1740777 0.3872784 0.6026039
+## 120 : 40   0.1905339 0.0000000 0.0000000 0.2837006 0.4902114
+## 120 : 0    0.2637485 0.0000000 0.1692055 0.3872983 0.6116979
+## 80 : 40    0.5919469 0.2839402 0.5184306 0.6923659 0.8308461
+## 80 : 0     0.5444918 0.2287899 0.4306651 0.6579622 0.8212768
+## 40 : 0     0.5708636 0.1954287 0.4754313 0.6875411 0.8422871
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -2693,6 +2925,123 @@ probabilities of overlap. For example, when comparing the slices 120 and
 between 0.18 and 0.43 in 50\% of the pseudo-replicates. Note that the
 quantiles and central tendencies can be modified via the
 \texttt{conc.quantiles} option.
+
+\section{Disparity from other
+matrices}\label{disparity-from-other-matrices}
+
+In the example so far, disparity was measured from an ordinated
+multidimensional space (i.e.~a PCO of the distances between taxa based
+on discrete morphological characters). This is a common approach in
+palaeobiology, morphometrics or ecology but ordinated matrices are not
+mandatory for the \texttt{dispRity} package! It is totally possible to
+perform the same analysis detailed above using other types of matrices
+as long as your elements are rows in your matrix.
+
+For example, we can use the data set \texttt{eurodist}, an \texttt{R}
+inbuilt dataset that contains the distances (in km) between European
+cities. We can check for example, if Northern European cities are closer
+to each other than Southern ones:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Making the eurodist data set into a matrix (rather than "dist" object)}
+\NormalTok{eurodist <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(eurodist)}
+\NormalTok{eurodist[}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           Athens Barcelona Brussels Calais Cherbourg
+## Athens         0      3313     2963   3175      3339
+## Barcelona   3313         0     1318   1326      1294
+## Brussels    2963      1318        0    204       583
+## Calais      3175      1326      204      0       460
+## Cherbourg   3339      1294      583    460         0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The two groups of cities}
+\NormalTok{Northern <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Brussels"}\NormalTok{, }\StringTok{"Calais"}\NormalTok{, }\StringTok{"Cherbourg"}\NormalTok{, }\StringTok{"Cologne"}\NormalTok{, }\StringTok{"Copenhagen"}\NormalTok{,}
+              \StringTok{"Hamburg"}\NormalTok{, }\StringTok{"Hook of Holland"}\NormalTok{, }\StringTok{"Paris"}\NormalTok{, }\StringTok{"Stockholm"}\NormalTok{)}
+\NormalTok{Southern <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Athens"}\NormalTok{, }\StringTok{"Barcelona"}\NormalTok{, }\StringTok{"Geneva"}\NormalTok{, }\StringTok{"Gibraltar"}\NormalTok{, }\StringTok{"Lisbon"}\NormalTok{, }\StringTok{"Lyons"}\NormalTok{,}
+              \StringTok{"Madrid"}\NormalTok{, }\StringTok{"Marseilles"}\NormalTok{, }\StringTok{"Milan"}\NormalTok{, }\StringTok{"Munich"}\NormalTok{, }\StringTok{"Rome"}\NormalTok{, }\StringTok{"Vienna"}\NormalTok{)}
+
+\NormalTok{## Creating the subset dispRity object}
+\NormalTok{eurodist_subsets <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(eurodist, }\DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\StringTok{"Northern"}\NormalTok{ =}\StringTok{ }\NormalTok{Northern,}
+                                                        \StringTok{"Southern"}\NormalTok{ =}\StringTok{ }\NormalTok{Southern))}
+
+\NormalTok{## Bootstrapping and rarefying to 9 elements (the number of Northern cities)}
+\NormalTok{eurodist_bs <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(eurodist_subsets, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{)}
+
+\NormalTok{## Measuring disparity as the median distance from group's centroid}
+\NormalTok{euro_disp <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(eurodist_bs, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+
+\NormalTok{## Testing the differences using a simple wilcox.test}
+\NormalTok{euro_diff <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(euro_disp, }\DataTypeTok{test =}\NormalTok{ wilcox.test)}
+\NormalTok{euro_diff_rar <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(euro_disp, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+We can compare this approach to an ordination one:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Ordinating the eurodist matrix}
+\NormalTok{euro_ord <-}\StringTok{ }\KeywordTok{cmdscale}\NormalTok{(eurodist, }\DataTypeTok{k =} \KeywordTok{nrow}\NormalTok{(eurodist) }\OperatorTok{-}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in cmdscale(eurodist, k = nrow(eurodist) - 2): only 11 of the first
+## 19 eigenvalues are > 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating disparity on the bootstrapped and rarefied subset data}
+\NormalTok{euro_ord_disp <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(}\KeywordTok{custom.subsets}\NormalTok{(euro_ord, }\DataTypeTok{group =}
+        \KeywordTok{list}\NormalTok{(}\StringTok{"Northern"}\NormalTok{ =}\StringTok{ }\NormalTok{Northern, }\StringTok{"Southern"}\NormalTok{ =}\StringTok{ }\NormalTok{Southern)), }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{),}
+        \DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+
+\NormalTok{## Testing the differences using a simple wilcox.test}
+\NormalTok{euro_ord_diff <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(euro_ord_disp, }\DataTypeTok{test =}\NormalTok{ wilcox.test)}
+\NormalTok{euro_ord_diff_rar <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(euro_ord_disp, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+And visualise the differences:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Plotting the differences}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\NormalTok{## Plotting the normal disparity}
+\KeywordTok{plot}\NormalTok{(euro_disp, }\DataTypeTok{main =} \StringTok{"Distance differences"}\NormalTok{)}
+\NormalTok{## Adding the p-value}
+\KeywordTok{text}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\DecValTok{4000}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"p="}\NormalTok{,}\KeywordTok{round}\NormalTok{(euro_diff[[}\DecValTok{2}\NormalTok{]][[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{5}\NormalTok{)))}
+\NormalTok{## Plotting the rarefied disparity}
+\KeywordTok{plot}\NormalTok{(euro_disp, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Distance differences (rarefied)"}\NormalTok{)}
+\NormalTok{## Adding the p-value}
+\KeywordTok{text}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\DecValTok{4000}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"p="}\NormalTok{,}\KeywordTok{round}\NormalTok{(euro_diff_rar[[}\DecValTok{2}\NormalTok{]][[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{5}\NormalTok{)))}
+
+\NormalTok{## Plotting the ordinated disparity}
+\KeywordTok{plot}\NormalTok{(euro_ord_disp, }\DataTypeTok{main =} \StringTok{"Ordinated differences"}\NormalTok{)}
+\NormalTok{## Adding the p-value}
+\KeywordTok{text}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\DecValTok{1400}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"p="}\NormalTok{,}\KeywordTok{round}\NormalTok{(euro_ord_diff[[}\DecValTok{2}\NormalTok{]][[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{5}\NormalTok{) ))}
+\NormalTok{## Plotting the rarefied disparity}
+\KeywordTok{plot}\NormalTok{(euro_ord_disp, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Ordinated differences (rarefied)"}\NormalTok{)}
+\NormalTok{## Adding the p-value}
+\KeywordTok{text}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\DecValTok{1400}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\StringTok{"p="}\NormalTok{,}\KeywordTok{round}\NormalTok{(euro_ord_diff_rar[[}\DecValTok{2}\NormalTok{]][[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{digit =} \DecValTok{5}\NormalTok{) ))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+
+As expected, the results are pretty similar in pattern but different in
+terms of scale. The median centroids distance is expressed in km in the
+``Distance differences'' plots and in Euclidean units of variation in
+the ``Ordinated differences'' plots.
 
 \chapter{Making stuff up!}\label{making-stuff-up}
 
@@ -3042,7 +3391,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -3107,7 +3456,7 @@ coordinates below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3156,7 +3505,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3208,7 +3557,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -3254,7 +3603,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -3780,7 +4129,7 @@ through time (for this dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -3794,7 +4143,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -4090,7 +4439,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -4253,7 +4602,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -4272,7 +4621,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -4406,7 +4755,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -4493,7 +4842,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-105-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4504,7 +4853,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.

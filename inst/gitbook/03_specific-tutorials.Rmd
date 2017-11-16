@@ -347,49 +347,74 @@ The detailed list can be found in `?dispRity.metric` along with some description
 
 Level | Name | Description | Source | 
 ------|------|---------------------------------------------------|--------|
-1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
+2 | `ancestral.dist` | The distance between an element and its ancestor | `dispRity` |
+2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
-<!-- 1 | `hypervolume` | The volume of the ordinated space | [`hypervolume`](https://cran.r-project.org/web/packages/hypervolume/index.html)`::hypervolume` |-->
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
-2 | `ranges` | The range of each dimension | `dispRity` |
-2 | `variances` | The variance of each dimension | `dispRity` |
-2 | `centroids`<sup>2</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
+1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `mode.val` | The modal value | `dispRity` |
+1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
+2 | `pairwise.dist` | The pairwise distances between elements | [`stats`](https://cran.r-project.org/web/packages/stats/index.html)`::dist` |
+2 | `radius` | The radius of each dimensions | `dispRity` |
+2 | `ranges` | The range of each dimension | `dispRity` |
+1 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
+2 | `variances` | The variance of each dimension | `dispRity` |
 
-
-1: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (not PCA).
-
-2: Note that by default, the centroid is the centroid of the elements.
+1: Note that by default, the centroid is the centroid of the elements.
 It can, however, be fixed to a different value by using the `centroid` argument `centroids(space, centroid = rep(0, ncol(space)))`, for example the origin of the ordinated space.
+
+2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (*not* PCA).
 
 ### Equations and implementations
 Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}
 \end{equation}
-Where *k* is the number of dimensions, and $\lambda_i$ is the eigenvalue of each dimension.
-
-\begin{equation}
-    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
-\end{equation}
-Where *k* is the number of dimensions.
-
-\begin{equation}
-    ranges = |max(k_i) - min(k_i)|
-\end{equation}
-Where *k* is the number of dimensions.
-
-\begin{equation}
-    variances = \sigma^{2}{k_i}
-\end{equation}
-Where *k* is the number of dimensions, and $\sigma^{2}$ is their variance.
 
 \begin{equation}
     centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
 \end{equation}
-Where *n* is each element in the ordinated space, *k* is the number of dimensions, and $Centroid_{k}$ is their mean (or can be set to another value).
+
+\begin{equation}
+    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+
+\begin{equation}
+    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+\end{equation}
+
+\begin{equation}
+    n.ball.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R
+\end{equation}
+
+\begin{equation}
+    radius = |\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|
+\end{equation}
+
+\begin{equation}
+    ranges = |max(k_i) - min(k_i)|
+\end{equation}
+
+\begin{equation}
+    variances = \sigma^{2}{k_i}
+\end{equation}
+
+\begin{equation}
+    span.tree.length = \sum(\mathrm{branch\ length})
+\end{equation}
+
+
+Where *k* is the number of dimensions,
+*n* the number of elements,
+$\Gamma$ is the Gamma distribution,
+$\lambda_i$ is the eigenvalue of each dimensions,
+$\sigma^{2}$ is their variance and
+$Centroid_{k}$ is their mean,
+$Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
+$f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
+*R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -404,7 +429,7 @@ dummy_space <- space.maker(10, 5, rnorm)
 We will use this simulated space to demonstrate the different metrics.
 
 #### Volumes and surface metrics
-The functions `ellipse.volume`, `convhull.surface` and `convhull.volume`  all measure the surface or the volume of the ordinated space occupied:
+The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
 
 ```{r}
 ## Calculating the ellipsoid volume
@@ -418,17 +443,20 @@ summary(dispRity(dummy_space, metric = convhull.surface))
 
 ## Calculating the convex hull volume
 summary(dispRity(dummy_space, metric = convhull.volume))
+
+## Calculating the convex hull volume
+summary(dispRity(dummy_space, metric = n.ball.volume))
 ```
 
 The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space.
 
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values.
 
-#### Ranges, variances and diagonal
+#### Ranges, variances, radius, pairwise distance, modal value and diagonal
 
-The functions `ranges`, `variances` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
+The functions `ranges`, `variances` `radius`, `pairwise.dist`, `mode.val` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
 
-`ranges` and `variances` both work on the same principle and measure the range/variance of each dimension:
+`ranges`, `variances` and `radius` work on the same principle and measure the range/variance/radius of each dimension:
 
 ```{r}
 ## Calculating the ranges of each dimension in the ordinated space
@@ -450,19 +478,44 @@ summary(dispRity(dummy_space, metric = variances))
 ## Calculating disparity as the sum and the product of these variances
 summary(dispRity(dummy_space, metric = c(sum, variances)))
 summary(dispRity(dummy_space, metric = c(prod, variances)))
+
+## Calculating the radius of each dimension in the ordinated space
+radius(dummy_space)
+
+## By default the radius is the maximum distance from the centre of
+## the dimension. It can however be changed to any function:
+radius(dummy_space, type = min)
+radius(dummy_space, type = mean)
+
+## Calculating disparity as the mean average radius
+summary(dispRity(dummy_space, metric = c(mean, radius), type = mean))
 ```
 
-The `diagonal` function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space):
+The pairwise distances uses the function `stats::dist` and can take the normal `dist` options:
+
+```{r}
+## The average pairwise euclidean distance
+summary(dispRity(dummy_space, metric = c(mean, pairwise.dist)))
+
+## The distribution of the Manhattan distances
+summary(dispRity(dummy_space, metric = pairwise.dist, method = "manhattan"))
+```
+
+The `diagonal` function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space).
+The `mode.val` function measures the modal value of the matrix:
 
 
 ```{r}
 ## Calculating the ordinated space's diagonal
 summary(dispRity(dummy_space, metric = diagonal))
+
+## Calculating the modal value of the matrix
+summary(dispRity(dummy_space, metric = mode.val))
 ```
 
 > This metric is only a Euclidean diagonal (mathematically valid) if the dimensions within the space are all orthogonal!
 
-#### Centroids metric
+#### Centroids and ancestral distance metrics
 
 The `centroids` metric allows users to measure the position of the different elements compared to a fixed point in the ordinated space.
 By default, this function measures the distance between each element and their centroid (centre point):
@@ -485,6 +538,37 @@ summary(dispRity(dummy_space, metric = centroids, centroid = c(0,0,0,0,0)))
 summary(dispRity(dummy_space, metric = centroids, centroid = c(0,1,2,3,4)))
 ```
 
+The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor.
+Therefore this functions needs a tree and node coordinates as additional arguments:
+
+```{r}
+## A generating a random tree with node labels
+tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+## Adding the tip and node names to the matrix
+dummy_space2 <- dummy_space[-1,]
+rownames(dummy_space2) <- c(tree$tip.label, tree$node.label)
+
+## Calculating all the ancestral nodes
+all_anc_centroids <- nodes.coordinates(dummy_space2, tree, full = TRUE)
+
+## Calculating the distances from the ancestral nodes
+ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
+                           nodes.coords = all_anc_centroids)
+
+## Calculating disparity as the sum of the distances from all the ancestral nodes
+summary(dispRity(ancestral_dist, metric = sum))
+```
+
+#### Minimal spanning tree length
+
+The `span.tree.length` uses the `vegan::spantree` function to heuristically calculate the minimum spanning tree (the shortest multidimensional tree connecting each elements) and calculates its length as the sum of every branch lengths.
+
+```{r}
+## The length of the minimal spanning tree
+summary(dispRity(dummy_space, metric = span.tree.length))
+```
+
+Note that because the solution is heuristic, this metric can take a long time to compute for big matrices.
 
 ## Summarising dispRity data (plots)
 
@@ -816,3 +900,83 @@ These results show the median overlap among pairs of distributions in the first 
 In other words, when two distributions are compared, they are now compared for each bootstrap pseudo-replicate, thus effectively creating a distribution of probabilities of overlap.
 For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50\% of the pseudo-replicates.
 Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option.
+
+
+## Disparity from other matrices
+
+In the example so far, disparity was measured from an ordinated multidimensional space (i.e. a PCO of the distances between taxa based on discrete morphological characters).
+This is a common approach in palaeobiology, morphometrics or ecology but ordinated matrices are not mandatory for the `dispRity` package!
+It is totally possible to perform the same analysis detailed above using other types of matrices as long as your elements are rows in your matrix.
+
+For example, we can use the data set `eurodist`, an `R` inbuilt dataset that contains the distances (in km) between European cities.
+We can check for example, if Northern European cities are closer to each other than Southern ones:
+
+```{r}
+## Making the eurodist data set into a matrix (rather than "dist" object)
+eurodist <- as.matrix(eurodist)
+eurodist[1:5, 1:5]
+
+## The two groups of cities
+Northern <- c("Brussels", "Calais", "Cherbourg", "Cologne", "Copenhagen",
+              "Hamburg", "Hook of Holland", "Paris", "Stockholm")
+Southern <- c("Athens", "Barcelona", "Geneva", "Gibraltar", "Lisbon", "Lyons",
+              "Madrid", "Marseilles", "Milan", "Munich", "Rome", "Vienna")
+
+## Creating the subset dispRity object
+eurodist_subsets <- custom.subsets(eurodist, group = list("Northern" = Northern,
+                                                        "Southern" = Southern))
+
+## Bootstrapping and rarefying to 9 elements (the number of Northern cities)
+eurodist_bs <- boot.matrix(eurodist_subsets, rarefaction = 9)
+
+## Measuring disparity as the median distance from group's centroid
+euro_disp <- dispRity(eurodist_bs, metric = c(median, centroids))
+
+## Testing the differences using a simple wilcox.test
+euro_diff <- test.dispRity(euro_disp, test = wilcox.test)
+euro_diff_rar <- test.dispRity(euro_disp, test = wilcox.test, rarefaction = 9)
+```
+
+We can compare this approach to an ordination one:
+
+```{r}
+## Ordinating the eurodist matrix
+euro_ord <- cmdscale(eurodist, k = nrow(eurodist) - 2)
+
+## Calculating disparity on the bootstrapped and rarefied subset data
+euro_ord_disp <- dispRity(boot.matrix(custom.subsets(euro_ord, group =
+        list("Northern" = Northern, "Southern" = Southern)), rarefaction = 9),
+        metric = c(median, centroids))
+
+## Testing the differences using a simple wilcox.test
+euro_ord_diff <- test.dispRity(euro_ord_disp, test = wilcox.test)
+euro_ord_diff_rar <- test.dispRity(euro_ord_disp, test = wilcox.test, rarefaction = 9)
+```
+
+And visualise the differences:
+
+```{r, fig.width=12, fig.height=12}
+## Plotting the differences
+par(mfrow = c(2,2), bty = "n")
+## Plotting the normal disparity
+plot(euro_disp, main = "Distance differences")
+## Adding the p-value
+text(1.5, 4000, paste0("p=",round(euro_diff[[2]][[1]], digit = 5)))
+## Plotting the rarefied disparity
+plot(euro_disp, rarefaction = 9, main = "Distance differences (rarefied)")
+## Adding the p-value
+text(1.5, 4000, paste0("p=",round(euro_diff_rar[[2]][[1]], digit = 5)))
+
+## Plotting the ordinated disparity
+plot(euro_ord_disp, main = "Ordinated differences")
+## Adding the p-value
+text(1.5, 1400, paste0("p=",round(euro_ord_diff[[2]][[1]], digit = 5) ))
+## Plotting the rarefied disparity
+plot(euro_ord_disp, rarefaction = 9, main = "Ordinated differences (rarefied)")
+## Adding the p-value
+text(1.5, 1400, paste0("p=",round(euro_ord_diff_rar[[2]][[1]], digit = 5) ))
+
+```
+
+As expected, the results are pretty similar in pattern but different in terms of scale.
+The median centroids distance is expressed in km in the "Distance differences" plots and in Euclidean units of variation in the "Ordinated differences" plots.

@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-15">
+<meta name="date" content="2017-11-16">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -143,6 +143,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
+<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -345,7 +346,7 @@ square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<
 ## [6,] 0.2627652 0.24523019</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Visualising the space
 <span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-64-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-70-1.png" width="768" /></p>
 <p>Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A plane space: uniform with one dimensions equal to 0
 plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),
@@ -374,7 +375,7 @@ circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span
 
 ## Plotting the circle
 <span class="kw">plot</span>(circle, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;A normal circle&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-66-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-72-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating doughnut space (a spherical space with a hole)
 doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),
      <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>), <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))</code></pre></div>
@@ -403,7 +404,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 ## Plotting the doughnut space
 <span class="kw">scatterplot3d</span>(doughnut_space[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
               <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Doughnut space&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-67-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-73-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 </div>
 <div id="generating-realistic-spaces" class="section level3">
@@ -440,7 +441,7 @@ simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span
 <span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)
 <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),
         <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-68-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-74-1.png" width="768" /></p>
 <p>It is now possible to simulate a space using these observed arguments to test several hypothesis:</p>
 <ul>
 <li>Is the space uniform or normal?</li>
@@ -473,7 +474,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 <span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Normal (&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">3</span>),
                               <span class="st">&quot;,&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">2</span>]], <span class="dt">digit =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>))
 <span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable + correlation)&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-75-1.png" width="768" /></p>
 <p>If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.</p>
 
 </div>

@@ -18,8 +18,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # `dispRity`
 
 This is a package for measuring disparity in `R`.
-It allows users to summarise matrices as representations as multidimensional spaces (namely from ordinated matrices from MDS, PCA, PCO, PCoA) into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
-This manual is based on the version `0.4`.
+It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
+Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is *not* restricted to any type of matrices!
+This manual is based on the version `0.4.2`.
 
 ## What is `dispRity`?
 This is a modular package for measuring disparity in `R`.
