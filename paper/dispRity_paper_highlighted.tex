@@ -211,6 +211,7 @@ In brief, the package takes a \texttt{matrix} object (the multidimensional space
 \hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}
 (see Manuals and Vignettes below).
 Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow} and Table \ref{Tab:main_fun}).
+\hl{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements} \citep[e.g. the multidimensional space can be a distance matrix][]{Close2015}.
 
 \begin{figure}[!htbp]
 \centering
@@ -226,8 +227,8 @@ Some additional functions modify the multidimensional space, for example by divi
         \hline
         \texttt{geomorph.ordination} & Imports \hl{shape} data from the \texttt{geomorph} package. \\
         \texttt{Claddis.ordination} & Imports \hl{discrete morphological} data from the \texttt{Claddis} package. \\
-        \texttt{custom.subsamples} & Separates data into custom subsamples. \\
-        \texttt{time.subsamples} & Separates data into time subsamples. \\
+        \texttt{custom.subsets} & Separates data into custom subsets. \\
+        \texttt{time.subsets} & Separates data into time subsets. \\
         \texttt{boot.matrix} & Bootstraps and rarefies a matrix or a \disp object. \\
         \disp & Calculates disparity from an matrix or a \disp object. \\
         \texttt{summary.dispRity} & Summarises a \disp object. \\
@@ -261,7 +262,8 @@ The disparity metric (i.e. the aspect of interest of the space) is passed throug
 
 The disparity metrics can be functions from other packages, defined by the user or from the \disp package (see Table \ref{Tab:metrics} for the currently implemented metrics).
 When multiple functions are passed to the \texttt{metric} argument, the functions are sorted by dimension-level and applied in decreasing order to the data.
-For example, if the metric is defined as \texttt{metric = c(mean, range)}, the \texttt{range} function (dimension-level 2) is first applied to the data and the function \texttt{mean} is then applied to the result (e.g. \texttt{mean(range(data))}).
+For example, if the metric is defined as \texttt{metric = c(\hl{prod}, ranges)} \hl{(the hyperbox volume)}, the \texttt{ranges} function (dimension-level 2) is first applied to data \hl{(calculating the range of each dimension)} and the function \hl{\texttt{prod}} is then applied to the results (e.g. \hl{\texttt{prod(ranges(data))}}).
+\hl{If one needs to define the metric as something more complex, say the hypercube volume, one can directly pass a function description to the \texttt{metric} argument (e.g. \texttt{metric = function(x) min(ranges(x)) * ncol(x)}).}
 There is no limitation on the metric dimensions only that at least one dimension-level 2 or 1 function must be present in the metric definition (i.e. disparity can only be defined as distribution or a single value).
 \hl{Note that this function also allows to work on only a subset of dimensions via the \texttt{dimensions} argument (e.g. if only the $n$ first dimensions must be considered).}
 
@@ -269,52 +271,65 @@ There is no limitation on the metric dimensions only that at least one dimension
 \resizebox{\textwidth}{!}
 {%
     \begin{tabular}{p{2cm}|p{5cm}|p{1cm}|p{5cm}|p{5cm}}
-        name & description & dimen-sion level & definition & source \\
+        name & description & dim level & definition & source \\
         \hline
-        \texttt{ellipse. volume}$^1$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
+        \texttt{ancestral. dist} & The distance between an element and its ancestor & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}$ & This package \\
+        \texttt{centroids} & The distance between each element and a fixed point$^1$ of the space & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}$ & This package \\
         \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
         \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
         \texttt{diagonal} & The greatest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & This package \\
+        \texttt{ellipse. volume}$^2$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
         \texttt{mode.val} & The modal value & 1 & NA & This package\\
+        \texttt{n.ball. volume} & The hyper-spherical ($n$-ball) volume & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R$ & This package\\
+        \texttt{pairwise. dist} & The pairwise distances between elements & 2 & NA & \texttt{stats::dist}\\        
+        \texttt{radius} & The radius of each dimensions & 2 & $|\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|$ & This package\\
         \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & This package \\
+        \texttt{span.tree. length} & The minimal spanning tree length & 1 & $\sum(\mathrm{branch\ length})$ & \texttt{vegan::spantree}\\        
         \texttt{variances} & The variance of each dimension & 2 & $\sigma^{2}{k_i}$ & This package \\
-        \texttt{centroids} & The distance between each element and a fixed point$^2$ of the space & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}$ & This package \\
-        \texttt{ancestral. distance} & The distance between an element and its ancestor & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{k})^2}}$ & This package \\
     \end{tabular}
 }%
-    \caption{\small{Where $k$ is the number of dimensions, $n$ the number of elements, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean. $^1$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA); $^2$ by default that point is the centroid of the elements.}}
+    % \caption{\small{Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA).}}
     \label{Tab:metrics}
 \end{table}
 
-%TG: Add the proper sources for the convhulln package
+\textbf{Table 1 (caption):} Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA).
+
+%TODO: Add the proper sources for the convhulln and vegan packages
 
 \subsection{Splitting the multidimensional space into subsets}
-Prior to calculating disparity, the multidimensional space can be subdivided into subsamples, typically to be compared to each other.
-For example, one may be interested in seeing how the disparity of a specific subsample of the space compares to another (e.g. difference among groups) or, how different subsamples change sequentially (e.g. through time).
+Prior to calculating disparity, the multidimensional space can be subdivided into subsets, typically to be compared to each other.
+For example, one may be interested in seeing how the disparity of a specific subset of the space compares to another (e.g. difference among groups) or, how different subsets change sequentially (e.g. through time).
 In essence, the original space corresponds to the overall space (e.g. a morphospace contains all the observed morphologies).
-Conversely, subsamples correspond to parts of the space with pooled characteristics (i.e. only a subset of the total morphospace).
+Conversely, subsets correspond to parts of the space with pooled characteristics (i.e. only a subset of the total morphospace).
 
-This splitting can be done using the \texttt{custom.subsamples} or \texttt{time.subsamples} functions.
+This splitting can be done using the \texttt{custom.subsets} or \texttt{time.subsets} functions.
 \hl{The first argument is the matrix}
-defining the multidimensional space and a list of elements to group into different subsamples.
-The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time subsamples for example, 
+defining the multidimensional space and a list of elements to group into different subsets.
+The second also takes a matrix and arguments giving the age of the taxa (a phylogeny and/or a table containing the first and last occurence data for all/some elements - this allows species with a longer timespan to be present in multiple time subsets for example, 
 \hl{see below}
-) and which subsamples to create: (1) discrete time subsamples (or time-binning) or (2) continuous time subsamples (or time-slicing).
+) and which subsets to create: (1) discrete time subsets (or time-binning) or (2) continuous time subsets (or time-slicing).
 
 The time-binning method groups elements by specific age range.
 The time-slicing method works by using a phylogeny and looking at which taxa are present at any specific point in time.
 This method thus requires the nodes to be part of the multidimensional space, a dated phylogeny (chronogram) and which model to use when slicing through branches rather than tips and nodes.
-When a slice occurs not on a tip or a node, four methods are available to select either the descendent or the ancestor's node/tip as an element for this time slice:
+When a slice occurs not on a tip or a node, \hl{six} methods are available to select either the descendent or the ancestor's node/tip as an element for this time slice:
 \begin{itemize}
     \item ``acctran'' (accelerated transformation) where the data chosen along the branch is always the one of the descendant
     \item ``deltran'' (delayed transformation) where the data chosen along the branch is always the one of the ancestor
-    \item ``punctuated'' where the data chosen along the branch is randomly chosen between the descendant or the ancestor
-    \item ``gradual'' where the data chosen along the branch is either the descendant or the ancestor depending on branch length
+    \item \hl{``random''} where the data chosen along the branch is randomly chosen between the descendant or the ancestor
+    \item \hl{``proximity''} where the data chosen along the branch is either the descendant or the ancestor depending on branch length
+    \item \hl{``punctuated'' where the data chosen along the branch is both the descendant and the ancestor with an even probability}
+    \item \hl{``gradual'' where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length}
 \end{itemize}
+
+\hl{Note that the four first models are "fixed": the selected data is always either the one of the descendant or the ancestor.
+The two last models are "probabilistic": the data from both the descendant and the ancestor is used with an associate probability.
+These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).}
 
 \subsection{Bootstrapping and rarefying}
 Disparity measurement can be influenced by sampling \citep{Butler2012}.
-To take this source of bias into account, it is common practice to bootstrap the multidimensional space (to minimise the effect of outliers) or/and to rarefy the data (to minimise the effect of different sample sizes in different subsamples).
+To take this source of bias into account, it is common practice to bootstrap the multidimensional space (to minimise the effect of outliers) or/and to rarefy the data (to minimise the effect of different sample sizes in different subsets).
 Additionally, if disparity is defined as a dimension-level 1 metric, it can be useful to measure it on bootstrapped data to obtain a distribution on which to perform statistical analyses.
 
 Bootstrapping can be achieved by using the \texttt{boot.matrix} function which pseudo-replicates the multidimensional space following two algorithms (1) the ``full'' algorithm where the bootstrapping is entirely stochastic ($n$ elements are replaced by any $m$ elements drawn from the data) and (2) the ``single'' algorithm where only one random element is replaced for each pseudo-replicate (somewhat akin to jackknife resampling).
@@ -323,12 +338,12 @@ Bootstrapping can be achieved by using the \texttt{boot.matrix} function which p
 % Conversely, it is possible to use a dimension-level 2 metric on a bootstrapped multidimensional space to avoid this problem: the disparity metric is then measured on a pseudo-replicated multidimensional space rather than the metric itself being pseudo-replicated.
 
 Similarly, rarefaction can be achieved through the same \texttt{boot.matrix} function.
-Rarefaction can be useful when looking at the effect of reducing the number of elements on the results of an analysis or for allowing the comparisons of subsamples with the same number of elements in each.
+Rarefaction can be useful when looking at the effect of reducing the number of elements on the results of an analysis or for allowing the comparisons of subsets with the same number of elements in each.
 In practice, rarefaction limits the number of elements to be drawn for each bootstrap replication: only $n-x$ elements are selected at each bootstrap replicate (where $x$ is the number of non-sampled elements).
 
 \subsection{Interpreting results}
 The functions above all generate a \disp object that can be summarised or plotted using the \texttt{S3} method functions \texttt{summary.dispRity} and \texttt{plot.dispRity} (provided disparity was calculated).
-These results can then be analysed using the \texttt{test.dispRity} function for comparing subsamples or testing hypotheses.
+These results can then be analysed using the \texttt{test.dispRity} function for comparing subsets or testing hypotheses.
 
 \subsubsection{Summarising and plotting}
 The \texttt{summary.dispRity} and \texttt{plot.dispRity} functions allow users to set which central tendency and which quantiles should be represented.
@@ -339,9 +354,9 @@ The function can also take any additional graphic arguments (\texttt{main}, \tex
 % Note that if the disparity has been calculated on fully rarefied data (using \texttt{boot.matrix(data, rarefaction = TRUE)} prior to calculating disparity), the rarefaction curves for the whole multidimensional space (or its sub-samples) can be plotted using \texttt{rarefaction = ``plot''}.
 
 \subsubsection{Testing hypotheses}
-The \texttt{test.dispRity} function allows users to test hypotheses on the disparity data (e.g. by comparing the different subsamples to each other).
+The \texttt{test.dispRity} function allows users to test hypotheses on the disparity data (e.g. by comparing the different subsets to each other).
 Similarly to the \disp function described above, this function can take any test defined by the user or from other R packages.
-The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsamples: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subsample to all the others; (3) ``sequential'' for comparing subsamples sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsamples simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsamples} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of subsamples to compare.
+The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of subsets to compare.
 
 Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff};][]{Bhattacharyya,GuillermeCooper} or a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}).
 Additionally, this function also allows additional arguments such as \texttt{rarefaction} (as described above) or \texttt{correction} to adjust p-values when using multiple parametric tests.
@@ -394,8 +409,8 @@ In other words, whether the approximation of the volume within the morphospace (
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> subsamples <- custom.subsamples(data = BeckLee\_mat50, group = mammal\_groups)}\\
-\noindent \texttt{> bootstraps <- boot.matrix(subsamples)}\\
+\noindent \texttt{> subsets <- custom.subsets(data = BeckLee\_mat50, group = mammal\_groups)}\\
+\noindent \texttt{> bootstraps <- boot.matrix(subsets)}\\
 \noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
 \noindent Which allows a finer tuning of the optional arguments in each function.
@@ -405,20 +420,20 @@ This function returns a \disp object that summarises the disparity analysis:
 
 \noindent \texttt{> disparity}\\
 \noindent \texttt{ ---- dispRity object ---- }\\
-\noindent \texttt{2 customised subsamples for 50 elements with 48 dimensions:}\\
+\noindent \texttt{2 customised subsets for 50 elements with 48 dimensions:}\\
           \texttt{crown, stem.}\\
 \noindent \texttt{Data was bootstrapped 100 times (method:"full").}\\
 \noindent \texttt{Disparity was calculated as: c(sum, variances).}\\
 
 \bigskip
-As indicated, the \disp object contains two customised subsamples (called ``crown'' and ``stem'') from a morphospace made of 50 elements for 48 dimensions.
+As indicated, the \disp object contains two customised subsets (called ``crown'' and ``stem'') from a morphospace made of 50 elements for 48 dimensions.
 The \disp object also displays information on the number and method of the bootstrap replicates as well as the definition of disparity.
 To visualise the actual disparity values, one can use the \texttt{summary} or/and \texttt{plot} options (Table \ref{Tab:summary_group} and Fig. \ref{Fig:plot_group}):
 
 
 % mammal_groups <- list("crown" = c(16, 19:41, 45:50), "stem" = c(1:15, 17:18, 42:44))
-% subsamples <- custom.subsamples(data = BeckLee_mat50, group = mammal_groups)
-% bootstraps <- boot.matrix(subsamples)
+% subsets <- custom.subsets(data = BeckLee_mat50, group = mammal_groups)
+% bootstraps <- boot.matrix(subsets)
 % disparity <- dispRity(bootstraps, metric = c(sum, variances))
 
 \noindent \texttt{> summary(disparity)}
@@ -427,13 +442,13 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
 \centering
 \begin{tabular}{rlrrrrrrr}
   \hline
- & subsamples & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
+ & subsets & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
   \hline
 1 & crown &  30 & 2.00 & 1.93 & 1.87 & 1.92 & 1.95 & 1.98 \\ 
   2 & stem &  20 & 1.72 & 1.63 & 1.53 & 1.60 & 1.66 & 1.69 \\ 
    \hline
 \end{tabular}
-\caption{Summarising a \disp object (disparity per groups). $n$ is the number of elements per subsamples, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and 95\% are the confidence intervals.}
+\caption{Summarising a \disp object (disparity per groups). $n$ is the number of elements per subsets, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and 95\% are the confidence intervals.}
 \label{Tab:summary_group}
 \end{table}
 
@@ -478,8 +493,8 @@ It is then possible to measure disparity-through-time using the following functi
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> subsamples <- time.subsamples(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
-\noindent \texttt{> bootstraps <- boot.matrix(subsamples)}\\
+\noindent \texttt{> subsets <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
+\noindent \texttt{> bootstraps <- boot.matrix(subsets)}\\
 \noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
 \noindent The arguments \texttt{data = BeckLee\_mat50} and \texttt{metric = c(sum, variances)} are the same as in the example above.
@@ -493,14 +508,14 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \centering
 \begin{tabular}{rlrrrrrrr}
   \hline
- & subsamples & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
+ & subsets & n & obs & bs.median & 2.5\% & 25\% & 75\% & 97.5\% \\ 
   \hline
 1 & 100.5 - 66 &  15 & 1.67 & 1.55 & 1.40 & 1.51 & 1.58 & 1.65 \\ 
   2 & 66 - 56 &   9 & 1.88 & 1.69 & 1.43 & 1.63 & 1.77 & 1.83 \\ 
   3 & 56 - 33.9 &  13 & 1.96 & 1.83 & 1.62 & 1.77 & 1.86 & 1.90 \\ 
    \hline
 \end{tabular}
-\caption{Summarising a \disp object (disparity through time). $n$ is the number of elements per subsamples, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and 95\% are the confidence intervals.}
+\caption{Summarising a \disp object (disparity through time). $n$ is the number of elements per subsets, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and 95\% are the confidence intervals.}
 \label{Tab:summary_time}
 \end{table}
 
@@ -526,7 +541,7 @@ Similarly to the example above, it is also possible to statistically test this h
   \hline
  & Df & Sum Sq & Mean Sq & F value & Pr($>$F) \\ 
   \hline
-subsamples & 2 & 3.14 & 1.57 & 177.84 & 0.0000 \\ 
+subsets & 2 & 3.14 & 1.57 & 177.84 & 0.0000 \\ 
   Residuals & 297 & 2.62 & 0.01 &  &  \\ 
    \hline
 \end{tabular}
@@ -552,7 +567,7 @@ Both functionalities are described in more details in the package manual.
 
 % \subsection{Further directions} TG: maybe this section is useless
 % Further functionalities and improvement on current functionalities will be implemented in future versions.
-% In fact, optimised architecture and a C implementations are being currently developed for faster calculations and lower memory footprints for most computational heavy functions (e.g. \disp or \texttt{time.subsamples}).
+% In fact, optimised architecture and a C implementations are being currently developed for faster calculations and lower memory footprints for most computational heavy functions (e.g. \disp or \texttt{time.subsets}).
 % New functionalities currently being developed will include time sequential linear models (for accurately measuring directionality in disparity changes between time slices) or mode of disparity evolution testing (allowing to fit different models such as Brownian Motion or Ornstein-Uhlenbeck to disparity curves).
 
 \section{Conclusion}
