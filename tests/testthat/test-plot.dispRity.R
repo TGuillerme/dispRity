@@ -24,7 +24,7 @@ test_that("set.default works", {
         , round(c(0.96824, 2.02266), 5))
     expect_equal(
         test[[2]]
-        , "Subsamples")
+        , "Subsets")
     expect_equal(
         test[[3]]
         , "c(median, centroids)")

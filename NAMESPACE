@@ -46,7 +46,11 @@ export(ellipse.volume)
 export(convhull.volume)
 export(convhull.surface)
 export(diagonal)
-export(ancestral.distance)
+export(ancestral.dist)
+export(radius)
+export(n.ball.volume)
+export(pairwise.dist)
+export(span.tree.length)
 
 ##disparity tests
 export(bhatt.coeff)
