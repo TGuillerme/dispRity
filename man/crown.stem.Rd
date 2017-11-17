@@ -4,12 +4,14 @@
 \alias{crown.stem}
 \title{Separates stem and crown species}
 \usage{
-crown.stem(tree, output.names = TRUE)
+crown.stem(tree, inc.nodes = TRUE, output.names = TRUE)
 }
 \arguments{
 \item{tree}{a code{"phylo"} object}
 
-\item{output.names}{whether to output the taxa names (\code{TRUE}; default) or two phylogenetic trees}
+\item{inc.nodes}{whether to include the nodes (\code{TRUE}; default) or not (\code{FALSE}) in the output.}
+
+\item{output.names}{whether to output the taxa names (\code{TRUE}; default) or two phylogenetic trees (\code{FALSE}).}
 }
 \description{
 Selects the crown

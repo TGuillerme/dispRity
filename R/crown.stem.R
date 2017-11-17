@@ -3,7 +3,8 @@
 #' @description Selects the crown
 #'
 #' @param tree a code{"phylo"} object
-#' @param output.names whether to output the taxa names (\code{TRUE}; default) or two phylogenetic trees
+#' @param inc.nodes whether to include the nodes (\code{TRUE}; default) or not (\code{FALSE}) in the output.
+#' @param output.names whether to output the taxa names (\code{TRUE}; default) or two phylogenetic trees (\code{FALSE}).
 #' 
 #' @examples
 #' ## A tree with fossil taxa
@@ -29,10 +30,11 @@
 ## DEBUG
 #source("sanitizing.R")
 
-crown.stem <- function(tree, output.names = TRUE) {
+crown.stem <- function(tree, inc.nodes = TRUE, output.names = TRUE) {
 
     ## Sanitizing
     check.class(tree, "phylo")
+    check.class(inc.nodes, "logical")
     check.class(output.names, "logical")
     match_call <- match.call()
 
@@ -62,8 +64,13 @@ crown.stem <- function(tree, output.names = TRUE) {
     ## Transforming the output in names
     if(output.names) {
         ## Extract the names
-        crown_names <- c(crown_tree$tip.label, crown_tree$node.label)
-        stem_names <- c(stem_tree$tip.label, stem_tree$node.label)
+        if(inc.nodes) {
+            crown_names <- c(crown_tree$tip.label, crown_tree$node.label)
+            stem_names <- c(stem_tree$tip.label, stem_tree$node.label)
+        } else {
+            crown_names <- c(crown_tree$tip.label)
+            stem_names <- c(stem_tree$tip.label)
+        }
         return(list("crown" = crown_names, "stem" = stem_names))
     } else {
         ## Make a multiphylo object
