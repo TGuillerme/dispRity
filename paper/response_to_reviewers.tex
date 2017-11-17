@@ -299,22 +299,21 @@ I have however added several additional ones to the newest version of the packag
 
 \item{\textcolor{blue}{The package also employs a rarefaction function, but rarefaction can be problematic in the sense that rarefaction curves can sometimes cross such that the sampling level used to make comparisons can effect which of two or more subsets is considered the most disparate. This is why algorithms designed to sample "fairly" rather than equally have been explored, see for example Kotric and Knoll (2015, Paleobiology, 41, 68–). A user may also wish to rarefy by some external data source, such as number of occurrences, or geographic regions. These are obviously major additions, but are something the author might wish to add in future.}}
 
+This is again an excellent suggestion!
+I will develop more complex rarefaction algorithms based on sampling and occurrence based on methods applied empirically by Kotric and Knoll 2015 \textit{Palaeobiology} and Butler et al 2012 \textit{Evolution}.
+I've added a note 
 
+% %TG: TODO maybe!
 
+\item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package)}
 
+I have added an illustrative example in the \texttt{plot.dispRity} manual on how to add disparity data (continuous or discrete) to the \texttt{geoscalePlot} and \texttt{geoscaleBox} functions thus allowing users to make ready-to-publish figures.
 
-
-
-
-
-
-% %TG: adding rarefaction algorithms.
-
-\item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package), and options for the user to only use a limited set of ordination axes (matrix columns), e.g., to avoid using higher axes with negative eigenvalues.}}
+\item{\textcolor{blue}{and options for the user to only use a limited set of ordination axes (matrix columns), e.g., to avoid using higher axes with negative eigenvalues.}}
 
 This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} functions allowing users to set a \texttt{dimensions} argument to either a proportion or a value of dimensions to use (e.g. \texttt{0.95} or \texttt{10} to use only the 95\% of the dimensions or the 10 first ones respectively). I've added a line highlighting this feature that is indeed often used:
 
-l. @@@: \textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).}
+\textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).} l. @@@: 
 
 \end{enumerate}
 
@@ -329,7 +328,6 @@ See Reviewer 1 minor comment \ref{abstract_typo}.
 \item{\textcolor{blue}{L7 - "a" here should be removed. L17 - "suits best" should be "best suits". L23 - "allowing to" should be "allowing users to". L28 - "suit" should be "suite".}}
 
 I've fixed these typos.
-
 
 \item{\textcolor{blue}{L54 - Technically a principal coordinates analysis *is* classic multidimensional scaling (CMDS). The author may also want to cite use of non-metric multidimensional scaling (e.g., Liow 2004, American Naturalist, 164, 431–).}}
 
