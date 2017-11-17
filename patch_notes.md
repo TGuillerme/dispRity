@@ -1,7 +1,8 @@
 Patch notes
 ----
 <!-- * 2017/10/18 - v1.0 *got you covered*  -->
-* 2017/11/16 - v0.4.2
+* 2017/11/17 - v0.4.2
+  * *New* utility function: `crown.stem` for separating a tree into crown and stem groups.
   * *New* disparity metric: `span.tree.length` the length of the minimum spanning tree.
   * *New* disparity metric: `pairwise.dist`: the element's pairwise distances.
   * *New* disparity metric: `radius`: the radius of each dimensions.

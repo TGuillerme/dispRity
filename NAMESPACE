@@ -79,6 +79,7 @@ export(pair.plot)
 export(slice.tree)
 export(clean.data)
 export(get.bin.ages)
+export(crown.stem)
 
 ##Morphological data analysis
 export(sim.morpho)
