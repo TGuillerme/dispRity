@@ -30,11 +30,11 @@
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
+#' data(BeckLee_tree)
 #'
 #' ## Calculating the disparity from customised subsets
 #' ## Generating the subsets
-#' groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 25)),
-#'       dimnames =list(rownames(BeckLee_mat50))), ncol = 1)
+#' groups <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
 #' customised_subsets <- custom.subsets(BeckLee_mat50, groups)
 #' ## Bootstrapping the data
 #' bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)

@@ -49,7 +49,7 @@ custom.subsets(ordinated_matrix, groups)
 
 }
 \seealso{
-\code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
 }
 \author{
 Thomas Guillerme

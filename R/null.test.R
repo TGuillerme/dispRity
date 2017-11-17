@@ -20,8 +20,8 @@
 #' ## Calculating the disparity as the ellipsoid volume
 #' obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
 #' ## Testing against normal distribution
-#' null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
-# results ; plot(results)
+#' results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
+#' results ; plot(results)
 #' 
 #' \dontrun{
 #' ## Running the test on multiple subsets

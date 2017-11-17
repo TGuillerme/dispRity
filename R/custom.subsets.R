@@ -36,7 +36,7 @@
 #'      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
 #' custom.subsets(ordinated_matrix, groups)
 #'
-#' @seealso \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
 #'
 #' @author Thomas Guillerme
 
