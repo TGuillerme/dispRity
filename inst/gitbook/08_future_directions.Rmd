@@ -19,6 +19,10 @@ vignette: >
 Some more tests are being developed such as a `sequential.test` to run sequential linear models for testing hypothesis in disparity through time or a `model.test` developed in collaboration with [Mark Puttick](https://puttickbiology.wordpress.com/) to fit modes of evolution to disparity curves.
 Stay tuned!
 
+## More rarefactions!
+
+I am working on including several "clever" bootstrap and rarefaction algorithms for palaeobiology studies based on geological sampling (following:and Butler et al. 2012 *Evolution* and Kotric and Knoll 2015 *Palaeobiology*).
+
 ## Faster disparity calculations
 
 I am slowly implementing parallel disparity calculation as well as C implementations of some disparity metrics to increase significantly improve the speed of the `dispRity` function.
@@ -28,11 +32,14 @@ I am slowly implementing parallel disparity calculation as well as C implementat
 I am equally slowly developing functions to allow more of the options in the package to be modular (in the same way as the `metric` argument in `dispRity`).
 The next arguments to benefit this increased modularity will be `time.subsets`'s `model` argument and `boot.matrix`'s `type` argument.
 
+## More suggestions?
 
-# References
+More generally, I welcome any suggestions or collaborations for developing some additional specific ideas.
+Feel free to contact me via email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dispRity).
 
+<!-- 
 * Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
 * Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
 * Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
 * Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
-* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130.
+* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130. -->

@@ -19,7 +19,7 @@ This demo showcases a typical disparity-through-time analysis: we are going to t
 ### The morphospace
 
 
-In this example, we are going to use a subset of the data from Beck and Lee (2014).
+In this example, we are going to use a subset of the data from @beckancient2014.
 See the [example data](#example-data) description for more details.
 Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).
@@ -120,7 +120,7 @@ For more details, please refer to the [`dispRity` metric section](#disparity-met
 In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the `dispRity` function.
 Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace).
 Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace.
-We use this here because it is a standard metric used in disparity-through-time analysis (Wills _et al._ 1994).
+We use this here because it is a standard metric used in disparity-through-time analysis [@Wills1994].
 
 ```{r}
 ## Calculating disparity for the bootstrapped data

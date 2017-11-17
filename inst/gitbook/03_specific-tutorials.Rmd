@@ -14,7 +14,7 @@ The following section contains information specific to some functions.
 If any of your questions are not covered in these sections, please refer to the function help files in R, send me an email (<guillert@tcd.ie>), or raise an issue on GitHub.
 The several tutorials below describe specific functionalities of certain functions; please always refer to the function help files for the full function documentation!
 
-Before each section, make sure you loaded the Beck and Lee (2014) data (see [example data](#example-data) for more details).
+Before each section, make sure you loaded the @beckancient2014 data (see [example data](#example-data) for more details).
 
 ```{r}
 ## Loading the data

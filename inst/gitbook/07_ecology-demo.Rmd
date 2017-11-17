@@ -171,7 +171,7 @@ We can now see that there is a significant difference in petal-space occupancy b
 #### Setting up a multidimensional null-hypothesis
 
 One other series of test can be done on the shape of the petal-space.
-Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to Diaz _et al._ 2016):
+Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to @diaz2016global):
 
 ```{r, fig.width=6, fig.height=6}
 ## Testing against a uniform distribution
