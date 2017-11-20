@@ -305,7 +305,7 @@ I've added a note
 
 % %TG: TODO maybe!
 
-\item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package)}
+\item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package)}}
 
 I have added an illustrative example in the \texttt{plot.dispRity} manual on how to add disparity data (continuous or discrete) to the \texttt{geoscalePlot} and \texttt{geoscaleBox} functions thus allowing users to make ready-to-publish figures.
 
@@ -330,12 +330,17 @@ See Reviewer 1 minor comment \ref{abstract_typo}.
 I've fixed these typos.
 
 \item{\textcolor{blue}{L54 - Technically a principal coordinates analysis *is* classic multidimensional scaling (CMDS). The author may also want to cite use of non-metric multidimensional scaling (e.g., Liow 2004, American Naturalist, 164, 431–).}}
+\label{PCO_cites}
 
-%TG: check paper and cite
+I have changed this sentence to:
+
+\textit{These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix (Lloyd 2016 and references therein; e.g. in Close et al. 2015), or as outputs from an ordination, whether it being a principal components analysis (PCA, Hotelling 1933; e.g. in Zelditch et al. 2012), a metric scaling (PCO, PCoA, Torgerson 1958; e.g. in Brusatte et al. 2008) or a non-metric scaling (MDS, NMDS, Shepard 1962; e.g. in Liow 2004; Donohue et al. 2013).} lines @@@
 
 \item{\textcolor{blue}{L80 - I'm not sure I would use the term "enforce" here. I think many of us write packages that serve our own needs, but the great thing about languages like R is that it is flexible and code can be borrowed and appropriated etc. Essentially I think the author may unintentionally disparage other package authors here. Besides which, I do not feel that dispRity is competing with other packages, rather it is supplemental to them. I.e., to repeat my comment from above I see dispRity as sitting at the end of a range of data analysis pipelines with other packages sitting in front of it.}}
 
-%TG: done this down
+I've change this sentence to:
+
+\textit{package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric to best it their needs (i.e. data, hypothesis, etc.) making the implementations sometimes hard to adapt to different needs.}  lines @@@
 
 \item{\textcolor{blue}{L84 - Redundant "a".}}
 
@@ -370,15 +375,12 @@ I've removed the inaccurate definitions in parenthesis.
 
 \item{\textcolor{blue}{L252 - It might be more helpful to define these using the phylogeny as this is a more generally applicable approach than manually delimiting row numbers (where human error can easily creep in or the inclusion of exclusion of data can mess things up). I.e., something that identifies descendants of the crown node and then a simple setdiff() between these and all possible names to get the non-crown (stem) taxa).}}
 
-%Implement a crown/stem phylo function
+Great suggestion! I've added an utility function \texttt{crown.stem} allowing to separate stem and crown species.
+The function is now briefly mentioned in the package description paper and detailed in the package itself.
 
 \item{\textcolor{blue}{L296 - Should be "increase".}}
 
 I've fixed this typo.
-
-\item{\textcolor{blue}{L324 - Figure 4 caption should be "elements per subsample" and "50\% and 95\%".}}
-
-%Check! fixed and already
 
 \item{\textcolor{blue}{L357 - Should be "for such analyses".}}
 
@@ -411,11 +413,10 @@ I've removed this last sentence (see Reviewer 1 minor comment \ref{remove_last_s
 
 \item{\textcolor{blue}{The author acknowledged assistance with writing (suspect English is a second language) and the writing was great in the paper, but less so in the abstract.  Having someone double check the grammar in the abstract would be beneficial.  Also, line 116 refers to table ??.}}
 
-\item{\textcolor{blue}{In the examples, replacing objects is not a good idea.  (This is also a problem in the help file examples in the R package.).  Remember that novice R users will use this software and might develop the habit of overwriting objects in the global environment, as updates.  It is possible to update objects with new names and retain the history during analyses, which is preferred in most cases and essential in others (for example, when a different analysis requires going back to a previously defined object.)  I recommend providing unique names.  For example, disparity is defined twice as an object on lines 255 and 261.  On line 261 it could be defined as DisparityB, and subsequently used without overwriting the object produced from a different function in line 255.}}
+\item{\textcolor{blue}{In the examples, replacing objects is not a good idea.  (This is also a problem in the help file examples in the R package.).  Remember that novice R users will use this software and might develop the habit of overwriting objects in the global environment, as updates.  It is possible to update objects with new names and retain the history during analyses, which is preferred in most cases and essential in others (for example, when a different analysis requires going back to a previously defined object.)  I recommend providing unique names.  For example, disparity is defined twice as an object on lines 255 and 261.  On line 261 it could be defined as DisparityB, and subsequently used without overwriting the object produced from a different function in line 255. Relatedly, one should not name objects the same name as functions.  This is simply bad news.  It is not something to encourage users to do.  Using "Disparity" rather than the function name, disparity, accomplishes the same thing without potentially causing problems down the line.  (The author will field requests for help from users, so this can be considered a pitfall avoided beforehand.)  This is discussed some here: https://stackoverflow.com/questions/6135868/in-r-what-exactly-is-the-problem-with-having-variables-with-the-same-name-as-ba}}
 
-% %TG: rename objects in the example
-
-\item{\textcolor{blue}{Relatedly, one should not name objects the same name as functions.  This is simply bad news.  It is not something to encourage users to do.  Using "Disparity" rather than the function name, disparity, accomplishes the same thing without potentially causing problems down the line.  (The author will field requests for help from users, so this can be considered a pitfall avoided beforehand.)  This is discussed some here: https://stackoverflow.com/questions/6135868/in-r-what-exactly-is-the-problem-with-having-variables-with-the-same-name-as-ba}}
+I have changed the variable names in the package description manuscript to not be redundant.
+I've also changed the variable names in the package's help files to not override other functions/objects.
 
 \item{\textcolor{blue}{It took me a bit of sleuthing for how the ANOVA on line 326 was performed. 
 If I have one major concern, it is here. 
@@ -459,6 +460,26 @@ I believe that an ANOVA consistent with the confidence interval approach in Tabl
 \item \textcolor{blue}{3) Or (and less recommended), put very stark and clear warnings that statistical results produced by some of these functions have not been tested and the user bares some risk making inferences from them.}
 
 \end{itemize}
+
+The ANOVA problem is totally a garbage-in-garbage-out problem and I agree with this reviewer that this might be a serious problem down the line.
+
+Unfortunately, I do not have any proper solution to propose to this problem and I guess multidimensional distributions comparisons methods needs yet to be developed!
+
+The reason for these crazy high degrees of freedom come from the bootstrapping pseudo-replication: effectively, the test data contains all the bootstrap data.
+One solution is to use the concatenate = FALSE option in test.dispRity, performing the test for each bootstrap replicate rather than pooling the data.
+This methods outputs a distribution of test that can be used to assess the type I error.
+However, the pooling of the p-value is not satisfactory either.
+
+Some methods exists such as NPMANOVA (from vegan::adonis) but is performed on the wrong kind of matrix.
+
+One of the reasons for this functionality in the package is to make the test.dispRity function modular like the other main functions: i.e. it \textit{can} apply a \textit{lm} class function to the data but the reason for doing that might be dubious (or not, if the users don't bootstrap the matrix for example).
+
+%TG: I therefore removed the example in the manuscript and the manual to not mislead users into running flawed analysis. However, I've left the architecture implemented for adventurous (or clever) users.
+% Remove the ANOVA example
+% Remove mentions to it on bootstrapped data in the manuals
+% Replace by more savy example
+% Allow to use NPMANOVA instead
+
 
 \item{\textcolor{blue}{I also have a recommendation for the package, itself, based on my experiences. 
 The author should strive to make arguments and function details clearer to users, especially as using dispRity requires a lot of integration between different functions. 
@@ -568,6 +589,8 @@ Throughout I was frustrated with this; the referencing ignores a century of work
 I appreciate there merit in citing relevant literature for your field, but that doesn't absolve one of a duty to accurately attribute ideas to those that came up with them.
 If you are unfamiliar with developments in ideas beyond your particular field, I would suggest Legendre \& Legendre's *Numerical Ecology* textbook as a good source for original work relevant to what is presented here.}}
 
+See my response to Reviewer 2 - Minor suggestion \ref{PCO_cites}.
+
 % %TG: source orginal papers
 
 \item{\textcolor{blue}{The comparison or critique of packages that, in the eyes of the author, restrict users grated a little with me. As a developer of one of the packages named, I feel that particular critique is unwarranted for several reasons;
@@ -596,6 +619,7 @@ This is one area where there is the potential for the ideal of being accommodati
 An example where it needs specific handling is in multivariate dispersions (distances around centroids), but even simple ordinations based on dissimilarities require special handling.}}
 
 %TG: negative egein values explnations
+% Check Legendre and Legendre pp.449
 
 \end{enumerate}
 

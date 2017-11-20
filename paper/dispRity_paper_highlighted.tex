@@ -170,7 +170,23 @@ The biological variables in such analyses are equally diverse, including morphol
 % Variety of multidimensional spaces, metrics and tests
 In all these analysis, each set of multivariate traits forms a multidimensional space.
 \hl{This space is represented as a matrix where rows are regarded as samples or observations (e.g. a specimen, field sites, etc.) and columns are variables or some transformation thereof (e.g. an embedding, scaling, ordination, etc. of the variables).}
-These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix \citep[][and references therein]{lloyd2016estimating}, or as outputs from a principal coordinates analysis \citep[PCO;][]{Brusatte12092008}, a principal components analysis \citep[PCA;][]{zelditch2012geometric}, or a multidimensional scaling \citep[MDS;][]{DonohueDim}, among others.
+\hl{These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix (}
+\citealt{lloyd2016estimating}
+\hl{and references therein; e.g. in}
+\citealt{Close2015}
+\hl{), or as outputs from an ordination, whether it being a principal components analysis (PCA,}
+\citealt{PCA}
+\hl{; e.g. in}
+\citealt{zelditch2012geometric}
+\hl{), a metric scaling (PCO, PCoA,}
+\citealt{PCO}
+\hl{; e.g. in}
+\citealt{Brusatte12092008}
+\hl{) or a non-metric scaling (MDS, NMDS,}
+\citealt{MDS}
+\hl{; e.g. in}
+\citealt{Liow2004,DonohueDim}
+\hl{).}
 The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
 For example, when using morphological traits the multivariate space will be a morphospace, when using ecological traits it may be referred to as an ecospace or trait space.
 
@@ -193,7 +209,8 @@ In summary, there are many different ways to perform each step of a multidimensi
 % Problems with this variety
 In theory, this multitude of ways to generate and define multidimensional spaces, measure disparity within and analyse these metrics is not an issue, in fact, it allows researchers to choose both the most appropriate method for their question or data, or even to test their question using multiple methods \citep[such as][for biogeography]{matzke2013biogeobears}.
 In practice, however, this is hampered by existing software implementations.
-Although many software packages exist for multidimensional analysis \citep[e.g.][]{bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,adams2013geomorph,Claddis,adams2017geometric}, package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric and then enforce this on users by allowing little to no flexibility.
+Although many software packages exist for multidimensional analysis \citep[e.g.][]{navarro2003MDA,bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,adams2013geomorph,Claddis,adams2017geometric},
+\hl{package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric to best it their needs (i.e. data, hypothesis, etc.) making the implementations sometimes hard to adapt to different needs.}
 For example, in the excellent and widely used \texttt{geomorph} package, morphological disparity analysis uses the \texttt{morphol.disparity} function that defines the multidimensional space as the ordination of the Procrustes transform of the morphometric data, the disparity metric
 \hl{as the relative sum of the diagonal of the covariance of the ordination scores (Procrustes variance)}
 , and uses permutation tests \citep{zelditch2012geometric,adams2013geomorph,adams2017geometric}.
@@ -399,9 +416,9 @@ One typical question with such analysis would be to test whether two groups of s
 For example, using the data described above, we can test whether the crown mammals are more diverse in term of morphology than the stem ones.
 In other words, whether the approximation of the volume within the morphospace (the disparity as defined above) is different in crown or stem mammals.
 
-\noindent These two groups can be defined as follows (where the integers are the row number of the species in the matrix):
+\noindent These two groups can be defined using one the package's utility functions, \texttt{crown.stem} that selects :
 
-\noindent \texttt{> mammal\_groups <- list(\textquotedbl crown\textquotedbl = c(16, 19:41, 45:50), \textquotedbl stem\textquotedbl = c(1:15, 17:18, 42:44))}
+\noindent \texttt{> mammal\_groups <- crown.stem(BeckLee\_tree)}
 
 \noindent It is then possible to measure the disparity between the two groups as follows:
 
@@ -493,16 +510,16 @@ It is then possible to measure disparity-through-time using the following functi
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> subsets <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
-\noindent \texttt{> bootstraps <- boot.matrix(subsets)}\\
-\noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
+\noindent \texttt{> \hl{time\_subsets} <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
+\noindent \texttt{> \hl{bootstraps2} <- boot.matrix(\hl{time\_subsets})}\\
+\noindent \texttt{> \hl{disparity2} <- dispRity(\hl{bootstraps2}, metric = c(sum, variances))}\\
 
 \noindent The arguments \texttt{data = BeckLee\_mat50} and \texttt{metric = c(sum, variances)} are the same as in the example above.
 However, in this type of analysis, we also need to have additional arguments: the \texttt{time = time\_bins} indicates the boundaries of the different time bins, the \texttt{tree = BeckLee\_tree} argument provides information on the age of each element and \texttt{method = 'discrete'} indicates that the data is time-binned.
 
 Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:summary_time} and Fig. \ref{Fig:plot_time}):
 
-\noindent \texttt{> summary(disparity)}
+\noindent \texttt{> summary(\hl{disparity2})}
 
 \begin{table}[ht]
 \centering
@@ -519,7 +536,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \label{Tab:summary_time}
 \end{table}
 
-\noindent \texttt{> plot(disparity, type = \textquotedbl continuous\textquotedbl)}
+\noindent \texttt{> plot(\hl{disparity2}, type = \textquotedbl continuous\textquotedbl)}
 
 \noindent Note that many plot options specific to \disp objects are available such as plotting disparity in a ``continuous'' fashion (inferring disparity between the time bins).
 
@@ -533,7 +550,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
 Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, an ANOVA (Table \ref{Tab:anova}): 
 
-\noindent \texttt{> anova(test.dispRity(disparity, test = lm, comparisons = \textquotedbl all\textquotedbl))}
+\noindent \texttt{> anova(test.dispRity(disparity2, test = lm, comparisons = \textquotedbl all\textquotedbl))}
 
 \begin{table}[ht]
 \centering
