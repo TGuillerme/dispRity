@@ -178,6 +178,9 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## concatenate
     check.class(concatenate, "logical")
+    if(!is_distribution && !concatenate) {
+        stop("Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).")
+    }
 
     ## concatenate (ignore if data is not bootstrapped)
     if(is_bootstrapped & is_distribution & !concatenate) {
