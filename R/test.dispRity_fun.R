@@ -135,6 +135,9 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     ## Transforming list to table
     table_temp <- do.call(rbind.data.frame, details_out)
 
+    ## Getting the eventual parameter name
+    param_name <- unique(as.character(lapply(details_out, names)))
+
     ## Calculate the quantiles and the central tendency
     if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
         table_out <- get.quantiles.from.table(table_temp, con.cen.tend, conc.quantiles)
@@ -143,7 +146,11 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     }
 
     ## Getting column names
-    colnames(table_out)[1] <- name
+    if(param_name != "NULL") {
+        colnames(table_out)[1] <- paste(name, param_name, sep = ": ")
+    } else {
+        colnames(table_out)[1] <- name
+    }
     ## Getting row names (the comparisons)
     row.names(table_out) <- comparisons_list
 

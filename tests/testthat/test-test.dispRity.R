@@ -232,7 +232,7 @@ test_that("output.htest.results internal fun", {
     test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
-    expect_equal(colnames(test_out), c("statistic", "25%", "75%"))
+    expect_equal(colnames(test_out), c("statistic: t", "25%", "75%"))
     expect_equal(rownames(test_out), unlist(lapply(comp_subsets, paste, collapse = ":")))
 
     ## Wrapping function
@@ -241,7 +241,7 @@ test_that("output.htest.results internal fun", {
     expect_is(test_out, "list")
     expect_equal(length(test_out), 3)
 
-    elements_names <- c("statistic", "parameter", "p.value")
+    elements_names <- c("statistic: t", "parameter: df", "p.value")
     comp_names <- unlist(lapply(comp_subsets, paste, collapse = ":"))
     
     for(element in 1:3) {
@@ -296,7 +296,7 @@ test_that("test.dispRity works fine", {
     ## Correction
     expect_warning(test <- test.dispRity(sum_of_ranges, t.test, correction = "none"))
     expect_equal(length(test), 3)
-    expect_equal(unlist(lapply(test, colnames)), c("statistic", "parameter", "p.value"))
+    expect_equal(unlist(lapply(test, colnames)), c("statistic: t", "parameter: df", "p.value"))
     expect_equal(unique(unlist(lapply(test, rownames))), c("V1.1 : V1.2", "V1.1 : V1.3", "V1.2 : V1.3"))
 
     ## Custom comparisons errors management

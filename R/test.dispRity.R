@@ -216,7 +216,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## ----------------------
 
     ## Extracting the data (sends error if data is not bootstrapped)
-
     extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
 
     ## Custom, pairwise, sequential and referential
