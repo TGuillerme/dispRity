@@ -201,9 +201,22 @@ This requires the definition of a proxy for space occupancy: the disparity metri
 \hl{, a more direct approximation of the hyper volume }
 \citep{cornwell2006trait,DonohueDim}
 \hl{, or many more }
-\citep[e.g.][]{Navarrro2003MDA}.
+\citep[e.g.][]{navarro2003MDA}.
 
-Finally, all these different multidimensional spaces and their associated disparity metrics can be used in an equal variety of statistical tests such as non-parametric multivariate analyses of variance \citep[e.g.][]{Brusatte12092008}, multidimensional permutation tests \citep[e.g.][]{diaz2016global} or even simply by looking at the confidence interval overlaps between disparity measurements \citep[e.g.][]{halliday2016eutherian}.
+Finally, all these different multidimensional spaces and their associated disparity metrics can be used in an equal variety of statistical tests such as non-parametric multivariate analyses of variance (
+\hl{NPMANOVA, }
+\citealt{NPMANOVA}
+\hl{; e.g. in }
+\citealt{Brusatte12092008}
+\hl{)}
+multidimensional permutation tests
+\hl{(}
+\citealt{ManlyPermutations}
+\hl{; e.g. in }
+\citealt{diaz2016global}
+\hl{)}
+or even simply by looking at the confidence interval overlaps between disparity measurements
+\hl{().}
 In summary, there are many different ways to perform each step of a multidimensional analysis, making analyses of complexity ever more complex.
 
 % Problems with this variety
@@ -227,7 +240,7 @@ The package is described here for the use of discrete morphological data diversi
 In brief, the package takes a \texttt{matrix} object (the multidimensional space), 
 \hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}
 (see Manuals and Vignettes below).
-Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow} and Table \ref{Tab:main_fun}).
+Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow}).% and Table \ref{Tab:main_fun}).
 \hl{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements} \citep[e.g. the multidimensional space can be a distance matrix][]{Close2015}.
 
 \begin{figure}[!htbp]
@@ -237,27 +250,47 @@ Some additional functions modify the multidimensional space, for example by divi
 \label{Fig:workflow}
 \end{figure}
 
+% \begin{table}
+%     \begin{tabular}{ll}
+%         \hline
+%         Function & Description \\ 
+%         \hline
+%         \texttt{geomorph.ordination} & Imports \hl{shape} data from the \texttt{geomorph} package. \\
+%         \texttt{Claddis.ordination} & Imports \hl{discrete morphological} data from the \texttt{Claddis} package. \\
+%         \texttt{custom.subsets} & Separates data into custom subsets. \\
+%         \texttt{time.subsets} & Separates data into time subsets. \\
+%         \texttt{boot.matrix} & Bootstraps and rarefies a matrix or a \disp object. \\
+%         \disp & Calculates disparity from an matrix or a \disp object. \\
+%         \texttt{summary.dispRity} & Summarises a \disp object. \\
+%         \texttt{plot.dispRity} & Plots a \disp object. \\
+%         \texttt{test.dispRity} & Applies statistical tests to a \disp object.\\
+%         \texttt{dispRity.per.group} & Pipeline for \hl{disparity-within-groups} analysis. \\
+%         \texttt{dispRity.through.time} & Pipeline for disparity-through-time analysis. \\
+%         \hline
+%     \end{tabular}
+%     \caption{Main functions in the \disp package.}
+%     \label{Tab:main_fun}
+% \end{table}
+
+
+\begin{landscape}
 \begin{table}
-    \begin{tabular}{ll}
+    \begin{tabular}{p{4cm}p{5cm}p{6cm}p{6cm}}
         \hline
-        Function & Description \\ 
+        in this manuscript & in \texttt{dispRity} & in palaeobiology & in ecology \\ 
         \hline
-        \texttt{geomorph.ordination} & Imports \hl{shape} data from the \texttt{geomorph} package. \\
-        \texttt{Claddis.ordination} & Imports \hl{discrete morphological} data from the \texttt{Claddis} package. \\
-        \texttt{custom.subsets} & Separates data into custom subsets. \\
-        \texttt{time.subsets} & Separates data into time subsets. \\
-        \texttt{boot.matrix} & Bootstraps and rarefies a matrix or a \disp object. \\
-        \disp & Calculates disparity from an matrix or a \disp object. \\
-        \texttt{summary.dispRity} & Summarises a \disp object. \\
-        \texttt{plot.dispRity} & Plots a \disp object. \\
-        \texttt{test.dispRity} & Applies statistical tests to a \disp object.\\
-        \texttt{dispRity.per.group} & Pipeline for \hl{disparity-within-groups} analysis. \\
-        \texttt{dispRity.through.time} & Pipeline for disparity-through-time analysis. \\
+        multidimensional space & matrix ($n\times k$) & morphospace, traitspace, etc. & ecospace, function-space, etc. \\
+        elements & rows ($n$) & taxa, specimen, etc. & taxa, field sites, environments, etc. \\
+        dimensions & columns ($k$) & ordination scores, distances, etc. & ordination scores, distances, etc. \\
+        subsets & matrix ($m \times k$, with $m \leq n$) & e.g. every element in an strata or sharing the same ancestor & e.g. elements living in the same environment \\
+        disparity & a dimension-level 1 or 2 function$^1$ & disparity: e.g. the sum of variances \cite{Wills2001}, the average pairwise distance between taxa \cite{Foote01071994}, etc. & dissimilarity: e.g. ellipsoid volume \cite{DonohueDim}, convex hull volume \cite{cornwell2006trait}, etc. \\
         \hline
     \end{tabular}
-    \caption{Main functions in the \disp package.}
-    \label{Tab:main_fun}
+    \caption{Glossary and equivalences between this manuscript, the \texttt{dispRity} package and terms commonly used in palaeobiology or ecology. $^1$See Fig. \ref{Fig:levels}.}
+    \label{Tab:terms}
 \end{table}
+\end{landscape}
+
 
 \subsection{Measuring disparity}
 The \disp function measures disparity of any multidimensional space (of class \texttt{matrix} or \texttt{data.frame}) where the columns correspond to the dimensions and the rows correspond to the elements present in the space.
@@ -306,10 +339,11 @@ There is no limitation on the metric dimensions only that at least one dimension
     \end{tabular}
 }%
     % \caption{\small{Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA).}}
-    \label{Tab:metrics}
+    % \label{Tab:metrics}
 \end{table}
 
 \textbf{Table 1 (caption):} Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA).
+\label{Tab:metrics}
 
 %TODO: Add the proper sources for the convhulln and vegan packages
 
@@ -484,7 +518,7 @@ It is possible to test this hypothesis by using, for example, a non-parametric W
 \noindent \texttt{> test.dispRity(disparity, test = wilcox.test)}\\
 
 \noindent \texttt{[[1]]}\\
-\noindent \texttt{             statistic}\\
+\noindent \texttt{          statistic: W}\\
 \noindent \texttt{crown : stem     10000}\\
 \noindent \texttt{ }\\
 \noindent \texttt{[[2]]}\\
@@ -492,7 +526,8 @@ It is possible to test this hypothesis by using, for example, a non-parametric W
 \noindent \texttt{crown : stem 2.562144e-34}\\
 
 \bigskip
-As indicated by the p value, there is a significant difference in disparity between the groups.
+As indicated by the \textit{p} value, there is a significant difference in disparity between the groups.
+\hl{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the \textit{p} value. However, the raw test results can also be output using the option \texttt{details = TRUE} in the function above.}
 Relating back to our question: yes, crown mammals display a higher diversity in morphologies than their stem counterparts (in this example and dataset!).
 
 \subsubsection{Typical disparity-through-time analysis}

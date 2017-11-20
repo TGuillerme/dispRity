@@ -103,6 +103,7 @@ Specifically, the lines 58-61 need to be revised, as they simply don’t convey 
 Say what “specific aspect of it [multidimensional space]” you are referring to.
 Also, the different definitions of disparity alluded to on lines 61-63 should be summarised.
 Furthermore, the manuscript is lacking a table summarising the metrics of disparity that this package can work with (which I suspect it was supposed to have).}}
+\label{define_disparity}
 
 %TODO improve disparity definition in the abstract
 
@@ -113,7 +114,7 @@ However, I have tried to give specific examples each time I refer to disparity a
 
 I rewrote the part in the introducing disparity as follows:
 
-\textit{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. “does group A occupies more space than group B?”). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001) , a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996) , a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013) , or many more (e.g. Navarro, 2003).} lines @@@
+\textit{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. “does group A occupies more space than group B?”). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001), a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996), a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013), or many more (e.g. Navarro, 2003).} lines @@@
 
 \item{\textcolor{blue}{Another concern I have is about how this R package sits within the current analytical toolkit available.
 How does this new package relate to existing packages available for R?
@@ -144,6 +145,7 @@ Similarly, the R package ‘diverse’ has a function called disparity, and the 
 I have fixed these typos.
 
 \item{\textcolor{blue}{Line 84 – Explain what the Procrustes variance is. And when is it appropriate and when is not appropriate? Be more specific.}}
+\label{tone_down}
 
 In \texttt{geomorph}, the procrustes variance is defined as the sum of the diagonal covariance matrix between each elements divided by the number of elements (or effectively the sum of the squared ordination values divided by the number of elements - see example in \texttt{R} for \texttt{?dispRity::geomorph.ordination}).
 Using this disparity metric is appropriate for testing volume based hypothesis (e.g. Does group A occupies more morphospace than group B?) but does not allow to test position based hypothesis (e.g. Does group A occupies a different part of the morphospace than group B).
@@ -479,6 +481,10 @@ One of the reasons for this functionality in the package is to make the test.dis
 % Remove mentions to it on bootstrapped data in the manuals
 % Replace by more savy example
 % Allow to use NPMANOVA instead
+%
+% Dissimilarity analyses: ANOVA using dissimilarities, ANOSIM, MRPP, BIOENV, Mantel and partial Mantel tests.
+% Ordination and environment: vector fitting, centroid fitting and smooth surface fitting, adding species scores as weighted averages, adding convex hull, SD ellipses, arrows etc. to ordination.
+% Ordination: support and meta functions for NMDS, redundancy analysis, constrained correspondence analysis, constrained analysis of proximities (all three with partial analysis),
 
 
 \item{\textcolor{blue}{I also have a recommendation for the package, itself, based on my experiences. 
@@ -494,6 +500,12 @@ Although the geomorph results by comparison were tedious to achieve, I can attes
 The author should remember that once this manuscript is published, this R package becomes a dedication to the researchers who use it. 
 Cleaning up some of these details now will make it easier to remain dedicated later.}}
 
+%TODO: add [[1]] and [[2]] names
+
+I have changed the \texttt{test.dispRity} to now output the name of the statistic and the parameter in the output list (e.g. \texttt{statistic: t} and \texttt{parameter: df} for the example provided by the reviewer).
+I have also highlighted in the manuscript one of the features of the function allowing to output the results in a format more familiar to the user using the option \texttt{details = TRUE} (returning the raw test results):
+
+\textit{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the p value. However, the raw test results can also be output using the option} \texttt{details = TRUE} \textit{in the function above.} lines @@@
 
 \end{enumerate}
 
@@ -574,13 +586,13 @@ Cleaning up some of these details now will make it easier to remain dedicated la
 It seems unclear, to me at least, who the intended audience is?
 At various points I get the impression that the author intends for the package to be useful, and therefore, presents it, to readers beyond those studying morphometry etc.
 There are frequent references to ecology and related disciplines where similar approaches are used.
-Yet, those in these broader fields will struggle to follow what is presented as the manuscript exclusively uses "morphospaces" and related terminology that will only be relevant to a specific subset of readers.}
-
-\textcolor{blue}{If you want to aim for a more general audience, consider rewriting the manuscript in more general terminology; samples in rows, variables in columns, for example.
+Yet, those in these broader fields will struggle to follow what is presented as the manuscript exclusively uses "morphospaces" and related terminology that will only be relevant to a specific subset of readers.If you want to aim for a more general audience, consider rewriting the manuscript in more general terminology; samples in rows, variables in columns, for example.
 Perhaps include a table to relate terminology used in morphometry with that more commonly encountered in community ecology.
 Consider adding an ecological example and removing, if length is an issue, content on the manual and vignette --- we don't really need a paragraph on that, just a sentence to highlight it exists.}}
 
-% %TG: adding a table of terms correspondance
+I have worked towards making the manuscript more useful for non-morphologists.
+I have generalised the input description as suggest by this reviewer, minor comment \ref{rows}; added a glossary table and a brief example using ecological data.
+%TODO: add Diaz's example?
 % %TG: adding an ecology example (removing manual and vignette description)
 
 \item{\textcolor{blue}{The referencing is poor; why cite Close et al for the concept of pairwise distances?
@@ -589,9 +601,7 @@ Throughout I was frustrated with this; the referencing ignores a century of work
 I appreciate there merit in citing relevant literature for your field, but that doesn't absolve one of a duty to accurately attribute ideas to those that came up with them.
 If you are unfamiliar with developments in ideas beyond your particular field, I would suggest Legendre \& Legendre's *Numerical Ecology* textbook as a good source for original work relevant to what is presented here.}}
 
-See my response to Reviewer 2 - Minor suggestion \ref{PCO_cites}.
-
-% %TG: source orginal papers
+I thank this reviewer for sharing the excellent Legendre \& Legendre reference (that was definitely a reference I was missing) and I've accurately credited the statistical methods throughout the manuscript - see my response to Reviewer 2, minor suggestion \ref{PCO_cites}.
 
 \item{\textcolor{blue}{The comparison or critique of packages that, in the eyes of the author, restrict users grated a little with me. As a developer of one of the packages named, I feel that particular critique is unwarranted for several reasons;
 \begin{itemize}
@@ -601,12 +611,16 @@ See my response to Reviewer 2 - Minor suggestion \ref{PCO_cites}.
 \end{itemize}
 }}
 
+I apologise for the unfounded critique and I have toned down this sentence (see Reviewer 1, minor suggestion \ref{tone_down}).
+% Additionally, I have added more functionalities using vegan and geiger %TODO!
 % %TG: Tone down the critics to other packages
 
 \item{\textcolor{blue}{You don't really define disparity anywhere, except in very loose terms.
 This needs making more explicit; I appreciate that disparity is a broad, nebulous concept, but you need to help the reader that may not be familiar with your subject area.
 Either that or as mentioned above, refocus the paper on those readers already versed in this particular type of analysis.}}
 \label{nebulous}
+
+I have tried to define disparity with more examples and references to be more familiar to a broader range of readers (See Reviewer 1, major suggestion \ref{define_disparity}).
 
 %TG: explain disparity
 
@@ -618,6 +632,7 @@ If so, there are some issues that cannot be corrected by the user without strong
 This is one area where there is the potential for the ideal of being accommodating of users can cause problems downstream if you are not in control of issues like non-metric dissimilarities.
 An example where it needs specific handling is in multivariate dispersions (distances around centroids), but even simple ordinations based on dissimilarities require special handling.}}
 
+%TOD: add a note to the paper and the package (warnings if negative eigen values).
 %TG: negative egein values explnations
 % Check Legendre and Legendre pp.449
 
@@ -634,12 +649,13 @@ I've fixed these typos.
 \item{\textcolor{blue}{L50: Here is an opportunity to bridge to the community ecology field and make more general statements regarding multivariate data; rows and samples or observations, columns are variables or some function of variables such as an embedding (PCO) or an ordination.}}
 
 I've changed the sentence to:
+\label{rows}
 
 \textit{In all these analysis, each set of multivariate traits forms a multidimensional space. This space is represented as a matrix where rows are regarded as samples or observations (e.g. a specimen, field sites, etc.) and columns are variables or some transformation thereof (e.g. an embedding, scaling, ordination, etc. of the variables).}
 
 \item{\textcolor{blue}{L51--54: here referencing is very poor. Please cite relevant original research. Also, expand on what you mean by MDS; is this different from PCO, which also goes by this name --- do you mean NMDS here?}}
 
-%TODO
+I went with Legendre \& Legendre 1998's definition of ordinations (pp. 388) in the three major distinct categories: (1) principal components analysis (PCA), (2), principal coordinates and metric scaling (PCO, PCoA) and non metric dimensional scaling (NMDS, MDS), ignoring correspondence and factor analysis for clarity. See reviewer 2, minor suggestion \ref{PCO_cites}.
 
 \item{\textcolor{blue}{L65--64 here are additional areas where referencing is poor. Consider Marti Anderson's work on multivariate ANOVA \& dispersions as earlier work, for example:
 \begin{itemize}
@@ -652,7 +668,11 @@ I've changed the sentence to:
 Also comparing overlap in CIs is a terrible way to perform inference; for 95\% confidence intervals, if the intervals for two estimated means are as close as possible but not overlapping, the p value of the difference means test is 0.005, not 0.05. To achieve 0.05 you can allow considerable overlap, but how much is tricky to discern by eye.
 As such you are at risk of making poor choices on the basis of perceived significance.}
 
-%TODO I agree with the last point of this comment (that comparing CI's overlap is a terrible method!) -> change to "has been done in variable ways, sometimes leading to inaccuracies,"
+I have changed this sentence by citing Anderson 2001 \textit{Austral Ecol.} and Manly 1997 \textit{Randomization, bootstrap and Monte Carlo methods in biology}.
+I also totally agree with the poor choice of simply comparing CIs; unfortunately this method is not that uncommon common in palaeobiology.
+I've removed the citation (to avoid pointing-and-shaming) and added a caveat to this way of comparing disparity:
+
+\textit{[...] an equal variety of statistical tests such as non-parametric multivariate analyses of variance (NPMANOVA, Anderson 2001 ; e.g. in Brusatte et al. 2008) multidimensional permutation tests (Manly 1997 ; e.g. in Díaz et al. 2016) or even simply by looking at the confidence interval overlaps between disparity measurements (which, when not based on rigorous statistic methods can often leads to serious inaccuracy).}
 
 \item{\textcolor{blue}{L116 There is either a missing reference or a missing table, I presume the latter as no existing table matches the textual description in and around this line.}}
 
