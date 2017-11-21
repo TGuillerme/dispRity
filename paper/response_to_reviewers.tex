@@ -107,7 +107,7 @@ Furthermore, the manuscript is lacking a table summarising the metrics of dispar
 
 %TODO improve disparity definition in the abstract
 
-As Reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
+As reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
 This observation was the genesis for this package and I am currently working on a collaborative review to define the borders (or the absence thereof) of this concept.
 I feel that explaining this would be out of the scope of this software description paper.
 However, I have tried to give specific examples each time I refer to disparity as a way to measure these ``specific aspect of the space'' and I have also added a clearer definition of what I mean by disparity throughout this manuscript.
@@ -214,6 +214,7 @@ I've added hyphens to disparity-within-group and ``\textit{shape data}'' and ``\
 Really the only major omission here is a more detailed description of the tools avilable under the "Data Simulations" section of the manuscript.
 I suspect many users will find this the *most* useful feature of the package and the author should consider unpacking this section a bit more.
 Perhaps adding an additional multipanel figure exhibitng some simulated spaces.}}
+\label{simulations}
 
 Reviewer 4 (minor comment \ref{remove_simulations}) suggested completely removing this section which conflicts directly with this suggestion.
 The simulation protocols implemented here are already developed (and tested) in details in previous publications with new novel features attached to future publication.
@@ -290,7 +291,7 @@ I've reflected these changes in the manual with a subsection in the chapter ``Sp
 \item{\textcolor{blue}{Picking up on the first point from above, there are also additional post-ordination disparity metrics that have been used in the literature but are not available here. For example, hypercube volume, minimum spanning tree length etc. I would also urge the author to cite the work of Mike Foote, who made some early important contributions to disparity in general, and has written papers that discuss some of these potential metrics (e.g., Foote 1997, Annual Review of Ecology and Systematics, 28, 129–). I believe Wills (2001, cited) also discusses a long list of metrics.}}
 
 I agree, there are many more metrics commonly used for disparity analysis not implemented in this package.
-This was a conscious choice: due to the really high number of metrics available (especially when combining different ones), I designed the package to be modular hence allowing users to implement their own metrics (see response to Reviewer 1 minor comment \ref{table_missing}).
+This was a conscious choice: due to the really high number of metrics available (especially when combining different ones), I designed the package to be modular hence allowing users to implement their own metrics (see response to reviewer 1 minor comment \ref{table_missing}).
 I have precise this using the hypercube volume example in the manuscript:
 
 \textit{When multiple functions are passed to the} \texttt{metric} \textit{argument, the functions are sorted by dimension-level and applied in decreasing order to the data.
@@ -325,7 +326,7 @@ This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} fun
 
 \item{\textcolor{blue}{L4 - "in" should be "to"? "of variables" is then redundant and can be removed. L6 - "are the axis of this space" could just be "are the axes".}}
 
-See Reviewer 1 minor comment \ref{abstract_typo}.
+See reviewer 1 minor comment \ref{abstract_typo}.
 
 \item{\textcolor{blue}{L7 - "a" here should be removed. L17 - "suits best" should be "best suits". L23 - "allowing to" should be "allowing users to". L28 - "suit" should be "suite".}}
 
@@ -350,7 +351,7 @@ I've fixed this typo.
 
 \item{\textcolor{blue}{L116 - "??"!}}
 
-Sincerest apologies! See Reviewer 1 minor comment \ref{table_missing}.
+Sincerest apologies! See reviewer 1 minor comment \ref{table_missing}.
 
 \item{\textcolor{blue}{L130 - I don't think the term "possible observed" makes sense. Either the author means all the observed morphologies *or* all the possible morphologies. I suggest the former is safer as I think it likely that possible morphologies introduce sufficient complexity we can never really say this is true. For example, if we alter the number of elements in our sample (removing a species say) the ordination/morphospace we produce will differ, but the range of possible morphologies should not.}}
 
@@ -386,7 +387,7 @@ I've fixed this typo.
 
 \item{\textcolor{blue}{L357 - Should be "for such analyses".}}
 
-I've removed this last sentence (see Reviewer 1 minor comment \ref{remove_last_sentence}).
+I've removed this last sentence (see reviewer 1 minor comment \ref{remove_last_sentence}).
 
 \end{enumerate}
 
@@ -601,7 +602,7 @@ Throughout I was frustrated with this; the referencing ignores a century of work
 I appreciate there merit in citing relevant literature for your field, but that doesn't absolve one of a duty to accurately attribute ideas to those that came up with them.
 If you are unfamiliar with developments in ideas beyond your particular field, I would suggest Legendre \& Legendre's *Numerical Ecology* textbook as a good source for original work relevant to what is presented here.}}
 
-I thank this reviewer for sharing the excellent Legendre \& Legendre reference (that was definitely a reference I was missing) and I've accurately credited the statistical methods throughout the manuscript - see my response to Reviewer 2, minor suggestion \ref{PCO_cites}.
+I thank this reviewer for sharing the excellent Legendre \& Legendre reference (that was definitely a reference I was missing) and I've accurately credited the statistical methods throughout the manuscript - see my response to reviewer 2, minor suggestion \ref{PCO_cites}.
 
 \item{\textcolor{blue}{The comparison or critique of packages that, in the eyes of the author, restrict users grated a little with me. As a developer of one of the packages named, I feel that particular critique is unwarranted for several reasons;
 \begin{itemize}
@@ -611,7 +612,7 @@ I thank this reviewer for sharing the excellent Legendre \& Legendre reference (
 \end{itemize}
 }}
 
-I apologise for the unfounded critique and I have toned down this sentence (see Reviewer 1, minor suggestion \ref{tone_down}).
+I apologise for the unfounded critique and I have toned down this sentence (see reviewer 1, minor suggestion \ref{tone_down}).
 % Additionally, I have added more functionalities using vegan and geiger %TODO!
 % %TG: Tone down the critics to other packages
 
@@ -620,7 +621,7 @@ This needs making more explicit; I appreciate that disparity is a broad, nebulou
 Either that or as mentioned above, refocus the paper on those readers already versed in this particular type of analysis.}}
 \label{nebulous}
 
-I have tried to define disparity with more examples and references to be more familiar to a broader range of readers (See Reviewer 1, major suggestion \ref{define_disparity}).
+I have tried to define disparity with more examples and references to be more familiar to a broader range of readers (See reviewer 1, major suggestion \ref{define_disparity}).
 
 %TG: explain disparity
 
@@ -676,17 +677,20 @@ I've removed the citation (to avoid pointing-and-shaming) and added a caveat to 
 
 \item{\textcolor{blue}{L116 There is either a missing reference or a missing table, I presume the latter as no existing table matches the textual description in and around this line.}}
 
-Sincerest apologies! See Reviewer 1 minor comment \ref{table_missing}.
+Sincerest apologies! See reviewer 1 minor comment \ref{table_missing}.
 
 \item{\textcolor{blue}{L134 Needs "an" between "as" and "argument". L210 delete "sheer". L213 "longer" not "bigger" and "altitude" not "altitudes". L218 "longer" not "bigger"}}
 
-I've fixed these typos (see also Reviewer 2 minor comment \ref{altitude}).
+I've fixed these typos (see also reviewer 2 minor comment \ref{altitude}).
 
 \item{\textcolor{blue}{L252 and throughout the code: insert straight quotes. There is a good chance these curly quotes will get replaced with some non-ASCII character and be impossible to paste into R.}}
 
 I've converted all quotes in quoted code lines as ASCII straight quotes.
 
 \item{\textcolor{blue}{In the example around L236--249, can you justify the metric used here? Is the sum of variances along components of an ordination a valid measure of the dispersion in multivariate space of samples? You don't, or I didn't see, reference to original work that justifies this, and it's not something I have come across despite implementing some approaches for testing multivariate dispersion in the **vegan** package. Doesn't this suffer the same problem as confidence bars in an x-y scatterplot where the bars have been defined with reference to only one axis at a time? The solution is a confidence ellipse, which is often quite different to the interval implied by separate confidence interval bars for each axis.}}
+
+This metric (the sum of each ordination axis variance) is commonly used in palaeobiology (since Foote 1991 and Wills et al. 1994) probably due to a ``citation diffusion effect'' (i.e. future authors replicating convincing methods) and partly due to its pretty good behaviour with palaeontological data (e.g. missing data, Ciampaglio 2001).
+However, as this reviewer high
 
 %TG: justify from palaeo litterature? + add a note "One of the caveats of such method is that it implicitely ignores the covariance between the ordination axis."
 
@@ -705,7 +709,8 @@ I've changed the sentence following this suggestion.
 \item{\textcolor{blue}{If you need to save space to add an ecological example, cut the *Manuals and vignettes* section and also the *Data simulations* section. The later is somewhat tangential to the main thrust of the paper and you cover this in the vignette/bookdown resources.}}
 \label{remove_simulations}
 
-%TODO cut down the manual and vignette part + simulation part: just link to it?
+I have removed the simulations part as suggested by this reviewer.
+However, following the encouraging suggestions of reviewer 2 (major suggestion \ref{simulations}) I have developed in much more details the simulation algorithms in the package manual.
 
 \end{enumerate}
 
