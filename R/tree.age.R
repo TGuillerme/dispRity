@@ -5,6 +5,7 @@
 #' @param tree A \code{phylo} object.
 #' @param age The age of the tree. If missing the age is set to be the tree height.
 #' @param order Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.
+#' @param fossil.only \code{logical}, whether the tree contains only fossil taxa (\code{TRUE}) or not (\code{FALSE} - default). If the \code{tree} contains a \code{tree$root.time} element (for tree's root age), and that \code{order} is set to \code{"past"}, the ages in the tree are adjusted to be starting from the root.time, resulting in tips potentially older than age 0.
 #'
 #' @examples
 #' ## A dated random phylogeny with a root 50 units of time old.
@@ -18,7 +19,7 @@
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it
 
-tree.age <- function(tree, age, order = 'past'){
+tree.age <- function(tree, age, order = 'past', fossil.only = FALSE){
 
 #SANITYZING
 
@@ -34,14 +35,12 @@ tree.age <- function(tree, age, order = 'past'){
     check.length(age, '1', ' must a a single value.')
 
     #order
-    check.class(order, 'character', ' must be \'past\' or \'present\'.')
-    if(order != 'past') {
-        if(order != 'present') {
-            stop('order must be \'past\' or \'present\'.')
-        }
-    }
+    check.method(order, c("past", "present"), "order argument")
 
-#CALCULATE THE EDGES AGE
+    ## Fossils only
+    check.class(fossil.only, "logical")
+
+    #CALCULATE THE EDGES AGE
 
     if(age != 0) {
         ages.table <- tree.age_scale(tree.age_table(tree), age)
@@ -51,10 +50,21 @@ tree.age <- function(tree, age, order = 'past'){
 
     #Type
     if(order != 'past') {
-        ages.table$ages <- round(ages.table$ages, digits = 7)
+        ages.table$ages <- round(ages.table$ages, digits = 7) # CHANGE PRECISION!
     } else {
         tree.height <- max(ages.table$ages)
         ages.table$ages <- round(abs(ages.table$ages - tree.height), digits = 3)
+    }
+
+    ## Adjust time for tree with non-living taxa
+    if(fossil.only) {
+        if(!is.null(tree$root.time) && order == "past") {
+            ## If the root.time is not equal to the older node, scale the tree ages down
+            if(round(tree$root.time, digit = 5) > round(max(ages.table$ages), digit = 5)) {
+                ## Add the time to the root age to all the ages
+                ages.table$ages <- ages.table$ages + abs(tree$root.time - max(ages.table$ages))
+            }
+        }
     }
 
     #Output
