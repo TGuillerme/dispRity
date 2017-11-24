@@ -96,13 +96,13 @@ test_that("Non living trees works", {
     ## Random tree
     set.seed(1)
     tree <- rtree(5)
-    tree_age_living <- tree.age(tree, fossil.only = FALSE)
+    tree_age_living <- tree.age(tree)#, fossil.only = FALSE)
 
     ## Making the tree older
     tree$root.time <- 150
 
     ## Recalculate the ages
-    tree_age_fossil <- tree.age(tree, fossil.only = TRUE)
+    tree_age_fossil <- tree.age(tree)#, fossil.only = TRUE)
 
     for(tip in 1:(Ntip(tree)+Nnode(tree))) {
         expect_equal(tree_age_fossil[tip, 1], tree_age_living[tip, 1] + abs(150 - max(tree_age_living[,1])))

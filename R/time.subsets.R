@@ -137,7 +137,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
         ## Generating the star tree
         tree <- stree(nrow_data)
         tree$tip.label <- names_data
-        tree$root.time <- max(names_data)
+        tree$root.time <- max(FADLAD)
     }
 
     ## Ntip_tree variable declaration

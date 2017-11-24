@@ -55,9 +55,16 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
 
     ## Get all the strats covered by the tree
     strats <- which(stratigraphy$End < tree$root.time)
-
+    
     ## Remove eventual recent strats for trees not containing living taxa
-    recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree)))
+    if(max(node.depth.edgelength(tree)) < tree$root.time) {
+        ## Correct recent if tree contains only fossils
+        time_ro_recent <- abs(max(node.depth.edgelength(tree)) - tree$root.time)
+        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree) + time_ro_recent))
+    } else {
+        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree)))
+    }
+
     if(length(recent) > 0) {
         strats <- strats[-recent]
     }

@@ -133,7 +133,7 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         while(exists("offspring_node")) {
             #Compute the node ages
             age_tree <- tree.age(tree)
-            age_slic <- tree.age(tree_slice)
+            age_slic <- tree.age(tree_slice, fossil = FALSE)
             #select the oldest node in tree_slice
             root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
             #calculate the slice age using the oldest node in tree_slice

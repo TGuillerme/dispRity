@@ -265,7 +265,7 @@ test_that("Boot.matrix works with small, empty/subsets", {
     expect_equal(warnings, "The following subsets have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
 
     expect_equal(test$subsets[[1]][[2]], matrix(rep(NA, 100), nrow = 1))
-    expect_equal(test$subsets[[2]][[2]], matrix(rep(51, 100), nrow = 1))
+    expect_equal(unique(sort(test$subsets[[2]][[2]])), c(51))
 })
 
 
