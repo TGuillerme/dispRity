@@ -9,8 +9,8 @@ Patch notes
   * *New* disparity metric: `radius`: the radius of each dimensions.
   * *New* disparity metric: `n.ball.volume`: the *n*-dimensional sphere or ellipsoid volume.
   * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...)
-  * **Changed argument** in `time.subset`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
-  * **New argument** in `time.subset`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
+  * **Changed argument** in `time.subsets`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
+  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
 * 2017/11/13 - v0.4.1
   * *New* disparity metric: `ancestral.distance` to get the distance from taxa/nodes to their ancestors.
   * *New* function: `random.circle` for generating random circle coordinates (see example in `space.maker` for creating doughnut spaces!).
