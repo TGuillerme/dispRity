@@ -89,7 +89,13 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
         if(verbose) message(".", appendLF = FALSE)
 
         ## Slicing the tree
-        sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
+        if(time[slice] != 0) {
+            sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
+        } else {
+            ## Extract only living taxa
+            tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != 0), 2]))
+        }
 
         ## Empty subset
         if(class(sub_tree) != "phylo" && is.na(sub_tree)) {
@@ -134,6 +140,8 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
     if(verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
+
+    #get.slice(slice = 8, time, model, ages_tree, data, verbose, tree)
 
     ## Get the slices elements
     slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
