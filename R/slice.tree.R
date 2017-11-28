@@ -68,8 +68,16 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         return(NA)
     } else {
         suppressMessages(
+        try(
             tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
+        , silent = TRUE)
         )
+        
+
+        if(!exists("tree_slice")) {
+            ## Slicing through a single edge!
+            return(slice.edge(tree, age, model))
+        }
     }
 
     

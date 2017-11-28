@@ -451,11 +451,11 @@ test_that("dispRity deals with probabilities subsets", {
     test3 <- dispRity(data1, metric = mean)
 
     expect_equal(summary(test1)$n, c(15,21))
-    expect_equal(summary(test2)$n, c(15,21))
+    expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
     expect_equal(as.vector(summary(test1)$obs), c(-0.010, 0.007))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.007, 0.004))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.012, 0.004))
     expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
 
 })

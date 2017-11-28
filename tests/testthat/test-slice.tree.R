@@ -236,3 +236,18 @@ test_that("slice.tree proba works", {
 #expect_equal(
 #        sort(slice.tree(tree, 0, 'DELTRAN')$tip.label), sort(acc_0)
 #        )
+
+
+# Slice tree with single edge sliced
+test_that("slice.tree works on a single edge", {
+
+    tree <- read.tree(text = "((A:1, B:5):1, C:1);")
+    tree$node.label <- as.character(paste0("n",seq(1:2)))
+
+    expect_equal(slice.tree(tree, age = 1, model = "acctran"), "B")
+    expect_equal(slice.tree(tree, age = 1, "deltran"), "n2")
+    expect_equal(slice.tree(tree, age = 1, "proximity"), "B")
+    expect_equal(slice.tree(tree, age = 3.9, "proximity"), "n2")
+    expect_equal(slice.tree(tree, age = 1, "punctuated"), c("n2", "B", "0.5"))
+    expect_equal(slice.tree(tree, age = 3, "gradual"), c("n2", "B", "0.6"))
+})

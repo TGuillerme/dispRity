@@ -206,7 +206,70 @@ slice.tree_PROXIMITY <- function(tree, tip, tree_slice, probability = FALSE) {
             prob <- as.character(round(prob, digits = 10))
             return(c(DEL_node, ACC_node, prob))
         } else {
-            return(ifelse(full_edge < slice_edge/2, DEL_node, ACC_node))
+            return(ifelse(slice_edge < full_edge/2, DEL_node, ACC_node))
+        }
+    }
+}
+
+
+## Slicing through a single edge
+slice.edge <- function(tree, age, model) {
+    ## Get the edges length (depth)
+    edges_depth <- node.depth.edgelength(tree)
+
+    ## Correct with the root.age
+    edges_depth <- max(edges_depth)-edges_depth
+    if(!is.null(tree$root.time)) {
+        edges_depth <- edges_depth + abs(max(edges_depth) - tree$root.time)
+    }
+    
+    ## Find which edge gets sliced
+    edge_slice <- tree$tip.label[which(edges_depth < age)]
+    edge_slice <- edge_slice[!is.na(edge_slice)]
+
+    ## Get the upper node (after the slice)
+    upper_node <- getMRCA(tree, tip = edge_slice)
+    if(is.null(upper_node)) {
+        upper_node_name <- edge_slice
+        upper_node <- which(tree$tip.label == edge_slice)
+    } else {
+        upper_node_name <- tree$node.label[upper_node-Ntip(tree)]
+    }
+    ## Get the lower node name
+    lower_node_name <- slice.tree_parent.node(tree, upper_node_name)
+
+    if(any(model %in% c("punctuated", "gradual", "proximity"))) {
+        
+        ## Get the lower node ID
+        lower_node <- which(tree$node.label == lower_node_name) + Ntip(tree)
+
+        ## Get the total edge length
+        full_edge <- edges_depth[lower_node] - edges_depth[upper_node]
+
+        ## Get the slice edge
+        slice_edge <- edges_depth[lower_node] - age
+
+        if(model != "proximity") {
+            prob <- 1-slice_edge/full_edge
+            prob <- as.character(round(prob, digits = 10))
+            if(model == "gradual") {
+                return(c(lower_node_name, upper_node_name, prob))
+            } else {
+                return(c(lower_node_name, upper_node_name, "0.5"))
+            }
+        } else {
+            return(ifelse(slice_edge < full_edge/2, lower_node_name, upper_node_name))
+        }
+
+    } else {
+        if(model == "random") {
+            return(sample(c(upper_node_name, lower_node_name), 1))
+        }
+        if(model == "acctran") {
+            return(upper_node_name)
+        }
+        if(model == "deltran") {
+            return(lower_node_name)
         }
     }
 }

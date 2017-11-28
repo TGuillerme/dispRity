@@ -107,7 +107,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
         ## tree must be dated
         if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
         ## tree.age_tree variable declaration
-        tree.age_tree <- tree.age(tree, age = tree$root.time)
+        tree.age_tree <- tree.age(tree)
     }
 
 

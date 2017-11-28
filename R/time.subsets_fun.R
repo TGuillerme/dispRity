@@ -149,7 +149,7 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
-    #get.slice(slice = 21, time, model, ages_tree, data, verbose, tree)
+    #get.slice(slice = 19, time, model, ages_tree, data, verbose, tree)
 
     ## Get the slices elements
     slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)

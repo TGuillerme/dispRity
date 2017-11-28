@@ -285,17 +285,8 @@ test_that("boot.matrix deals with probabilities subsets", {
     set.seed(1)
     test3 <- boot.matrix(data2, bootstraps = 10)
 
-     for(sub in 1:2) {
-        ## Difference
-        expect_true(
-            !all(test1$subsets[[sub]][[2]] == test2$subsets[[sub]][[2]])
-            )
-        ## Control
-        expect_false(
-            !all(test3$subsets[[sub]][[2]] == test2$subsets[[sub]][[2]])
-            )
-        ## More sampled
-        expect_gt(length(unique(as.vector(test1$subsets[[sub]][[2]])))
-        ,length(unique(as.vector(test2$subsets[[sub]][[2]]))))
-     }
+    expect_equal(dim(test1$subsets[[1]][[2]]), c(15,10))
+    expect_equal(dim(test1$subsets[[2]][[2]]), c(21,10))
+    expect_equal(dim(test2$subsets[[1]][[2]]), c(11,10))
+    expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
