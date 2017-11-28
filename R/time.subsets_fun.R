@@ -95,6 +95,14 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
             ## Extract only living taxa
             tree_ages <- tree.age(tree)[1:Ntip(tree), ]
             sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != 0), 2]))
+
+            if(model == "punctuated" || model == "gradual") {
+                ## Transforming the subtree into a probability table
+                tips_list <- sub_tree$tip.label
+                nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
+                sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
+                rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+            }
         }
 
         ## Empty subset
