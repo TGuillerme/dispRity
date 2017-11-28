@@ -75,18 +75,9 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     
     if(model == "gradual" || model == "punctuated") {
         
-        ## Running the probability models      
-        tree_sliced <- matrix(NA, ncol = 3)
-
-        for (tip in 1:Ntip(tree_slice)) {
-            ## Both with probability
-            tips_probabilities <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice, probability = TRUE)
-            ## Combine the results with previous tips
-            tree_sliced <- rbind(tree_sliced, tips_probabilities)
-        }
-
-        ## Removing the first row (NAs)
-        tree_sliced <- tree_sliced[-1,]
+        ## Running the probability models
+        tips_probabilities <- sapply(tree_slice$tip.label, function(X) slice.tree_PROXIMITY(tree, X, tree_slice, probability = TRUE), simplify = FALSE)
+        tree_sliced <- do.call(rbind, tips_probabilities)
 
         ## Removing the rownames
         rownames(tree_sliced) <- NULL

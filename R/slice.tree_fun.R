@@ -137,35 +137,41 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     }
 
     #Test if there is another node between the MRCA (parent_node) and tip
-        try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-        while(exists("offspring_node")) {
-            #Compute the node ages
-            age_tree <- tree.age(tree)
-            age_slic <- tree.age(tree_slice, fossil = FALSE)
-            #select the oldest node in tree_slice
-            root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
-            #calculate the slice age using the oldest node in tree_slice
-            age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
-            #extract the age of the offspring node
-            off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
-            
-            precision <- unique(num.decimals(c(off_nod_age, age)))
-            ## If precision are different and not equal to at least 1
-            if(length(precision) > 1 && sort(precision)[1] != 1) {
-                ## Round the node ages
-                num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
-                off_nod_age <- round(off_nod_age, digit = num_digits)
-                age <- round(age, digit = num_digits)
-            }
-            
-            if(off_nod_age > age) {
-                parent_node <- offspring_node
-                remove(offspring_node)
-                try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-            } else {
-                remove(offspring_node)
-            }
+    try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+    while(exists("offspring_node")) {
+
+        if(offspring_node == tip) {
+            ## The offspring is just the tip
+            return(parent_node)
         }
+
+        #Compute the node ages
+        age_tree <- tree.age(tree)
+        age_slic <- tree.age(tree_slice, fossil = FALSE)
+        #select the oldest node in tree_slice
+        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
+        #calculate the slice age using the oldest node in tree_slice
+        age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
+        #extract the age of the offspring node
+        off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
+        
+        precision <- num.decimals(c(off_nod_age, age))
+        ## If precision are different and not equal to at least 1
+        #if(length(precision) > 1 && sort(precision)[1] != 1) {
+        ## Round the node ages
+        num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
+        off_nod_age <- round(off_nod_age, digit = num_digits)
+        age <- round(age, digit = num_digits)
+        #}
+        
+        if(off_nod_age > age) {
+            parent_node <- offspring_node
+            remove(offspring_node)
+            try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+        } else {
+            remove(offspring_node)
+        }
+    }
     return(parent_node)
 }
 
