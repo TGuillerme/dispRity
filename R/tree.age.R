@@ -30,8 +30,12 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
 
     #age
     if(missing(age)) {
-    	#Using the tree height as age if age is missing
+        ## Using the tree height as age if age is missing
         age <- max(dist.nodes(tree)[, Ntip(tree)+1])
+        ## Correct age to root time or arbitrary to 1 if NA
+        if(is.na(age)) {
+            age <- ifelse(is.null(tree$root.time), 0, tree$root.time)
+        }
     }
     check.class(age, 'numeric', ' must be a numerical value.')
     check.length(age, '1', ' must a a single value.')
@@ -62,6 +66,11 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
     if(fossil) {
         if(!is.null(tree$root.time) && order == "past") {
             ## If the root.time is not equal to the older node, scale the tree ages down
+            # cat(paste0("tree$root.time = ", tree$root.time, "\n"))
+            # cat(paste0("max(ages.table$ages) = ", max(ages.table$ages), "\n"))
+            # cat(paste0("age = ", age, "\n"))
+            # table_ages_test <<- ages.table
+            # cat("\n")
             if(round(tree$root.time, digit = 5) > round(max(ages.table$ages), digit = 5)) {
                 ## Add the time to the root age to all the ages
                 ages.table$ages <- ages.table$ages + abs(tree$root.time - max(ages.table$ages))

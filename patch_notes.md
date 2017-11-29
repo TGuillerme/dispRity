@@ -1,7 +1,7 @@
 Patch notes
 ----
 <!-- * 2017/10/18 - v1.0 *got you covered*  -->
-* 2017/11/24 - v0.4.2
+* 2017/11/29 - v0.5.0
   * `slice.tree` can now slice through a single edge.
   * Various small speed improvements.
   * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.

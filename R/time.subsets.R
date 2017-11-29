@@ -129,15 +129,18 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     if(missing(tree)) {
         if(missing(FADLAD)) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".")
+        tree_was_missing <- TRUE
 
         ## Checking FADLAD disponibilities
         names_data <- rownames(data)
         ## All names must be present in the data
         if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         ## Generating the star tree
-        tree <- stree(nrow_data)
-        tree$tip.label <- names_data
+        tree <- stree(nrow_data, tip.label = names_data)
         tree$root.time <- max(FADLAD)
+        tree$edge.length <- FADLAD$FAD
+    } else {
+        tree_was_missing <- FALSE
     }
 
     ## Ntip_tree variable declaration
@@ -217,6 +220,9 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     if(method != "continuous") {
         ## else inc.nodes must be logical
         check.class(inc.nodes, "logical")
+        if(tree_was_missing && inc.nodes) {
+            stop("If no phylogeny is provided, inc.nodes must be FALSE.")
+        }
     } else {
         ## Include nodes is mandatory
         inc.nodes <- TRUE
