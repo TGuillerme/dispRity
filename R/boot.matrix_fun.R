@@ -43,8 +43,12 @@ boot.single.proba <- function(elements, rarefaction) {
 ## Performs bootstrap on one subsets and all rarefaction levels
 replicate.bootstraps.verbose <- function(rarefaction, bootstraps, subsets, boot.type.fun) {
     message(".", appendLF = FALSE)
-    if(length(subsets$elements) == 1) {
-        return(matrix(rep(subsets$elements[[1]], bootstraps), nrow = 1))
+    if(nrow(subsets$elements) == 1) {
+        if(length(subsets$elements) > 1) {
+            return(matrix(replicate(bootstraps, elements.sampler(matrix(subsets$elements[1,], nrow = 1))), nrow = 1))
+        } else {
+            return(matrix(rep(subsets$elements[[1]], bootstraps), nrow = 1))
+        }
     } else {
         return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction)))
     }

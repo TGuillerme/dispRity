@@ -172,7 +172,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         matrix_decomposition <- TRUE
 
         ## Remove empty subsets or with only one data point
-        elements <- unlist(lapply(lapply(data$subsets, lapply, length), `[[`, 1))
+        elements <- unlist(lapply(lapply(data$subsets, lapply, nrow), `[[`, 1))
         elements_keep <- which(elements > 1)
         removed_elements <- ifelse(length(elements_keep) != length(elements), TRUE, FALSE)
 

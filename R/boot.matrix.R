@@ -59,7 +59,7 @@
 # bootstraps = 7
 # rarefaction = FALSE
 # dimensions = FALSE
-# verbose = FALSE
+# verbose = TRUE
 # boot.type = "full"
 # data <- BeckLee_mat50
 # bootstraps = 11
@@ -150,7 +150,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single", "rangers"))
+    check.method(boot.type, c("full", "single"))
     
     ## Check whether the subsets (if any)
 
@@ -177,8 +177,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## If TRUE, set automatic threshold at 0.95
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)
-        check.class(dimensions, "numeric", " must be logical or a proportional threshold value.")
-        check.length(dimensions, 1, " must be logical or a proportional threshold value.", errorif = FALSE)
+        check.class(dimensions, "numeric", " must be a proportional threshold value.")
+        check.length(dimensions, 1, " must be a proportional threshold value.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
         if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")

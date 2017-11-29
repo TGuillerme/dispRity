@@ -105,8 +105,11 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
 
     ## Get the elements per subsets
     elements <- lapply(data$subsets, lapply.get.elements, bootstrapped)
-    if(is.null(elements[[1]])) {
-        elements <- list(nrow(data$subsets[[1]]$elements))
+    nulls <- unlist(lapply(elements, is.null))
+    if(any(nulls)) {
+        for(null_elem in which(nulls)) {
+            elements[[null_elem]] <- nrow(data$subsets[[null_elem]]$elements)
+        }
     }
     
     ## Get the names of the subsets
@@ -162,7 +165,6 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
         replace_vals <- sapply(to_check, check.elements.NA, summary_results, data)
         ## Replace them in the results
         summary_results[to_check, 2] <- replace_vals
-
     }
 
     #----------------------
