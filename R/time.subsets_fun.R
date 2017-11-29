@@ -88,13 +88,15 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
         ## Verbose
         if(verbose) message(".", appendLF = FALSE)
 
+        ## Getting the tree ages
+        tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+
         ## Slicing the tree
-        if(time[slice] != 0) {
+        if(time[slice] != min(tree_ages[,1])) {
             sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
         } else {
             ## Extract only living taxa
-            tree_ages <- tree.age(tree)[1:Ntip(tree), ]
-            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != 0), 2]))
+            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
 
             if(model == "punctuated" || model == "gradual") {
                 ## Transforming the subtree into a probability table
@@ -123,21 +125,36 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
             return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
         
         } else {
-        ## Output are "probability tables" 
-
             ## Add any missed taxa from the FADLAD
             taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
-            if(length(taxa) > 0) {
-                ## Combine the taxa, their ancestor and their probability to the sub_tree table
-                ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
-                sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
+
+            if(model == "gradual" || model == "punctuated") {
+            ## Return a probability table
+                if(length(taxa) > 0) {
+                    ## Combine the taxa, their ancestor and their probability to the sub_tree table
+                    ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
+                    sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
+                    rownames(sub_tree) <- NULL
+                    ## Convert the tips into row numbers
+                    tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
+
+                } else {
+                    sub_tree <- matrix(sub_tree, ncol = 3)
+                    tips <- matrix(match(sub_tree[,1:2], rownames(data)), ncol = 2)
+                }
+
+                ## Returning the tips with the probabilities
+                return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
+            } else {
+            ## Return a matrix
+
+                if(length(taxa) > 0) {
+                    sub_tree <- c(sub_tree, taxa)
+                }
+
+                return( list( "elements" = as.matrix(match(sub_tree, rownames(data))) ) )
             }
 
-            ## Convert the tips into row numbers
-            tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
-
-            ## Returning the tips with the probabilities
-            return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
         }
     }
 
@@ -149,7 +166,7 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
-    #get.slice(slice = 19, time, model, ages_tree, data, verbose, tree)
+    #get.slice(slice = 20, time, model, ages_tree, data, verbose, tree)
 
     ## Get the slices elements
     slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
