@@ -255,7 +255,16 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
-        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+
+        if(!all(colnames(FADLAD) %in% c("FAD", "LAD"))) {
+            stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+        } else {
+            ## Check if FAD/LAD is in the right order (else reorder)
+            if(colnames(FADLAD)[1] == "LAD") {
+                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], rownames = rownames(FADLAD))
+            }
+        }
+
         ## Check if the FADLAD contains all taxa
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
