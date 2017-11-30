@@ -15,6 +15,10 @@
 \alias{convhull.volume}
 \alias{diagonal}
 \alias{ancestral.dist}
+\alias{pairwise.dist}
+\alias{span.tree.length}
+\alias{n.ball.volume}
+\alias{radius}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
