@@ -1,7 +1,8 @@
 Patch notes
 ----
 <!-- * 2017/10/18 - v1.0 *got you covered*  -->
-* 2017/11/29 - v0.5.0
+* 2017/11/30 - v0.5.0
+  * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
   * `slice.tree` can now slice through a single edge.
   * Various small speed improvements.
   * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.

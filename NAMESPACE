@@ -11,6 +11,7 @@ importFrom("stats", "bw.nrd0", "coef", "dist", "glm", "p.adjust", "quantile", "r
 importFrom("utils", "combn", "data", "capture.output")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
+importFrom("vegan", "adonis")
 # importFrom("geoscale", "timescales") #TG: somehow doesn't loads
 # importFrom("Claddis", "MorphDistMatrix")
 # importFrom("geomorph", "gpagen")
@@ -55,6 +56,7 @@ export(span.tree.length)
 ##disparity tests
 export(bhatt.coeff)
 export(null.test)
+export(adonis.dispRity)
 #export(sequential.test)
 #export(model.test)
 
@@ -97,3 +99,5 @@ S3method(print, dispRity)
 S3method(matrix, dispRity)
 S3method(scale, dispRity)
 S3method(sort, dispRity)
+#UseMethod(adonis, dispRity)
+#S3method(adonis, dispRity)

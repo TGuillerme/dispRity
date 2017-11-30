@@ -1,0 +1,157 @@
+#' @title Adonis dispRity
+#'
+#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis}} function from the \code{vegan} package.
+#'
+#' @param data A \code{dispRity} object with subsets
+#' @param formula The model formula (default is \code{matrix ~ group}, see details)
+#' @param method The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[stats]{dist}} (see details - default \code{method ="euclidean"})
+#' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis}}
+#' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
+#' 
+#' @details
+#' The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
+#'
+#' If \code{data$matrix} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
+#' 
+#' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
+#' 
+#' If the \code{dispRity} data has custom subsets with multiple group categories (separated by a dot, e.g. \code{c("group1.cat1", "group1.cat2", "group2.catA", "group2.catB")} being two groups with two categories each), the default formula is \code{matrix ~ first_group} but can be set to any combination (e.g. \code{matrix ~ first_group + second_group}).
+#' 
+#' If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
+#' 
+#' 
+#' @examples
+#' # Adonis with one groups 
+#' 
+#' ## Generating a random character matrix
+#' character_matrix <- sim.morpho(rtree(20), 50, rates = c(rnorm, 1, 0))
+#' ## Calculating the distance matrix
+#' distance_matrix <- as.matrix(dist(character_matrix))
+#' ## Creating two groups
+#' random_groups <- list("group1" = 1:10, "group2" = 11:20)
+#' 
+#' ## Generating a dispRity object
+#' random_disparity <- custom.subsets(distance_matrix, random_groups)
+#' ## Running a default NPMANOVA
+#' adonis.dispRity(random_disparity)
+#' 
+#' 
+#' ## Adonis with multiple groups
+#' 
+#' ## Creating a random matrix
+#' random_matrix <- matrix(data = rnorm(90), nrow = 10, 
+#'                      dimnames = list(letters[1:10]))
+#' ## Creating two groups with two states each
+#' groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
+#'          nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
+#' 
+#' ## Creating the dispRity object
+#' multi_groups <- custom.subsets(random_matrix, groups)
+#' 
+#' ## Running the NPMANOVA
+#' adonis.dispRity(multi_groups, matrix ~ g1 + g2)
+#' 
+#' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}
+#' 
+#' @author Thomas Guillerme
+#' @export
+
+# source("sanitizing.R")
+# source("adonis.dispRity_fun.R")
+# formula = matrix ~ group
+# method = "euclidean"
+# warn = TRUE
+
+adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean", ..., warn = TRUE) {
+
+    match_call <- match.call()
+
+    ## data must be dispRity
+    check.class(data, "dispRity")
+
+    ## data must have subsets
+    if(is.null(data$subsets)) {
+        stop("The data must have subsets. Use custom.subsets() or time.subsets() to create some.")
+    } else {
+        if(is.na(match(data$call$subsets, "customised"))) {
+            ## Subsets are time
+            time_subsets <- TRUE
+        } else {
+            time_subsets <- FALSE
+        }
+    }
+
+    ## formula must be formula
+    check.class(formula, "formula")
+
+    ## formula must have the right response/predictors
+    formula_error_format <- "Formula must be of type: matrix ~ predictor(s) (where matrix is the response)."
+    check.length(formula, 3, msg = formula_error_format)
+    if(!formula[[1]] == "~") stop(formula_error_format)
+    if(!formula[[2]] == "matrix") stop(formula_error_format)
+    ## Non-default predictors
+    if(!formula[[3]] == "group") {
+        n_predictors <- length(formula[[3]])-1
+        group_variables <- names(data$subsets)
+        group_names <- unique(unlist(lapply(strsplit(group_variables, split = "\\."), `[[`, 1)))
+        split.variables <- function(one_group_name, group_variables) {
+            return(group_variables[grep(one_group_name, group_variables)])
+            # return(unlist(lapply(strsplit(group_variables[grep(group_names[name], group_variables)], split = "\\."), function(X) return(X[2]))))
+        }
+        group_variables <- lapply(as.list(group_names), split.variables, group_variables)
+        
+        ## Check the predictors
+        for(predictor in 1:n_predictors) {
+            if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
+                stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets."))
+            }
+        }
+    } else {
+        n_predictors <- 1
+        group_names <- as.character(formula[[3]])
+        group_variables <- names(data$subsets)
+    }
+
+    ## methods
+    methods_avail <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")
+    check.method(method, methods_avail, "method")
+
+    ## warnings
+    check.class(warn, "logical")
+    
+    ## Checking if the data is a distance matrix or not
+    matrix <- check.dist.matrix(data$matrix, method = method)
+    was_dist <- matrix[[2]]
+    matrix <- matrix[[1]]
+    if(warn && !was_dist) {
+        warning("The input data for adonis.dispRity is a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).\nMake sure that this is the desired methodological approach!")
+    }
+
+    ## Making the predictors table
+    predictors <- make.factors(data, group_names, group_variables, time_subsets)
+
+    ## Run adonis
+    adonis_out <- vegan::adonis(formula, predictors, method = method, ...)
+    #adonis_out <- vegan::adonis(formula, predictors, method = method) ; warning("DEBUG adonis.dispRity")
+
+    ## Update the formula
+    if(time_subsets) {
+        time_f <- ~time
+        formula[[3]] <- time_f[[2]]
+    }
+    if(!was_dist) {
+        matrix_f <- ~dist(matrix)
+        formula[[2]] <- matrix_f[[2]]
+    }
+
+    ## Update the call
+    adonis_out$call[[which(names(adonis_out$call) == "formula")]] <- as.expression(formula)[[1]]
+    adonis_out$call[[which(names(adonis_out$call) == "data")]] <- match_call$data
+    if(method == "euclidean") {
+        adonis_out$call[[which(names(adonis_out$call) == "method")]] <- "euclidean"
+    } else {
+        adonis_out$call[[which(names(adonis_out$call) == "method")]] <- match_call$method
+    }
+
+    return(adonis_out)
+}
