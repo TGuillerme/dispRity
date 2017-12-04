@@ -91,12 +91,36 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     if(!formula[[2]] == "matrix") stop(formula_error_format)
     ## Non-default predictors
     if(!formula[[3]] == "group") {
+
+        ## Predictor is time
+        if(formula[[3]] == "time" || formula[[3]] == "time.series") {
+
+            if(!time_subsets) {
+                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula))
+            }
+            
+            ## Set up the model details
+            n_predictors <- ifelse(formula[[3]] == "time", 1, length(data$subsets))
+            group_names <- ifelse(formula[[3]] == "time", "time", names(data$subsets))
+            group_variables <- NA
+            pool_time <- ifelse(formula[[3]] == "time", TRUE, FALSE)
+
+            ## Update the formula
+            if(formula[[3]] == "time.series") {
+                series <- paste(gsub(" - ", ":", names(data$subsets)), collapse = " + ")
+                formula <- formula(paste0("matrix ~ ", series))
+            } else {
+                time_f <- ~time
+                formula[[3]] <- time_f[[2]]
+            }
+        }
+
         n_predictors <- length(formula[[3]])-1
         group_variables <- names(data$subsets)
         group_names <- unique(unlist(lapply(strsplit(group_variables, split = "\\."), `[[`, 1)))
         split.variables <- function(one_group_name, group_variables) {
             return(group_variables[grep(one_group_name, group_variables)])
-            # return(unlist(lapply(strsplit(group_variables[grep(group_names[name], group_variables)], split = "\\."), function(X) return(X[2]))))
+
         }
         group_variables <- lapply(as.list(group_names), split.variables, group_variables)
         
@@ -105,11 +129,24 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
                 stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets."))
             }
+        
         }
     } else {
+
         n_predictors <- 1
-        group_names <- as.character(formula[[3]])
-        group_variables <- names(data$subsets)
+
+        if(time_subsets) {
+            ## Modifying group to be time
+            time_fun <- ~ time
+            formula[[3]] <- time_fun[[2]]
+            group_names <- "time"
+            group_variables <- NA
+            pool_time <- TRUE
+
+        } else {
+            group_names <- as.character(formula[[3]])
+            group_variables <- names(data$subsets)
+        }
     }
 
     ## methods

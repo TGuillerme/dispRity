@@ -39,11 +39,39 @@ make.factors <- function(data, group_names, group_variables, time_subsets) {
     }
 
 
+    ## Make time factor
+    make.time.factor <- function(data, pool = FALSE) {
+        ## Get the time data
+        time_data <- lapply(data$subsets, function(X) return(X$elements))
+
+        ## Individual time series
+        make.time.series <- function(one_time_subset, data) {
+            ## Generate the time series
+            time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix), dimnames = list(rownames(data$matrix)))
+            time_series[as.vector(one_time_subset), 1] <- TRUE
+            return(time_series)
+        }
+        ## Get the data for each time series
+        groups <- lapply(time_data, make.time.series, data)
+        groups <- do.call(cbind, groups)
+
+        ## Naming the groups
+        colnames(groups) <- names(time_data)
+
+        if(pool) {
+            ## Translating the data
+            groups <- t(apply(groups, 1,  function (X) ifelse(X, names(X), NA)))
+            groups <- matrix(apply(groups, 1, function(row) return(na.omit(row)[1])), ncol = 1, dimnames = list(rownames(data$matrix), "time"))
+        } 
+        
+        return(groups)
+    }
+
+
     if(length(group_names) == 1) {
         if(time_subsets) {
             ## Time groups
-            stop("Time subsets not implemented yet for adonis.dispRity.")
-
+            return(make.time.factor(data))
         } else {
             ## Normal groups
             ## Extract all subsets as a factor list
