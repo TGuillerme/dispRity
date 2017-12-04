@@ -70,6 +70,7 @@ export(sort.dispRity)
 export(get.subsets)
 export(merge.subsets)
 export(size.subsets)
+export(extinction.subsets)
 
 ##Package utilities
 export(nodes.coordinates)
