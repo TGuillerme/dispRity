@@ -464,3 +464,8 @@ test_that("size.subsets works", {
         , c("90"=18, "80"=22, "70"=23, "60"=21, "50"=18, "40"=15, "30"=10))
 
 })
+
+
+test_that("extinction.subsets works", {
+    cat("EXTINCTION SUBSETS NOT TESTED!")
+})
