@@ -15,7 +15,7 @@
 #' 
 #' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 #' 
-#' If the \code{dispRity} data has custom subsets with multiple group categories (separated by a dot, e.g. \code{c("group1.cat1", "group1.cat2", "group2.catA", "group2.catB")} being two groups with two categories each), the default formula is \code{matrix ~ first_group} but can be set to any combination (e.g. \code{matrix ~ first_group + second_group}).
+#' If the \code{dispRity} data has custom subsets with multiple group categories (separated by a dot, e.g. \code{c("group1.cat1", "group1.cat2", "group2.catA", "group2.catB")} being two groups with two categories each), the default formula is \code{matrix ~ first_group} but can be set to any combination (e.g. \code{matrix ~ first_group + second_group}).
 #' 
 #' If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
 #' 
@@ -38,7 +38,7 @@
 #' 
 #' ## Adonis with multiple groups
 #' 
-#' ## Creating a random matrix
+#' ## Creating a random matrix
 #' random_matrix <- matrix(data = rnorm(90), nrow = 10, 
 #'                      dimnames = list(letters[1:10]))
 #' ## Creating two groups with two states each

@@ -71,7 +71,7 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
             # cat(paste0("age = ", age, "\n"))
             # table_ages_test <<- ages.table
             # cat("\n")
-            if(round(tree$root.time, digit = 5) > round(max(ages.table$ages), digit = 5)) {
+            if(round(tree$root.time, digits = 5) > round(max(ages.table$ages), digits = 5)) {
                 ## Add the time to the root age to all the ages
                 ages.table$ages <- ages.table$ages + abs(tree$root.time - max(ages.table$ages))
             }

@@ -72,9 +72,9 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     digit_root_time <- num.decimals(root_time)
 
     if(digit_root_time < digit_node_depth) {
-        node_depth <- round(node_depth, digit = digit_root_time)
+        node_depth <- round(node_depth, digits = digit_root_time)
     } else {
-        root_time <- round(root_time, digit = digit_node_depth)
+        root_time <- round(root_time, digits = digit_node_depth)
     }
 
     ## Remove eventual recent strats for trees not containing living taxa

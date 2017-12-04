@@ -8,7 +8,7 @@ check.dist.matrix <- function(matrix, method) {
         if(all(diag(matrix) == 0)) {
             ## Check if both triangles are equal
             if(all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
-                return(list(as.dist(matrix), "was_dist" = TRUE))
+                return(list(stats::as.dist(matrix), "was_dist" = TRUE))
             } else {
                 return(list(stats::dist(matrix, method = method), "was_dist" = FALSE))
             }

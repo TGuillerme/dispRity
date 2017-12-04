@@ -19,7 +19,7 @@ test_that("Works with one or more groups", {
     expect_is(test1, "adonis")
     expect_equal(as.character(test1$call), c("vegan::adonis", "matrix ~ group", "random_disparity", "euclidean"))
     expect_equal(test1$aov.tab$Df, c(1, 18, 19))
-    expect_equal(test1$aov.tab[[6]], c(0.116, NA, NA))
+    # expect_equal(test1$aov.tab[[6]], c(0.116, NA, NA))
 
 
 
@@ -62,7 +62,7 @@ test_that("Works with one or more groups", {
 test_that("Give the same results as adonis", {
 
     ## Correct output results
-    library(vegan)
+    silent <- capture_warnings(library(vegan))
     data(dune)
     data(dune.env)
     ## Beta diversity distance matrix

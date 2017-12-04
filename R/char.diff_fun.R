@@ -102,7 +102,7 @@ plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend
 
 
     ## Measuring the densities
-    densities <- apply(matrix, 2, density, na.rm = TRUE)
+    densities <- apply(matrix, 2, stats::density, na.rm = TRUE)
 
     ## Getting the plot limits
     if(missing(xlim)) {
@@ -113,7 +113,7 @@ plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend
     }
 
     ## Measuring the cumulated density
-    cum_density <- density(as.numeric(matrix), na.rm = TRUE)
+    cum_density <- stats::density(as.numeric(matrix), na.rm = TRUE)
 
     ## Empty plot
     plot(1,1, col = "white", xlim = xlim, ylim = ylim, main = main, xlab = xlab, ylab = ylab, bty = "n")

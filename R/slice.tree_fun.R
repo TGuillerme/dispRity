@@ -160,8 +160,8 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         #if(length(precision) > 1 && sort(precision)[1] != 1) {
         ## Round the node ages
         num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
-        off_nod_age <- round(off_nod_age, digit = num_digits)
-        age <- round(age, digit = num_digits)
+        off_nod_age <- round(off_nod_age, digits = num_digits)
+        age <- round(age, digits = num_digits)
         #}
         
         if(off_nod_age > age) {
