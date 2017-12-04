@@ -637,10 +637,10 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
     if(is_bins) {
         ## Extinction bins
-        extinction_bins <- grep(paste0(" - ", extinction), names(data$subsets))
+        extinction_subset <- grep(paste0(" - ", extinction), names(data$subsets))
 
         ## Check if extinction bin is in the data
-        if(length(extinction_bins) == 0) {
+        if(length(extinction_subset) == 0) {
             ## Detect the bin before the extinction time
             bin_ages <- which(detect.bin.age(data, extinction, greater = TRUE) == TRUE)
             extinction_subset<- bin_ages[length(bin_ages)]
