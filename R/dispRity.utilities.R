@@ -632,6 +632,31 @@ size.subsets <- function(data) {
 
 extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list = FALSE) {
 
+    ## data
+    check.class(data, "dispRity")
+    if(is.null(data$subsets)) {
+        stop("data has no subsets. Use the time.subsets to generate some.")
+    }
+
+    ## extinction
+    check.class(extinction, c("numeric", "integer"))
+    check.length(extinction, 1, errorif = FALSE, msg = "extinction argument must be a single numeric argument.")
+    ## check if the extinction is within the range
+    data_range <- range(as.numeric(unlist(strsplit(names(data$subsets), split = " - "))))
+    if(extinction < data_range[1] || extinction > data_range[2]) {
+        stop(paste0("extinction argument must be a numeric value between ", data_range[1], " and ", data_range[2], "."))
+    }
+
+    check.class(lag, c("numeric", "integer"))
+    check.length(lag, 1, errorif = FALSE, msg = "lag argument must be a single numeric argument.")
+    lag <- round(lag)
+    if(lag < 1) {
+        stop("lag argument must be at least 1.")
+    }
+
+    check.class(names, "logical")
+    check.class(as.list, "logical")
+
     ## Bins or slices
     is_bins <- ifelse(data$call$subsets[1] == "discrete", TRUE, FALSE)
 
@@ -652,8 +677,18 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
     }
 
+    ## Checking lag effect
+    lag <- extinction_subset+lag
+    if(lag > length(data$subsets)) {
+        lag <- length(data$subsets)
+        warning(paste0("Lag is too long! It was automatically set to subset number ", lag, "."))
+    }
+    if(extinction == lag) {
+        stop("No lag subset available after the extinction subset.")
+    }
+
     ## Adding the lag effect bins
-    extinction_subset <- seq(from = extinction_subset, to = extinction_subset+lag)
+    extinction_subset <- seq(from = extinction_subset, to = lag)
 
     ## Returning the names or numbers
     if(names) {

@@ -467,5 +467,22 @@ test_that("size.subsets works", {
 
 
 test_that("extinction.subsets works", {
-    cat("EXTINCTION SUBSETS NOT TESTED!")
+
+    data(disparity)
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+
+    ## Sanitising
+    expect_error(extinction.subsets("disparity", 66, names = TRUE, as.list = TRUE))
+    expect_error(extinction.subsets(disparity, c(1,2), names = TRUE, as.list = TRUE))
+    expect_error(extinction.subsets(disparity, 66, names = "TRUE", as.list = TRUE))
+    expect_error(extinction.subsets(disparity, 66, names = TRUE, as.list = "TRUE"))
+    expect_error(extinction.subsets(disparity, 91, names = TRUE, as.list = TRUE))
+
+    ## Normal behaviour
+    expect_equal(extinction.subsets(disparity, 66, names = TRUE, as.list = TRUE), list("60" = c("70", "60")))
+    expect_equal(extinction.subsets(disparity, 66, lag = 4), c(3:7))
+    expect_warning(expect_equal(extinction.subsets(disparity, 66, lag = 12), c(3:7)))
+    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111.2592), c(1,2))
+    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111), c(1,2))
 })
