@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-17">
+<meta name="date" content="2017-12-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
   
   
 <link rel="prev" href="ecology-demo.html">
-<link rel="next" href="references.html">
+
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -141,7 +141,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
+</ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
 </ul></li>
@@ -197,7 +199,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
 <li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -239,6 +240,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="more-suggestions" class="section level2">
 <h2><span class="header-section-number">9.5</span> More suggestions?</h2>
 <p>More generally, I welcome any suggestions or collaborations for developing some additional specific ideas. Feel free to contact me via email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dispRity">GitHub page</a>.</p>
+<!-- 
+* Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
+* Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
+* Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
+* Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
+* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130. -->
+
 </div>
 </div>
             </section>
@@ -246,8 +254,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ecology-demo.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

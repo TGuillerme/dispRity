@@ -91,7 +91,7 @@ names(binned_morphospace)
 binned_morphospace
 ```
 
-> These objects will gradually contain more information when completing the following steps in the disparity-through-time analysis.
+> These objects will gradual.splitly contain more information when completing the following steps in the disparity-through-time analysis.
 
 ### Bootstrapping the data
 

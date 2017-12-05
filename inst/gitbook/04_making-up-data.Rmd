@@ -46,7 +46,7 @@ Nearly too good to be true...
 
 ### A more detailed description
 
-The protocol implemented here to generate discrete morphological matrices is based on the ones developed in [@GuillermeCooper;@OReilly2016;@puttick2017uncertain;OReilly2017].
+The protocol implemented here to generate discrete morphological matrices is based on the ones developed in [@GuillermeCooper;@OReilly2016;@puttick2017uncertain;@OReilly2017].
 
  * The first `tree` argument will be the tree on which to "evolve" the characters and therefore requires branch length.
  You can generate quick and easy random Yule trees using `ape::rtree(number_of_taxa)` but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function `tree.bd` from the [`diversitree`](http://www.zoology.ubc.ca/prog/diversitree/) package [@fitzjohndiversitree2012].

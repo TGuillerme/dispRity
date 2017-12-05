@@ -161,7 +161,7 @@ This element of the `dispRity` object is never modified.
 This element contains the information on the `dispRity` object content.
 It is a `list` that can contain the following:
 
- * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"punctuated"`, `"gradual"`). This element generated only once via `time.subsets()` and `custom.subsets()`.
+ * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"equal.split"`, `"gradual.split"`). This element generated only once via `time.subsets()` and `custom.subsets()`.
  * `$call$dimensions`: either a single `numeric` value indicating how many dimensions to use or a vector of `numeric` values indicating which specific dimensions to use. This element is by default the number of columns in `$matrix` but can be modified through `boot.matrix()` or `dispRity()`.
  * `$call$bootstrap`: this is a `list` containing three elements:
     * `[[1]]`: the number of bootstrap replicates (`numeric`)

@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-17">
+<meta name="date" content="2017-12-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -141,7 +141,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
+</ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
 </ul></li>
@@ -197,7 +199,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
 <li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -221,7 +222,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="details-of-specific-functions" class="section level1">
 <h1><span class="header-section-number">4</span> Details of specific functions</h1>
 <p>The following section contains information specific to some functions. If any of your questions are not covered in these sections, please refer to the function help files in R, send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), or raise an issue on GitHub. The several tutorials below describe specific functionalities of certain functions; please always refer to the function help files for the full function documentation!</p>
-<p>Before each section, make sure you loaded the Beck and Lee (2014) data (see <a href="getting-started-with-disprity.html#example-data">example data</a> for more details).</p>
+<p>Before each section, make sure you loaded the <span class="citation">@beckancient2014</span> data (see <a href="getting-started-with-disprity.html#example-data">example data</a> for more details).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the data
 <span class="kw">data</span>(BeckLee_mat50) ; <span class="kw">data</span>(BeckLee_mat99)
 <span class="kw">data</span>(BeckLee_tree) ; <span class="kw">data</span>(BeckLee_ages)</code></pre></div>
@@ -272,15 +273,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as the root age plus 1% of the tree length, as long as at least three elements/taxa are present at that point in time. The algorithm adds an extra 1% tree length until reaching the required minimum of three elements. It is also possible to include nodes in each bin by using <code>inc.nodes = TRUE</code> and providing a matrix that contains the ordinated distance among tips <em>and</em> nodes.</p>
 <p>For the time-slicing method (<code>method = continuous</code>), the idea is fairly similar. This option, however, requires a matrix that contains the ordinated distance among taxa <em>and</em> nodes and an extra argument describing the assumed evolutionary model (via the <code>model</code> argument). This model argument is used when the time slice occurs along a branch of the tree rather than on a tip or a node, meaning that a decision must be made about what the value for the branch should be. The model can be one of the following:</p>
 <ul>
+<li><strong>Punctuated models</strong></li>
 <li><code>acctran</code> where the data chosen along the branch is always the one of the descendant</li>
 <li><code>deltran</code> where the data chosen along the branch is always the one of the ancestor</li>
 <li><code>random</code> where the data chosen along the branch is randomly chosen between the descendant or the ancestor</li>
-<li><code>proximity</code> where the data chosen along the branch is either the descendant or the ancestor depending on branch length</li>
-<li><code>punctuated</code> where the data chosen along the branch is both the descendant and the ancestor with an even probability</li>
-<li><code>gradual</code> where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length</li>
+<li><p><code>proximity</code> where the data chosen along the branch is either the descendant or the ancestor depending on branch length</p></li>
+<li><strong>Gradual models</strong></li>
+<li><code>equal.split</code> where the data chosen along the branch is both the descendant and the ancestor with an even probability</li>
+<li><p><code>gradual.split</code> where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length</p></li>
 </ul>
 <blockquote>
-<p>Note that the four first models are “fixed”: the selected data is always either the one of the descendant or the ancestor. The two last models are “probabilistic”: the data from both the descendant and the ancestor is used with an associate probability. These later models perform better when bootstrapped, effectively approximating the “intermediate” state between and the ancestor and the descendants.</p>
+<p>Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor. In other words, changes along the branches always occur at either ends of it. The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability. These later models perform better when bootstrapped, effectively approximating the “intermediate” state between and the ancestor and the descendants.</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices every 40 million years under a model of proximity evolution
 <span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
@@ -404,9 +407,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 
 ## Example of dimension-level 1 functions
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] 0.3873238</code></pre>
+<pre><code>## [1] -0.3227241</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] 0.8189937</code></pre>
+<pre><code>## [1] -0.2690165</code></pre>
 <p>Any summary metric such as mean or median are good examples of dimension-level 1 functions as they reduce the matrix to a single dimension (i.e. one value).</p>
 </div>
 <div id="dimension-level-2-functions" class="section level4">
@@ -417,7 +420,7 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 
 ## A dimension-level 2 metric
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -8.0595618 -0.5106728 -1.3381023  0.1982694</code></pre>
+<pre><code>## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790</code></pre>
 <p>Several dimension-level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> or <code>ranges</code> functions that calculate the variance or the range of each dimension of the ordinated matrix respectively.</p>
 </div>
 <div id="dimension-level-3-functions" class="section level4">
@@ -425,17 +428,17 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 <p>Finally a dimension-level 3 function will transform the matrix into another matrix. Note that the dimension of the output matrix doesn’t need to match the the input matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##            [,1]      [,2]       [,3]
-## [1,]  0.7722329 -1.232395  0.5044684
-## [2,] -1.2323952  5.258134 -2.5675598
-## [3,]  0.5044684 -2.567560  1.8322537</code></pre>
+<pre><code>##          [,1]      [,2]      [,3]
+## [1,] 1.916420 1.9501955 0.2907060
+## [2,] 1.950196 3.2948635 0.3958234
+## [3,] 0.290706 0.3958234 0.6704976</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric with a forced matrix output
 <span class="kw">as.matrix</span>(<span class="kw">dist</span>(dummy_matrix))</code></pre></div>
 <pre><code>##          1        2        3        4
-## 1 0.000000 5.096201 5.831904 4.944653
-## 2 5.096201 0.000000 2.058924 1.534373
-## 3 5.831904 2.058924 0.000000 1.823741
-## 4 4.944653 1.534373 1.823741 0.000000</code></pre>
+## 1 0.000000 5.140790 4.005068 3.120827
+## 2 5.140790 0.000000 2.179318 2.982267
+## 3 4.005068 2.179318 0.000000 2.174896
+## 4 3.120827 2.982267 2.174896 0.000000</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level3">
@@ -683,7 +686,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the distribution of these ranges
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ranges))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      2.736 1.673 2.431 2.908 3.645</code></pre>
+## 1       1 10      2.431 1.673 2.431 2.908 3.645</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the sum and the product of these ranges
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, ranges)))</code></pre></div>
 <pre><code>##   subsets  n   obs
@@ -697,7 +700,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the distribution of these variances
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> variances))</code></pre></div>
 <pre><code>##   subsets  n obs.median 2.5%   25%   75% 97.5%
-## 1       1 10      0.654 0.38 0.609 0.913 1.121</code></pre>
+## 1       1 10      0.609 0.38 0.609 0.913 1.121</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the sum and the product of these variances
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
 <pre><code>##   subsets  n   obs
@@ -726,7 +729,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The distribution of the Manhattan distances
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> pairwise.dist, <span class="dt">method =</span> <span class="st">&quot;manhattan&quot;</span>))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      4.427 2.566 3.335 5.672  9.63</code></pre>
+## 1       1 10      3.619 2.566 3.335 5.672  9.63</code></pre>
 <p>The <code>diagonal</code> function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space). The <code>mode.val</code> function measures the modal value of the matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ordinated space&#39;s diagonal
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> diagonal))</code></pre></div>
@@ -746,7 +749,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The distribution of the distances between each element and their centroid
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      1.435 0.788 1.267 1.993 3.167</code></pre>
+## 1       1 10      2.214 0.788 1.267 1.993 3.167</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Disparity as the median value of these distances
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids)))</code></pre></div>
 <pre><code>##   subsets  n   obs
@@ -755,11 +758,11 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The distance between each element and the origin of the ordinated space
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids, <span class="dt">centroid =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>)))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5% 25%   75% 97.5%
-## 1       1 10      1.487 0.785 1.2 2.044 3.176</code></pre>
+## 1       1 10      2.323 0.785 1.2 2.044 3.176</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Disparity as the distance between each element and a specific point in space
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> centroids, <span class="dt">centroid =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      5.489 4.293 5.032 6.155 6.957</code></pre>
+## 1       1 10      4.675 4.293 5.032 6.155 6.957</code></pre>
 <p>The <code>ancestral.dist</code> metric works on a similar principle as the <code>centroids</code> function but changes the centroid to be the coordinates of each element’s ancestor. Therefore this functions needs a tree and node coordinates as additional arguments:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A generating a random tree with node labels
 tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">5</span>) ; tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)
@@ -826,10 +829,10 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Default summary
 <span class="kw">summary</span>(disparity_time_slices)</code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 2.899     2.472 1.842 2.276 2.693 2.855
-## 2      80 22 3.558     3.394 3.141 3.297 3.474 3.579
-## 3      40 15 4.032     3.781 3.515 3.692 3.850 3.969
-## 4       0 10 4.055     3.688 3.207 3.509 3.760 3.953</code></pre>
+## 1     120  5 2.823     2.295 1.398 2.037 2.563 2.767
+## 2      80 19 3.233     3.065 2.785 2.973 3.133 3.266
+## 3      40 15 3.359     3.149 2.764 2.996 3.285 3.443
+## 4       0 10 4.055     3.685 3.169 3.453 3.760 3.961</code></pre>
 <p>Information about the number of elements in each subset and the observed (i.e. non-bootstrapped) disparity are also calculated. This is specifically handy when rarefying the data for example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">summary</span>(disparity_crown_stem))</code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
@@ -850,10 +853,10 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Same as above but using the 88th quantile and the standard deviation as the summary 
 <span class="kw">summary</span>(disparity_time_slices, <span class="dt">quantile =</span> <span class="dv">88</span>, <span class="dt">cent.tend =</span> sd)</code></pre></div>
 <pre><code>##   subsets  n   obs bs.sd    6%   94%
-## 1     120  6 2.899 0.319 1.902 2.801
-## 2      80 22 3.558 0.117 3.220 3.552
-## 3      40 15 4.032 0.117 3.570 3.925
-## 4       0 10 4.055 0.194 3.330 3.895</code></pre>
+## 1     120  5 2.823 0.380 1.489 2.654
+## 2      80 19 3.233 0.127 2.869 3.224
+## 3      40 15 3.359 0.189 2.815 3.394
+## 4       0 10 4.055 0.205 3.291 3.885</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the details of the object and rounding the values to the 5th decimal place
 <span class="kw">summary</span>(disparity_time_slices, <span class="dt">recall =</span> <span class="ot">TRUE</span>, <span class="dt">rounding =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
@@ -862,10 +865,10 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(sum, variances).</code></pre>
 <pre><code>##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  6 2.89926   2.47202 1.84236 2.27615 2.69342 2.85486
-## 2      80 22 3.55782   3.39410 3.14102 3.29705 3.47379 3.57925
-## 3      40 15 4.03191   3.78130 3.51518 3.69170 3.84985 3.96858
-## 4       0 10 4.05457   3.68835 3.20652 3.50867 3.76034 3.95260</code></pre>
+## 1     120  5 2.82292   2.29516 1.39758 2.03734 2.56317 2.76690
+## 2      80 19 3.23312   3.06472 2.78542 2.97332 3.13308 3.26617
+## 3      40 15 3.35947   3.14918 2.76395 2.99563 3.28541 3.44267
+## 4       0 10 4.05457   3.68545 3.16864 3.45263 3.76034 3.96114</code></pre>
 <p>Note that the summary table is a <code>data.frame</code>, hence it is as easy to modify as any dataframe using <code>dplyr</code>. You can also export it in <code>csv</code> format using <code>write.csv</code> or <code>write_csv</code> or even directly export into <code>LaTeX</code> format using the following;</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the xtable package
 <span class="kw">require</span>(xtable)
@@ -975,12 +978,12 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## T-test to test for a difference in disparity between crown and stem mammals
 <span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test)</code></pre></div>
 <pre><code>## [[1]]
-##              statistic
-## crown : stem  66.67693
+##              statistic: t
+## crown : stem     66.67693
 ## 
 ## [[2]]
-##              parameter
-## crown : stem  169.1446
+##              parameter: df
+## crown : stem      169.1446
 ## 
 ## [[3]]
 ##                    p.value
@@ -1005,25 +1008,25 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <span class="kw">test.dispRity</span>(disparity_time_slices, <span class="dt">test =</span> wilcox.test,
               <span class="dt">comparisons =</span> <span class="st">&quot;sequential&quot;</span>, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
 <pre><code>## [[1]]
-##          statistic
-## 120 : 80         0
-## 80 : 40         97
-## 40 : 0        6992
+##          statistic: W
+## 120 : 80           27
+## 80 : 40          3466
+## 40 : 0            455
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 7.677344e-34
-## 80 : 40  1.378183e-32
-## 40 : 0   3.416199e-06</code></pre>
+## 120 : 80 1.720545e-33
+## 80 : 40  5.370214e-04
+## 40 : 0   3.599349e-28</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring the overlap between distributions in the time bins (using the
 ## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
 <span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##                    bhatt.coeff
-## 120 - 80 : 80 - 40   0.0000000
-## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.5194852</code></pre>
+## 120 - 80 : 80 - 40    0.000000
+## 120 - 80 : 40 - 0     0.000000
+## 80 - 40 : 40 - 0      0.490448</code></pre>
 <p>It is also possible to apply some more <em>complex</em> tests that have their own output classes (like <code>stats::lm</code>).</p>
 <p>The results can then be analysed as usual using the associated <code>summary</code> S3 method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Performing and linear model applied to the same data
@@ -1037,7 +1040,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## 
 ## Coefficients:
 ## (Intercept)   subsets120    subsets40    subsets80  
-##      3.6438      -1.2077       0.1261      -0.2571</code></pre>
+##      3.6216      -1.3756      -0.4873      -0.5747</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The output is a regular `lm` output
 <span class="kw">class</span>(slice_lm)</code></pre></div>
 <pre><code>## [1] &quot;lm&quot;</code></pre>
@@ -1049,21 +1052,121 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.45304 -0.10015  0.01867  0.10692  0.46313 
+## -1.13370 -0.13528  0.02831  0.15469  0.57698 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  3.64384    0.02041 178.540  &lt; 2e-16 ***
-## subsets120  -1.20770    0.02886 -41.843  &lt; 2e-16 ***
-## subsets40    0.12611    0.02886   4.369 1.59e-05 ***
-## subsets80   -0.25708    0.02886  -8.907  &lt; 2e-16 ***
+## (Intercept)  3.62157    0.02441  148.39   &lt;2e-16 ***
+## subsets120  -1.37564    0.03451  -39.86   &lt;2e-16 ***
+## subsets40   -0.48733    0.03451  -14.12   &lt;2e-16 ***
+## subsets80   -0.57468    0.03451  -16.65   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.2041 on 396 degrees of freedom
-## Multiple R-squared:  0.8688, Adjusted R-squared:  0.8678 
-## F-statistic: 874.3 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.2441 on 396 degrees of freedom
+## Multiple R-squared:  0.8051, Adjusted R-squared:  0.8037 
+## F-statistic: 545.4 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Of course, due to the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made). The only condition is that the test can be applied to at least two distributions. In practice, the <code>test.dispRity</code> function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the <code>comparisons</code> argument is set to <code>pairwise</code>, <code>referential</code> or <code>sequential</code>) or a table containing all the distributions (<code>comparisons = all</code>; this should be in the same format as data passed to <code>lm</code> for example).</p>
+<div id="npmanova-in-disprity" class="section level3">
+<h3><span class="header-section-number">4.6.1</span> NPMANOVA in <code>dispRity</code></h3>
+<p>One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices <code>vegan::adonis</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(vegan)</code></pre></div>
+<pre><code>## Warning: package &#39;vegan&#39; was built under R version 3.4.3</code></pre>
+<pre><code>## Loading required package: permute</code></pre>
+<pre><code>## 
+## Attaching package: &#39;permute&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:devtools&#39;:
+## 
+##     check</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## This is vegan 2.4-5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(dune)
+<span class="kw">data</span>(dune.env)
+
+## Beta diversity distance matrix
+betad &lt;-<span class="st"> </span><span class="kw">betadiver</span>(dune, <span class="st">&quot;z&quot;</span>)
+
+## Create a pairwise distance matrix
+make.pairwise.dist.matrix &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {
+    <span class="cf">if</span>(<span class="kw">class</span>(matrix) <span class="op">==</span><span class="st"> &quot;matrix&quot;</span> <span class="op">||</span><span class="st"> </span><span class="kw">class</span>(matrix) <span class="op">==</span><span class="st"> &quot;data.frame&quot;</span>) {
+        ## Simply calculate the distances
+        <span class="kw">return</span>(<span class="kw">dist</span>(matrix))
+    } <span class="cf">else</span> {
+        ## Transform the distances into a matrix
+        pair_distances &lt;-<span class="st"> </span>matrix
+        pairwise_dist &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, <span class="dt">nrow =</span> <span class="kw">nrow</span>(matrix), <span class="dt">ncol =</span> <span class="kw">nrow</span>(matrix))
+        <span class="kw">colnames</span>(pairwise_dist) &lt;-<span class="st"> </span><span class="kw">rownames</span>(pairwise_dist) &lt;-<span class="st"> </span><span class="kw">rownames</span>(matrix)
+        <span class="kw">diag</span>(pairwise_dist) &lt;-<span class="st"> </span><span class="dv">0</span>
+        pairwise_dist[<span class="kw">lower.tri</span>(pairwise_dist)] &lt;-<span class="st"> </span>pair_distances
+        pairwise_dist &lt;-<span class="st"> </span><span class="kw">as.dist</span>(pairwise_dist)
+    }
+}
+pairwise_dist &lt;-<span class="st"> </span><span class="kw">make.pairwise.dist.matrix</span>(dune)
+
+## Create the factor group
+factors &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">factor =</span> dune.env<span class="op">$</span>Management)
+
+## Testing adonis
+test1 &lt;-<span class="st"> </span><span class="kw">adonis</span>(betad <span class="op">~</span><span class="st"> </span>factor, factors)
+test2 &lt;-<span class="st"> </span><span class="kw">adonis</span>(pairwise_dist <span class="op">~</span><span class="st"> </span>factor, factors)
+
+
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+## Check if it works for mammals data set
+<span class="kw">data</span>(BeckLee_mat50)
+<span class="kw">data</span>(BeckLee_tree)
+## Crown stem group
+crown_stem &lt;-<span class="st"> </span><span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>)
+## Dummy group
+group_sample &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">25</span>)
+group1 &lt;-<span class="st"> </span><span class="kw">rownames</span>(BeckLee_mat50)[group_sample]
+group2 &lt;-<span class="st"> </span><span class="kw">rownames</span>(BeckLee_mat50)[<span class="op">-</span>group_sample]
+dummy_group &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">group1 =</span> group1, <span class="dt">group2 =</span> group2)
+## Equal groups
+equal_group &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">groupA =</span> <span class="kw">rownames</span>(BeckLee_mat50), <span class="dt">groupB =</span> <span class="kw">rownames</span>(BeckLee_mat50))
+
+## Create the subsets
+subset_crown_stem &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(BeckLee_mat50, <span class="dt">group =</span> crown_stem)
+subset_dummy_group &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(BeckLee_mat50, <span class="dt">group =</span> dummy_group)
+subset_equal_group &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(BeckLee_mat50, <span class="dt">group =</span> equal_group)
+
+## Calculate disparity
+disp_crown_stem &lt;-<span class="st"> </span><span class="kw">dispRity</span>(subset_crown_stem, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))
+disp_dummy_group &lt;-<span class="st"> </span><span class="kw">dispRity</span>(subset_dummy_group, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))
+disp_equal_group &lt;-<span class="st"> </span><span class="kw">dispRity</span>(subset_equal_group, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))
+
+<span class="kw">summary</span>(disp_crown_stem)</code></pre></div>
+<pre><code>##   subsets  n   obs
+## 1   crown 30 1.387
+## 2    stem 20 1.274</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_dummy_group)</code></pre></div>
+<pre><code>##   subsets  n   obs
+## 1  group1 25 1.396
+## 2  group2 25 1.373</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_equal_group)</code></pre></div>
+<pre><code>##   subsets  n  obs
+## 1  groupA 50 1.39
+## 2  groupB 50 1.39</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Function for creating the factors table
+make.factors &lt;-<span class="st"> </span><span class="cf">function</span>(data) {
+    ## Extracting the factors
+    factors &lt;-<span class="st"> </span><span class="kw">names</span>(<span class="kw">sort</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(data<span class="op">$</span>subsets, <span class="cf">function</span>(X) <span class="kw">return</span>(X<span class="op">$</span>elements)))))
+    ## Trimming the factors names
+    group_names &lt;-<span class="st"> </span><span class="kw">names</span>(data<span class="op">$</span>subsets)
+    <span class="cf">for</span>(group <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(group_names)) {
+        factors[<span class="kw">grep</span>(group_names[group], factors)] &lt;-<span class="st"> </span>group_names[group]
+    }
+    <span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">factor =</span> factors, <span class="dt">row.names =</span> <span class="kw">rownames</span>(data<span class="op">$</span>matrix)))
+}
+
+adonis.dispRity &lt;-<span class="st"> </span><span class="cf">function</span>(data, ...) {
+  ## Create the factor table
+  factors &lt;-<span class="st"> </span><span class="kw">make.factors</span>(data)  
+
+  ## Run adonis
+  <span class="kw">return</span>(<span class="kw">adonis</span>(<span class="kw">make.pairwise.dist.matrix</span>(data<span class="op">$</span>matrix)<span class="op">~</span>factor, factors, ...))
+}</code></pre></div>
+</div>
 </div>
 <div id="disparity-as-a-distribution" class="section level2">
 <h2><span class="header-section-number">4.7</span> Disparity as a distribution</h2>
@@ -1079,17 +1182,17 @@ disparity_centroids_median &lt;-<span class="st"> </span><span class="kw">dispRi
 ## The distributions:
 <span class="kw">summary</span>(disparity_centroids)</code></pre></div>
 <pre><code>##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  6      1.536     1.388 0.806 1.246 1.597 1.897
-## 2      80 22      1.871     1.811 1.479 1.677 1.903 2.062
-## 3      40 15      1.943     1.886 1.541 1.788 1.986 2.096
-## 4       0 10      1.910     1.804 1.341 1.668 1.960 2.097</code></pre>
+## 1     120  5      1.539     1.287 0.536 1.092 1.553 1.864
+## 2      80 19      1.846     1.688 1.409 1.582 1.814 1.945
+## 3      40 15      1.892     1.685 1.327 1.563 1.839 2.062
+## 4       0 10      1.855     1.801 1.313 1.680 1.962 2.104</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The summary of the distributions (as median)
 <span class="kw">summary</span>(disparity_centroids_median)</code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 1.536     1.353 0.790 1.268 1.507 1.576
-## 2      80 22 1.871     1.813 1.716 1.778 1.832 1.874
-## 3      40 15 1.943     1.885 1.794 1.846 1.923 1.968
-## 4       0 10 1.910     1.814 1.601 1.772 1.861 1.918</code></pre>
+## 1     120  5 1.508     1.287 0.535 0.943 1.477 1.508
+## 2      80 19 1.790     1.682 1.534 1.645 1.716 1.791
+## 3      40 15 1.689     1.678 1.552 1.635 1.717 1.822
+## 4       0 10 1.910     1.804 1.577 1.761 1.855 1.909</code></pre>
 <p>We can see that the summary message for the distribution is slightly different than before. Here <code>summary</code> also displays the observed central tendency (i.e. the central tendency of the measured distributions). Note that, as expected, this central tendency is the same in both metrics!</p>
 <p>Another, maybe more intuitive way, to compare both approaches for measuring disparity is to plot the distributions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical parameters
@@ -1099,7 +1202,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <span class="kw">plot</span>(disparity_centroids, <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)
 <span class="kw">plot</span>(disparity_centroids_median,
      <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-60-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-61-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap in the distribution of medians
@@ -1107,12 +1210,12 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
-## 120 : 80   0.0000000
-## 120 : 40   0.0000000
-## 120 : 0    0.1309300
-## 80 : 40    0.6179184
-## 80 : 0     0.8377968
-## 40 : 0     0.7606357</code></pre>
+## 120 : 80   0.1905968
+## 120 : 40   0.1936492
+## 120 : 0    0.1381682
+## 80 : 40    0.9416139
+## 80 : 0     0.6076888
+## 40 : 0     0.7124871</code></pre>
 <p>In this case, we are looking at the probability of overlap of the distribution of median distances from centroids among each pair of time slices. In other words, we are measuring whether the medians from each bootstrap pseudo-replicate for each time slice overlap. But of course, we might be interested in the actual distribution of the distances from the centroid rather than simply their central tendencies. This can be problematic depending on the research question asked since we are effectively comparing non-independent medians distributions (because of the pseudo-replication).</p>
 <p>One solution, therefore, is to look at the full distribution:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap for the full distributions
@@ -1120,12 +1223,12 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
-## 120 : 80   0.5984180
-## 120 : 40   0.4978507
-## 120 : 0    0.6624471
-## 80 : 40    0.9419177
-## 80 : 0     0.9423180
-## 40 : 0     0.9446338</code></pre>
+## 120 : 80   0.6286805
+## 120 : 40   0.6631398
+## 120 : 0    0.5819930
+## 80 : 40    0.9397416
+## 80 : 0     0.8578102
+## 40 : 0     0.9361860</code></pre>
 <p>These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps. For example, when comparing the slices 120 and 80, we are effectively comparing the 5 <span class="math inline">\(\times\)</span> 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 <span class="math inline">\(\times\)</span> 100 distances from slice 80. However, this can also be problematic for some specific tests since the <em>n</em> <span class="math inline">\(\times\)</span> 100 distances are also pseudo-replicates and thus are still not independent.</p>
 <p>A second solution is to compare the distributions to each other <em>for each replicate</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Boostrapped probability of overlap for the full distributions
@@ -1133,12 +1236,12 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
 ## This will inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2831403 0.0000000 0.1740777 0.3872784 0.6026039
-## 120 : 40   0.1905339 0.0000000 0.0000000 0.2837006 0.4902114
-## 120 : 0    0.2637485 0.0000000 0.1692055 0.3872983 0.6116979
-## 80 : 40    0.5919469 0.2839402 0.5184306 0.6923659 0.8308461
-## 80 : 0     0.5444918 0.2287899 0.4306651 0.6579622 0.8212768
-## 40 : 0     0.5708636 0.1954287 0.4754313 0.6875411 0.8422871</code></pre>
+## 120 : 80   0.2507287 0.0000000 0.1450953 0.3829003 0.5431424
+## 120 : 40   0.3184407 0.0000000 0.2000000 0.4312174 0.7651213
+## 120 : 0    0.2368001 0.0000000 0.0000000 0.3464102 0.5791641
+## 80 : 40    0.5739203 0.2252672 0.4678055 0.6965587 0.8184853
+## 80 : 0     0.4649973 0.1382736 0.3688643 0.5757552 0.7292754
+## 40 : 0     0.5418625 0.1954287 0.4385665 0.6767986 0.8082483</code></pre>
 <p>These results show the median overlap among pairs of distributions in the first column (<code>bhatt.coeff</code>) and then the distribution of these overlaps among each pair of bootstraps. In other words, when two distributions are compared, they are now compared for each bootstrap pseudo-replicate, thus effectively creating a distribution of probabilities of overlap. For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50% of the pseudo-replicates. Note that the quantiles and central tendencies can be modified via the <code>conc.quantiles</code> option.</p>
 </div>
 <div id="disparity-from-other-matrices" class="section level2">
@@ -1206,7 +1309,7 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)
 ## Adding the p-value
 <span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-66-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-67-1.png" width="1152" /></p>
 <p>As expected, the results are pretty similar in pattern but different in terms of scale. The median centroids distance is expressed in km in the “Distance differences” plots and in Euclidean units of variation in the “Ordinated differences” plots.</p>
 
 </div>

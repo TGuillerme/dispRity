@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-17">
+<meta name="date" content="2017-12-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -141,7 +141,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
+</ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
 </ul></li>
@@ -197,7 +199,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
 <li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -266,13 +267,13 @@ variances &lt;-<span class="st"> </span>variances<span class="op">/</span><span 
 <span class="kw">plot</span>(petal_space[, <span class="dv">1</span>], petal_space[, <span class="dv">2</span>], <span class="dt">col =</span> species,
     <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 1 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
     <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 2 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-97-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-98-1.png" width="576" /></p>
 <p>This shows the distribution of the different species in the petal-space along the two first axis of variation. This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA). However, in this case we are ignoring the two other dimensions of the ordination! If we look at the two other axis we see a totally different result:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the two second axis of the petal-space
 <span class="kw">plot</span>(petal_space[, <span class="dv">3</span>], petal_space[, <span class="dv">4</span>], <span class="dt">col =</span> species,
     <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 3 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">3</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
     <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 4 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">4</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-98-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-99-1.png" width="576" /></p>
 <p>Additionally, these two represented dimensions do not represent a biological reality <em>per se</em>; i.e. the values on the first dimension do not represent a continuous trait (e.g. petal length), instead they just represent the ordinations of correlations between the data and some factors.</p>
 <p>Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a <em>n</em>-dimensional object.</p>
 </div>
@@ -330,7 +331,7 @@ petal_subsets</code></pre></div>
 
 ## Plotting the disparity in the petal_space
 <span class="kw">plot</span>(petal_disparity)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-103-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-104-1.png" width="576" /></p>
 <p>Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!</p>
 </div>
 <div id="testing-hypothesis" class="section level3">
@@ -350,16 +351,16 @@ disparity_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Post-hoc testing of the differences between species (corrected for multiple tests)
 <span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> t.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
 <pre><code>## [[1]]
-##                         statistic
-## setosa : versicolor    -33.714480
-## setosa : virginica     -34.257797
-## versicolor : virginica  -8.595829
+##                        statistic: t
+## setosa : versicolor      -33.714480
+## setosa : virginica       -34.257797
+## versicolor : virginica    -8.595829
 ## 
 ## [[2]]
-##                        parameter
-## setosa : versicolor     189.0217
-## setosa : virginica      150.1371
-## versicolor : virginica  171.2387
+##                        parameter: df
+## setosa : versicolor         189.0217
+## setosa : virginica          150.1371
+## versicolor : virginica      171.2387
 ## 
 ## [[3]]
 ##                             p.value
@@ -369,17 +370,17 @@ disparity_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>
 <p>We can now see that there is a significant difference in petal-space occupancy between all species of iris.</p>
 <div id="setting-up-a-multidimensional-null-hypothesis" class="section level4">
 <h4><span class="header-section-number">8.3.4.1</span> Setting up a multidimensional null-hypothesis</h4>
-<p>One other series of test can be done on the shape of the petal-space. Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to Diaz <em>et al.</em> 2016):</p>
+<p>One other series of test can be done on the shape of the petal-space. Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to <span class="citation">@diaz2016global</span>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing against a uniform distribution
 disparity_uniform &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
     <span class="dt">null.distrib =</span> runif, <span class="dt">scale =</span> <span class="ot">FALSE</span>)
 <span class="kw">plot</span>(disparity_uniform)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-105-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-106-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing against a normal distribution
 disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
     <span class="dt">null.distrib =</span> rnorm, <span class="dt">scale =</span> <span class="ot">TRUE</span>)
 <span class="kw">plot</span>(disparity_normal)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-106-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-107-1.png" width="576" /></p>
 <p>In both cases we can see that our petal-space is not entirely normal or uniform. This is expected because of the simplicity of these parameters.</p>
 
 </div>

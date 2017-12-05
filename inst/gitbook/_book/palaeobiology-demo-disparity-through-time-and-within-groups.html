@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-11-17">
+<meta name="date" content="2017-12-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -141,7 +141,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a></li>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
+</ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
 </ul></li>
@@ -197,7 +199,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
 <li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>10</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -226,7 +227,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">7.1</span> Before starting</h2>
 <div id="the-morphospace" class="section level3">
 <h3><span class="header-section-number">7.1.1</span> The morphospace</h3>
-<p>In this example, we are going to use a subset of the data from Beck and Lee (2014). See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details. Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>). The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
+<p>In this example, we are going to use a subset of the data from <span class="citation">@beckancient2014</span>. See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details. Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>). The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading demo and the package data
 <span class="kw">library</span>(dispRity)
 
@@ -261,13 +262,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">data</span>(BeckLee_tree)
 <span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)
 <span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-85-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-86-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)
 strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-86-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-87-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
@@ -319,7 +320,7 @@ binned_morphospace</code></pre></div>
 ## 5 discrete time subsets for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
 <blockquote>
-<p>These objects will gradually contain more information when completing the following steps in the disparity-through-time analysis.</p>
+<p>These objects will gradual.splitly contain more information when completing the following steps in the disparity-through-time analysis.</p>
 </blockquote>
 </div>
 <div id="bootstrapping-the-data" class="section level3">
@@ -345,7 +346,7 @@ binned_morphospace</code></pre></div>
 <div id="calculating-disparity" class="section level3">
 <h3><span class="header-section-number">7.2.3</span> Calculating disparity</h3>
 <p>We can now calculate the disparity within each time subsets along with some confidence intervals generated by the pseudoreplication step above (bootstraps/rarefaction). Disparity can be calculated in many ways and this package allows users to come up with their own disparity metrics. For more details, please refer to the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a>.</p>
-<p>In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the <code>dispRity</code> function. Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace). Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace. We use this here because it is a standard metric used in disparity-through-time analysis (Wills <em>et al.</em> 1994).</p>
+<p>In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the <code>dispRity</code> function. Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace). Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace. We use this here because it is a standard metric used in disparity-through-time analysis <span class="citation">[@Wills1994]</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity for the bootstrapped data
 (boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
@@ -394,7 +395,7 @@ binned_morphospace</code></pre></div>
 ## Plotting the bootstrapped and rarefied results
 <span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)
 <span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-92-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-93-1.png" width="1152" /></p>
 </div>
 </div>
 <div id="testing-differences" class="section level2">
@@ -404,11 +405,11 @@ binned_morphospace</code></pre></div>
 <span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,
     <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
 <pre><code>## [[1]]
-##                    statistic
-## 100 - 80 : 80 - 60       471
-## 80 - 60 : 60 - 40       1562
-## 60 - 40 : 40 - 20       6250
-## 40 - 20 : 20 - 0        3725
+##                    statistic: W
+## 100 - 80 : 80 - 60          471
+## 80 - 60 : 60 - 40          1562
+## 60 - 40 : 40 - 20          6250
+## 40 - 20 : 20 - 0           3725
 ## 
 ## [[2]]
 ##                         p.value
@@ -420,11 +421,11 @@ binned_morphospace</code></pre></div>
 <span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,
     <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
 <pre><code>## [[1]]
-##                    statistic
-## 100 - 80 : 80 - 60       662
-## 80 - 60 : 60 - 40       1814
-## 60 - 40 : 40 - 20       5752
-## 40 - 20 : 20 - 0        3621
+##                    statistic: W
+## 100 - 80 : 80 - 60          662
+## 80 - 60 : 60 - 40          1814
+## 60 - 40 : 40 - 20          5752
+## 40 - 20 : 20 - 0           3621
 ## 
 ## [[2]]
 ##                         p.value

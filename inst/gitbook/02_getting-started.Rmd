@@ -222,7 +222,7 @@ Using the @beckancient2014 data described [above](#example-data):
 
 ```{r}
 ## Creating the two groups (crown versus stem) as a list
-mammal_groups <- crown.stem(BeckLee_tree, inc.nodes = TRUE)
+mammal_groups <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
 
 ## Measuring disparity for each group
 disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,

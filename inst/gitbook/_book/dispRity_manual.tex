@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-11-17}
+  \date{2017-12-05}
 
 \usepackage{booktabs}
 
@@ -510,12 +510,12 @@ functions.
 \hypertarget{example-data}{\subsection{Example
 data}\label{example-data}}
 
-To illustrate these functions, we will use data from Beck and Lee
-(2014). This dataset contains an ordinated matrix of 50 discrete
-characters from mammals (\texttt{BeckLee\_mat50}), another matrix of the
-same 50 mammals and the estimated discrete data characters of their
-descendants (thus 50 + 49 rows, \texttt{BeckLee\_mat99}), a dataframe
-containing the ages of each taxon in the dataset
+To illustrate these functions, we will use data from
+\citet{beckancient2014}. This dataset contains an ordinated matrix of 50
+discrete characters from mammals (\texttt{BeckLee\_mat50}), another
+matrix of the same 50 mammals and the estimated discrete data characters
+of their descendants (thus 50 + 49 rows, \texttt{BeckLee\_mat99}), a
+dataframe containing the ages of each taxon in the dataset
 (\texttt{BeckLee\_ages}) and finally a phylogenetic tree with the
 relationships among the 50 mammals (\texttt{BeckLee\_tree}).
 
@@ -746,14 +746,13 @@ To perform such an analysis, you will need:
   Your favourite disparity metric (here the sum of variances)
 \end{itemize}
 
-Using the Beck and Lee (2014) data described
+Using the \citet{beckancient2014} data described
 \protect\hyperlink{example-data}{above}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Creating the two groups (crown versus stem) as a list}
-\NormalTok{mammal_groups <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"crown"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{19}\OperatorTok{:}\DecValTok{41}\NormalTok{, }\DecValTok{45}\OperatorTok{:}\DecValTok{50}\NormalTok{),}
-                      \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{))}
+\NormalTok{mammal_groups <-}\StringTok{ }\KeywordTok{crown.stem}\NormalTok{(BeckLee_tree, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{)}
 
 \NormalTok{## Measuring disparity for each group}
 \NormalTok{disparity_data <-}\StringTok{ }\KeywordTok{dispRity.per.group}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ mammal_groups,}
@@ -791,8 +790,8 @@ test).
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 1.995     1.936 1.866 1.914 1.947 1.971
-## 2    stem 20 1.715     1.632 1.541 1.604 1.667 1.695
+## 1   crown 30 1.995     1.933 1.883 1.917 1.951 1.983
+## 2    stem 20 1.715     1.635 1.535 1.610 1.664 1.691
 \end{verbatim}
 
 \begin{Shaded}
@@ -833,8 +832,9 @@ an issue on GitHub. The several tutorials below describe specific
 functionalities of certain functions; please always refer to the
 function help files for the full function documentation!
 
-Before each section, make sure you loaded the Beck and Lee (2014) data
-(see \protect\hyperlink{example-data}{example data} for more details).
+Before each section, make sure you loaded the \citet{beckancient2014}
+data (see \protect\hyperlink{example-data}{example data} for more
+details).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -977,7 +977,8 @@ decision must be made about what the value for the branch should be. The
 model can be one of the following:
 
 \begin{itemize}
-\tightlist
+\item
+  \textbf{Punctuated models}
 \item
   \texttt{acctran} where the data chosen along the branch is always the
   one of the descendant
@@ -991,21 +992,25 @@ model can be one of the following:
   \texttt{proximity} where the data chosen along the branch is either
   the descendant or the ancestor depending on branch length
 \item
-  \texttt{punctuated} where the data chosen along the branch is both the
-  descendant and the ancestor with an even probability
+  \textbf{Gradual models}
 \item
-  \texttt{gradual} where the data chosen along the branch is both the
-  descendant and the ancestor with a probability depending on branch
+  \texttt{equal.split} where the data chosen along the branch is both
+  the descendant and the ancestor with an even probability
+\item
+  \texttt{gradual.split} where the data chosen along the branch is both
+  the descendant and the ancestor with a probability depending on branch
   length
 \end{itemize}
 
 \begin{quote}
-Note that the four first models are ``fixed'': the selected data is
-always either the one of the descendant or the ancestor. The two last
-models are ``probabilistic'': the data from both the descendant and the
-ancestor is used with an associate probability. These later models
-perform better when bootstrapped, effectively approximating the
-``intermediate'' state between and the ancestor and the descendants.
+Note that the four first models are a proxy for punctuated evolution:
+the selected data is always either the one of the descendant or the
+ancestor. In other words, changes along the branches always occur at
+either ends of it. The two last models are a proxy for gradual
+evolution: the data from both the descendant and the ancestor is used
+with an associate probability. These later models perform better when
+bootstrapped, effectively approximating the ``intermediate'' state
+between and the ancestor and the descendants.
 \end{quote}
 
 \begin{Shaded}
@@ -1309,7 +1314,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.3873238
+## [1] -0.3227241
 \end{verbatim}
 
 \begin{Shaded}
@@ -1319,7 +1324,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.8189937
+## [1] -0.2690165
 \end{verbatim}
 
 Any summary metric such as mean or median are good examples of
@@ -1343,7 +1348,7 @@ A dimension-level 2 function will decompose a \texttt{matrix} into a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -8.0595618 -0.5106728 -1.3381023  0.1982694
+## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790
 \end{verbatim}
 
 Several dimension-level 2 functions are implemented in \texttt{dispRity}
@@ -1366,10 +1371,10 @@ need to match the the input matrix:
 \end{Shaded}
 
 \begin{verbatim}
-##            [,1]      [,2]       [,3]
-## [1,]  0.7722329 -1.232395  0.5044684
-## [2,] -1.2323952  5.258134 -2.5675598
-## [3,]  0.5044684 -2.567560  1.8322537
+##          [,1]      [,2]      [,3]
+## [1,] 1.916420 1.9501955 0.2907060
+## [2,] 1.950196 3.2948635 0.3958234
+## [3,] 0.290706 0.3958234 0.6704976
 \end{verbatim}
 
 \begin{Shaded}
@@ -1381,10 +1386,10 @@ need to match the the input matrix:
 
 \begin{verbatim}
 ##          1        2        3        4
-## 1 0.000000 5.096201 5.831904 4.944653
-## 2 5.096201 0.000000 2.058924 1.534373
-## 3 5.831904 2.058924 0.000000 1.823741
-## 4 4.944653 1.534373 1.823741 0.000000
+## 1 0.000000 5.140790 4.005068 3.120827
+## 2 5.140790 0.000000 2.179318 2.982267
+## 3 4.005068 2.179318 0.000000 2.174896
+## 4 3.120827 2.982267 2.174896 0.000000
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{make.metric}}{make.metric}}\label{make.metric}
@@ -1879,7 +1884,7 @@ principle and measure the range/variance/radius of each dimension:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      2.736 1.673 2.431 2.908 3.645
+## 1       1 10      2.431 1.673 2.431 2.908 3.645
 \end{verbatim}
 
 \begin{Shaded}
@@ -1925,7 +1930,7 @@ principle and measure the range/variance/radius of each dimension:
 
 \begin{verbatim}
 ##   subsets  n obs.median 2.5%   25%   75% 97.5%
-## 1       1 10      0.654 0.38 0.609 0.913 1.121
+## 1       1 10      0.609 0.38 0.609 0.913 1.121
 \end{verbatim}
 
 \begin{Shaded}
@@ -2020,7 +2025,7 @@ take the normal \texttt{dist} options:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      4.427 2.566 3.335 5.672  9.63
+## 1       1 10      3.619 2.566 3.335 5.672  9.63
 \end{verbatim}
 
 The \texttt{diagonal} function measures the multidimensional diagonal of
@@ -2074,7 +2079,7 @@ their centroid (centre point):
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      1.435 0.788 1.267 1.993 3.167
+## 1       1 10      2.214 0.788 1.267 1.993 3.167
 \end{verbatim}
 
 \begin{Shaded}
@@ -2102,7 +2107,7 @@ number of dimensions:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5% 25%   75% 97.5%
-## 1       1 10      1.487 0.785 1.2 2.044 3.176
+## 1       1 10      2.323 0.785 1.2 2.044 3.176
 \end{verbatim}
 
 \begin{Shaded}
@@ -2114,7 +2119,7 @@ number of dimensions:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      5.489 4.293 5.032 6.155 6.957
+## 1       1 10      4.675 4.293 5.032 6.155 6.957
 \end{verbatim}
 
 The \texttt{ancestral.dist} metric works on a similar principle as the
@@ -2230,10 +2235,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 2.899     2.472 1.842 2.276 2.693 2.855
-## 2      80 22 3.558     3.394 3.141 3.297 3.474 3.579
-## 3      40 15 4.032     3.781 3.515 3.692 3.850 3.969
-## 4       0 10 4.055     3.688 3.207 3.509 3.760 3.953
+## 1     120  5 2.823     2.295 1.398 2.037 2.563 2.767
+## 2      80 19 3.233     3.065 2.785 2.973 3.133 3.266
+## 3      40 15 3.359     3.149 2.764 2.996 3.285 3.443
+## 4       0 10 4.055     3.685 3.169 3.453 3.760 3.961
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed
@@ -2284,10 +2289,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.sd    6%   94%
-## 1     120  6 2.899 0.319 1.902 2.801
-## 2      80 22 3.558 0.117 3.220 3.552
-## 3      40 15 4.032 0.117 3.570 3.925
-## 4       0 10 4.055 0.194 3.330 3.895
+## 1     120  5 2.823 0.380 1.489 2.654
+## 2      80 19 3.233 0.127 2.869 3.224
+## 3      40 15 3.359 0.189 2.815 3.394
+## 4       0 10 4.055 0.205 3.291 3.885
 \end{verbatim}
 
 \begin{Shaded}
@@ -2307,10 +2312,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  6 2.89926   2.47202 1.84236 2.27615 2.69342 2.85486
-## 2      80 22 3.55782   3.39410 3.14102 3.29705 3.47379 3.57925
-## 3      40 15 4.03191   3.78130 3.51518 3.69170 3.84985 3.96858
-## 4       0 10 4.05457   3.68835 3.20652 3.50867 3.76034 3.95260
+## 1     120  5 2.82292   2.29516 1.39758 2.03734 2.56317 2.76690
+## 2      80 19 3.23312   3.06472 2.78542 2.97332 3.13308 3.26617
+## 3      40 15 3.35947   3.14918 2.76395 2.99563 3.28541 3.44267
+## 4       0 10 4.05457   3.68545 3.16864 3.45263 3.76034 3.96114
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2564,12 +2569,12 @@ Here we are using the variables generated in the
 
 \begin{verbatim}
 ## [[1]]
-##              statistic
-## crown : stem  66.67693
+##              statistic: t
+## crown : stem     66.67693
 ## 
 ## [[2]]
-##              parameter
-## crown : stem  169.1446
+##              parameter: df
+## crown : stem      169.1446
 ## 
 ## [[3]]
 ##                    p.value
@@ -2610,16 +2615,16 @@ Here we are using the variables generated in the
 
 \begin{verbatim}
 ## [[1]]
-##          statistic
-## 120 : 80         0
-## 80 : 40         97
-## 40 : 0        6992
+##          statistic: W
+## 120 : 80           27
+## 80 : 40          3466
+## 40 : 0            455
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 7.677344e-34
-## 80 : 40  1.378183e-32
-## 40 : 0   3.416199e-06
+## 120 : 80 1.720545e-33
+## 80 : 40  5.370214e-04
+## 40 : 0   3.599349e-28
 \end{verbatim}
 
 \begin{Shaded}
@@ -2637,9 +2642,9 @@ Here we are using the variables generated in the
 
 \begin{verbatim}
 ##                    bhatt.coeff
-## 120 - 80 : 80 - 40   0.0000000
-## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.5194852
+## 120 - 80 : 80 - 40    0.000000
+## 120 - 80 : 40 - 0     0.000000
+## 80 - 40 : 40 - 0      0.490448
 \end{verbatim}
 
 It is also possible to apply some more \emph{complex} tests that have
@@ -2668,7 +2673,7 @@ The results can then be analysed as usual using the associated
 ## 
 ## Coefficients:
 ## (Intercept)   subsets120    subsets40    subsets80  
-##      3.6438      -1.2077       0.1261      -0.2571
+##      3.6216      -1.3756      -0.4873      -0.5747
 \end{verbatim}
 
 \begin{Shaded}
@@ -2696,20 +2701,20 @@ The results can then be analysed as usual using the associated
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.45304 -0.10015  0.01867  0.10692  0.46313 
+## -1.13370 -0.13528  0.02831  0.15469  0.57698 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)  3.64384    0.02041 178.540  < 2e-16 ***
-## subsets120  -1.20770    0.02886 -41.843  < 2e-16 ***
-## subsets40    0.12611    0.02886   4.369 1.59e-05 ***
-## subsets80   -0.25708    0.02886  -8.907  < 2e-16 ***
+## (Intercept)  3.62157    0.02441  148.39   <2e-16 ***
+## subsets120  -1.37564    0.03451  -39.86   <2e-16 ***
+## subsets40   -0.48733    0.03451  -14.12   <2e-16 ***
+## subsets80   -0.57468    0.03451  -16.65   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2041 on 396 degrees of freedom
-## Multiple R-squared:  0.8688, Adjusted R-squared:  0.8678 
-## F-statistic: 874.3 on 3 and 396 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.2441 on 396 degrees of freedom
+## Multiple R-squared:  0.8051, Adjusted R-squared:  0.8037 
+## F-statistic: 545.4 on 3 and 396 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 Of course, due to the modular design of the package, tests can always be
@@ -2722,6 +2727,161 @@ argument is set to \texttt{pairwise}, \texttt{referential} or
 \texttt{sequential}) or a table containing all the distributions
 (\texttt{comparisons\ =\ all}; this should be in the same format as data
 passed to \texttt{lm} for example).
+
+\subsection{\texorpdfstring{NPMANOVA in
+\texttt{dispRity}}{NPMANOVA in dispRity}}\label{npmanova-in-disprity}
+
+One often useful test to apply to multidimensional data is the
+permutational multivariate analysis of variance based on distance
+matrices \texttt{vegan::adonis}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(vegan)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'vegan' was built under R version 3.4.3
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: permute
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'permute'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:devtools':
+## 
+##     check
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\begin{verbatim}
+## This is vegan 2.4-5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(dune)}
+\KeywordTok{data}\NormalTok{(dune.env)}
+
+\NormalTok{## Beta diversity distance matrix}
+\NormalTok{betad <-}\StringTok{ }\KeywordTok{betadiver}\NormalTok{(dune, }\StringTok{"z"}\NormalTok{)}
+
+\NormalTok{## Create a pairwise distance matrix}
+\NormalTok{make.pairwise.dist.matrix <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix) \{}
+    \ControlFlowTok{if}\NormalTok{(}\KeywordTok{class}\NormalTok{(matrix) }\OperatorTok{==}\StringTok{ "matrix"} \OperatorTok{||}\StringTok{ }\KeywordTok{class}\NormalTok{(matrix) }\OperatorTok{==}\StringTok{ "data.frame"}\NormalTok{) \{}
+\NormalTok{        ## Simply calculate the distances}
+        \KeywordTok{return}\NormalTok{(}\KeywordTok{dist}\NormalTok{(matrix))}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{        ## Transform the distances into a matrix}
+\NormalTok{        pair_distances <-}\StringTok{ }\NormalTok{matrix}
+\NormalTok{        pairwise_dist <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow =} \KeywordTok{nrow}\NormalTok{(matrix), }\DataTypeTok{ncol =} \KeywordTok{nrow}\NormalTok{(matrix))}
+        \KeywordTok{colnames}\NormalTok{(pairwise_dist) <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(pairwise_dist) <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(matrix)}
+        \KeywordTok{diag}\NormalTok{(pairwise_dist) <-}\StringTok{ }\DecValTok{0}
+\NormalTok{        pairwise_dist[}\KeywordTok{lower.tri}\NormalTok{(pairwise_dist)] <-}\StringTok{ }\NormalTok{pair_distances}
+\NormalTok{        pairwise_dist <-}\StringTok{ }\KeywordTok{as.dist}\NormalTok{(pairwise_dist)}
+\NormalTok{    \}}
+\NormalTok{\}}
+\NormalTok{pairwise_dist <-}\StringTok{ }\KeywordTok{make.pairwise.dist.matrix}\NormalTok{(dune)}
+
+\NormalTok{## Create the factor group}
+\NormalTok{factors <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{factor =}\NormalTok{ dune.env}\OperatorTok{$}\NormalTok{Management)}
+
+\NormalTok{## Testing adonis}
+\NormalTok{test1 <-}\StringTok{ }\KeywordTok{adonis}\NormalTok{(betad }\OperatorTok{~}\StringTok{ }\NormalTok{factor, factors)}
+\NormalTok{test2 <-}\StringTok{ }\KeywordTok{adonis}\NormalTok{(pairwise_dist }\OperatorTok{~}\StringTok{ }\NormalTok{factor, factors)}
+
+
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{## Check if it works for mammals data set}
+\KeywordTok{data}\NormalTok{(BeckLee_mat50)}
+\KeywordTok{data}\NormalTok{(BeckLee_tree)}
+\NormalTok{## Crown stem group}
+\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{crown.stem}\NormalTok{(BeckLee_tree, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{## Dummy group}
+\NormalTok{group_sample <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{50}\NormalTok{, }\DecValTok{25}\NormalTok{)}
+\NormalTok{group1 <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(BeckLee_mat50)[group_sample]}
+\NormalTok{group2 <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(BeckLee_mat50)[}\OperatorTok{-}\NormalTok{group_sample]}
+\NormalTok{dummy_group <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{group1 =}\NormalTok{ group1, }\DataTypeTok{group2 =}\NormalTok{ group2)}
+\NormalTok{## Equal groups}
+\NormalTok{equal_group <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{groupA =} \KeywordTok{rownames}\NormalTok{(BeckLee_mat50), }\DataTypeTok{groupB =} \KeywordTok{rownames}\NormalTok{(BeckLee_mat50))}
+
+\NormalTok{## Create the subsets}
+\NormalTok{subset_crown_stem <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ crown_stem)}
+\NormalTok{subset_dummy_group <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ dummy_group)}
+\NormalTok{subset_equal_group <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ equal_group)}
+
+\NormalTok{## Calculate disparity}
+\NormalTok{disp_crown_stem <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_crown_stem, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+\NormalTok{disp_dummy_group <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_dummy_group, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+\NormalTok{disp_equal_group <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_equal_group, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+
+\KeywordTok{summary}\NormalTok{(disp_crown_stem)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n   obs
+## 1   crown 30 1.387
+## 2    stem 20 1.274
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_dummy_group)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n   obs
+## 1  group1 25 1.396
+## 2  group2 25 1.373
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_equal_group)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n  obs
+## 1  groupA 50 1.39
+## 2  groupB 50 1.39
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Function for creating the factors table}
+\NormalTok{make.factors <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data) \{}
+\NormalTok{    ## Extracting the factors}
+\NormalTok{    factors <-}\StringTok{ }\KeywordTok{names}\NormalTok{(}\KeywordTok{sort}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(data}\OperatorTok{$}\NormalTok{subsets, }\ControlFlowTok{function}\NormalTok{(X) }\KeywordTok{return}\NormalTok{(X}\OperatorTok{$}\NormalTok{elements)))))}
+\NormalTok{    ## Trimming the factors names}
+\NormalTok{    group_names <-}\StringTok{ }\KeywordTok{names}\NormalTok{(data}\OperatorTok{$}\NormalTok{subsets)}
+    \ControlFlowTok{for}\NormalTok{(group }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(group_names)) \{}
+\NormalTok{        factors[}\KeywordTok{grep}\NormalTok{(group_names[group], factors)] <-}\StringTok{ }\NormalTok{group_names[group]}
+\NormalTok{    \}}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{factor =}\NormalTok{ factors, }\DataTypeTok{row.names =} \KeywordTok{rownames}\NormalTok{(data}\OperatorTok{$}\NormalTok{matrix)))}
+\NormalTok{\}}
+
+\NormalTok{adonis.dispRity <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, ...) \{}
+\NormalTok{  ## Create the factor table}
+\NormalTok{  factors <-}\StringTok{ }\KeywordTok{make.factors}\NormalTok{(data)  }
+
+\NormalTok{  ## Run adonis}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{adonis}\NormalTok{(}\KeywordTok{make.pairwise.dist.matrix}\NormalTok{(data}\OperatorTok{$}\NormalTok{matrix)}\OperatorTok{~}\NormalTok{factor, factors, ...))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{disparity-as-a-distribution}{\section{Disparity as a
 distribution}\label{disparity-as-a-distribution}}
@@ -2771,10 +2931,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  6      1.536     1.388 0.806 1.246 1.597 1.897
-## 2      80 22      1.871     1.811 1.479 1.677 1.903 2.062
-## 3      40 15      1.943     1.886 1.541 1.788 1.986 2.096
-## 4       0 10      1.910     1.804 1.341 1.668 1.960 2.097
+## 1     120  5      1.539     1.287 0.536 1.092 1.553 1.864
+## 2      80 19      1.846     1.688 1.409 1.582 1.814 1.945
+## 3      40 15      1.892     1.685 1.327 1.563 1.839 2.062
+## 4       0 10      1.855     1.801 1.313 1.680 1.962 2.104
 \end{verbatim}
 
 \begin{Shaded}
@@ -2786,10 +2946,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  6 1.536     1.353 0.790 1.268 1.507 1.576
-## 2      80 22 1.871     1.813 1.716 1.778 1.832 1.874
-## 3      40 15 1.943     1.885 1.794 1.846 1.923 1.968
-## 4       0 10 1.910     1.814 1.601 1.772 1.861 1.918
+## 1     120  5 1.508     1.287 0.535 0.943 1.477 1.508
+## 2      80 19 1.790     1.682 1.534 1.645 1.716 1.791
+## 3      40 15 1.689     1.678 1.552 1.635 1.717 1.822
+## 4       0 10 1.910     1.804 1.577 1.761 1.855 1.909
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -2813,7 +2973,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2839,12 +2999,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.0000000
-## 120 : 40   0.0000000
-## 120 : 0    0.1309300
-## 80 : 40    0.6179184
-## 80 : 0     0.8377968
-## 40 : 0     0.7606357
+## 120 : 80   0.1905968
+## 120 : 40   0.1936492
+## 120 : 0    0.1381682
+## 80 : 40    0.9416139
+## 80 : 0     0.6076888
+## 40 : 0     0.7124871
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -2873,12 +3033,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.5984180
-## 120 : 40   0.4978507
-## 120 : 0    0.6624471
-## 80 : 40    0.9419177
-## 80 : 0     0.9423180
-## 40 : 0     0.9446338
+## 120 : 80   0.6286805
+## 120 : 40   0.6631398
+## 120 : 0    0.5819930
+## 80 : 40    0.9397416
+## 80 : 0     0.8578102
+## 40 : 0     0.9361860
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -2907,12 +3067,12 @@ A second solution is to compare the distributions to each other
 
 \begin{verbatim}
 ##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2831403 0.0000000 0.1740777 0.3872784 0.6026039
-## 120 : 40   0.1905339 0.0000000 0.0000000 0.2837006 0.4902114
-## 120 : 0    0.2637485 0.0000000 0.1692055 0.3872983 0.6116979
-## 80 : 40    0.5919469 0.2839402 0.5184306 0.6923659 0.8308461
-## 80 : 0     0.5444918 0.2287899 0.4306651 0.6579622 0.8212768
-## 40 : 0     0.5708636 0.1954287 0.4754313 0.6875411 0.8422871
+## 120 : 80   0.2507287 0.0000000 0.1450953 0.3829003 0.5431424
+## 120 : 40   0.3184407 0.0000000 0.2000000 0.4312174 0.7651213
+## 120 : 0    0.2368001 0.0000000 0.0000000 0.3464102 0.5791641
+## 80 : 40    0.5739203 0.2252672 0.4678055 0.6965587 0.8184853
+## 80 : 0     0.4649973 0.1382736 0.3688643 0.5757552 0.7292754
+## 40 : 0     0.5418625 0.1954287 0.4385665 0.6767986 0.8082483
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -3036,7 +3196,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -3118,7 +3278,7 @@ description}\label{a-more-detailed-description}
 
 The protocol implemented here to generate discrete morphological
 matrices is based on the ones developed in
-{[}\citet{GuillermeCooper};\citet{OReilly2016};\citet{puttick2017uncertain};OReilly2017{]}.
+\citep{GuillermeCooper, OReilly2016, puttick2017uncertain, OReilly2017}.
 
 \begin{itemize}
 \tightlist
@@ -3391,7 +3551,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -3456,7 +3616,7 @@ coordinates below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3505,7 +3665,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3557,7 +3717,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -3603,7 +3763,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -3917,9 +4077,9 @@ content. It is a \texttt{list} that can contain the following:
   information on the subsets type (either \texttt{"continuous"},
   \texttt{"discrete"} or \texttt{"custom"}) and their eventual model
   (\texttt{"acctran"}, \texttt{"deltran"}, \texttt{"random"},
-  \texttt{"proximity"}, \texttt{"punctuated"}, \texttt{"gradual"}). This
-  element generated only once via \texttt{time.subsets()} and
-  \texttt{custom.subsets()}.
+  \texttt{"proximity"}, \texttt{"equal.split"},
+  \texttt{"gradual.split"}). This element generated only once via
+  \texttt{time.subsets()} and \texttt{custom.subsets()}.
 \item
   \texttt{\$call\$dimensions}: either a single \texttt{numeric} value
   indicating how many dimensions to use or a vector of \texttt{numeric}
@@ -4053,18 +4213,19 @@ Beck and Lee (2014).
 
 \subsection{The morphospace}\label{the-morphospace}
 
-In this example, we are going to use a subset of the data from Beck and
-Lee (2014). See the \protect\hyperlink{example-data}{example data}
-description for more details. Briefly, this dataset contains an
-ordinated matrix of 50 discrete characters from mammals
-(\texttt{BeckLee\_mat50}), another matrix of the same 50 mammals and the
-estimated discrete data characters of their descendants (thus 50 + 49
-rows, \texttt{BeckLee\_mat99}), a dataframe containing the ages of each
-taxon in the dataset (\texttt{BeckLee\_ages}) and finally a phylogenetic
-tree with the relationships among the 50 mammals
-(\texttt{BeckLee\_tree}). The ordinated matrix will represent our full
-morphospace, i.e.~all the mammalian morphologies that ever existed
-through time (for this dataset).
+In this example, we are going to use a subset of the data from
+\citet{beckancient2014}. See the
+\protect\hyperlink{example-data}{example data} description for more
+details. Briefly, this dataset contains an ordinated matrix of 50
+discrete characters from mammals (\texttt{BeckLee\_mat50}), another
+matrix of the same 50 mammals and the estimated discrete data characters
+of their descendants (thus 50 + 49 rows, \texttt{BeckLee\_mat99}), a
+dataframe containing the ages of each taxon in the dataset
+(\texttt{BeckLee\_ages}) and finally a phylogenetic tree with the
+relationships among the 50 mammals (\texttt{BeckLee\_tree}). The
+ordinated matrix will represent our full morphospace, i.e.~all the
+mammalian morphologies that ever existed through time (for this
+dataset).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4129,7 +4290,7 @@ through time (for this dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-85-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -4143,7 +4304,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-87-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -4266,8 +4427,8 @@ output.
 \end{verbatim}
 
 \begin{quote}
-These objects will gradually contain more information when completing
-the following steps in the disparity-through-time analysis.
+These objects will gradual.splitly contain more information when
+completing the following steps in the disparity-through-time analysis.
 \end{quote}
 
 \subsection{Bootstrapping the data}\label{bootstrapping-the-data}
@@ -4337,8 +4498,7 @@ by the multi-dimensional variance of each time subset (i.e.~the spread
 of the taxa within the morphospace). Note that this metric comes with a
 caveat (not solved here) since it ignores covariances among the
 dimensions of the morphospace. We use this here because it is a standard
-metric used in disparity-through-time analysis (Wills \emph{et al.}
-1994).
+metric used in disparity-through-time analysis \citep{Wills1994}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4439,7 +4599,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -4468,11 +4628,11 @@ subsets), we apply a non-parametric mean comparison: the
 
 \begin{verbatim}
 ## [[1]]
-##                    statistic
-## 100 - 80 : 80 - 60       471
-## 80 - 60 : 60 - 40       1562
-## 60 - 40 : 40 - 20       6250
-## 40 - 20 : 20 - 0        3725
+##                    statistic: W
+## 100 - 80 : 80 - 60          471
+## 80 - 60 : 60 - 40          1562
+## 60 - 40 : 40 - 20          6250
+## 40 - 20 : 20 - 0           3725
 ## 
 ## [[2]]
 ##                         p.value
@@ -4492,11 +4652,11 @@ subsets), we apply a non-parametric mean comparison: the
 
 \begin{verbatim}
 ## [[1]]
-##                    statistic
-## 100 - 80 : 80 - 60       662
-## 80 - 60 : 60 - 40       1814
-## 60 - 40 : 40 - 20       5752
-## 40 - 20 : 20 - 0        3621
+##                    statistic: W
+## 100 - 80 : 80 - 60          662
+## 80 - 60 : 60 - 40          1814
+## 60 - 40 : 40 - 20          5752
+## 40 - 20 : 20 - 0           3621
 ## 
 ## [[2]]
 ##                         p.value
@@ -4602,7 +4762,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -4621,7 +4781,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -4755,7 +4915,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-104-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -4804,16 +4964,16 @@ using the \texttt{test.dispRity} option.
 
 \begin{verbatim}
 ## [[1]]
-##                         statistic
-## setosa : versicolor    -33.714480
-## setosa : virginica     -34.257797
-## versicolor : virginica  -8.595829
+##                        statistic: t
+## setosa : versicolor      -33.714480
+## setosa : virginica       -34.257797
+## versicolor : virginica    -8.595829
 ## 
 ## [[2]]
-##                        parameter
-## setosa : versicolor     189.0217
-## setosa : virginica      150.1371
-## versicolor : virginica  171.2387
+##                        parameter: df
+## setosa : versicolor         189.0217
+## setosa : virginica          150.1371
+## versicolor : virginica      171.2387
 ## 
 ## [[3]]
 ##                             p.value
@@ -4831,7 +4991,7 @@ null-hypothesis}\label{setting-up-a-multidimensional-null-hypothesis}
 One other series of test can be done on the shape of the petal-space.
 Using a MCMC permutation test we can simulate a petal-space with
 specific properties and see if our observed petal-space matches these
-properties (similarly to Diaz \emph{et al.} 2016):
+properties (similarly to \citet{diaz2016global}):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4842,7 +5002,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-105-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4853,7 +5013,7 @@ properties (similarly to Diaz \emph{et al.} 2016):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
@@ -4897,8 +5057,6 @@ developing some additional specific ideas. Feel free to contact me via
 email (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) or if
 you are a GitHub user, directly create an issue on the
 \href{https://github.com/TGuillerme/dispRity}{GitHub page}.
-
-\chapter{References}\label{references}
 
 \bibliography{References.bib}
 
