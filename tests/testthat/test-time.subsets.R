@@ -372,8 +372,8 @@ test_that("probability models work", {
     data(BeckLee_ages)
     data(BeckLee_tree)
     
-    test1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    test2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "punctuated", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "equal.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     expect_is(test1, "dispRity")
     expect_is(test1$subsets[[1]][[1]], "matrix")

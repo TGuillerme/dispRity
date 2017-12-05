@@ -98,7 +98,7 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
             ## Extract only living taxa
             sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
 
-            if(model == "punctuated" || model == "gradual") {
+            if(model == "equal.split" || model == "gradual.split") {
                 ## Transforming the subtree into a probability table
                 tips_list <- sub_tree$tip.label
                 nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
@@ -128,7 +128,7 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
             ## Add any missed taxa from the FADLAD
             taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
 
-            if(model == "gradual" || model == "punctuated") {
+            if(model == "equal.split" || model == "gradual.split") {
             ## Return a probability table
                 if(length(taxa) > 0) {
                     ## Combine the taxa, their ancestor and their probability to the sub_tree table

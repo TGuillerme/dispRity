@@ -182,10 +182,10 @@ test_that("slice.tree works properly", {
         slice.tree(tree, 0, 'randOM'), 'phylo'
         )
     expect_is(
-        slice.tree(tree, 0, 'gradual'), 'matrix'
+        slice.tree(tree, 0, 'gradual.split'), 'matrix'
         )
     expect_is(
-        slice.tree(tree, 0, 'punctuated'), 'matrix'
+        slice.tree(tree, 0, 'equal.split'), 'matrix'
         )
 })
 
@@ -194,8 +194,8 @@ test_that("slice.tree proba works", {
     tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
     tree$node.label <- as.character(paste0("n",seq(1:5)))
 
-    test0g <- slice.tree(tree, 0, "gradual")
-    test0p <- slice.tree(tree, 0, "punctuated")
+    test0g <- slice.tree(tree, 0, "gradual.split")
+    test0p <- slice.tree(tree, 0, "equal.split")
 
     LAD <- FAD <- tree.age(tree)
 
@@ -206,14 +206,14 @@ test_that("slice.tree proba works", {
     expect_equal(test0g, test0p)
 
     ## Different results (no FADLAD)
-    test0g_1 <- slice.tree(tree, 2.8, "gradual")
-    test0p_1 <- slice.tree(tree, 2.8, "punctuated")
+    test0g_1 <- slice.tree(tree, 2.8, "gradual.split")
+    test0p_1 <- slice.tree(tree, 2.8, "equal.split")
     expect_equal(round(as.numeric(test0g_1[,3]), digit = 3), c(0.900, 0.933, 0.560))
     expect_equal(round(as.numeric(test0p_1[,3]), digit = 3), c(0.500, 0.500, 0.500))
 
     ## Different results (with FADLAD)
-    test0g_2 <- slice.tree(tree, 2.8, "gradual", FAD, LAD)
-    test0p_2 <- slice.tree(tree, 2.8, "punctuated", FAD, LAD)
+    test0g_2 <- slice.tree(tree, 2.8, "gradual.split", FAD, LAD)
+    test0p_2 <- slice.tree(tree, 2.8, "equal.split", FAD, LAD)
     expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(1.000, 1.000, 0.560))
     expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
 })
@@ -248,6 +248,6 @@ test_that("slice.tree works on a single edge", {
     expect_equal(slice.tree(tree, age = 1, "deltran"), "n2")
     expect_equal(slice.tree(tree, age = 1, "proximity"), "B")
     expect_equal(slice.tree(tree, age = 3.9, "proximity"), "n2")
-    expect_equal(slice.tree(tree, age = 1, "punctuated"), c("n2", "B", "0.5"))
-    expect_equal(slice.tree(tree, age = 3, "gradual"), c("n2", "B", "0.6"))
+    expect_equal(slice.tree(tree, age = 1, "equal.split"), c("n2", "B", "0.5"))
+    expect_equal(slice.tree(tree, age = 3, "gradual.split"), c("n2", "B", "0.6"))
 })

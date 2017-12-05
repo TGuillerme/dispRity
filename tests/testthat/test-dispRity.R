@@ -440,7 +440,7 @@ test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_tree)
     
 
-    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
     data2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     set.seed(1)

@@ -6,7 +6,7 @@
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
 #' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsets}}.
@@ -48,7 +48,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     check.length(age, 1, " must be a single numeric value.")
     check.class(model, "character", " must be one of the following: acctran, deltran, random, proximity.")
     model <- tolower(model)
-    check.method(model, c("acctran", "deltran", "random", "proximity", "punctuated", "gradual"), "Slicing model")
+    check.method(model, c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split"), "Slicing model")
 
     #FAD/LAD
     if(missing(FAD)) {
@@ -81,7 +81,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     }
 
     
-    if(model == "gradual" || model == "punctuated") {
+    if(model == "gradual.split" || model == "equal.split") {
         
         ## Running the probability models
         tips_probabilities <- sapply(tree_slice$tip.label, function(X) slice.tree_PROXIMITY(tree, X, tree_slice, probability = TRUE), simplify = FALSE)
@@ -104,8 +104,8 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         }
         tree_sliced <- t(apply(tree_sliced, 1, adjust.prob, FAD, LAD, age))
 
-        ## Correcting probabilities if punctuated
-        if(model == "punctuated") {
+        ## Correcting probabilities if gradual.split
+        if(model == "equal.split") {
             tree_sliced[,3] <- sapply(tree_sliced[,3], function(X) ifelse(round(as.numeric(X), digits = 5) == 0 || round(as.numeric(X), digits = 5) == 1, X, "0.5"))
         }
 

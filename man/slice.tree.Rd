@@ -11,7 +11,7 @@ slice.tree(tree, age, model, FAD, LAD)
 
 \item{age}{A single \code{numeric} value indicating where to perform the slice.}
 
-\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.}
+\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.}
 
 \item{FAD, LAD}{The first and last occurrence data.}
 }

@@ -9,7 +9,7 @@
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
 #' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
@@ -25,16 +25,22 @@
 #' 
 #'  
 #' @details
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is can be one of the following:
 #' \itemize{
-#'   \item \code{"acctran"}: always the value from the ancestral node.
-#'   \item \code{"deltran"}: always the value from the descendant node or tip.
-#'   \item \code{"random"}: randomly selected from the ancestral node or the descendant node or tip.
-#'   \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
-#'   \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
-#'   \item \code{"gradual"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'      \item Punctuated models:
+#'      \itemize{
+#'         \item \code{"acctran"}: always the value from the ancestral node.
+#'         \item \code{"deltran"}: always the value from the descendant node or tip.
+#'         \item \code{"random"}: randomly selected from the ancestral node or the descendant node or tip.
+#'         \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'      }
+#'      \item Gradual models:
+#'      \itemize{
+#'          \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+#'          \item \code{"gradual.split"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'      }
 #' }
-#' N.B. \code{"punctuated"} and \code{"gradual"} differ from \code{"random"} and \code{"proximity"} by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
+#' N.B. \code{"equal.split"} and \code{"gradual.split"} differ from the punctuated models by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -206,7 +212,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     } else {
         ## else model must be one of the following
         model <- tolower(model)
-        all_models <- c("acctran", "deltran", "random", "proximity", "punctuated", "gradual")
+        all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
         check.method(model, all_models, "model argument")

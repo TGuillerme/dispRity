@@ -238,7 +238,7 @@ slice.edge <- function(tree, age, model) {
     ## Get the lower node name
     lower_node_name <- slice.tree_parent.node(tree, upper_node_name)
 
-    if(any(model %in% c("punctuated", "gradual", "proximity"))) {
+    if(any(model %in% c("equal.split", "gradual.split", "proximity"))) {
         
         ## Get the lower node ID
         lower_node <- which(tree$node.label == lower_node_name) + Ntip(tree)
@@ -252,7 +252,7 @@ slice.edge <- function(tree, age, model) {
         if(model != "proximity") {
             prob <- 1-slice_edge/full_edge
             prob <- as.character(round(prob, digits = 10))
-            if(model == "gradual") {
+            if(model == "gradual.split") {
                 return(c(lower_node_name, upper_node_name, prob))
             } else {
                 return(c(lower_node_name, upper_node_name, "0.5"))
