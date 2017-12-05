@@ -241,14 +241,14 @@ The standard approach in palaeobiology relies on the following pipeline: (i) cod
 I feel that the reviewer's suggestion of proposing more accurate models for ancestral states reconstructions and will technically not be doable after step (iii).
 In fact, the ordination, to be meaningful as a ``morphospace'' should always be done on the full dataset.
 I.e. no additional data should be added to the space \textit{a posteriori}.
-In practice, the \textit{time.subsamples} function can only select between two information: the ancestral node (DELTRAN) and the descendant node/tip (ACCTRAN) along the edge since only the two of them are real objects in the morphospace.
+In practice, the \textit{time.subset} function can only select between two information: the ancestral node (DELTRAN) and the descendant node/tip (ACCTRAN) along the edge since only the two of them are real objects in the morphospace.
 It is therefore not possible to create an ancestral states reconstruction along the edge after running the ordination.
 
 I have however modified the available models to better describe this limitation and I have added two new models that would approximate ancestral reconstruction along edges
 I have modified the name of the two previous ``punctuated'' and ``gradual'' algorithms to ``random'' and ``proximity'' to reflect more accurately how they select either the ACCTRAN or DELTRAN information.
-I've added two more accurate models (now named ``punctuated'' and ``gradual'') to reflect the changes along the branches.
+I've added two more accurate models (now named ``equal.split'' and ``gradual.split'') to reflect the changes along the branches.
 These two algorithm now allows to use both the ACCTRAN and DELTRAN information with a linked probability to use either of them per bootstrap draw.
-For example, the ``punctuated'' model will have a 0.5 probability of using either node information for each bootstrap draw; the ``gradual'' model transforms the branch length were the slice occurs into a probability of drawing either of the nodes information (e.g. if the slices occurs 3/4 along the branch from A to B, the model will draw the information from A and B with a probability of respectively 0.25 and 0.75).
+For example, the ``equal.split'' model will have a 0.5 probability of using either node information for each bootstrap draw; the ``gradual.split'' model transforms the branch length were the slice occurs into a probability of drawing either of the nodes information (e.g. if the slices occurs 3/4 along the branch from A to B, the model will draw the information from A and B with a probability of respectively 0.25 and 0.75).
 For example, the median disparity over 1000 bootstrap pseudo-replication along the edge (AB) will integrate 0.75 information from A and 0.25 from B thus approximating the ``intermediate'' between A and B (when averaged ).
 
 I've added these models descriptions in the manual and in the manuscript:
@@ -256,13 +256,14 @@ I've added these models descriptions in the manual and in the manuscript:
 \begin{itemize}
     \item \textit{``random'' where the data chosen along the branch is randomly chosen between the descendant or the ancestor}
     \item \textit{``proximity'' where the data chosen along the branch is either the descendant or the ancestor depending on branch length}
-    \item \textit{``punctuated'' where the data chosen along the branch is both the descendant and the ancestor with an even probability}
-    \item \textit{``gradual'' where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length}
+    \item \textit{``equal.split'' where the data chosen along the branch is both the descendant and the ancestor with an even probability}
+    \item \textit{``gradual.split'' where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length}
 \end{itemize}
 
-\textit{Note that the four first models are "fixed": the selected data is always either the one of the descendant or the ancestor.
-The two last models are "probabilistic": the data from both the descendant and the ancestor is used with an associate probability.
-These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).} lines @@@
+\textit{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
+The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
+These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines @@@
 
 \item{\textcolor{blue}{An additional more minor implementation issue here concerns the "subsamples". Firstly, I would urge the author to reconsider this name as it implies subsampling (e.g., rarefaction) and not what is intended, i.e., subsets of the data (the term used on L124) or groups of taxa. However, a more pressing issue is that I do not see any restrictions on overlap between these "subsamples" and indeed in the case of time-binning this is suggested as a "pro" (L138). Although in cases such as time-binning it is obviously sensible to allow taxa to appear in multiple "subsamples" this changes the assumptions of a statistical test looking for differences between samples, i.e., as overlap increases so would type II errors. I suggest the author consider at least a warning to users in such circumstances.}}
 
@@ -500,8 +501,6 @@ Regardless, this complexity begs for direction.
 Although the geomorph results by comparison were tedious to achieve, I can attest that it saved a lot of time spent working with users to understand results. 
 The author should remember that once this manuscript is published, this R package becomes a dedication to the researchers who use it. 
 Cleaning up some of these details now will make it easier to remain dedicated later.}}
-
-%TODO: add [[1]] and [[2]] names
 
 I have changed the \texttt{test.dispRity} to now output the name of the statistic and the parameter in the output list (e.g. \texttt{statistic: t} and \texttt{parameter: df} for the example provided by the reviewer).
 I have also highlighted in the manuscript one of the features of the function allowing to output the results in a format more familiar to the user using the option \texttt{details = TRUE} (returning the raw test results):

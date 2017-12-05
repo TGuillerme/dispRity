@@ -369,12 +369,12 @@ When a slice occurs not on a tip or a node, \hl{six} methods are available to se
     \item ``deltran'' (delayed transformation) where the data chosen along the branch is always the one of the ancestor
     \item \hl{``random''} where the data chosen along the branch is randomly chosen between the descendant or the ancestor
     \item \hl{``proximity''} where the data chosen along the branch is either the descendant or the ancestor depending on branch length
-    \item \hl{``punctuated'' where the data chosen along the branch is both the descendant and the ancestor with an even probability}
-    \item \hl{``gradual'' where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length}
+    \item \hl{``equal.split'' where the data chosen along the branch is both the descendant and the ancestor with an even probability}
+    \item \hl{``gradual.split'' where the data chosen along the branch is both the descendant and the ancestor with a probability depending on branch length}
 \end{itemize}
 
-\hl{Note that the four first models are "fixed": the selected data is always either the one of the descendant or the ancestor.
-The two last models are "probabilistic": the data from both the descendant and the ancestor is used with an associate probability.
+\hl{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
+The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
 Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).}
 
