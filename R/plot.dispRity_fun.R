@@ -235,7 +235,42 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
             y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
-            polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
+
+            ## Dividing the polygon if NAs
+            if(any(is.na(y_vals))) {
+
+                ## Check where the NAs are
+                is_nas <- is.na(y_vals[1:points_n])
+
+                ## Selecting the groups of applicable data
+                groups <- numeric()
+                group_label <- 1
+                for(point in 1:length(is_nas)) {
+                    if(is.na(y_vals[point])) {
+                        group_label <- group_label + 1
+                        groups[point] <- NA
+                    } else {
+                        groups[point] <- group_label
+                    }
+                }
+
+                ## splitting the data into the groups
+                y_vals1 <- split(y_vals[1:points_n], groups)
+                y_vals2 <- split(y_vals[(points_n+1):(points_n*2)], rev(groups))
+                x_vals1 <- split(x_vals[1:points_n], groups)
+                x_vals2 <- split(x_vals[(points_n+1):(points_n*2)], rev(groups))
+
+                ## Merging the groups
+                y_vals <- mapply(c, y_vals1, y_vals2, SIMPLIFY = FALSE)
+                x_vals <- mapply(c, x_vals1, x_vals2, SIMPLIFY = FALSE)
+
+                ## Plotting the polygons
+                mapply(polygon, x_vals, y_vals, MoreArgs = list(col = poly_col[[cis]], border = "NA", density = density))
+
+            } else {
+                polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
+            }
+
         }
 
         ## Add the central tendency on top
