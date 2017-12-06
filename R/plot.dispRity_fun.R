@@ -111,7 +111,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
         quantiles_n <- (ncol(summarised_data) - 4)/2
 
         ## Set the width (default)
-        width <- points_n/8
+        width <- 0.5 #points_n/(points_n*2)
 
         ## Set the colours
         if(length(col) < (quantiles_n + 1)) {
