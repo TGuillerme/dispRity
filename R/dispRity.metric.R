@@ -114,6 +114,15 @@
 #' ## The average radius of each axis (mean distance from centre of each axis)
 #' radius(dummy_matrix, type = mean)
 #' 
+#' ## The pairwise distance
+#' pairwise.dist(dummy_matrix)
+#' 
+#' ## The average squared pairwise distance
+#' mean(pairwise.dist(dummy_matrix)^2)
+#' 
+#' ## equal to:
+#' #geiger::disparity(data = dummy_matrix)
+#' 
 #' ## A random matrix
 #' dummy_matrix <- matrix(rnorm(90), 9, 10)
 #' ## A random treee with node labels
@@ -305,17 +314,17 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
 }
 
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
-span.tree.length <- function(matrix, toolong = 0, ...) {
+span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
     if(ncol(matrix) == nrow(matrix)) {
         ## Something like that for testing the triangularity
         if(all(sort(matrix[upper.tri(matrix)]) == sort(matrix[lower.tri(matrix)]))) {
             span_tree <- vegan::spantree(matrix, toolong = toolong)
         } else {
-            span_tree <- vegan::spantree(dist(matrix, ...), toolong = toolong)
+            span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
         }
     } else {
-        span_tree <- vegan::spantree(dist(matrix, ...), toolong = toolong)
+        span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
     }
 
     ## Output the span tree length
@@ -324,7 +333,7 @@ span.tree.length <- function(matrix, toolong = 0, ...) {
 
 ## Calculates the pairwise distance between elements
 pairwise.dist <- function(matrix, method = "euclidean", ...) {
-    return(as.vector(dist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
+    return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
 }
 
 ## Calculate the radius for each dimensions

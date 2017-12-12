@@ -12,7 +12,7 @@ adonis.dispRity(data, formula = matrix ~ group, method = "euclidean", ...,
 
 \item{formula}{The model formula (default is \code{matrix ~ group}, see details)}
 
-\item{method}{The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[stats]{dist}} (see details - default \code{method ="euclidean"})}
+\item{method}{The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})}
 
 \item{...}{Any optional arguments to be passed to \code{\link[vegan]{adonis}}}
 

@@ -10,13 +10,13 @@ check.dist.matrix <- function(matrix, method) {
             if(all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
                 return(list(stats::as.dist(matrix), "was_dist" = TRUE))
             } else {
-                return(list(stats::dist(matrix, method = method), "was_dist" = FALSE))
+                return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
             }
         } else {
-            return(list(stats::dist(matrix, method = method), "was_dist" = FALSE))
+            return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
         }
     } else {
-        return(list(stats::dist(matrix, method = method), "was_dist" = FALSE))
+        return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
     }
 }
 

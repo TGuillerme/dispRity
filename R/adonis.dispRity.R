@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object with subsets
 #' @param formula The model formula (default is \code{matrix ~ group}, see details)
-#' @param method The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[stats]{dist}} (see details - default \code{method ="euclidean"})
+#' @param method The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
 #' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis}}
 #' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
 #' 
@@ -150,7 +150,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     }
 
     ## methods
-    methods_avail <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski")
+    methods_avail <- c("manhattan", "euclidean", "canberra", "bray", "kulczynski", "jaccard", "gower", "altGower", "morisita", "horn", "mountford", "raup" , "binomial", "chao", "cao", "mahalanobis")
     check.method(method, methods_avail, "method")
 
     ## warnings
