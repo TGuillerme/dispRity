@@ -21,7 +21,7 @@
 #' 
 #' 
 #' @examples
-#' # Adonis with one groups 
+#' ## Adonis with one groups 
 #' 
 #' ## Generating a random character matrix
 #' character_matrix <- sim.morpho(rtree(20), 50, rates = c(rnorm, 1, 0))
@@ -51,6 +51,22 @@
 #' ## Running the NPMANOVA
 #' adonis.dispRity(multi_groups, matrix ~ g1 + g2)
 #' 
+#' ## Adonis with time
+#' 
+#' ## Creating time series
+#' data(BeckLee_mat50)
+#' data(BeckLee_tree)
+#' data(BeckLee_ages)
+#' time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree, 
+#'      method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
+#'      FADLAD = BeckLee_ages)
+#' 
+#' ## Running the NPMANOVA with time as a predictor
+#' adonis.dispRity(time_subsets, matrix ~ time)
+#' 
+#' ## Running the NPMANOVA with each time bin as a predictor
+#' adonis.dispRity(time_subsets, matrix ~ time.subsets)
+#' 
 #' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}
 #' 
 #' @author Thomas Guillerme
@@ -58,7 +74,7 @@
 
 # source("sanitizing.R")
 # source("adonis.dispRity_fun.R")
-# formula = matrix ~ time
+# formula = matrix ~ group
 # method = "euclidean"
 # warn = TRUE
 
@@ -73,7 +89,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     if(is.null(data$subsets)) {
         stop("The data must have subsets. Use custom.subsets() or time.subsets() to create some.")
     } else {
-        if(is.na(match(data$call$subsets, "customised"))) {
+        if(is.na(match(data$call$subsets[1], "customised"))) {
             ## Subsets are time
             time_subsets <- TRUE
         } else {
@@ -107,7 +123,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
             ## Update the formula
             if(formula[[3]] == "time.subsets") {
-                group_names_tmp <- paste0("t", gsub(" - ", ".", names(data$subsets)))
+                group_names_tmp <- paste0("t", gsub(" - ", "to", names(data$subsets)))
                 series <- paste(group_names_tmp, collapse = " + ")
                 formula <- formula(paste0("matrix ~ ", series))
             } else {
@@ -184,8 +200,8 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
         ## Removing the data from the matrix
         matrix_tmp <- as.matrix(matrix)
-        matrix_tmp <- matrix_tmp[,-na_predictor]
-        matrix_tmp <- matrix_tmp[-na_predictor,] 
+        matrix_tmp <- matrix_tmp[,-which(na_predictor)]
+        matrix_tmp <- matrix_tmp[-which(na_predictor),] 
         matrix <- as.dist(matrix_tmp)
     }
 

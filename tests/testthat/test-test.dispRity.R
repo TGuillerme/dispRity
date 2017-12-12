@@ -325,7 +325,6 @@ test_that("test.dispRity works fine", {
         test.dispRity(disparity, t.test, comparisons = "sequential", correction = "none")
     )
 
-
 })
 
 test_that("example works fine", {
@@ -400,4 +399,28 @@ test_that("example works fine", {
     expect_warning(expect_equal(
         as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
         , c(24.048441,2.053728,9.798655)))
+})
+
+
+test_that("adonis and dtt works fine", {
+
+    set.seed(1)
+    ## Load the Beck & Lee 2014 data
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data(BeckLee_ages)
+
+    groups <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = c(ranges))
+    time <- dispRity(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", FADLAD = BeckLee_ages, time = 10), metric = c(ranges))
+    
+   expect_warning(test_group_adonis <- test.dispRity(data = groups, test = adonis.dispRity))
+   expect_warning(test_group_adonis2 <- test.dispRity(groups, test = vegan::adonis))
+   expect_warning(test_time_adonis <- test.dispRity(time, test = adonis.dispRity))
+
+    expect_is(test_group_adonis, "adonis")
+    expect_is(test_group_adonis2, "adonis")
+    expect_is(test_time_adonis, "adonis")
+
+
+
 })

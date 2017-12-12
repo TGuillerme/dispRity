@@ -35,12 +35,28 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
 
     ## Output one factor
     output.factor <- function(factors, one_group_variable, data) {
-        return(data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)))
-    }
 
+        test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)), silent = TRUE)
+
+        if(class(test) == "try-error") {
+            ## Deal with NAs down the line
+            factors_out <- make.time.factor(data, pool = TRUE, time = FALSE)
+
+        } else {
+            return(factors_out)
+        }
+    }
+    
 
     ## Make time factor
-    make.time.factor <- function(data, pool = FALSE) {
+    make.time.factor <- function(data, pool = FALSE, time = TRUE) {
+
+        if(time) {
+            colnames <- "time"
+        } else {
+            colnames <- "group"
+        }
+
         ## Get the time data
         time_data <- lapply(data$subsets, function(X) return(X$elements))
         
@@ -56,19 +72,29 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
         groups <- do.call(cbind, groups)
 
         ## Naming the groups
-        colnames(groups) <- paste0("t", gsub(" - ", ".", names(time_data)))
+        if(time) {
+            colnames(groups) <- paste0("t", gsub(" - ", "to", names(time_data)))
+        } else {
+            colnames(groups) <- names(time_data)
+        }
 
         if(pool) {
             ## Translating the data
             groups <- t(apply(groups, 1, function (X) ifelse(X, names(X), NA)))
-            groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), "time")))
+            groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), colnames)))
         } else {
             ## Binarise the data
-            groups <- data.frame(ifelse(groups, 1, 0), stringsAsFactors = TRUE)
+            if(time) {
+                groups <- data.frame(ifelse(groups, 1, 0), stringsAsFactors = TRUE)
+            }
             for(col in 1:ncol(groups)) {
                 groups[,col] <- factor(groups[,col])
             }
-            colnames(groups) <- paste0("t", gsub(" - ", ".", names(time_data)))
+            if(time) {
+                colnames(groups) <- paste0("t", gsub(" - ", "to", names(time_data)))
+            } else {
+                colnames(groups) <- names(time_data)
+            }
         }
         
         return(groups)

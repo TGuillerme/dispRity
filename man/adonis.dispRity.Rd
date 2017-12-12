@@ -33,7 +33,7 @@ If the \code{dispRity} data has custom subsets with multiple group categories (s
 If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
 }
 \examples{
-# Adonis with one groups 
+## Adonis with one groups 
 
 ## Generating a random character matrix
 character_matrix <- sim.morpho(rtree(20), 50, rates = c(rnorm, 1, 0))
@@ -62,6 +62,22 @@ multi_groups <- custom.subsets(random_matrix, groups)
 
 ## Running the NPMANOVA
 adonis.dispRity(multi_groups, matrix ~ g1 + g2)
+
+## Adonis with time
+
+## Creating time series
+data(BeckLee_mat50)
+data(BeckLee_tree)
+data(BeckLee_ages)
+time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree, 
+     method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
+     FADLAD = BeckLee_ages)
+
+## Running the NPMANOVA with time as a predictor
+adonis.dispRity(time_subsets, matrix ~ time)
+
+## Running the NPMANOVA with each time bin as a predictor
+adonis.dispRity(time_subsets, matrix ~ time.subsets)
 
 }
 \seealso{

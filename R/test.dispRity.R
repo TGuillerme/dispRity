@@ -86,6 +86,9 @@
 # rarefaction = NULL
 # concatenate = TRUE
 # conc.quantiles = c(mean, c(95, 50))
+# correction = "none"
+# details = TRUE
+# match_call <- list(data = "data", test = "adonis.dispRity")
 # test.dispRity(data, test = lm, comparisons = "all")
 # test.dispRity(data, test = lm, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
@@ -159,7 +162,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         #     comparisons <- "all"
         # }
 
-        if(as.character(match_call$test) == "null.test") {
+        if(any(as.character(match_call$test) == "null.test")) {
             comp <- "null.test"
             comparisons <- "all"
         }
@@ -214,6 +217,15 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## ----------------------
     ##  APPLYING THE TEST
     ## ----------------------
+
+    if(length(grep("adonis", as.character(match_call$test))) > 0) {
+
+        warning("adonis.dispRity test will be applied to the data matrix, not to the calculated disparity.\nSee ?adonis.dispRity for more details.")
+
+        return(adonis.dispRity(data, ...))
+        #adonis.dispRity(data)
+    }
+
 
     ## Extracting the data (sends error if data is not bootstrapped)
     extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
