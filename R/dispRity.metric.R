@@ -121,7 +121,7 @@
 #' mean(pairwise.dist(dummy_matrix)^2)
 #' 
 #' ## equal to:
-#' #geiger::disparity(data = dummy_matrix)
+#' geiger::disparity(data = dummy_matrix)
 #' 
 #' ## A random matrix
 #' dummy_matrix <- matrix(rnorm(90), 9, 10)

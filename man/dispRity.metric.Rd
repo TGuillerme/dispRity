@@ -129,6 +129,15 @@ radius(dummy_matrix)
 ## The average radius of each axis (mean distance from centre of each axis)
 radius(dummy_matrix, type = mean)
 
+## The pairwise distance
+pairwise.dist(dummy_matrix)
+
+## The average squared pairwise distance
+mean(pairwise.dist(dummy_matrix)^2)
+
+## equal to:
+geiger::disparity(data = dummy_matrix)
+
 ## A random matrix
 dummy_matrix <- matrix(rnorm(90), 9, 10)
 ## A random treee with node labels

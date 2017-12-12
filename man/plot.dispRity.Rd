@@ -66,7 +66,7 @@ plot(disparity, type = "box")
 ## Using polygons rather than boxes (quantiles and central tendency can be
 ## set by the user)
 plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
-     cent.tend = mode.val)
+     cent.tend = mean)
 
 ## Using different options
 plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
