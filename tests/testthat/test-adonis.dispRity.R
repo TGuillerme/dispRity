@@ -21,9 +21,6 @@ test_that("Works with one or more groups", {
     expect_equal(test1$aov.tab$Df, c(1, 18, 19))
     # expect_equal(test1$aov.tab[[6]], c(0.116, NA, NA))
 
-
-
-
     ## Adonis with multiple groups 
     ## Creating a random matrix
     random_matrix <- matrix(data = rnorm(90), nrow = 10,
@@ -36,12 +33,12 @@ test_that("Works with one or more groups", {
 
     ## Running the NPMANOVA
     set.seed(1)
-    test2 <- adonis.dispRity(multi_groups, matrix ~ g1 + g2, warn = FALSE, permutations = 10, method = "maximum")
+    test2 <- adonis.dispRity(multi_groups, matrix ~ g1 + g2, warn = FALSE, permutations = 10, method = "manhattan")
 
     expect_is(test2, "adonis")
-    expect_equal(as.character(test2$call), c("vegan::adonis", "dist(matrix) ~ g1 + g2", "multi_groups", "10", "maximum"))
+    expect_equal(as.character(test2$call), c("vegan::adonis", "dist(matrix) ~ g1 + g2", "multi_groups", "10", "manhattan"))
     expect_equal(test2$aov.tab$Df, c(1, 1, 7, 9))
-    expect_equal(round(test2$aov.tab[[6]], digit =5), round(c(0.45454545, 0.09090909, NA, NA), digit = 5))
+    expect_equal(round(test2$aov.tab[[6]], digit =5), round(c(0.18182, 0.18182, NA, NA), digit = 5))
 
 
     ## Testing formula management
@@ -124,7 +121,14 @@ test_that("Correct behaviour with palaeo data", {
     expect_lt(test_crow_stem$aov.tab[[6]][1], test_dummy_group$aov.tab[[6]][1])
     expect_equal(test_crow_stem$aov.tab$Df, test_dummy_group$aov.tab$Df)
 
+    set.seed(1)
+    expect_warning(test_disp_time1 <- adonis.dispRity(disp_time, warn = FALSE))
+    set.seed(1)
+    expect_warning(test_disp_time2 <- adonis.dispRity(disp_time, formula = matrix ~ time, warn = FALSE))
+    set.seed(1)
+    test_disp_time3 <- adonis.dispRity(disp_time, formula = matrix ~ time.subsets, warn = FALSE)
 
-    #disp_time <- adonis.dispRity(disp_time, warn = FALSE)
-
+    ## test 1 and 2 are the same
+    expect_equal(test_disp_time1$aov.tab[[6]][1], test_disp_time2$aov.tab[[6]][1])
+    expect_equal(dim(test_disp_time3$aov.tab), c(5,6))
 })

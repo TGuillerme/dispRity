@@ -58,7 +58,7 @@
 
 # source("sanitizing.R")
 # source("adonis.dispRity_fun.R")
-# formula = matrix ~ group
+# formula = matrix ~ time
 # method = "euclidean"
 # warn = TRUE
 
@@ -93,7 +93,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     if(!formula[[3]] == "group") {
 
         ## Predictor is time
-        if(formula[[3]] == "time" || formula[[3]] == "time.series") {
+        if(formula[[3]] == "time" || formula[[3]] == "time.subsets") {
 
             if(!time_subsets) {
                 stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula))
@@ -101,35 +101,37 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             
             ## Set up the model details
             n_predictors <- ifelse(formula[[3]] == "time", 1, length(data$subsets))
-            group_names <- ifelse(formula[[3]] == "time", "time", names(data$subsets))
+            group_names <- ifelse(formula[[3]] == "time", "time", NA)
             group_variables <- NA
             pool_time <- ifelse(formula[[3]] == "time", TRUE, FALSE)
 
             ## Update the formula
-            if(formula[[3]] == "time.series") {
-                series <- paste(gsub(" - ", ":", names(data$subsets)), collapse = " + ")
+            if(formula[[3]] == "time.subsets") {
+                group_names_tmp <- paste0("t", gsub(" - ", ".", names(data$subsets)))
+                series <- paste(group_names_tmp, collapse = " + ")
                 formula <- formula(paste0("matrix ~ ", series))
             } else {
                 time_f <- ~time
                 formula[[3]] <- time_f[[2]]
             }
-        }
+        } else {
 
-        n_predictors <- length(formula[[3]])-1
-        group_variables <- names(data$subsets)
-        group_names <- unique(unlist(lapply(strsplit(group_variables, split = "\\."), `[[`, 1)))
-        split.variables <- function(one_group_name, group_variables) {
-            return(group_variables[grep(one_group_name, group_variables)])
+            n_predictors <- length(formula[[3]])-1
+            group_variables <- names(data$subsets)
+            group_names <- unique(unlist(lapply(strsplit(group_variables, split = "\\."), `[[`, 1)))
+            split.variables <- function(one_group_name, group_variables) {
+                return(group_variables[grep(one_group_name, group_variables)])
 
-        }
-        group_variables <- lapply(as.list(group_names), split.variables, group_variables)
-        
-        ## Check the predictors
-        for(predictor in 1:n_predictors) {
-            if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
-                stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets."))
             }
-        
+            group_variables <- lapply(as.list(group_names), split.variables, group_variables)
+            
+            ## Check the predictors
+            for(predictor in 1:n_predictors) {
+                if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
+                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets.\n"))
+                }
+            
+            }
         }
     } else {
 
@@ -165,7 +167,27 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     }
 
     ## Making the predictors table
-    predictors <- make.factors(data, group_names, group_variables, time_subsets)
+    predictors <- make.factors(data, group_names, group_variables, time_subsets, pool_time)
+
+    if(any(is.na(predictors))) {
+        ## Select the NA predictor
+        na_predictor <- as.vector(apply(predictors, 1, is.na))
+        warning(paste0("The following element(s) has no associated predictor value and was removed from the analysis: ", paste(attr(matrix, "Labels")[na_predictor], collapse = ", "), "."))
+
+        ## Removing the data from the predictors
+        predictors_tmp <- as.matrix(predictors[!na_predictor,])
+        colnames(predictors_tmp) <- colnames(predictors)
+        for(col in 1:ncol(predictors)) {
+            predictors_tmp[,col] <- factor(predictors_tmp[,col])
+        }
+        predictors <- data.frame(predictors_tmp)
+
+        ## Removing the data from the matrix
+        matrix_tmp <- as.matrix(matrix)
+        matrix_tmp <- matrix_tmp[,-na_predictor]
+        matrix_tmp <- matrix_tmp[-na_predictor,] 
+        matrix <- as.dist(matrix_tmp)
+    }
 
     ## Run adonis
     adonis_out <- vegan::adonis(formula, predictors, method = method, ...)
@@ -173,7 +195,11 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## Update the formula
     if(time_subsets) {
-        time_f <- ~time
+        if(pool_time) {
+            time_f <- ~time
+        } else {
+            time_f <- ~time.subsets
+        }
         formula[[3]] <- time_f[[2]]
     }
     if(!was_dist) {

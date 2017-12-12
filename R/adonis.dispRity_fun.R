@@ -21,7 +21,7 @@ check.dist.matrix <- function(matrix, method) {
 }
 
 ## Make the factors for the dispRity object
-make.factors <- function(data, group_names, group_variables, time_subsets) {
+make.factors <- function(data, group_names, group_variables, time_subsets, pool_time) {
     ## Extracting the factors
 
 
@@ -43,7 +43,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets) {
     make.time.factor <- function(data, pool = FALSE) {
         ## Get the time data
         time_data <- lapply(data$subsets, function(X) return(X$elements))
-
+        
         ## Individual time series
         make.time.series <- function(one_time_subset, data) {
             ## Generate the time series
@@ -56,13 +56,20 @@ make.factors <- function(data, group_names, group_variables, time_subsets) {
         groups <- do.call(cbind, groups)
 
         ## Naming the groups
-        colnames(groups) <- names(time_data)
+        colnames(groups) <- paste0("t", gsub(" - ", ".", names(time_data)))
 
         if(pool) {
             ## Translating the data
-            groups <- t(apply(groups, 1,  function (X) ifelse(X, names(X), NA)))
-            groups <- matrix(apply(groups, 1, function(row) return(na.omit(row)[1])), ncol = 1, dimnames = list(rownames(data$matrix), "time"))
-        } 
+            groups <- t(apply(groups, 1, function (X) ifelse(X, names(X), NA)))
+            groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), "time")))
+        } else {
+            ## Binarise the data
+            groups <- data.frame(ifelse(groups, 1, 0), stringsAsFactors = TRUE)
+            for(col in 1:ncol(groups)) {
+                groups[,col] <- factor(groups[,col])
+            }
+            colnames(groups) <- paste0("t", gsub(" - ", ".", names(time_data)))
+        }
         
         return(groups)
     }
@@ -71,7 +78,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets) {
     if(length(group_names) == 1) {
         if(time_subsets) {
             ## Time groups
-            return(make.time.factor(data))
+            return(make.time.factor(data, pool = pool_time))
         } else {
             ## Normal groups
             ## Extract all subsets as a factor list
