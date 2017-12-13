@@ -4,7 +4,7 @@
 \alias{tree.age}
 \title{Calculating the age of nodes and tips in a tree.}
 \usage{
-tree.age(tree, age, order = "past", fossil = TRUE)
+tree.age(tree, age, order = "past", fossil = TRUE, digits = 3)
 }
 \arguments{
 \item{tree}{A \code{phylo} object.}
@@ -14,6 +14,8 @@ tree.age(tree, age, order = "past", fossil = TRUE)
 \item{order}{Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.}
 
 \item{fossil}{\code{logical}, whether to always consider the tree as containing at least one living taxa (\code{TRUE}) or allowing only fossil taxa (\code{FALSE} - default), see details.}
+
+\item{digits}{A \code{numeric} value or \code{integer} for the precision of the output.}
 }
 \description{
 Calculates the age of each node and tip in a tree give the height of the tree or some specified age.

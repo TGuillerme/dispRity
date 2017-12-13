@@ -6,6 +6,7 @@
 #' @param age The age of the tree. If missing the age is set to be the tree height.
 #' @param order Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.
 #' @param fossil \code{logical}, whether to always consider the tree as containing at least one living taxa (\code{TRUE}) or allowing only fossil taxa (\code{FALSE} - default), see details.
+#' @param digits A \code{numeric} value or \code{integer} for the precision of the output.
 #' 
 #' @details When \code{fossil = TRUE}, if the \code{tree} contains a \code{tree$root.time} element (for tree's root age), and that \code{order} is set to \code{"past"}, the output ages are adjusted to be starting from the root.time. Else, if no \code{tree$root.time} exists or \code{fossil = FALSE}, tips and nodes age is relative from the tip furthest away from the root.
 #'
@@ -21,7 +22,7 @@
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it
 
-tree.age <- function(tree, age, order = 'past', fossil = TRUE){
+tree.age <- function(tree, age, order = 'past', fossil = TRUE, digits = 3){
 
 #SANITYZING
 
@@ -43,6 +44,10 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
     #order
     check.method(order, c("past", "present"), "order argument")
 
+    ## Digits
+    check.class(digits, c("numeric", "integer"))
+    check.length(digits, 1, msg = "must be a single numeric value.")
+
     ## Fossils only
     # check.class(fossil.only, "logical")
 
@@ -56,10 +61,10 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
 
     #Type
     if(order != 'past') {
-        ages.table$ages <- round(ages.table$ages, digits = 7) # CHANGE PRECISION!
+        ages.table$ages <- round(ages.table$ages, digits = digits)
     } else {
         tree.height <- max(ages.table$ages)
-        ages.table$ages <- round(abs(ages.table$ages - tree.height), digits = 3)
+        ages.table$ages <- round(abs(ages.table$ages - tree.height), digits = digits)
     }
 
     ## Adjust time for tree with non-living taxa
@@ -71,7 +76,7 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE){
             # cat(paste0("age = ", age, "\n"))
             # table_ages_test <<- ages.table
             # cat("\n")
-            if(round(tree$root.time, digits = 5) > round(max(ages.table$ages), digits = 5)) {
+            if(round(tree$root.time, digits = digits) > round(max(ages.table$ages), digits = digits)) {
                 ## Add the time to the root age to all the ages
                 ages.table$ages <- ages.table$ages + abs(tree$root.time - max(ages.table$ages))
             }
