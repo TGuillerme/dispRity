@@ -74,6 +74,17 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 return()
             }
+
+            if(class(x)[2] == "dtt") {
+
+                ## Fake an object with no attributes
+                x_tmp <- x
+                class(x_tmp) <- "list"
+                print(x_tmp)
+                cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
+                cat(paste0("Use plot.dispRity to visualise."))
+                return()
+            }
         }
 
         if(length(x$call) == 0) {

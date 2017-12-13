@@ -34,7 +34,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
             quantiles_n <- (ncol(summarised_data) - 4)/2
-            colfun <- colorRampPalette(c("grey", "lightgrey"))
+            colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
             col <- c(col, colfun(quantiles_n))
         }
     } else {
@@ -42,7 +42,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
             quantiles_n <- ncol(summarised_data[, -c(1:4)])/2
             cols_missing <- (quantiles_n + 1) - length(col)
             if(cols_missing > 0) {
-                colfun <- colorRampPalette(c("grey", "lightgrey"))
+                colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
                 col <- c(col, colfun(cols_missing))
             }
         }

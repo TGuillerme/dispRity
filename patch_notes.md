@@ -5,7 +5,7 @@ Patch notes
   * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
   * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
   * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
-  * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2).	
+  * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2).	 This version is slower that `geiger::dtt` but allows any univariate disparity metric!
   * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
   * `slice.tree` can now slice through a single edge.
   * Various small speed improvements.
