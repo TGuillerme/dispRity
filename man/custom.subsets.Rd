@@ -12,7 +12,7 @@ custom.subsets(data, group)
 \arguments{
 \item{data}{A \code{matrix}.}
 
-\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.}
+\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -46,6 +46,12 @@ custom.subsets(ordinated_matrix,
 groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
 custom.subsets(ordinated_matrix, groups)
+
+## Splitting a matrix by clade
+data(BeckLee_mat50)
+data(BeckLee_tree)
+custom.subsets(BeckLee_mat50, group = BeckLee_tree)
+
 
 }
 \seealso{

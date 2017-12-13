@@ -1,4 +1,4 @@
-#' @title Adonis dispRity
+#' @title adonis dispRity (from \code{vegan::adonis})
 #'
 #' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis}} function from the \code{vegan} package.
 #'
@@ -19,6 +19,8 @@
 #' 
 #' If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
 #' 
+#' @seealso
+#' \code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}.
 #' 
 #' @examples
 #' ## Adonis with one groups 

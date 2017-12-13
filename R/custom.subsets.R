@@ -4,7 +4,7 @@
 #' @description Splits the data into a customized subsets list.
 #'
 #' @param data A \code{matrix}.
-#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
+#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -35,6 +35,12 @@
 #' groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
 #'      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
 #' custom.subsets(ordinated_matrix, groups)
+#' 
+#' ## Splitting a matrix by clade
+#' data(BeckLee_mat50)
+#' data(BeckLee_tree)
+#' custom.subsets(BeckLee_mat50, group = BeckLee_tree)
+#' 
 #'
 #' @seealso \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
 #'
@@ -78,7 +84,39 @@ custom.subsets <- function(data, group) {
         if(class(group) == "list") {
             group_class <- "list"
         } else {
-            stop("group argument must be either a 'list', a 'matrix' or a 'data.frame'.")
+            if(class(group) == "phylo") {
+
+                group_class <- "phylo"
+                ## Matching the tree and the data
+                if(any(is.na(match(group$tip.label, rownames(data))))) {
+                    stop("Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+                }
+
+                if(is.null(group$node.labe)) {
+                    ## No nodes
+                    if(nrow(data) != Ntip(group)) {
+                        stop("Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+                    }
+                    inc.nodes <- FALSE
+                } else {
+                    ## Are the nodes relevant in the data
+                    if(nrow(data) == (Ntip(group) + Nnode(group))) {
+                        if(any(is.na(match(group$node.label, rownames(data))))) {
+                            stop("Some nodes in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+                        }
+                        inc.nodes <- TRUE
+                    } else {
+                        if(nrow(data) == Ntip(group)) {
+                            inc.nodes <- FALSE
+                        } else {
+                            stop("Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+                        }
+                    }
+                }
+
+            } else {
+                stop("group argument must be either a 'list', a 'matrix', a 'data.frame' or a 'phylo' object.")
+            }
         }
     }
 
@@ -97,6 +135,29 @@ custom.subsets <- function(data, group) {
         ## Creating the subsets
         subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data), recursive = FALSE)
     } else {
+
+        if(group_class == "phylo") {
+
+            get.clade.tips <- function(node, tree, inc.nodes) {
+                if(inc.nodes) {
+                    clade <- extract.clade(phy = tree, node = node)
+                    return(c(clade$tip.label, clade$node.label))
+                } else {
+                    return(extract.clade(phy = tree, node = node)$tip.label)
+                }
+            }
+
+             group_tmp <- sapply(Ntip(group)+1:Nnode(group), get.clade.tips, tree = group, inc.nodes = inc.nodes, USE.NAMES = FALSE)
+
+             if(!is.null(group$node.label)) {
+                names(group_tmp) <- group$node.label
+             } else {
+                names(group_tmp) <- paste0("n", Ntip(group)+1:Nnode(group))
+             }
+
+             group <- group_tmp
+         }
+
         ## Using a list
 
         ## Check for empty groups
@@ -139,6 +200,7 @@ custom.subsets <- function(data, group) {
 
         ## Creating the subsets
         subsets_list <- lapply(group, function(x) list("elements" = matrix(x)))
+    
     }
 
     ## Output as a dispRity object

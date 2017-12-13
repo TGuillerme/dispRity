@@ -184,3 +184,21 @@ test_that("empty custom.subsets", {
 
     expect_equal(capture_warnings(custom.subsets(data, group5)), "Subsample E is empty.")
 }) 
+
+## Subsets works with a tree
+test_that("clade subsets works", {
+    data(BeckLee_mat50)
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+
+    without_nodes <- custom.subsets(BeckLee_mat50, group = BeckLee_tree)
+    with_nodes <- custom.subsets(BeckLee_mat99, group = BeckLee_tree)
+
+    ## Both contain the same number of groups (Nnodes)
+    expect_equal(length(without_nodes$subsets), Nnode(BeckLee_tree))
+    expect_equal(length(with_nodes$subsets), Nnode(BeckLee_tree))
+
+    ## Both first groups contain all the data (root)
+    expect_equal(nrow(without_nodes$subsets[[1]]$elements), nrow(BeckLee_mat50))
+    expect_equal(nrow(with_nodes$subsets[[1]]$elements), nrow(BeckLee_mat99))
+})

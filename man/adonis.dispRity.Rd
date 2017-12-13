@@ -2,7 +2,7 @@
 % Please edit documentation in R/adonis.dispRity.R
 \name{adonis.dispRity}
 \alias{adonis.dispRity}
-\title{Adonis dispRity}
+\title{adonis dispRity (from \code{vegan::adonis})}
 \usage{
 adonis.dispRity(data, formula = matrix ~ group, method = "euclidean", ...,
   warn = TRUE)
@@ -81,6 +81,8 @@ adonis.dispRity(time_subsets, matrix ~ time.subsets)
 
 }
 \seealso{
+\code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}.
+
 \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}
 }
 \author{
