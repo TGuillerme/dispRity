@@ -118,9 +118,9 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
     }
 
     ## Check if bootstrapped
-    if(is_bootstrapped) {
+    if(is_bootstrapped || is_distribution) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data) - 4)/2
+        quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
 
         ## Set the width (default)
         width <- 0.5 #points_n/(points_n*2)
@@ -145,10 +145,9 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
                     ## Setting X
                     x_vals <- c(point-width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point-width/(quantiles_n - cis + 1.5)) + shift
                     ## Setting Y
-                    y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
+                    y_vals <- c(rep(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point], 2),
+                              rep(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2) - (cis - 1), rarefaction)[point], 2)
+                              )
                     ## Plotting the box
                     polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
@@ -159,8 +158,8 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting Y
-                    y_vals<-c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
+                    y_vals<-c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2) - (cis - 1), rarefaction)[point])
                     ## Plotting the box
                     lines(x = rep((point + shift), 2), y = y_vals, lty = (quantiles_n - cis + 1), lwd = cis * 1.5, col = col[[1]])
 
@@ -168,7 +167,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             }
         }
         ## Add the points estimates
-        points(1:points_n + shift, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
+        points(1:points_n + shift, extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]], pch = 19)
     } else {
         
         ## Add the points estimates
@@ -219,9 +218,9 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
     }
 
     ## Check if bootstrapped
-    if(is_bootstrapped) {
+    if(is_bootstrapped || is_distribution) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data) - 4)/2
+        quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
 
         ## Set the colours
         if(length(col) < (quantiles_n + 1)) {
@@ -238,7 +237,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         ## Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
-            y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
+            y_vals <- c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction), rev(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2)-(cis-1), rarefaction)))
 
             ## Dividing the polygon if NAs
             if(any(is.na(y_vals))) {
@@ -278,7 +277,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         }
 
         ## Add the central tendency on top
-        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), lty = 1, col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), lty = 1, col = col[[1]])
 
         ## Add the observed values on top
         if(observed == TRUE) {

@@ -78,19 +78,19 @@ test_that("extract.from.summary works", {
 test_that("transpose.box works", {
 
     expect_error(
-        transpose.box("disparity", rarefaction = FALSE)
+        transpose.box("disparity", rarefaction = FALSE, is_bootstrapped = TRUE)
         )
     expect_error(
-        transpose.box(disparity, rarefaction = 99)
+        transpose.box(disparity, rarefaction = 99, is_bootstrapped = TRUE)
         )
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = FALSE))
+        dim(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
         ,c(100, 7))
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = 5))
+        dim(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
         ,c(100, 7))
 
-    test <- transpose.box(disparity, rarefaction = FALSE)
+    test <- transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE)
     for(subsets in 1:length(disparity$subsets)) {
         expect_equal(
             test[,subsets]
