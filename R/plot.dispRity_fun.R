@@ -1,5 +1,5 @@
 ## default settings
-set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE) {
+set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE, is_bootstrapped) {
 
     ## ylim
     if(ylim[[1]] == "default") {
@@ -33,13 +33,13 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         col <- "black"
         ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
-            quantiles_n <- (ncol(summarised_data) - 4)/2
+            quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
             colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
             col <- c(col, colfun(quantiles_n))
         }
     } else {
         if(type != "box") {
-            quantiles_n <- ncol(summarised_data[, -c(1:4)])/2
+            quantiles_n <- ncol(summarised_data[, -c(1:ifelse(is_bootstrapped, 4, 3))])/2
             cols_missing <- (quantiles_n + 1) - length(col)
             if(cols_missing > 0) {
                 colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
@@ -101,8 +101,8 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 
     ## Empty plot
     if(add == FALSE) {
-        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001) ; warning("DEBUG: plot")
+        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001,, type = "n", ...)
+        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n")) ; warning("DEBUG: plot")
     }
 
     ## Set the shift parameter (for add)
@@ -291,7 +291,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
 }
 
 ## Plotting elements
-plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, ...) {
+plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, element.pch, ...) {
 
     div.log = FALSE
     ## Check if ylab2 exists
@@ -313,15 +313,21 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
         dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
         if(div.log == FALSE) {
-            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white")
+
+            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
             for(line in 1:points_n) {
-                lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+                # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+                points(line, summarised_data[line,2], pch = element.pch, col = col)
             }
+
         } else {
-            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white")
+            
+            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
             for(line in 1:points_n) {
-                lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
+                points(line, log(summarised_data[line,2]), pch = element.pch, col = col)
+                # lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
             }
+
         }
     }
     ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)

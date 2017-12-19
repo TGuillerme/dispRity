@@ -16,6 +16,7 @@
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
+#' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -113,7 +114,15 @@
 # lines.args=NULL
 # token.args=NULL
 
-plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+# data(disparity)
+# data <- dispRity
+# type = "line"
+# elements = TRUE
+# ylim = c(0, 5)
+# xlab = ("Time (Ma)")
+# ylab = "disparity"
+
+plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     #SANITIZING
     #DATA
@@ -460,7 +469,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
 
     ## Setting the default arguments
-    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type)
+    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
     ylim <- default_arg[[1]]
     xlab <- default_arg[[2]]
     ylab <- default_arg[[3]]
@@ -506,7 +515,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
         # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -522,7 +531,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
         # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -550,7 +559,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
         }
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col, type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
 
         return(invisible())

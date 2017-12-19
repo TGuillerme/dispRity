@@ -7,7 +7,7 @@
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95),
   cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
   ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE,
-  density = NULL, nclass = 10, coeff = 1, ...)
+  density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
@@ -37,6 +37,8 @@
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
+
+\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
