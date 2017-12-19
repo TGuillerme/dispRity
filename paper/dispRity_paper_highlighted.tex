@@ -321,20 +321,20 @@ There is no limitation on the metric dimensions only that at least one dimension
 \resizebox{\textwidth}{!}
 {%
     \begin{tabular}{p{2cm}|p{5cm}|p{1cm}|p{5cm}|p{5cm}}
-        name & description & dim level & definition & source \\
+        name & description & dim & definition & source \\
         \hline
         \texttt{ancestral. dist} & The distance between an element and its ancestor & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}$ & This package \\
         \texttt{centroids} & The distance between each element and a fixed point$^1$ of the space & 2 & $\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}$ & This package \\
-        \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
-        \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \\
+        \texttt{convhull. surface} & The surface of the convex hull & 1 & NA & \texttt{geometry::convhulln} \citep{barber1996quickhull,geometryR}\\
+        \texttt{convhull. volume} & The volume of the convex hull & 1 & NA & \texttt{geometry::convhulln} \citep{barber1996quickhull,geometryR}\\
         \texttt{diagonal} & The greatest Euclidean distance & 1 & $\sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}$ & This package \\
-        \texttt{ellipse. volume}$^2$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & \cite{DonohueDim}\\
+        \texttt{ellipse. volume}$^2$ & The volume of the ellipsoid & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})$ & This package; based on \cite{DonohueDim}\\
         \texttt{mode.val} & The modal value & 1 & NA & This package\\
         \texttt{n.ball. volume} & The hyper-spherical ($n$-ball) volume & 1 & $\frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R$ & This package\\
-        \texttt{pairwise. dist} & The pairwise distances between elements & 2 & NA & \texttt{stats::dist}\\        
+        \texttt{pairwise. dist} & The pairwise distances between elements & 2 & NA & \texttt{vegan::vegdist} \citep{oksanen2007vegan}\\        
         \texttt{radius} & The radius of each dimensions & 2 & $|\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|$ & This package\\
         \texttt{ranges} & The absolute ranges of each dimension & 2 & $|max(k_i) - min(k_i)|$ & This package \\
-        \texttt{span.tree. length} & The minimal spanning tree length & 1 & $\sum(\mathrm{branch\ length})$ & \texttt{vegan::spantree}\\        
+        \texttt{span.tree. length} & The minimal spanning tree length & 1 & $\sum(\mathrm{branch\ length})$ & \texttt{vegan::spantree} \citep{oksanen2007vegan}\\
         \texttt{variances} & The variance of each dimension & 2 & $\sigma^{2}{k_i}$ & This package \\
     \end{tabular}
 }%
@@ -409,7 +409,12 @@ The \texttt{test.dispRity} function allows users to test hypotheses on the dispa
 Similarly to the \disp function described above, this function can take any test defined by the user or from other R packages.
 The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of subsets to compare.
 
-Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff};][]{Bhattacharyya,GuillermeCooper} or a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}).
+Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff};][]{Bhattacharyya,GuillermeCooper}, a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}) 
+\hl{as well as a wrapper for the \texttt{vegan::adonis}}
+ \citep{oksanen2007vegan}
+\hl{and \texttt{geiger::dtt}}
+ \citep{geiger2008}
+\hl{functions (respectively \texttt{adonis.dispRity} and \texttt{dtt.dispRity} - allowing \texttt{dispRity} objects to be directly used with any disparity metric).}
 Additionally, this function also allows additional arguments such as \texttt{rarefaction} (as described above) or \texttt{correction} to adjust p-values when using multiple parametric tests.
 
 \section{Examples}
@@ -583,21 +588,23 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \end{figure}
 
 From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
-Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, an ANOVA (Table \ref{Tab:anova}): 
+Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA \citep[PERMANOVA; ][]{permanova} through the \texttt{adonis.disprity} function that is a wrapper of the \texttt{vegan::adonis} function \citep{oksanen2007vegan} for \disp objects:
 
-\noindent \texttt{> anova(test.dispRity(disparity2, test = lm, comparisons = \textquotedbl all\textquotedbl))}
+\noindent \texttt{> test.dispRity(disparity2, test = adonis.dispRity)}
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{lrrrrr}
+\begin{tabular}{lrrrrrr}
   \hline
- & Df & Sum Sq & Mean Sq & F value & Pr($>$F) \\ 
+              & Df & Sum Sq & Mean Sq & F Model & R2   & Pr($>$F) \\ 
   \hline
-subsets & 2 & 3.14 & 1.57 & 177.84 & 0.0000 \\ 
-  Residuals & 297 & 2.62 & 0.01 &  &  \\ 
+    time      & 2  &  7.50 & 3.75     & 2.06    & 0.11 & <0.01 *** \\ 
+    Residuals & 34 & 61.82 & 1.81     &         & 0.89 & \\ 
+    Total     & 36 & 69.32 &          &         & 1.00 & \\ 
    \hline
 \end{tabular}
-\caption{ANOVA performed on a \disp object.}
+\caption{Permanova output from \texttt{adonis.dispRity}:\\
+Call: vegan::adonis(formula = dist(matrix) \texttildelow time, data = disparity2, method = "euclidean"); Permutation: free; Number of permutations: 999; Terms added sequentially (first to last). Signif. codes:  0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1.}
 \label{Tab:anova}
 \end{table}
 
@@ -631,8 +638,8 @@ The \disp object allows users to easily pipeline disparity analysis from the dat
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging the development of this package and helping with the writing of this paper and the package manuals.
-Thanks to Martin Brazeau and Andrew Jackson for specific implementation ideas 
-\hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive comments on the earlier version of this manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
+Thanks to David Bapst, Martin Brazeau, Andrew Jackson, Graeme Lloyd and Emma Sherratt for specific implementation ideas 
+\hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive and encouraging comments on the manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
 I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau 
 \hl{and from the Discovery Project Grant DP170103227 awarded to Vera Weisbecker}.
 
