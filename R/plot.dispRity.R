@@ -102,8 +102,8 @@
 # quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
-# elements = TRUE
-# time.subsets = TRUE
+# elements = FALSE
+# time.subsets = FALSE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -530,7 +530,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     ## Box plot
     if(type == "box") {
         ## Simple case: boxplot
-        plot_data <- transpose.box(data, rarefaction)
+        plot_data <- transpose.box(data, rarefaction, is_bootstrapped)
         ## Bigger plot margins if elements needed
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)

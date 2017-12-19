@@ -105,6 +105,18 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
         #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001) ; warning("DEBUG: plot")
     }
 
+    ## Set the shift parameter (for add)
+    shift = 0
+    if(add) {
+        ## Is the previous plot the same size?
+        prev_axis <- par("xaxp")
+        if(prev_axis[2] == points_n) {
+            shift = 0
+        } else {
+            shift = 0.5
+        }
+    }
+
     ## Check if bootstrapped
     if(is_bootstrapped) {
         ## How many quantiles?
@@ -123,18 +135,6 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
         } else {
             poly_col <- col[-1]
             poly_col <- rev(poly_col)
-        }
-
-        ## Set the shift parameter (for add)
-        shift = 0
-        if(add) {
-            ## Is the previous plot the same size?
-            prev_axis <- par("xaxp")
-            if(prev_axis[2] == points_n) {
-                shift = 0
-            } else {
-                shift = 0.5
-            }
         }
 
 
@@ -167,14 +167,18 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
                 }
             }
         }
+        ## Add the points estimates
+        points(1:points_n + shift, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
+    } else {
+        
+        ## Add the points estimates
+        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction), col = col[[1]], pch = 19)
     }
 
-    ## Add the points estimates
-    points(1:points_n + shift, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
 
     if(observed == TRUE) {
         ## Add the points observed (if existing)
-        points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4) + shift
+        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4)
     }
 
     ## Save parameters
@@ -203,15 +207,15 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
     if(add == FALSE) {
         if(time_slicing[1] == FALSE) {
             ## Plot with standard xaxis
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
-            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
     } else {
-        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]])
     }
 
     ## Check if bootstrapped
@@ -373,15 +377,19 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
 }
 
 ## Transposing data for boxploting (taking functions from summary.dispRity)
-transpose.box <- function(data, rarefaction) {
+transpose.box <- function(data, rarefaction, is_bootstrapped) {
 
     get.rare <- function(data, rare){
         return(data[[rare]])
     }
 
     if(rarefaction == FALSE) {
-        ## Select the raw data
-        box_data <- lapply(data$disparity, function(X) return(X[[2]]))
+        if(is_bootstrapped) {
+            ## Select the raw data
+            box_data <- lapply(data$disparity, function(X) return(X[[2]]))
+        } else {
+            box_data <- lapply(data$disparity, function(X) return(X[[1]]))
+        }
     } else {
         ## Select the rarefaction data
         rare_rows <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction) + 1)
