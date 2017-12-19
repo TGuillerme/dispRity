@@ -1,8 +1,8 @@
 #' @title Plots pairwise comparisons
 #'
-#' @description Plots pairwise comparisons from a data frame (typically output from \code{link{test.dispRity}}).
+#' @description Plots pairwise comparisons from a data frame (typically output from \code{\link{test.dispRity}}).
 #'
-#' @param data A \code{matrix} or a \code{data.frame} object with comparisons pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).
+#' @param data A \code{matrix} or a \code{data.frame} object with comparisons' pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).
 #' @param what A \code{numeric} or \code{character} value designating which column to plot.
 #' @param col The two extremes of a color gradient (default = \code{c("black", "white")}).
 #' @param legend Logical, whether to plot the legend or not.
@@ -25,6 +25,15 @@
 #' 
 #' ## Adding some tokens for each value below 0.2 in the second column
 #' pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
+#' 
+#' ## Loading disparity data
+#' data(disparity)
+#' 
+#' ## Testing the pairwise difference between slices
+#' tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
+#' 
+#' ## Plotting the significance
+#' pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
 #' 
 #' @seealso \code{\link{test.dispRity}}.
 #'

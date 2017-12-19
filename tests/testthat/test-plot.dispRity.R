@@ -127,3 +127,17 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, rarefaction = TRUE))
     
 })
+
+
+
+test_that("plot.dispRity continuous with NAs", {
+
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    test_data <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = seq(from = 40, to = 80, by = 10))
+
+    test_data$subsets$`60`$elements <- matrix(NA)
+    expect_warning(test_data <- dispRity(boot.matrix(test_data), c(sum, variances)))
+    expect_null(plot(test_data))
+  
+})

@@ -239,7 +239,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree
         if(any(is.na(match(rownames(data), tree$tip.label)))) {
-            stop("The labels in the matrix and in the tree do not match!")
+            stop("The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
         }
     } else {
         ## Check if the tree has node labels

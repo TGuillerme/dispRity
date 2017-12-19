@@ -465,12 +465,17 @@ test_that("size.subsets works", {
 
 })
 
-
 test_that("extinction.subsets works", {
 
     data(disparity)
     data(BeckLee_mat99)
     data(BeckLee_tree)
+
+    ## detect.bin.age (internal)
+    data <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 66, 40), inc.nodes = TRUE)
+    expect_equal(detect.bin.age(data, 66, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
+    expect_equal(detect.bin.age(data, 66, greater = FALSE), c("100 - 66" = FALSE, "66 - 40" = TRUE))
+    expect_equal(detect.bin.age(data, 60, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
 
     ## Sanitising
     expect_error(extinction.subsets("disparity", 66, names = TRUE, as.list = TRUE))

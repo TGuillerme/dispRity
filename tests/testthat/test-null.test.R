@@ -148,3 +148,34 @@ test_that("null.test works", {
         unique(unlist(lapply(null.test(multi_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE), class)))
         , c("randtest", "lightrandtest"))
 })
+
+
+## null.test plots
+test_that("null.test example works", {
+
+    ## Load the Beck & Lee 2014 data
+    data(BeckLee_mat50)
+    groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+         rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+    ## Bootstrapping the data
+    set.seed(1)
+    bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
+    ## Calculating variances of each dimension
+    sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+    ## Testing against normal distribution
+    set.seed(1)
+    results <- null.test(sum_variances, replicates = 10, null.distrib = rnorm)
+
+    expect_is(results, c("dispRity", "randtest"))
+
+    for(test in 1:length(results)) {
+        expect_equal(round(results[[test]][[1]], digits = 6), summary(sum_variances, rounding = 6)$obs[test])
+        expect_equal(results[[test]][[5]], 0.09090909)
+    }
+
+    test <- plot(results)
+    expect_null(test)
+
+
+})

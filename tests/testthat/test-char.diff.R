@@ -19,6 +19,10 @@ test_that("internal function char.diff", {
     matrix <- list(A, B)
     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
 
+    ## char.diff works with characters
+    matrix <- list(as.character(A), as.character(B))
+    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+
 })
 
 test_that("char.diff pair", {

@@ -245,10 +245,32 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
 
 ## Verbose bootstrap
 test_that("verbose bootstrap works", {
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data(BeckLee_ages)
     data <- matrix(rnorm(25), 5, 5)
     out <- capture_messages(boot.matrix(data, verbose = TRUE))
     expect_equal(out,
         c("Bootstrapping", ".", "Done."))
+
+    ## Verbose works with single elements subsets
+    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(139, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+
+    data1$subsets$`139`$elements <- matrix(data1$subsets$`139`$elements[-1,], nrow = 1)
+
+    expect_equal(capture_messages(
+        boot.matrix(data1, 10, boot.type = "single", verbose = TRUE)
+        ), c("Bootstrapping", ".", ".", "Done."))
+    expect_equal(capture_messages(
+        boot.matrix(data1, 10, boot.type = "full", verbose = TRUE)
+        ), c("Bootstrapping", ".", ".", "Done."))
+    set.seed(1)
+    test_single <- boot.matrix(data1, 10, boot.type = "single", verbose = FALSE)
+    set.seed(1)
+    test_full <- boot.matrix(data1, 10, boot.type = "full", verbose = FALSE)
+
+    expect_equal(test_single$subsets$`139`[[2]], matrix(51, ncol = 10, nrow = 1))
+    expect_equal(test_full$subsets$`139`[[2]], matrix(51, ncol = 10, nrow = 1))
 })
 
 
@@ -268,6 +290,18 @@ test_that("Boot.matrix works with small, empty/subsets", {
     expect_equal(unique(sort(test$subsets[[2]][[2]])), c(51))
 })
 
+
+test_that("boot.single.proba works well", {
+
+    elements <- matrix(c(1,3,5,2,4,6,0.75, 0.01, 0.99), ncol = 3, byrow = FALSE)
+
+    expect_length(boot.single.proba(elements, rarefaction = 3), 3)
+    expect_length(boot.single.proba(elements, rarefaction = 2), 2)
+    expect_error(boot.single.proba(elements, rarefaction = 1))
+    
+    set.seed(1)
+    expect_equal(boot.single.proba(elements, rarefaction = 3), c(5,1,1))
+})
 
 test_that("boot.matrix deals with probabilities subsets", {
     data(BeckLee_mat99)
@@ -290,3 +324,4 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[1]][[2]]), c(11,10))
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
+

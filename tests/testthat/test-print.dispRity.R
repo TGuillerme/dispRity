@@ -109,3 +109,25 @@ test_that("randtest printing", {
         "-1.400160e-01  3.141577e+29  5.034313e+60 "))
 
 })
+
+
+test_that("dtt printing", {
+    ## Loading geiger's example data set
+    data <- matrix(rnorm(20), ncol = 2)
+    rownames(data) <- paste0("t", 1:10)
+    tree <- rtree(10)
+
+    ## The average squared pairwise distance metric (used in geiger::dtt)
+    average.sq <- function(X) mean(pairwise.dist(X)^2)
+    ## Calculate the disparity of the dataset using dtt.dispRity
+    dispRity_dtt <- dtt.dispRity(data = data[], metric = average.sq,
+                                 tree = tree, nsim = 10)
+
+    print_dtt <- capture.output(dispRity_dtt)
+
+    expect_equal(print_dtt[length(print_dtt)-1],
+        c("- attr(*, \"class\") = \"dispRity\" \"dtt\""))
+    expect_equal(print_dtt[length(print_dtt)],
+        c("Use plot.dispRity to visualise."))
+
+})
