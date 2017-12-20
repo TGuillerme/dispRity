@@ -29,39 +29,39 @@ test_that("utilities internal: recursive.sort", {
     expect_equal(recursive.sort(LETTERS[1:5], 5:1), rev(LETTERS[1:5]))
 })
 
-test_that("utilities internal: merge.two.subsamples", {
+test_that("utilities internal: merge.two.subsets", {
     data(disparity)
     data <- disparity
 
-    ## Merging two first subsamples
-    test <- merge.two.subsamples(1,2, data)
+    ## Merging two first subsets
+    test <- merge.two.subsets(1,2, data)
 
     expect_is(test, "dispRity")
     expect_equal(length(test), 4)
-    expect_is(test$subsamples, "list")
-    expect_equal(length(test$subsamples),length(data$subsamples)-1)
-    expect_equal(names(test$subsamples)[1], paste(names(data$subsamples)[1:2], collapse = "-"))
+    expect_is(test$subsets, "list")
+    expect_equal(length(test$subsets),length(data$subsets)-1)
+    expect_equal(names(test$subsets)[1], paste(names(data$subsets)[1:2], collapse = "-"))
 })
 
-test_that("utilities internal: check.subsamples", {
+test_that("utilities internal: check.subsets", {
     data(disparity)
     data <- disparity
 
-    ## Testing if subsamples work
+    ## Testing if subsets work
     expect_error(
-        check.subsamples(1:20, data)
+        check.subsets(1:20, data)
         )
     expect_error(
-        check.subsamples(8, data)
+        check.subsets(8, data)
         )
     expect_error(
-        check.subsamples(c(1,2,8), data)
+        check.subsets(c(1,2,8), data)
         )
     expect_error(
-        check.subsamples(c("8", "0"), data)
+        check.subsets(c("8", "0"), data)
         )
     expect_error(
-        check.subsamples(matrix(NA), data)
+        check.subsets(matrix(NA), data)
         )
 })
 
@@ -80,7 +80,7 @@ test_that("make.matrix", {
         test1$call
         ,"list")
     expect_is(
-        test1$subsamples
+        test1$subsets
         ,"list")
 
     test2 <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
@@ -95,7 +95,7 @@ test_that("make.matrix", {
         test2$call
         ,"list")
     expect_is(
-        test2$subsamples
+        test2$subsets
         ,"list")
     expect_equal(
         length(unlist(test2))
@@ -120,7 +120,7 @@ test_that("fill.dispRity", {
         test$call
         ,"list")
     expect_is(
-        test$subsamples
+        test$subsets
         ,"list")
 
 
@@ -131,7 +131,7 @@ test_that("fill.dispRity", {
         test$call$dimensions
         , ncol(test$matrix))
     expect_equal(
-        as.vector(test$subsamples[[1]]$elements)
+        as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix))
 })
 
@@ -141,13 +141,13 @@ test_that("matrix.dispRity", {
     ## Load the Beck & Lee 2014 data
     data(BeckLee_mat50)
 
-    ## Calculating the disparity from a customised subsamples
-    ## Generating the subsamples
+    ## Calculating the disparity from a customised subsets
+    ## Generating the subsets
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
     ## Bootstrapping and rarefying the data
     set.seed(1)
-    dispRity_data <- boot.matrix(customised_subsamples, bootstraps = 100,rarefaction = c(15, 10))
+    dispRity_data <- boot.matrix(customised_subsets, bootstraps = 100,rarefaction = c(15, 10))
 
 
     expect_error(
@@ -157,45 +157,45 @@ test_that("matrix.dispRity", {
         all(matrix.dispRity(dispRity_data) == BeckLee_mat50)
         )
     expect_equal(
-        dim(matrix.dispRity(dispRity_data, subsamples = 2))
+        dim(matrix.dispRity(dispRity_data, subsets = 2))
         , c(25, 48))
     expect_equal(
-        rownames(matrix.dispRity(dispRity_data, subsamples = 2))
+        rownames(matrix.dispRity(dispRity_data, subsets = 2))
         , c("Rhombomylus","Gomphos","Mimotona","Soricidae","Solenodon","Eoryctes","Potamogalinae","Rhynchocyon","Procavia","Moeritherium","Dasypodidae","Bradypus","Myrmecophagidae","Dilambdogale","Widanelfarasia","Todralestes","unnamed_zalambdalestid","unnamed_cimolestid","Oxyclaenus","Protictis","Icaronycteris","Patriomanis","Cynocephalus","Pezosiren","Trichechus"))
     expect_equal(
-        dim(matrix.dispRity(dispRity_data, subsamples = 2, rarefaction = 2, bootstrap = 52))
+        dim(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c(15, 48))
     expect_equal(
-        rownames(matrix.dispRity(dispRity_data, subsamples = 2, rarefaction = 2, bootstrap = 52))
+        rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c("Patriomanis","Patriomanis","Procavia","Oxyclaenus","Pezosiren","Solenodon","Potamogalinae","Procavia","Gomphos","Cynocephalus","Solenodon","Todralestes","Gomphos","Widanelfarasia","Pezosiren"))
 })
 
 
-## get.subsamples
-test_that("get.subsamples", {
+## get.subsets
+test_that("get.subsets", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
-    subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-    bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
+    subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
     disparity_data <- dispRity(bootstrapped_data, variances)
 
     expect_error(
-        get.subsamples(disparity_data)
+        get.subsets(disparity_data)
         )
     expect_error(
-        get.subsamples(disparity_data, matrix(1))
+        get.subsets(disparity_data, matrix(1))
         )
     expect_error(
-        get.subsamples(disparity_data, "blabalbal")
+        get.subsets(disparity_data, "blabalbal")
         )
     expect_error(
-        get.subsamples(disparity_data, 1:10)
+        get.subsets(disparity_data, 1:10)
         )
     expect_error(
-        get.subsamples(disparity_data, 6)
+        get.subsets(disparity_data, 6)
         )
 
-    test <- get.subsamples(subsamples_full, subsamples = c(1,2))
+    test <- get.subsets(subsets_full, subsets = c(1,2))
     expect_is(
         test
         ,"dispRity")
@@ -203,13 +203,13 @@ test_that("get.subsamples", {
         length(test)
         ,3)
     expect_equal(
-        length(test$subsamples)
+        length(test$subsets)
         ,2)
     expect_equal(
-        names(test$subsamples)
-        ,names(subsamples_full$subsamples)[1:2])
+        names(test$subsets)
+        ,names(subsets_full$subsets)[1:2])
 
-    test <- get.subsamples(bootstrapped_data, subsamples = "66.75552")
+    test <- get.subsets(bootstrapped_data, subsets = "66.75552")
     expect_is(
         test
         ,"dispRity")
@@ -217,13 +217,13 @@ test_that("get.subsamples", {
         length(test)
         ,3)
     expect_equal(
-        length(test$subsamples)
+        length(test$subsets)
         ,1)
     expect_equal(
         test$call$bootstrap[[1]]
         ,10)
 
-    test <- get.subsamples(disparity_data, subsamples = c(1:3))
+    test <- get.subsets(disparity_data, subsets = c(1:3))
     expect_is(
         test
         ,"dispRity")
@@ -231,7 +231,7 @@ test_that("get.subsamples", {
         length(test)
         ,4)
     expect_equal(
-        length(test$subsamples)
+        length(test$subsets)
         ,3)
     expect_equal(
         length(test$disparity)
@@ -246,12 +246,12 @@ test_that("get.subsamples", {
 ## extract.dispRity
 test_that("extract.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
-    subsamples_full <- time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-    bootstrapped_data <- boot.matrix(subsamples_full, bootstraps = 10, rarefaction = c(3, 5))
+    subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
     data <- dispRity(bootstrapped_data, c(sum,variances))
 
     expect_error(
-        extract.dispRity(subsamples_full)
+        extract.dispRity(subsets_full)
         )
 
     expect_error(
@@ -265,10 +265,10 @@ test_that("extract.dispRity", {
         ,"list")
     expect_equal(
         length(test)
-        ,length(data$subsamples))
+        ,length(data$subsets))
     expect_equal(
         names(test)
-        ,names(data$subsamples))
+        ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
         ,4.05457)
@@ -279,10 +279,10 @@ test_that("extract.dispRity", {
         ,"list")
     expect_equal(
         length(test)
-        ,length(data$subsamples))
+        ,length(data$subsets))
     expect_equal(
         names(test)
-        ,names(data$subsamples))
+        ,names(data$subsets))
     expect_equal(
         length(test[[5]][[1]])
         ,data$call$bootstrap[[1]])
@@ -293,14 +293,14 @@ test_that("extract.dispRity", {
         ,"list")
     expect_equal(
         length(test)
-        ,length(data$subsamples))
+        ,length(data$subsets))
     expect_equal(
         names(test)
-        ,names(data$subsamples))
+        ,names(data$subsets))
     expect_null(
         test[[1]])
 
-    test <- extract.dispRity(data, observed = FALSE, subsamples = c(1,5))
+    test <- extract.dispRity(data, observed = FALSE, subsets = c(1,5))
     expect_is(
         test
         ,"list")
@@ -309,7 +309,7 @@ test_that("extract.dispRity", {
         ,2)
     expect_equal(
         names(test)
-        ,names(data$subsamples)[c(1,5)])
+        ,names(data$subsets)[c(1,5)])
 
 
 })
@@ -317,8 +317,8 @@ test_that("extract.dispRity", {
 test_that("scale.dispRity", {
     data(BeckLee_mat50)
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-    customised_subsamples <- custom.subsamples(BeckLee_mat50, groups)
-    bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 7, rarefaction = c(10, 25))
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+    bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 7, rarefaction = c(10, 25))
     data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
     expect_error(
@@ -357,8 +357,8 @@ test_that("scale.dispRity", {
 
 test_that("sort.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
-    subsamples <- time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
-    data <- dispRity(subsamples, metric = mean)
+    subsets <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+    data <- dispRity(subsets, metric = mean)
 
     expect_error(
         sort.dispRity("yes")
@@ -382,11 +382,11 @@ test_that("sort.dispRity", {
 
 
 
-## merge.subsamples
-test_that("merge.subsamples", {
+## merge.subsets
+test_that("merge.subsets", {
     data(disparity)
     data_test1 <- disparity
-    expect_warning(data_test2 <- custom.subsamples(matrix(rnorm(120), 40), group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24), "e" = c(25:30), "f" = c(31:40))))
+    expect_warning(data_test2 <- custom.subsets(matrix(rnorm(120), 40), group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24), "e" = c(25:30), "f" = c(31:40))))
     tests <- list()
     expected_names <- list(c("70", "60", "90-80-50", "40", "30"),
                            c("70", "60", "80-90-50", "40", "30"),
@@ -403,64 +403,91 @@ test_that("merge.subsamples", {
 
     ## Errors
     expect_error(
-        merge.subsamples("data_test1", c(1,2))
+        merge.subsets("data_test1", c(1,2))
         )
     expect_error(
-        merge.subsamples(matrix(100,10), c(1,2))
+        merge.subsets(matrix(100,10), c(1,2))
         )
     expect_error(
-        merge.subsamples(data_test2, "c(1,2)")
+        merge.subsets(data_test2, "c(1,2)")
         )
     expect_error(
-        merge.subsamples(data_test2, c(13,14))
+        merge.subsets(data_test2, c(13,14))
         )
     expect_error(
-        merge.subsamples(data_test2, c("a", "x"))
+        merge.subsets(data_test2, c("a", "x"))
         )
 
     dummy_data1 <- dummy_data2 <- data_test1
     dummy_data1$call$bootstrap <- NULL
-    test1 <- capture_warnings(garbage <-merge.subsamples(dummy_data1, c(1,2)))
+    test1 <- capture_warnings(garbage <-merge.subsets(dummy_data1, c(1,2)))
 
     expect_equal(test1, "dummy_data1 contained disparity data that has been discarded in the output.")
 
 
     ## Warnings
     expect_warning(
-        tests[[1]] <- merge.subsamples(data_test1, c(2,1,5))
+        tests[[1]] <- merge.subsets(data_test1, c(2,1,5))
         )
     expect_warning(
-        tests[[2]] <- merge.subsamples(data_test1, c("90", "80", "50"))
+        tests[[2]] <- merge.subsets(data_test1, c("90", "80", "50"))
         )
     expect_warning(
-        tests[[3]] <- merge.subsamples(data_test1, 20)
+        tests[[3]] <- merge.subsets(data_test1, 20)
         )
 
     ## Working fine!
-    tests[[4]] <- merge.subsamples(data_test2, c(1,2,3))
-    tests[[5]] <- merge.subsamples(data_test2, c("a", "b", "c"))
-    tests[[6]] <- merge.subsamples(data_test2, 10)
+    tests[[4]] <- merge.subsets(data_test2, c(1,2,3))
+    tests[[5]] <- merge.subsets(data_test2, c("a", "b", "c"))
+    tests[[6]] <- merge.subsets(data_test2, 10)
 
     for(test in 1:length(tests)) {
         ## Class
         expect_is(tests[[test]]
             , "dispRity")
-        ## Number of subsamples
+        ## Number of subsets
         expect_equal(
-            names(tests[[test]]$subsamples)
+            names(tests[[test]]$subsets)
             ,expected_names[[test]])
-        ## Number of elements per subsample
+        ## Number of elements per subsets
         expect_equal(
-            as.vector(unlist(lapply(tests[[test]]$subsamples, lapply, length)))
+            as.vector(unlist(lapply(tests[[test]]$subsets, lapply, length)))
             ,expected_elements[[test]])
     }
 })
 
 
-test_that("size.subsamples works", {
+test_that("size.subsets works", {
     data(disparity)
     expect_equal(
-        size.subsamples(disparity)
+        size.subsets(disparity)
         , c("90"=18, "80"=22, "70"=23, "60"=21, "50"=18, "40"=15, "30"=10))
 
+})
+
+test_that("extinction.subsets works", {
+
+    data(disparity)
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+
+    ## detect.bin.age (internal)
+    data <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 66, 40), inc.nodes = TRUE)
+    expect_equal(detect.bin.age(data, 66, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
+    expect_equal(detect.bin.age(data, 66, greater = FALSE), c("100 - 66" = FALSE, "66 - 40" = TRUE))
+    expect_equal(detect.bin.age(data, 60, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
+
+    ## Sanitising
+    expect_error(extinction.subsets("disparity", 66, names = TRUE, as.list = TRUE))
+    expect_error(extinction.subsets(disparity, c(1,2), names = TRUE, as.list = TRUE))
+    expect_error(extinction.subsets(disparity, 66, names = "TRUE", as.list = TRUE))
+    expect_error(extinction.subsets(disparity, 66, names = TRUE, as.list = "TRUE"))
+    expect_error(extinction.subsets(disparity, 91, names = TRUE, as.list = TRUE))
+
+    ## Normal behaviour
+    expect_equal(extinction.subsets(disparity, 66, names = TRUE, as.list = TRUE), list("60" = c("70", "60")))
+    expect_equal(extinction.subsets(disparity, 66, lag = 4), c(3:7))
+    expect_warning(expect_equal(extinction.subsets(disparity, 66, lag = 12), c(3:7)))
+    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111.2592), c(1,2))
+    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111), c(1,2))
 })

@@ -1,16 +1,16 @@
-#' @title Separating data into custom subsamples.
-#' @aliases cust.series custom.series cust.subsamples
+#' @title Separating data into custom subsets.
+#' @aliases cust.series custom.series cust.subsets
 #'
-#' @description Splits the data into a customized subsamples list.
+#' @description Splits the data into a customized subsets list.
 #'
 #' @param data A \code{matrix}.
-#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames.
+#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{matrix}{the multidimensional space (a \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #'
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
@@ -22,28 +22,34 @@
 #' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
 #' 
 #' ## Splitting the ordinated matrix into two groups using row numbers
-#' custom.subsamples(ordinated_matrix, list(c(1:4), c(5:10)))
+#' custom.subsets(ordinated_matrix, list(c(1:4), c(5:10)))
 #' 
 #' ## Splitting the ordinated matrix into three groups using row names
 #' ordinated_matrix <- matrix(data = rnorm(90), nrow = 10,
 #'      dimnames = list(letters[1:10]))
-#' custom.subsamples(ordinated_matrix,
+#' custom.subsets(ordinated_matrix,
 #'      list("A" = c("a", "b", "c", "d"), "B" = c("e", "f", "g", "h", "i", "j"),
 #'           "C" = c("a", "c", "d", "f", "h")))
 #' 
 #' ## Splitting the ordinated matrix into four groups using a dataframe
 #' groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5), rep(c(1,2), 5)),
 #'      nrow = 10, ncol = 2, dimnames = list(letters[1:10], c("g1", "g2"))))
-#' custom.subsamples(ordinated_matrix, groups)
+#' custom.subsets(ordinated_matrix, groups)
+#' 
+#' ## Splitting a matrix by clade
+#' data(BeckLee_mat50)
+#' data(BeckLee_tree)
+#' custom.subsets(BeckLee_mat50, group = BeckLee_tree)
+#' 
 #'
-#' @seealso \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
 #'
 #' @author Thomas Guillerme
 
 ## DEBUG
-# warning("DEBUG cust.subsamples")
+# warning("DEBUG cust.subsets")
 # source("sanitizing.R")
-# source("custom.subsamples_fun.R")
+# source("custom.subsets_fun.R")
 # source("dispRity.utilities.R")
 # source("dispRity.utilities_fun.R")
 # data <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
@@ -51,7 +57,7 @@
 # group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-custom.subsamples <- function(data, group) {
+custom.subsets <- function(data, group) {
 
     ## Saving the call
     match_call <- match.call()
@@ -78,7 +84,39 @@ custom.subsamples <- function(data, group) {
         if(class(group) == "list") {
             group_class <- "list"
         } else {
-            stop("group argument must be either a 'list', a 'matrix' or a 'data.frame'.")
+            if(class(group) == "phylo") {
+
+                group_class <- "phylo"
+                ## Matching the tree and the data
+                if(any(is.na(match(group$tip.label, rownames(data))))) {
+                    stop("Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+                }
+
+                if(is.null(group$node.labe)) {
+                    ## No nodes
+                    if(nrow(data) != Ntip(group)) {
+                        stop("Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+                    }
+                    inc.nodes <- FALSE
+                } else {
+                    ## Are the nodes relevant in the data
+                    if(nrow(data) == (Ntip(group) + Nnode(group))) {
+                        if(any(is.na(match(group$node.label, rownames(data))))) {
+                            stop("Some nodes in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+                        }
+                        inc.nodes <- TRUE
+                    } else {
+                        if(nrow(data) == Ntip(group)) {
+                            inc.nodes <- FALSE
+                        } else {
+                            stop("Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+                        }
+                    }
+                }
+
+            } else {
+                stop("group argument must be either a 'list', a 'matrix', a 'data.frame' or a 'phylo' object.")
+            }
         }
     }
 
@@ -92,11 +130,34 @@ custom.subsamples <- function(data, group) {
         if(!all( as.character(rownames(group)) %in% as.character(rownames(data)))) stop("Row names in data and group arguments don't match.")
 
         ## Checking if the groups have a list three elements
-        if(any(apply(group, 2, check.elements.data.frame))) stop("There must be at least three elements for each subsample.")
+        if(any(apply(group, 2, check.elements.data.frame))) stop("There must be at least three elements for each subset.")
 
-        ## Creating the subsamples
-        subsamples_list <- unlist(apply(group, 2, split.elements.data.frame, data), recursive = FALSE)
+        ## Creating the subsets
+        subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data), recursive = FALSE)
     } else {
+
+        if(group_class == "phylo") {
+
+            get.clade.tips <- function(node, tree, inc.nodes) {
+                if(inc.nodes) {
+                    clade <- extract.clade(phy = tree, node = node)
+                    return(c(clade$tip.label, clade$node.label))
+                } else {
+                    return(extract.clade(phy = tree, node = node)$tip.label)
+                }
+            }
+
+             group_tmp <- sapply(Ntip(group)+1:Nnode(group), get.clade.tips, tree = group, inc.nodes = inc.nodes, USE.NAMES = FALSE)
+
+             if(!is.null(group$node.label)) {
+                names(group_tmp) <- group$node.label
+             } else {
+                names(group_tmp) <- paste0("n", Ntip(group)+1:Nnode(group))
+             }
+
+             group <- group_tmp
+         }
+
         ## Using a list
 
         ## Check for empty groups
@@ -105,9 +166,9 @@ custom.subsamples <- function(data, group) {
             ## Prepare a warning message
             empty_groups_names <- ifelse(!is.null(names(empty_groups)), paste(names(which(empty_groups)), collapse = ", "), paste(which(empty_groups), collapse = ", "))
             being <- ifelse(length(which(empty_groups)) == 1, "is", "are")
-            subsample <- ifelse(length(which(empty_groups)) == 1, "Subsample", "Subsamples")
+            subset <- ifelse(length(which(empty_groups)) == 1, "Subsample", "Subsamples")
             ## Send a warning messages
-            warning(paste(subsample, empty_groups_names, being, "empty."))
+            warning(paste(subset, empty_groups_names, being, "empty."))
 
             ## Replace NULL groups by NAs
             null_groups <- unlist(lapply(group, is.null))
@@ -137,10 +198,11 @@ custom.subsamples <- function(data, group) {
         ## Checking if the groups have names
         if(is.null(names(group))) names(group) <- seq(1:length(group))
 
-        ## Creating the subsamples
-        subsamples_list <- lapply(group, function(x) list("elements" = matrix(x)))
+        ## Creating the subsets
+        subsets_list <- lapply(group, function(x) list("elements" = matrix(x)))
+    
     }
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsamples" = "customised"), subsamples = subsamples_list))
+    return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list))
 }

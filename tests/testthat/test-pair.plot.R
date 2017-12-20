@@ -24,4 +24,9 @@ test_that("testing examples", {
     pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
     test <- pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
     expect_null(test)
+  
+    data(disparity)
+    tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
+    test <- pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
+    expect_null(test)
 })

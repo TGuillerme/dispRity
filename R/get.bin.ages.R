@@ -15,15 +15,17 @@
 #' ## Getting the stratigraphic data
 #' stratigraphy <- get.bin.ages(BeckLee_tree)
 #' 
-#' ## Making stratigraphic time subsamples
-#' time.subsamples(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' ## Making stratigraphic time subsets
+#' time.subsets(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'                 time = stratigraphy)
 #'
-#' @seealso \code{\link{time.subsamples}}
+#' @seealso \code{\link{time.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @import geoscale timescales
 #' @export
+
+#source("summary.dispRity_fun.R")
 
 get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {    
     ## Tree
@@ -55,9 +57,35 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
 
     ## Get all the strats covered by the tree
     strats <- which(stratigraphy$End < tree$root.time)
+    
+    ## Function for getting the decimals
+    num.decimals <- function(x) {
+        x <- sub("0+$","",x)
+        x <- sub("^.+[.]","",x)
+        return(nchar(x))
+    }
+
+    ## Getting the number of decimals
+    node_depth <- max(node.depth.edgelength(tree))
+    root_time <- tree$root.time
+    digit_node_depth <- num.decimals(node_depth)
+    digit_root_time <- num.decimals(root_time)
+
+    if(digit_root_time < digit_node_depth) {
+        node_depth <- round(node_depth, digits = digit_root_time)
+    } else {
+        root_time <- round(root_time, digits = digit_node_depth)
+    }
 
     ## Remove eventual recent strats for trees not containing living taxa
-    recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree)))
+    if(node_depth < root_time) {
+        ## Correct recent if tree contains only fossils
+        time_ro_recent <- abs(node_depth - tree$root.time)
+        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree) + time_ro_recent))
+    } else {
+        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree)))
+    }
+
     if(length(recent) > 0) {
         strats <- strats[-recent]
     }

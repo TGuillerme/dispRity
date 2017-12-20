@@ -3,7 +3,7 @@ title: "dispRity ecology demo"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: References.bib
+bibliography: [References.bib, packages.bib]
 bst: sysbio.bst
 vignette: >
   %\VignetteIndexEntry{dispRity ecology demo}
@@ -85,29 +85,29 @@ Therefore, we might want to approach this problem without getting stuck in only 
 
 ## A multidimensional approach with `dispRity`
 
-The first step is to create different subsamples that represent subsamples of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
-Each of these subsamples will contain only the individuals of a specific species.
+The first step is to create different subsets that represent subsets of the ordinated space (i.e. sub-regions within the *n*-dimensional object).
+Each of these subsets will contain only the individuals of a specific species.
 
 ```{r}
 ## Creating the table that contain the elements and their attributes
-petal_subsamples <- custom.subsamples(petal_space, group = list(
+petal_subsets <- custom.subsets(petal_space, group = list(
                                 "setosa" = which(species == "setosa"),
                                 "versicolor" = which(species == "versicolor"),
                                 "virginica" = which(species == "virginica")))
 
 ## Visualising the dispRity object content
-petal_subsamples
+petal_subsets
 ```
 
-This created a `dispRity` object (more about that [here](#guts)) with three subsamples corresponding to each subspecies.
+This created a `dispRity` object (more about that [here](#guts)) with three subsets corresponding to each subspecies.
 
 ### Bootstrapping the data
-We can the bootstrap the subsamples to be able test the robustness of the measured disparity to outliers.
+We can the bootstrap the subsets to be able test the robustness of the measured disparity to outliers.
 We can do that using the default options of `boot.matrix` (more about that [here](#bootstraps-and-rarefactions)):
 
 ```{r}
 ## Bootstrapping the data
-(petal_bootstrapped <- boot.matrix(petal_subsamples))
+(petal_bootstrapped <- boot.matrix(petal_subsets))
 ```
 
 ### Calculating disparity
@@ -127,7 +127,7 @@ Here we are going to feed the functions `stats::median` and `dispRity::centroids
 ```
 
 ### Summarising the results (plot)
-Similarly to the `custom.subsamples` and `boot.matrix` function, `dispRity` displays a `dispRity` object.
+Similarly to the `custom.subsets` and `boot.matrix` function, `dispRity` displays a `dispRity` object.
 But we are definitely more interested in actually look at the calculated values.
 
 First we can summarise the data in a table by simply using `summary`:
@@ -155,11 +155,8 @@ Now contrary to simply plotting the two first axis of the PCA where we saw that 
 Finally we can test our hypothesis that we guessed from the disparity plot (that some groups occupy different volume of the petal-space) by using the `test.dispRity` option.
 
 ```{r}
-## Fitting a linear model to our data
-disparity_lm <- test.dispRity(petal_disparity, test = lm, comparisons = "all")
-
-## Testing whether there is a difference in disparity between the different species
-summary(aov(disparity_lm))
+## Running a PERMANOVA
+test.dispRity(petal_disparity, test = adonis.dispRity)
 
 ## Post-hoc testing of the differences between species (corrected for multiple tests)
 test.dispRity(petal_disparity, test = t.test, correction = "bonferroni")
@@ -171,7 +168,7 @@ We can now see that there is a significant difference in petal-space occupancy b
 #### Setting up a multidimensional null-hypothesis
 
 One other series of test can be done on the shape of the petal-space.
-Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to Diaz _et al._ 2016):
+Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to @diaz2016global):
 
 ```{r, fig.width=6, fig.height=6}
 ## Testing against a uniform distribution

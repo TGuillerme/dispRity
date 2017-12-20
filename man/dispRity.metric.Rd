@@ -14,7 +14,11 @@
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
-\alias{ancestral.distance}
+\alias{ancestral.dist}
+\alias{pairwise.dist}
+\alias{span.tree.length}
+\alias{n.ball.volume}
+\alias{radius}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -51,6 +55,8 @@ The currently implemented dimension-level 1 metrics are:
          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
      }
   \item \code{mode.val}: calculates the modal value of a vector.
+  \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
+  \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
 }
 
  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
@@ -59,8 +65,13 @@ The currently implemented dimension-level 2 metrics are:
 \itemize{
   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
-  \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
-  \item \code{ancestral.distance}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{node.centroids}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
+  \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
+
+  \item \code{ancestral.dist}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
+
+  \item \code{pairwise.dist}: calculates the pairwise distance between elements. The distance type can be changed via the \code{method} argument (see \code{\link[stats]{dist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
+
+  \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
 
 }
 }
@@ -101,22 +112,48 @@ convhull.volume(dummy_matrix)
 ## Matrix diagonal
 diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
 
+## Minimum spanning tree length (default)
+span.tree.length(dummy_matrix)
+
+## Minimum spanning tree length from a distance matrix (faster)
+distance <- as.matrix(dist(dummy_matrix))
+span.tree.length(distance)
+
+## Minimum spanning tree length based on Manhattan distance
+span.tree.length(dummy_matrix, method = "manhattan")
+span.tree.length(as.matrix(dist(dummy_matrix, method = "manhattan"))) # Same
+
+## The maximal radius of each axis (maximum distance from centre of each axis)
+radius(dummy_matrix)
+
+## The average radius of each axis (mean distance from centre of each axis)
+radius(dummy_matrix, type = mean)
+
+## The pairwise distance
+pairwise.dist(dummy_matrix)
+
+## The average squared pairwise distance
+mean(pairwise.dist(dummy_matrix)^2)
+
+## equal to:
+geiger::disparity(data = dummy_matrix)
+
 ## A random matrix
-matrix <- matrix(rnorm(90), 9, 10)
+dummy_matrix <- matrix(rnorm(90), 9, 10)
 ## A random treee with node labels
-tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
 ## Adding the tip and node names to the matris
-rownames(matrix) <- c(tree$tip.label, tree$node.label)
+rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
 
 ## Calculating the direct ancestral nodes
-direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+direct_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = FALSE)
 ## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+all_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = TRUE)
 
 ## Calculating the distances from the direct ancestral nodes
-ancestral.distance(matrix, nodes.coordinates = direct_anc_centroids)
+ancestral.dist(dummy_matrix, nodes.coords = direct_anc_centroids)
 ## Calculating the distances from all the ancestral nodes
-ancestral.distance(matrix, nodes.coordinates = all_anc_centroids)
+ancestral.dist(dummy_matrix, nodes.coords = all_anc_centroids)
 
 }
 \seealso{

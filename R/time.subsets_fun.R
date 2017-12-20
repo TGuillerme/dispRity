@@ -30,8 +30,8 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 }
 
 
-## Discrete time subsamples
-time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+## Discrete time subsets
+time.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
     
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
@@ -79,39 +79,83 @@ time.subsamples.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbos
     return(interval_elements)
 }
 
-## Continuous time subsamples
-time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+## Continuous time subsets
+time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
     ## lapply function for getting the slices
-    get.slice <- function(slice, time, model, ages_tree, data, verbose) {
+    get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {
 
         ## Verbose
         if(verbose) message(".", appendLF = FALSE)
 
-        ## Get the subtree
-        if(time[slice] == 0) {
-            ## Select the tips to drop
-            taxa_to_drop <- ages_tree$LAD[which(ages_tree$LAD[1:Ntip(tree),1] != 0),2]
-            ## drop the tips
-            sub_tree <- drop.tip(tree, tip = as.character(taxa_to_drop))
-        } else {
-            ## Subtree
+        ## Getting the tree ages
+        tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+
+        ## Slicing the tree
+        if(time[slice] != min(tree_ages[,1])) {
             sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
+        } else {
+            ## Extract only living taxa
+            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
+
+            if(model == "equal.split" || model == "gradual.split") {
+                ## Transforming the subtree into a probability table
+                tips_list <- sub_tree$tip.label
+                nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
+                sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
+                rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+            }
         }
 
-        if(class(sub_tree) !=  "phylo" && is.na(sub_tree)) {
+        ## Empty subset
+        if(class(sub_tree) != "phylo" && is.na(sub_tree)) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
         }
 
-        ## Select the tips 
-        tips <- sub_tree$tip.label
+        ## Output are single trees
+        if(class(sub_tree) == "phylo") {
+            ## Select the tips 
+            tips <- sub_tree$tip.label
 
-        ## Add any missed taxa from the FADLAD
-        taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            ## Add any missed taxa from the FADLAD
+            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
 
-        ## Getting the list of elements
-        return( list("elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ))
+            ## Getting the list of elements
+            return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
+        
+        } else {
+            ## Add any missed taxa from the FADLAD
+            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+
+            if(model == "equal.split" || model == "gradual.split") {
+            ## Return a probability table
+                if(length(taxa) > 0) {
+                    ## Combine the taxa, their ancestor and their probability to the sub_tree table
+                    ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
+                    sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
+                    rownames(sub_tree) <- NULL
+                    ## Convert the tips into row numbers
+                    tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
+
+                } else {
+                    sub_tree <- matrix(sub_tree, ncol = 3)
+                    tips <- matrix(match(sub_tree[,1:2], rownames(data)), ncol = 2)
+                }
+
+                ## Returning the tips with the probabilities
+                return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
+            } else {
+            ## Return a matrix
+
+                if(length(taxa) > 0) {
+                    sub_tree <- c(sub_tree, taxa)
+                }
+
+                return( list( "elements" = as.matrix(match(sub_tree, rownames(data))) ) )
+            }
+
+        }
     }
 
     ## ages of tips/nodes + FAD/LAD
@@ -122,8 +166,10 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
+    #get.slice(slice = 20, time, model, ages_tree, data, verbose, tree)
+
     ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose)
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
 
     ## verbose
     if(verbose) {
@@ -136,9 +182,9 @@ time.subsamples.continuous <- function(data, tree, time, model, FADLAD, verbose)
     return(slices_elements)
 }
 
-## Making the origin subsamples for a disparity_object
-make.origin.subsamples <- function(data) {
+## Making the origin subsets for a disparity_object
+make.origin.subsets <- function(data) {
     origin <- list("elements" = as.matrix(seq(1:nrow(data))))
-    origin_subsamples <- list("origin" = origin)
-    return(origin_subsamples)
+    origin_subsets <- list("origin" = origin)
+    return(origin_subsets)
 }

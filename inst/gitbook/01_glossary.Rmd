@@ -2,6 +2,7 @@
 title: "Glossary"
 author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
+bibliography: [References.bib, packages.bib]
 output:
   html_document: default
   pdf_document: default
@@ -10,7 +11,7 @@ output:
 
 # Glossary
 
--   **Multidimensional space**. The mathematical multidimensional object that will be analysed with this package.
+-   **Multidimensional space** (or just space). The mathematical multidimensional object that will be analysed with this package.
     In morphometrics, this is often referred to as the morphospace.
     However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc.
     In practice, this term designates a matrix where the columns represent the dimensions of the space (often – but not necessarily - > 3!) and the rows represent the elements within this space.
@@ -19,6 +20,19 @@ output:
 
 -   **Dimensions**. The columns of the multidimensional space matrix. The dimensions can be referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA for example.
 
--   **Subsamples**. Subsamples of the multidimensional space.
-    A subsample (or subsamples) contains the same number of dimensions as the space but may contain a smaller subset of elements.
-    For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsamples containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
+-   **Subsets**. Subsets of the multidimensional space.
+    A subset (or subsets) contains the same number of dimensions as the space but may contain a smaller subset of elements.
+    For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsets containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.
+
+-   **Disparity**. A metric expressing the similarities/dissimilarities of the elements within the space or a summarising the space dimensions. For example the pairwise distances between elements or the range of each dimensions.
+
+
+## Glossary equivalences in palaeobiology and ecology
+
+In this manual | In `dispRity` | E.g. in palaeobiology | E.g. in ecology
+---------------|---------------|------------------|-------------
+the multidimensional space | a `matrix` object ($n\times k$) | a morphospace | a function-space
+elements | rows ($n$) | taxa | field experiments
+dimensions | columns ($k$) | morphological characters | communities' compositions
+subsets | a `matrix` ($m \times k$, with $m \leq n$) | time series | experimental treatments
+disparity | a `function` | sum of variances | ellipsoid volume

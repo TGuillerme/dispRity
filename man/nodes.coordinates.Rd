@@ -17,7 +17,7 @@ nodes.coordinates(matrix, tree, full = TRUE)
 A \code{matrix} if \code{full = FALSE} or a \code{list} of matrices if \code{full = TRUE}.
 }
 \description{
-Calculates ancestral nodes coordinates in a format that can be passed to \code{\link{ancestral.distance}}
+Calculates ancestral nodes coordinates in a format that can be passed to \code{\link{ancestral.dist}}
 }
 \examples{
 ## A random matrix
@@ -33,13 +33,13 @@ direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
 all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
 
 ## Calculating the distances from the direct ancestral nodes
-ancestral.distance(matrix, nodes.coordinates = direct_anc_centroids)
+ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
 ## Calculating the distances from all the ancestral nodes
-ancestral.distance(matrix, nodes.coordinates = all_anc_centroids)
+ancestral.dist(matrix, nodes.coords = all_anc_centroids)
 
 }
 \seealso{
-\code{\link{ancestral.distance}}, \code{\link{dispRity.metrics}}, \code{\link{dispRity}}
+\code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}
 }
 \author{
 Thomas Guillerme

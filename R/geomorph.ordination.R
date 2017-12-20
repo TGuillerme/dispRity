@@ -6,7 +6,7 @@
 #' @param ... Any optional arguments to be passed to \code{\link[stats]{prcomp}}.
 #' 
 #' @details
-#' If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsamples}} using these factors.
+#' If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsets}} using these factors.
 #' 
 #' @return
 #' A \code{matrix} or a \code{dispRity} object.
@@ -43,7 +43,7 @@
 #' geomorph_val == dispRity_val # all TRUE
 #' }
 #'
-#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 
 # require(geomorph)
@@ -86,7 +86,7 @@ geomorph.ordination <- function(data, ...) {
         ## Get the meta data
         factors <- which(unlist(lapply(data, class)) == "factor")
 
-        ## Get the list of subsamples
+        ## Get the list of subsets
         group_list <- unlist(lapply(data[factors], make.groups.factors), recursive = FALSE)
 
         ## Get the names of the ordination elements (if missing)
@@ -97,7 +97,7 @@ geomorph.ordination <- function(data, ...) {
                 rownames(ordination) <- dimnames(data$coords)[[3]]
             }
         }
-        return(custom.subsamples(ordination, group = group_list))
+        return(custom.subsets(ordination, group = group_list))
 
     } else {
         ## Just output the ordinated matrix

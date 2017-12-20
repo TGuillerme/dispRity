@@ -1,16 +1,16 @@
-#' @title Separating data in time subsamples.
+#' @title Separating data in time subsets.
 #' @aliases time.series
 #'
-#' @description Splits the data into a time subsamples list.
+#' @description Splits the data into a time subsets list.
 #' 
-#' @usage time.subsamples(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
+#' @usage time.subsets(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A matrix.
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.
-#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsamples. Is ignored if \code{method = "continuous"}.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
+#' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
@@ -19,19 +19,28 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{matrix}{the multidimensional space (a \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
+#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #'
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #'  
 #' @details
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsamples is:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is can be one of the following:
 #' \itemize{
-#'   \item \code{"acctran"}: always the value from the ancestral node.
-#'   \item \code{"deltran"}: always the value from the descendant node or tip.
-#'   \item \code{"punctuated"}: randomly selected from the ancestral node or the descendant node or tip.
-#'   \item \code{"gradual"}: either the ancestral node if the sampling point on the edge is \eqn{< edge.length/2} else the descendant node or tip.
+#'      \item Punctuated models:
+#'      \itemize{
+#'         \item \code{"acctran"}: always the value from the ancestral node.
+#'         \item \code{"deltran"}: always the value from the descendant node or tip.
+#'         \item \code{"random"}: randomly selected from the ancestral node or the descendant node or tip.
+#'         \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'      }
+#'      \item Gradual models:
+#'      \itemize{
+#'          \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+#'          \item \code{"gradual.split"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'      }
 #' }
+#' N.B. \code{"equal.split"} and \code{"gradual.split"} differ from the punctuated models by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -40,26 +49,27 @@
 #'
 #' ## Time binning (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-#' time.subsamples(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' time.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 #' ## Generate the same time bins but including nodes
-#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
+#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #'
 #' ## Time slicing (continuous method)
-#' ## Generate five equidistant time slices in the dataset assuming a gradual
+#' ## Generate five equidistant time slices in the dataset assuming a proximity
 #' ## evolutionary model
-#' time.subsamples(data = BeckLee_mat99, tree = BeckLee_tree,
+#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
 #'
-#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' @author Thomas Guillerme
 
 ##Testing
-# warning("DEBUG time.subsamples")
+# warning("DEBUG time.subsets")
 # source("sanitizing.R")
-# source("time.subsamples_fun.R")
+# source("time.subsets_fun.R")
+# source("slice.tree_fun.R")
 # data(BeckLee_tree) ; data(BeckLee_mat50)
 # data(BeckLee_mat99) ; data(BeckLee_ages)
 # data = BeckLee_mat50
@@ -67,18 +77,25 @@
 # method = "discrete"
 # model = "acctran"
 # time = 5
+
 # inc.nodes = TRUE
 # FADLAD = BeckLee_ages
-
-# data <- matrix_ord_Hall
-# tree <- tree_Hall
+# data = BeckLee_mat99
+# tree = BeckLee_tree
 # method = "continuous"
-# model = "gradual"
-# time <- c(120, 44)
+# model = "proximity"
+# time <- c(120, 100, 80, 60, 40 , 20, 0)
 # verbose <- TRUE
+# t0 <- FALSE
 
 
-time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
+# plot(BeckLee_tree, cex = 0.5)
+# nodelabels(BeckLee_tree$node.label, cex = 0.5)
+# axisPhylo()
+# abline(v = 40)
+
+
+time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -96,7 +113,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
         ## tree must be dated
         if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
         ## tree.age_tree variable declaration
-        tree.age_tree <- tree.age(tree, age = tree$root.time)
+        tree.age_tree <- tree.age(tree)
     }
 
 
@@ -118,15 +135,18 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(missing(tree)) {
         if(missing(FADLAD)) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".")
+        tree_was_missing <- TRUE
 
         ## Checking FADLAD disponibilities
         names_data <- rownames(data)
         ## All names must be present in the data
         if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         ## Generating the star tree
-        tree <- stree(nrow_data)
-        tree$tip.label <- names_data
-        tree$root.time <- max(names_data)
+        tree <- stree(nrow_data, tip.label = names_data)
+        tree$root.time <- max(FADLAD)
+        tree$edge.length <- FADLAD$FAD
+    } else {
+        tree_was_missing <- FALSE
     }
 
     ## Ntip_tree variable declaration
@@ -192,7 +212,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     } else {
         ## else model must be one of the following
         model <- tolower(model)
-        all_models <- c("acctran", "deltran", "punctuated", "gradual")
+        all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
         check.class(model, "character")
         check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
         check.method(model, all_models, "model argument")
@@ -206,6 +226,9 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(method != "continuous") {
         ## else inc.nodes must be logical
         check.class(inc.nodes, "logical")
+        if(tree_was_missing && inc.nodes) {
+            stop("If no phylogeny is provided, inc.nodes must be FALSE.")
+        }
     } else {
         ## Include nodes is mandatory
         inc.nodes <- TRUE
@@ -216,7 +239,7 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree
         if(any(is.na(match(rownames(data), tree$tip.label)))) {
-            stop("The labels in the matrix and in the tree do not match!")
+            stop("The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
         }
     } else {
         ## Check if the tree has node labels
@@ -238,7 +261,16 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
-        if(!all(colnames(FADLAD) == c("FAD", "LAD"))) stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+
+        if(!all(colnames(FADLAD) %in% c("FAD", "LAD"))) {
+            stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+        } else {
+            ## Check if FAD/LAD is in the right order (else reorder)
+            if(colnames(FADLAD)[1] == "LAD") {
+                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], rownames = rownames(FADLAD))
+            }
+        }
+
         ## Check if the FADLAD contains all taxa
         if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
@@ -258,20 +290,20 @@ time.subsamples <- function(data, tree, method, time, model, inc.nodes = FALSE, 
     check.class(verbose, "logical")
 
     ## -------------------------------
-    ##  GENRATING THE TIME subsamples
+    ##  GENRATING THE TIME subsets
     ## -------------------------------
 
     if(method == "discrete") {
-        time_subsamples <- time.subsamples.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
+        time_subsets <- time.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
     }
 
     if(method == "continuous") {
-        time_subsamples <- time.subsamples.continuous(data, tree, time, model, FADLAD, verbose)
+        time_subsets <- time.subsets.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
-    ## Adding the original subsamples
-    #time_subsamples <- c(make.origin.subsamples(data), time_subsamples)
+    ## Adding the original subsets
+    #time_subsets <- c(make.origin.subsets(data), time_subsets)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsamples" = c(method, model)), subsamples = time_subsamples))
+    return(make.dispRity(data = data, call = list("subsets" = c(method, model)), subsets = time_subsets))
 }

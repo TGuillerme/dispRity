@@ -1,4 +1,73 @@
 #FUNCTIONS FOR slice.tree
+## Get the node IDs
+get.node.ID <- function(node, tree) {
+    ## Check if it's a node
+    is_node <- which(tree$node.label == node)
+    ## Return the node or the tip
+    return(ifelse(length(is_node) > 0, is_node + Ntip(tree), which(tree$tip.label == node)))
+}
+
+## Get the node ID out of a tree (i.e. from a parent tree)
+get.node.ID.expand <- function(node, tree, full_tree) {    
+    ## Get the expanded tree
+    tree_expand <- extract.clade(full_tree, node = node)
+    ## Expanded labels
+    labels_expand <- c(tree_expand$tip.label, tree_expand$node.label)
+    ## Get all the node IDs matching with the expanded labels
+    labels_expand_match <- sapply(labels_expand, get.node.ID, tree = tree)
+    ## Get the first match
+    match <- as.numeric(labels_expand_match[!is.na(labels_expand_match)][1])
+    return(match)
+}
+
+## Get the branch length
+get.branch.length <- function(node1, node2, tree, full_tree) {
+
+    ## Get the node IDs
+    node1_ID <- get.node.ID(node1, tree)
+    node2_ID <- get.node.ID(node2, tree)
+
+    ## Check the descendant node IDs (if NAs)
+    node2_ID <- ifelse(is.na(node2_ID), get.node.ID.expand(node2, tree, full_tree), node2_ID)
+
+    if(!is.na(node1_ID)) {
+        ## Return branch length
+        return(tree$edge.length[which(tree$edge[,1] == node1_ID & tree$edge[,2] == node2_ID)])   
+    } else {
+        ## Calculated branch length from not included nodes
+
+        ## Get it's ID in the full tree
+        no1_fulID <- get.node.ID(node1, full_tree)
+
+        ## Get it's ancestor
+        ancestor <- slice.tree_parent.node(full_tree, node1)
+        ## Get it's ancestor ID in the subtree
+        anc_subID <- get.node.ID(ancestor[1], tree)
+
+        ## If ancestor still not found in sub_tree, continue looping and record the ancestors
+        while(is.na(anc_subID)) {
+            ancestor <- c(slice.tree_parent.node(full_tree, ancestor[1]), ancestor)
+            anc_subID <- get.node.ID(ancestor[1], tree)
+        }
+
+        ## Get the distance between the slice and the closest ancestor (in the subtree)
+        distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
+
+        ## Get it's ID in the full tree
+        anc_fulID <- sapply(ancestor, get.node.ID, full_tree)
+        ## Adding the real ancestor
+        anc_fulID <- as.numeric(c(anc_fulID, no1_fulID))
+
+        ## Loop through the nodes to calculate distance2 (the distance between the closest ancestor and the real ancestor in the full tree)
+        distance2 <- 0
+        for(node in 1:(length(anc_fulID)-1)) {
+            distance2 <- distance2 + full_tree$edge.length[which(full_tree$edge[,1] == anc_fulID[node] & full_tree$edge[,2] == anc_fulID[node +1])]
+        }
+
+        ## Calculate the real distance from node to slice
+        return(distance1 - distance2)
+    }
+}
 
 #Select the parent node of a tip
 slice.tree_parent.node <- function(tree, tip) {
@@ -51,6 +120,14 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
     return(offspring_node)
 }
 
+## Getting number of decimals for precision
+num.decimals <- function(x) {
+    x <- sub("0+$","",x)
+    x <- sub("^.+[.]","",x)
+    return(nchar(x))
+}
+
+
 #Modify the tree slicing by replacing the tips that are not at the cut by the parent node
 slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     parent_node <- slice.tree_parent.node(tree, tip)
@@ -60,25 +137,41 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     }
 
     #Test if there is another node between the MRCA (parent_node) and tip
-        try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-        while(exists("offspring_node")) {
-            #Compute the node ages
-            age_tree <- tree.age(tree)
-            age_slic <- tree.age(tree_slice)
-            #select the oldest node in tree_slice
-            root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
-            #calculate the slice age using the oldest node in tree_slice
-            age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
-            #extract the age of the offspring node
-            off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
-            if(off_nod_age > age) {
-                parent_node <- offspring_node
-                remove(offspring_node)
-                try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-            } else {
-                remove(offspring_node)
-            }
+    try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+    while(exists("offspring_node")) {
+
+        if(offspring_node == tip) {
+            ## The offspring is just the tip
+            return(parent_node)
         }
+
+        #Compute the node ages
+        age_tree <- tree.age(tree)
+        age_slic <- tree.age(tree_slice, fossil = FALSE)
+        #select the oldest node in tree_slice
+        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
+        #calculate the slice age using the oldest node in tree_slice
+        age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
+        #extract the age of the offspring node
+        off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
+        
+        precision <- num.decimals(c(off_nod_age, age))
+        ## If precision are different and not equal to at least 1
+        #if(length(precision) > 1 && sort(precision)[1] != 1) {
+        ## Round the node ages
+        num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
+        off_nod_age <- round(off_nod_age, digits = num_digits)
+        age <- round(age, digits = num_digits)
+        #}
+        
+        if(off_nod_age > age) {
+            parent_node <- offspring_node
+            remove(offspring_node)
+            try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+        } else {
+            remove(offspring_node)
+        }
+    }
     return(parent_node)
 }
 
@@ -90,65 +183,93 @@ slice.tree_ACCTRAN <- function(tree, tip, tree_slice) {
 }
 
 #Modify the tree slicing by replacing the tips that are not at the cut by the offspring node towards the tip
-slice.tree_GRADUAL <- function(tree, tip, tree_slice) {
+slice.tree_PROXIMITY <- function(tree, tip, tree_slice, probability = FALSE) {
     #Calculating both the DELTRAN and the ACCTRAN node
     DEL_node <- slice.tree_DELTRAN(tree, tip, tree_slice)
     ACC_node <- slice.tree_ACCTRAN(tree, tip, tree_slice)
 
     #If both nodes are the same (i.e slicing through the actual species), just return one
     if(DEL_node == ACC_node) {
-        return(DEL_node)
-    } else {
-        #Extract the distance between DEL_node and ACC_node on tree
-        #Creating the two sub clades
-        del_tree  <- extract.clade(tree, DEL_node)
-
-        if(any(tree$tip.label == ACC_node)) {
-            #Subclade irrelevant if ACC_node is a tip
-            ACC_tip <- TRUE
-            acc_tree <- list() ; acc_tree$tip.label <- ACC_node
+        if(probability) {
+            return(c(DEL_node, ACC_node, "1"))
         } else {
-            ACC_tip <- FALSE
-            acc_tree <- extract.clade(tree, ACC_node)
-        }
-        #Tips to drop (-1)
-        if(Ntip(del_tree) > 3) {
-            drop <- del_tree$tip.label[which(is.na(match(del_tree$tip.label, acc_tree$tip.label)))]
-            #keep one species
-            drop <- drop[-1]
-            del_tree <- drop.tip(del_tree, drop)
-        }
-
-        #Selecting the DEL_edge (root in del_tree) and the ACC_edge
-        DEL_edge <- Ntip(del_tree)+1
-        if(ACC_tip != TRUE) {
-            ACC_edge <- which(del_tree$node.label == ACC_node)+Ntip(del_tree)
-        } else {
-            ACC_edge <- which(del_tree$tip.label == ACC_node)
-        }
-
-        #Extracting the total edge length from DEL to ACC
-        total.edge.length <- del_tree$edge.length[which(apply(del_tree$edge, 1, function(x) all(x == c(DEL_edge, ACC_edge))))] #edge connecting DEL_node to ACC_node
-
-        #Calculate the terminal elements branch length and check if the tip is closer to the parent or offspring node.
-        terms <- tree_slice$edge[, 2] <= Ntip(tree_slice)
-        terminal.elements <- tree_slice$edge.length[terms]
-        names(terminal.elements) <- tree_slice$tip.label[tree_slice$edge[terms, 2]]
-
-        #Select the terminal edge for tip
-        terminal.edge <- sort(terminal.elements[match(acc_tree$tip.label, names(terminal.elements))])
-        names(terminal.edge) <- NULL
-
-        #Choose ACC or DEL node
-        if(terminal.edge < total.edge.length/2) {
-            #cat(i, "-", tip, "\n", sep=" ")
-            #print(DEL_node)
             return(DEL_node)
+        }
+    } else {
+        ## Get branch lengths
+        full_edge <- get.branch.length(DEL_node, ACC_node, tree, full_tree = tree)
+        slice_edge <- get.branch.length(DEL_node, ACC_node, tree_slice, full_tree = tree)
+
+
+        if(probability) {
+            prob <- 1-slice_edge/full_edge
+            prob <- as.character(round(prob, digits = 10))
+            return(c(DEL_node, ACC_node, prob))
         } else {
-            #cat(i, "-", tip, "\n", sep=" ")
-            #print(ACC_node)
-            return(ACC_node)
+            return(ifelse(slice_edge < full_edge/2, DEL_node, ACC_node))
+        }
+    }
+}
+
+
+## Slicing through a single edge
+slice.edge <- function(tree, age, model) {
+    ## Get the edges length (depth)
+    edges_depth <- node.depth.edgelength(tree)
+
+    ## Correct with the root.age
+    edges_depth <- max(edges_depth)-edges_depth
+    if(!is.null(tree$root.time)) {
+        edges_depth <- edges_depth + abs(max(edges_depth) - tree$root.time)
+    }
+    
+    ## Find which edge gets sliced
+    edge_slice <- tree$tip.label[which(edges_depth < age)]
+    edge_slice <- edge_slice[!is.na(edge_slice)]
+
+    ## Get the upper node (after the slice)
+    upper_node <- getMRCA(tree, tip = edge_slice)
+    if(is.null(upper_node)) {
+        upper_node_name <- edge_slice
+        upper_node <- which(tree$tip.label == edge_slice)
+    } else {
+        upper_node_name <- tree$node.label[upper_node-Ntip(tree)]
+    }
+    ## Get the lower node name
+    lower_node_name <- slice.tree_parent.node(tree, upper_node_name)
+
+    if(any(model %in% c("equal.split", "gradual.split", "proximity"))) {
+        
+        ## Get the lower node ID
+        lower_node <- which(tree$node.label == lower_node_name) + Ntip(tree)
+
+        ## Get the total edge length
+        full_edge <- edges_depth[lower_node] - edges_depth[upper_node]
+
+        ## Get the slice edge
+        slice_edge <- edges_depth[lower_node] - age
+
+        if(model != "proximity") {
+            prob <- 1-slice_edge/full_edge
+            prob <- as.character(round(prob, digits = 10))
+            if(model == "gradual.split") {
+                return(c(lower_node_name, upper_node_name, prob))
+            } else {
+                return(c(lower_node_name, upper_node_name, "0.5"))
+            }
+        } else {
+            return(ifelse(slice_edge < full_edge/2, lower_node_name, upper_node_name))
         }
 
+    } else {
+        if(model == "random") {
+            return(sample(c(upper_node_name, lower_node_name), 1))
+        }
+        if(model == "acctran") {
+            return(upper_node_name)
+        }
+        if(model == "deltran") {
+            return(lower_node_name)
+        }
     }
 }

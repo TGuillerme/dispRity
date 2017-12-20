@@ -30,7 +30,7 @@ print.dispRity(disparity, all = TRUE)
 
 }
 \seealso{
-\code{\link{cust.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 \author{
 Thomas Guillerme

@@ -1,6 +1,6 @@
 #' @title Calculates disparity from a matrix.
 #'
-#' @description Calculates disparity on a matrix or subsamples of a matrix, where the disparity metric can be user specified.
+#' @description Calculates disparity on a matrix or subsets of a matrix, where the disparity metric can be user specified.
 #'
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
@@ -13,13 +13,13 @@
 #' This function outputs a \code{dispRity} object containing:
 #' \item{matrix}{the multidimensional space (a \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
-#' \item{disparity}{A \code{list} containing the disparity in each subsamples.}
+#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
+#' \item{disparity}{A \code{list} containing the disparity in each subsets.}
 #'
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
+#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsets}} or \code{\link{cust.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
 #' 
 #' \code{metric} should be input as a vector of functions.
 #' The functions are sorted and used by dimension-level from 3 to 1 (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -43,13 +43,13 @@
 #' bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
 #' dispRity(bootstrapped_data, metric = c(sum, variances))
 #'
-#' ## Calculating the disparity from a customised subsample
-#' ## Generating the subsamples
-#' customised_subsamples <- custom.subsamples(BeckLee_mat50,
+#' ## Calculating the disparity from a customised subset
+#' ## Generating the subsets
+#' customised_subsets <- custom.subsets(BeckLee_mat50,
 #'      list(group1 = 1:(nrow(BeckLee_mat50)/2),
 #'           group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
 #' ## Bootstrapping the data
-#' bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+#' bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
 #' ## Calculating the sum of variances
 #' sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 #' summary(sum_of_variances)
@@ -68,14 +68,14 @@
 # \dontrun{
 # ## Calculating disparity using one thread
 # system.time(dispRity(bootstrapped_data, metric = c(sum, variances)))
-# ## Bootstrapping a subsample of matrices using four threads
+# ## Bootstrapping a subset of matrices using four threads
 # system.time(dispRity(bootstrapped_data, metric = c(sum, variances),
 #      parallel = c(4, "SOCK")))
 # ## System time is significantly longer! Using parallel is only an improvement
 # ## for big datasets.
 # }
 #' 
-#' @seealso \code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -87,17 +87,17 @@
 # source("dispRity.metric.R")
 # source("dispRity.utilities.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.subsamples.R") ; source("time.subsamples_fun.R")
-# source("custom.subsamples.R") ; source("custom.subsamples_fun.R")
+# source("time.subsets.R") ; source("time.subsets_fun.R")
+# source("custom.subsets.R") ; source("custom.subsets_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_subsamples_simple <- time.subsamples(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
-# data_subsamples_boot <- boot.matrix(data_subsamples_simple, bootstraps = 11, rarefaction = c(5,6))
+# data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 # metric = c(sum, variances)
 # verbose = TRUE
-# data <- data_subsamples_boot
+# data <- data_subsets_boot
 
 dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
     ## ----------------------
@@ -171,13 +171,13 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         ## Data call had no metric calculated yet
         matrix_decomposition <- TRUE
 
-        ## Remove empty subsamples or with only one data point
-        elements <- unlist(lapply(lapply(data$subsamples, lapply, length), `[[`, 1))
+        ## Remove empty subsets or with only one data point
+        elements <- unlist(lapply(lapply(data$subsets, lapply, nrow), `[[`, 1))
         elements_keep <- which(elements > 1)
         removed_elements <- ifelse(length(elements_keep) != length(elements), TRUE, FALSE)
 
-        ## Lapply through the subsamples
-        lapply_loop <- data$subsamples[elements_keep]
+        ## Lapply through the subsets
+        lapply_loop <- data$subsets[elements_keep]
 
     } else {
         ## Data has already been decomposed
@@ -187,6 +187,16 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
 
         ## No removed elements
         removed_elements <- FALSE
+    }
+
+
+    ## Select the elements if probabilities are used
+    if(ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
+        ## Sample the elements
+        selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
+        for(subset in 1:length(selected_elements)) {
+            lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = 1)
+        }
     }
     
     # if(!do_parallel) {
@@ -201,17 +211,17 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
 
     ## Adding the removed elements as NAs
     if(removed_elements) {
-        ## Creating empty disparity subsamples
-        empty_disparity <- lapply(data$subsamples[which(elements <= 1)], lapply, function(x) ifelse(x, NA, NA))
+        ## Creating empty disparity subsets
+        empty_disparity <- lapply(data$subsets[which(elements <= 1)], lapply, function(x) ifelse(x, NA, NA))
 
-        ## Merging the two subsamples
+        ## Merging the two subsets
         disparity <- c(disparity, empty_disparity)
-        disparity <- disparity[match(names(data$subsamples), names(disparity))]
+        disparity <- disparity[match(names(data$subsets), names(disparity))]
 
         ## Prepare a warning message
         empty_group_names <- paste(names(which(elements <= 1)), collapse = ", ")
-        subsample <- ifelse(length(which(elements <=1)) > 1, "subsamples", "subsample")
-        warning(paste("Disparity not calculated for", subsample, empty_group_names, "(not enough data)."))
+        subset <- ifelse(length(which(elements <=1)) > 1, "subsets", "subset")
+        warning(paste("Disparity not calculated for", subset, empty_group_names, "(not enough data)."))
     }
 
     ## Update the disparity

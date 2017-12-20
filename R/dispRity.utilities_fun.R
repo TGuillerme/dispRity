@@ -1,19 +1,19 @@
 ## Extracting a specific rarefaction level
-extract.disparity.values <- function(subsamples, data, rarefaction, concatenate) {
+extract.disparity.values <- function(subsets, data, rarefaction, concatenate) {
     ## Get the rarefaction level
     if(rarefaction != FALSE) {
-        rarefaction = as.numeric(which(lapply(data$subsamples[[subsamples]][-1], nrow) == rarefaction) + 1)
+        rarefaction = as.numeric(which(lapply(data$subsets[[subsets]][-1], nrow) == rarefaction) + 1)
         if(length(rarefaction) == 0) {
-            ## No rarefaction level for this subsample
+            ## No rarefaction level for this subset
             return(NULL)
         }
     } else {
         rarefaction = 2
     }
     if(concatenate) {
-        return(list(as.numeric(data$disparity[[subsamples]][[rarefaction]])))
+        return(list(as.numeric(data$disparity[[subsets]][[rarefaction]])))
     } else {
-        return(lapply(seq_len(ncol(data$disparity[[subsamples]][[rarefaction]])), function(col) data$disparity[[subsamples]][[rarefaction]][,col]))
+        return(lapply(seq_len(ncol(data$disparity[[subsets]][[rarefaction]])), function(col) data$disparity[[subsets]][[rarefaction]][,col]))
     }
 }
 
@@ -28,44 +28,61 @@ recursive.sort <- function(data, sort) {
     return(data[sort])
 }
 
-## Merging two subsamples
-merge.two.subsamples <- function(subs1, subs2, data) {
-    ## Get the list of new subsamples
-    new_subsample <- list("elements" = matrix(unique(c(data$subsamples[[subs1]]$elements, data$subsamples[[subs2]]$elements, ncol = 1))))
-    ## Replace the second subsample with the new one
-    data$subsamples[[subs2]] <- new_subsample
+## Merging two subsets
+merge.two.subsets <- function(subs1, subs2, data) {
+    ## Get the list of new subsets
+    new_subset <- list("elements" = matrix(unique(c(data$subsets[[subs1]]$elements, data$subsets[[subs2]]$elements, ncol = 1))))
+    ## Replace the second subset with the new one
+    data$subsets[[subs2]] <- new_subset
     ## Rename it
-    names(data$subsamples)[subs2] <- paste(names(data$subsamples)[subs1], names(data$subsamples)[subs2], sep = "-") 
+    names(data$subsets)[subs2] <- paste(names(data$subsets)[subs1], names(data$subsets)[subs2], sep = "-") 
     ## Remove the former
-    data$subsamples[[subs1]] <- NULL
+    data$subsets[[subs1]] <- NULL
     return(data)
 }
 
-## Check subsample availability
-check.subsamples <- function(subsamples, data) {
-    if(length(subsamples) > length(data$subsamples)) {
-        stop("Not enough subsamples in the original data.")
+## Check subset availability
+check.subsets <- function(subsets, data) {
+    if(length(subsets) > length(data$subsets)) {
+        stop("Not enough subsets in the original data.")
     } else {
-        if(class(subsamples) == "numeric" | class(subsamples) == "integer") {
-            if(any(is.na(match(subsamples, 1:length(data$subsamples))))) {
+        if(class(subsets) == "numeric" | class(subsets) == "integer") {
+            if(any(is.na(match(subsets, 1:length(data$subsets))))) {
 
-                subsamples <- subsamples[which(is.na(match(subsamples, 1:length(data$subsamples))))]
-                orthograph <- ifelse(length(subsamples) == 1, "Subsample", "Subsamples")
-                stop(paste(orthograph, paste(subsamples, collapse = ", "), "not found."))
+                subsets <- subsets[which(is.na(match(subsets, 1:length(data$subsets))))]
+                orthograph <- ifelse(length(subsets) == 1, "Subsample", "Subsamples")
+                stop(paste(orthograph, paste(subsets, collapse = ", "), "not found."))
 
             }
         } else {
-            if(class(subsamples) == "character") {
-                if(any(is.na(match(subsamples, names(data$subsamples))))) {
+            if(class(subsets) == "character") {
+                if(any(is.na(match(subsets, names(data$subsets))))) {
 
-                    subsamples <- subsamples[which(is.na(match(subsamples, names(data$subsamples))))]
-                    orthograph <- ifelse(length(subsamples) == 1, "Subsample", "Subsamples")
-                    stop(paste(orthograph, paste(subsamples, collapse = ", "), "not found."))
+                    subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
+                    orthograph <- ifelse(length(subsets) == 1, "Subsample", "Subsamples")
+                    stop(paste(orthograph, paste(subsets, collapse = ", "), "not found."))
 
                 }
             } else {
-                stop("subsamples argument must be of class \"numeric\" or \"character\".")
+                stop("subsets argument must be of class \"numeric\" or \"character\".")
             }
         }
     }
+}
+
+## Detecting the bin age lower or greater than a value
+detect.bin.age <- function(data, value, greater = FALSE) {
+    ## Detect the bin before the extinction time
+    bin_times <- unlist(sapply(names(data$subsets), strsplit, split = " - ", simplify = FALSE), recursive = FALSE)
+
+    ## Detecting the bin age
+    detect.bin.ages.lapply <- function(one_bin, value, greater) {
+        if(greater) {
+            return(ifelse(as.numeric(one_bin)[2] >= value, TRUE, FALSE))
+        } else {
+            return(ifelse(as.numeric(one_bin)[1] <= value, TRUE, FALSE))
+        }
+    }
+
+    return(unlist(lapply(bin_times, detect.bin.ages.lapply, value, greater)))
 }
