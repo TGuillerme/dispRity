@@ -126,7 +126,7 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
         This causes biologists to either reduce these \hl{to} a manageable number of variables or, increasingly, to use multivariate toolkits.
         One such toolkit is based on creating a multidimensional space where the variables are the \hl{axes}.
         It is then possible to \hl{measure divers aspects of the distribution of some observation (e.g. species) in this space}.
-        For example, if studying morphology, one can create a morphospace for two groups of species, measure \hl{the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not}.
+        For example, if studying morphology, one can create a morphospace for two groups of species, measure \hl{the volume occupied by each of these groups and then test whether these two volumes are significantly different or not}.
 
         \item There are as many definition of these multidimensional spaces, metrics and tests as there are questions that can be tackled with such methods.
         Many of these methods are implemented in specific software or R packages.
@@ -163,9 +163,9 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
 Biological data are complex.
 To understand the ecology and evolution of species we must use multiple variables that inevitably covary with each other through time and space.
 One solution to this problem is to analyse these data in a multivariate framework \citep[e.g.][]{price2015predation,diaz2016global}.
-Such analyses aim to capture the complex multidimensionality of biological data, while still providing outputs that are interpretable in our physical world restricted to three dimensions.
-These multivariate analyses can be used to investigate changes in morphological diversity through time \citep{Close2015}, competitive replacement scenarios \citep{Brusatte12092008}, relationships among form and function \citep{diaz2016global} and even to describe the entirety of possible shapes for a group of organisms \citep{raup1966geometric}.
-The biological variables in such analyses are equally diverse, including morphological traits (discrete traits like the presence or absence of a character, e.g. \citealt{brusattedinosaur2012}; and continuous traits such as lengths, e.g. \citealt{price2015predation}), life history traits \citep[e.g.][]{diaz2016global}, or even ecosystem properties \citep[e.g.][]{DonohueDim}. 
+Such analyses aim to capture the complex multidimensionality of biological data, while still providing outputs that are interpretable.
+These multivariate analyses can be used to investigate changes in morphological diversity through time \citep[e.g][]{Close2015}, competitive replacement scenarios \citep[e.g.][]{Brusatte12092008}, relationships among form and function \citep[e.g.][]{diaz2016global} and even to describe the entirety of possible shapes for a group of organisms \citep[e.g.][]{raup1966geometric}.
+The biological variables in such analyses are equally diverse, including morphological traits (discrete traits like the presence or absence of a character, e.g. \citealt{Close2015}; and continuous traits such as lengths, e.g. \citealt{price2015predation}), life history traits \citep[e.g.][]{diaz2016global}, or even ecosystem properties \citep[e.g.][]{DonohueDim}. 
 
 % Variety of multidimensional spaces, metrics and tests
 In all these analysis, each set of multivariate traits forms a multidimensional space.
@@ -188,7 +188,7 @@ In all these analysis, each set of multivariate traits forms a multidimensional 
 \citealt{Liow2004,DonohueDim}
 \hl{).}
 The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
-For example, when using morphological traits the multivariate space will be a morphospace, when using ecological traits it may be referred to as an ecospace or trait space.
+For example, when using morphological traits the space will be a morphospace, when using ecological traits it may be referred to as an ecospace, etc.
 
 \hl{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupies more space than group B?'').
 This requires the definition of a proxy for space occupancy: the disparity metric}
@@ -215,14 +215,14 @@ multidimensional permutation tests
 \hl{; e.g. in }
 \citealt{diaz2016global}
 \hl{)}
-or even simply by looking at the confidence interval overlaps between disparity measurements
+or even, less rigorously, by looking at the confidence interval overlaps between disparity measurements
 \hl{().}
 In summary, there are many different ways to perform each step of a multidimensional analysis, making analyses of complexity ever more complex.
 
 % Problems with this variety
-In theory, this multitude of ways to generate and define multidimensional spaces, measure disparity within and analyse these metrics is not an issue, in fact, it allows researchers to choose both the most appropriate method for their question or data, or even to test their question using multiple methods \citep[such as][for biogeography]{matzke2013biogeobears}.
+In theory, this multitude of ways to generate and define multidimensional spaces, measure disparity within and analyse these metrics is not an issue, in fact, it allows researchers to choose both the most appropriate method for their question or data, or even to test their question using multiple methods.
 In practice, however, this is hampered by existing software implementations.
-Although many software packages exist for multidimensional analysis \citep[e.g.][]{navarro2003MDA,bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,adams2013geomorph,Claddis,adams2017geometric},
+Although many software packages exist for multidimensional analysis \citep[e.g.][]{navarro2003MDA,bouxin2005ginkgo,de2007ginkgo,oksanen2007vegan,geiger2008,adams2013geomorph,Claddis,adams2017geometric},
 \hl{package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric to best it their needs (i.e. data, hypothesis, etc.) making the implementations sometimes hard to adapt to different needs.}
 For example, in the excellent and widely used \texttt{geomorph} package, morphological disparity analysis uses the \texttt{morphol.disparity} function that defines the multidimensional space as the ordination of the Procrustes transform of the morphometric data, the disparity metric
 \hl{as the relative sum of the diagonal of the covariance of the ordination scores (Procrustes variance)}
@@ -231,15 +231,14 @@ For example, in the excellent and widely used \texttt{geomorph} package, morphol
 This can lead to inappropriate analyses by users confined by the existing software implementations. %Oh no!
 
 % Here comes the solution!
-The aim of the \disp package is to solve such problems by providing a completely flexible framework for studying multidimensional data.
+The aim of the \disp package is avoid such problems by providing a completely flexible framework for studying multidimensional data.
 This package is based on a highly modular architecture where each crucial decision in multidimensional analysis (which data, which metric and which test) can be provided by the user.
 It implements many commonly used metrics and definitions of disparity, as well as providing a simple interface for users to implement their own disparity functions.
 The package is described here for the use of discrete morphological data diversity analysis but can be generalised to any type of multidimensional data (see the package vignette for more examples).
 
 \section{Description}
 In brief, the package takes a \texttt{matrix} object (the multidimensional space), 
-\hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}
-(see Manuals and Vignettes below).
+\hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}.
 Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow}).
 \hl{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements} \citep[e.g. the multidimensional space can be a distance matrix][]{Close2015}.
 
@@ -249,29 +248,6 @@ Some additional functions modify the multidimensional space, for example by divi
 \caption{\disp package workflow: rectangles represent matrices; ellipses represent functions; plain black arrows indicate input/output; dashed grey arrows indicate output (though the summary, plot, and test function cannot be applied if no disparity has been calculated).}
 \label{Fig:workflow}
 \end{figure}
-
-% \begin{table}
-%     \begin{tabular}{ll}
-%         \hline
-%         Function & Description \\ 
-%         \hline
-%         \texttt{geomorph.ordination} & Imports \hl{shape} data from the \texttt{geomorph} package. \\
-%         \texttt{Claddis.ordination} & Imports \hl{discrete morphological} data from the \texttt{Claddis} package. \\
-%         \texttt{custom.subsets} & Separates data into custom subsets. \\
-%         \texttt{time.subsets} & Separates data into time subsets. \\
-%         \texttt{boot.matrix} & Bootstraps and rarefies a matrix or a \disp object. \\
-%         \disp & Calculates disparity from an matrix or a \disp object. \\
-%         \texttt{summary.dispRity} & Summarises a \disp object. \\
-%         \texttt{plot.dispRity} & Plots a \disp object. \\
-%         \texttt{test.dispRity} & Applies statistical tests to a \disp object.\\
-%         \texttt{dispRity.per.group} & Pipeline for \hl{disparity-within-groups} analysis. \\
-%         \texttt{dispRity.through.time} & Pipeline for disparity-through-time analysis. \\
-%         \hline
-%     \end{tabular}
-%     \caption{Main functions in the \disp package.}
-%     \label{Tab:main_fun}
-% \end{table}
-
 
 \begin{landscape}
 \begin{table}
@@ -290,7 +266,6 @@ Some additional functions modify the multidimensional space, for example by divi
     \label{Tab:terms}
 \end{table}
 \end{landscape}
-
 
 \subsection{Measuring disparity}
 The \disp function measures disparity of any multidimensional space (of class \texttt{matrix} or \texttt{data.frame}) where the columns correspond to the dimensions and the rows correspond to the elements present in the space.
@@ -342,7 +317,7 @@ There is no limitation on the metric dimensions only that at least one dimension
     % \label{Tab:metrics}
 \end{table}
 
-\textbf{Table 1 (caption):} Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO/PCoA (\textit{not} PCA).
+\textbf{Table 1 (caption):} Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO (\textit{not} PCA).
 \label{Tab:metrics}
 
 %TODO: Add the proper sources for the convhulln and vegan packages
@@ -375,9 +350,8 @@ When a slice occurs not on a tip or a node, \hl{six} methods are available to se
 
 \hl{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
-These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
-Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).
-See Guillerme \& Cooper \textit{in review} for full description}
+There is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).
+See Guillerme \& Cooper \textit{in review} for full description.}
 
 \subsection{Bootstrapping and rarefying}
 Disparity measurement can be influenced by sampling \citep{Butler2012}.
@@ -395,20 +369,20 @@ In practice, rarefaction limits the number of elements to be drawn for each boot
 
 \subsection{Interpreting results}
 The functions above all generate a \disp object that can be summarised or plotted using the \texttt{S3} method functions \texttt{summary.dispRity} and \texttt{plot.dispRity} (provided disparity was calculated).
-These results can then be analysed using the \texttt{test.dispRity} function for comparing subsets or testing hypotheses.
+These results can also be analysed using the \texttt{test.dispRity} function for comparing subsets or testing hypotheses.
 
 \subsubsection{Summarising and plotting}
 The \texttt{summary.dispRity} and \texttt{plot.dispRity} functions allow users to set which central tendency and which quantiles should be represented.
 % as common arguments which central tendency (e.g. if central tendency is the mean and disparity was calculated as the sum of the variances for each dimensions, the central disparity tendency would be the mean of the sum of the variances) and the quantiles to represent (in the same example, if the quantile chosen is the 50th, these functions will also display 50\% of the sum of variances around the mean).
 Additionally, the \texttt{plot.dispRity} function graphically represents the summarised results using different representations: (1) ``continuous'' for displaying continuous disparity curves (in the case of disparity-through-time analysis for example) and (2) ``box'', ``lines'', or ``polygons'' to display them using boxplots, confidence interval lines or polygons respectively.
 Additional arguments specific to \disp objects can also be used such as \texttt{observed} to display the observed disparity (i.e. non-bootstrapped) or \texttt{rarefaction} to only plot the disparity for a certain number of elements (i.e. the rarefaction level).
-The function can also take any additional graphic arguments (\texttt{main}, \texttt{xlab}, \texttt{col}, etc...) from base R.
+The function can also take any additional graphic arguments (\texttt{main}, \texttt{xlab}, \texttt{col}, etc...) from base \texttt{R}.
 % Note that if the disparity has been calculated on fully rarefied data (using \texttt{boot.matrix(data, rarefaction = TRUE)} prior to calculating disparity), the rarefaction curves for the whole multidimensional space (or its sub-samples) can be plotted using \texttt{rarefaction = ``plot''}.
 
 \subsubsection{Testing hypotheses}
 The \texttt{test.dispRity} function allows users to test hypotheses on the disparity data (e.g. by comparing the different subsets to each other).
 Similarly to the \disp function described above, this function can take any test defined by the user or from other R packages.
-The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets} - this can be used for \texttt{lm} or \texttt{glm}) or (5) any list of pairs (or more) of subsets to compare.
+The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets} - this can be used for \texttt{lm} class functions) or (5) any list of pairs (or more) of subsets to compare.
 
 Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff};][]{Bhattacharyya,GuillermeCooper}, a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}) 
 \hl{as well as a wrapper for the \texttt{vegan::adonis}}
@@ -616,7 +590,7 @@ Similarly to the example above, it is also possible to statistically test this h
               & Df & Sum Sq & Mean Sq & F Model & R2   & Pr($>$F) \\ 
   \hline
     time      & 2  &  7.50 & 3.75     & 2.06    & 0.11 & <0.01 *** \\ 
-    Residuals & 34 & 61.82 & 1.81     &         & 0.89 & \\ 
+    Residuals & 34 & 61.82 & 1.81     &         & 0.89 & \\
     Total     & 36 & 69.32 &          &         & 1.00 & \\ 
    \hline
 \end{tabular}
