@@ -2,19 +2,24 @@
 title: "Getting started with dispRity"
 author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
+bibliography: [References.bib, packages.bib]
 output:
   html_document: default
   pdf_document: default
 ---
 
-
 # Getting started with `dispRity`
 
 ## What sort of data does `dispRity` work with?
 
-Disparity can be estimated from pretty much any matrix.
-Classically, however, it is measured from ordinated matrices.
-These matrices can be from any type of ordination (PCO, PCA, PCoA, MDS, etc.) as long as they have your element names as rows (taxa, experiments, countries etc.) and your ordination axes as columns (the dimensions of your dataset).
+**Any matrix object in `R`.**
+Disparity can be estimated from pretty much any matrix as long as rows represent the elements and columns the dimensions.
+These matrices can be observations, pairwise differences between elements, ordinations, etc...
+
+## Ordinated matrices
+
+Classically, when a high number of variables is used, disparity is calculated from ordinated matrices.
+These can be any type of ordinations (PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa, countries, field experiments) and the dimensions are the columns.
 
 ### Ordination matrices from `Claddis`
 

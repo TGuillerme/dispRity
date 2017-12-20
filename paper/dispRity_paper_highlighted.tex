@@ -240,7 +240,7 @@ The package is described here for the use of discrete morphological data diversi
 In brief, the package takes a \texttt{matrix} object (the multidimensional space), 
 \hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}
 (see Manuals and Vignettes below).
-Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow}).% and Table \ref{Tab:main_fun}).
+Some additional functions modify the multidimensional space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow}).
 \hl{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements} \citep[e.g. the multidimensional space can be a distance matrix][]{Close2015}.
 
 \begin{figure}[!htbp]
@@ -376,7 +376,8 @@ When a slice occurs not on a tip or a node, \hl{six} methods are available to se
 \hl{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
-Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).}
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).
+See Guillerme \& Cooper \textit{in review} for full description}
 
 \subsection{Bootstrapping and rarefying}
 Disparity measurement can be influenced by sampling \citep{Butler2012}.
@@ -450,31 +451,41 @@ The package contains a dataset that is a subset from \cite{beckancient2014} and 
 In this example, the multidimensional space is defined as a morphospace: the ordination of the distances among discrete morphological characters for 50 mammal species \citep[from][]{beckancient2014}.
 Additionally, we can define disparity as the sum of the variances on each dimension \citep{foote1991morphological,Wills1994} that will represent an aspect of the the volume of the morphospace (i.e. a large sum of variances approximates a large morphospace and vice versa).
 
-\subsection{Typical disparity among groups analysis}
+\subsection{Example}
+
+The \texttt{R} script for the following example is available in the supplementary materials.
+
+\subsubsection{Typical disparity among groups analysis}
 One typical question with such analysis would be to test whether two groups of species have a different disparity.
 For example, using the data described above, we can test whether the crown mammals are more diverse in term of morphology than the stem ones.
 In other words, whether the approximation of the volume within the morphospace (the disparity as defined above) is different in crown or stem mammals.
 
-\noindent These two groups can be defined using one the package's utility functions, \texttt{crown.stem} that selects :
+\hl{\noindent These two groups can be defined using one the package's utility functions, \texttt{crown.stem} that separate the crown and stem species given a phylogeny (allowing to ignore the nodes or not):}
 
-\noindent \texttt{> mammal\_groups <- crown.stem(BeckLee\_tree)}
+\noindent
+\hl{\texttt{> mammal\_groups <- crown.stem(BeckLee\_tree, inc.nodes = FALSE)}}
 
 \noindent It is then possible to measure the disparity between the two groups as follows:
 
-\noindent \texttt{> disparity <- dispRity.per.group(data = BeckLee\_mat50, group = mammal\_groups, metric = c(sum, variances))}
+\noindent
+\texttt{> disparity <- dispRity.per.group(data = BeckLee\_mat50,}\\
+\texttt{group = mammal\_groups, metric = c(sum, variances))}
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> subsets <- custom.subsets(data = BeckLee\_mat50, group = mammal\_groups)}\\
-\noindent \texttt{> bootstraps <- boot.matrix(subsets)}\\
-\noindent \texttt{> disparity <- dispRity(bootstraps, metric = c(sum, variances))}\\
+\noindent
+\texttt{> subsets <- custom.subsets(data = BeckLee\_mat50, group = mammal\_groups)}\\
+\noindent
+\texttt{> bootstraps <- boot.matrix(subsets)}\\
+\noindent
+\texttt{> \hl{disparity2} <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
 \noindent Which allows a finer tuning of the optional arguments in each function.
 The three arguments here are defined as follows: \texttt{data = BeckLee\_mat50} is our definition of the multidimensional space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity. 
 
 This function returns a \disp object that summarises the disparity analysis:
 
-\noindent \texttt{> disparity}\\
+\noindent \texttt{> \hl{disparity2}}\\
 \noindent \texttt{ ---- dispRity object ---- }\\
 \noindent \texttt{2 customised subsets for 50 elements with 48 dimensions:}\\
           \texttt{crown, stem.}\\
@@ -492,7 +503,7 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
 % bootstraps <- boot.matrix(subsets)
 % disparity <- dispRity(bootstraps, metric = c(sum, variances))
 
-\noindent \texttt{> summary(disparity)}
+\noindent \texttt{> summary(\hl{disparity2)}}
 
 \begin{table}[ht]
 \centering
@@ -504,11 +515,13 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
   2 & stem &  20 & 1.72 & 1.63 & 1.53 & 1.60 & 1.66 & 1.69 \\ 
    \hline
 \end{tabular}
-\caption{Summarising a \disp object (disparity per groups). $n$ is the number of elements per subsets, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and 95\% are the confidence intervals.}
+\caption{Summarising a \disp object (disparity per groups). $n$ is the number of elements per subsets, $obs$ the observed disparity (not bootstrapped), $bs.median$ is the median bootstrapped disparity (here the median of the sum of ranges) and the 2.5, 25, 75 and
+\hl{97.5}
+\% are the confidence intervals.}
 \label{Tab:summary_group}
 \end{table}
 
-\noindent \texttt{> plot(disparity)}
+\noindent \texttt{> plot(\hl{disparity2)}}
 
 \begin{figure}[!htbp]
 \centering
@@ -520,7 +533,7 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
 As we can see from the summary table (Table \ref{Tab:summary_group}) and the plot (\ref{Fig:plot_group}), there seems to be a significant difference in morphospace volume occupied between the two groups.
 It is possible to test this hypothesis by using, for example, a non-parametric Wilcoxon test (\texttt{stats::wilcox.test}):
 
-\noindent \texttt{> test.dispRity(disparity, test = wilcox.test)}\\
+\noindent \texttt{> test.dispRity(\hl{disparity2}, test = wilcox.test)}\\
 
 \noindent \texttt{[[1]]}\\
 \noindent \texttt{          statistic: W}\\
@@ -541,25 +554,29 @@ A
 question to this observation could be to test whether this difference is due to an overall change in disparity through time or not.
 In other words, did disparity increase through time in mammals globally or is it only between stem and crown mammals.
 Using the same definition of the multidimensional space and disparity as in the previous example, we can measure, for example, changes in disparity through time between the Late Cretaceous (100.5 to 66.0 million years ago - Mya), the Paleocene (66.0 to 56.0 Mya) and the Eocene (56.0 to 33.9 Mya).
+\hl{Note that stratigraphic times can be generated automatically using the \texttt{get.bin.ages} utility function.}
 
-\noindent \texttt{> time\_bins <- c(100.5, 66, 56, 33.9)}
+\noindent
+\texttt{> time\_bins <- c(100.5, 66, 56, 33.9)}
 
 It is then possible to measure disparity-through-time using the following function:
 
-\noindent \texttt{> disparity <- dispRity.through.time(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, metric = c(sum, variances))}
+\noindent
+\texttt{> \hl{disparity3} <- dispRity.through.time(data = BeckLee\_mat50,}\\
+\texttt{tree = BeckLee\_tree, time = time\_bins, metric = c(sum, variances))}
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> \hl{time\_subsets} <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree, time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
+\noindent \texttt{> \hl{time\_subsets} <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree,}\\ \texttt{time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
 \noindent \texttt{> \hl{bootstraps2} <- boot.matrix(\hl{time\_subsets})}\\
-\noindent \texttt{> \hl{disparity2} <- dispRity(\hl{bootstraps2}, metric = c(sum, variances))}\\
+\noindent \texttt{> \hl{disparity4} <- dispRity(\hl{bootstraps2}, metric = c(sum, variances))}\\
 
 \noindent The arguments \texttt{data = BeckLee\_mat50} and \texttt{metric = c(sum, variances)} are the same as in the example above.
 However, in this type of analysis, we also need to have additional arguments: the \texttt{time = time\_bins} indicates the boundaries of the different time bins, the \texttt{tree = BeckLee\_tree} argument provides information on the age of each element and \texttt{method = 'discrete'} indicates that the data is time-binned.
 
 Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:summary_time} and Fig. \ref{Fig:plot_time}):
 
-\noindent \texttt{> summary(\hl{disparity2})}
+\noindent \texttt{> summary(\hl{disparity4})}
 
 \begin{table}[ht]
 \centering
@@ -576,7 +593,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \label{Tab:summary_time}
 \end{table}
 
-\noindent \texttt{> plot(\hl{disparity2}, type = \textquotedbl continuous\textquotedbl)}
+\noindent \texttt{> plot(\hl{disparity4}, type = \textquotedbl continuous\textquotedbl)}
 
 \noindent Note that many plot options specific to \disp objects are available such as plotting disparity in a ``continuous'' fashion (inferring disparity between the time bins).
 
@@ -590,7 +607,7 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
 Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA \citep[PERMANOVA; ][]{permanova} through the \texttt{adonis.disprity} function that is a wrapper of the \texttt{vegan::adonis} function \citep{oksanen2007vegan} for \disp objects:
 
-\noindent \texttt{> test.dispRity(disparity2, test = adonis.dispRity)}
+\noindent \texttt{> test.dispRity(\hl{disparity4, test = adonis.dispRity)}}
 
 \begin{table}[ht]
 \centering
@@ -603,12 +620,15 @@ Similarly to the example above, it is also possible to statistically test this h
     Total     & 36 & 69.32 &          &         & 1.00 & \\ 
    \hline
 \end{tabular}
-\caption{Permanova output from \texttt{adonis.dispRity}:\\
-Call: vegan::adonis(formula = dist(matrix) \texttildelow time, data = disparity2, method = "euclidean"); Permutation: free; Number of permutations: 999; Terms added sequentially (first to last). Signif. codes:  0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1.}
+\caption{
+\hl{Permanova output from \texttt{adonis.dispRity}:\\
+Call: vegan::adonis(formula = dist(matrix) \texttildelow  time, data = disparity2, method = "euclidean"); Permutation: free; Number of permutations: 999; Terms added sequentially (first to last). Signif. codes:  0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1.}
+}
 \label{Tab:anova}
 \end{table}
 
 To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset.
+\hl{Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test}.
 
 \section{Additional information}
 \subsection{Manuals and vignette}
@@ -617,12 +637,14 @@ Information concerning each function can be found in R in the individual functio
 This manual contains substantially more information and detailed examples including a tutorial for a ``classic'' disparity analysis in palaeobiology as well as an introduction to the use of this package in ecology or other disciplines. 
 
 \subsection{Data simulations}
-This package also contains functions for simulating random discrete morphological matrices (\texttt{sim.morpho}) or random multidimensional spaces (\texttt{space.maker}).
-These functions are based on a similar modular architecture as that used by the \disp functions, allowing users to provide their own distribution parameters for the simulations.
-For example, \texttt{stats::rnorm} can be provided as an argument for drawing normal characters rates with \texttt{sim.morpho} or normally distributed multidimensional space with \texttt{space.maker}.
-The discrete morphological data simulations are based on protocols from \cite{GuillermeCooper}, \cite{OReilly20160081} and \cite{puttick2017uncertain}. 
-The multidimensional space simulations are based on the methods from \cite{diaz2016global}.
-Both functionalities are described in more details in the package manual.
+\hl{This package also contains functions for simulating random discrete morphological matrices (\texttt{sim.morpho}) or random multidimensional spaces (\texttt{space.maker}).}
+\hl{These functions are based on a similar modular architecture as that used by the \texttt{dispRity} functions, allowing users to provide their own distribution parameters for the simulations.}
+\hl{For example, \texttt{stats::rnorm} can be provided as an argument for drawing normal characters rates with \texttt{sim.morpho} or normally distributed multidimensional space with \texttt{space.maker}.}
+\hl{The discrete morphological data simulations are based on protocols from }
+\cite{GuillermeCooper}, \cite{OReilly20160081} and \cite{puttick2017uncertain}.
+\hl{The multidimensional space simulations are based on the methods from}
+\cite{diaz2016global}.
+\hl{Both functionalities are described in more details in the package manual.}
 
 % \subsection{Further directions} TG: maybe this section is useless
 % Further functionalities and improvement on current functionalities will be implemented in future versions.
@@ -638,14 +660,13 @@ The \disp object allows users to easily pipeline disparity analysis from the dat
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging the development of this package and helping with the writing of this paper and the package manuals.
-Thanks to David Bapst, Martin Brazeau, Andrew Jackson, Graeme Lloyd and Emma Sherratt for specific implementation ideas 
-\hl{and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive and encouraging comments on the manuscript}. %TG: add Graeme Lloyd, Dave Bapst and Emma Sherratt
-I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 – 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau 
+\hl{Thanks to David Bapst, Martin Brazeau, Andrew Jackson, Graeme Lloyd and Emma Sherratt for specific implementation ideas  and to Michael Collyer, Gavin Simpson and two other anonymous reviewers for constructive and encouraging comments on the manuscript}.
+I acknowledge support from European Research Council under the European Union's Seventh Framework Programme (FP/2007 - 2013)/ERC Grant Agreement number 311092 awarded to Martin D. Brazeau 
 \hl{and from the Discovery Project Grant DP170103227 awarded to Vera Weisbecker}.
 
 
 \section{Funding}
-This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007–2013)/ERC Grant Agreement number 311092 
+This work was funded by the European Research Council under the European Union's Seventh Framework Programme (FP/2007 - 2013)/ERC Grant Agreement number 311092 
 \hl{and the Discovery Project Grant number DP170103227}.
 
 \bibliographystyle{sysbio}

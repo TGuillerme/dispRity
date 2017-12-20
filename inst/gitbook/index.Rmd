@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
+bibliography: [References.bib, packages.bib]
 link-citations: yes
 github-repo: TGuillerme/dispRity
 description: "dispRity R package vignette"
@@ -20,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This is a package for measuring disparity in `R`.
 It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
 Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is *not* restricted to any type of matrices!
-This manual is based on the version `0.4.2`.
+This manual is based on the version `0.5.0`.
 
 ## What is `dispRity`?
 This is a modular package for measuring disparity in `R`.
@@ -56,7 +57,7 @@ library(dispRity)
 set.seed(123)
 ```
 
-Note this uses the `release` branch (version`0.4`). <!-- @@@ -->
+Note this uses the `release` branch (version`0.5`). <!-- @@@ -->
 For the piping-hot (but potentially unstable) version, you can change the argument `ref = release` to `ref = master`.
 `dispRity` depends mainly on the `ape` package and uses functions from several other packages (`ade4`, `geometry`, `grDevices`, `hypervolume`, `paleotree`, `snow`, `Claddis`, `geomorph` and `RCurl`).
 

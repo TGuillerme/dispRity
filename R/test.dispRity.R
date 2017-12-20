@@ -210,7 +210,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## correction
     check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-    if(!is.null(data$call$bootstrap) && correction == "none" && length(data$subsets) > 2) {
+    if(!is.null(data$call$bootstrap) && correction == "none" && length(data$subsets) > 2 && match_call$test != "adonis.dispRity") {
         warning("Multiple p-values will be calculated without adjustment!\nThis will inflate Type I error!")
     }
 

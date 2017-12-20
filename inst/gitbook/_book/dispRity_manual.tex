@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-12-05}
+  \date{2017-12-20}
 
 \usepackage{booktabs}
 
@@ -157,7 +157,7 @@ a single value or distribution describing a specific aspect of this
 multidimensional space (the disparity). Multidimensional spaces can be
 ordinated matrices from MDS, PCA, PCO, PCoA but the package is
 \emph{not} restricted to any type of matrices! This manual is based on
-the version \texttt{0.4.2}.
+the version \texttt{0.5.0}.
 
 \section{\texorpdfstring{What is
 \texttt{dispRity}?}{What is dispRity?}}\label{what-is-disprity}
@@ -201,7 +201,7 @@ You can install this package easily if you use the latest version of
 \end{Highlighting}
 \end{Shaded}
 
-Note this uses the \texttt{release} branch (version\texttt{0.4}). For
+Note this uses the \texttt{release} branch (version\texttt{0.5}). For
 the piping-hot (but potentially unstable) version, you can change the
 argument \texttt{ref\ =\ release} to \texttt{ref\ =\ master}.
 \texttt{dispRity} depends mainly on the \texttt{ape} package and uses
@@ -247,14 +247,14 @@ and the package description.
 
 \begin{itemize}
 \item
-  \textbf{Multidimensional space}. The mathematical multidimensional
-  object that will be analysed with this package. In morphometrics, this
-  is often referred to as the morphospace. However it may also be
-  referred to as the cladisto-space for cladistic data or the eco-space
-  for ecological data etc. In practice, this term designates a matrix
-  where the columns represent the dimensions of the space (often -- but
-  not necessarily - \textgreater{} 3!) and the rows represent the
-  elements within this space.
+  \textbf{Multidimensional space} (or just space). The mathematical
+  multidimensional object that will be analysed with this package. In
+  morphometrics, this is often referred to as the morphospace. However
+  it may also be referred to as the cladisto-space for cladistic data or
+  the eco-space for ecological data etc. In practice, this term
+  designates a matrix where the columns represent the dimensions of the
+  space (often -- but not necessarily - \textgreater{} 3!) and the rows
+  represent the elements within this space.
 \item
   \textbf{Elements}. The rows of the multidimensional space matrix.
   Elements can be taxa, field sites, countries etc.
@@ -270,7 +270,76 @@ and the package description.
   components of variation (the dimensions), we can create two subsets
   containing just mammals or birds, but with the same 50 dimensions, to
   compare disparity in the two clades.
+\item
+  \textbf{Disparity}. A metric expressing the
+  similarities/dissimilarities of the elements within the space or a
+  summarising the space dimensions. For example the pairwise distances
+  between elements or the range of each dimensions.
 \end{itemize}
+
+\section{Glossary equivalences in palaeobiology and
+ecology}\label{glossary-equivalences-in-palaeobiology-and-ecology}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+In this manual\strut
+\end{minipage} & \begin{minipage}[b]{0.20\columnwidth}\raggedright\strut
+In \texttt{dispRity}\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\raggedright\strut
+E.g. in palaeobiology\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedright\strut
+E.g. in ecology\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+the multidimensional space\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+a \texttt{matrix} object (\(n\times k\))\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
+a morphospace\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright\strut
+a function-space\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+elements\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+rows (\(n\))\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
+taxa\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright\strut
+field experiments\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+dimensions\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+columns (\(k\))\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
+morphological characters\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright\strut
+communities' compositions\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+subsets\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+a \texttt{matrix} (\(m \times k\), with \(m \leq n\))\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
+time series\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright\strut
+experimental treatments\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+disparity\strut
+\end{minipage} & \begin{minipage}[t]{0.20\columnwidth}\raggedright\strut
+a \texttt{function}\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\raggedright\strut
+sum of variances\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedright\strut
+ellipsoid volume\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
 
 \chapter{\texorpdfstring{Getting started with
 \texttt{dispRity}}{Getting started with dispRity}}\label{getting-started-with-disprity}
@@ -278,11 +347,17 @@ and the package description.
 \section{\texorpdfstring{What sort of data does \texttt{dispRity} work
 with?}{What sort of data does dispRity work with?}}\label{what-sort-of-data-does-disprity-work-with}
 
-Disparity can be estimated from pretty much any matrix. Classically,
-however, it is measured from ordinated matrices. These matrices can be
-from any type of ordination (PCO, PCA, PCoA, MDS, etc.) as long as they
-have your element names as rows (taxa, experiments, countries etc.) and
-your ordination axes as columns (the dimensions of your dataset).
+\textbf{Any matrix object in \texttt{R}.} Disparity can be estimated
+from pretty much any matrix as long as rows represent the elements and
+columns the dimensions. These matrices can be observations, pairwise
+differences between elements, ordinations, etc\ldots{}
+
+\section{Ordinated matrices}\label{ordinated-matrices}
+
+Classically, when a high number of variables is used, disparity is
+calculated from ordinated matrices. These can be any type of ordinations
+(PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa,
+countries, field experiments) and the dimensions are the columns.
 
 \subsection{\texorpdfstring{Ordination matrices from
 \texttt{Claddis}}{Ordination matrices from Claddis}}\label{ordination-matrices-from-claddis}
@@ -839,8 +914,10 @@ details).
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Loading the data}
-\KeywordTok{data}\NormalTok{(BeckLee_mat50) ; }\KeywordTok{data}\NormalTok{(BeckLee_mat99)}
-\KeywordTok{data}\NormalTok{(BeckLee_tree) ; }\KeywordTok{data}\NormalTok{(BeckLee_ages)}
+\KeywordTok{data}\NormalTok{(BeckLee_mat50)}
+\KeywordTok{data}\NormalTok{(BeckLee_mat99)}
+\KeywordTok{data}\NormalTok{(BeckLee_tree)}
+\KeywordTok{data}\NormalTok{(BeckLee_ages)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1042,6 +1119,10 @@ between and the ancestor and the descendants.
 ##     133.51104, 89.00736, 44.50368, 0.
 \end{verbatim}
 
+If you want to generate time subsets based on stratigraphy, the package
+proposes a useful functions to do it for you: \texttt{get.bin.ages}
+(check out the function's manual in \texttt{R})!
+
 \hypertarget{customised-subsets}{\section{Customised
 subsets}\label{customised-subsets}}
 
@@ -1053,9 +1134,8 @@ actual element names or their position in the matrix).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Creating the two groups as a list}
-\NormalTok{mammal_groups <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"crown"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{19}\OperatorTok{:}\DecValTok{41}\NormalTok{, }\DecValTok{45}\OperatorTok{:}\DecValTok{50}\NormalTok{),}
-                      \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{))}
+\NormalTok{## Creating the two groups (crown and stems)}
+\NormalTok{mammal_groups <-}\StringTok{ }\KeywordTok{crown.stem}\NormalTok{(BeckLee_tree, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{)}
 
 \NormalTok{## Separating the dataset into two different groups}
 \KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ mammal_groups)}
@@ -1068,16 +1148,32 @@ actual element names or their position in the matrix).
 ##     crown, stem.
 \end{verbatim}
 
-Elements can easily be assigned to different groups if necessary!
+Like in this example, you can use the utility function
+\texttt{crown.stem} that allows to automatically separate the crown and
+stems taxa given a phylogenetic tree. Also, elements can easily be
+assigned to different groups if necessary!
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Creating the three groups as a list}
-\NormalTok{mammal_groups <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"crown"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{19}\OperatorTok{:}\DecValTok{41}\NormalTok{, }\DecValTok{45}\OperatorTok{:}\DecValTok{50}\NormalTok{),}
-                      \StringTok{"stem"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{15}\NormalTok{, }\DecValTok{17}\OperatorTok{:}\DecValTok{18}\NormalTok{, }\DecValTok{42}\OperatorTok{:}\DecValTok{44}\NormalTok{).}
+\NormalTok{weird_groups <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"even"}\NormalTok{ =}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{1}\NormalTok{, }\DataTypeTok{to =} \DecValTok{49}\NormalTok{, }\DataTypeTok{by =} \DecValTok{2}\NormalTok{),}
+                      \StringTok{"odd"}\NormalTok{ =}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{2}\NormalTok{, }\DataTypeTok{to =} \DecValTok{50}\NormalTok{, }\DataTypeTok{by =} \DecValTok{2}\NormalTok{),}
                       \StringTok{"all"}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{50}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+The \texttt{custom.subsets} function can also take a phylogeny (as a
+\texttt{phylo} object) as an argument to create groups as clades:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Creating groups as clades}
+\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ BeckLee_tree)}
+\end{Highlighting}
+\end{Shaded}
+
+This automatically creates 49 (the number of nodes) groups containing
+between two and 50 (the number of tips) elements.
 
 \hypertarget{bootstraps-and-rarefactions}{\section{Bootstraps and
 rarefactions}\label{bootstraps-and-rarefactions}}
@@ -2385,7 +2481,7 @@ number of elements) by using the \texttt{rarefaction} argument.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-50-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2416,7 +2512,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2445,7 +2541,7 @@ central tendency.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2476,7 +2572,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2499,7 +2595,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2647,241 +2743,363 @@ Here we are using the variables generated in the
 ## 80 - 40 : 40 - 0      0.490448
 \end{verbatim}
 
-It is also possible to apply some more \emph{complex} tests that have
-their own output classes (like \texttt{stats::lm}).
-
-The results can then be analysed as usual using the associated
-\texttt{summary} S3 method:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{## Performing and linear model applied to the same data}
-\NormalTok{(slice_lm <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(disparity_time_slices, }\DataTypeTok{test =}\NormalTok{ lm,}
-                            \DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning in test.dispRity(disparity_time_slices, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Call:
-## test(formula = data ~ subsets, data = data)
-## 
-## Coefficients:
-## (Intercept)   subsets120    subsets40    subsets80  
-##      3.6216      -1.3756      -0.4873      -0.5747
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{## The output is a regular `lm` output}
-\KeywordTok{class}\NormalTok{(slice_lm)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "lm"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{## This output can be summarised using summary}
-\KeywordTok{summary}\NormalTok{(slice_lm)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-## Call:
-## test(formula = data ~ subsets, data = data)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1.13370 -0.13528  0.02831  0.15469  0.57698 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)  3.62157    0.02441  148.39   <2e-16 ***
-## subsets120  -1.37564    0.03451  -39.86   <2e-16 ***
-## subsets40   -0.48733    0.03451  -14.12   <2e-16 ***
-## subsets80   -0.57468    0.03451  -16.65   <2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 0.2441 on 396 degrees of freedom
-## Multiple R-squared:  0.8051, Adjusted R-squared:  0.8037 
-## F-statistic: 545.4 on 3 and 396 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-Of course, due to the modular design of the package, tests can always be
-made by the user (the same way disparity metrics can be user made). The
-only condition is that the test can be applied to at least two
-distributions. In practice, the \texttt{test.dispRity} function will
-pass the calculated disparity data (distributions) to the provided
-function in either pairs of distributions (if the \texttt{comparisons}
-argument is set to \texttt{pairwise}, \texttt{referential} or
-\texttt{sequential}) or a table containing all the distributions
+Because of the modular design of the package, tests can always be made
+by the user (the same way disparity metrics can be user made). The only
+condition is that the test can be applied to at least two distributions.
+In practice, the \texttt{test.dispRity} function will pass the
+calculated disparity data (distributions) to the provided function in
+either pairs of distributions (if the \texttt{comparisons} argument is
+set to \texttt{pairwise}, \texttt{referential} or \texttt{sequential})
+or a table containing all the distributions
 (\texttt{comparisons\ =\ all}; this should be in the same format as data
-passed to \texttt{lm} for example).
+passed to \texttt{lm}-type functions for example).
 
 \subsection{\texorpdfstring{NPMANOVA in
 \texttt{dispRity}}{NPMANOVA in dispRity}}\label{npmanova-in-disprity}
 
 One often useful test to apply to multidimensional data is the
 permutational multivariate analysis of variance based on distance
-matrices \texttt{vegan::adonis}.
+matrices \texttt{vegan::adonis}. This can be done on \texttt{dispRity}
+objects using the \texttt{adonis.dispRity} wrapper function. Basically,
+this function takes the exact same arguments as \texttt{adonis} and a
+\texttt{dispRity} object for data and performs a PERMANOVA based on the
+distance matrix of the multidimensional space (unless the
+multidimensional space was already defined as a distance matrix). The
+\texttt{adonis.dispRity} function uses the information from the
+\texttt{dispRity} object to generate default formulas:
+
+\begin{itemize}
+\tightlist
+\item
+  If the object contains customised subsets, it applies the default
+  formula \texttt{matrix\ \textasciitilde{}~group} testing the effect of
+  \texttt{group} as a predictor on \texttt{matrix} (called from the
+  \texttt{dispRity} object as \texttt{data\$matrix} see
+  \protect\hyperlink{The-dispRity-object-content}{\texttt{dispRitu}
+  object details})
+\item
+  If the object contains time subsets, it applies the default formula
+  \texttt{matrix\ \textasciitilde{}\ time} testing the effect of
+  \texttt{time} as a predictor (were the different levels of
+  \texttt{time} are the different time slices/bins)
+\end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(vegan)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: package 'vegan' was built under R version 3.4.3
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: permute
-\end{verbatim}
-
-\begin{verbatim}
-## 
-## Attaching package: 'permute'
-\end{verbatim}
-
-\begin{verbatim}
-## The following object is masked from 'package:devtools':
-## 
-##     check
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: lattice
-\end{verbatim}
-
-\begin{verbatim}
-## This is vegan 2.4-5
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{data}\NormalTok{(dune)}
-\KeywordTok{data}\NormalTok{(dune.env)}
-
-\NormalTok{## Beta diversity distance matrix}
-\NormalTok{betad <-}\StringTok{ }\KeywordTok{betadiver}\NormalTok{(dune, }\StringTok{"z"}\NormalTok{)}
-
-\NormalTok{## Create a pairwise distance matrix}
-\NormalTok{make.pairwise.dist.matrix <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix) \{}
-    \ControlFlowTok{if}\NormalTok{(}\KeywordTok{class}\NormalTok{(matrix) }\OperatorTok{==}\StringTok{ "matrix"} \OperatorTok{||}\StringTok{ }\KeywordTok{class}\NormalTok{(matrix) }\OperatorTok{==}\StringTok{ "data.frame"}\NormalTok{) \{}
-\NormalTok{        ## Simply calculate the distances}
-        \KeywordTok{return}\NormalTok{(}\KeywordTok{dist}\NormalTok{(matrix))}
-\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
-\NormalTok{        ## Transform the distances into a matrix}
-\NormalTok{        pair_distances <-}\StringTok{ }\NormalTok{matrix}
-\NormalTok{        pairwise_dist <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DataTypeTok{nrow =} \KeywordTok{nrow}\NormalTok{(matrix), }\DataTypeTok{ncol =} \KeywordTok{nrow}\NormalTok{(matrix))}
-        \KeywordTok{colnames}\NormalTok{(pairwise_dist) <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(pairwise_dist) <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(matrix)}
-        \KeywordTok{diag}\NormalTok{(pairwise_dist) <-}\StringTok{ }\DecValTok{0}
-\NormalTok{        pairwise_dist[}\KeywordTok{lower.tri}\NormalTok{(pairwise_dist)] <-}\StringTok{ }\NormalTok{pair_distances}
-\NormalTok{        pairwise_dist <-}\StringTok{ }\KeywordTok{as.dist}\NormalTok{(pairwise_dist)}
-\NormalTok{    \}}
-\NormalTok{\}}
-\NormalTok{pairwise_dist <-}\StringTok{ }\KeywordTok{make.pairwise.dist.matrix}\NormalTok{(dune)}
-
-\NormalTok{## Create the factor group}
-\NormalTok{factors <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{factor =}\NormalTok{ dune.env}\OperatorTok{$}\NormalTok{Management)}
-
-\NormalTok{## Testing adonis}
-\NormalTok{test1 <-}\StringTok{ }\KeywordTok{adonis}\NormalTok{(betad }\OperatorTok{~}\StringTok{ }\NormalTok{factor, factors)}
-\NormalTok{test2 <-}\StringTok{ }\KeywordTok{adonis}\NormalTok{(pairwise_dist }\OperatorTok{~}\StringTok{ }\NormalTok{factor, factors)}
-
-
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
-\NormalTok{## Check if it works for mammals data set}
-\KeywordTok{data}\NormalTok{(BeckLee_mat50)}
-\KeywordTok{data}\NormalTok{(BeckLee_tree)}
-\NormalTok{## Crown stem group}
-\NormalTok{crown_stem <-}\StringTok{ }\KeywordTok{crown.stem}\NormalTok{(BeckLee_tree, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{)}
-\NormalTok{## Dummy group}
-\NormalTok{group_sample <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{50}\NormalTok{, }\DecValTok{25}\NormalTok{)}
-\NormalTok{group1 <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(BeckLee_mat50)[group_sample]}
-\NormalTok{group2 <-}\StringTok{ }\KeywordTok{rownames}\NormalTok{(BeckLee_mat50)[}\OperatorTok{-}\NormalTok{group_sample]}
-\NormalTok{dummy_group <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{group1 =}\NormalTok{ group1, }\DataTypeTok{group2 =}\NormalTok{ group2)}
-\NormalTok{## Equal groups}
-\NormalTok{equal_group <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{groupA =} \KeywordTok{rownames}\NormalTok{(BeckLee_mat50), }\DataTypeTok{groupB =} \KeywordTok{rownames}\NormalTok{(BeckLee_mat50))}
+\NormalTok{## Generating a random character matrix}
+\NormalTok{character_matrix <-}\StringTok{ }\KeywordTok{sim.morpho}\NormalTok{(}\KeywordTok{rtree}\NormalTok{(}\DecValTok{20}\NormalTok{), }\DecValTok{50}\NormalTok{, }\DataTypeTok{rates =} \KeywordTok{c}\NormalTok{(rnorm, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
 
-\NormalTok{## Create the subsets}
-\NormalTok{subset_crown_stem <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ crown_stem)}
-\NormalTok{subset_dummy_group <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ dummy_group)}
-\NormalTok{subset_equal_group <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(BeckLee_mat50, }\DataTypeTok{group =}\NormalTok{ equal_group)}
+\NormalTok{## Calculating the distance matrix}
+\NormalTok{distance_matrix <-}\StringTok{ }\KeywordTok{as.matrix}\NormalTok{(}\KeywordTok{dist}\NormalTok{(character_matrix))}
 
-\NormalTok{## Calculate disparity}
-\NormalTok{disp_crown_stem <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_crown_stem, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
-\NormalTok{disp_dummy_group <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_dummy_group, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
-\NormalTok{disp_equal_group <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(subset_equal_group, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(median, centroids))}
+\NormalTok{## Creating two groups}
+\NormalTok{random_groups <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"group1"}\NormalTok{ =}\StringTok{ }\DecValTok{1}\OperatorTok{:}\DecValTok{10}\NormalTok{, }\StringTok{"group2"}\NormalTok{ =}\StringTok{ }\DecValTok{11}\OperatorTok{:}\DecValTok{20}\NormalTok{)}
 
-\KeywordTok{summary}\NormalTok{(disp_crown_stem)}
+\NormalTok{## Generating a dispRity object}
+\NormalTok{random_disparity <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(distance_matrix, random_groups)}
+
+\NormalTok{## Running a default NPMANOVA}
+\KeywordTok{adonis.dispRity}\NormalTok{(random_disparity)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##   subsets  n   obs
-## 1   crown 30 1.387
-## 2    stem 20 1.274
+## 
+## Call:
+## vegan::adonis(formula = matrix ~ group, data = random_disparity,      method = "euclidean") 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)  
+## group      1      16.5  16.500  1.3904 0.07171  0.095 .
+## Residuals 18     213.6  11.867         0.92829         
+## Total     19     230.1                 1.00000         
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{verbatim}
+
+Of course, it is possible to pass customised formulas if the disparity
+object contains more more groups. In that case the predictors must
+correspond to the names of the groups explained data must be set as
+\texttt{matrix}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(disp_dummy_group)}
+\NormalTok{## Creating two groups with two states each}
+\NormalTok{groups <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{10}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\DecValTok{10}\NormalTok{)),}
+         \DataTypeTok{nrow =} \DecValTok{20}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{dimnames =} \KeywordTok{list}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"t"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"g1"}\NormalTok{, }\StringTok{"g2"}\NormalTok{))))}
+
+\NormalTok{## Creating the dispRity object}
+\NormalTok{multi_groups <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(distance_matrix, groups)}
+
+\NormalTok{## Running the NPMANOVA}
+\KeywordTok{adonis.dispRity}\NormalTok{(multi_groups, matrix }\OperatorTok{~}\StringTok{ }\NormalTok{g1 }\OperatorTok{+}\StringTok{ }\NormalTok{g2)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##   subsets  n   obs
-## 1  group1 25 1.396
-## 2  group2 25 1.373
+## 
+## Call:
+## vegan::adonis(formula = matrix ~ g1 + g2, data = multi_groups,      method = "euclidean") 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)
+## g1         1      16.5  16.500 1.34921 0.07171  0.111
+## g2         1       5.7   5.700 0.46609 0.02477  0.998
+## Residuals 17     207.9  12.229         0.90352       
+## Total     19     230.1                 1.00000
 \end{verbatim}
+
+Finally, it is possible to use objects generated by
+\texttt{time.subsets}. In this case, \texttt{adonis.dispRity} will
+applied the \texttt{matrix\ \textasciitilde{}\ time} formula by default:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(disp_equal_group)}
+\NormalTok{## Creating time series}
+\NormalTok{time_subsets <-}\StringTok{ }\KeywordTok{time.subsets}\NormalTok{(BeckLee_mat50, BeckLee_tree, }
+     \DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{85}\NormalTok{, }\DecValTok{65}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+     \DataTypeTok{FADLAD =}\NormalTok{ BeckLee_ages)}
+
+\NormalTok{## Running the NPMANOVA with time as a predictor}
+\KeywordTok{adonis.dispRity}\NormalTok{(time_subsets)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##   subsets  n  obs
-## 1  groupA 50 1.39
-## 2  groupB 50 1.39
+## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity is a distance matrix.
+## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
+## Make sure that this is the desired methodological approach!
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## vegan::adonis(formula = dist(matrix) ~ time, data = time_subsets,      method = "euclidean") 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+## time       2     8.049  4.0245  2.1303 0.08311  0.001 ***
+## Residuals 47    88.792  1.8892         0.91689           
+## Total     49    96.841                 1.00000           
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Note that the function warns you that the input data was transformed
+into a distance matrix. This is reflected in the Call part of the output
+(\texttt{formula\ =\ dist(matrix)\ \textasciitilde{}\ time}).
+
+To use each time subset as a separate predictor, you can use the
+\texttt{matrix\ \textasciitilde{}\ time.subsets} formula; this is
+equivalent to
+\texttt{matrix\ \textasciitilde{}\ first\_time\_subset\ +\ second\_time\_subset\ +\ ...}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Running the NPMANOVA with each time bin as a predictor}
+\KeywordTok{adonis.dispRity}\NormalTok{(time_subsets, matrix }\OperatorTok{~}\StringTok{ }\NormalTok{time.subsets)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in adonis.dispRity(time_subsets, matrix ~ time.subsets): The input data for adonis.dispRity is a distance matrix.
+## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
+## Make sure that this is the desired methodological approach!
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## vegan::adonis(formula = dist(matrix) ~ time.subsets, data = time_subsets,      method = "euclidean") 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+## t100to85   1     3.090  3.0897  1.6354 0.03190  0.002 ** 
+## t85to65    1     4.959  4.9593  2.6251 0.05121  0.001 ***
+## Residuals 47    88.792  1.8892         0.91689           
+## Total     49    96.841                 1.00000           
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{geiger::dtt} model fitting in
+\texttt{dispRity}}{geiger::dtt model fitting in dispRity}}\label{geigerdtt-model-fitting-in-disprity}
+
+The \texttt{dtt} function from the \texttt{geiger} package is also often
+used to compare a trait's disparity observed in living taxa to the
+disparity of a simulated trait based on a given phylogeny. The
+\texttt{dispRity} package proposes a wrapper function for
+\texttt{geiger::dtt}, \texttt{dtt.dispRity} that allows the use of any
+disparity metric. Unfortunately, this implementation is slower that
+\texttt{geiger::dtt} (so if you're using the metrics implemented in
+\texttt{geiger} prefer the original version) and, as the original
+function, is limited to ultrametric trees (only living taxa!)\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(geiger)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: geiger
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Function for creating the factors table}
-\NormalTok{make.factors <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data) \{}
-\NormalTok{    ## Extracting the factors}
-\NormalTok{    factors <-}\StringTok{ }\KeywordTok{names}\NormalTok{(}\KeywordTok{sort}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{lapply}\NormalTok{(data}\OperatorTok{$}\NormalTok{subsets, }\ControlFlowTok{function}\NormalTok{(X) }\KeywordTok{return}\NormalTok{(X}\OperatorTok{$}\NormalTok{elements)))))}
-\NormalTok{    ## Trimming the factors names}
-\NormalTok{    group_names <-}\StringTok{ }\KeywordTok{names}\NormalTok{(data}\OperatorTok{$}\NormalTok{subsets)}
-    \ControlFlowTok{for}\NormalTok{(group }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(group_names)) \{}
-\NormalTok{        factors[}\KeywordTok{grep}\NormalTok{(group_names[group], factors)] <-}\StringTok{ }\NormalTok{group_names[group]}
-\NormalTok{    \}}
-    \KeywordTok{return}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{factor =}\NormalTok{ factors, }\DataTypeTok{row.names =} \KeywordTok{rownames}\NormalTok{(data}\OperatorTok{$}\NormalTok{matrix)))}
-\NormalTok{\}}
+\NormalTok{geiger_data <-}\StringTok{ }\KeywordTok{get}\NormalTok{(}\KeywordTok{data}\NormalTok{(geospiza))}
 
-\NormalTok{adonis.dispRity <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(data, ...) \{}
-\NormalTok{  ## Create the factor table}
-\NormalTok{  factors <-}\StringTok{ }\KeywordTok{make.factors}\NormalTok{(data)  }
-
-\NormalTok{  ## Run adonis}
-  \KeywordTok{return}\NormalTok{(}\KeywordTok{adonis}\NormalTok{(}\KeywordTok{make.pairwise.dist.matrix}\NormalTok{(data}\OperatorTok{$}\NormalTok{matrix)}\OperatorTok{~}\NormalTok{factor, factors, ...))}
-\NormalTok{\}}
+\NormalTok{## Calculate the disparity of the dataset using the sum of variance}
+\NormalTok{dispRity_dtt <-}\StringTok{ }\KeywordTok{dtt.dispRity}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ geiger_data}\OperatorTok{$}\NormalTok{dat, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances),}
+                             \DataTypeTok{tree =}\NormalTok{ geiger_data}\OperatorTok{$}\NormalTok{phy, }\DataTypeTok{nsim =} \DecValTok{100}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Warning in dtt.dispRity(data = geiger_data$dat, metric = c(sum,
+## variances), : The following tip(s) was not present in the data: olivacea.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(dispRity_dtt, }\DataTypeTok{fig.width=}\DecValTok{8}\NormalTok{, }\DataTypeTok{fig.height=}\DecValTok{8}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in plot.window(...): "fig.width" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in plot.window(...): "fig.height" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in plot.xy(xy, type, ...): "fig.width" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in plot.xy(xy, type, ...): "fig.height" is not a graphical
+## parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in axis(side = side, at = at, labels = labels, ...): "fig.width" is
+## not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in axis(side = side, at = at, labels = labels, ...): "fig.height"
+## is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in axis(side = side, at = at, labels = labels, ...): "fig.width" is
+## not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in axis(side = side, at = at, labels = labels, ...): "fig.height"
+## is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in box(...): "fig.width" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in box(...): "fig.height" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(...): "fig.width" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(...): "fig.height" is not a graphical parameter
+\end{verbatim}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+
+Note that, like in the original \texttt{dtt} function, it is possible to
+change the evolutionary model (see \texttt{?geiger::sim.char}
+documentation).
+
+\subsection{\texorpdfstring{null morphospace testing with
+\texttt{null.test}}{null morphospace testing with null.test}}\label{null-morphospace-testing-with-null.test}
+
+This test is equivalent to the test performed in \citet{diaz2016global}.
+It compares the disparity measured in the observed space to the
+disparity measured in a set of simulated spaces. These simulated spaces
+can be built with based on the hypothesis assumptions: for example, we
+can test whether our space is normal.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{## A "normal" multidimensional space with 50 dimensions and 10 elements}
+\NormalTok{normal_space <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{50}\NormalTok{)}
+
+\NormalTok{## Calculating the disparity as the average pairwise distances}
+\NormalTok{obs_disparity <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(normal_space, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(mean, pairwise.dist))}
+
+\NormalTok{## Testing against 100 randomly generated normal spaces}
+\NormalTok{(results <-}\StringTok{ }\KeywordTok{null.test}\NormalTok{(obs_disparity, }\DataTypeTok{replicates =} \DecValTok{100}\NormalTok{, }\DataTypeTok{null.distrib =}\NormalTok{ rnorm))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Monte-Carlo test
+## Call: [1] "dispRity::null.test"
+## 
+## Observation: 9.910536 
+## 
+## Based on 100 replicates
+## Simulated p-value: 0.7524752 
+## Alternative hypothesis: two-sided 
+## 
+##     Std.Obs Expectation    Variance 
+## -0.24885893  9.96420000  0.04650127
+\end{verbatim}
+
+Here the results show that disparity measured in our observed space is
+not significantly different than the one measured in a normal space. We
+can then propose that our observed space is normal!
+
+These results have an attributed \texttt{dispRity} and \texttt{randtest}
+class and can be plotted as \texttt{randtest} objects using the
+\texttt{dispRity} S3 \texttt{plot} method:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Plotting the results}
+\KeywordTok{plot}\NormalTok{(results, }\DataTypeTok{main =} \StringTok{"Is this space normal?"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
+
+For more details on generating spaces see the
+\protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}}
+function tutorial.
 
 \hypertarget{disparity-as-a-distribution}{\section{Disparity as a
 distribution}\label{disparity-as-a-distribution}}
@@ -2973,7 +3191,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3196,7 +3414,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -3551,7 +3769,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -3616,7 +3834,7 @@ coordinates below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3665,7 +3883,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3717,7 +3935,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -3763,7 +3981,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -4290,7 +4508,7 @@ dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -4304,7 +4522,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -4599,7 +4817,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -4762,7 +4980,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-104-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -4781,7 +4999,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-105-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -4915,7 +5133,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-104-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -4930,27 +5148,36 @@ using the \texttt{test.dispRity} option.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Fitting a linear model to our data}
-\NormalTok{disparity_lm <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(petal_disparity, }\DataTypeTok{test =}\NormalTok{ lm, }\DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{)}
+\NormalTok{## Running a PERMANOVA}
+\KeywordTok{test.dispRity}\NormalTok{(petal_disparity, }\DataTypeTok{test =}\NormalTok{ adonis.dispRity)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in test.dispRity(petal_disparity, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## Warning in test.dispRity(petal_disparity, test = adonis.dispRity): adonis.dispRity test will be applied to the data matrix, not to the calculated disparity.
+## See ?adonis.dispRity for more details.
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{## Testing whether there is a difference in disparity between the different species}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{aov}\NormalTok{(disparity_lm))}
-\end{Highlighting}
-\end{Shaded}
+\begin{verbatim}
+## Warning in adonis.dispRity(data, ...): The input data for adonis.dispRity is a distance matrix.
+## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
+## Make sure that this is the desired methodological approach!
+\end{verbatim}
 
 \begin{verbatim}
-##              Df Sum Sq Mean Sq F value Pr(>F)    
-## subsets       2  5.387  2.6935   705.5 <2e-16 ***
-## Residuals   297  1.134  0.0038                   
+## 
+## Call:
+## vegan::adonis(formula = dist(matrix) ~ group, data = data, method = "euclidean") 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##            Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+## group       2    592.07 296.037  487.33 0.86894  0.001 ***
+## Residuals 147     89.30   0.607         0.13106           
+## Total     149    681.37                 1.00000           
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 \end{verbatim}
@@ -5002,7 +5229,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5013,7 +5240,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
@@ -5058,7 +5285,7 @@ email (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) or if
 you are a GitHub user, directly create an issue on the
 \href{https://github.com/TGuillerme/dispRity}{GitHub page}.
 
-\bibliography{References.bib}
+\bibliography{packages.bib,References.bib}
 
 
 \end{document}

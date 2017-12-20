@@ -2,6 +2,7 @@
 title: "Details of specific functions"
 author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
+bibliography: [References.bib, packages.bib]
 output:
   html_document: default
   pdf_document: default
@@ -18,8 +19,10 @@ Before each section, make sure you loaded the @beckancient2014 data (see [exampl
 
 ```{r}
 ## Loading the data
-data(BeckLee_mat50) ; data(BeckLee_mat99)
-data(BeckLee_tree) ; data(BeckLee_ages)
+data(BeckLee_mat50)
+data(BeckLee_mat99)
+data(BeckLee_tree)
+data(BeckLee_ages)
 ```
 
 
@@ -109,28 +112,39 @@ time.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
     method = "continuous", model = "proximity", time = 4, FADLAD = BeckLee_ages)
 ```
 
+If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
+
 ## Customised subsets
 
 Another way of separating elements into different categories is to use customised subsets as briefly explained [above](#disparity-among-groups).
 This function simply takes the list of elements to put in each group (whether they are the actual element names or their position in the matrix).
 
 ```{r, eval=TRUE}
-## Creating the two groups as a list
-mammal_groups <- list("crown" = c(16, 19:41, 45:50),
-                      "stem" = c(1:15, 17:18, 42:44))
+## Creating the two groups (crown and stems)
+mammal_groups <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
 
 ## Separating the dataset into two different groups
 custom.subsets(BeckLee_mat50, group = mammal_groups)
 ```
 
-Elements can easily be assigned to different groups if necessary!
+Like in this example, you can use the utility function `crown.stem` that allows to automatically separate the crown and stems taxa given a phylogenetic tree.
+Also, elements can easily be assigned to different groups if necessary!
 
 ```{r, eval=FALSE}
 ## Creating the three groups as a list
-mammal_groups <- list("crown" = c(16, 19:41, 45:50),
-                      "stem" = c(1:15, 17:18, 42:44).
+weird_groups <- list("even" = seq(from = 1, to = 49, by = 2),
+                      "odd" = seq(from = 2, to = 50, by = 2),
                       "all" = c(1:50))
 ```
+
+The `custom.subsets` function can also take a phylogeny (as a `phylo` object) as an argument to create groups as clades:
+
+```{r, eval=FALSE}
+## Creating groups as clades
+custom.subsets(BeckLee_mat50, group = BeckLee_tree)
+```
+
+This automatically creates 49 (the number of nodes) groups containing between two and 50 (the number of tips) elements.
 
 ## Bootstraps and rarefactions
 
@@ -799,114 +813,125 @@ test.dispRity(disparity_time_slices, test = wilcox.test,
 test.dispRity(disparity_time_bins, test = bhatt.coeff)
 ```
 
-It is also possible to apply some more *complex* tests that have their own output classes (like `stats::lm`).
-
-The results can then be analysed as usual using the associated `summary` S3 method:
-
-```{r}
-## Performing and linear model applied to the same data
-(slice_lm <- test.dispRity(disparity_time_slices, test = lm,
-                            comparisons = "all"))
-
-## The output is a regular `lm` output
-class(slice_lm)
-
-## This output can be summarised using summary
-summary(slice_lm)
-```
-
-Of course, due to the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
+Because of the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
 The only condition is that the test can be applied to at least two distributions.
-In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `lm` for example).
+In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `lm`-type functions for example).
 
 ### NPMANOVA in `dispRity`
 
 One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis`.
+This can be done on `dispRity` objects using the `adonis.dispRity` wrapper function.
+Basically, this function takes the exact same arguments as `adonis` and a `dispRity` object for data and performs a PERMANOVA based on the distance matrix of the multidimensional space (unless the multidimensional space was already defined as a distance matrix).
+The `adonis.dispRity` function uses the information from the `dispRity` object to generate default formulas:
+
+  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
+  * If the object contains time subsets, it applies the default formula `matrix ~ time` testing the effect of `time` as a predictor (were the different levels of `time` are the different time slices/bins)
 
 ```{r}
-library(vegan)
-data(dune)
-data(dune.env)
-
-## Beta diversity distance matrix
-betad <- betadiver(dune, "z")
-
-## Create a pairwise distance matrix
-make.pairwise.dist.matrix <- function(matrix) {
-    if(class(matrix) == "matrix" || class(matrix) == "data.frame") {
-        ## Simply calculate the distances
-        return(dist(matrix))
-    } else {
-        ## Transform the distances into a matrix
-        pair_distances <- matrix
-        pairwise_dist <- matrix(NA, nrow = nrow(matrix), ncol = nrow(matrix))
-        colnames(pairwise_dist) <- rownames(pairwise_dist) <- rownames(matrix)
-        diag(pairwise_dist) <- 0
-        pairwise_dist[lower.tri(pairwise_dist)] <- pair_distances
-        pairwise_dist <- as.dist(pairwise_dist)
-    }
-}
-pairwise_dist <- make.pairwise.dist.matrix(dune)
-
-## Create the factor group
-factors <- data.frame(factor = dune.env$Management)
-
-## Testing adonis
-test1 <- adonis(betad ~ factor, factors)
-test2 <- adonis(pairwise_dist ~ factor, factors)
-
-
 set.seed(1)
-## Check if it works for mammals data set
-data(BeckLee_mat50)
-data(BeckLee_tree)
-## Crown stem group
-crown_stem <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
-## Dummy group
-group_sample <- sample(1:50, 25)
-group1 <- rownames(BeckLee_mat50)[group_sample]
-group2 <- rownames(BeckLee_mat50)[-group_sample]
-dummy_group <- list(group1 = group1, group2 = group2)
-## Equal groups
-equal_group <- list(groupA = rownames(BeckLee_mat50), groupB = rownames(BeckLee_mat50))
+## Generating a random character matrix
+character_matrix <- sim.morpho(rtree(20), 50, rates = c(rnorm, 1, 0))
 
-## Create the subsets
-subset_crown_stem <- custom.subsets(BeckLee_mat50, group = crown_stem)
-subset_dummy_group <- custom.subsets(BeckLee_mat50, group = dummy_group)
-subset_equal_group <- custom.subsets(BeckLee_mat50, group = equal_group)
+## Calculating the distance matrix
+distance_matrix <- as.matrix(dist(character_matrix))
 
-## Calculate disparity
-disp_crown_stem <- dispRity(subset_crown_stem, metric = c(median, centroids))
-disp_dummy_group <- dispRity(subset_dummy_group, metric = c(median, centroids))
-disp_equal_group <- dispRity(subset_equal_group, metric = c(median, centroids))
+## Creating two groups
+random_groups <- list("group1" = 1:10, "group2" = 11:20)
 
-summary(disp_crown_stem)
-summary(disp_dummy_group)
-summary(disp_equal_group)
+## Generating a dispRity object
+random_disparity <- custom.subsets(distance_matrix, random_groups)
 
-## Function for creating the factors table
-make.factors <- function(data) {
-    ## Extracting the factors
-    factors <- names(sort(unlist(lapply(data$subsets, function(X) return(X$elements)))))
-    ## Trimming the factors names
-    group_names <- names(data$subsets)
-    for(group in 1:length(group_names)) {
-        factors[grep(group_names[group], factors)] <- group_names[group]
-    }
-    return(data.frame(factor = factors, row.names = rownames(data$matrix)))
-}
-
-adonis.dispRity <- function(data, ...) {
-  ## Create the factor table
-  factors <- make.factors(data)  
-
-  ## Run adonis
-  return(adonis(make.pairwise.dist.matrix(data$matrix)~factor, factors, ...))
-}
-
-
+## Running a default NPMANOVA
+adonis.dispRity(random_disparity)
 ```
 
+Of course, it is possible to pass customised formulas if the disparity object contains more more groups.
+In that case the predictors must correspond to the names of the groups explained data must be set as `matrix`:
+
+```{r}
+## Creating two groups with two states each
+groups <- as.data.frame(matrix(data = c(rep(1,10), rep(2,10), rep(c(1,2), 10)),
+         nrow = 20, ncol = 2, dimnames = list(paste0("t", 1:20), c("g1", "g2"))))
+
+## Creating the dispRity object
+multi_groups <- custom.subsets(distance_matrix, groups)
+
+## Running the NPMANOVA
+adonis.dispRity(multi_groups, matrix ~ g1 + g2)
+```
+
+Finally, it is possible to use objects generated by `time.subsets`.
+In this case, `adonis.dispRity` will applied the `matrix ~ time` formula by default:
+
+```{r}
+## Creating time series
+time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree, 
+     method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
+     FADLAD = BeckLee_ages)
+
+## Running the NPMANOVA with time as a predictor
+adonis.dispRity(time_subsets)
+```
+
+Note that the function warns you that the input data was transformed into a distance matrix.
+This is reflected in the Call part of the output (`formula = dist(matrix) ~ time`).
+
+To use each time subset as a separate predictor, you can use the `matrix ~ time.subsets` formula; this is equivalent to `matrix ~ first_time_subset + second_time_subset + ...`:
+
+```{r}
+## Running the NPMANOVA with each time bin as a predictor
+adonis.dispRity(time_subsets, matrix ~ time.subsets)
+```
+
+### `geiger::dtt` model fitting in `dispRity`
+
+The `dtt` function from the `geiger` package is also often used to compare a trait's disparity observed in living taxa to the disparity of a simulated trait based on a given phylogeny.
+The `dispRity` package proposes a wrapper function for `geiger::dtt`, `dtt.dispRity` that allows the use of any disparity metric.
+Unfortunately, this implementation is slower that `geiger::dtt` (so if you're using the metrics implemented in `geiger` prefer the original version) and, as the original function, is limited to ultrametric trees (only living taxa!)...
+
+```{r}
+require(geiger)
+geiger_data <- get(data(geospiza))
+
+## Calculate the disparity of the dataset using the sum of variance
+dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = c(sum, variances),
+                             tree = geiger_data$phy, nsim = 100)
+
+## Plotting the results
+plot(dispRity_dtt, fig.width=8, fig.height=8)
+```
+
+Note that, like in the original `dtt` function, it is possible to change the evolutionary model (see `?geiger::sim.char` documentation).
+
+### null morphospace testing with `null.test`
+
+This test is equivalent to the test performed in @diaz2016global.
+It compares the disparity measured in the observed space to the disparity measured in a set of simulated spaces.
+These simulated spaces can be built with based on the hypothesis assumptions: for example, we can test whether our space is normal.
+
+```{r}
+set.seed(123)
+## A "normal" multidimensional space with 50 dimensions and 10 elements
+normal_space <- matrix(rnorm(1000), ncol = 50)
+
+## Calculating the disparity as the average pairwise distances
+obs_disparity <- dispRity(normal_space, metric = c(mean, pairwise.dist))
+
+## Testing against 100 randomly generated normal spaces
+(results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
+```
+
+Here the results show that disparity measured in our observed space is not significantly different than the one measured in a normal space.
+We can then propose that our observed space is normal!
+
+These results have an attributed `dispRity` and `randtest` class and can be plotted as `randtest` objects using the `dispRity` S3 `plot` method:
+
+```{r, fig.width=8, fig.height=8}
+## Plotting the results
+plot(results, main = "Is this space normal?")
+```
+
+For more details on generating spaces see the [`space.maker`](#Simulating-multidimensional-spaces) function tutorial.
 
 ## Disparity as a distribution
 

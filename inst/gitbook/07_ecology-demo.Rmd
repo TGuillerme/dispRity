@@ -3,7 +3,7 @@ title: "dispRity ecology demo"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: References.bib
+bibliography: [References.bib, packages.bib]
 bst: sysbio.bst
 vignette: >
   %\VignetteIndexEntry{dispRity ecology demo}
@@ -155,11 +155,8 @@ Now contrary to simply plotting the two first axis of the PCA where we saw that 
 Finally we can test our hypothesis that we guessed from the disparity plot (that some groups occupy different volume of the petal-space) by using the `test.dispRity` option.
 
 ```{r}
-## Fitting a linear model to our data
-disparity_lm <- test.dispRity(petal_disparity, test = lm, comparisons = "all")
-
-## Testing whether there is a difference in disparity between the different species
-summary(aov(disparity_lm))
+## Running a PERMANOVA
+test.dispRity(petal_disparity, test = adonis.dispRity)
 
 ## Post-hoc testing of the differences between species (corrected for multiple tests)
 test.dispRity(petal_disparity, test = t.test, correction = "bonferroni")

@@ -16,8 +16,6 @@ install_github("TGuillerme/dispRity", ref = "release")
 library(dispRity)
 ```
 
-> The next release version (`0.5`) is ready and tested on the `"master"` branch and will be released pretty soon on the `"release"` branch. To use this latest version (RECOMENDED), change `ref = "release"` to `ref = "master"` in the code above.
-
 The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref = "release"` option with `ref = "master"`.
 If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) for the latest developments.
 
@@ -33,7 +31,7 @@ See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/mast
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Patch notes
-* 2017/12/19 - v0.5.0 *covered with tests*
+* 2017/12/20 - v0.5.0 *covered with tests*
   * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
   * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
   * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
