@@ -86,7 +86,7 @@ For example, the line in the abstract “It is then possible to use a summary me
 
 I have changed the terms used in the abstract and proposed more specific examples for clarity:
 
-\textit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the multidimensional volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} line @@@
+\textit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} lines 6-10.
 
 The changes have also been made throughout the manuscript as generally suggested by all four reviewers.
 
@@ -99,8 +99,7 @@ Also, the different definitions of disparity alluded to on lines 61-63 should be
 Furthermore, the manuscript is lacking a table summarising the metrics of disparity that this package can work with (which I suspect it was supposed to have).}}
 \label{define_disparity}
 
-%TODO improve disparity definition in the abstract
-
+Apologies for the omission of the table summarising the metrics which is now properly included in the manuscript (see reviewer 1, minor comment \ref{table_missing})
 As reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
 This observation was the genesis for this package and I am currently working on a collaborative review to define the borders (or the absence thereof) of this concept.
 I feel that explaining this would be out of the scope of this software description paper.
@@ -108,7 +107,7 @@ However, I have tried to give specific examples each time I refer to disparity a
 
 I rewrote the part in the introducing disparity as follows:
 
-\textit{It is then possible to measure how the observations are distributed within this space to answer related questions (e.g. “does group A occupies more space than group B?”). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001), a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996), a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013), or many more (e.g. Navarro, 2003).} lines @@@
+\textit{One can then measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupies more space than group B?''). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001), a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996), a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013), or many more (e.g. Navarro, 2003).} lines 60-67.
 
 \item{\textcolor{blue}{Another concern I have is about how this R package sits within the current analytical toolkit available.
 How does this new package relate to existing packages available for R?
@@ -119,8 +118,12 @@ Within there are metrics for community dissimilarity, metrics from ordinations e
 Vegan is a popular package for analysis of multivariate datasets and seems to be relevant here with similar functionalities but not discussed.
 Similarly, the R package ‘diverse’ has a function called disparity, and the ‘geiger’ function disparity implements the disparity-through-time. }}
 
-%TODO
-%TG: add more functions cross over with vegan and geiger
+I have added two wrapper functions to use the popular functions \texttt{vegan::adonis} and \texttt{geiger::dtt} to the package (\texttt{dispRity.adonis} and \texttt{dispRity.dtt}).
+Also, I have generalised the distances calculations using the \texttt{vegan::vegdist} function that allows for more distances than \texttt{stats::dist} to be calculated.
+
+I've updated the manual and the example to describe these new functions:
+
+\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 351-361.
 
 \end{enumerate}
 
@@ -130,8 +133,7 @@ Similarly, the R package ‘diverse’ has a function called disparity, and the 
 
 \item{\textcolor{blue}{The paper keywords are narrow and suggest a very particular use of disparity analyses (morphological disparity). The paper suggests there are broader applications and so these should be revised to include the diverse applications that the paper suggests. }}
 
-%TODO
-%Increase keywords
+I have broaden the keywords within the limits allowed by manuscript central for MEE publications. 
 
 \item{\textcolor{blue}{Line 4 – changes ``in'' to ``to''. Line 6 – changes ``axis'' to ``axes''}}
 \label{abstract_typo}
@@ -147,7 +149,7 @@ For example, one might find out that group A and B have the same volume but that
 
 I've highlighted this in the text:
 
-\textit{For example, in the excellent and widely used} \texttt{geomorph} \textit{package, morphological disparity analysis uses the} \texttt{morphol.disparity} \textit{function that defines the multidimensional space as the ordination of the Procrustes transform of the morphometric data, the disparity metric as the relative sum of the diagonal of the covariance of the ordination scores (Procrustes variance), and uses permutation tests(Zelditch et al., 2012; Adams and Otarola-Castillo, 2013; Adams et al., 2017). This is ideal for testing volume based hypothesis (e.g. does groups A and B have the same volume?), but in other cases may not be appropriate in non-volume based hypothesis, e.g. does groups A and B occupy the same location?).} lines @@@
+\textit{For example, in the excellent and widely used} \texttt{geomorph} \textit{package, morphological disparity analysis uses the} \texttt{morphol.disparity} \textit{function that defines the multidimensional space as the ordination of the Procrustes transform of the morphometric data, the disparity metric as the relative sum of the diagonal of the covariance of the ordination scores (Procrustes variance), and uses permutation tests (Zelditch et al., 2012; Adams and Otarola-Castillo, 2013; Adams et al., 2017). This is ideal for testing volume based hypothesis (e.g. does groups A and B have the same volume?), but in other cases may not be appropriate in non-volume based hypothesis, e.g. does groups A and B occupy the same location?).} lines 85-93.
 
 \item{\textcolor{blue}{Lines 98-100 – Suggest changing this to be specific: “calculates a disparity metric from the space”, and “analyse the resulting disparity object through hypothesis testing and visualisation”}}
 
@@ -159,7 +161,7 @@ I have changed the sentence following the reviewer's suggestion.
 I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the currently implemented metrics description.
 I would also like to underline that although not all usual disparity metrics are not represented in the table and in the package (by far!) the idea of the \texttt{dispRity} package and specifically the \texttt{metric} argument in the \texttt{dispRity} function is to allow users to come up with their \textit{own} metric.
 
-For example, if one decides to use the relative ellipsoid hyper volume to the number of elements per group as a disparity metric (i.e. this metric could be used as a proxy for the average space occupancy per unit element - e.g. per taxon).
+For example, if one decides to use the relative ellipsoid hyper volume to the number of elements per group as a disparity metric (i.e. this metric could be used as a proxy for the average space occupancy per unit element - e.g. per taxa).
 This would not be doable directly by using the implemented \texttt{ellipse.volume} function but would require the user to use a function like:\\
 \texttt{dispRity(my\_data, metric = function(X) ellipse.volume(X)/nrows(X))}\\
 
@@ -172,8 +174,9 @@ I removed the last sentence.
 \item{\textcolor{blue}{Figure 1 – Procrustes is a proper noun and requires a capital p. Is the Procrustes matrix a “Procrustes distance matrix” or a “Procrustes residuals matrix”? i.e. is it the shape variables after a Procrustes superimposition (latter) or the distances between individuals after a Procrustes superimposition (former)? Both are suitable inputs for ordination.}}
 
 I meant both matrices (as this reviewers rightly points out they are suitable for ordination).
-I have made this more clear in the figure.
+I have made this more clear in the figure caption.
 On a more general note, the package now allows users to input any matrix (although the package does not provide warranty that the provided matrix is meaningful to the user's specific analysis).
+I have added an example to the \texttt{dispRity} manual based on the \texttt{eurodist R} base dataset. 
 
 \item{\textcolor{blue}{Figure 2 makes little sense without a summary of the kinds of disparity metrics available to the user, and needs more explanation with examples for each dimension level.}}
 
@@ -358,9 +361,10 @@ I have changed the start of the sentence to ``\textit{The first argument is the 
 
 \item{\textcolor{blue}{L136 - It is not immediately obvious to me why a phylogeny is required here. This only becomes clearer later (time-slicing) so maybe a "heads up" parenthetic (i.e., "see below") could be added here.}}
 
-I've added ``\textit{see below}'' to the sentence (line @@@).
-Following this comment, I've also changed the code since, indeed, a phylogeny should not always be required!
-The function can now works without it as long as First/Last occurrence data are provided for each taxa.
+I've modified the sentence in bracket to
+``\textit{a dated phylogeny of the elements present in the morphospace - see below}'' (line @@@).
+
+I've also changed the code to allow non-phylogenetic dating (e.g. just adding the First/Last Occurrence Dates of all the taxa) but I've only mentioned it in the function manual and the vignette due to space restriction in this manuscript.
 
 \item{\textcolor{blue}{L208 - "looking at"? L213 - Should be "altitudinal"?}}
 \label{altitude}
@@ -666,7 +670,7 @@ I have changed this sentence by citing Anderson 2001 \textit{Austral Ecol.} and 
 I also totally agree with the poor choice of simply comparing CIs; unfortunately this method is not that uncommon common in palaeobiology.
 I've removed the citation (to avoid pointing-and-shaming) and added a caveat to this way of comparing disparity:
 
-\textit{[...] an equal variety of statistical tests such as non-parametric multivariate analyses of variance (NPMANOVA, Anderson 2001 ; e.g. in Brusatte et al. 2008) multidimensional permutation tests (Manly 1997 ; e.g. in Díaz et al. 2016) or even simply by looking at the confidence interval overlaps between disparity measurements (which, when not based on rigorous statistic methods can often leads to serious inaccuracy).}
+\textit{[...] an equal variety of statistical tests such as non-parametric multivariate analyses of variance (NPMANOVA, Anderson 2001 ; e.g. in Brusatte et al. 2008) multidimensional permutation tests (Manly 1997 ; e.g. in Díaz et al. 2016) or even, less rigorously, by looking at the confidence interval overlaps between disparity measurements.}
 
 \item{\textcolor{blue}{L116 There is either a missing reference or a missing table, I presume the latter as no existing table matches the textual description in and around this line.}}
 
