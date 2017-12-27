@@ -325,7 +325,7 @@ For example, if the metric is defined as \texttt{metric = c(\hl{prod}, ranges)} 
 \subsection{Splitting the multidimensional space into subsets}
 Prior to calculating disparity, the space can be subdivided into subsets, typically to be compared to each other.
 For example, one may be interested in seeing how the disparity of a specific subset of the space compares to another (e.g. difference among groups) or, how different subsets change sequentially (e.g. through time).
-In essence, the original space corresponds to the overall space (e.g. a morphospace contains all the observed morphologies).
+In essence, the original space corresponds to the overall space (e.g. a morphospace contains \hl{all the observed morphologies}).
 Conversely, subsets correspond to parts of the space with pooled characteristics.
 
 This splitting can be done using the \texttt{custom.subsets} or \texttt{time.subsets} functions.
@@ -377,7 +377,7 @@ The function can also take any additional graphic arguments (\texttt{main}, \tex
 \subsubsection{Testing hypotheses}
 The \texttt{test.dispRity} function allows users to test hypotheses on the disparity data (e.g. by comparing the different subsets to each other).
 Similarly to the \disp function described above, this function can take any test defined by the user or from other R packages.
-The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets} - this can be used for \texttt{lm} class functions) or (5) any list of pairs (or more) of subsets to compare.
+The \texttt{comparison} arguments indicates in which order (if any) the tests should be applied to the subsets: (1) ``pairwise'' for pairwise comparisons; (2)``referential'' for comparing the first subset to all the others; (3) ``sequential'' for comparing subsets sequentially (e.g. first against second, second against third, etc.); (4) `all'' for comparing all the subsets simultaneously (i.e. \texttt{disparity $\mathtt{\sim}$ subsets}) or (5) any list of pairs (or more) of subsets to compare.
 
 Some tests are implemented within the package such as the Bhattacharrya Coefficient \citep[\texttt{bhatt.coeff};][]{Bhattacharyya,GuillermeCooper}, a permutation test based on null hypothesised multidimensional space following \cite{diaz2016global} (\texttt{null.test}) 
 \hl{as well as a wrapper for the \texttt{vegan::adonis}}
@@ -515,7 +515,10 @@ It is possible to test this hypothesis by using, for example, a non-parametric W
 
 \bigskip
 As indicated by the \textit{p} value, there is a significant difference in disparity between the groups.
-\hl{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the \textit{p} value. However, the raw test results can also be output using the option \texttt{details = TRUE} in the function above.}
+\hl{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the \textit{p} value. However, the raw test results can also be output using the option \texttt{details = TRUE} in the function above.
+Additionally, the test is here performed on the pooled bootstrapped pseudo-replications which can increase the type I error.
+It is possible to compare each bootstrap in a pairwise way without pooling the data by using the \texttt{concatenate = FALSE} argument.
+The results will then be a distribution of statistic and \textit{p} values.}
 Relating back to our question: yes, crown mammals display a higher diversity in morphologies than their stem counterparts (in this example and dataset!).
 
 \subsubsection{Typical disparity-through-time analysis}

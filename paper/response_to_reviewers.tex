@@ -123,7 +123,7 @@ Also, I have generalised the distances calculations using the \texttt{vegan::veg
 
 I've updated the manual and the example to describe these new functions:
 
-\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 351-361.
+\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 355-365.
 
 \end{enumerate}
 
@@ -339,13 +339,14 @@ I've fixed these typos.
 
 I have changed this sentence to:
 
-\textit{These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix (Lloyd 2016 and references therein; e.g. in Close et al. 2015), or as outputs from an ordination, whether it being a principal components analysis (PCA, Hotelling 1933; e.g. in Zelditch et al. 2012), a metric scaling (PCO, PCoA, Torgerson 1958; e.g. in Brusatte et al. 2008) or a non-metric scaling (MDS, NMDS, Shepard 1962; e.g. in Liow 2004; Donohue et al. 2013).} lines @@@
+\textit{These multidimensional spaces can be defined in many ways, for example as a pairwise distance matrix (Lloyd 2016 and references therein; e.g. in Close et al. 2015), or as outputs from an ordination, whether it being a principal components analysis (PCA, Hotelling 1933; e.g. in Zelditch et al. 2012), a metric scaling (PCO, PCoA, Torgerson 1958; e.g. in Brusatte et al. 2008) or a non-metric scaling (MDS, NMDS, Shepard 1962; e.g. in Liow 2004; Donohue et al. 2013).} lines 51-56
+
 
 \item{\textcolor{blue}{L80 - I'm not sure I would use the term "enforce" here. I think many of us write packages that serve our own needs, but the great thing about languages like R is that it is flexible and code can be borrowed and appropriated etc. Essentially I think the author may unintentionally disparage other package authors here. Besides which, I do not feel that dispRity is competing with other packages, rather it is supplemental to them. I.e., to repeat my comment from above I see dispRity as sitting at the end of a range of data analysis pipelines with other packages sitting in front of it.}}
 
 I've change this sentence to:
 
-\textit{package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric to best it their needs (i.e. data, hypothesis, etc.) making the implementations sometimes hard to adapt to different needs.}  lines @@@
+\textit{package maintainers/software developers choose their preferred definition of multidimensional space and disparity metric to best it their needs (i.e. data, hypothesis, etc.) making the implementations sometimes hard to adapt to different needs.} lines 82-85.
 
 \item{\textcolor{blue}{L84 - Redundant "a".}}
 
@@ -357,16 +358,16 @@ Sincerest apologies! See reviewer 1 minor comment \ref{table_missing}.
 
 \item{\textcolor{blue}{L130 - I don't think the term "possible observed" makes sense. Either the author means all the observed morphologies *or* all the possible morphologies. I suggest the former is safer as I think it likely that possible morphologies introduce sufficient complexity we can never really say this is true. For example, if we alter the number of elements in our sample (removing a species say) the ordination/morphospace we produce will differ, but the range of possible morphologies should not.}}
 
-I agree and have changed it to ``\textit{all the observed morphologies}'' line @@@.
+I agree and have changed it to ``\textit{all the observed morphologies}'' line 147-148
 
 \item{\textcolor{blue}{L134 - Should probably be "an argument".}}
 
-I have changed the start of the sentence to ``\textit{The first argument is the matrix}'' line @@@.
+I have changed the start of the sentence to ``\textit{The first argument is the matrix}'' line 151.
 
 \item{\textcolor{blue}{L136 - It is not immediately obvious to me why a phylogeny is required here. This only becomes clearer later (time-slicing) so maybe a "heads up" parenthetic (i.e., "see below") could be added here.}}
 
 I've modified the sentence in bracket to
-``\textit{a dated phylogeny of the elements present in the morphospace - see below}'' (line @@@).
+``\textit{a dated phylogeny of the elements present in the morphospace - see below}'' line 153.
 
 I've also changed the code to allow non-phylogenetic dating (e.g. just adding the First/Last Occurrence Dates of all the taxa) but I've only mentioned it in the function manual and the vignette due to space restriction in this manuscript.
 
@@ -414,14 +415,13 @@ I've removed this last sentence (see reviewer 1 minor comment \ref{remove_last_s
 
 \begin{enumerate}
 
-\item{\textcolor{blue}{The author presents a simple example and defers much of the many details users will encounter to his impermanent sources (vignettes, webpages), which I believe to be wise, as the R package will evolve.  I believe the purpose of a manuscript like this is illustrate its purpose and utility rather than serve as an instructional manual.  I believe the author has found the appropriate balance of instructional content between this manuscript and his other sources.}}
+% \item{\textcolor{blue}{The author presents a simple example and defers much of the many details users will encounter to his impermanent sources (vignettes, webpages), which I believe to be wise, as the R package will evolve.  I believe the purpose of a manuscript like this is illustrate its purpose and utility rather than serve as an instructional manual.  I believe the author has found the appropriate balance of instructional content between this manuscript and his other sources.}}
 
-
-\item{\textcolor{blue}{The author acknowledged assistance with writing (suspect English is a second language) and the writing was great in the paper, but less so in the abstract.  Having someone double check the grammar in the abstract would be beneficial.  Also, line 116 refers to table ??.}}
+% \item{\textcolor{blue}{The author acknowledged assistance with writing (suspect English is a second language) and the writing was great in the paper, but less so in the abstract.  Having someone double check the grammar in the abstract would be beneficial.  Also, line 116 refers to table ??.}}
 
 \item{\textcolor{blue}{In the examples, replacing objects is not a good idea.  (This is also a problem in the help file examples in the R package.).  Remember that novice R users will use this software and might develop the habit of overwriting objects in the global environment, as updates.  It is possible to update objects with new names and retain the history during analyses, which is preferred in most cases and essential in others (for example, when a different analysis requires going back to a previously defined object.)  I recommend providing unique names.  For example, disparity is defined twice as an object on lines 255 and 261.  On line 261 it could be defined as DisparityB, and subsequently used without overwriting the object produced from a different function in line 255. Relatedly, one should not name objects the same name as functions.  This is simply bad news.  It is not something to encourage users to do.  Using "Disparity" rather than the function name, disparity, accomplishes the same thing without potentially causing problems down the line.  (The author will field requests for help from users, so this can be considered a pitfall avoided beforehand.)  This is discussed some here: https://stackoverflow.com/questions/6135868/in-r-what-exactly-is-the-problem-with-having-variables-with-the-same-name-as-ba}}
 
-I have changed the variable names in the package description manuscript to not be redundant.
+I have changed the variable names in the package description manuscript to be non-redundant.
 I've also changed the variable names in the package's help files to not override other functions/objects.
 
 \item{\textcolor{blue}{It took me a bit of sleuthing for how the ANOVA on line 326 was performed. 
@@ -439,22 +439,7 @@ The ANOVA statistics are not based on the data but on the bootstrap results, whi
 The normal procedure is to calculate a statistic, like an F statistic, in every bootstrap iteration and then draw inference from the distribution of that statistic, much like the "percentile bootstrap" (discussed some here:% \url{https://stats.stackexchange.com/questions/20701/computing-p-value-using-bootstrap-with-r/277391#277391}).
 I believe that an ANOVA consistent with the confidence interval approach in Table 3 would bootstrap values in every permutation representing a null model (e.g., the values sampled come from a population with consistent mean and variance), calculate an F statistic based on among- and within-group disparities, then draw inference from the observed F value in the distribution of random outcomes.}}
 
-% %TG: ANOVA problem
-
-% As a minimum, this analysis should be called something different than " ANOVA performed on a dispRity object", which is rather terse, and I would be loathe to suggest that it tests the null hypothesis that disparity does not change through time, as suggested by the author.  In fact, it simply doesn't.  I came up with this simple example to illustrate why, according to the dispRity guidance:
-
-% n <- 40
-% p <- 10
-% g <- as.data.frame(as.factor(rep(1:2, n)[1:n])) # generate groups
-% Y <- matrix(rnorm(n*p), n, p)# generate random data with no pattern
-% rownames(Y) <- rownames(g)
-% cs <- custom.subsamples(Y, g) # customized subsamples
-% bd <- boot.matrix(cs, bootstraps = 100) # bootstrapped data
-% sv <- dispRity(bd, metric = c(sum, variances)) # sum_variances, as per directions
-
-% anova(test.dispRity(sv, lm, "all")) # ALWAYS. A. SIGNIFICANT! RESULT!
-
-% To state this plainly, garbage in equals a pattern out.  This happened with every permutation I ran and the result was usually a huge effect size similar to that reported in the manuscript.  
+\label{ANOVA}
 
 \textcolor{blue}{I can see no reason to perform ANOVA like this.  I'm not sure what it helps.  I stopped here in terms of my sleuthing but I wonder what other analytical short-cuts like this could cause problems. This is important!  As the author noted, and I agree, there is a paucity of development in this area.  One of the reasons might be that it takes time to bench test methods.  Surveying our functions in geomorph will reveal many methodological papers cited along with functions.  We release functions once we feel they are theoretically sound.  Introducing methods that have not been vetted will lead users to make dangerously incorrect inferences.  This is a difficult job but it has to be done.  While I'm excited to see this package released, to release it with known flawed analytical functions introduces a much larger mess to clean up later.  My recommendations are these:}
 
@@ -467,29 +452,19 @@ I believe that an ANOVA consistent with the confidence interval approach in Tabl
 
 \end{itemize}
 
-The ANOVA problem is totally a garbage-in-garbage-out problem and I agree with this reviewer that this might be a serious problem down the line.
 
-Unfortunately, I do not have any proper solution to propose to this problem and I guess multidimensional distributions comparisons methods needs yet to be developed!
+I agree that this ANOVA is a garbage-in-garbage-out test and used it more for illustrating the package's possibilities rather than show-casing disparity analysis best (worst?) practices.
+Following this reviewer's comments with which I totally agree, I have completely removed the ANOVA example (from the paper, the manuals and the vignette), replacing it in the paper with a PERMANOVA (based on \texttt{vegan::adonis}) which is more conventional.
+As this reviewer points out, the ANOVA is indeed performed on the bootstrapped data rather than the observed data which, of course, artificially (and wrongly) increases the statistical power.
+Although the ANOVA is not mentioned any more, I have however left the ability for \texttt{test.dispRity} to deal with \texttt{lm} type tests (with a warning being triggered).
 
-The reason for these crazy high degrees of freedom come from the bootstrapping pseudo-replication: effectively, the test data contains all the bootstrap data.
-One solution is to use the concatenate = FALSE option in test.dispRity, performing the test for each bootstrap replicate rather than pooling the data.
-This methods outputs a distribution of test that can be used to assess the type I error.
-However, the pooling of the p-value is not satisfactory either.
+I have implemented the reviewers' suggestion similary to the ``percentile bootstrap'' idea, allowing \texttt{test.dispRity} to work on either the pooled bootstrap distribution through the \texttt{concatenate = TRUE} argument (this was indeed erroneous in the previous ANOVA example but could be justifiable in other cases; e.g. when comparing distribution overlap probabilities) or by applying the test for each bootstrap pseudo-replicate with \texttt{concatenate = FALSE}. I've clarified this in the manuscript:
 
-Some methods exists such as NPMANOVA (from vegan::adonis) but is performed on the wrong kind of matrix.
+\textit{Additionally, the test is here performed on the pooled bootstrapped pseudo-replications which can increase the type I error.
+It is possible to compare each bootstrap in a pairwise way without pooling the data by using the} \texttt{concatenate = FALSE} \textit{argument.
+The results will then be a distribution of statistic and p values.} lines 319-323.
 
-One of the reasons for this functionality in the package is to make the test.dispRity function modular like the other main functions: i.e. it \textit{can} apply a \textit{lm} class function to the data but the reason for doing that might be dubious (or not, if the users don't bootstrap the matrix for example).
-
-%TG: I therefore removed the example in the manuscript and the manual to not mislead users into running flawed analysis. However, I've left the architecture implemented for adventurous (or clever) users.
-% Remove the ANOVA example
-% Remove mentions to it on bootstrapped data in the manuals
-% Replace by more savy example
-% Allow to use NPMANOVA instead
-%
-% Dissimilarity analyses: ANOVA using dissimilarities, ANOSIM, MRPP, BIOENV, Mantel and partial Mantel tests.
-% Ordination and environment: vector fitting, centroid fitting and smooth surface fitting, adding species scores as weighted averages, adding convex hull, SD ellipses, arrows etc. to ordination.
-% Ordination: support and meta functions for NMDS, redundancy analysis, constrained correspondence analysis, constrained analysis of proximities (all three with partial analysis),
-
+I aim to implement more multidimensional test in future versions of the package (or that users develop their own implementations!).
 
 \item{\textcolor{blue}{I also have a recommendation for the package, itself, based on my experiences. 
 The author should strive to make arguments and function details clearer to users, especially as using dispRity requires a lot of integration between different functions. 
@@ -507,7 +482,9 @@ Cleaning up some of these details now will make it easier to remain dedicated la
 I have changed the \texttt{test.dispRity} to now output the name of the statistic and the parameter in the output list (e.g. \texttt{statistic: t} and \texttt{parameter: df} for the example provided by the reviewer).
 I have also highlighted in the manuscript one of the features of the function allowing to output the results in a format more familiar to the user using the option \texttt{details = TRUE} (returning the raw test results):
 
-\textit{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the p value. However, the raw test results can also be output using the option} \texttt{details = TRUE} \textit{in the function above.} lines @@@
+\textit{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the p value. However, the raw test results can also be output using the option} \texttt{details = TRUE} \textit{in the function above.} lines 318-319.
+
+Furthermore, I have developed the example for the function \texttt{geomorph.ordination} highlighting how to perform similar analysis with both packages (as shown in the reviewer's attached markdown example).
 
 \end{enumerate}
 
