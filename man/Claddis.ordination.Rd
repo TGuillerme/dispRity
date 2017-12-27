@@ -5,7 +5,7 @@
 \title{Imports data from Claddis}
 \usage{
 Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
-  ...)
+  add = TRUE, ...)
 }
 \arguments{
 \item{data}{Data from Claddis::ReadMorphNexus.}
@@ -15,6 +15,8 @@ Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
 \item{transform}{Whether to transform the proportional distances (for Gower and Max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).}
 
 \item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
+
+\item{add}{whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.}
 }
