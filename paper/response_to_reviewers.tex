@@ -214,14 +214,13 @@ Perhaps adding an additional multipanel figure exhibitng some simulated spaces.}
 \label{simulations}
 
 Reviewer 4 (minor comment \ref{remove_simulations}) suggested completely removing this section which conflicts directly with this suggestion.
-The simulation protocols implemented here are already developed (and tested) in details in previous publications with new novel features attached to future publication.
+The simulation protocols implemented here are already developed (and tested) in details in previous publications along with novel features that are part of future publications.
 For example the discrete data simulation protocol is described and detailed in Guillerme \& Cooper 2016 \textit{Mol Phyl Evol}, O’Reilly et al. 2016 \textit{Biol Let}, O'Reilly et al. 2017 \textit{Palaeontology} and Guillerme \& Brazeau \textit{in review}.
 The implemented ordinated space simulations are theoretically described in Diaz et al. 2016 \textit{Nature} and will be used along with additional simulation features not implemented yet (including shape evolution) as part of a project currently in progress.
-I am therefore inclined to follow reviewer's 4 suggestion rather than this one.
+Due to the space constraint for application manuscripts in MEE, I am inclined to follow reviewer's 4 suggestion rather than this one.
 
 However, I have heavily edited the online manual to highlight the simulation functionalities implemented in the \texttt{dispRity} package: \url{https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/making-stuff-up.html}.
 The manual now has a chapter entirely dedicated to the data simulation functions with emphasis on both the methods used and the algorithms implemented (and illustrated with advanced examples).
-%TODO: check typos in there.
 
 \item{\textcolor{blue}{Secondly, problematic implementations.
 Here there is again only one major issue, and that concerns the time-slicing options.
@@ -241,8 +240,8 @@ I.e. no additional data should be added to the space \textit{a posteriori}.
 In practice, the \textit{time.subset} function can only select between two information: the ancestral node (DELTRAN) and the descendant node/tip (ACCTRAN) along the edge since only the two of them are real objects in the morphospace.
 It is therefore not possible to create an ancestral states reconstruction along the edge after running the ordination.
 
-I have however modified the available models to better describe this limitation and I have added two new models that would approximate ancestral reconstruction along edges
-I have modified the name of the two previous ``punctuated'' and ``gradual'' algorithms to ``random'' and ``proximity'' to reflect more accurately how they select either the ACCTRAN or DELTRAN information.
+I have however modified the available models to better describe this limitation and I have added two new models that would approximate ancestral reconstruction along edges.
+I have modified the name of the two previous ``punctuated'' and ``gradual'' models to ``random'' and ``proximity'' to reflect more accurately how they select either the ACCTRAN or DELTRAN information.
 I've added two more accurate models (now named ``equal.split'' and ``gradual.split'') to reflect the changes along the branches.
 These two algorithm now allows to use both the ACCTRAN and DELTRAN information with a linked probability to use either of them per bootstrap draw.
 For example, the ``equal.split'' model will have a 0.5 probability of using either node information for each bootstrap draw; the ``gradual.split'' model transforms the branch length were the slice occurs into a probability of drawing either of the nodes information (e.g. if the slices occurs 3/4 along the branch from A to B, the model will draw the information from A and B with a probability of respectively 0.25 and 0.75).
@@ -260,61 +259,66 @@ I've added these models descriptions in the manual and in the manuscript:
 \textit{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
-Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines @@@
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines 166-180.
+
 
 \item{\textcolor{blue}{An additional more minor implementation issue here concerns the "subsamples". Firstly, I would urge the author to reconsider this name as it implies subsampling (e.g., rarefaction) and not what is intended, i.e., subsets of the data (the term used on L124) or groups of taxa. However, a more pressing issue is that I do not see any restrictions on overlap between these "subsamples" and indeed in the case of time-binning this is suggested as a "pro" (L138). Although in cases such as time-binning it is obviously sensible to allow taxa to appear in multiple "subsamples" this changes the assumptions of a statistical test looking for differences between samples, i.e., as overlap increases so would type II errors. I suggest the author consider at least a warning to users in such circumstances.}}
 
 I've changed ``subsample'' to ``subset'' throughout the package, the manual and the paper.
 
-I also agree with this comment: this method creates a trade-off between the number of slices and the type II errors: %TOCHEK@@@
+I also agree with this comment: this method is a trade-off between the number of slices.
 (1) too few slices decrease resolution and veer towards the time binning (which could increase "significance" by comparing too different time subsamples);
-(2) too many slices will increase the resolution be will create much more pseudo replication and thus increase type II error.
-
-A more detailed description and test of these models might be out of the scope of this package description paper but is currently in development for a special issue paper to be submitted to \textit{Palaeontology} as part as a special symposium for the Palaeontological Association annual meeting 2017 in collaboration with Natalie Cooper (\url{http://www.palass.org/meetings-events/annual-meeting/2017/annual-meeting-2017-london-symposium-abstracts}).
+(2) too many slices will increase the resolution be will create much more pseudo replication and thus increase type I error.
 
 I've added a warning in the manual and the manuscript:
 
-\textit{Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} line @@@
+\textit{Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type I error (thus decreasing accuracy).} line 177-180.
+
+
+A more detailed description and test of these models might be out of the scope of this package description paper but is currently in development for a special issue paper to be submitted to \textit{Palaeontology} as part as a special symposium for the Palaeontological Association annual meeting 2017 in collaboration with Natalie Cooper.
+The full (un-reviewed an un-compiled) manuscript is available on Natalie's Github page (\url{https://github.com/nhcooper123/time-slice/blob/master/manuscript/time-slice.tex}).
+
 
 \item{\textcolor{blue}{Finally, additions the author could consider adding to the package. These are mostly minor, but more numerous. Some of these are simple caveats for limitations to the package. For example, disparity metrics can be generated from, for example, a discrete-character taxon matrix directly, or the distance matrix given to the ordination (e.g., the weighted mean pairwise distance metric used in Close et al. 2015, cited). Because the package only deals with matrices generated by the ordination itself these metrics are beyond its scope, although are of potential value to disparity analysis more broadly. Specifically, the Close et al. (2015) metric can be applied to an incomplete matrix, but principal coordinates/classic multidimensional scaling requires a complete distance matrix and hence taxa would have to be pruned to generate an ordination, but can be retained if using a pre-ordination metric. In a similar vein, although the package allows bootstrapping of the space it could also be useful for the raw data itself to be bootstrapped, e.g., the set of measurements used to generate a principal components analysis. It might be helpful for the author just to make it clear (with a sentence or two) that these are things a user might want to attempt, but the package cannot (reasonably) do.}}
+
+
 
 I have updated the package's structure to be able to deal with any type of matrix as long as rows are the elements (e.g. taxa).
 It is now possible to perform the whole pipelined analysis (including bootstrapping) on non-ordinated matrices.
 
-I've reflected these changes in the manual with a subsection in the chapter ``Specific tutorials'' and in manuscript as follows:
+I've reflected these changes in the manual with a subsection in the chapter ``Specific tutorials - 4.8'' (based on a distance matrix) and in manuscript as follows:
 
-\textit{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements (e.g. the multidimensional space can be a distance matrixl; Close et al., 2015).} @@@
-
+\textit{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements (e.g. the multidimensional space can be a distance matrixl; Close et al., 2015).} lines 109-111.
 
 \item{\textcolor{blue}{Picking up on the first point from above, there are also additional post-ordination disparity metrics that have been used in the literature but are not available here. For example, hypercube volume, minimum spanning tree length etc. I would also urge the author to cite the work of Mike Foote, who made some early important contributions to disparity in general, and has written papers that discuss some of these potential metrics (e.g., Foote 1997, Annual Review of Ecology and Systematics, 28, 129–). I believe Wills (2001, cited) also discusses a long list of metrics.}}
 
 I agree, there are many more metrics commonly used for disparity analysis not implemented in this package.
 This was a conscious choice: due to the really high number of metrics available (especially when combining different ones), I designed the package to be modular hence allowing users to implement their own metrics (see response to reviewer 1 minor comment \ref{table_missing}).
-I have precise this using the hypercube volume example in the manuscript:
+I have add the hypercube volume description as an example of user defined metric in the manuscript:
 
-\textit{When multiple functions are passed to the} \texttt{metric} \textit{argument, the functions are sorted by dimension-level and applied in decreasing order to the data.
-For example, if the metric is defined as} \texttt{metric = c(prod, ranges)} \textit{(the hyperbox volume), the} \texttt{ranges} \textit{function (dimension-level 2) is first applied to data (calculating the range of each dimension) and the function} \texttt{prod} \textit{is then applied to the results (e.g.} \texttt{prod(ranges(data))}\textit{).
-If one needs to define the metric as something more complex, say the hypercube volume, one can directly pass a function description to the} \texttt{metric} \textit{argument (e.g.} \texttt{metric = function(x) min(ranges(x)) * ncol(x)}\textit{).}
+\textit{When multiple functions are passed to the} \texttt{metric} \textit{argument, they are sorted by dimension-level and applied in decreasing order to the data.
+For example, if the metric is defined as} \texttt{metric = c(prod, ranges)} \textit{(the hypercube volume), the} \texttt{ranges} \textit{function (dimension-level 2) is first applied to data (the range of each dimensions) and the function} \texttt{prod} \textit{is then applied to the results (}\texttt{prod(ranges(data))}\textit{).
+One can also directly pass a function description to the} \texttt{metric}\textit{ argument (e.g.} \texttt{metric = function(x) mean(dist(x)$\hat{\mkern6mu}$2)} \textit{ for the average squared pairwise distance).} lines 127-132.
 
-I have however added several additional ones to the newest version of the package including the minimal spanning tree length (\texttt{span.tree.length} - as suggested), the ancestral distance which is equivalent to the distance from centroid but were the ``centroid'' are the coordinates of each element's ancestors (\texttt{ancestral.dist}), the pairwise distances (\texttt{pairwise.dist}), the radius which equivalent to the distance from centroids but for the dimensions (i.e. the distance between each dimensions coordinates and the mean dimension's coordinates - \texttt{radius}) and the $n$-ball volume which is an extension of the \texttt{ellipse.volume} function for a sphere (the true $n$-ball volume) or an ellipsoid (\texttt{n.ball.volume}).
+
+I have however added several additional new metrics ones to the newest version of the package including: (1) the minimal spanning tree length (\texttt{span.tree.length} - as suggested), (2) the ancestral distance which is equivalent to the distance from centroid but were the ``centroid'' are the coordinates of each element's ancestors (\texttt{ancestral.dist}), (3) the pairwise distances (\texttt{pairwise.dist} - based on \texttt{vegan:vegdist}), (4) the radius which equivalent to the distance from centroids but for the dimensions (i.e. the distance between each dimensions coordinates and the mean dimension's coordinates - \texttt{radius}) and (5) the $n$-ball volume which is an extension of the \texttt{ellipse.volume} function for a sphere (the true $n$-ball volume) or an ellipsoid (\texttt{n.ball.volume} - see Table 2 in the new version of the manuscript).
 
 \item{\textcolor{blue}{The package also employs a rarefaction function, but rarefaction can be problematic in the sense that rarefaction curves can sometimes cross such that the sampling level used to make comparisons can effect which of two or more subsets is considered the most disparate. This is why algorithms designed to sample "fairly" rather than equally have been explored, see for example Kotric and Knoll (2015, Paleobiology, 41, 68–). A user may also wish to rarefy by some external data source, such as number of occurrences, or geographic regions. These are obviously major additions, but are something the author might wish to add in future.}}
 
 This is again an excellent suggestion!
-I will develop more complex rarefaction algorithms based on sampling and occurrence based on methods applied empirically by Kotric and Knoll 2015 \textit{Palaeobiology} and Butler et al 2012 \textit{Evolution}.
-I've added a note 
-
-% %TG: TODO maybe!
+I will implement the possibility to pass a probability matrix to the \texttt{boot.type} argument in the \texttt{boot.matrix} function where the probabilities can be reflecting occurences, regions, etc.
+I will also implement the ``fair'' algorithm mentioned in Kotric and Knoll (2015, Paleobiology, 41, 68–).
 
 \item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package)}}
 
-I have added an illustrative example in the \texttt{plot.dispRity} manual on how to add disparity data (continuous or discrete) to the \texttt{geoscalePlot} and \texttt{geoscaleBox} functions thus allowing users to make ready-to-publish figures.
+Similarly to previous comment, I will also add the permutation test based on the \texttt{PAST} package in a future version of the package.
+Furthermore, I have added an illustrative example in the \texttt{plot.dispRity} manual on how to add disparity data (continuous or discrete) to the \texttt{geoscalePlot} and \texttt{geoscaleBox} functions thus allowing users to make nice ready-to-publish figures using the \texttt{geoscale} package.
 
 \item{\textcolor{blue}{and options for the user to only use a limited set of ordination axes (matrix columns), e.g., to avoid using higher axes with negative eigenvalues.}}
 
 This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} functions allowing users to set a \texttt{dimensions} argument to either a proportion or a value of dimensions to use (e.g. \texttt{0.95} or \texttt{10} to use only the 95\% of the dimensions or the 10 first ones respectively). I've added a line highlighting this feature that is indeed often used:
 
-\textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).} l. @@@: 
+\textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).} lines 132-133. 
 
 \end{enumerate}
 
