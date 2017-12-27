@@ -150,8 +150,20 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single"))
-    
+    check.method(boot.type, c("full", "single"), "boot.type")
+
+    # boot.type_class <- class(boot.type)
+    # if(boot.type_class == "character") {
+    #     boot.type <- tolower(boot.type)
+    #     check.method(boot.type, c("full", "single"), "boot.type")
+    #     check.length(boot.type, 1, " must be \"full\", \"single\" or a matrix.")
+    # } else {
+    #     check.class(boot.type, "matrix")
+    #     if(!all(colnames(boot.type) == colnames(data$matrix))) {
+    #         stop("The personalised boot.type matrix must have the same rownames as the data.")
+    #     }
+    # }
+
     ## Check whether the subsets (if any)
 
     ## Set up the bootstrap type function
