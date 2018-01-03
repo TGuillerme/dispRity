@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2017-12-27}
+  \date{2018-01-03}
 
 \usepackage{booktabs}
 
@@ -352,6 +352,14 @@ from pretty much any matrix as long as rows represent the elements and
 columns the dimensions. These matrices can be observations, pairwise
 differences between elements, ordinations, etc\ldots{}
 
+\begin{quote}
+Note that whether the matrix is an ordinated one or of any other type,
+it is always considered as the multidimensional space to analysis and no
+corrections are applied to it (e.g.~if ordinated and with negative eigen
+values, no correction is used). Always make sure the input is the right
+multidimensional space to analyse!
+\end{quote}
+
 \section{Ordinated matrices}\label{ordinated-matrices}
 
 Classically, when a high number of variables is used, disparity is
@@ -378,10 +386,10 @@ automatically calculate and ordinate the distances among taxa:
 
 \begin{verbatim}
 ##                      [,1]          [,2]       [,3]
-## Ancilla      7.252259e-17  4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01 -4.566150e-16 -0.2534942
-## Ancillista   5.106645e-01 -8.153839e-16 -0.2534942
-## Amalda      -3.207162e-16 -4.154578e-01  0.2534942
+## Ancilla      0.000000e+00  4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
+## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
+## Amalda      -2.004476e-16 -4.154578e-01  0.2534942
 \end{verbatim}
 
 Note that several options are available, namely which type of distance
