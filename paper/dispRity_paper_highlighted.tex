@@ -260,6 +260,7 @@ In brief, the package takes a \texttt{matrix} object (the multidimensional space
 \hl{calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation}.
 Some additional functions modify the space, for example by dividing it by groups or through time and/or bootstrapping it (see Fig. \ref{Fig:workflow}).
 \hl{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements} \citep[e.g. the space can be a distance matrix][]{Close2015}.
+\hl{The matrix is always considered as the multidimensional space and no correction is applied to it (e.g. if ordinated and with negative eigen values, corrections should be applied prior to using the \texttt{dispRity} package.)}
 
 \begin{figure}[!htbp]
 \centering
@@ -422,8 +423,7 @@ Additionally, we can define disparity as the sum of the variances on each dimens
 
 \subsection{Example}
 
-\hl{The \texttt{R} script for the following example is available in the supplementary materials.}
-
+\hl{The following example is based on the discrete morphological data described above. More examples, including based on other types of data are available in the package vignette.}
 
 \subsubsection{Typical disparity among groups analysis}
 One typical question with such analysis would be to test whether two groups of species have a different disparity.
@@ -451,7 +451,7 @@ In other words, whether the approximation of the volume within the morphospace (
 \texttt{> \hl{disparity2} <- dispRity(bootstraps, metric = c(sum, variances))}\\
 
 \noindent Which allows a finer tuning of the optional arguments in each function.
-The three arguments here are defined as follows: \texttt{data = BeckLee\_mat50} is our space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity. 
+The three arguments here are defined as follows: \texttt{data = BeckLee\_mat50} is our space, \texttt{group = mammal\_groups} indicates which mammals belong to which group and \texttt{metric = c(sum, variances)} is our definition of disparity \citep{foote1991morphological,Wills1994,Ciampaglio2001}. 
 
 This function returns a \disp object that summarises the disparity analysis:
 
@@ -576,7 +576,6 @@ Again, the resulting \disp object can be summarised and plotted (Table \ref{Tab:
 \label{Fig:plot_time}
 \end{figure}
 
-From the plot and the summary, disparity seems to change (increase) through time from the Cretaceous to the Eocene.
 \hl{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA}
  \citep[PERMANOVA; ][]{permanova}
 \hl{through the \texttt{adonis.disprity} function that is a wrapper of the \texttt{vegan::adonis} function}

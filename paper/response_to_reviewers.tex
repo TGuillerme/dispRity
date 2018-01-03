@@ -117,13 +117,14 @@ How does the package relate to the ‘vegan’ R package for multivariate analys
 Within there are metrics for community dissimilarity, metrics from ordinations etc.
 Vegan is a popular package for analysis of multivariate datasets and seems to be relevant here with similar functionalities but not discussed.
 Similarly, the R package ‘diverse’ has a function called disparity, and the ‘geiger’ function disparity implements the disparity-through-time. }}
+\label{add_geiger_vegan}
 
 I have added two wrapper functions to use the popular functions \texttt{vegan::adonis} and \texttt{geiger::dtt} to the package (\texttt{dispRity.adonis} and \texttt{dispRity.dtt}).
 Also, I have generalised the distances calculations using the \texttt{vegan::vegdist} function that allows for more distances than \texttt{stats::dist} to be calculated.
 
 I've updated the manual and the example to describe these new functions:
 
-\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 355-365.
+\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 359-369.
 
 \end{enumerate}
 
@@ -259,7 +260,7 @@ I've added these models descriptions in the manual and in the manuscript:
 \textit{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
-Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines 166-180.
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines 169-183.
 
 
 \item{\textcolor{blue}{An additional more minor implementation issue here concerns the "subsamples". Firstly, I would urge the author to reconsider this name as it implies subsampling (e.g., rarefaction) and not what is intended, i.e., subsets of the data (the term used on L124) or groups of taxa. However, a more pressing issue is that I do not see any restrictions on overlap between these "subsamples" and indeed in the case of time-binning this is suggested as a "pro" (L138). Although in cases such as time-binning it is obviously sensible to allow taxa to appear in multiple "subsamples" this changes the assumptions of a statistical test looking for differences between samples, i.e., as overlap increases so would type II errors. I suggest the author consider at least a warning to users in such circumstances.}}
@@ -272,7 +273,7 @@ I also agree with this comment: this method is a trade-off between the number of
 
 I've added a warning in the manual and the manuscript:
 
-\textit{Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type I error (thus decreasing accuracy).} line 177-180.
+\textit{Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type I error (thus decreasing accuracy).} line 180-183.
 
 
 A more detailed description and test of these models might be out of the scope of this package description paper but is currently in development for a special issue paper to be submitted to \textit{Palaeontology} as part as a special symposium for the Palaeontological Association annual meeting 2017 in collaboration with Natalie Cooper.
@@ -298,7 +299,7 @@ I have add the hypercube volume description as an example of user defined metric
 
 \textit{When multiple functions are passed to the} \texttt{metric} \textit{argument, they are sorted by dimension-level and applied in decreasing order to the data.
 For example, if the metric is defined as} \texttt{metric = c(prod, ranges)} \textit{(the hypercube volume), the} \texttt{ranges} \textit{function (dimension-level 2) is first applied to data (the range of each dimensions) and the function} \texttt{prod} \textit{is then applied to the results (}\texttt{prod(ranges(data))}\textit{).
-One can also directly pass a function description to the} \texttt{metric}\textit{ argument (e.g.} \texttt{metric = function(x) mean(dist(x)$\hat{\mkern6mu}$2)} \textit{ for the average squared pairwise distance).} lines 127-132.
+One can also directly pass a function description to the} \texttt{metric}\textit{ argument (e.g.} \texttt{metric = function(x) mean(dist(x)$\hat{\mkern6mu}$2)} \textit{ for the average squared pairwise distance).} lines 130-135.
 
 
 I have however added several additional new metrics ones to the newest version of the package including: (1) the minimal spanning tree length (\texttt{span.tree.length} - as suggested), (2) the ancestral distance which is equivalent to the distance from centroid but were the ``centroid'' are the coordinates of each element's ancestors (\texttt{ancestral.dist}), (3) the pairwise distances (\texttt{pairwise.dist} - based on \texttt{vegan:vegdist}), (4) the radius which equivalent to the distance from centroids but for the dimensions (i.e. the distance between each dimensions coordinates and the mean dimension's coordinates - \texttt{radius}) and (5) the $n$-ball volume which is an extension of the \texttt{ellipse.volume} function for a sphere (the true $n$-ball volume) or an ellipsoid (\texttt{n.ball.volume} - see Table 2 in the new version of the manuscript).
@@ -318,7 +319,7 @@ Furthermore, I have added an illustrative example in the \texttt{plot.dispRity} 
 
 This option is implemented in the \texttt{boot.matrix} and \texttt{dispRity} functions allowing users to set a \texttt{dimensions} argument to either a proportion or a value of dimensions to use (e.g. \texttt{0.95} or \texttt{10} to use only the 95\% of the dimensions or the 10 first ones respectively). I've added a line highlighting this feature that is indeed often used:
 
-\textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).} lines 132-133. 
+\textit{Note that this function also allows to work on only a subset of dimensions via the} \texttt{dimensions} \textit{argument (e.g. if only the $n$ first dimensions must be considered).} lines 134-135. 
 
 \end{enumerate}
 
@@ -358,16 +359,16 @@ Sincerest apologies! See reviewer 1 minor comment \ref{table_missing}.
 
 \item{\textcolor{blue}{L130 - I don't think the term "possible observed" makes sense. Either the author means all the observed morphologies *or* all the possible morphologies. I suggest the former is safer as I think it likely that possible morphologies introduce sufficient complexity we can never really say this is true. For example, if we alter the number of elements in our sample (removing a species say) the ordination/morphospace we produce will differ, but the range of possible morphologies should not.}}
 
-I agree and have changed it to ``\textit{all the observed morphologies}'' line 147-148
+I agree and have changed it to ``\textit{all the observed morphologies}'' line 150
 
 \item{\textcolor{blue}{L134 - Should probably be "an argument".}}
 
-I have changed the start of the sentence to ``\textit{The first argument is the matrix}'' line 151.
+I have changed the start of the sentence to ``\textit{The first argument is the matrix}'' line 153.
 
 \item{\textcolor{blue}{L136 - It is not immediately obvious to me why a phylogeny is required here. This only becomes clearer later (time-slicing) so maybe a "heads up" parenthetic (i.e., "see below") could be added here.}}
 
 I've modified the sentence in bracket to
-``\textit{a dated phylogeny of the elements present in the morphospace - see below}'' line 153.
+``\textit{a dated phylogeny of the elements present in the morphospace - see below}'' line 155.
 
 I've also changed the code to allow non-phylogenetic dating (e.g. just adding the First/Last Occurrence Dates of all the taxa) but I've only mentioned it in the function manual and the vignette due to space restriction in this manuscript.
 
@@ -439,8 +440,6 @@ The ANOVA statistics are not based on the data but on the bootstrap results, whi
 The normal procedure is to calculate a statistic, like an F statistic, in every bootstrap iteration and then draw inference from the distribution of that statistic, much like the "percentile bootstrap" (discussed some here:% \url{https://stats.stackexchange.com/questions/20701/computing-p-value-using-bootstrap-with-r/277391#277391}).
 I believe that an ANOVA consistent with the confidence interval approach in Table 3 would bootstrap values in every permutation representing a null model (e.g., the values sampled come from a population with consistent mean and variance), calculate an F statistic based on among- and within-group disparities, then draw inference from the observed F value in the distribution of random outcomes.}}
 
-\label{ANOVA}
-
 \textcolor{blue}{I can see no reason to perform ANOVA like this.  I'm not sure what it helps.  I stopped here in terms of my sleuthing but I wonder what other analytical short-cuts like this could cause problems. This is important!  As the author noted, and I agree, there is a paucity of development in this area.  One of the reasons might be that it takes time to bench test methods.  Surveying our functions in geomorph will reveal many methodological papers cited along with functions.  We release functions once we feel they are theoretically sound.  Introducing methods that have not been vetted will lead users to make dangerously incorrect inferences.  This is a difficult job but it has to be done.  While I'm excited to see this package released, to release it with known flawed analytical functions introduces a much larger mess to clean up later.  My recommendations are these:}
 
 \begin{itemize}
@@ -452,6 +451,7 @@ I believe that an ANOVA consistent with the confidence interval approach in Tabl
 
 \end{itemize}
 
+\label{ANOVA}
 
 I agree that this ANOVA is a garbage-in-garbage-out test and used it more for illustrating the package's possibilities rather than show-casing disparity analysis best (worst?) practices.
 Following this reviewer's comments with which I totally agree, I have completely removed the ANOVA example (from the paper, the manuals and the vignette), replacing it in the paper with a PERMANOVA (based on \texttt{vegan::adonis}) which is more conventional.
@@ -462,7 +462,7 @@ I have implemented the reviewers' suggestion similary to the ``percentile bootst
 
 \textit{Additionally, the test is here performed on the pooled bootstrapped pseudo-replications which can increase the type I error.
 It is possible to compare each bootstrap in a pairwise way without pooling the data by using the} \texttt{concatenate = FALSE} \textit{argument.
-The results will then be a distribution of statistic and p values.} lines 319-323.
+The results will then be a distribution of statistic and p values.} lines 323-327.
 
 I aim to implement more multidimensional test in future versions of the package (or that users develop their own implementations!).
 
@@ -482,7 +482,7 @@ Cleaning up some of these details now will make it easier to remain dedicated la
 I have changed the \texttt{test.dispRity} to now output the name of the statistic and the parameter in the output list (e.g. \texttt{statistic: t} and \texttt{parameter: df} for the example provided by the reviewer).
 I have also highlighted in the manuscript one of the features of the function allowing to output the results in a format more familiar to the user using the option \texttt{details = TRUE} (returning the raw test results):
 
-\textit{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the p value. However, the raw test results can also be output using the option} \texttt{details = TRUE} \textit{in the function above.} lines 318-319.
+\textit{Note that by default the function only outputs the test's statistic, parameter (if parametric) and the p value. However, the raw test results can also be output using the option} \texttt{details = TRUE} \textit{in the function above.} lines 319-320.
 
 Furthermore, I have developed the example for the function \texttt{geomorph.ordination} highlighting how to perform similar analysis with both packages (as shown in the reviewer's attached markdown example).
 
@@ -569,10 +569,13 @@ Yet, those in these broader fields will struggle to follow what is presented as 
 Perhaps include a table to relate terminology used in morphometry with that more commonly encountered in community ecology.
 Consider adding an ecological example and removing, if length is an issue, content on the manual and vignette --- we don't really need a paragraph on that, just a sentence to highlight it exists.}}
 
-I have worked towards making the manuscript more useful for non-morphologists.
-I have generalised the input description as suggest by this reviewer, minor comment \ref{rows}; added a glossary table and a brief example using ecological data.
-%TODO: add Diaz's example?
-% %TG: adding an ecology example (removing manual and vignette description)
+Due to space constraint for this format of MEE manuscript, I have left the references to ecology in the introduction of the manuscript but removed any further references.
+However, I have expanded the ecological example in the vignette which now include a test similar to the one in Diaz \textit{et al} 2016 (Science).
+I therefore hope that the mention of ecology in the introduction will encourage ecology-focused researcher to explore the manual.
+
+\textit{The following example is based on the discrete morphological data described above. More examples, including based on other types of data are available in the package vignette.} lines 271-273
+
+Additionally, I've also added a Glossary table as suggested and generalised disparity data description as suggest by this reviewer's minor comment \ref{rows}.
 
 \item{\textcolor{blue}{The referencing is poor; why cite Close et al for the concept of pairwise distances?
 I'm pretty sure PCO existed before Brusatte et al, and PCA certainly before 2012, etc.
@@ -581,6 +584,10 @@ I appreciate there merit in citing relevant literature for your field, but that 
 If you are unfamiliar with developments in ideas beyond your particular field, I would suggest Legendre \& Legendre's *Numerical Ecology* textbook as a good source for original work relevant to what is presented here.}}
 
 I thank this reviewer for sharing the excellent Legendre \& Legendre reference (that was definitely a reference I was missing) and I've accurately credited the statistical methods throughout the manuscript - see my response to reviewer 2, minor suggestion \ref{PCO_cites}.
+
+
+
+
 
 \item{\textcolor{blue}{The comparison or critique of packages that, in the eyes of the author, restrict users grated a little with me. As a developer of one of the packages named, I feel that particular critique is unwarranted for several reasons;
 \begin{itemize}
@@ -591,8 +598,7 @@ I thank this reviewer for sharing the excellent Legendre \& Legendre reference (
 }}
 
 I apologise for the unfounded critique and I have toned down this sentence (see reviewer 1, minor suggestion \ref{tone_down}).
-% Additionally, I have added more functionalities using vegan and geiger %TODO!
-% %TG: Tone down the critics to other packages
+Following the points raised by this reviewer, I have added functionalities from other packages (namely \texttt{vegan::adonis}) using defaults more appropriate to disparity analysis in palaeobiology (see reviewer 1 major comment \ref{add_geiger_vegan}).
 
 \item{\textcolor{blue}{You don't really define disparity anywhere, except in very loose terms.
 This needs making more explicit; I appreciate that disparity is a broad, nebulous concept, but you need to help the reader that may not be familiar with your subject area.
@@ -601,7 +607,6 @@ Either that or as mentioned above, refocus the paper on those readers already ve
 
 I have tried to define disparity with more examples and references to be more familiar to a broader range of readers (See reviewer 1, major suggestion \ref{define_disparity}).
 
-%TG: explain disparity
 
 \item{\textcolor{blue}{Something that I did miss, which is at the forefront of my mind as a lot of work has gone into **vegan** in this area, is how you handle negative eigenvalues and their eigenvectors?
 Typically, one needs to account for these issues, which readily arise when embedding data in an Euclidean space (via PCO) using a non-metric dissimilarity.
@@ -611,9 +616,12 @@ If so, there are some issues that cannot be corrected by the user without strong
 This is one area where there is the potential for the ideal of being accommodating of users can cause problems downstream if you are not in control of issues like non-metric dissimilarities.
 An example where it needs specific handling is in multivariate dispersions (distances around centroids), but even simple ordinations based on dissimilarities require special handling.}}
 
-%TOD: add a note to the paper and the package (warnings if negative eigen values).
-%TG: negative egein values explnations
-% Check Legendre and Legendre pp.449
+The package does not deal with negative eigen values in any special way, this task being left to the user to deal with.
+In fact, the package simply takes as input a matrix and only considers rows as elements and columns as dimensions; it ignores whether it is an ordinated matrix or not and this, along with the subsequent tasks is left to the users to deal with appropriately.
+
+I have added a warning about that in the manuscript, in the vignette and the package manual (for the functions that allow the matrix as input).
+
+\textit{The matrix is always considered as the multidimensional space and no correction is applied to it (e.g. if ordinated and with negative eigen values, corrections should be applied prior to using the} \texttt{dispRity} \textit{package.)} lines 111-113
 
 \end{enumerate}
 
@@ -668,9 +676,11 @@ I've converted all quotes in quoted code lines as ASCII straight quotes.
 \item{\textcolor{blue}{In the example around L236--249, can you justify the metric used here? Is the sum of variances along components of an ordination a valid measure of the dispersion in multivariate space of samples? You don't, or I didn't see, reference to original work that justifies this, and it's not something I have come across despite implementing some approaches for testing multivariate dispersion in the **vegan** package. Doesn't this suffer the same problem as confidence bars in an x-y scatterplot where the bars have been defined with reference to only one axis at a time? The solution is a confidence ellipse, which is often quite different to the interval implied by separate confidence interval bars for each axis.}}
 
 This metric (the sum of each ordination axis variance) is commonly used in palaeobiology (since Foote 1991 and Wills et al. 1994) probably due to a ``citation diffusion effect'' (i.e. future authors replicating convincing methods) and partly due to its pretty good behaviour with palaeontological data (e.g. missing data, Ciampaglio 2001).
-However, as this reviewer high
+I now cite these three references lines 293-294 as a justification.
 
-%TG: justify from palaeo litterature? + add a note "One of the caveats of such method is that it implicitely ignores the covariance between the ordination axis."
+However, as this reviewer highlights, this metric suffers from several problems such as the fact that it ignores the covariance between the dimensions.
+This can be a problem when the disparity metric is used for an exact proxy of the multidimensional volume (which, as this reviewer proposes, would be closer to the ellipsoid volume).
+However as a standard and comparable disparity metric, the sum of each dimension's variance is mathematically equal to the mean squared pairwise distance, a metric heavily used through it's implementation in \texttt{geiger} (Harmon \textit{et al} 2008 Bioinformatics).
 
 \item{\textcolor{blue}{L294 replace "following up" with "subsequent"}}
 
@@ -678,11 +688,13 @@ I've changed the sentence following this suggestion.
 
 \item{\textcolor{blue}{L323 This statement seems overly vague. What level of confidence is there in this test? The 95\% intervals overlap throughout, and although you don't show then, one can infer that say the 0.2 probability quantile of subsample 2 overlaps with the 0.975 quantile of sub sample 1.}}
 
-%TODO
+I have removed this statement altogether and now directly applied the test, the reader can now read directly to the results of the test (table 5) and the conclusions lines 365-366.
 
 \item{\textcolor{blue}{L326 Where do the 300 samples come from as implied by the residual degrees of freedom. Table 3 suggests 15 + 9 + 13 = 37 samples in this analysis. I'm clearly missing something here. Also, this is an omnibus test, which if we believe the printed values (see previous re DF) only says there is some effect of `subsamples`. Can this analysis be extended to point estimates for mean variance (again assuming you can justify this sum of individual variances method) and post-hoc comparisons of pairwise `subsample` differences, which would be quite useful?}}
 
-%TODO correct/explain this 300 subsamples + add a posthoc t-test.
+The high value of the samples, residuals and degrees of freedom comes from the test being performed on the pooled bootstrap values rather than the raw observations.
+I have now removed any mentions to this dodge anova and replaced it with a more traditional PERMANOVA instead (see reviewer 1 major comment \ref{add_geiger_vegan} and reviewer 3, major comment \ref{ANOVA}).
+
 
 \item{\textcolor{blue}{If you need to save space to add an ecological example, cut the *Manuals and vignettes* section and also the *Data simulations* section. The later is somewhat tangential to the main thrust of the paper and you cover this in the vignette/bookdown resources.}}
 \label{remove_simulations}
