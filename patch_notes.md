@@ -1,6 +1,9 @@
 Patch notes
 ----
 <!-- * 2017/10/18 - v1.0 *got you covered*  -->
+* 2017/12/28 - v0.5.1
+  * Minor bug fixes and typos in error messages and manuals
+  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
 * 2017/12/20 - v0.5.0 *covered with tests*
   * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
   * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.

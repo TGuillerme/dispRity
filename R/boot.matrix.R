@@ -2,7 +2,7 @@
 #'
 #' @description Bootstraps and rarefies either a matrix or a list of matrices.
 #' 
-#' @param data A matrix or a list of matrices (typically output from \link{time.subsets} or \link{cust.subsets}).
+#' @param data A \code{matrix} or a list of matrices (typically output from \link{time.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
@@ -18,6 +18,8 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #'
 #' @details  
+#' \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
+#' 
 #' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{

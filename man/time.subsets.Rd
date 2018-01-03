@@ -8,7 +8,7 @@
 time.subsets(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
 }
 \arguments{
-\item{data}{A matrix.}
+\item{data}{A \code{matrix} (see details).}
 
 \item{tree}{A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.}
 
@@ -38,6 +38,8 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Splits the data into a time subsets list.
 }
 \details{
+The data is considered as the multidimensional space with rows as elements and columns as dimensions and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
+
 If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is can be one of the following:
 \itemize{
      \item Punctuated models:

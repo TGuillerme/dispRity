@@ -3,7 +3,7 @@
 #'
 #' @description Splits the data into a customized subsets list.
 #'
-#' @param data A \code{matrix}.
+#' @param data A \code{matrix} (see details).
 #' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.
 #'
 #' @return
@@ -15,6 +15,8 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details
+#' The data is considered as the multidimensional space with rows as elements and columns as dimensions and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
+#' 
 #' Note that every element from the input data can be assigned to multiple groups!
 #'
 #' @examples
