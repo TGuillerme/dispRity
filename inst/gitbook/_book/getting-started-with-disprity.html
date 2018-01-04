@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2017-12-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -230,9 +230,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="what-sort-of-data-does-disprity-work-with" class="section level2">
 <h2><span class="header-section-number">3.1</span> What sort of data does <code>dispRity</code> work with?</h2>
 <p><strong>Any matrix object in <code>R</code>.</strong> Disparity can be estimated from pretty much any matrix as long as rows represent the elements and columns the dimensions. These matrices can be observations, pairwise differences between elements, ordinations, etc…</p>
-<blockquote>
-<p>Note that whether the matrix is an ordinated one or of any other type, it is always considered as the multidimensional space to analysis and no corrections are applied to it (e.g. if ordinated and with negative eigen values, no correction is used). Always make sure the input is the right multidimensional space to analyse!</p>
-</blockquote>
 </div>
 <div id="ordinated-matrices" class="section level2">
 <h2><span class="header-section-number">3.2</span> Ordinated matrices</h2>
@@ -245,10 +242,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## Ordinating the example data from Claddis
 <span class="kw">Claddis.ordination</span>(Michaux1989) </code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
-## Ancilla      0.000000e+00  4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
-## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
-## Amalda      -2.004476e-16 -4.154578e-01  0.2534942</code></pre>
+## Ancilla      7.252259e-17  4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01 -4.566150e-16 -0.2534942
+## Ancillista   5.106645e-01 -8.153839e-16 -0.2534942
+## Amalda      -3.207162e-16 -4.154578e-01  0.2534942</code></pre>
 <p>Note that several options are available, namely which type of distance should be computed. See more info in the function manual (<code>?Claddis.ordination</code>). Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::MorphDistMatrix</code> and <code>stats::cmdscale</code>.</p>
 </div>
 <div id="ordination-matrices-from-geomorph" class="section level3">

@@ -47,6 +47,9 @@
 #' ## Measuring differences from a reference subset
 #' test.dispRity(sum_of_variances, wilcox.test, "referential")
 #'
+#' ## Running a linear model on the data
+#' test.dispRity(sum_of_variances, lm, "all")
+#'
 #' ## Measuring disparity as a distribution
 #' disparity_var <- dispRity(bootstrapped_data, metric = variances)
 #' ## Differences between the concatenated bootstrapped values of the subsets
@@ -255,8 +258,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
         if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
-
-        if(concatenate == FALSE) warning("Comparison type \"all\" is based on concatenated data.\nlm or aov type tests will have an inflated type I error!")
     }
 
     ## Sequential.test comparisons (one to each other)

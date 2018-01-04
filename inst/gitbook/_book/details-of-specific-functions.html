@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2017-12-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -985,7 +985,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>It is also possible to input a list of pairs of <code>numeric</code> values or <code>characters</code> matching the subset names to create personalised tests. Some other tests implemented in <code>dispRity</code> such as the <code>dispRity::null.test</code> have a specific way they are applied to the data and therefore ignore the <code>comparisons</code> argument. <!-- Add sequential test one day! --></p>
 <p>The <code>test</code> argument can be any statistical or non-statistical test to apply to the disparity object. It can be a common statistical test function (e.g. <code>stats::t.test</code>), a function implemented in <code>dispRity</code> (e.g. see <code>?null.test</code>) or any function defined by the user.</p>
 <p>This function also allows users to correct for Type I error inflation (false positives) when using multiple comparisons via the <code>correction</code> argument. This argument can be empty (no correction applied) or can contain one of the corrections from the <code>stats::p.adjust</code> function (see <code>?p.adjust</code>).</p>
-<p>Note that the <code>test.dispRity</code> algorithm deals with some classical test outputs and summarises the test output. It is, however, possible to get the full detailed output by using the options <code>details = TRUE</code>.</p>
+<p>Note that the <code>test.dispRity</code> algorithm deals with some classical test outputs (<code>h.test</code>, <code>lm</code> and <code>numeric</code> vector) and summarises the test output. It is, however, possible to get the full detailed output by using the options <code>details = TRUE</code>.</p>
 <p>Here we are using the variables generated in the <a href="#summarising-dispRity-data-plots">section above</a>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## T-test to test for a difference in disparity between crown and stem mammals
 <span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test)</code></pre></div>

@@ -63,6 +63,9 @@ test.dispRity(sum_of_variances, bhatt.coeff, "pairwise")
 ## Measuring differences from a reference subset
 test.dispRity(sum_of_variances, wilcox.test, "referential")
 
+## Running a linear model on the data
+test.dispRity(sum_of_variances, lm, "all")
+
 ## Measuring disparity as a distribution
 disparity_var <- dispRity(bootstrapped_data, metric = variances)
 ## Differences between the concatenated bootstrapped values of the subsets
