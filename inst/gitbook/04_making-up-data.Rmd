@@ -10,16 +10,16 @@ output:
 
 # Making stuff up!
 
-The `dispRity` package also offers some advanced data simulation features to allow to test hypothesis, explore ordinate-spaces or metrics properties or simply playing around with data!
+The `dispRity` package also offers some advanced data simulation features to allow to test hypothesis, explore multidimensional spaces, metrics properties or simply playing around with data!
 All the following functions are based on the same modular architecture of the package and therefore can be used with most of the functions of the package.
 
 ## Simulating discrete morphological data
 
 The function `sim.morpho` allows to simulate discrete morphological data matrices (sometimes referred to as "cladistic" matrices).
-It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states.
+It allows to evolve multiple discrete characters on a given phylogenetic tree, given different evolutionary models, rates, and states.
 It even allows to include proper inapplicable data to make datasets as messy as in real life!
 
-In brief, the function `sim.morpho` takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates.
+In brief, the function `sim.morpho` takes a phylogenetic tree, the number of required characters, the evolutionary model and a function from which to draw the rates.
 The package also contains a function for quickly checking the matrix's phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony.
 The methods are described in details below
 
@@ -33,27 +33,26 @@ my_tree <- rcoal(15)
 ## an equal rates model with a gamma rate distribution (0.5, 1) with no 
 ## invariant characters.
 my_matrix <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
-    0.15), rates = c(rgamma, 0.5, 1), invariant = FALSE)
+    0.15), rates = c(rgamma, shape = 0.5, rate = 1), invariant = FALSE)
 
 ## The first few lines of the matrix
-my_matrix[1:5, 1:10]
+my_matrix[1:10, 1:10]
 
 ## Checking the matrix properties with a quick Maximum Parsimony tree search
 check.morpho(my_matrix, my_tree)
 ```
 
 Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!
-Nearly too good to be true...
 
 ### A more detailed description
 
-The protocol implemented here to generate discrete morphological matrices is based on the ones developed in [@GuillermeCooper;@OReilly2016;@puttick2017uncertain;@OReilly2017].
+The protocol implemented here to generate discrete morphological matrices is based on the ones developed in @GuillermeCooper @OReilly2016 @puttick2017uncertain and @OReilly2017.
 
  * The first `tree` argument will be the tree on which to "evolve" the characters and therefore requires branch length.
- You can generate quick and easy random Yule trees using `ape::rtree(number_of_taxa)` but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function `tree.bd` from the [`diversitree`](http://www.zoology.ubc.ca/prog/diversitree/) package [@fitzjohndiversitree2012].
- * The second argument, `character` is the number of characters. Pretty straight forward.
- * The third, `states` is the proportion of characters states above two (yes, the minimum number of states is two). This argument intakes the proportion of *n*-states characters, for example `states = c(0.5,0.3,0.2)` will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%. 
- * The forth, `model` is the evolutionary model for generating the character(s). More about this below.
+ You can generate quick and easy random Yule trees using `ape::rtree(number_of_taxa)` but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function `tree.bd` from the [`diversitree`](http://www.zoology.ubc.ca/prog/diversitree/) package [@fitzjohndiversitree2012] for example.
+ * The second argument, `character` is the number of characters.
+ * The third, `states` is the proportion of characters states above two. This argument intakes the proportion of *n*-states characters, for example `states = c(0.5,0.3,0.2)` will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%. 
+ * The fourth, `model` is the evolutionary model for generating the character(s). More about this below.
  * The fifth and sixth, `rates` and `substitution` are the model parameters described below as well.
  * Finally, the two logical arguments, are self explanatory: `invariant` whether to allow invariant characters (i.e. characters that don't change) and `verbose` whether to print the simulation progress on your console.
 
@@ -63,13 +62,13 @@ There are currently three evolutionary models implemented in `sim.morpho` but mo
 Note also that they allow fine tuning parameters making them pretty plastic!
 
  * `"ER"`: this model allows any number of character states and is based on the Mk model [@lewisa2001]. It assumes a unique overall evolutionary rate equal substitution rate between character states. This model is based on the `ape::rTraitDisc` function.
- * `"HKY"`: this is binary state character model based on the molecular HKY model [@HKY85]. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A <-> G or C <-> T) against transvertions (A <-> C and G <-> T). After evolving the nucleotide, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the `phyclust::seq.gen.HKY` function and was first proposed by @OReilly2016.
+ * `"HKY"`: this is binary state character model based on the molecular HKY model [@HKY85]. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A <-> G or C <-> T) against transvertions (A <-> C and G <-> T). After evolving the nucleotides, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the `phyclust::seq.gen.HKY` function and was first proposed by @OReilly2016.
  * `"MIXED"`: this model uses a random (uniform) mix between both the `"ER"` and the `"HKY"` models.
 
 The models can take the following parameters:
-(1) `rates` is the evolutionary rate (i.e. the rate of changes along a branch: the evolutionary speed) and (2) `substitution` is the frequency of changes between one state or another.
+(1) `rates` is the evolutionary rate (i.e. the rate of changes along a branch; the evolutionary speed) and (2) `substitution` is the frequency of changes between one state or another.
 For example if a character can have high probability of changing (the *evolutionary* rate) with, each time a change occurs a probability of changing from state *X* to state *Y* (the *substitution* rate).
-Note that in the `"ER"` model, the substitution rate is ignore because... by definition this (substitution) rate is equal!
+Note that in the `"ER"` model, the substitution rate is ignore because by definition this rate is equal!
 
 The parameters arguments `rates` and `substitution` takes a distributions from which to draw the parameters values for each character.
 For example, if you want an `"HKY"` model with an evolutionary rate (i.e. speed) drawn from a uniform distribution bounded between 0.001 and 0.005, you can define it as `rates = c(runif, min = 0.001, max = 0.005)`, `runif` being the function for random draws from a uniform distribution and `max` and `min` being the distribution parameters.
@@ -88,7 +87,7 @@ They differ from missing characters `?` in their nature by being inapplicable ra
 For example, considering a binary character defined as "colour of the tail" with the following states "blue" and "red"; on a taxa with no tail, the character should be coded as inapplicable ("`-`") since the state of the character "colour of tail" is *known*: it's neither "blue" or "red", it's just not there!
 It contrasts with coding it as missing ("`?`" - also called as ambiguous) where the state is *unknown*, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!
 
-This type of characters can be added to the simulated matrices using the `apply.NA` function/
+This type of characters can be added to the simulated matrices using the `apply.NA` function.
 It takes, as arguments, the `matrix`, the source of inapplicability (`NAs` - more below), the `tree` used to generate the matrix and the two same `invariant` and `verbose` arguments as defined above.
 The `NAs` argument allows two types of sources of inapplicability:
 
@@ -114,15 +113,16 @@ my_matrix_NA[1:10, 90:100]
 ### Parameters for a realistic(ish) matrix
 
 There are many parameters that can create a "realistic" matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all parameters combination end up creating "good" matrices.
-The following parameters however, seem to generate fairly "realist" matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter ($\alpha$) of 5 and no scaling ($\beta$ = 1) with a rate of 100.
+The following parameters however, seem to generate fairly "realist" matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter ($\alpha$) of 10 and no scaling ($\beta$ = 1) with a rate of 50.
 
 ```{r}
 set.seed(0)
 ## tree
-my_tree <- rcoal(15)
+my_tree <- rcoal(30)
 ## matrix
-morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
-    rates = c(rgamma, rate = 100, shape = 5), invariant = FALSE)
+morpho_mat <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
+    0.15), rates = c(rgamma, shape = 10, rate = 50), invariant = FALSE)
+
 check.morpho(morpho_mat, my_tree)
 ```
 
@@ -131,13 +131,13 @@ check.morpho(morpho_mat, my_tree)
 
 
 ## Simulating multidimensional spaces
-Another way to simulate data is to directly simulate an ordinated space with the `space.maker` function.
-This function allows users to simulate multidimensional spaces with a certain number of properties.
-For example, it is possible to design a multidimensional space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis.
+Another way to simulate data is to directly simulate a multidimensional space with the `space.maker` function.
+This function allows users to simulate spaces with a certain number of properties.
+For example, it is possible to design a space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis.
 This can be useful for creating ordinated spaces for null hypothesis, for example if you're using the function `null.test` [@diaz2016global].
 
 This function takes as arguments the number of elements (data points - `elements` argument) and dimensions (`dimensions` argument) to create the space and the distribution functions to be used for each axis.
-The distributions are passed through the `distribution` argument as... modular functions!
+The distributions are passed through the `distribution` argument as modular functions.
 You can either pass a single distribution function for all the axes (for example `distribution = runif` for all the axis being uniform) or a specific distribution function for each specific axis (for example `distribution = c(runif, rnorm, rgamma))` for the first axis being uniform, the second normal and the third gamma).
 You can of course use your very own functions or use the ones implemented in `dispRity` for more complex ones (see below).
 Specific optional arguments for each of these distributions can be passed as a list via the `arguments` argument.
@@ -167,23 +167,28 @@ Of course, more complex spaces can be created by changing the distributions, the
 ## A plane space: uniform with one dimensions equal to 0
 plane_space <- space.maker(2500, 3, c(runif, runif, runif),
                            arguments = list(list(min = 0, max = 0), NULL, NULL))
+head(plane_space)
 
 ## Correlation matrix for a 3D space
 (cor_matrix <- matrix(cbind(1, 0.8, 0.2, 0.8, 1, 0.7, 0.2, 0.7, 1), nrow = 3))
 
 ## An ellipsoid space (normal space with correlation)
 ellipse_space <- space.maker(2500, 3, rnorm, cor.matrix = cor_matrix)
+head(ellipse_space)
 
 ## A cylindrical space with decreasing axes variance
 cylindrical_space <- space.maker(2500, 3, c(rnorm, rnorm, runif),
                                  scree = c(0.7, 0.2, 0.1))
+head(cylindrical_space)
 ```
+
+See below for the visualisation of the spaces.
 
 ### Personalised dimensions distributions
 
 Following the modular architecture of the package, it is of course possible to pass home made distribution functions to the `distribution` argument.
 For example, the `random.circle` function is a personalised one implemented in `dispRity`.
-This function allows to create circles based on basic trigonometry allowing to axis to covary to produce circle coordinates.
+This function allows to create circles based on trigonometry allowing two axis to covary to produce circle coordinates.
 By default, this function generates two sets of coordinates with a `distribution` argument and a minimum and maximum boundary (`inner` and `outer` respectively) to create nice sharp edges to the circle.
 The maximum boundary is equivalent to the radius of the circle (it removes coordinates beyond the circle radius) and the minimum is equivalent to the radius of a smaller circle with no data (it removes coordinates below this inner circle radius).
 
@@ -201,7 +206,10 @@ plot(circle, xlab = "x", ylab = "y", main = "A normal circle")
 ## Creating doughnut space (a spherical space with a hole)
 doughnut_space <- space.maker(5000, 3, c(rnorm, random.circle),
      arguments = list(list(mean = 0), list(runif, inner = 0.5, outer = 1)))
+head(doughnut_space)
 ```
+
+See below for the visualisation of the "doughnut" space.
 
 ### Visualising the space
 
@@ -270,7 +278,7 @@ simulated_space <- space.maker(1000, dimensions = obs_dim,
 plot(simulated_space[,1:2], xlab = "PC1", ylab = "PC2")
 points(BeckLee_mat50[,1:2], col = "red", pch = 20)
 legend("topleft", legend = c("observed", "simulated"),
-        pch = c(20,21), col = c("red", "black"))
+        pch = c(20,21), col = c("red", "black"), bg = "white")
 ```
 
 It is now possible to simulate a space using these observed arguments to test several hypothesis:
@@ -303,9 +311,8 @@ op <- par(mfrow = (c(2, 2)), bty = "n")
 ## Plotting the results
 plot(test_unif, main = "Uniform (0,1)")
 plot(test_norm1, main = "Normal (0,1)")
-plot(test_norm2, main = paste0("Normal (", round(obs_mu_sd_glob[[1]], digit = 3),
-                              ",", round(obs_mu_sd_glob[[2]], digit = 3), ")"))
-plot(test_norm3, main = "Normal (variable + correlation)")
+plot(test_norm2, main = "Normal (global observed\nmean and sd)")
+plot(test_norm3, main = "Normal (variable mean\nand sd with correlation)")
 
 ```
 

@@ -325,3 +325,16 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
+# test_that("boot.type is a matrix", {
+
+#     ## Creating a probability matrix
+#     data(BeckLee_mat50)
+#     data(BeckLee_tree)
+#     elements <- rownames(BeckLee_mat50)
+#     prob_matrix <- matrix(runif(length(elements)), dimnames = list(elements))
+#     data <- custom.subsets(BeckLee_mat50, crown.stem(BeckLee_tree, inc.nodes = FALSE))
+
+#     bs <- boot.matrix(data, bootstraps = 7, boot.type = prob_matrix)
+
+
+# })
