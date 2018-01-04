@@ -2,7 +2,7 @@
 #'
 #' @description Bootstraps and rarefies either a matrix or a list of matrices.
 #' 
-#' @param data A \code{matrix} or a list of matrices (typically output from \link{time.subsets} or \link{custom.subsets} - see details).
+#' @param data A matrix or a list of matrices (typically output from \link{time.subsets} or \link{cust.subsets}).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
@@ -18,8 +18,6 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #'
 #' @details  
-#' \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
-#' 
 #' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
@@ -152,20 +150,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single"), "boot.type")
-
-    # boot.type_class <- class(boot.type)
-    # if(boot.type_class == "character") {
-    #     boot.type <- tolower(boot.type)
-    #     check.method(boot.type, c("full", "single"), "boot.type")
-    #     check.length(boot.type, 1, " must be \"full\", \"single\" or a matrix.")
-    # } else {
-    #     check.class(boot.type, "matrix")
-    #     if(!all(colnames(boot.type) == colnames(data$matrix))) {
-    #         stop("The personalised boot.type matrix must have the same rownames as the data.")
-    #     }
-    # }
-
+    check.method(boot.type, c("full", "single"))
+    
     ## Check whether the subsets (if any)
 
     ## Set up the bootstrap type function

@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2017-12-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -227,11 +227,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="making-stuff-up" class="section level1">
 <h1><span class="header-section-number">5</span> Making stuff up!</h1>
-<p>The <code>dispRity</code> package also offers some advanced data simulation features to allow to test hypothesis, explore multidimensional spaces, metrics properties or simply playing around with data! All the following functions are based on the same modular architecture of the package and therefore can be used with most of the functions of the package.</p>
+<p>The <code>dispRity</code> package also offers some advanced data simulation features to allow to test hypothesis, explore ordinate-spaces or metrics properties or simply playing around with data! All the following functions are based on the same modular architecture of the package and therefore can be used with most of the functions of the package.</p>
 <div id="simulating-discrete-morphological-data" class="section level2">
 <h2><span class="header-section-number">5.1</span> Simulating discrete morphological data</h2>
-<p>The function <code>sim.morpho</code> allows to simulate discrete morphological data matrices (sometimes referred to as “cladistic” matrices). It allows to evolve multiple discrete characters on a given phylogenetic tree, given different evolutionary models, rates, and states. It even allows to include proper inapplicable data to make datasets as messy as in real life!</p>
-<p>In brief, the function <code>sim.morpho</code> takes a phylogenetic tree, the number of required characters, the evolutionary model and a function from which to draw the rates. The package also contains a function for quickly checking the matrix’s phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony. The methods are described in details below</p>
+<p>The function <code>sim.morpho</code> allows to simulate discrete morphological data matrices (sometimes referred to as “cladistic” matrices). It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states. It even allows to include proper inapplicable data to make datasets as messy as in real life!</p>
+<p>In brief, the function <code>sim.morpho</code> takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates. The package also contains a function for quickly checking the matrix’s phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony. The methods are described in details below</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">3</span>)
 ## Simulating a starting tree with 15 taxa as a random coalescent tree
 my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
@@ -240,21 +240,16 @@ my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class=
 ## an equal rates model with a gamma rate distribution (0.5, 1) with no 
 ## invariant characters.
 my_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="dt">tree =</span> my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">states =</span> <span class="kw">c</span>(<span class="fl">0.85</span>,
-    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">shape =</span> <span class="fl">0.5</span>, <span class="dt">rate =</span> <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
+    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
 
 ## The first few lines of the matrix
-my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</code></pre></div>
+my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</code></pre></div>
 <pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 ## t15 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
 ## t12 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
 ## t14 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
 ## t6  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
-## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  
-## t2  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  
-## t11 &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;1&quot;  
-## t7  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  
-## t1  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  
-## t5  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;</code></pre>
+## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Checking the matrix properties with a quick Maximum Parsimony tree search
 <span class="kw">check.morpho</span>(my_matrix, my_tree)</code></pre></div>
 <pre><code>##                                     
@@ -262,15 +257,15 @@ my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 ## Consistency index          0.7625899
 ## Retention index            0.8881356
 ## Robinson-Foulds distance   0.0000000</code></pre>
-<p>Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!</p>
+<p>Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree! Nearly too good to be true…</p>
 <div id="a-more-detailed-description" class="section level3">
 <h3><span class="header-section-number">5.1.1</span> A more detailed description</h3>
-<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">Guillerme and Cooper (<a href="#ref-GuillermeCooper">2016</a>)</span> <span class="citation">OReilly et al. (<a href="#ref-OReilly2016">2016</a>)</span> <span class="citation">M. N. Puttick et al. (<a href="#ref-puttick2017uncertain">2017</a>)</span> and <span class="citation">O’Reilly et al. (<a href="#ref-OReilly2017">2017</a>)</span>.</p>
+<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">(Guillerme and Cooper <a href="#ref-GuillermeCooper">2016</a>; OReilly et al. <a href="#ref-OReilly2016">2016</a>; M. N. Puttick et al. <a href="#ref-puttick2017uncertain">2017</a>; O’Reilly et al. <a href="#ref-OReilly2017">2017</a>)</span>.</p>
 <ul>
-<li>The first <code>tree</code> argument will be the tree on which to “evolve” the characters and therefore requires branch length. You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">(FitzJohn <a href="#ref-fitzjohndiversitree2012">2012</a>)</span> for example.</li>
-<li>The second argument, <code>character</code> is the number of characters.</li>
-<li>The third, <code>states</code> is the proportion of characters states above two. This argument intakes the proportion of <em>n</em>-states characters, for example <code>states = c(0.5,0.3,0.2)</code> will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%.</li>
-<li>The fourth, <code>model</code> is the evolutionary model for generating the character(s). More about this below.</li>
+<li>The first <code>tree</code> argument will be the tree on which to “evolve” the characters and therefore requires branch length. You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">(FitzJohn <a href="#ref-fitzjohndiversitree2012">2012</a>)</span>.</li>
+<li>The second argument, <code>character</code> is the number of characters. Pretty straight forward.</li>
+<li>The third, <code>states</code> is the proportion of characters states above two (yes, the minimum number of states is two). This argument intakes the proportion of <em>n</em>-states characters, for example <code>states = c(0.5,0.3,0.2)</code> will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%.</li>
+<li>The forth, <code>model</code> is the evolutionary model for generating the character(s). More about this below.</li>
 <li>The fifth and sixth, <code>rates</code> and <code>substitution</code> are the model parameters described below as well.</li>
 <li>Finally, the two logical arguments, are self explanatory: <code>invariant</code> whether to allow invariant characters (i.e. characters that don’t change) and <code>verbose</code> whether to print the simulation progress on your console.</li>
 </ul>
@@ -279,10 +274,10 @@ my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 <p>There are currently three evolutionary models implemented in <code>sim.morpho</code> but more will come in the future. Note also that they allow fine tuning parameters making them pretty plastic!</p>
 <ul>
 <li><code>&quot;ER&quot;</code>: this model allows any number of character states and is based on the Mk model <span class="citation">(Lewis <a href="#ref-lewisa2001">2001</a>)</span>. It assumes a unique overall evolutionary rate equal substitution rate between character states. This model is based on the <code>ape::rTraitDisc</code> function.</li>
-<li><code>&quot;HKY&quot;</code>: this is binary state character model based on the molecular HKY model <span class="citation">(Hasegawa, Kishino, and Yano <a href="#ref-HKY85">1985</a>)</span>. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A &lt;-&gt; G or C &lt;-&gt; T) against transvertions (A &lt;-&gt; C and G &lt;-&gt; T). After evolving the nucleotides, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the <code>phyclust::seq.gen.HKY</code> function and was first proposed by <span class="citation">OReilly et al. (<a href="#ref-OReilly2016">2016</a>)</span>.</li>
+<li><code>&quot;HKY&quot;</code>: this is binary state character model based on the molecular HKY model <span class="citation">(Hasegawa, Kishino, and Yano <a href="#ref-HKY85">1985</a>)</span>. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A &lt;-&gt; G or C &lt;-&gt; T) against transvertions (A &lt;-&gt; C and G &lt;-&gt; T). After evolving the nucleotide, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the <code>phyclust::seq.gen.HKY</code> function and was first proposed by <span class="citation">OReilly et al. (<a href="#ref-OReilly2016">2016</a>)</span>.</li>
 <li><code>&quot;MIXED&quot;</code>: this model uses a random (uniform) mix between both the <code>&quot;ER&quot;</code> and the <code>&quot;HKY&quot;</code> models.</li>
 </ul>
-<p>The models can take the following parameters: (1) <code>rates</code> is the evolutionary rate (i.e. the rate of changes along a branch; the evolutionary speed) and (2) <code>substitution</code> is the frequency of changes between one state or another. For example if a character can have high probability of changing (the <em>evolutionary</em> rate) with, each time a change occurs a probability of changing from state <em>X</em> to state <em>Y</em> (the <em>substitution</em> rate). Note that in the <code>&quot;ER&quot;</code> model, the substitution rate is ignore because by definition this rate is equal!</p>
+<p>The models can take the following parameters: (1) <code>rates</code> is the evolutionary rate (i.e. the rate of changes along a branch: the evolutionary speed) and (2) <code>substitution</code> is the frequency of changes between one state or another. For example if a character can have high probability of changing (the <em>evolutionary</em> rate) with, each time a change occurs a probability of changing from state <em>X</em> to state <em>Y</em> (the <em>substitution</em> rate). Note that in the <code>&quot;ER&quot;</code> model, the substitution rate is ignore because… by definition this (substitution) rate is equal!</p>
 <p>The parameters arguments <code>rates</code> and <code>substitution</code> takes a distributions from which to draw the parameters values for each character. For example, if you want an <code>&quot;HKY&quot;</code> model with an evolutionary rate (i.e. speed) drawn from a uniform distribution bounded between 0.001 and 0.005, you can define it as <code>rates = c(runif, min = 0.001, max = 0.005)</code>, <code>runif</code> being the function for random draws from a uniform distribution and <code>max</code> and <code>min</code> being the distribution parameters. These distributions should always be passed in the format <code>c(random_distribution_function, distribution_parameters)</code> with the names of the distribution parameters arguments.</p>
 </div>
 <div id="checking-the-results" class="section level4">
@@ -292,7 +287,7 @@ my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 <div id="adding-inapplicable-characters" class="section level4">
 <h4><span class="header-section-number">5.1.1.3</span> Adding inapplicable characters</h4>
 <p>Once a matrix is generated, it is possible to apply inapplicable characters to it for increasing realism! Inapplicable characters are commonly designated as <code>NA</code> or simply <code>-</code>. They differ from missing characters <code>?</code> in their nature by being inapplicable rather than unknown. For example, considering a binary character defined as “colour of the tail” with the following states “blue” and “red”; on a taxa with no tail, the character should be coded as inapplicable (“<code>-</code>”) since the state of the character “colour of tail” is <em>known</em>: it’s neither “blue” or “red”, it’s just not there! It contrasts with coding it as missing (“<code>?</code>” - also called as ambiguous) where the state is <em>unknown</em>, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!</p>
-<p>This type of characters can be added to the simulated matrices using the <code>apply.NA</code> function. It takes, as arguments, the <code>matrix</code>, the source of inapplicability (<code>NAs</code> - more below), the <code>tree</code> used to generate the matrix and the two same <code>invariant</code> and <code>verbose</code> arguments as defined above. The <code>NAs</code> argument allows two types of sources of inapplicability:</p>
+<p>This type of characters can be added to the simulated matrices using the <code>apply.NA</code> function/ It takes, as arguments, the <code>matrix</code>, the source of inapplicability (<code>NAs</code> - more below), the <code>tree</code> used to generate the matrix and the two same <code>invariant</code> and <code>verbose</code> arguments as defined above. The <code>NAs</code> argument allows two types of sources of inapplicability:</p>
 <ul>
 <li><code>&quot;character&quot;</code> where the inapplicability is due to the character (e.g. coding a character tail for species with no tail). In practice, the algorithm chooses a character <em>X</em> as the underlying character (e.g. “presence and absence of tail”), arbitrarily chooses one of the states as “absent” (e.g. 0 = absent) and changes in the next character <em>Y</em> any state next to character <em>X</em> state 0 into an inapplicable token (“<code>-</code>”). This simulates the inapplicability induced by coding the characters (i.e. not always biological).</li>
 <li><code>&quot;clade&quot;</code> where the inapplicability is due to evolutionary history (e.g. a clade loosing its tail). In practice, the algorithm chooses a random clade in the tree and a random character <em>Z</em> and replaces the state of the taxa present in the clade by the inapplicable token (“<code>-</code>”). This simulates the inapplicability induced by evolutionary biology (e.g. the lose of a feature in a clade).</li>
@@ -320,28 +315,27 @@ my_matrix_NA[<span class="dv">1</span><span class="op">:</span><span class="dv">
 </div>
 <div id="parameters-for-a-realisticish-matrix" class="section level3">
 <h3><span class="header-section-number">5.1.2</span> Parameters for a realistic(ish) matrix</h3>
-<p>There are many parameters that can create a “realistic” matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all parameters combination end up creating “good” matrices. The following parameters however, seem to generate fairly “realist” matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 10 and no scaling (<span class="math inline">\(\beta\)</span> = 1) with a rate of 50.</p>
+<p>There are many parameters that can create a “realistic” matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all parameters combination end up creating “good” matrices. The following parameters however, seem to generate fairly “realist” matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 5 and no scaling (<span class="math inline">\(\beta\)</span> = 1) with a rate of 100.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">0</span>)
 ## tree
-my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">30</span>)
+my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)
 ## matrix
-morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="dt">tree =</span> my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">states =</span> <span class="kw">c</span>(<span class="fl">0.85</span>,
-    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">shape =</span> <span class="dv">10</span>, <span class="dt">rate =</span> <span class="dv">50</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
-
+morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>,
+    <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">5</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)
 <span class="kw">check.morpho</span>(morpho_mat, my_tree)</code></pre></div>
 <pre><code>##                                     
-## Maximum parsimony        133.0000000
-## Consistency index          0.7819549
-## Retention index            0.9597222
-## Robinson-Foulds distance   4.0000000</code></pre>
+## Maximum parsimony        104.0000000
+## Consistency index          0.0000000
+## Retention index            0.7886179
+## Robinson-Foulds distance   0.0000000</code></pre>
 <!-- ## Simulating continuous morphological data -->
 <!-- TG: Add tutorial for evolving "morpho" shapes -->
 </div>
 </div>
 <div id="simulating-multidimensional-spaces" class="section level2">
 <h2><span class="header-section-number">5.2</span> Simulating multidimensional spaces</h2>
-<p>Another way to simulate data is to directly simulate a multidimensional space with the <code>space.maker</code> function. This function allows users to simulate spaces with a certain number of properties. For example, it is possible to design a space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis. This can be useful for creating ordinated spaces for null hypothesis, for example if you’re using the function <code>null.test</code> <span class="citation">(Díaz et al. <a href="#ref-diaz2016global">2016</a>)</span>.</p>
-<p>This function takes as arguments the number of elements (data points - <code>elements</code> argument) and dimensions (<code>dimensions</code> argument) to create the space and the distribution functions to be used for each axis. The distributions are passed through the <code>distribution</code> argument as modular functions. You can either pass a single distribution function for all the axes (for example <code>distribution = runif</code> for all the axis being uniform) or a specific distribution function for each specific axis (for example <code>distribution = c(runif, rnorm, rgamma))</code> for the first axis being uniform, the second normal and the third gamma). You can of course use your very own functions or use the ones implemented in <code>dispRity</code> for more complex ones (see below). Specific optional arguments for each of these distributions can be passed as a list via the <code>arguments</code> argument.</p>
+<p>Another way to simulate data is to directly simulate an ordinated space with the <code>space.maker</code> function. This function allows users to simulate multidimensional spaces with a certain number of properties. For example, it is possible to design a multidimensional space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis. This can be useful for creating ordinated spaces for null hypothesis, for example if you’re using the function <code>null.test</code> <span class="citation">(Díaz et al. <a href="#ref-diaz2016global">2016</a>)</span>.</p>
+<p>This function takes as arguments the number of elements (data points - <code>elements</code> argument) and dimensions (<code>dimensions</code> argument) to create the space and the distribution functions to be used for each axis. The distributions are passed through the <code>distribution</code> argument as… modular functions! You can either pass a single distribution function for all the axes (for example <code>distribution = runif</code> for all the axis being uniform) or a specific distribution function for each specific axis (for example <code>distribution = c(runif, rnorm, rgamma))</code> for the first axis being uniform, the second normal and the third gamma). You can of course use your very own functions or use the ones implemented in <code>dispRity</code> for more complex ones (see below). Specific optional arguments for each of these distributions can be passed as a list via the <code>arguments</code> argument.</p>
 <p>Furthermore, it is possible to add a correlation matrix to add a correlation between the axis via the <code>cor.matrix</code> argument or even a vector of proportion of variance to be bear by each axis via the <code>scree</code> argument to simulate realistic ordinated spaces.</p>
 <p>Here is a simple two dimensional example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
@@ -353,12 +347,12 @@ square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<
 ## The resulting 2D matrix
 <span class="kw">head</span>(square_space)</code></pre></div>
 <pre><code>##           [,1]       [,2]
-## [1,] 0.3322704 0.73741888
-## [2,] 0.5157255 0.33160759
-## [3,] 0.3716847 0.62284731
-## [4,] 0.4367013 0.76535328
-## [5,] 0.7424290 0.07764732
-## [6,] 0.0111013 0.65066885</code></pre>
+## [1,] 0.9548679 0.55645395
+## [2,] 0.3721235 0.53218069
+## [3,] 0.3229877 0.25041834
+## [4,] 0.8404244 0.46840450
+## [5,] 0.2839796 0.07466592
+## [6,] 0.2627652 0.24523019</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Visualising the space
 <span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-77-1.png" width="768" /></p>
@@ -366,15 +360,8 @@ square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A plane space: uniform with one dimensions equal to 0
 plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),
                            <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">0</span>), <span class="ot">NULL</span>, <span class="ot">NULL</span>))
-<span class="kw">head</span>(plane_space)</code></pre></div>
-<pre><code>##      [,1]       [,2]       [,3]
-## [1,]    0 0.18294640 0.32682604
-## [2,]    0 0.67243526 0.77182827
-## [3,]    0 0.56028603 0.06603386
-## [4,]    0 0.80409259 0.19401581
-## [5,]    0 0.31732158 0.16460302
-## [6,]    0 0.09244429 0.99873117</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Correlation matrix for a 3D space
+
+## Correlation matrix for a 3D space
 (cor_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>))</code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]  1.0  0.8  0.2
@@ -382,29 +369,13 @@ plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 ## [3,]  0.2  0.7  1.0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## An ellipsoid space (normal space with correlation)
 ellipse_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, rnorm, <span class="dt">cor.matrix =</span> cor_matrix)
-<span class="kw">head</span>(ellipse_space)</code></pre></div>
-<pre><code>##            [,1]       [,2]       [,3]
-## [1,] -0.5080285 -0.7014059 -1.0286500
-## [2,]  0.7250674  0.9498248  0.7220638
-## [3,]  0.4476787  0.2102857 -0.3835125
-## [4,] -1.3252827 -0.5060518  0.2211104
-## [5,] -0.9193155 -1.3861888 -1.6151720
-## [6,] -0.7217653 -0.1967257  0.2672965</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A cylindrical space with decreasing axes variance
+
+## A cylindrical space with decreasing axes variance
 cylindrical_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, rnorm, runif),
-                                 <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))
-<span class="kw">head</span>(cylindrical_space)</code></pre></div>
-<pre><code>##             [,1]        [,2]         [,3]
-## [1,] -0.07935545  0.10932383 0.0017309562
-## [2,] -0.20619425 -0.14809591 0.0008416656
-## [3,] -0.20133258  0.05766707 0.0041888464
-## [4,]  0.69412491 -0.47106729 0.0036967387
-## [5,]  0.41300602  0.23924098 0.0077537936
-## [6,]  0.53369953  0.02882589 0.0073476805</code></pre>
-<p>See below for the visualisation of the spaces.</p>
+                                 <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))</code></pre></div>
 <div id="personalised-dimensions-distributions" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Personalised dimensions distributions</h3>
-<p>Following the modular architecture of the package, it is of course possible to pass home made distribution functions to the <code>distribution</code> argument. For example, the <code>random.circle</code> function is a personalised one implemented in <code>dispRity</code>. This function allows to create circles based on trigonometry allowing two axis to covary to produce circle coordinates. By default, this function generates two sets of coordinates with a <code>distribution</code> argument and a minimum and maximum boundary (<code>inner</code> and <code>outer</code> respectively) to create nice sharp edges to the circle. The maximum boundary is equivalent to the radius of the circle (it removes coordinates beyond the circle radius) and the minimum is equivalent to the radius of a smaller circle with no data (it removes coordinates below this inner circle radius).</p>
+<p>Following the modular architecture of the package, it is of course possible to pass home made distribution functions to the <code>distribution</code> argument. For example, the <code>random.circle</code> function is a personalised one implemented in <code>dispRity</code>. This function allows to create circles based on basic trigonometry allowing to axis to covary to produce circle coordinates. By default, this function generates two sets of coordinates with a <code>distribution</code> argument and a minimum and maximum boundary (<code>inner</code> and <code>outer</code> respectively) to create nice sharp edges to the circle. The maximum boundary is equivalent to the radius of the circle (it removes coordinates beyond the circle radius) and the minimum is equivalent to the radius of a smaller circle with no data (it removes coordinates below this inner circle radius).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
 op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
 
@@ -416,16 +387,7 @@ circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-79-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating doughnut space (a spherical space with a hole)
 doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),
-     <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>), <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))
-<span class="kw">head</span>(doughnut_space)</code></pre></div>
-<pre><code>##            [,1]        [,2]       [,3]
-## [1,]  1.0692065 -0.34286592 -0.4077478
-## [2,]  0.3898210 -0.06393936  0.5212298
-## [3,] -0.9878641  0.36223496  0.4519167
-## [4,]  0.1031183  0.08781562  0.9176893
-## [5,]  1.1351951 -0.34076407  0.8712020
-## [6,]  0.1769964 -0.77904629  0.5770467</code></pre>
-<p>See below for the visualisation of the “doughnut” space.</p>
+     <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>), <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))</code></pre></div>
 </div>
 <div id="visualising-the-space" class="section level3">
 <h3><span class="header-section-number">5.2.2</span> Visualising the space</h3>
@@ -487,7 +449,7 @@ simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span
 <span class="kw">plot</span>(simulated_space[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">xlab =</span> <span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;PC2&quot;</span>)
 <span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)
 <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),
-        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>), <span class="dt">bg =</span> <span class="st">&quot;white&quot;</span>)</code></pre></div>
+        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>))</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-81-1.png" width="768" /></p>
 <p>It is now possible to simulate a space using these observed arguments to test several hypothesis:</p>
 <ul>
@@ -518,8 +480,9 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 ## Plotting the results
 <span class="kw">plot</span>(test_unif, <span class="dt">main =</span> <span class="st">&quot;Uniform (0,1)&quot;</span>)
 <span class="kw">plot</span>(test_norm1, <span class="dt">main =</span> <span class="st">&quot;Normal (0,1)&quot;</span>)
-<span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="st">&quot;Normal (global observed</span><span class="ch">\n</span><span class="st">mean and sd)&quot;</span>)
-<span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable mean</span><span class="ch">\n</span><span class="st">and sd with correlation)&quot;</span>)</code></pre></div>
+<span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Normal (&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">3</span>),
+                              <span class="st">&quot;,&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">2</span>]], <span class="dt">digit =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>))
+<span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable + correlation)&quot;</span>)</code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-82-1.png" width="768" /></p>
 <p>If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.</p>
 
