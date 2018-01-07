@@ -85,7 +85,7 @@
 # conc.quantiles = c(mean, c(95, 50))
 # correction = "none"
 # details = TRUE
-# match_call <- list(data = "data", test = "adonis.dispRity")
+# match_call <- list(data = "data", test = "t.test")
 # test.dispRity(data, test = lm, comparisons = "all")
 # test.dispRity(data, test = lm, comparisons = "all", concatenate = FALSE)
 # data <- test.dispRity(data, test = sequential.test, family = gaussian, concatenate = FALSE)
@@ -301,6 +301,16 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
                 table_out <- output.htest.results(details_out, comparisons_list, correction = correction)
             } else {
                 table_out <- output.htest.results(details_out, comparisons_list, conc.quantiles, con.cen.tend, correction = correction)
+            }
+
+            ## Editing table names
+            long_title <- unlist(lapply(table_out, function(X) ifelse(length(grep(" c\\(\"", colnames(X)[1])) > 0, TRUE, FALSE)))
+            if(any(long_title)) {
+                for(i in 1:length(table_out)) {
+                    if(long_title[i]) {
+                        colnames(table_out[[i]])[1] <- gsub("\\\".*", "", gsub("c\\(\"", "", colnames(table_out[[i]])[1]))
+                    }
+                }
             }
 
             return(table_out)
