@@ -65,9 +65,10 @@ Dear Dr Vamosi,\\
 \bigskip
 
 I am very grateful to the four referees for their helpful and constructive comments, which I believe have helped me to significantly improve the \texttt{dispRity} package and this associated package description paper.
-I have taken all of their comments on board, and respond to their points in details below.
-For improving clarity in this document, reviewers comments are displayed in blue, my responses in normal text and the changes to the manuscript in italic.
-Also, I've uploaded two versions of the revised manuscript: both have the exact same content but one has all the changes and additions to the main text highlighted in yellow to help with reviewing.
+I have taken all of their comments on board (though some will be implemented in later versions), and respond to their points in details below.
+For improving clarity in this document, reviewers' comments are displayed in blue, my responses in normal text and the changes to the manuscript in italic.
+Additionally, I've uploaded two versions of the revised manuscript: both have the exact same content but one has all the changes and additions to the main text highlighted in yellow to help with reviewing.
+All the changes implemented in the package and the vignette are available on the release branch under version 0.5.1.
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~
 %
@@ -86,7 +87,7 @@ For example, the line in the abstract “It is then possible to use a summary me
 
 I have changed the terms used in the abstract and proposed more specific examples for clarity:
 
-\textit{It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} lines 6-10.
+\textit{It is then possible to measure diverse aspects of the distribution of some observation (e.g. species) in this space. For example, if studying morphology, one can create a morphospace for two groups of species, measure the volume occupied by each of these groups and then test whether these two volumes are significantly different or not.} lines 6-10.
 
 The changes have also been made throughout the manuscript as generally suggested by all four reviewers.
 
@@ -99,7 +100,7 @@ Also, the different definitions of disparity alluded to on lines 61-63 should be
 Furthermore, the manuscript is lacking a table summarising the metrics of disparity that this package can work with (which I suspect it was supposed to have).}}
 \label{define_disparity}
 
-Apologies for the omission of the table summarising the metrics which is now properly included in the manuscript (see reviewer 1, minor comment \ref{table_missing})
+Apologies for the omission of the table summarising the metrics which is now properly included in the manuscript (see reviewer 1, minor comment \ref{table_missing}).
 As reviewer 4 (major comment \ref{nebulous}) also underlines: ``disparity is a broad, nebulous concept''.
 This observation was the genesis for this package and I am currently working on a collaborative review to define the borders (or the absence thereof) of this concept.
 I feel that explaining this would be out of the scope of this software description paper.
@@ -107,7 +108,7 @@ However, I have tried to give specific examples each time I refer to disparity a
 
 I rewrote the part in the introducing disparity as follows:
 
-\textit{One can then measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupies more space than group B?''). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001), a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996), a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013), or many more (e.g. Navarro, 2003).} lines 60-67.
+\textit{One can then measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupy more space than group B?''). This requires the definition of a proxy for space occupancy: the disparity metric (or index; Hopkins and Gerber, 2017) which can be measured in a multitude of ways. For example, one could use a metric based on the variance or the range of each axis of space (Wills, 2001; Ciampaglio et al., 2001), a distance (e.g. Euclidean) measured between observations (Foote, 1993, 1996), a more direct approximation of the hyper volume (Cornwell et al., 2006; Donohue et al., 2013), or many more (e.g. Navarro, 2003).} lines 60-67.
 
 \item{\textcolor{blue}{Another concern I have is about how this R package sits within the current analytical toolkit available.
 How does this new package relate to existing packages available for R?
@@ -124,7 +125,7 @@ Also, I have generalised the distances calculations using the \texttt{vegan::veg
 
 I've updated the manual and the example to describe these new functions:
 
-\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 359-369.
+\textit{Similarly to the example above, it is also possible to statistically test this hypothesis using, for example, permutational multivariate ANOVA (PERMANOVA; Anderson, 2001b) through the adonis.disprity function that is a wrapper of the vegan::adonis function (Oksanen et al., 2007) for dispRity objects [TABLE 4]. To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset. Note that in this case, the function outputs different warnings on the usage of such test and the eventual data not used in the test. Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.} lines 359-369.
 
 \end{enumerate}
 
@@ -145,7 +146,7 @@ I have fixed these typos.
 \label{tone_down}
 
 In \texttt{geomorph}, the procrustes variance is defined as the sum of the diagonal covariance matrix between each elements divided by the number of elements (or effectively the sum of the squared ordination values divided by the number of elements - see example in \texttt{R} for \texttt{?dispRity::geomorph.ordination}).
-Using this disparity metric is appropriate for testing volume based hypothesis (e.g. Does group A occupies more morphospace than group B?) but does not allow to test position based hypothesis (e.g. Does group A occupies a different part of the morphospace than group B).
+Using this disparity metric is appropriate for testing volume based hypothesis (e.g. Does group A occupy more morphospace than group B?) but does not allow to test position based hypothesis (e.g. Does group A occupy a different part of the morphospace than group B).
 For example, one might find out that group A and B have the same volume but that doesn't tell us if they occupy the same position in the morphospace.
 
 I've highlighted this in the text:
@@ -160,7 +161,7 @@ I have changed the sentence following the reviewer's suggestion.
 \label{table_missing}
 
 I sincerely apologise for the omission of the Table! It is now included in the new version of the manuscript with the currently implemented metrics description.
-I would also like to underline that although not all usual disparity metrics are not represented in the table and in the package (by far!) the idea of the \texttt{dispRity} package and specifically the \texttt{metric} argument in the \texttt{dispRity} function is to allow users to come up with their \textit{own} metric.
+I would also like to underline that although not all usual disparity metrics are represented in the table and in the package (by far!) the idea of the \texttt{dispRity} package and specifically the \texttt{metric} argument in the \texttt{dispRity} function is to allow users to come up with their \textit{own} metric.
 
 For example, if one decides to use the relative ellipsoid hyper volume to the number of elements per group as a disparity metric (i.e. this metric could be used as a proxy for the average space occupancy per unit element - e.g. per taxa).
 This would not be doable directly by using the implemented \texttt{ellipse.volume} function but would require the user to use a function like:\\
@@ -260,7 +261,7 @@ I've added these models descriptions in the manual and in the manuscript:
 \textit{Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants (see below).
-Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type II error (thus decreasing accuracy).} lines 169-183.
+Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type I error (thus decreasing accuracy).} lines 169-183.
 
 
 \item{\textcolor{blue}{An additional more minor implementation issue here concerns the "subsamples". Firstly, I would urge the author to reconsider this name as it implies subsampling (e.g., rarefaction) and not what is intended, i.e., subsets of the data (the term used on L124) or groups of taxa. However, a more pressing issue is that I do not see any restrictions on overlap between these "subsamples" and indeed in the case of time-binning this is suggested as a "pro" (L138). Although in cases such as time-binning it is obviously sensible to allow taxa to appear in multiple "subsamples" this changes the assumptions of a statistical test looking for differences between samples, i.e., as overlap increases so would type II errors. I suggest the author consider at least a warning to users in such circumstances.}}
@@ -276,7 +277,7 @@ I've added a warning in the manual and the manuscript:
 \textit{Finally, there is a trade-off between precision and accuracy when using the time-slicing method: a higher number of slices increases the precision of the disparity analysis but also increases the type I error (thus decreasing accuracy).} line 180-183.
 
 
-A more detailed description and test of these models might be out of the scope of this package description paper but is currently in development for a special issue paper to be submitted to \textit{Palaeontology} as part as a special symposium for the Palaeontological Association annual meeting 2017 in collaboration with Natalie Cooper.
+A more detailed description and test of these models might be out of the scope of this package description paper but is currently in development for a special issue paper in \textit{Palaeontology} (in review) as part as a special symposium for the Palaeontological Association annual meeting 2017 in collaboration with Natalie Cooper.
 The full (un-reviewed an un-compiled) manuscript is available on Natalie's Github page (\url{https://github.com/nhcooper123/time-slice/blob/master/manuscript/time-slice.tex}).
 
 
@@ -289,7 +290,7 @@ It is now possible to perform the whole pipelined analysis (including bootstrapp
 
 I've reflected these changes in the manual with a subsection in the chapter ``Specific tutorials - 4.8'' (based on a distance matrix) and in manuscript as follows:
 
-\textit{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements (e.g. the multidimensional space can be a distance matrixl; Close et al., 2015).} lines 109-111.
+\textit{Note that the input matrix is not restricted to an ordinated matrix but can be any kind of matrix as long as its rows represent elements (e.g. the multidimensional space can be a distance matrix; Close et al., 2015).} lines 109-111.
 
 \item{\textcolor{blue}{Picking up on the first point from above, there are also additional post-ordination disparity metrics that have been used in the literature but are not available here. For example, hypercube volume, minimum spanning tree length etc. I would also urge the author to cite the work of Mike Foote, who made some early important contributions to disparity in general, and has written papers that discuss some of these potential metrics (e.g., Foote 1997, Annual Review of Ecology and Systematics, 28, 129–). I believe Wills (2001, cited) also discusses a long list of metrics.}}
 
@@ -302,12 +303,12 @@ For example, if the metric is defined as} \texttt{metric = c(prod, ranges)} \tex
 One can also directly pass a function description to the} \texttt{metric}\textit{ argument (e.g.} \texttt{metric = function(x) mean(dist(x)$\hat{\mkern6mu}$2)} \textit{ for the average squared pairwise distance).} lines 130-135.
 
 
-I have however added several additional new metrics ones to the newest version of the package including: (1) the minimal spanning tree length (\texttt{span.tree.length} - as suggested), (2) the ancestral distance which is equivalent to the distance from centroid but were the ``centroid'' are the coordinates of each element's ancestors (\texttt{ancestral.dist}), (3) the pairwise distances (\texttt{pairwise.dist} - based on \texttt{vegan:vegdist}), (4) the radius which equivalent to the distance from centroids but for the dimensions (i.e. the distance between each dimensions coordinates and the mean dimension's coordinates - \texttt{radius}) and (5) the $n$-ball volume which is an extension of the \texttt{ellipse.volume} function for a sphere (the true $n$-ball volume) or an ellipsoid (\texttt{n.ball.volume} - see Table 2 in the new version of the manuscript).
+I have however added several additional metrics to the newest version of the package including: (1) the minimal spanning tree length (\texttt{span.tree.length} - as suggested), (2) the ancestral distance which is equivalent to the distance from centroid but were the ``centroid'' are the coordinates of each element's ancestors (\texttt{ancestral.dist}), (3) the pairwise distances (\texttt{pairwise.dist} - based on \texttt{vegan::vegdist}), (4) the radius, equivalent to the distance from centroids but for the dimensions rather than the elements (i.e. the distance between each dimensions coordinates and the mean dimension's coordinates - \texttt{radius}) and (5) the $n$-ball volume which is an extension of the \texttt{ellipse.volume} function for a sphere (the true $n$-ball volume) or an ellipsoid (\texttt{n.ball.volume} - see Table 2 in the new version of the manuscript).
 
 \item{\textcolor{blue}{The package also employs a rarefaction function, but rarefaction can be problematic in the sense that rarefaction curves can sometimes cross such that the sampling level used to make comparisons can effect which of two or more subsets is considered the most disparate. This is why algorithms designed to sample "fairly" rather than equally have been explored, see for example Kotric and Knoll (2015, Paleobiology, 41, 68–). A user may also wish to rarefy by some external data source, such as number of occurrences, or geographic regions. These are obviously major additions, but are something the author might wish to add in future.}}
 
-This is again an excellent suggestion!
-I will implement the possibility to pass a probability matrix to the \texttt{boot.type} argument in the \texttt{boot.matrix} function where the probabilities can be reflecting occurences, regions, etc.
+This is an excellent suggestion for future direction for the package!
+I have raised an issue on my GitHub page for implementing the possibility to pass a probability matrix to the \texttt{boot.type} argument in the \texttt{boot.matrix} function where the probabilities can be reflecting occurences, regions, etc.
 I will also implement the ``fair'' algorithm mentioned in Kotric and Knoll (2015, Paleobiology, 41, 68–).
 
 \item{\textcolor{blue}{Other minor additions the author may also wish to consider are the permutation test from Brusatte et al. (2014, Current Biology, 24, 2386-), a means of adding the geologic timescale to time series plots (e.g., using the geoscale package)}}

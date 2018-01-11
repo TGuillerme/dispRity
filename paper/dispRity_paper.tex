@@ -125,7 +125,7 @@ $^1$Imperial College London, Silwood Park Campus, Department of Life Sciences, B
         \item Biological data is multivariate in essence: many traits in organisms co-vary with each other in space and time.
         This causes biologists to either reduce these to a manageable number of variables or, increasingly, to use multivariate toolkits.
         One such toolkit is based on creating a multidimensional space where the variables are the axes.
-        It is then possible to measure divers aspects of the distribution of some observation (e.g. species) in this space.
+        It is then possible to measure diverse aspects of the distribution of some observation (e.g. species) in this space.
         For example, if studying morphology, one can create a morphospace for two groups of species, measure the volume occupied by each of these groups and then test whether these two volumes are significantly different or not.
 
         \item There are as many definition of these multidimensional spaces, metrics and tests as there are questions that can be tackled with such methods.
@@ -176,7 +176,7 @@ These multidimensional spaces can be defined in many ways, for example as a pair
 The name we give to the multidimensional space tends to vary with the kinds of traits used to construct it. 
 For example, when using morphological traits the space will be a morphospace, when using ecological traits it may be referred to as an ecospace, etc.
 
-One can then measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupies more space than group B?'').
+One can then measure how the observations are distributed within this space to answer related questions (e.g. ``does group A occupy more space than group B?'').
 This requires the definition of a proxy for space occupancy: the disparity metric \citep[or index;][]{Hopkins2017} which can be measured in a multitude of ways.
 For example, one could use a metric based on the variance or the range of each axis of space \citep{Wills2001, Ciampaglio2001}, a distance (e.g. Euclidean) measured between observations \citep{foote1993contributions,Foote29111996}, a more direct approximation of the hyper volume \citep{cornwell2006trait,DonohueDim}, or many more \citep[e.g.][]{navarro2003MDA}.
 
@@ -548,7 +548,7 @@ Call: vegan::adonis(formula = dist(matrix) \texttildelow time, data = disparity2
 \end{table}
 
 To answer our specific question above: yes there is an effect of time on morphological disparity (an increase) in this dataset.
-Note that is this case, the function calls different warnings on the usage of such test and the eventual data not used in the test.
+Note that in this case, the function outputs different warnings on the usage of such test and the eventual data not used in the test.
 Additionally, the test is not applied to the bootstrapped data and thus might be sensitive to outliers and sampling size.
 
 \section{Additional information}
