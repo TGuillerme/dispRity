@@ -64,7 +64,7 @@ If you are using this package, please cite the following Zenodo DOI (an associat
 
 * Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
 
- [BibTeX](https://zenodo.org/record/31742/export/hx), [EndNote](https://zenodo.org/record/31742/export/xe), [DataCite](https://zenodo.org/record/5563174246/export/dcite3), [RefWorks](https://zenodo.org/record/31742/export/xw)
+ [BibTeX](https://zenodo.org/record/31742/export/hx), [EndNote](https://zenodo.org/record/31742/export/xe), [DataCite](https://zenodo.org/record/31742/export/dcite3), [RefWorks](https://zenodo.org/record/31742/export/xw)
 
 Acknowledgments
 -------
