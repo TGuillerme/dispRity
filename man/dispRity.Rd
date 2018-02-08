@@ -16,6 +16,8 @@ dispRity(data, metric, dimensions, ..., verbose = FALSE)
 \item{...}{Optional arguments to be passed to the metric.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+
+\item{parallel}{Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

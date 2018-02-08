@@ -7,7 +7,7 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
-# @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
+##' @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -99,7 +99,7 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
-dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
+dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -152,15 +152,22 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
 
     ## Parallel
     # if(missing(parallel)) {
-        do_parallel <- FALSE
+    #     do_parallel <- FALSE
     # } else {
     #     do_parallel <- FALSE
-    #     warning("parallel option not implemented yet.")
-    #     # check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
+    #     if(class(parallel) == "logical") {
+    #         do_parallel <- parallel
+    #     } else {
+    #         if(class(parallel) == "numeric") {
+    #             check.length(parallel, 1, msg = "Parallel must be either logical or a number of cores to use.")
+    #             do_parallel <- TRUE
+    #         } else {
+    #             stop("Parallel must be either logical or a number of cores to use.")
+    #         }
+    #     }
     # }
+
+    do_parallel <- FALSE
 
     ## ----------------------
     ## CALCULTING DISPARITY
@@ -199,15 +206,39 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         }
     }
     
-    # if(!do_parallel) {
+
+    ## Initialising the cluster
+    if(do_parallel) {
+        ## Selecting the number of cores
+        cores <- ifelse(parallel == TRUE, parallel::detectCores() - 1, parallel)
+        ## Initialise the cluster
+        cluster <- parallel::makeCluster(cores)
+        ## Checking for eventual additional arguments to export
+        # additional_args <- list(...)
+        # if(length(additional_args) > 0) {
+        #     additional_args <- NULL
+        # }
+    
+        ## Get the current environement
+        current_env <- environment()
+
+        ## Export from this environment
+        parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
+    }
+
+
+    if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        #disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
         if(verbose) message("Done.", appendLF = FALSE)
-    # } else {
-    #     disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-    #     stopCluster(cluster)
-    # }
+    } else {
+        cat("Enter parlapply\n")
+        disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
+        cat("Exit parlapply\n")
+        ## Stopping the cluster
+        parallel::stopCluster(cluster)
+        rm(cluster)
+    }
 
     ## Adding the removed elements as NAs
     if(removed_elements) {

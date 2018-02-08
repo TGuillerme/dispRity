@@ -459,3 +459,21 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
 
 })
+
+
+
+# test_that("dispRity works in parallel", {
+#     library(parallel)
+#     data(BeckLee_mat99)
+#     test <- boot.matrix(BeckLee_mat99, 100)
+
+#     ## Control
+#     test_non_par <- dispRity(test, metric = c(sum, variances))
+
+#     ## Error
+#     expect_error(dispRity(test, metric = c(sum, variances), parallel = "whatever"))
+
+#     ## Run parallel
+#     test_par <- dispRity(test, metric = c(sum, variances), parallel = TRUE)
+
+# })
