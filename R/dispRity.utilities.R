@@ -244,15 +244,14 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     }
 
     ## Rarefaction
-    if(!observed) {
-        if(rarefaction != FALSE) {
-            check.class(rarefaction, c("numeric", "integer"))
-            check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
-            if(data$call$bootstrap[[3]][1] != "full" & any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
-                stop("Rarefaction level not found.")
-            }
-        } 
-    }
+    if(rarefaction != FALSE) {
+        check.class(rarefaction, c("numeric", "integer"))
+        check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
+        if(data$call$bootstrap[[3]][1] != "full" & any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
+            stop("Rarefaction level not found.")
+        }
+        if(observed) {warning("Observed value cannot be extract if rarefaction is not FALSE.")}
+    } 
 
     ## Get the disparity values
     if(observed) {
