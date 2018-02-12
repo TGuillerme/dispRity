@@ -83,7 +83,7 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it is a bootstrapped dispRity object
-    if(is.null(data$disparity)) {
+    if(is.null(data$disparity) && is.na(class(data)[2])) {
         stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
     }
     
@@ -92,6 +92,35 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     if(any(quantiles < 1) | any(quantiles > 100)) {
         stop("quantiles(s) must be any value between 1 and 100.")
     }
+
+    #----------------------
+    # SPECIAL SHORTCUTS (dual classes)
+    #----------------------
+    if(length(class(data)) > 1) {
+
+        ## Model test summary
+        if(class(data)[2] == "model.test") {
+            ## Extracting the AICs and the log likelihoods
+            base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
+
+            ## Extracting the additional parameters
+            parameters <- sapply(data$full.details, function(x) x$par)
+            base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
+            
+            ## Get the full list of parameters
+            names_list <- lapply(parameters, names)
+            full_param <- unique(unlist(names_list))
+
+            output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
+
+            ## Rounding
+            summary_results <- rounding.fun(output_table, rounding, model.test = TRUE)
+
+            return(summary_results)
+        } else {
+            stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".")
+        }
+    } 
 
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE

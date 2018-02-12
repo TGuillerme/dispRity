@@ -77,10 +77,10 @@ round.column <- function(column, rounding) {
 
 
 ## Function for rounding the results
-rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
+rounding.fun <- function(results_table, rounding, model.test = FALSE) {
 
-    ## seq.test
-    start_column <- ifelse(seq.test, 1, 3)
+    ## model.test
+    start_column <- ifelse(model.test, 1, 3)
 
     ## Apply the rounding
     rounded_table <- as.matrix(results_table[,c(start_column:ncol(results_table))])
@@ -91,7 +91,20 @@ rounding.fun <- function(results_table, rounding, seq.test = FALSE) {
 }
 
 
-
+## match parameters lapply (for model.test summaries)
+match.parameters <- function(one_param, full_param) {
+    ## Which parameters are present:
+    available_param <- full_param %in% names(one_param)
+    if(any(!available_param)) {
+        ## Making the missing parameters NAs
+        output_param <- rep(NA, length(full_param))
+        names(output_param) <- full_param
+        output_param[available_param] <- one_param
+        return(output_param)
+    } else {
+        return(one_param)
+    }
+}
 
 
 

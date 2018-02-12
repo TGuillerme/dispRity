@@ -99,3 +99,16 @@ depth <- c(1,2,1,2,1,1,2,1,2,1,2,1,2,1,2,1,2,2,2,1,2,1,1,2,1,2,1,1,2,1,2,1,2,1,2
 
 ## Output list
 McClean_data <- list("ordination"=McClean_ordination, "treatment"=treatment, "depth"=depth)
+
+
+
+#####################################
+## Model test data
+#####################################
+
+## Test data
+data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
+data_bootstrapped <- boot.matrix(time.subsamples(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "gradual"))
+model_test_data <- dispRity(data_bootstrapped, c(sum, variances))
+
+save(model_test_data, file="../model_test_data.Rda")
