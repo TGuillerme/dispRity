@@ -1,5 +1,4 @@
 #TESTING null.test
-
 context("model.test")
 
 ## Select model data

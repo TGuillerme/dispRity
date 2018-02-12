@@ -6,7 +6,7 @@
 #'
 #' @param data A \code{dispRity} object used to test models of evolution through time.
 #' @param model The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model. A single model can be used as input or multiple modes can be supplied in a vector. If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}. If a list is supplied different models will be fit to the data (See \bold{Details}).
-#' @param pool.variance If \code{NULL} (default) the difference in variances will be calculated using Bartlett's Test (\code{\link[stats]{bartlett.test}}) of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.
+#' @param pool.variance If \code{NULL} (default) the difference in variances will be calculated using \code{\link[stats]{bartlett.test}} of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.
 #' @param time.split The age of the change in mode (\code{numeric}). The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}).
 #' @param fixed.optima A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).
 #' @param control.list A \code{list} of fine-tune control inputs for the optim function.
@@ -58,8 +58,8 @@
 #' data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
 #' 
 #' ## Calculating finer scale disparity
-#' data <- time.series(BeckLee_mat99, BeckLee_tree,
-#'                           method = "continuous", model = "gradual",
+#' data <- time.subsets(BeckLee_mat99, BeckLee_tree,
+#'                           method = "continuous", model = "proximity",
 #'                           time = rev(seq(from = 0, to = 120, length.out = 120)))
 #' data <- dispRity(boot.matrix(data), metric = c(sum, variances))
 #' 
@@ -86,13 +86,14 @@
 #' @export
 #' 
 
+# warning("DEBUG model.test")
 # source("sanitizing.R")
 # source("model.test_fun.R")
 # set.seed(123)
 # data(BeckLee_mat99)
 # data(BeckLee_ages)
 # data(BeckLee_tree)
-# continuousData <- time.series(BeckLee_mat99, BeckLee_tree, method="continuous", time=seq(120, 0, length.out=120), model="gradual")
+# continuousData <- time.subsets(BeckLee_mat99, BeckLee_tree, method="continuous", time=seq(120, 0, length.out=120), model="proximity")
 # data_bootstrapped <- boot.matrix(continuousData)
 # data <- dispRity(data_bootstrapped, c(sum, variances))
 # models <- list("BM", "OU", "multi.OU", c("BM", "Trend"))

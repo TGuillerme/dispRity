@@ -12,7 +12,7 @@ model.test(data, model, pool.variance = NULL, time.split,
 
 \item{model}{The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model. A single model can be used as input or multiple modes can be supplied in a vector. If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}. If a list is supplied different models will be fit to the data (See \bold{Details}).}
 
-\item{pool.variance}{If \code{NULL} (default) the difference in variances will be calculated using Bartlett's Test (\code{\link[stats]{bartlett.test}}) of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.}
+\item{pool.variance}{If \code{NULL} (default) the difference in variances will be calculated using \code{\link[stats]{bartlett.test}} of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.}
 
 \item{time.split}{The age of the change in mode (\code{numeric}). The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}).}
 
@@ -71,7 +71,7 @@ plot(tests)
 data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
 
 ## Calculating finer scale disparity
-data <- time.subsamples(BeckLee_mat99, BeckLee_tree,
+data <- time.series(BeckLee_mat99, BeckLee_tree,
                           method = "continuous", model = "gradual",
                           time = rev(seq(from = 0, to = 120, length.out = 120)))
 data <- dispRity(boot.matrix(data), metric = c(sum, variances))
