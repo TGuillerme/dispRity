@@ -337,10 +337,10 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     }
 
     ## type
-    if(length(data$subsets) == 1) {
-        type <- "box"
-        message("Only one subset of data available: type is set to \"box\".")
-    }
+    # if(length(data$subsets) == 1) {
+    #     type <- "box"
+    #     message("Only one subset of data available: type is set to \"box\".")
+    # }
 
     if(missing(type)) {
         ## Set type to default
