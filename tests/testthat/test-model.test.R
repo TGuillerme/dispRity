@@ -13,7 +13,7 @@ test_that("simple models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
-    expect_equal(round(test[[2]][[1]]$value, digit = 4), 10.0892)
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), 8.2029)
 
     set.seed(1)
     test <- model.test(data, model = "Stasis", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
@@ -22,7 +22,7 @@ test_that("simple models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
-    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(-15.11164, digit = 4))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(-14.7086, digit = 4))
 
     set.seed(1)
     test <- model.test(data, model = "Trend", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
@@ -31,7 +31,7 @@ test_that("simple models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
-    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(12.77702, digit = 4))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(10.5916, digit = 4))
 
     set.seed(1)
     test <- model.test(data, model = "OU", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
@@ -40,7 +40,7 @@ test_that("simple models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
-    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(13.36439, digit = 4))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(10.9821, digit = 4))
 
     set.seed(1)
     test <- model.test(data, model = "multi.OU", pool.variance = NULL, time.split = c(45, 65), fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
@@ -49,7 +49,7 @@ test_that("simple models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
-    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(10.08924, digit = 4))
+    expect_equal(round(test[[2]][[1]]$value, digit = 4), round(12.0183, digit = 4))
 
 })
 
@@ -62,4 +62,5 @@ test_that("multiple.models work", {
     expect_equal(names(test), c("aic.models", "full.details", "call"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
+    expect_equal(dim(test$aic.models), c(13, 3))
 })
