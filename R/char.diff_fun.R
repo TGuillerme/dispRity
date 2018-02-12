@@ -60,7 +60,7 @@ char.diff_R <- function(X, Y){
         differences <- ifelse(X-Y != 0, 1, 0)
 
         ## Calculate the difference
-        return( round( 1 - ( abs(sum(abs(differences))/length(X)-0.5)/0.5 ), digit = 10))
+        return( round( 1 - ( abs(sum(abs(differences))/length(X)-0.5)/0.5 ), digits = 10))
     } else {
         ## Normalise the characters
         X <- normalise.character(X, states_X)
@@ -102,7 +102,7 @@ plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend
 
 
     ## Measuring the densities
-    densities <- apply(matrix, 2, density, na.rm = TRUE)
+    densities <- apply(matrix, 2, stats::density, na.rm = TRUE)
 
     ## Getting the plot limits
     if(missing(xlim)) {
@@ -113,7 +113,7 @@ plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend
     }
 
     ## Measuring the cumulated density
-    cum_density <- density(as.numeric(matrix), na.rm = TRUE)
+    cum_density <- stats::density(as.numeric(matrix), na.rm = TRUE)
 
     ## Empty plot
     plot(1,1, col = "white", xlim = xlim, ylim = ylim, main = main, xlab = xlab, ylab = ylab, bty = "n")

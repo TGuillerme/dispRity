@@ -39,8 +39,8 @@ convert.to.character <- function(list, object) {
 
 
 ## function for repeating the extracted_data names (list to table internal)
-rep.names <- function(name, subsamples) {
-    return(rep(name, subsamples))
+rep.names <- function(name, subsets) {
+    return(rep(name, subsets))
 }
 
 
@@ -53,10 +53,10 @@ list.to.table <- function(extracted_data, style = "group") {
     if(length(names_list) == 0) {
         names_list <- as.list(seq(from = 1, to = length(extracted_data)))
     }
-    subsamples_length <- unlist(lapply(extracted_data, length), recursive = FALSE)
+    subsets_length <- unlist(lapply(extracted_data, length), recursive = FALSE)
 
     ## Create the data.frame
-    output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "subsamples" = unlist(mapply(rep.names, names_list, subsamples_length, SIMPLIFY = FALSE)))
+    output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "subsets" = unlist(mapply(rep.names, names_list, subsets_length, SIMPLIFY = FALSE)))
 
     ## Transform groups to numeric
     if(style == "binomial") {
@@ -81,47 +81,47 @@ htest.to.vector <- function(htest, print) {
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
     options(warn = -1)
     if(comp == "custom") {
-        ## get the list of subsamples to compare
-        comp_subsamples <- comparisons
+        ## get the list of subsets to compare
+        comp_subsets <- comparisons
     }
 
     if(comp == "pairwise") {
-        ## Get the pairs of subsamples
-        comp_subsamples <- combn(1:length(extracted_data), 2)
-        ## convert pair subsamples table into a list of pairs
-        comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
+        ## Get the pairs of subsets
+        comp_subsets <- combn(1:length(extracted_data), 2)
+        ## convert pair subsets table into a list of pairs
+        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
     }
 
     if(comp == "sequential") {
         ## Set the list of sequences
-        comp_subsamples <- set.sequence(length(extracted_data))
-        ## convert seq subsamples into a list of sequences
-        comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
+        comp_subsets <- set.sequence(length(extracted_data))
+        ## convert seq subsets into a list of sequences
+        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
     }
 
     if(comp == "referential") {
         ## Set the list of comparisons as a matrix
         matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
-        comp_subsamples <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
-        ## convert pair subsamples table into a list of pairs
-        comp_subsamples <- unlist(apply(comp_subsamples, 2, list), recursive = FALSE)
+        comp_subsets <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
+        ## convert pair subsets table into a list of pairs
+        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
     }
     options(warn = 0)
 
-    return(comp_subsamples)
+    return(comp_subsets)
 }
 
 ## Save the comparisons list
-save.comparison.list <- function(comp_subsamples, extracted_data) {
+save.comparison.list <- function(comp_subsets, extracted_data) {
     ## Saving the list of comparisons
-    comparisons_list <- convert.to.character(comp_subsamples, extracted_data)
+    comparisons_list <- convert.to.character(comp_subsets, extracted_data)
     comparisons_list <- unlist(lapply(comparisons_list, paste, collapse = " : "))
     return(comparisons_list)
 }
 
 ## Function for lapplying aov type functions
 lapply.lm.type <- function(data, test, ...) {
-    return(test(data ~ subsamples, data = data, ...))
+    return(test(data ~ subsets, data = data, ...))
 }
 
 
@@ -135,6 +135,9 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     ## Transforming list to table
     table_temp <- do.call(rbind.data.frame, details_out)
 
+    ## Getting the eventual parameter name
+    param_name <- unique(as.character(lapply(details_out, names)))
+
     ## Calculate the quantiles and the central tendency
     if(!missing(conc.quantiles) && !missing(con.cen.tend)) {
         table_out <- get.quantiles.from.table(table_temp, con.cen.tend, conc.quantiles)
@@ -143,7 +146,11 @@ output.numeric.results <- function(details_out, name, comparisons_list, conc.qua
     }
 
     ## Getting column names
-    colnames(table_out)[1] <- name
+    if(param_name != "NULL") {
+        colnames(table_out)[1] <- paste(name, param_name, sep = ": ")
+    } else {
+        colnames(table_out)[1] <- name
+    }
     ## Getting row names (the comparisons)
     row.names(table_out) <- comparisons_list
 
@@ -205,7 +212,7 @@ output.htest.results <- function(details_out, comparisons_list, conc.quantiles, 
 #     list_of_results <- list()
 #     for(element in 1:length(summaries[[1]][[1]])) {
 #         list_of_results[[element]] <- matrix(unlist(lapply(lapply(summaries, `[[`, 1), `[[`, element)), nrow = length(summaries[[1]][[1]][[element]]),
-#             dimnames = list(c("subsamples", "Residuals")))
+#             dimnames = list(c("subsets", "Residuals")))
 #     }
 
 #     ## Get the quantiles

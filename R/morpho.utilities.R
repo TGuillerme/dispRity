@@ -33,17 +33,17 @@
 #' 
 #' @examples
 #' ## A random multistate matrix
-#' matrix <- matrix(sample(c(0,1,2), 100, TRUE), 10, 10)
+#' random_matrix <- matrix(sample(c(0,1,2), 100, TRUE), 10, 10)
 #' 
 #' ## Get the contrast matrix
-#' get.contrast.matrix(matrix)
+#' get.contrast.matrix(random_matrix)
 #' 
 #' ## Adding inapplicable and missing data to the matrix
-#' matrix[sample(1:100, 10)] <- "?"
-#' matrix[sample(1:100, 10)] <- "-"
+#' random_matrix[sample(1:100, 10)] <- "?"
+#' random_matrix[sample(1:100, 10)] <- "-"
 #' 
 #' ## Get the contrast matrix
-#' get.contrast.matrix(matrix)
+#' get.contrast.matrix(random_matrix)
 #' 
 #' @seealso \code{\link{check.morpho}}
 #' 
@@ -180,7 +180,7 @@ apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, .
         if(invariant == FALSE) {
             invariants <- length(which(apply(matrix_inapplicable, 2, function(X) length(unique(X))) <= 1))
             if(invariants != 0) {
-                message(paste(invariants, "characters are now invariant due inapplicable data."))
+                warning(paste(invariants, "characters are now invariant due inapplicable data."))
             }
         }
 

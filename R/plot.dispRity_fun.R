@@ -1,5 +1,5 @@
 ## default settings
-set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE) {
+set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE, is_bootstrapped) {
 
     ## ylim
     if(ylim[[1]] == "default") {
@@ -16,7 +16,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         if(rarefaction == TRUE) {
             xlab <- "Elements"
         } else {
-            xlab <- "Subsamples"
+            xlab <- "Subsets"
         }
     }
     
@@ -33,16 +33,16 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
         col <- "black"
         ## If any quantiles add, grey colours
         if(ncol(summarised_data) > 3) {
-            quantiles_n <- (ncol(summarised_data) - 4)/2
-            colfun <- colorRampPalette(c("grey", "lightgrey"))
+            quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
+            colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
             col <- c(col, colfun(quantiles_n))
         }
     } else {
         if(type != "box") {
-            quantiles_n <- ncol(summarised_data[, -c(1:4)])/2
+            quantiles_n <- ncol(summarised_data[, -c(1:ifelse(is_bootstrapped, 4, 3))])/2
             cols_missing <- (quantiles_n + 1) - length(col)
             if(cols_missing > 0) {
-                colfun <- colorRampPalette(c("grey", "lightgrey"))
+                colfun <- grDevices::colorRampPalette(c("grey", "lightgrey"))
                 col <- c(col, colfun(cols_missing))
             }
         }
@@ -56,12 +56,28 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
 ### what is the column of the table (or, if "rows", the rows numbers)
 ### rarefaction is the rarefaction value (FALSE == none)
 extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
+
+    ## Internal function for checking true NAs
+    check.na <- function(row, extract, summarised_data) {
+        if(!extract[row]) {
+            extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+        }
+        return(extract[row])
+    }
+
     ## No rarefaction level
-    if(rarefaction == FALSE) {
+    if(!rarefaction) {
+        ## Values to extract
+        extract <- !is.na(summarised_data$obs)
+        ## Check if any of the values to extract are NAs from rarefaction or from missing data
+        if(any(!extract)) {
+            extract <- sapply(1:nrow(summarised_data), check.na, extract, summarised_data)
+        }
+
         if(what != "rows") {
-            return(summarised_data[which(!is.na(summarised_data$obs)), what])
+            return(summarised_data[which(extract), what])
         } else {
-            return(which(!is.na(summarised_data$obs)))
+            return(which(extract))
         }
     } else {
         ## Rarefaction level
@@ -77,7 +93,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
     ## How many points?
-    points_n <- length(unique(summarised_data$subsamples))
+    points_n <- length(unique(summarised_data$subsets))
 
     ## dummy matrix (for getting the nice boxplots split + column names)
     dummy_mat <- matrix(1:points_n, ncol = points_n)
@@ -85,17 +101,29 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 
     ## Empty plot
     if(add == FALSE) {
-        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001) ; warning("DEBUG: plot")
+        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001,, type = "n", ...)
+        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n")) ; warning("DEBUG: plot")
+    }
+
+    ## Set the shift parameter (for add)
+    shift = 0
+    if(add) {
+        ## Is the previous plot the same size?
+        prev_axis <- par("xaxp")
+        if(prev_axis[2] == points_n) {
+            shift = 0
+        } else {
+            shift = 0.5
+        }
     }
 
     ## Check if bootstrapped
-    if(is_bootstrapped) {
+    if(is_bootstrapped || is_distribution) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data) - 4)/2
+        quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
 
         ## Set the width (default)
-        width <- points_n/8
+        width <- 0.5 #points_n/(points_n*2)
 
         ## Set the colours
         if(length(col) < (quantiles_n + 1)) {
@@ -109,18 +137,6 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             poly_col <- rev(poly_col)
         }
 
-        ## Set the shift parameter (for add)
-        shift = 0
-        if(add) {
-            ## Is the previous plot the same size?
-            prev_axis <- par("xaxp")
-            if(prev_axis[2] == points_n) {
-                shift = 0
-            } else {
-                shift = 0.5
-            }
-        }
-
 
         ## Add the quantiles
         if(type == "polygon") {
@@ -129,10 +145,9 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
                     ## Setting X
                     x_vals <- c(point-width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point+width/(quantiles_n - cis + 1.5), point-width/(quantiles_n - cis + 1.5)) + shift
                     ## Setting Y
-                    y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
+                    y_vals <- c(rep(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point], 2),
+                              rep(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2) - (cis - 1), rarefaction)[point], 2)
+                              )
                     ## Plotting the box
                     polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
@@ -143,22 +158,26 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
             for (point in 1:points_n) {
                 for(cis in 1:quantiles_n) {
                     ## Setting Y
-                    y_vals<-c(extract.from.summary(summarised_data, 4 + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, ncol(summarised_data) - (cis - 1), rarefaction)[point])
+                    y_vals<-c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point],
+                              extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2) - (cis - 1), rarefaction)[point])
                     ## Plotting the box
                     lines(x = rep((point + shift), 2), y = y_vals, lty = (quantiles_n - cis + 1), lwd = cis * 1.5, col = col[[1]])
 
                 }
             }
         }
+        ## Add the points estimates
+        points(1:points_n + shift, extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]], pch = 19)
+    } else {
+        
+        ## Add the points estimates
+        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction), col = col[[1]], pch = 19)
     }
 
-    ## Add the points estimates
-    points(1:points_n + shift, extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]], pch = 19)
 
     if(observed == TRUE) {
         ## Add the points observed (if existing)
-        points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4) + shift
+        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4)
     }
 
     ## Save parameters
@@ -169,7 +188,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
     
     ## How many points?
-    points_n <- length(unique(summarised_data$subsamples))
+    points_n <- length(unique(summarised_data$subsets))
 
     ## Set the shift parameter (for add)
     shift = 0
@@ -187,21 +206,21 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
     if(add == FALSE) {
         if(time_slicing[1] == FALSE) {
             ## Plot with standard xaxis
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
-            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, 4, rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
+            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+            #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
     } else {
-        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]])
     }
 
     ## Check if bootstrapped
-    if(is_bootstrapped) {
+    if(is_bootstrapped || is_distribution) {
         ## How many quantiles?
-        quantiles_n <- (ncol(summarised_data) - 4)/2
+        quantiles_n <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
 
         ## Set the colours
         if(length(col) < (quantiles_n + 1)) {
@@ -218,12 +237,47 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
         ## Add the polygons
         for (cis in 1:quantiles_n) {
             x_vals <- c(1:points_n, points_n:1)
-            y_vals <- c(extract.from.summary(summarised_data, 4 + cis, rarefaction), rev(extract.from.summary(summarised_data, ncol(summarised_data)-(cis-1), rarefaction)))
-            polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
+            y_vals <- c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction), rev(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + quantiles_n*2)-(cis-1), rarefaction)))
+
+            ## Dividing the polygon if NAs
+            if(any(is.na(y_vals))) {
+
+                ## Check where the NAs are
+                is_nas <- is.na(y_vals[1:points_n])
+
+                ## Selecting the groups of applicable data
+                groups <- numeric()
+                group_label <- 1
+                for(point in 1:length(is_nas)) {
+                    if(is.na(y_vals[point])) {
+                        group_label <- group_label + 1
+                        groups[point] <- NA
+                    } else {
+                        groups[point] <- group_label
+                    }
+                }
+
+                ## splitting the data into the groups
+                y_vals1 <- split(y_vals[1:points_n], groups)
+                y_vals2 <- split(y_vals[(points_n+1):(points_n*2)], rev(groups))
+                x_vals1 <- split(x_vals[1:points_n], groups)
+                x_vals2 <- split(x_vals[(points_n+1):(points_n*2)], rev(groups))
+
+                ## Merging the groups
+                y_vals <- mapply(c, y_vals1, y_vals2, SIMPLIFY = FALSE)
+                x_vals <- mapply(c, x_vals1, x_vals2, SIMPLIFY = FALSE)
+
+                ## Plotting the polygons
+                mapply(polygon, x_vals, y_vals, MoreArgs = list(col = poly_col[[cis]], border = "NA", density = density))
+
+            } else {
+                polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
+            }
+
         }
 
         ## Add the central tendency on top
-        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, 4, rarefaction), lty = 1, col = col[[1]])
+        lines(seq(from = 1, to = points_n), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), lty = 1, col = col[[1]])
 
         ## Add the observed values on top
         if(observed == TRUE) {
@@ -237,7 +291,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim,
 }
 
 ## Plotting elements
-plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, ...) {
+plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, element.pch, ...) {
 
     div.log = FALSE
     ## Check if ylab2 exists
@@ -255,19 +309,25 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
         }
     } else {
         ## Creating the dummy data table
-        points_n <- length(unique(summarised_data$subsamples))
+        points_n <- length(unique(summarised_data$subsets))
         dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
         if(div.log == FALSE) {
-            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white")
+
+            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
             for(line in 1:points_n) {
-                lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+                # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+                points(line, summarised_data[line,2], pch = element.pch, col = col)
             }
+
         } else {
-            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white")
+            
+            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
             for(line in 1:points_n) {
-                lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
+                points(line, log(summarised_data[line,2]), pch = element.pch, col = col)
+                # lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
             }
+
         }
     }
     ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)
@@ -276,9 +336,9 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
 }
 
 
-## Splitting the summarised data table by subsamples (list)
-split.summary.data <- function(subsamples_levels, summarised_data) {
-    return(summarised_data[which(summarised_data$subsamples == subsamples_levels),])
+## Splitting the summarised data table by subsets (list)
+split.summary.data <- function(subsets_levels, summarised_data) {
+    return(summarised_data[which(summarised_data$subsets == subsets_levels),])
 }
 
 ## rarefaction plottings
@@ -290,7 +350,7 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     }
     ## title?
     if(missing(main)) {
-        main <- unique(as.character(sub_data$subsamples))
+        main <- unique(as.character(sub_data$subsets))
     }
     ## how many quantiles?
     quantiles_n <- (ncol(sub_data) - 4)/2
@@ -322,24 +382,28 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
 }
 
 ## Transposing data for boxploting (taking functions from summary.dispRity)
-transpose.box <- function(data, rarefaction) {
+transpose.box <- function(data, rarefaction, is_bootstrapped) {
 
     get.rare <- function(data, rare){
         return(data[[rare]])
     }
 
     if(rarefaction == FALSE) {
-        ## Select the raw data
-        box_data <- lapply(data$disparity, function(X) return(X[[2]]))
+        if(is_bootstrapped) {
+            ## Select the raw data
+            box_data <- lapply(data$disparity, function(X) return(X[[2]]))
+        } else {
+            box_data <- lapply(data$disparity, function(X) return(X[[1]]))
+        }
     } else {
         ## Select the rarefaction data
-        rare_rows <- lapply(lapply(data$subsamples, lapply, nrow), function(X) which(X[-1] == rarefaction) + 1)
+        rare_rows <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction) + 1)
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    output <- t(matrix(unlist(box_data), nrow = length(data$subsamples), byrow = TRUE))
+    output <- t(matrix(unlist(box_data), nrow = length(data$subsets), byrow = TRUE))
 
-    colnames(output) <- names(data$subsamples)
+    colnames(output) <- names(data$subsets)
 
     return(output)
 }

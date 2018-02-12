@@ -8,7 +8,7 @@ pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
   diag, add, lower = TRUE, ...)
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{data.frame} object with comparisons pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).}
+\item{data}{A \code{matrix} or a \code{data.frame} object with comparisons' pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).}
 
 \item{what}{A \code{numeric} or \code{character} value designating which column to plot.}
 
@@ -27,7 +27,7 @@ pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
 \item{...}{Any other options to be passed to \code{\link[graphics]{plot}}.}
 }
 \description{
-Plots pairwise comparisons from a data frame (typically output from \code{link{test.dispRity}}).
+Plots pairwise comparisons from a data frame (typically output from \code{\link{test.dispRity}}).
 }
 \details{
 The number of rows (i.e. comparisons) in \code{matrix} must be equal to the results of a pairwise combination.
@@ -42,6 +42,15 @@ pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
 
 ## Adding some tokens for each value below 0.2 in the second column
 pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
+
+## Loading disparity data
+data(disparity)
+
+## Testing the pairwise difference between slices
+tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
+
+## Plotting the significance
+pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
 
 }
 \seealso{

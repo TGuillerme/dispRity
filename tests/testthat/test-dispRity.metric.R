@@ -327,3 +327,108 @@ test_that("diagonal", {
     matrix <- matrix(seq(1:25), 5, 5)
     expect_equal(diagonal(matrix), sqrt(20))
 })
+
+
+
+test_that("ancestral.dist", {
+
+    set.seed(1)
+    tree <- rtree(6)
+    expect_equal(
+        get.ancestors(7, tree),
+        7)
+    expect_equal(
+        get.ancestors(4, tree),
+        c(10,9,7))
+    expect_equal(
+        get.ancestors(4, tree, full = FALSE),
+        c(10))
+
+
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    tree <- rtree(5)
+    tree$node.label <- paste0("n", 1:4)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
+
+     test <- nodes.coordinates(matrix, tree, full = FALSE)
+     expect_is(test, "matrix")
+     expect_equal(rownames(test), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
+
+     test <- nodes.coordinates(matrix, tree, full = TRUE)
+     expect_is(test[[1]], "matrix")
+     expect_is(test[[2]], "matrix")
+     expect_is(test[[3]], "matrix")
+
+     expect_equal(rownames(test[[1]]), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
+     expect_equal(rownames(test[[2]]), c("n1", "n1", "n1", "n3", "n3", NA, NA, NA, "n1"))
+     expect_equal(rownames(test[[3]]), c(NA, NA, NA, "n1", "n1", NA, NA, NA, NA))
+
+     set.seed(1)
+     matrix <- matrix(rnorm(90), 9, 10)
+     tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+     rownames(matrix) <- c(tree$tip.label, tree$node.label)
+
+     direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+     all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+
+     test1 <- ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
+     test2 <- ancestral.dist(matrix, nodes.coords = all_anc_centroids)
+
+     expect_equal(test1[6], c("n1" = 0))
+     expect_equal(test2[6], c("n1" = 0))
+     expect_lt(test1[1], test2[1])
+     expect_equal(test1[7], test2[7])
+
+})
+
+
+test_that("span.tree.length", {
+
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 10, 5)
+
+    test <- round(span.tree.length(matrix), digit = 5)
+
+    expect_equal(test, 15.40008)
+
+    dist <- as.matrix(dist(matrix))
+
+    expect_equal(test, round(span.tree.length(dist), digit = 5))
+})
+
+test_that("pairwise.dist", {
+
+    set.seed(1)
+    matrix <- matrix(rnorm(30), 3, 10)
+
+    distances <- pairwise.dist(matrix)
+
+    expect_equal(distances[1], as.vector(dist(matrix[c(1,2),])))
+    expect_equal(distances[2], as.vector(dist(matrix[c(1,3),])))
+    expect_equal(distances[3], as.vector(dist(matrix[c(2,3),])))
+})
+
+test_that("radius", {
+
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+
+    radiuses <- radius(matrix)
+
+    expect_equal(length(radiuses), ncol(matrix))
+    expect_equal(round(radiuses, digit = 5), round(c(1.4660109,0.9556041,2.2528229,0.5045006,2.0705822,1.1221754,1.4195993,0.9011047,0.7181528,0.9463714), digit = 5))
+})
+
+
+test_that("n.ball.volume", {
+
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+
+    volume_sphere <- n.ball.volume(matrix)
+    volume_spheroid <- n.ball.volume(matrix, sphere = FALSE)
+
+    expect_equal(round(volume_sphere, digit = 5), round(1.286559, digit = 5))
+    expect_equal(round(volume_spheroid, digit = 5), round(8.202472, digit = 5))
+})

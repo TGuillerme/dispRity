@@ -6,13 +6,13 @@
 \usage{
 \method{plot}{dispRity}(data, type, quantiles = c(50, 95),
   cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
-  ylab, col, time.subsamples = TRUE, observed = FALSE, add = FALSE,
-  density = NULL, nclass = 10, coeff = 1, ...)
+  ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE,
+  density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsamples}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -20,7 +20,7 @@
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
-\item{elements}{\code{logical} whether to plot the number of elements per subsamples.}
+\item{elements}{\code{logical} whether to plot the number of elements per subsets.}
 
 \item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
 
@@ -30,13 +30,15 @@
 
 \item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
 
-\item{time.subsamples}{\code{logical} whether to handle continuous data from the \code{time.subsamples} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsamples are used for the x axis labels.}
+\item{time.subsets}{\code{logical} whether to handle continuous data from the \code{time.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
+
+\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
@@ -66,7 +68,7 @@ plot(disparity, type = "box")
 ## Using polygons rather than boxes (quantiles and central tendency can be
 ## set by the user)
 plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
-     cent.tend = mode.val)
+     cent.tend = mean)
 
 ## Using different options
 plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
@@ -76,7 +78,7 @@ plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
 plot(disparity, type = "continuous")
 
 ## Using different options (with non time.slicing option)
-plot(disparity, type = "continuous", time.subsamples = FALSE,
+plot(disparity, type = "continuous", time.subsets = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots
@@ -94,7 +96,7 @@ data_distribution <- unlist(data_distribution, recursive = FALSE)
 data_obs <- as.vector(data_obs)
 
 ## Getting the ages
-ages <- as.numeric(names(disparity$subsamples))
+ages <- as.numeric(names(disparity$subsets))
 
 ## Plotting the results median
 geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")

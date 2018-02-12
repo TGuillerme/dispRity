@@ -1,0 +1,1 @@
+<!-- Bug issue template -->

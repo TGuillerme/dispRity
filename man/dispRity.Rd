@@ -7,7 +7,7 @@
 dispRity(data, metric, dimensions, ..., verbose = FALSE)
 }
 \arguments{
-\item{data}{A matrix or a \code{dispRity} object (see details).}
+\item{data}{A \code{matrix} or a \code{dispRity} object (see details).}
 
 \item{metric}{A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).}
 
@@ -16,21 +16,23 @@ dispRity(data, metric, dimensions, ..., verbose = FALSE)
 \item{...}{Optional arguments to be passed to the metric.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+
+\item{parallel}{Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
 \item{matrix}{the multidimensional space (a \code{matrix}).}
 \item{call}{A \code{list} containing the called arguments.}
-\item{subsamples}{A \code{list} containing matrices pointing to the elements present in each subsamples.}
-\item{disparity}{A \code{list} containing the disparity in each subsamples.}
+\item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
+\item{disparity}{A \code{list} containing the disparity in each subsets.}
 
 Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 }
 \description{
-Calculates disparity on a matrix or subsamples of a matrix, where the disparity metric can be user specified.
+Calculates disparity on a matrix or subsets of a matrix, where the disparity metric can be user specified.
 }
 \details{
-The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsamples}} or \code{\link{cust.subsamples}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
+The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsets}} or \code{\link{custom.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}}, a list of disparity measurements calculated from the \code{dispRity} function or a \code{matrix} object with rows as elements and columns as dimensions. In any of these cases, the data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 
 \code{metric} should be input as a vector of functions.
 The functions are sorted and used by dimension-level from 3 to 1 (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -54,13 +56,13 @@ summary(sum_of_variances)
 bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
 dispRity(bootstrapped_data, metric = c(sum, variances))
 
-## Calculating the disparity from a customised subsample
-## Generating the subsamples
-customised_subsamples <- custom.subsamples(BeckLee_mat50,
+## Calculating the disparity from a customised subset
+## Generating the subsets
+customised_subsets <- custom.subsets(BeckLee_mat50,
      list(group1 = 1:(nrow(BeckLee_mat50)/2),
           group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
 ## Bootstrapping the data
-bootstrapped_data <- boot.matrix(customised_subsamples, bootstraps = 100)
+bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
 ## Calculating the sum of variances
 sum_of_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 summary(sum_of_variances)
@@ -79,7 +81,7 @@ summary(disparity_level1)
 
 }
 \seealso{
-\code{\link{custom.subsamples}}, \code{\link{time.subsamples}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+\code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 \author{
 Thomas Guillerme

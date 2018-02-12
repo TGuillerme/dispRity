@@ -7,7 +7,7 @@ object
 	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|
-	|	\---$subsamples = class:"character"
+	|	\---$subsets = class:"character"
 	|	|
 	|	\---$bootstrap = class:"character"
 	|	|
@@ -15,11 +15,11 @@ object
 	|	|
 	|	\---$metric = class:"character"
 	|
-	\---$subsamples* = class:"list" (subsamples as a list)
+	\---$subsets* = class:"list" (subsets as a list)
 	|	|
-	|	\---[[1]]* = class:"list" (first item in subsamples list)
+	|	\---[[1]]* = class:"list" (first item in subsets list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first subsample)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the first subset)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -27,9 +27,9 @@ object
 	|	|	|
 	|	|	\---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
 	|	|
-	|	\---[[2]] = class:"list" (second item in subsamples list)
+	|	\---[[2]] = class:"list" (second item in subsets list)
 	|	|	|
-	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second subsample)
+	|	|	\---$elements* = class:"matrix" (one column matrix containing the elements within the second subset)
 	|	|	|
 	|	|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 	|	|	|
@@ -41,17 +41,17 @@ object
 	|	|	|	|
 	|	|		\---[[...]] = class:"numeric" (the bootstraps)
 	|	|
-	|	\---[[...]] = class:"list" (the following subsamples)
+	|	\---[[...]] = class:"list" (the following subsets)
 	|		|
-	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this subsample)
+	|		\---$elements* = class:"matrix" (a one column matrix containing the elements within this subset)
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
 	\---$disparity
 		|
-		\---[[2]] = class:"list" (the first subsamples)
+		\---[[2]] = class:"list" (the first subsets)
 		|	|
-		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsamples)
+		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsets)
 		|	|
 		|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 		|	|
@@ -59,9 +59,9 @@ object
 		|	|
 		|	\---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
 		|
-		\---[[2]] = class:"list" (the first subsamples)
+		\---[[2]] = class:"list" (the first subsets)
 		|	|
-		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsamples)
+		|	\---$observed* = class:"numeric" (vector containing the observed disparity within the subsets)
 		|	|
 		|	\---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
 		|	|
@@ -73,9 +73,9 @@ object
 		|		|
 		|		\---[[...]] = class:"numeric" (the bootstraps)
 		|
-		\---[[...]] = class:"list" (the following subsamples)
+		\---[[...]] = class:"list" (the following subsets)
 			|
-			\---$observed* = class:"numeric" (the vector containing the observed disparity within this subsamples)
+			\---$observed* = class:"numeric" (the vector containing the observed disparity within this subsets)
 			|
 			\---[[...]] = class:"matrix" (the rarefactions)
 ```

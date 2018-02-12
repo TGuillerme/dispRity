@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal dimension.level3.fun dimension.level2.fun dimension.level1.fun
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius
 # hyper.volume
 #' @title Disparity metrics
 #'
@@ -30,7 +30,7 @@
 #'      }
 #   \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
 #      \itemize{
-#          \item \code{method = "box"} see \code{link[hypervolume]{hypervolume}} for more details
+#          \item \code{method = "box"} see \code{\link[hypervolume]{hypervolume}} for more details
 #          \item \code{print.output = FALSE} whether to print (\code{TRUE}) or capture (\code{FALSE}) the verbose output. 
 #      }
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
@@ -38,6 +38,8 @@
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'   \item \code{mode.val}: calculates the modal value of a vector.
+#'   \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
+#'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
 #' }
 #' 
 #'  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
@@ -46,7 +48,14 @@
 #' \itemize{
 #'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
-#'   \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subsample of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
+#'   \item \code{centroids}: calculates the Euclidean distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix).
+#'
+#'   \item \code{ancestral.dist}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
+#'
+#'   \item \code{pairwise.dist}: calculates the pairwise distance between elements. The distance type can be changed via the \code{method} argument (see \code{\link[stats]{dist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
+#' 
+#'   \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
+#'
 #' }
 #'
 #' @examples
@@ -87,7 +96,50 @@
 #' 
 #' ## Matrix diagonal
 #' diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
-#'
+#' 
+#' ## Minimum spanning tree length (default)
+#' span.tree.length(dummy_matrix)
+#' 
+#' ## Minimum spanning tree length from a distance matrix (faster)
+#' distance <- as.matrix(dist(dummy_matrix))
+#' span.tree.length(distance)
+#' 
+#' ## Minimum spanning tree length based on Manhattan distance
+#' span.tree.length(dummy_matrix, method = "manhattan")
+#' span.tree.length(as.matrix(dist(dummy_matrix, method = "manhattan"))) # Same
+#' 
+#' ## The maximal radius of each axis (maximum distance from centre of each axis)
+#' radius(dummy_matrix)
+#' 
+#' ## The average radius of each axis (mean distance from centre of each axis)
+#' radius(dummy_matrix, type = mean)
+#' 
+#' ## The pairwise distance
+#' pairwise.dist(dummy_matrix)
+#' 
+#' ## The average squared pairwise distance
+#' mean(pairwise.dist(dummy_matrix)^2)
+#' 
+#' ## equal to:
+#' geiger::disparity(data = dummy_matrix)
+#' 
+#' ## A random matrix
+#' dummy_matrix <- matrix(rnorm(90), 9, 10)
+#' ## A random treee with node labels
+#' rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
+#' ## Adding the tip and node names to the matris
+#' rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
+#' 
+#' ## Calculating the direct ancestral nodes
+#' direct_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = FALSE)
+#' ## Calculating all the ancestral nodes
+#' all_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = TRUE)
+#' 
+#' ## Calculating the distances from the direct ancestral nodes
+#' ancestral.dist(dummy_matrix, nodes.coords = direct_anc_centroids)
+#' ## Calculating the distances from all the ancestral nodes
+#' ancestral.dist(dummy_matrix, nodes.coords = all_anc_centroids)
+#' 
 #' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @author Thomas Guillerme
@@ -125,6 +177,11 @@ ranges <- function(matrix, k.root) {
     }
 }
 
+## Euclidean distance from the centroid
+fun.dist <- function(row, centroid) {
+    return(sqrt(sum((row-centroid)^2)))
+}
+
 ## Calculating the distance from centroid
 centroids <- function(matrix, centroid) {
 
@@ -134,17 +191,13 @@ centroids <- function(matrix, centroid) {
     if(missing(centroid)) {
         ## Calculating the centroid point
         centroid <- apply(matrix, 2, mean)
-    }
+    } 
 
-    ## Euclidean distance from the centroid
-    fun.dist <- function(row, centroid) {
-        return(sqrt(sum((row-centroid)^2)))
-    }
-
+    ## Calculate centroid distance with a single centroid
     cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
-
     return(cent.dist)
 }
+
 
 ## Calculate the mode of a vector
 mode.val <- function(X){
@@ -208,3 +261,210 @@ diagonal <- function(matrix) {
     ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras' theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimension.
     return(sqrt(sum(ranges(matrix))))
 }
+
+## Calculating the distance from the ancestral nodes
+ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
+
+    ## Checking if the nodes.coords is available
+    if(missing(nodes.coords)) {
+        if(!missing(tree) && !missing(full)) {
+            nodes.coords <- nodes.coordinates(matrix, tree, full)
+        } else {
+            return(centroids(matrix, ...))
+            warning("Missing tree and full argument for nodes.coordinates.\nSee ?nodes.coordinates manual.\nCentroids function applied instead.")
+        }
+    }
+    
+    if(class(nodes.coords) == "matrix") {
+        ## Converting both matrix and nodes.coords in lists
+        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
+        nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
+
+        ## Calculate nodes.coords distance with multiple nodes.coords
+        cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coords)
+        return(cent.dist)
+    }
+
+    if(class(nodes.coords) == "list") {
+        ## Wrapper function
+        mapply.fun.dist <- function(nodes.coords, matrix) {
+            ## Converting the matrix into a list
+            nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
+            ## Calculate nodes.coords distance with multiple nodes.coords
+            cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coords)
+            return(cent.dist)
+        }
+
+        ## Convert the matrix into a list
+        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
+
+        ## Calculate nodes.coords distance with multiple centroids
+        cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix)
+        cent.dist <- do.call(rbind, cent.dist)
+        
+        ## Calculate the cumulative distances
+        cent.dist <- apply(cent.dist, 2, sum, na.rm = TRUE)
+        return(cent.dist)
+    }
+
+    if(class(nodes.coords) == "numeric") {
+        ## Apply the normal centroid function
+        return(centroids(matrix, centroid = nodes.coords, ...))
+    }
+}
+
+## Calculates the hyperbox volume (or hypercube if cube = TRUE)
+span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
+    ## Check if the matrix is a distance matrix first
+    if(ncol(matrix) == nrow(matrix)) {
+        ## Something like that for testing the triangularity
+        if(all(sort(matrix[upper.tri(matrix)]) == sort(matrix[lower.tri(matrix)]))) {
+            span_tree <- vegan::spantree(matrix, toolong = toolong)
+        } else {
+            span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
+        }
+    } else {
+        span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
+    }
+
+    ## Output the span tree length
+    return(sum(span_tree$dist))
+}
+
+## Calculates the pairwise distance between elements
+pairwise.dist <- function(matrix, method = "euclidean", ...) {
+    return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
+}
+
+## Calculate the radius for each dimensions
+radius <- function(matrix, type = max) {
+    ## Calculate the maximum distance from the centres per axis
+    differences <- mapply(function(x, y) abs(x - y), unlist(apply(matrix, 2, list), recursive = FALSE), as.list(apply(matrix, 2, mean)), SIMPLIFY = FALSE)
+
+    ## Getting the radius
+    return(unlist(lapply(differences, type)))
+}
+
+## Calculates the n-ball volume
+n.ball.volume <- function(matrix, sphere = TRUE) {
+    ## Dimensions
+    n <- ncol(matrix)
+
+    ## Radius
+    if(sphere) {
+        radius <- min(radius(matrix))
+    } else {
+        radius <- prod(radius(matrix))
+    }
+
+    ## Volume
+    return(pi^(n/2)/gamma((n/2)+1)*radius)
+}
+
+
+
+#' @title Nodes coordinates
+#'
+#' @description Calculates ancestral nodes coordinates in a format that can be passed to \code{\link{ancestral.dist}}
+#'
+#' @param matrix The \code{matrix} on which \code{\link{centroids}} will be applied
+#' @param tree A tree topology of class \code{"phylo"}.
+#' @param full Whether to get the centroids for all ancestors down to the root (\code{TRUE} - default) or only the direct ancestors (\code{FALSE})
+#' 
+#' @return
+#' A \code{matrix} if \code{full = FALSE} or a \code{list} of matrices if \code{full = TRUE}.
+#' 
+#' @examples
+#' ## A random matrix
+#' matrix <- matrix(rnorm(90), 9, 10)
+#' ## A random treee with node labels
+#' tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+#' ## Adding the tip and node names to the matris
+#' rownames(matrix) <- c(tree$tip.label, tree$node.label)
+#' 
+#' ## Calculating the direct ancestral nodes
+#' direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+#' ## Calculating all the ancestral nodes
+#' all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+#' 
+#' ## Calculating the distances from the direct ancestral nodes
+#' ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
+#' ## Calculating the distances from all the ancestral nodes
+#' ancestral.dist(matrix, nodes.coords = all_anc_centroids)
+#'
+#' @seealso \code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}
+#' 
+#' @author Thomas Guillerme
+#' @export
+#' 
+## Getting the centroid matrix for ancestor.centroids
+nodes.coordinates <- function(matrix, tree, full = TRUE) {
+    if(!full) {
+        ## Get the direct ancestors only (if no matrix provided)
+        centroids <- matrix[sapply(1:(Ntip(tree) + (Nnode(tree))), get.ancestors, tree, full = FALSE), ]
+    } else {
+        ## Calculate the multiple matrices
+        centroids <- lapply(get.ancestors.list(tree), function(X) return(matrix[c(X), ]))
+    }
+    return(centroids)
+}
+
+## Applies get.ancestor to all tips and nodes and outputs a list
+get.ancestors.list <- function(tree) {
+
+    ## Get all the ancestors
+    ancestors <- sapply(1:(Ntip(tree) + (Nnode(tree))), get.ancestors, tree, full = TRUE)
+
+    ## Get the tree depth
+    depth <- max(unlist(lapply(ancestors, length)))
+
+    ## Fill NAs were necessary
+    lapply.fill.NA <- function(X, depth) {
+        length_X <- length(X)
+        if(length_X == depth) {
+            return(X)
+        } else {
+            return(c(X, rep(NA, depth - length_X)))
+        }
+    }
+    ancestors <- lapply(ancestors, lapply.fill.NA, depth)
+
+    ## Transform into a matrix
+    ancestors <- matrix(unlist(ancestors), nrow = length(ancestors), byrow = TRUE)
+
+    ## And back into a list
+    return(unlist(apply(ancestors, 2, list), recursive = FALSE))
+}
+
+
+## get the list of ancestors (modified from phytools::getParent)
+get.ancestors <- function(tip, tree, full = TRUE) {
+
+    ## Getting the tree root (first node in ape edge table)
+    root <- tree$edge[1,1]
+
+    if(tip == root) {
+        ## If the tip is the root, simply return
+        return(root)
+    }
+
+    ## Function for getting one ancestor
+    get.one.ancestor <- function(tip, tree) {
+        return(ancestor <- tree$edge[which(tree$edge[, 2] == tip), 1])
+    }
+
+    ## Get the first ancestor
+    ancestors <- get.one.ancestor(tip, tree)
+
+    if(full) {
+        ## If the last ancestor is not the root, continue down the tree
+        while(ancestors[length(ancestors)] != root) {
+            ancestors <- c(ancestors, get.one.ancestor(ancestors[length(ancestors)], tree))
+        }
+    }
+
+    ## Output
+    return(ancestors)
+}
+
+

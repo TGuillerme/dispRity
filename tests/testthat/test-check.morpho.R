@@ -11,19 +11,29 @@ test_that("check.morpho works", {
     random.matrix <- sim.morpho(random.tree, characters = 50, model = "HKY", rates = c(rgamma, 1, 1), substitution = c(runif, 2, 2))
     #Erros
     expect_error(
-        check.morpho("a", parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree, distance = phangorn::RF.dist)
+        check.morpho("a", parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "a", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree, distance = phangorn::RF.dist)
+        check.morpho(matrix, parsimony = "a", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = "a", orig.tree, distance = phangorn::RF.dist)
+        check.morpho(matrix, parsimony = "fitch", first.tree = "a", distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), "a", distance = phangorn::RF.dist)
+        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree = "a", distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree, distance = "a")
+        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = "a")
+        )
+    expect_error(
+        check.morpho(matrix, parsimony = sum, first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
+        )
+
+    set.seed(1)
+    wrong_tree <- rtree(10)
+    wrong_tree$tip.label <- letters[1:10]
+    expect_error(
+        check.morpho(matrix, orig.tree = wrong_tree, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
 
     #Output
@@ -44,6 +54,12 @@ test_that("check.morpho works", {
     expect_equal(
        test[4,], 0
         )
+
+    #Verbose version
+    set.seed(1)
+    verbose <- capture_output(check.morpho(random.matrix, parsimony = "fitch", verbose = TRUE))
+    expect_equal(verbose, "Most parsimonious tree search:\nFinal p-score 48 after  0 nni operations ")
+
 
     #Test example (seed 10)
     set.seed(10)

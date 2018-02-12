@@ -1,8 +1,8 @@
 #' @title Plots pairwise comparisons
 #'
-#' @description Plots pairwise comparisons from a data frame (typically output from \code{link{test.dispRity}}).
+#' @description Plots pairwise comparisons from a data frame (typically output from \code{\link{test.dispRity}}).
 #'
-#' @param data A \code{matrix} or a \code{data.frame} object with comparisons pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).
+#' @param data A \code{matrix} or a \code{data.frame} object with comparisons' pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).
 #' @param what A \code{numeric} or \code{character} value designating which column to plot.
 #' @param col The two extremes of a color gradient (default = \code{c("black", "white")}).
 #' @param legend Logical, whether to plot the legend or not.
@@ -26,6 +26,15 @@
 #' ## Adding some tokens for each value below 0.2 in the second column
 #' pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
 #' 
+#' ## Loading disparity data
+#' data(disparity)
+#' 
+#' ## Testing the pairwise difference between slices
+#' tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
+#' 
+#' ## Plotting the significance
+#' pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
+#' 
 #' @seealso \code{\link{test.dispRity}}.
 #'
 #' @author Thomas Guillerme
@@ -43,7 +52,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     check.class(data, "data.frame")
     #getting the column names
     if(length(grep("-", rownames(data))) != 0 | length(grep(":", rownames(data))) != 0) {
-        elements <- unique(unlist(strsplit(rownames(data), split = " - ")))
+        elements <- unique(unlist(strsplit(rownames(data), split = " : ")))
     } else {
         #inferring the number of columns
         elements <- seq(1:find.num.elements(nrow(data)))
@@ -125,6 +134,11 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     }
 
     if(missing(add)) {
+        ## Correction if all results = 1
+        if(all(matrix_plot[!is.na(matrix_plot)] == 1)) {
+            col_grad <- rev(col_grad)
+        }
+
         #Plotting the matrix
         image(matrix_plot, col = col_grad, axes = FALSE, ...)
         #image(matrix_plot, col = col_grad, axes = FALSE) ; warning("DEBUG")

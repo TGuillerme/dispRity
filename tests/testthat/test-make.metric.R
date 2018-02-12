@@ -22,6 +22,7 @@ test_that("Output is correct", {
     expect_error(
     	make.metric(function(x)as.character(x))
     	)
+
     expect_equal(
     	make.metric(mean, silent=TRUE), "level1"
     	)
@@ -43,4 +44,14 @@ test_that("Output is correct", {
     expect_equal(
     	make.metric(function(x)sd(variances(var(x))), silent=TRUE), "level1"
     	)
+
+    expect_equal(capture.output(make.metric(var)),
+        c("var outputs a matrix object.", "var is detected as being a dimension-level 3 function.", "Additional dimension-level 2 and/or 1 function(s) will be needed."))
+
+    expect_equal(capture.output(make.metric(sd)), 
+        c("sd outputs a single value.", "sd is detected as being a dimension-level 1 function."))
+
+    expect_equal(capture.output(make.metric(variances)), 
+        c("variances outputs a matrix object.", "variances is detected as being a dimension-level 2 function."))
+
 })

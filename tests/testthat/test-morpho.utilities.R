@@ -106,10 +106,14 @@ test_that("apply.NA", {
     ## Errors
     expect_error(apply.NA("matrix", 4))
     expect_error(apply.NA(matrix, "4"))
+    expect_error(apply.NA(matrix, 51))
     expect_error(apply.NA(matrix, c("1", "character")))
     expect_error(apply.NA(matrix, c("clade", "character")))
     expect_error(apply.NA(matrix, c("clade", "character"), "tree"))
     expect_error(apply.NA(matrix, c("clade", "character"), rtree(5)))
+
+
+    apply.NA(matrix, 49)
 
     ## Apply NAs
     tests[[1]] <- apply.NA(matrix, 10)
@@ -127,4 +131,12 @@ test_that("apply.NA", {
             length(which(apply(tests[[test]], 2, function(x) "-" %in% x)) == TRUE)
             , 10)
     }
+
+
+    matrix_small <- sim.morpho(rtree(5), characters = 100, model = "ER",states = c(0.85, 0.15), rates = c(rgamma, rate = 10, shape = 5), invariant = TRUE)
+
+    set.seed(1)
+    warn <- capture_warnings(test <- apply.NA(matrix_small, 49, invariant = FALSE))
+    expect_equal(warn, "21 characters are now invariant due inapplicable data.")
+
 })

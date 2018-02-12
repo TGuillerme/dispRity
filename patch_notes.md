@@ -1,12 +1,37 @@
 Patch notes
 ----
-* 2017/09/25 - v0.4.1 
+<!-- * 2017/10/18 - v1.0 *got you covered*  -->
+* 2017/12/28 - v0.5.1
+  * Minor bug fixes and typos in error messages and manuals
+  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
+* 2017/12/20 - v0.5.0 *covered with tests*
+  * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
+  * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
+  * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
+  * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2). This version is slower that `geiger::dtt` but allows any univariate disparity metric!
+  * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
+  * `slice.tree` can now slice through a single edge.
+  * Various small speed improvements.
+  * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.
+  * *New* utility function: `crown.stem` for separating a tree into crown and stem groups.
+  * *New* disparity metric: `span.tree.length` the length of the minimum spanning tree.
+  * *New* disparity metric: `pairwise.dist`: the element's pairwise distances.
+  * *New* disparity metric: `radius`: the radius of each dimensions.
+  * *New* disparity metric: `n.ball.volume`: the *n*-dimensional sphere or ellipsoid volume.
+  * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...)
+  * **Changed argument** in `time.subsets`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
+  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
+* 2017/11/13 - v0.4.1
+  * *New* disparity metric: `ancestral.distance` to get the distance from taxa/nodes to their ancestors.
+  * *New* function: `random.circle` for generating random circle coordinates (see example in `space.maker` for creating doughnut spaces!).
   * *New* function: `get.bin.ages` for getting the geological timescale of a tree (based on `geoscale`).
-  * Fixed fuzzy match issues in `slice.tree`
+  * Added a `t0` argument to `time.subsamples` allowing to set the start age of the first subsample.
+  * Allowing subsamples to contain less than three elements (up to 0!).
+  * Fixed fuzzy match issues in `slice.tree`.
 * 2017/08/21 - v0.4.0 *user friendly*
   * Entirely rewritten manual (in GitBook)!
   * **Removed** `hyper.volume` metric for dependencies reasons
-  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: >2sec for 5k taxa and 10k bootstraps!)
+  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: <2sec for 5k taxa and 10k bootstraps!)
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
   * *New* utility function: `merge.subsamples` for... merging subsamples!

@@ -51,6 +51,12 @@ tree_age <- tree.age(rtree(10), age = 1)
 
 ## Test
 test_that("tree.age works", {
+
+    ## Errors
+    expect_error(
+        tree.age(rtree(10), order = "bla")
+        )
+
     ## table
     expect_is(
     	tree_age, 'data.frame'
@@ -82,3 +88,25 @@ test_that("Example runs", {
     	dim(ex1), c(19,2)
     	)
 })
+
+## Tree age works with trees with non-living taxa (if tree$root.time exists)
+
+test_that("Non living trees works", {
+
+    ## Random tree
+    set.seed(1)
+    tree <- rtree(5)
+    tree_age_living <- tree.age(tree)#, fossil.only = FALSE)
+
+    ## Making the tree older
+    tree$root.time <- 150
+
+    ## Recalculate the ages
+    tree_age_fossil <- tree.age(tree)#, fossil.only = TRUE)
+
+    for(tip in 1:(Ntip(tree)+Nnode(tree))) {
+        expect_equal(tree_age_fossil[tip, 1], tree_age_living[tip, 1] + abs(150 - max(tree_age_living[,1])))
+    }
+})
+
+

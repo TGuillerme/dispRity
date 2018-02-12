@@ -11,7 +11,7 @@ slice.tree(tree, age, model, FAD, LAD)
 
 \item{age}{A single \code{numeric} value indicating where to perform the slice.}
 
-\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"punctuated"} or \code{"gradual"}. Is ignored if \code{method = "discrete"}.}
+\item{model}{One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.}
 
 \item{FAD, LAD}{The first and last occurrence data.}
 }
@@ -34,7 +34,7 @@ tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 
 }
 \seealso{
-\code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsamples}}.
+\code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsets}}.
 }
 \author{
 Thomas Guillerme

@@ -4,7 +4,7 @@
 \alias{tree.age}
 \title{Calculating the age of nodes and tips in a tree.}
 \usage{
-tree.age(tree, age, order = "past")
+tree.age(tree, age, order = "past", fossil = TRUE, digits = 3)
 }
 \arguments{
 \item{tree}{A \code{phylo} object.}
@@ -12,9 +12,16 @@ tree.age(tree, age, order = "past")
 \item{age}{The age of the tree. If missing the age is set to be the tree height.}
 
 \item{order}{Either "past" if the units express time since the present (e.g. million years ago), or "present" if the unit is expressed in time since the root.}
+
+\item{fossil}{\code{logical}, whether to always consider the tree as containing at least one living taxa (\code{TRUE}) or allowing only fossil taxa (\code{FALSE} - default), see details.}
+
+\item{digits}{A \code{numeric} value or \code{integer} for the precision of the output.}
 }
 \description{
 Calculates the age of each node and tip in a tree give the height of the tree or some specified age.
+}
+\details{
+When \code{fossil = TRUE}, if the \code{tree} contains a \code{tree$root.time} element (for tree's root age), and that \code{order} is set to \code{"past"}, the output ages are adjusted to be starting from the root.time. Else, if no \code{tree$root.time} exists or \code{fossil = FALSE}, tips and nodes age is relative from the tip furthest away from the root.
 }
 \examples{
 ## A dated random phylogeny with a root 50 units of time old.
@@ -24,7 +31,7 @@ tree.age(rtree(10), order = 'present')
 
 }
 \seealso{
-\code{\link{slice.tree}}, \code{\link{time.subsamples}}.
+\code{\link{slice.tree}}, \code{\link{time.subsets}}.
 }
 \author{
 Thomas Guillerme

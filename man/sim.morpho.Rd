@@ -39,7 +39,7 @@ Generates a morphological matrix using \code{\link[ape]{rTraitDisc}} or \code{\l
      }
 
 \item The \code{states} argument attributes a number of states to each character by using the given probability vector for each number of states starting from two.
-For example \code{states = c(0.7, 0.2, 0.1)} will generate 70% of characters with two states, 20% of characters with three states and 10% of characters with four states. 
+For example \code{states = c(0.7, 0.2, 0.1)} will generate 70\% of characters with two states, 20\% of characters with three states and 10\% of characters with four states. 
 
 \item The \code{rates} and \code{substitution} arguments require a function that outputs a distribution and its optional parameters. For example \code{rates = c(runif, 1, 10)} creates a uniform distribution between 1 and 10 for the rates distribution.
 

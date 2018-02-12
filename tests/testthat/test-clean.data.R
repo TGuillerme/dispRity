@@ -49,6 +49,14 @@ trees_list <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETT
 dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
 cleaned <- clean.data(data = dummy_data, tree = trees_list)
 test_that("clean.data works", {
+    
+    ## Errors
+    data_test <- dummy_data
+    rownames(data_test) <- NULL
+    expect_error(
+        clean.data(data_test, tree_list)
+        )
+
     # Output is a list...
     expect_is(
     	cleaned, "list"
@@ -81,5 +89,18 @@ test_that("clean.data works", {
     expect_equal(
     	cleaned[[4]], "E"
     	)
+
+    ## Working with a single tree
+    test <- clean.data(dummy_data, trees_list[[1]])
+    expect_equal(
+        names(test)
+        , c("tree", "data", "dropped_tips", "dropped_rows")
+        )
+    expect_true(
+        is.na(test[[3]])
+        )
+    expect_true(
+        is.na(test[[4]])
+        )
 })
 

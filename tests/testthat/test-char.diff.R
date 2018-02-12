@@ -19,6 +19,10 @@ test_that("internal function char.diff", {
     matrix <- list(A, B)
     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
 
+    ## char.diff works with characters
+    matrix <- list(as.character(A), as.character(B))
+    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+
 })
 
 test_that("char.diff pair", {
@@ -93,6 +97,13 @@ test_that("char.diff matrix", {
             as.vector(tests[[test]])
             , expect_diff[[test]])
     }
+
+    ## Converting matrices into numeric
+    set.seed(1)
+    matrix_alpha <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
+    matrix_alpha <- apply(matrix_alpha, 2, as.character)
+    capture_warnings(test <- char.diff(matrix_alpha))
+    expect_is(test, c("matrix", "char.diff"))
 })
 
 
@@ -112,4 +123,22 @@ test_that("char.diff plot functions", {
     expect_true(select.nas(c(1, 2, NA, NA)))
     expect_false(select.nas(c(1,2,3,NA)))
 
+})
+
+
+test_that("char.diff plot (graphic)", {
+
+    ## Pairwise comparisons in a morphological matrix
+    morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
+
+    ## Plotting a matrix
+    capture_warnings(test <- plot.char.diff(morpho_matrix))
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+
+    ## Plotting the density profile of a char.diff object
+    capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
+    test <- plot(char.diff_matrix, type = "density")
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
