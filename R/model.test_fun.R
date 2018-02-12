@@ -5,7 +5,7 @@ bm.parameters <- function (data.model.test) {
 	
 	sample.size <- length(data.model.test$central_tendency) - 1
 	round.median.sample.size <- round(median(sample.size))
-	t.step <- (data.model.test$subsamples[sample.size + 1] - data.model.test$subsamples[1]) / sample.size
+	t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
 	epsilon <- 2 * pooled.variance(data.model.test) / round.median.sample.size
    	data.model.test.difference <- diff(data.model.test$central_tendency)
     return((1/t.step) * ((1/sample.size) * sum(data.model.test.difference ^ 2) - epsilon))
@@ -23,19 +23,19 @@ bm.parameters <- function (data.model.test) {
 eb.parameters <- function (data.model.test) {
 	
 	sample.size <- length(data.model.test$central_tendency) - 1
-    t.step <- (data.model.test$subsamples[sample.size + 1] - data.model.test$subsamples[1]) / sample.size
+    t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
     epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size))
     data.model.test.difference <- diff(data.model.test$central_tendency)
     mean.difference <- mean(data.model.test.difference)
     sigma.squared.step <- (1 / t.step) * ((1 / sample.size) * sum(mean.difference ^ 2) - epsilon)
-    a <- log(1e-5) / max(data.model.test$subsamples) * (1/2)
+    a <- log(1e-5) / max(data.model.test$subsets) * (1/2)
     return(c(sigma.squared.step, a))
 }
 
 trend.parameters <- function (data.model.test)  {
 	
 	sample.size <- length(data.model.test$central_tendency) - 1
-    t.step <- (data.model.test$subsamples[sample.size + 1] - data.model.test$subsamples[1]) / sample.size
+    t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
     epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size))
     data.model.test.difference <- diff(data.model.test$central_tendency)
     mean.difference <- mean(data.model.test.difference)
@@ -78,7 +78,7 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
 		    	optima <- anc.state
 	    }
 		
-		mean.ou <- optima * (1 - exp(-alpha * data.model.test.in$subsamples)) + anc.state * exp(-alpha * data.model.test.in$subsamples)
+		mean.ou <- optima * (1 - exp(-alpha * data.model.test.in$subsets)) + anc.state * exp(-alpha * data.model.test.in$subsets)
 		return(mean.ou)
 	}
 	
@@ -105,7 +105,7 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
 	    n.optima <- length(split.time) - 1
 	      
 	    ou.mean.fun <- function (anc.state, optima, alpha, time) optima * (1 - exp(-alpha * time)) + anc.state * exp(-alpha * time)
-	    ou.mean.splits <- sapply(1: n.optima, function(x) ou.mean.fun(anc.state, optima[x], alpha, data.model.test.in$subsamples))
+	    ou.mean.splits <- sapply(1: n.optima, function(x) ou.mean.fun(anc.state, optima[x], alpha, data.model.test.in$subsets))
 	    	    
 		mean.ou <- c()
 		for(x in 1:n.optima) mean.ou <- c(mean.ou, ou.mean.splits[start.split[x] : end.split[x] , x])  
@@ -130,7 +130,7 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
 		}		
 	   	 trend.param <- p[7]
 	   	 sample.size <- length(data.model.test.in[[1]])
-	   	 mean.trend <- anc.state + trend.param * data.model.test.in$subsamples
+	   	 mean.trend <- anc.state + trend.param * data.model.test.in$subsets
  		}
 	   
 	    
@@ -142,7 +142,7 @@ est.VCV <- function(p, data.model.test, model.type, fixed.optima=F, est.anc=TRUE
 	if(model.type == "BM" | model.type == "Trend")  {
 	
 		sigma.squared <- p[2]
-		VCV <- sigma.squared * outer(data.model.test$subsamples, data.model.test$subsamples, FUN = pmin)
+		VCV <- sigma.squared * outer(data.model.test$subsets, data.model.test$subsets, FUN = pmin)
 		diag(VCV) <- diag(VCV) + data.model.test$variance / data.model.test$sample_size
 		return(VCV)
 	}
@@ -151,9 +151,9 @@ est.VCV <- function(p, data.model.test, model.type, fixed.optima=F, est.anc=TRUE
 		
 	  	alpha <- p[3]
 	    sigma.squared <- p[2]
-	  	VCV <- outer(data.model.test$subsamples, data.model.test$subsamples, function(x, y) abs(x - y))
+	  	VCV <- outer(data.model.test$subsets, data.model.test$subsets, function(x, y) abs(x - y))
 	    VCV <- exp(-alpha * VCV)
-		VCVd <- (sigma.squared / (2 * alpha)) * (1 - exp(-2 * alpha * data.model.test$subsamples))
+		VCVd <- (sigma.squared / (2 * alpha)) * (1 - exp(-2 * alpha * data.model.test$subsets))
 		VCV_two <- outer(VCVd, VCVd, pmin)
 	    VCV <- VCV * VCV_two
 	    diag(VCV) <- VCVd + data.model.test$variance / data.model.test$sample_size
@@ -171,7 +171,7 @@ est.VCV <- function(p, data.model.test, model.type, fixed.optima=F, est.anc=TRUE
 		
 	    sigma.squared <- p[2]
 	    r.rate <- p[8]
-	    time.out.eb <- data.model.test$subsamples
+	    time.out.eb <- data.model.test$subsets
 	    VCV <- outer(sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), FUN=pmin)    
 	    diag(VCV) <- diag(VCV) + data.model.test$variance / data.model.test$sample_size
 	    return(VCV)
@@ -184,7 +184,7 @@ est.VCV <- function(p, data.model.test, model.type, fixed.optima=F, est.anc=TRUE
 ###################
 model.test.lik <- function(model.test_input, model.type.in, time.split, control.list, fixed.optima) {
 
-	half.life <- (model.test_input$subsamples[length(model.test_input$subsamples)] - model.test_input$subsamples[1]) / 4    
+	half.life <- (model.test_input$subsets[length(model.test_input$subsets)] - model.test_input$subsets[1]) / 4    
 	sts.params <- stasis.parameters(model.test_input)
 	p <- c()
 	p[1] <- model.test_input$central_tendency[1]
@@ -217,7 +217,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, ou.split, fi
      
     if(!is.null(time.split)) time.split <-  sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[4]])))))
      
-  	total.n <- length(data.model.test$subsamples)
+  	total.n <- length(data.model.test$subsets)
 	sample.time <- 1:total.n
 	split.here.vcv <-c(1, time.split)
 	split.here.2.vcv <-c(time.split - 1, total.n)		
@@ -226,9 +226,9 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, ou.split, fi
 
 	if(any(any.model, na.rm=T)) {
 			split.here.vcv <- split.here.2.vcv <- NULL
-			ou.mean <- c(1, time.split, length(data.model.test$subsamples))
+			ou.mean <- c(1, time.split, length(data.model.test$subsets))
 			split.here.vcv <- c(1, split.here.vcv)
-			split.here.2.vcv <- c(split.here.2.vcv, length(data.model.test$subsamples))
+			split.here.2.vcv <- c(split.here.2.vcv, length(data.model.test$subsets))
 		}
 
 	total_VCV <- matrix(0, nrow=total.n, ncol=total.n)
@@ -281,7 +281,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, ou.split, fi
 			time.out <- data.model.test.int[[4]]
 			time.out.diff <- diff(time.out[1:2])
 			time.out.2 <- time.out - (min(time.out) - time.out.diff)
-			data.model.test.int$subsamples <- time.out.2
+			data.model.test.int$subsets <- time.out.2
 				
 			output.vcv <- est.VCV(p, data.model.test.int, model.type=model.type.in[time.x])
 	
@@ -369,10 +369,10 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
     }
 
     ## Samples
-    if(data$call$subsamples[1] == "continuous") {
-        subsamples <- sort(as.numeric(names(data$subsamples)))
+    if(data$call$subsets[1] == "continuous") {
+        subsamples <- sort(as.numeric(names(data$subsets)))
     } else {
-        subsamples <- seq(1:length(data$subsamples))
+        subsamples <- seq(1:length(data$subsets))
     }
 	
 	subsamples <- max(subsamples) - subsamples

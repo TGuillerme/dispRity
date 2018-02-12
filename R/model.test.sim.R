@@ -92,7 +92,7 @@ model.test.sim <- function(number.sim=1,model.type.in, time.split=NULL, return.f
 	}
 	
 	data.model.test <- list(variance, sample.size, time.span)
-	names(data.model.test) <- c("variance", "sample_size", "subsamples")
+	names(data.model.test) <- c("variance", "sample_size", "subsets")
 	
 	if(!is.null(time.split)) time.split <-  sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[3]])))))
 
@@ -205,7 +205,7 @@ model.test.sim <- function(number.sim=1,model.type.in, time.split=NULL, return.f
 		
 		output <- lapply(1:number.sim, function(x) {
 			output.full <- list(output.values[,x], data.model.test.int[[1]], data.model.test.int[[2]], data.model.test.int[[3]])
-			names(output.full) <- c("disparity_measure", "variance", "sample_size", "subsamples")
+			names(output.full) <- c("disparity_measure", "variance", "sample_size", "subsets")
 			output.full
 			}
 		)

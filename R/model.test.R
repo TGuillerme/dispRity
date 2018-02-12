@@ -58,7 +58,7 @@
 #' data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
 #' 
 #' ## Calculating finer scale disparity
-#' data <- time.subsamples(BeckLee_mat99, BeckLee_tree,
+#' data <- time.series(BeckLee_mat99, BeckLee_tree,
 #'                           method = "continuous", model = "gradual",
 #'                           time = rev(seq(from = 0, to = 120, length.out = 120)))
 #' data <- dispRity(boot.matrix(data), metric = c(sum, variances))
@@ -92,7 +92,7 @@
 # data(BeckLee_mat99)
 # data(BeckLee_ages)
 # data(BeckLee_tree)
-# continuousData <- time.subsamples(BeckLee_mat99, BeckLee_tree, method="continuous", time=seq(120, 0, length.out=120), model="gradual")
+# continuousData <- time.series(BeckLee_mat99, BeckLee_tree, method="continuous", time=seq(120, 0, length.out=120), model="gradual")
 # data_bootstrapped <- boot.matrix(continuousData)
 # data <- dispRity(data_bootstrapped, c(sum, variances))
 # models <- list("BM", "OU", "multi.OU", c("BM", "Trend"))
