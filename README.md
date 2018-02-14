@@ -30,26 +30,26 @@ See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/mast
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-##### Patch notes
+##### Latest patch notes
 * 2017/12/20 - v0.5.0 *covered with tests*
   * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
-  * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
   * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
   * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2). This version is slower that `geiger::dtt` but allows any univariate disparity metric!
   * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
-  * `slice.tree` can now slice through a single edge.
-  * Various small speed improvements.
-  * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.
   * *New* utility function: `crown.stem` for separating a tree into crown and stem groups.
   * *New* disparity metric: `span.tree.length` the length of the minimum spanning tree.
   * *New* disparity metric: `pairwise.dist`: the element's pairwise distances.
   * *New* disparity metric: `radius`: the radius of each dimensions.
   * *New* disparity metric: `n.ball.volume`: the *n*-dimensional sphere or ellipsoid volume.
+  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
+  * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
+  * `slice.tree` can now slice through a single edge.
+  * Various small speed improvements.
+  * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.
   * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...)
   * **Changed argument** in `time.subsets`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
-  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
-   
-Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md).
+     
+Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
 Authors
 -------
