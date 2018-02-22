@@ -1,0 +1,121 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{pdflscape}
+\usepackage{fixltx2e}
+\usepackage{textcomp}
+\usepackage{fullpage}
+\usepackage{float}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{ifthen}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{enumerate}
+\usepackage[osf]{mathpazo}
+\usepackage{dcolumn}
+\usepackage{lineno}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\pagenumbering{arabic}
+
+%Pagination style and stuff
+%\linespread{2} 
+
+\raggedright
+\setlength{\parindent}{0.5in}
+\setcounter{secnumdepth}{0} 
+\renewcommand{\section}[1]{%
+\bigskip
+\begin{center}
+\begin{Large}
+\normalfont\scshape #1
+\medskip
+\end{Large}
+\end{center}}
+\renewcommand{\subsection}[1]{%
+\bigskip
+\begin{center}
+\begin{large}
+\normalfont\itshape #1
+\end{large}
+\end{center}}
+\renewcommand{\subsubsection}[1]{%
+\vspace{2ex}
+\noindent
+\textit{#1.}---}
+\renewcommand{\tableofcontents}{}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\textbf{RE: MEE-17-08-729 }\\
+\bigskip
+Dear Dr Vamosi,\\
+\bigskip
+
+I am very grateful to the four referees for their helpful and constructive comments, which I believe have helped me to significantly improve the \texttt{dispRity} package and this associated package description paper.
+I have taken all of their comments on board (though some will be implemented in later versions), and respond to their points in details below.
+For improving clarity in this document, reviewers' comments are displayed in blue, my responses in normal text and the changes to the manuscript in italic.
+Additionally, I've uploaded two versions of the revised manuscript: both have the exact same content but one has all the changes and additions to the main text highlighted in yellow to help with reviewing.
+All the changes implemented in the package and the vignette are available on the release branch under version 0.5.1.
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 1
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+\section{Reviewer 2}
+
+\begin{enumerate}
+
+\item{\textcolor{blue}{- In table 1 the singular of strata is stratum.}}
+
+\item{\textcolor{blue}{- Rows in Tables 1 and 2 are not well distinguished, i.e., I had to look at multiple columns to know where text broke over a line versus a new row.}}
+
+\item{\textcolor{blue}{L187 - Sentence seems to peter out. Close parenthesis and period?}}
+
+\item{\textcolor{blue}{L304 - Probably shouldn't use exclamation marks in a scientific paper unless they are factorials.}}
+
+I've removed the exclamation mark.
+
+\end{enumerate}
+
+
+\section{Reviewer 3}
+
+\begin{enumerate}
+
+\item{\textcolor{blue}{[pushing the package on the CRAN]}}
+
+\item{\textcolor{blue}{Table 2 seems to be lacking a caption and part of it just seems to have wandered into the text on page 12. }}
+
+The caption is part of the table in the LaTeX document.
+However, due to the table size, it doesn't fit in the page and was thus written separately.
+
+@@@ Force it to be under the table
+
+
+\item{\textcolor{blue}{I wondered, as pairwise.dist just vectorizes a distance matrix from vegan::vegdist, if these functions might be more so necessary internal functions that the author chose to externalize for users? 
+If that is the case, maybe some careful wording - more than just citing the original sources - is needed to not portray all of these as features of the new package.
+One suggestion is to offer, e.g., convhulln$vol rather than convhull.volume as the function that calculates hull volume, in Table 2, and indicate that convhull.volume similarly returns the $vol part of a convhull object, so one does not have to sift through a list. 
+(The idea is to do this with all cloned functions.) 
+Alternatively, write new bare functions (maybe the C++ coding could be improved for geometry::convhull?).
+Regardless of solution, the current help page for Disparity Metrics states things like, " Both convhull functions are based on the convhulln function."  They are not based on this function, they ARE this function.  Some effort should be made to either better credit original sources or avoid cloning functions, altogether.}}
+
+\item{\textcolor{blue}{Finally, there were some English irregularities (e.g., data is the plural form of datum) that could be fixed with some proofing from a native English-speaking scientist. (I would not trust this to a copy-editor over a colleague, if technical/scientific writing should be precise).}}
+
+\end{enumerate}
+
