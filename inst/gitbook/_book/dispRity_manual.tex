@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-01-03}
+  \date{2018-02-23}
 
 \usepackage{booktabs}
 
@@ -1706,7 +1706,7 @@ space\strut
 \end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
 The surface of the convex hull formed by all the elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln}\strut
+\href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln\$area}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 1\strut
@@ -1715,7 +1715,7 @@ The surface of the convex hull formed by all the elements\strut
 \end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
 The volume of the convex hull formed by all the elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln}\strut
+\href{https://cran.r-project.org/web/packages/geometry/index.html}{\texttt{geometry}}\texttt{::convhulln\$vol}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 1\strut
@@ -1761,7 +1761,7 @@ The hyper-spherical (\emph{n}-ball) volume\strut
 \end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
 The pairwise distances between elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-\href{https://cran.r-project.org/web/packages/stats/index.html}{\texttt{stats}}\texttt{::dist}\strut
+\href{https://cran.r-project.org/web/packages/vegan/index.html}{\texttt{vegan}}\texttt{::vegist}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 2\strut
@@ -1945,8 +1945,10 @@ object, this operation is the equivalent of
 ## 1       1 10 4.43
 \end{verbatim}
 
-The convex hull functions make a (good) estimation of the
-multidimensional properties of the ordinated space.
+The convex hull based functions are a call to the
+\texttt{geometry::convhulln} function with the \texttt{"FA"} option
+(computes total area and volume). Also note that they are really
+sensitive to the size of the dataset.
 
 \begin{quote}
 Cautionary note: measuring volumes in a high number of dimensions can be
@@ -2105,8 +2107,8 @@ principle and measure the range/variance/radius of each dimension:
 ## 1       1 10 0.652
 \end{verbatim}
 
-The pairwise distances uses the function \texttt{stats::dist} and can
-take the normal \texttt{dist} options:
+The pairwise distances uses the function \texttt{vegan::vegdist} and can
+take the normal \texttt{vegdist} options:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2131,6 +2133,9 @@ take the normal \texttt{dist} options:
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      3.619 2.566 3.335 5.672  9.63
 \end{verbatim}
+
+Note that this function is a direct call to
+\texttt{vegan::vegdist(matrix,\ method\ =\ method,\ diag\ =\ FALSE,\ upper\ =\ FALSE,\ ...)}.
 
 The \texttt{diagonal} function measures the multidimensional diagonal of
 the whole space (i.e.~in our case the longest Euclidean distance in our

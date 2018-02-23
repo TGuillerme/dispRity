@@ -367,13 +367,13 @@ Level | Name | Description | Source |
 ------|------|---------------------------------------------------|--------|
 2 | `ancestral.dist` | The distance between an element and its ancestor | `dispRity` |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
-1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
-1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln` |
+1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
+1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `mode.val` | The modal value | `dispRity` |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
-2 | `pairwise.dist` | The pairwise distances between elements | [`stats`](https://cran.r-project.org/web/packages/stats/index.html)`::dist` |
+2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
 1 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
@@ -466,7 +466,9 @@ summary(dispRity(dummy_space, metric = convhull.volume))
 summary(dispRity(dummy_space, metric = n.ball.volume))
 ```
 
-The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space.
+The convex hull based functions are a call to the `geometry::convhulln` function with the `"FA"` option (computes total area and volume).
+Also note that they are really sensitive to the size of the dataset.
+
 
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values.
 
@@ -509,7 +511,7 @@ radius(dummy_space, type = mean)
 summary(dispRity(dummy_space, metric = c(mean, radius), type = mean))
 ```
 
-The pairwise distances uses the function `stats::dist` and can take the normal `dist` options:
+The pairwise distances uses the function `vegan::vegdist` and can take the normal `vegdist` options:
 
 ```{r}
 ## The average pairwise euclidean distance
@@ -518,6 +520,8 @@ summary(dispRity(dummy_space, metric = c(mean, pairwise.dist)))
 ## The distribution of the Manhattan distances
 summary(dispRity(dummy_space, metric = pairwise.dist, method = "manhattan"))
 ```
+
+Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
 
 The `diagonal` function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space).
 The `mode.val` function measures the modal value of the matrix:

@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2018-02-23">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -555,13 +555,13 @@ disparity1 <span class="op">==</span><span class="st"> </span>disparity2</code><
 <td>1</td>
 <td><code>convhull.surface</code></td>
 <td>The surface of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln$area</code></td>
 </tr>
 <tr class="even">
 <td>1</td>
 <td><code>convhull.volume</code></td>
 <td>The volume of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln$vol</code></td>
 </tr>
 <tr class="odd">
 <td>1</td>
@@ -591,7 +591,7 @@ disparity1 <span class="op">==</span><span class="st"> </span>disparity2</code><
 <td>2</td>
 <td><code>pairwise.dist</code></td>
 <td>The pairwise distances between elements</td>
-<td><a href="https://cran.r-project.org/web/packages/stats/index.html"><code>stats</code></a><code>::dist</code></td>
+<td><a href="https://cran.r-project.org/web/packages/vegan/index.html"><code>vegan</code></a><code>::vegist</code></td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -683,7 +683,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> n.ball.volume))</code></pre></div>
 <pre><code>##   subsets  n  obs
 ## 1       1 10 4.43</code></pre>
-<p>The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space.</p>
+<p>The convex hull based functions are a call to the <code>geometry::convhulln</code> function with the <code>&quot;FA&quot;</code> option (computes total area and volume). Also note that they are really sensitive to the size of the dataset.</p>
 <blockquote>
 <p>Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> that often results in near 0 disparity values.</p>
 </blockquote>
@@ -733,7 +733,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(mean, radius), <span class="dt">type =</span> mean))</code></pre></div>
 <pre><code>##   subsets  n   obs
 ## 1       1 10 0.652</code></pre>
-<p>The pairwise distances uses the function <code>stats::dist</code> and can take the normal <code>dist</code> options:</p>
+<p>The pairwise distances uses the function <code>vegan::vegdist</code> and can take the normal <code>vegdist</code> options:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The average pairwise euclidean distance
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(mean, pairwise.dist)))</code></pre></div>
 <pre><code>##   subsets  n   obs
@@ -742,6 +742,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> pairwise.dist, <span class="dt">method =</span> <span class="st">&quot;manhattan&quot;</span>))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      3.619 2.566 3.335 5.672  9.63</code></pre>
+<p>Note that this function is a direct call to <code>vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)</code>.</p>
 <p>The <code>diagonal</code> function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space). The <code>mode.val</code> function measures the modal value of the matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ordinated space&#39;s diagonal
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> diagonal))</code></pre></div>
