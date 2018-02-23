@@ -44,10 +44,10 @@ The currently implemented dimension-level 1 metrics are:
      \itemize{
          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
      }
-  \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix.
-  \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix.
+  \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
+  \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
      \itemize{
-         \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
+         \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
          \item WARNING: both \code{convhull} functions can be computationally intensive!
      }
   \item \code{diagonal}: calculates the longest distance in the ordinated space.
@@ -69,7 +69,7 @@ The currently implemented dimension-level 2 metrics are:
 
   \item \code{ancestral.dist}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
 
-  \item \code{pairwise.dist}: calculates the pairwise distance between elements. The distance type can be changed via the \code{method} argument (see \code{\link[stats]{dist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
+  \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)}. The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
 
   \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
 
