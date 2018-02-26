@@ -469,8 +469,7 @@ summary(dispRity(dummy_space, metric = n.ball.volume))
 The convex hull based functions are a call to the `geometry::convhulln` function with the `"FA"` option (computes total area and volume).
 Also note that they are really sensitive to the size of the dataset.
 
-
-> Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values.
+> Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values. I strongly recommend reading [this really intuitive explanation](https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) from [Toph Tucker](https://github.com/tophtucker).
 
 #### Ranges, variances, radius, pairwise distance, modal value and diagonal
 
