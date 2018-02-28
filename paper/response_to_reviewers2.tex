@@ -59,7 +59,7 @@
 
 \begin{document}
 
-\textbf{RE: MEE-17-08-729 }\\
+\textbf{RE: MEE-18-01-025}\\
 \bigskip
 Dear Dr Vamosi,\\
 \bigskip
@@ -83,13 +83,20 @@ All the changes implemented in the package and the vignette are available on the
 
 \item{\textcolor{blue}{- In table 1 the singular of strata is stratum.}}
 
+I havefixed this typo.
+
 \item{\textcolor{blue}{- Rows in Tables 1 and 2 are not well distinguished, i.e., I had to look at multiple columns to know where text broke over a line versus a new row.}}
+
+I have added horizontal lines to this table.
 
 \item{\textcolor{blue}{L187 - Sentence seems to peter out. Close parenthesis and period?}}
 
+I am not entirely sure what this reviewer refers to.
+I have double checked punctuation in this paragraph.
+
 \item{\textcolor{blue}{L304 - Probably shouldn't use exclamation marks in a scientific paper unless they are factorials.}}
 
-I've removed the exclamation mark.
+I have removed the exclamation mark.
 
 \end{enumerate}
 
@@ -115,7 +122,12 @@ One suggestion is to offer, e.g., convhulln$vol rather than convhull.volume as t
 Alternatively, write new bare functions (maybe the C++ coding could be improved for geometry::convhull?).
 Regardless of solution, the current help page for Disparity Metrics states things like, " Both convhull functions are based on the convhulln function."  They are not based on this function, they ARE this function.  Some effort should be made to either better credit original sources or avoid cloning functions, altogether.}}
 
-\item{\textcolor{blue}{Finally, there were some English irregularities (e.g., data is the plural form of datum) that could be fixed with some proofing from a native English-speaking scientist. (I would not trust this to a copy-editor over a colleague, if technical/scientific writing should be precise).}}
+I have now specifically made clear that \texttt{convhull.surface}, \texttt{convhull.volume} and \texttt{pairwise.dist} are just duplicates of their associated original functions, both in the manuscript, package and vignettes.
+
+\item{\textcolor{blue}{Finally, there were some English irregularities (e.g., data is the plural form of datum) that could be fixed with some proofing from a native English-speaking scientist..}}
+
+A colleague has double checked the manuscript for typos.
 
 \end{enumerate}
 
+\end{document}
