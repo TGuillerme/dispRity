@@ -2,7 +2,7 @@
 #'
 #' @description Plots a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param x A \code{dispRity} object.
 #' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
@@ -123,7 +123,9 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+
+    data <- x
 
     #SANITIZING
     #DATA
@@ -229,23 +231,23 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
             lines(data$times, data$dtt, col = col[1], lwd = 1.5)
         } 
 
-         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
-            ## Colours
-            if(missing(col)) {
-                col <- "grey"
-            }
-            ## Ylab
-            if(missing(ylab)) {
-                ylab <- "Akaike weights"
-            }
-            ## Ylim
-            if(missing(ylim)) {
-                ylim <- NULL
-            }
+         # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+         #    ## Colours
+         #    if(missing(col)) {
+         #        col <- "grey"
+         #    }
+         #    ## Ylab
+         #    if(missing(ylab)) {
+         #        ylab <- "Akaike weights"
+         #    }
+         #    ## Ylim
+         #    if(missing(ylim)) {
+         #        ylim <- NULL
+         #    }
 
-            ## Plotting the model support
-            plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         }
+         #    ## Plotting the model support
+         #    plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
+         # }
         return(invisible())
     }
 

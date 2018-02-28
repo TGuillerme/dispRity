@@ -271,7 +271,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #'
 #' @description Scales or/and centers the disparity measurements.
 #'
-#' @param data a \code{dispRity} object.
+#' @param x a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
@@ -305,7 +305,8 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 # summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
 # summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+scale.dispRity <- function(x, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+    data <- x
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {
@@ -351,7 +352,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #'
 #' @description Sort (or order) the subsets of a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param x A \code{dispRity} object.
 #' @param decreasing \code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.
 #' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsets.
 #' @param ... optional arguments to be passed to \code{sort}.
@@ -379,7 +380,8 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 # summary(sort(data, decreasing = TRUE))
 # summary(sort(data, sort = c(7,1,3,4,5,2,6)))
 
-sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
+sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
+    data <- x
 
     ## Sanitizing
 

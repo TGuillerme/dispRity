@@ -1,6 +1,5 @@
 #' @name dispRity.metric
 #' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius
-# hyper.volume
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.

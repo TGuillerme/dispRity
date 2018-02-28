@@ -22,18 +22,22 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[latest development on master] dispRity v0.5.1 (2017-12-28)
+[last on release] dispRity v1.0.0 *got CRAN* (2019-02-28)
 =========================
+### NEW FEATURES
 
+  * CRAN release 1
+  
 ### MINOR IMPROVEMENTS
 
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
+  * Improved S3 methods
 
 ### BUG FIXES
 
   * Minor bug fixes and typos in error messages and manuals
 
-[latest on release] dispRity v0.5 *covered with tests* (2017-12-20)
+dispRity v0.5 *covered with tests* (2017-12-20)
 =========================
 
 ### NEW FEATURES

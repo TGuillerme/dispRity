@@ -59,7 +59,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     ## Transforming the Claddis data
 
     ## Compute the distance
-    distance <- MorphDistMatrix.support(data, distance = distance) #TG: Change to the proper version
+    distance <- Claddis::MorphDistMatrixFast(data, distance = distance)
 
     ## Ordinate the matrix
     ordination <- stats::cmdscale(distance, k = k, add = add, ...)

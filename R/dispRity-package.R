@@ -12,20 +12,20 @@
 #'
 #' @import ape
 #' @importFrom paleotree timeSliceTree 
-#' @importFrom snow makeCluster stopCluster parLapply 
 #' @importFrom geometry convhulln 
-# @importFrom hypervolume hypervolume estimate_bandwidth get_volume 
 #' @importFrom ade4 randtest as.randtest 
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var median runif cmdscale optim bartlett.test
+#' @importFrom stats bw.nrd0 coef glm p.adjust quantile rnorm var median cmdscale as.dist density optim bartlett.test
 #' @importFrom utils combn data capture.output
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
-#' @importFrom RCurl getURL url.exists 
-#' @importFrom mnormt dmnorm
-#' 
+#' @importFrom vegan adonis vegdist
+#' @importFrom geiger dtt ratematrix sim.char
+#' @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
+##' @importFrom Claddis MorphDistMatrixFast
+
 
 NULL
 

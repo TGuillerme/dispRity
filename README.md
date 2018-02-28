@@ -31,7 +31,7 @@ See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/mast
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ##### Latest patch notes
-* 2017/12/20 - v0.5.0 *covered with tests*
+* 2018/02/28 - v1.0.0 *got CRAN*
   * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
   * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
   * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2). This version is slower that `geiger::dtt` but allows any univariate disparity metric!

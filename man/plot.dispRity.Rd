@@ -4,13 +4,13 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(data, type, quantiles = c(50, 95),
-  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
-  ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE,
-  density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...)
+\method{plot}{dispRity}(x, type, quantiles = c(50, 95), cent.tend = median,
+  rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col,
+  time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL,
+  element.pch = 15, nclass = 10, coeff = 1, ...)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{x}{A \code{dispRity} object.}
 
 \item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 

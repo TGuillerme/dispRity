@@ -4,11 +4,11 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = median,
-  recall = FALSE, rounding)
+\method{summary}{dispRity}(object, quantiles = c(50, 95),
+  cent.tend = median, recall = FALSE, rounding)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{object}{A \code{dispRity} object.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 

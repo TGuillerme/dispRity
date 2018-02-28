@@ -4,10 +4,10 @@
 \alias{sort.dispRity}
 \title{Sorting or ordering a \code{dispRity} object.}
 \usage{
-\method{sort}{dispRity}(data, decreasing = FALSE, sort, ...)
+\method{sort}{dispRity}(x, decreasing = FALSE, sort, ...)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{x}{A \code{dispRity} object.}
 
 \item{decreasing}{\code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.}
 

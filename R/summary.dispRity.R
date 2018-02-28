@@ -2,7 +2,7 @@
 #'
 #' @description Creates a summary of a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param object A \code{dispRity} object.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param recall \code{logical} value specifying whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
@@ -48,7 +48,8 @@
 # recall <- FALSE
 # match_call <- list() ; match_call$cent.tend <- "median"
 
-summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
+summary.dispRity <- function(object, quantiles = c(50, 95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
+    data <- object
 
     #----------------------
     # SANITIZING

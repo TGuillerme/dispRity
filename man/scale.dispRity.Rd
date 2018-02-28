@@ -4,11 +4,11 @@
 \alias{scale.dispRity}
 \title{Scaling and centering disparity results.}
 \usage{
-\method{scale}{dispRity}(data, center = FALSE, scale = FALSE,
-  use.all = TRUE, ...)
+\method{scale}{dispRity}(x, center = FALSE, scale = FALSE, use.all = TRUE,
+  ...)
 }
 \arguments{
-\item{data}{a \code{dispRity} object.}
+\item{x}{a \code{dispRity} object.}
 
 \item{center}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
 

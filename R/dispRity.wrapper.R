@@ -39,7 +39,7 @@ dispRity.through.time <- function(data, tree, time, metric = c(median, centroids
     ## Sanitising is passed to the individual functions
 
     ## Dealing with missing time.subsets arguments
-    if(!methods::hasArg(method)) method <- "discrete"
+    if(!hasArg(method)) method <- "discrete"
 
     ## Creating the subsets
     data_subsetd <- time.subsets(data, tree, method, time = time, ...)

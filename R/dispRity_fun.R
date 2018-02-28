@@ -193,7 +193,7 @@ disparity.bootstraps.verbose <- function(one_subsets_bootstrap, metrics_list, da
 }
 
 
-## Lapply wrapper for disparity.bootstraps function
+# ## Lapply wrapper for disparity.bootstraps function
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) {
         disparity.bootstraps <- disparity.bootstraps.verbose
@@ -205,12 +205,12 @@ lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, ve
 }
 
 
-## Parallel versions
-parLapply.wrapper <- function(i, cluster) {
-    ## Running the parallel apply
-    parallel::parLapply(cluster, i, 
-        function(j) {
-            disparity.bootstraps.silent(j, metrics_list, data, matrix_decomposition)#, additional_args)
-        }
-    )
-}
+# ## Parallel versions
+# parLapply.wrapper <- function(i, cluster) {
+#     ## Running the parallel apply
+#     parallel::parLapply(cluster, i, 
+#         function(j) {
+#             disparity.bootstraps.silent(j, metrics_list, data, matrix_decomposition)#, additional_args)
+#         }
+#     )
+# }

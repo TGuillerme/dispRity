@@ -7,7 +7,7 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
-##' @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
+#          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -208,37 +208,37 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     
 
     ## Initialising the cluster
-    if(do_parallel) {
-        ## Selecting the number of cores
-        cores <- ifelse(parallel == TRUE, parallel::detectCores() - 1, parallel)
-        ## Initialise the cluster
-        cluster <- parallel::makeCluster(cores)
-        ## Checking for eventual additional arguments to export
-        # additional_args <- list(...)
-        # if(length(additional_args) > 0) {
-        #     additional_args <- NULL
-        # }
+    # if(do_parallel) {
+    #     ## Selecting the number of cores
+    #     cores <- ifelse(parallel == TRUE, parallel::detectCores() - 1, parallel)
+    #     ## Initialise the cluster
+    #     cluster <- parallel::makeCluster(cores)
+    #     ## Checking for eventual additional arguments to export
+    #     # additional_args <- list(...)
+    #     # if(length(additional_args) > 0) {
+    #     #     additional_args <- NULL
+    #     # }
     
-        ## Get the current environement
-        current_env <- environment()
+    #     ## Get the current environement
+    #     current_env <- environment()
 
-        ## Export from this environment
-        parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
-    }
+    #     ## Export from this environment
+    #     parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
+    # }
 
 
-    if(!do_parallel) {
+    # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
         if(verbose) message("Done.", appendLF = FALSE)
-    } else {
-        cat("Enter parlapply\n")
-        disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
-        cat("Exit parlapply\n")
-        ## Stopping the cluster
-        parallel::stopCluster(cluster)
-        rm(cluster)
-    }
+    # } else {
+    #     cat("Enter parlapply\n")
+    #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
+    #     cat("Exit parlapply\n")
+    #     ## Stopping the cluster
+    #     parallel::stopCluster(cluster)
+    #     rm(cluster)
+    # }
 
     ## Adding the removed elements as NAs
     if(removed_elements) {
