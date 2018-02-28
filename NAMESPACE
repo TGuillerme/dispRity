@@ -12,7 +12,7 @@ importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsi
 importFrom("vegan", "adonis", "vegdist")
 importFrom("geiger", "dtt", "ratematrix", "sim.char")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
-importFrom("mnormt", "dmnorm")
+# importFrom("mnormt", "dmnorm")
 # importFrom("Claddis", "MorphDistMatrix")
 # importFrom("geomorph", "gpagen")
 # importFrom("RCurl", "getURL", "url.exists")
