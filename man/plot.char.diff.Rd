@@ -4,12 +4,14 @@
 \alias{plot.char.diff}
 \title{Plots character differences}
 \usage{
-\method{plot}{char.diff}(matrix, type = "matrix", legend = TRUE,
+\method{plot}{char.diff}(x, ..., type = "matrix", legend = TRUE,
   legend.title = "Difference", legend.pos = "topleft", legend.round = 0,
-  axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...)
+  axis = TRUE, xlim, ylim, xlab, ylab, col, main)
 }
 \arguments{
-\item{matrix}{A discrete matrix or an already computed character difference matrix of class \code{char.diff}.}
+\item{x}{A discrete matrix or an already computed character difference matrix of class \code{char.diff}.}
+
+\item{...}{Any additional graphical arguments to be passed to \code{image}.}
 
 \item{type}{Either \code{"matrix"} (or \code{"m"}) or \code{"density"} (or \code{"d"}) for respectively plotting the matrix of character differences or its character differences density profile.}
 
@@ -34,8 +36,6 @@
 \item{col}{Two colors for forming the gradient if \code{type = "correlation"} or for the density lines colors if \code{type = "density"}.}
 
 \item{main}{An overall title for the plot.}
-
-\item{...}{Any additional graphical arguments to be passed to \code{image}.}
 }
 \description{
 Plots a character difference matrix from a discrete character matrix or its character differences density profile.

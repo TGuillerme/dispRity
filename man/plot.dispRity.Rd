@@ -4,13 +4,15 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(x, type, quantiles = c(50, 95), cent.tend = median,
-  rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col,
-  time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL,
-  element.pch = 15, nclass = 10, coeff = 1, ...)
+\method{plot}{dispRity}(x, ..., type, quantiles = c(50, 95),
+  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
+  ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE,
+  density = NULL, element.pch = 15, nclass = 10, coeff = 1)
 }
 \arguments{
 \item{x}{A \code{dispRity} object.}
+
+\item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 
 \item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
@@ -43,8 +45,6 @@
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
 \item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
-
-\item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 }
 \description{
 Plots a \code{dispRity} object.

@@ -4,8 +4,7 @@
 \alias{scale.dispRity}
 \title{Scaling and centering disparity results.}
 \usage{
-\method{scale}{dispRity}(x, center = FALSE, scale = FALSE, use.all = TRUE,
-  ...)
+\method{scale}{dispRity}(x, center = FALSE, scale = FALSE)
 }
 \arguments{
 \item{x}{a \code{dispRity} object.}
@@ -13,10 +12,6 @@
 \item{center}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
 
 \item{scale}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
-
-\item{use.all}{\code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).}
-
-\item{...}{optional arguments to be passed to \code{scale}.}
 }
 \description{
 Scales or/and centers the disparity measurements.

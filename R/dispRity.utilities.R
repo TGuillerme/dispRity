@@ -274,8 +274,8 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' @param x a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
-#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
-#' @param ... optional arguments to be passed to \code{scale}.
+# @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
+# @param ... optional arguments to be passed to \code{scale}.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -305,8 +305,9 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 # summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
 # summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-scale.dispRity <- function(x, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+scale.dispRity <- function(x, center = FALSE, scale = FALSE){#, use.all = TRUE, ...) {
     data <- x
+    use.all <- TRUE
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {

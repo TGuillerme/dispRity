@@ -77,7 +77,8 @@ char.diff <- function (matrix)  {
 #'
 #' @description Plots a character difference matrix from a discrete character matrix or its character differences density profile.
 #'
-#' @param matrix A discrete matrix or an already computed character difference matrix of class \code{char.diff}.
+#' @param x A discrete matrix or an already computed character difference matrix of class \code{char.diff}.
+#' @param ... Any additional graphical arguments to be passed to \code{image}.
 #' @param type Either \code{"matrix"} (or \code{"m"}) or \code{"density"} (or \code{"d"}) for respectively plotting the matrix of character differences or its character differences density profile.
 #' @param col Two colors for forming the gradient if \code{type = "correlation"} or for the density lines colors if \code{type = "density"}.
 #' @param legend A logical value stating whether to print the legend or not (default = \code{TRUE}).
@@ -90,7 +91,6 @@ char.diff <- function (matrix)  {
 #' @param xlab A \code{character} string for the the x axis. Can be missing.
 #' @param ylab A \code{character} string for the the y axis. Can be missing.
 #' @param main An overall title for the plot.
-#' @param ... Any additional graphical arguments to be passed to \code{image}.
 #' 
 #' @examples
 #' ## Comparing two characters
@@ -112,7 +112,9 @@ char.diff <- function (matrix)  {
 #' @export
 #' 
 
-plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...) {
+plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main) {
+
+    matrix <- x
 
     ## Saving the call
     match_call <- match.call()
