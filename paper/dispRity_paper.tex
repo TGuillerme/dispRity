@@ -298,7 +298,7 @@ For example, one may be interested in seeing how the disparity of a specific sub
 In essence, the original space corresponds to the overall space (e.g. a morphospace contains all the observed morphologies).
 Conversely, subsets correspond to parts of the space with pooled characteristics.
 
-This splitting can be done using the \texttt{custom.subsets} or \texttt{time.subsets} functions.
+This splitting can be done using the \texttt{custom.subsets} or \texttt{chrono.subsets} functions.
 The first argument is the matrix defining the space and a list of elements to group into different subsets.
 The second also takes a matrix and arguments giving the age of the taxa (a dated phylogeny of the elements present in the morphospace - see below) and which subsets to create: (1) discrete time subsets (or time-binning) or (2) continuous time subsets (or time-slicing).
 
@@ -477,7 +477,7 @@ It is then possible to measure disparity-through-time using the following functi
 
 \noindent Note that this function is a wrapper function that is the equivalent to:
 
-\noindent \texttt{> time\_subsets <- time.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree,}\\ \texttt{time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
+\noindent \texttt{> time\_subsets <- chrono.subsets(data = BeckLee\_mat50, tree = BeckLee\_tree,}\\ \texttt{time = time\_bins, method = \textquotedbl discrete\textquotedbl)}\\
 \noindent \texttt{> bootstraps2 <- boot.matrix(time\_subsets)}\\
 \noindent \texttt{> disparity4 <- dispRity(bootstraps2, metric = c(sum, variances))}\\
 
