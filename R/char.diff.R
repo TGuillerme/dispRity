@@ -227,7 +227,7 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
             legend("topleft", legend = c(as.character(round(max(matrix, na.rm = TRUE), legend.round)), as.character(round(min(matrix, na.rm = TRUE), legend.round))), title = legend.title, col = col, pch = 19)
         }
     } else {
-        ## Plotting the density profile
+        ## Plotting the density profile
         plot.char.diff.density(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab)
     }
 }
