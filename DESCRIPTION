@@ -1,5 +1,5 @@
 Package: dispRity
-Title: Measuring disparity in R
+Title: Measuring Disparity in R
 Author: Thomas Guillerme <guillert@tcd.ie>
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
 Version: 1.0.0
@@ -8,22 +8,24 @@ Description: A modular package for measuring disparity from multidimensional mat
 Depends:
     R (>= 3.0.0),
     ape,
+    stats
 Imports:
-  ade4,
-  geometry,
-  grDevices,
-  paleotree,
-  phangorn,
-  phyclust,
-  geoscale,
-  vegan,
-  geiger
-License: GPL-3
+	methods,
+	paleotree,
+	geometry,
+	ade4,
+	grDevices,
+	graphics,
+	utils,
+	phyclust,
+	phangorn,
+	vegan,
+	geiger,
+	geoscale
+License: GPL-3 | file LICENSE
 VignetteBuilder: knitr
 Suggests:
     testthat,
     knitr
-Remotes:
-    github::graemetlloyd/Claddis@master
 RoxygenNote: 6.0.1
 URL: https://github.com/TGuillerme/dispRity

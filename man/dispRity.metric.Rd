@@ -2,7 +2,6 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{dispRity.metric}
-\alias{k.root}
 \alias{dimension.level3.fun}
 \alias{dimension.level2.fun}
 \alias{dimension.level1.fun}
@@ -28,9 +27,9 @@ dimension.level1.fun(X, ...)
 \arguments{
 \item{matrix}{A matrix.}
 
-\item{X}{A vector.}
-
 \item{...}{Optional arguments to be passed to the function.}
+
+\item{X}{A vector.}
 }
 \description{
 Different implemented disparity metrics.

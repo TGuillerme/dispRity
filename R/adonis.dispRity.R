@@ -123,7 +123,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             group_variables <- NA
             pool_time <- ifelse(formula[[3]] == "time", TRUE, FALSE)
 
-            ## Update the formula
+            ## Update the formula
             if(formula[[3]] == "time.subsets") {
                 group_names_tmp <- paste0("t", gsub(" - ", "to", names(data$subsets)))
                 series <- paste(group_names_tmp, collapse = " + ")

@@ -71,7 +71,7 @@ geomorph.ordination <- function(data, ...) {
     }
 
 
-    ## Ordinating the Procrustes data (code from Emma Sherratt)
+    ## Ordinating the Procrustes data (code from Emma Sherratt)
     columns <- dim(coords)[1] * dim(coords)[2]
     rows <- dim(coords)[3]
     matrix_out <- aperm(coords, c(3, 2, 1))

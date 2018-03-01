@@ -92,7 +92,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
         ## Adjusting the FADLAD
         adjust.prob <- function(one_proba, FAD, LAD, age) {
-            ## If age is lower (more recent) than FAD of descendant, set probability of ancestor to 0
+            ## If age is lower (more recent) than FAD of descendant, set probability of ancestor to 0
             if(age < FAD[which(FAD[,2] == one_proba[2]), 1]) {
                 one_proba[3] <- "0"
             }

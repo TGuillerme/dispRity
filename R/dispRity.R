@@ -235,7 +235,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
     #     cat("Exit parlapply\n")
-    #     ## Stopping the cluster
+    #     ## Stopping the cluster
     #     parallel::stopCluster(cluster)
     #     rm(cluster)
     # }

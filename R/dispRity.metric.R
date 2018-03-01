@@ -143,6 +143,34 @@
 #'
 #' @author Thomas Guillerme
 
+## dimension level generic functions
+dimension.level3.fun <- function(matrix, ...) {
+    cat("No implemented Dimension level 3 functions implemented in dispRity!\n")
+    cat("You can create your own by using: ?make.metric\n")
+}
+
+dimension.level2.fun <- function(matrix, ...) {
+
+    cat("Dimension level 2 functions implemented in dispRity:\n")
+    cat("?ranges\n")
+    cat("?variances\n")
+    cat("?centroids\n")
+    cat("?ancestral.dist\n")
+    cat("?pairwise.dist\n")
+    cat("?radius\n")
+}
+
+dimension.level1.fun <- function(X, ...) {
+    cat("Dimension level 12 functions implemented in dispRity:\n")
+    cat("?ellipse.volume\n")
+    cat("?convhull.surface\n")
+    cat("?convhull.volume\n")
+    cat("?diagonal\n")
+    cat("?mode.val\n")
+    cat("?span.tree.length\n")
+    cat("?n.ball.volume\n")
+}
+
 ## kth root scaling
 k.root <- function(data, dimensions){
     return(data^(1/dimensions))
@@ -275,7 +303,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
     }
     
     if(class(nodes.coords) == "matrix") {
-        ## Converting both matrix and nodes.coords in lists
+        ## Converting both matrix and nodes.coords in lists
         matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
         nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
 
@@ -330,7 +358,7 @@ span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     return(sum(span_tree$dist))
 }
 
-## Calculates the pairwise distance between elements
+## Calculates the pairwise distance between elements
 pairwise.dist <- function(matrix, method = "euclidean", ...) {
     return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
 }
@@ -344,7 +372,7 @@ radius <- function(matrix, type = max) {
     return(unlist(lapply(differences, type)))
 }
 
-## Calculates the n-ball volume
+## Calculates the n-ball volume
 n.ball.volume <- function(matrix, sphere = TRUE) {
     ## Dimensions
     n <- ncol(matrix)

@@ -3,7 +3,8 @@
 #'
 #' @description Splits the data into a time subsets list.
 #' 
-#' @usage time.subsets(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
+#' @usage time.subsets(data, tree, method, time, model, inc.nodes = FALSE,
+#'                     FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A \code{matrix} (see details).
 #' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
@@ -139,7 +140,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
         if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".")
         tree_was_missing <- TRUE
 
-        ## Checking FADLAD disponibilities
+        ## Checking FADLAD disponibilities
         names_data <- rownames(data)
         ## All names must be present in the data
         if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
@@ -174,7 +175,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
             ## Set t0
             t0 <- max(FADLAD$FAD)
         } else {
-            ## Set tmax
+            ## Set tmax
             tmax <- min(tree.age_tree[,1])
         
             ## Set up t0
@@ -267,7 +268,7 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
         if(!all(colnames(FADLAD) %in% c("FAD", "LAD"))) {
             stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
         } else {
-            ## Check if FAD/LAD is in the right order (else reorder)
+            ## Check if FAD/LAD is in the right order (else reorder)
             if(colnames(FADLAD)[1] == "LAD") {
                 FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], rownames = rownames(FADLAD))
             }

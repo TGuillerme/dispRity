@@ -228,7 +228,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     
     ## Data
     check.class(data, "dispRity")
-    ## Data must have disparity values
+    ## Data must have disparity values
     if(is.null(data$call$disparity)) {
         stop("dispRity object does not contain disparity values.")
     }
@@ -434,6 +434,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 #' A \code{dispRity} object containing the original matrix and subsets.
 #' NOTE: if the data are already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 #' 
+#' 
 #' @examples
 #' ## Generate subsets from a dummy matrix
 #' dummy_matrix <- matrix(rnorm(120), 40)
@@ -465,7 +466,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 # data2 <- time_binsEQ_Beck
 # after = TRUE
 
-merge.subsets <- function(data, subsets) {
+merge.subsets<- function(data, subsets) {
 
     ## Internal cleaning function for only selecting the elements of the list in a subset
     select.elements <- function(subset) {
@@ -540,7 +541,7 @@ merge.subsets <- function(data, subsets) {
     }
 
     if(clean_data) {
-        ## Cleaning the data
+        ## Cleaning the data
         for(subs in 1:(length(data$subsets) - 1)) {
             ## Loop oversize buffer
             if(subs > (length(data$subsets) - 1)) {break}
@@ -626,7 +627,7 @@ size.subsets <- function(data) {
 #' test.dispRity(disparity, wilcox.test, comparisons = extinction_time,
 #'               correction = "bonferroni")
 #' 
-#' @seealso
+#' @seealso \code{\link{time.subsets}}, \code{\link{test.dispRity}}
 #' 
 #' @author Thomas Guillerme
 #' @export

@@ -546,7 +546,7 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
     xlim <- data_sub$plot$xlim
     ylim <- c(0, max(data_sub$plot$hist$count))
 
-    ## Plotting the simulated data
+    ## Plotting the simulated data
     plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
 
     ## Adding the observed data

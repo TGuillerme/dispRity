@@ -5,7 +5,8 @@
 \alias{time.series}
 \title{Separating data in time subsets.}
 \usage{
-time.subsets(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE)
+time.subsets(data, tree, method, time, model, inc.nodes = FALSE,
+                    FADLAD, verbose = FALSE, t0 = FALSE)
 }
 \arguments{
 \item{data}{A \code{matrix} (see details).}

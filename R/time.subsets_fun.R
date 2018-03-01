@@ -129,7 +129,7 @@ time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
             taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
 
             if(model == "equal.split" || model == "gradual.split") {
-            ## Return a probability table
+            ## Return a probability table
                 if(length(taxa) > 0) {
                     ## Combine the taxa, their ancestor and their probability to the sub_tree table
                     ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)

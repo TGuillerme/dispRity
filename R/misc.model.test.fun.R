@@ -9,7 +9,7 @@
 	#             ## Calculate the variance from the disparity data
 	#             variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var))
 	#         } else {
-	#             ## Extract directly the variance from the data
+	#             ## Extract directly the variance from the data
 	#             variance <- sapply(data[[3]], function(x) var(data[[1]][x[[1]]]))
 	#         }
 	
