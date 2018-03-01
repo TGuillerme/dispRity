@@ -11,13 +11,13 @@
 #' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
 #' @import ape
+#' @import stats
 #' @importFrom paleotree timeSliceTree 
 #' @importFrom geometry convhulln 
 #' @importFrom ade4 randtest as.randtest 
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom stats bw.nrd0 coef glm p.adjust quantile rnorm var median cmdscale as.dist density optim bartlett.test
 #' @importFrom utils combn data capture.output
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony

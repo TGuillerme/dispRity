@@ -267,15 +267,15 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     }
 }
 
-#' @title Scaling and centering disparity results.
+#' @title Rescaling and centering disparity results.
 #'
 #' @description Scales or/and centers the disparity measurements.
 #'
-#' @param x a \code{dispRity} object.
+#' @param data a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
-# @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
-# @param ... optional arguments to be passed to \code{scale}.
+#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
+#' @param ... optional arguments to be passed to \code{scale}.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -283,9 +283,9 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' 
 #' ## Scaling the data
 #' summary(disparity) # No scaling
-#' summary(scale(disparity)) # Dividing by the maximum
+#' summary(rescale(disparity)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(scale.dispRity(disparity, max = 0.1))
+#' summary(rescale(disparity, max = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 #'
@@ -301,13 +301,12 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 # summary(data) # No scaling
-# summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
-# summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
-# summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-scale.dispRity <- function(x, center = FALSE, scale = FALSE){#, use.all = TRUE, ...) {
-    data <- x
-    use.all <- TRUE
+rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {

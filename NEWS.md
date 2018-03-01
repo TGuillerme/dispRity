@@ -32,6 +32,7 @@ dispRity 0.2.0 (2016-04-01)
 
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
   * Improved S3 methods
+  * **Changed name**: `scale.dispRity` is now `rescale.dispRity`
 
 ### BUG FIXES
 

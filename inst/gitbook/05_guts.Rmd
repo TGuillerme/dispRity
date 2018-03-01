@@ -112,18 +112,21 @@ extract.dispRity(disparity)
 extract.dispRity(disparity, observed = FALSE, subsets = 2, rarefaction = 10)
 ```
 
-#### `scale.dispRity`
-This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
+#### `rescale.dispRity`
+This is the modified S3 method for `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object and can take optional arguments (for example the rescaling by dividing by a maximum value).
 
 ```{r, eval=FALSE}
 ## Getting the disparity values of the time subsets
 head(summary(disparity))
 
 ## Scaling the same disparity values
-head(summary(scale(disparity, scale = TRUE)))
+head(summary(rescale.dispRity(disparity, scale = TRUE)))
 
 ## Scaling and centering:
-head(summary(scale(disparity, scale = TRUE, center = TRUE)))
+head(summary(rescale.dispRity(disparity, scale = TRUE, center = TRUE)))
+
+## Rescaling the value by dividing by a maximum value
+head(summary(rescale.dispRity(disparity, max = 10)))
 ```
 
 #### `sort.dispRity`
