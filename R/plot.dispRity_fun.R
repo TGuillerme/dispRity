@@ -587,7 +587,7 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
 #         if(!is.null(token.args)) check.class(token.args, "list")
 
 #         #Creating the table results
-#         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
+#         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, digits = 10, results = "coefficients", match_call = list(cent.tend = NULL))
 
 #         #Checking if distribution
 #         is_distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)

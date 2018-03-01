@@ -33,7 +33,7 @@
 # ' ## Running a gaussian sequential test on the subsets
 # ' results <- sequential.test(subsets, family = gaussian)
 # ' ## Summarising the results
-# ' summary(results, rounding = 5)
+# ' summary(results, digits = 5)
 # ' ## Simple plotting the results
 # ' plot(results)
 # ' 
@@ -43,7 +43,7 @@
 # '      keep.structure = TRUE, concatenate = FALSE)
 # ' results <- sequential.test(subsets, family = gaussian)
 # ' ## Summarising
-# ' summary(results, rounding = 5, quantiles = c(50, 75), cent.tend = mean)
+# ' summary(results, digits = 5, quantiles = c(50, 75), cent.tend = mean)
 # ' ## Plotting the disparity first (as the me)
 # ' plot(dim_variances, type = "c", cent.tend = median)
 # ' ## Adding the sequential model (using the first quantile (12.55%) for our 

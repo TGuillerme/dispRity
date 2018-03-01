@@ -84,7 +84,7 @@ char.diff <- function (matrix)  {
 #' @param legend A logical value stating whether to print the legend or not (default = \code{TRUE}).
 #' @param legend.title A \code{character} string to be displayed as the title of the legend (default = \code{Difference}).
 #' @param legend.pos The position of the legend. Can be two \code{numeric}. Default is \code{"topleft"}.
-#' @param legend.round A \code{numeric} value for rounding up legend values. Default is \code{0}.
+#' @param legend.round A \code{numeric} value for digits up legend values. Default is \code{0}.
 #' @param axis A logical value stating whether to print the axis or not (default = \code{TRUE}).
 #' @param xlim Two \code{numeric} values to determine the x axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
 #' @param ylim Two \code{numeric} values to determine the y axis limits. If missing (default), the limits are calculated automatically to fit the plot window.

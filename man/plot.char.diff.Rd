@@ -21,7 +21,7 @@
 
 \item{legend.pos}{The position of the legend. Can be two \code{numeric}. Default is \code{"topleft"}.}
 
-\item{legend.round}{A \code{numeric} value for rounding up legend values. Default is \code{0}.}
+\item{legend.round}{A \code{numeric} value for digits up legend values. Default is \code{0}.}
 
 \item{axis}{A logical value stating whether to print the axis or not (default = \code{TRUE}).}
 

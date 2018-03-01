@@ -26,7 +26,7 @@
 
 
         #d<-disparity(phy2, td$data, index=disp)
-        d <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), rounding = 10)$obs)
+        d <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), digits = 10)$obs)
         names(d) <- Ntip(phy2)+1:Nnode(phy2)
         
 
@@ -51,7 +51,7 @@
 
 
             # d <- disparity(phy2, pp, index=disp)
-            d <- summary(dispRity(custom.subsets(pp, phy2), metric = metric), rounding = 10)$obs
+            d <- summary(dispRity(custom.subsets(pp, phy2), metric = metric), digits = 10)$obs
             
 
             y<-numeric()

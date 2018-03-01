@@ -64,6 +64,9 @@ For the piping-hot (but potentially unstable) version, you can change the argume
 ## Why not CRAN?
 
 This package is not available on CRAN.
+
+<!-- This is now on CRAN -->
+
 This is mainly because some parts are still in development and that the reactivity of GitHub is better for implementing new suggestions from users.
 However, the package follows the strict (and useful!) CRAN standards via Travis.
 

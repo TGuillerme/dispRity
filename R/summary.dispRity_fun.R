@@ -64,27 +64,27 @@ get.digit <- function(column) {
 }
 
 
-round.column <- function(column, rounding) {
-    ## Get the rounding value
-    rounding <- ifelse(rounding != "default", rounding, get.digit(as.numeric(column)))
+round.column <- function(column, digits) {
+    ## Get the digits value
+    digits <- ifelse(digits != "default", digits, get.digit(as.numeric(column)))
     ## Round the table
     if(class(column) != "group") {
-        return(round(as.numeric(column), digits = rounding))
+        return(round(as.numeric(column), digits = digits))
     } else {
-        return(round(as.numeric(as.character(column)), digits = rounding))
+        return(round(as.numeric(as.character(column)), digits = digits))
     }
 }
 
 
-## Function for rounding the results
-rounding.fun <- function(results_table, rounding, model.test = FALSE) {
+## Function for digits the results
+digits.fun <- function(results_table, digits, model.test = FALSE) {
 
     ## model.test
     start_column <- ifelse(model.test, 1, 3)
 
-    ## Apply the rounding
+    ## Apply the digits
     rounded_table <- as.matrix(results_table[,c(start_column:ncol(results_table))])
-    rounded_table <- apply(rounded_table, 2, round.column, rounding)
+    rounded_table <- apply(rounded_table, 2, round.column, digits)
     results_table[,c(start_column:ncol(results_table))] <- rounded_table
 
     return(results_table)
@@ -169,7 +169,7 @@ match.parameters <- function(one_param, full_param) {
 #     return(results_table)
 # }
 
-# summary.seq.test <- function(data, quantiles, cent.tend, recall, rounding, results, match_call) {
+# summary.seq.test <- function(data, quantiles, cent.tend, recall, digits, results, match_call) {
     
 #     ## SANITIZING
 #     ## quantiles

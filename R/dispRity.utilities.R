@@ -283,9 +283,9 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' 
 #' ## Scaling the data
 #' summary(disparity) # No scaling
-#' summary(rescale(disparity)) # Dividing by the maximum
+#' summary(rescale.dispRity(disparity)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(rescale(disparity, max = 0.1))
+#' summary(rescale.dispRity(disparity, max = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 #'

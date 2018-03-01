@@ -388,7 +388,7 @@ test_that("Example works", {
     bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-    ex3 <- summary(sum_of_ranges, rounding = 2)
+    ex3 <- summary(sum_of_ranges, digits = 2)
 
     expect_is(
         ex3

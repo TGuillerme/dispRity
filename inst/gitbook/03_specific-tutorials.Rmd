@@ -453,7 +453,7 @@ The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `n.bal
 ## Calculating the ellipsoid volume
 summary(dispRity(dummy_space, metric = ellipse.volume))
 ```
-> Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of `ellipse.volume(dummy_space)` (with rounding).
+> Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of `ellipse.volume(dummy_space)` (with digits).
 
 ```{r}
 ## Calculating the convex hull surface
@@ -646,7 +646,7 @@ The summary functions can also take various options such as:
 
  * `quantile` values for the confidence interval levels (by default, the 50 and 95 quantiles are calculated)
  * `cent.tend` for the central tendency to use for summarising the results (default is `median`)
- * rounding` option corresponding to the number of decimal places to print (default is `2`)
+ * digits` option corresponding to the number of decimal places to print (default is `2`)
  * `recall` option for printing the call of the `dispRity` object as well (default is `FALSE`)
 
 These options can easily be changed from the defaults as follows:
@@ -655,8 +655,8 @@ These options can easily be changed from the defaults as follows:
 ## Same as above but using the 88th quantile and the standard deviation as the summary 
 summary(disparity_time_slices, quantile = 88, cent.tend = sd)
 
-## Printing the details of the object and rounding the values to the 5th decimal place
-summary(disparity_time_slices, recall = TRUE, rounding = 5)
+## Printing the details of the object and digits the values to the 5th decimal place
+summary(disparity_time_slices, recall = TRUE, digits = 5)
 ```
 
 Note that the summary table is a `data.frame`, hence it is as easy to modify as any dataframe using `dplyr`.
