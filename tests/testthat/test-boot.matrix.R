@@ -254,7 +254,7 @@ test_that("verbose bootstrap works", {
         c("Bootstrapping", ".", "Done."))
 
     ## Verbose works with single elements subsets
-    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(139, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(139, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     data1$subsets$`139`$elements <- matrix(data1$subsets$`139`$elements[-1,], nrow = 1)
 
@@ -281,7 +281,7 @@ test_that("Boot.matrix works with small, empty/subsets", {
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- time.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+    silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
 
     warnings <- capture_warnings(test <- boot.matrix(data))
     expect_equal(warnings, "The following subsets have less than 3 elements: 140, 138, 130.\nThis might effect the bootstrap/rarefaction output.")
@@ -309,8 +309,8 @@ test_that("boot.matrix deals with probabilities subsets", {
     data(BeckLee_tree)
     
 
-    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    data2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     set.seed(1)
     test1 <- boot.matrix(data1, bootstraps = 10)

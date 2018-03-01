@@ -30,7 +30,7 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Calculates disparity on a matrix or subsets of a matrix, where the disparity metric can be user specified.
 }
 \details{
-The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsets}} or \code{\link{cust.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
+The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{chrono.subsets}} or \code{\link{custom.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}}, a list of disparity measurements calculated from the \code{dispRity} function or a \code{matrix} object with rows as elements and columns as dimensions. In any of these cases, the data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 
 \code{metric} should be input as a vector of functions.
 The functions are sorted and used by dimension-level from 3 to 1 (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -79,7 +79,7 @@ summary(disparity_level1)
 
 }
 \seealso{
-\code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+\code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 }
 \author{
 Thomas Guillerme

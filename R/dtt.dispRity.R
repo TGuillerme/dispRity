@@ -39,7 +39,7 @@
 #' plot(dispRity_dtt2)
 #' 
 #' @seealso
-#' \code{\link[geiger]{dtt}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{plot.dispRity}}.
+#' \code{\link[geiger]{dtt}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{plot.dispRity}}.
 #' 
 #' @author Thomas Guillerme
 #' @export

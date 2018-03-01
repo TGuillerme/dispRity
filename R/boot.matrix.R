@@ -2,7 +2,7 @@
 #'
 #' @description Bootstraps and rarefies either a matrix or a list of matrices.
 #' 
-#' @param data A matrix or a list of matrices (typically output from \link{time.subsets} or \link{cust.subsets}).
+#' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
@@ -25,7 +25,7 @@
 #'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
 #' }
 #'
-#' @seealso \code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{cust.subsets}}, \code{\link{chrono.subsets}}, \code{\link{dispRity}}.
 #'
 #' @examples
 #' ## Load the Beck & Lee 2014 matrix
@@ -88,15 +88,15 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     } else {
         ## Must be correct format
-        check.length(data, 3, " must be either a matrix or an output from the time.subsets or custom.subsets functions.")
+        check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         
         ## With the correct names
         data_names <- names(data)
         if(is.null(data_names)) {
-            stop(paste(match_call$data, "must be either a matrix or an output from the time.subsets or custom.subsets functions."))
+            stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."))
         } else {
             if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsets") {
-                stop(paste(match_call$data, "must be either a matrix or an output from the time.subsets or custom.subsets functions."))
+                stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."))
             }
         }
 

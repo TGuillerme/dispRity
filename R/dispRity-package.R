@@ -11,20 +11,21 @@
 #' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
 #' @import ape
+#' @import stats
 #' @importFrom paleotree timeSliceTree 
-#' @importFrom snow makeCluster stopCluster parLapply 
 #' @importFrom geometry convhulln 
-# @importFrom hypervolume hypervolume estimate_bandwidth get_volume 
 #' @importFrom ade4 randtest as.randtest 
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom stats bw.nrd0 coef dist glm p.adjust quantile rnorm var median runif cmdscale
 #' @importFrom utils combn data capture.output
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
-#' @importFrom RCurl getURL url.exists 
-#' 
+#' @importFrom vegan adonis vegdist
+#' @importFrom geiger dtt ratematrix sim.char
+#' @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
+##' @importFrom Claddis MorphDistMatrixFast
+
 
 NULL
 
@@ -68,7 +69,7 @@ NULL
 #'
 #' And example of a \code{dispRity} object.
 #'
-#' This matrix is based on the \code{\link{BeckLee}} dataset and split into seven continuous subsets (\code{\link{time.subsets}}).
+#' This matrix is based on the \code{\link{BeckLee}} dataset and split into seven continuous subsets (\code{\link{chrono.subsets}}).
 #' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 #' Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 #'

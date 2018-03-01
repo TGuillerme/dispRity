@@ -2,11 +2,12 @@
 #'
 #' @description Creates a summary of a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param object A \code{dispRity} object.
+#' @param ... Additional arguments to be passed to \code{\link{summary}}.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param recall \code{logical} value specifying whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
-#' @param rounding Optional, a value for rounding the values in the output table (default = 2).
+#' @param digits Optional, a value for digits the values in the output table (default = 2).
 # ' @param results Optional, in the case of summarising a \code{\link{sequential.test}} which results to display (default = "coefficients")
 #'
 #' @return
@@ -23,7 +24,7 @@
 #' ## Summarising the results
 #' summary(disparity) # default
 #' ## Using different options
-#' summary(disparity, quantiles = 75, cent.tend = mean, rounding = 8,
+#' summary(disparity, quantiles = 75, cent.tend = mean, digits = 8,
 #'      recall = TRUE)
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{plot.dispRity}}.
@@ -48,7 +49,8 @@
 # recall <- FALSE
 # match_call <- list() ; match_call$cent.tend <- "median"
 
-summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, recall = FALSE, rounding){#, results = "coefficients") {
+summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = median, recall = FALSE, digits){#, results = "coefficients") {
+    data <- object
 
     #----------------------
     # SANITIZING
@@ -71,19 +73,19 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     #recall
     check.class(recall, "logical")
 
-    #rounding
-    if(missing(rounding)) {
+    #digits
+    if(missing(digits)) {
         #Set to default (see below)
-        rounding <- "default"
+        digits <- "default"
     } else {
-        check.class(rounding, "numeric")
+        check.class(digits, "numeric")
     }
 
     #DATA
     #must be class dispRity
     check.class(data, "dispRity")
     #Check if it is a bootstrapped dispRity object
-    if(is.null(data$disparity)) {
+    if(is.null(data$disparity) && is.na(class(data)[2])) {
         stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
     }
     
@@ -92,6 +94,35 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     if(any(quantiles < 1) | any(quantiles > 100)) {
         stop("quantiles(s) must be any value between 1 and 100.")
     }
+
+    #----------------------
+    # SPECIAL SHORTCUTS (dual classes)
+    #----------------------
+    if(length(class(data)) > 1) {
+
+        ## Model test summary
+        if(class(data)[2] == "model.test") {
+            ## Extracting the AICs and the log likelihoods
+            base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
+
+            ## Extracting the additional parameters
+            parameters <- sapply(data$full.details, function(x) x$par)
+            base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
+            
+            ## Get the full list of parameters
+            names_list <- lapply(parameters, names)
+            full_param <- unique(unlist(names_list))
+
+            output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
+
+            ## Rounding
+            summary_results <- digits.fun(output_table, digits, model.test = TRUE)
+
+            return(summary_results)
+        } else {
+            stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".")
+        }
+    } 
 
     #----------------------
     # TRANSFORMING THE DATA INTO A TABLE
@@ -149,13 +180,13 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     }
 
     ## Round the results (number of decimals = maximum number of digits in the output)
-    summary_results <- rounding.fun(summary_results, rounding)
+    summary_results <- digits.fun(summary_results, digits)
 
     ## If any elements is equal to one, check if not NA
     if(any(summary_results$n == 1)) {
         ## Select the values to check
         to_check <- which(summary_results$n == 1)
-        ## Get their replacement values
+        ## Get their replacement values
 
         check.elements.NA <- function(row, summary_results, data) {
             ## Check if the subset contains NA elements
@@ -189,16 +220,16 @@ summary.dispRity <- function(data, quantiles = c(50, 95), cent.tend = median, re
     #         }
 
     #         #Creating the table results
-    #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding, results, match_call)
+    #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, digits, results, match_call)
 
     #         #Checking if distribution
     #         is.distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)
 
     #         #Rounding the results
     #         if(is.distribution == FALSE) {
-    #             results_out <- lapply(results_out, rounding.fun, rounding, seq.test = TRUE)
+    #             results_out <- lapply(results_out, digits.fun, digits, seq.test = TRUE)
     #         } else {
-    #             results_out <- lapply(results_out, lapply, rounding.fun, rounding, seq.test = TRUE)
+    #             results_out <- lapply(results_out, lapply, digits.fun, digits, seq.test = TRUE)
     #         }
 
     #         return(results_out)

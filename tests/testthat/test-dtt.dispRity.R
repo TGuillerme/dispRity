@@ -14,7 +14,7 @@ test_that("dispRity and dtt give the same results", {
     expect_equal(
         disparity(data = geo$dat, index = "avg.sq")
         ,
-        summary(dispRity(geo$dat, metric = average.sq), rounding = 10)$obs
+        summary(dispRity(geo$dat, metric = average.sq), digits = 10)$obs
         )
 
     ## Disparity per clades
@@ -23,7 +23,7 @@ test_that("dispRity and dtt give the same results", {
         )
 
     data_cleaned <- clean.data(geo$dat, geo$phy)
-    dispRity_disp <- summary(dispRity(custom.subsets(data_cleaned$data, data_cleaned$tree), metric = average.sq), rounding = 10)$obs
+    dispRity_disp <- summary(dispRity(custom.subsets(data_cleaned$data, data_cleaned$tree), metric = average.sq), digits = 10)$obs
 
     expect_equal(as.vector(geiger_disp), as.vector(dispRity_disp))
 

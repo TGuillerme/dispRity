@@ -7,7 +7,7 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
-# @param parallel An optional vector containing the number of parallel threads and the virtual connection process type to run the function in parallel (requires \code{snow} package; see \code{\link[snow]{makeCluster}} function).
+#          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -19,7 +19,7 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #' @details  
-#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{time.subsets}} or \code{\link{cust.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}} or a list of disparity measurements calculated from the \code{dispRity} function.
+#' The \code{dispRity} object given to the \code{data} argument can be: a list of matrices (typically output from the functions \code{\link{chrono.subsets}} or \code{\link{custom.subsets}}), a bootstrapped matrix output from \code{\link{boot.matrix}}, a list of disparity measurements calculated from the \code{dispRity} function or a \code{matrix} object with rows as elements and columns as dimensions. In any of these cases, the data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 #' 
 #' \code{metric} should be input as a vector of functions.
 #' The functions are sorted and used by dimension-level from 3 to 1 (see \code{\link{dispRity.metric}} and \code{\link{make.metric}}).
@@ -75,7 +75,7 @@
 # ## for big datasets.
 # }
 #' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity.metric}}, \code{\link{summary.dispRity}}, \code{\link{plot.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -87,19 +87,19 @@
 # source("dispRity.metric.R")
 # source("dispRity.utilities.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.subsets.R") ; source("time.subsets_fun.R")
+# source("chrono.subsets.R") ; source("chrono.subsets_fun.R")
 # source("custom.subsets.R") ; source("custom.subsets_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_subsets_simple <- chrono.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
 # data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 # metric = c(sum, variances)
 # verbose = TRUE
 # data <- data_subsets_boot
 
-dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
+dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -152,15 +152,22 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
 
     ## Parallel
     # if(missing(parallel)) {
-        do_parallel <- FALSE
+    #     do_parallel <- FALSE
     # } else {
     #     do_parallel <- FALSE
-    #     warning("parallel option not implemented yet.")
-    #     # check.length(parallel, 2, " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # check.class(as.numeric(parallel[1]), "numeric", " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # check.class(parallel[2], "character", " must be a vector containing the number of threads and the virtual connection process type.")
-    #     # cluster <- makeCluster(as.numeric(parallel[1]), parallel[2])
+    #     if(class(parallel) == "logical") {
+    #         do_parallel <- parallel
+    #     } else {
+    #         if(class(parallel) == "numeric") {
+    #             check.length(parallel, 1, msg = "Parallel must be either logical or a number of cores to use.")
+    #             do_parallel <- TRUE
+    #         } else {
+    #             stop("Parallel must be either logical or a number of cores to use.")
+    #         }
+    #     }
     # }
+
+    do_parallel <- FALSE
 
     ## ----------------------
     ## CALCULTING DISPARITY
@@ -199,14 +206,38 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE) { #parallel
         }
     }
     
+
+    ## Initialising the cluster
+    # if(do_parallel) {
+    #     ## Selecting the number of cores
+    #     cores <- ifelse(parallel == TRUE, parallel::detectCores() - 1, parallel)
+    #     ## Initialise the cluster
+    #     cluster <- parallel::makeCluster(cores)
+    #     ## Checking for eventual additional arguments to export
+    #     # additional_args <- list(...)
+    #     # if(length(additional_args) > 0) {
+    #     #     additional_args <- NULL
+    #     # }
+    
+    #     ## Get the current environement
+    #     current_env <- environment()
+
+    #     ## Export from this environment
+    #     parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
+    # }
+
+
     # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        #disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose) ; warning("DEBUG dispRity.R")
         if(verbose) message("Done.", appendLF = FALSE)
     # } else {
-    #     disparity <- parLapply(clust, lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-    #     stopCluster(cluster)
+    #     cat("Enter parlapply\n")
+    #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
+    #     cat("Exit parlapply\n")
+    #     ## Stopping the cluster
+    #     parallel::stopCluster(cluster)
+    #     rm(cluster)
     # }
 
     ## Adding the removed elements as NAs

@@ -1,6 +1,5 @@
 #' @name dispRity.metric
 #' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius
-# hyper.volume
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -22,10 +21,10 @@
 #'      \itemize{
 #'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
 #'      }
-#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix.
-#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix.
+#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
+#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
 #'      \itemize{
-#'          \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
+#'          \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive!
 #'      }
 #   \item \code{hyper.volume}: calculates the hypervolume using the \code{\link[hypervolume]{hypervolume}} algorithm. If no optional argument is given, the different arguments are set by default to:
@@ -52,7 +51,7 @@
 #'
 #'   \item \code{ancestral.dist}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
 #'
-#'   \item \code{pairwise.dist}: calculates the pairwise distance between elements. The distance type can be changed via the \code{method} argument (see \code{\link[stats]{dist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
+#'   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)}. The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
 #' 
 #'   \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
 #'
@@ -143,6 +142,34 @@
 #' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @author Thomas Guillerme
+
+## dimension level generic functions
+dimension.level3.fun <- function(matrix, ...) {
+    cat("No implemented Dimension level 3 functions implemented in dispRity!\n")
+    cat("You can create your own by using: ?make.metric\n")
+}
+
+dimension.level2.fun <- function(matrix, ...) {
+
+    cat("Dimension level 2 functions implemented in dispRity:\n")
+    cat("?ranges\n")
+    cat("?variances\n")
+    cat("?centroids\n")
+    cat("?ancestral.dist\n")
+    cat("?pairwise.dist\n")
+    cat("?radius\n")
+}
+
+dimension.level1.fun <- function(X, ...) {
+    cat("Dimension level 12 functions implemented in dispRity:\n")
+    cat("?ellipse.volume\n")
+    cat("?convhull.surface\n")
+    cat("?convhull.volume\n")
+    cat("?diagonal\n")
+    cat("?mode.val\n")
+    cat("?span.tree.length\n")
+    cat("?n.ball.volume\n")
+}
 
 ## kth root scaling
 k.root <- function(data, dimensions){
@@ -276,7 +303,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
     }
     
     if(class(nodes.coords) == "matrix") {
-        ## Converting both matrix and nodes.coords in lists
+        ## Converting both matrix and nodes.coords in lists
         matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
         nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
 
@@ -331,7 +358,7 @@ span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     return(sum(span_tree$dist))
 }
 
-## Calculates the pairwise distance between elements
+## Calculates the pairwise distance between elements
 pairwise.dist <- function(matrix, method = "euclidean", ...) {
     return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
 }
@@ -345,7 +372,7 @@ radius <- function(matrix, type = max) {
     return(unlist(lapply(differences, type)))
 }
 
-## Calculates the n-ball volume
+## Calculates the n-ball volume
 n.ball.volume <- function(matrix, sphere = TRUE) {
     ## Dimensions
     n <- ncol(matrix)

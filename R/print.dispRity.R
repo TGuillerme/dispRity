@@ -18,7 +18,7 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity, all = TRUE)
 #'
-#' @seealso \code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -26,24 +26,23 @@
 # warning("DEBUG dispRity.R")
 # library(dispRity)
 # source("sanitizing.R")
-# source("dispRity.R")
+# source("dispRity.R")
 # source("dispRity_fun.R")
 # source("dispRity.metric.R")
 # source("make.dispRity.R")
 # source("fetch.dispRity.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
-# source("time.subsets.R") ; source("time.subsets_fun.R")
-# source("cust.subsets.R") ; source("cust.subsets_fun.R")
+# source("chrono.subsets.R") ; source("chrono.subsets_fun.R")
+# source("custom.subsets.R") ; source("custom.subsets_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50
 # data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-# data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+# data_subsets_simple <- chrono.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
 # data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 # data <- dispRity(data_subsets_boot, metric = c(variances))
 
 print.dispRity <- function(x, all = FALSE, ...) {
-
 
     if(all) {
         ## Print everything
@@ -64,7 +63,6 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 x <- lapply(x, remove.call)
 
-
                 if(length(x) == 1) {
                     print(x[[1]])
                 } else {
@@ -72,6 +70,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     class(tmp) <- "list"
                     print(tmp) 
                 }
+                return()
+            } 
+            if(class(x)[2] == "model.test") {
+                cat("Disparity evolution model fitting:\n")
+                print(x$aic.models)
                 return()
             }
 

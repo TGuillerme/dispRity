@@ -5,7 +5,7 @@ context("dispRity")
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
-data_subsets_simple <- time.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
+data_subsets_simple <- chrono.subsets(BeckLee_mat50, tree = BeckLee_tree,  method = "discrete", time = c(120,80,40,20))
 data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 metric = c(sum, variances)
 verbose = TRUE
@@ -388,7 +388,7 @@ test_that("Example works", {
     bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
-    ex3 <- summary(sum_of_ranges, rounding = 2)
+    ex3 <- summary(sum_of_ranges, digits = 2)
 
     expect_is(
         ex3
@@ -420,7 +420,7 @@ test_that("dispRity works with small, empty/subsets", {
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- time.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
+    silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
     silent <- capture_warnings(data <- boot.matrix(data))
 
     warnings <- capture_warnings(test <- dispRity(data, metric = c(sum, variances), verbose = TRUE))
@@ -440,8 +440,8 @@ test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_tree)
     
 
-    data1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    data2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    data2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     set.seed(1)
     test1 <- dispRity(data1, metric = mean)
@@ -459,3 +459,21 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
 
 })
+
+
+
+# test_that("dispRity works in parallel", {
+#     library(parallel)
+#     data(BeckLee_mat99)
+#     test <- boot.matrix(BeckLee_mat99, 100)
+
+#     ## Control
+#     test_non_par <- dispRity(test, metric = c(sum, variances))
+
+#     ## Error
+#     expect_error(dispRity(test, metric = c(sum, variances), parallel = "whatever"))
+
+#     ## Run parallel
+#     test_par <- dispRity(test, metric = c(sum, variances), parallel = TRUE)
+
+# })

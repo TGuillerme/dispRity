@@ -131,7 +131,7 @@ For example, which metric should you use?
 How many bootstraps do you require?
 What model of evolution is most appropriate if you are time slicing?
 Should you rarefy the data?
-See [`time.subsets`](#time-slicing), [`custom.subsets`](#customised-subsets), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
+See [`chrono.subsets`](#time-slicing), [`custom.subsets`](#customised-subsets), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
 Note that any of these default arguments can be changed within the `disparity.through.time` or `disparity.per.group` functions.
 
 ### Example data

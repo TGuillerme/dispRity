@@ -48,7 +48,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
     }
     
 
-    ## Make time factor
+    ## Make time factor
     make.time.factor <- function(data, pool = FALSE, time = TRUE) {
 
         if(time) {
@@ -103,7 +103,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
 
     if(length(group_names) == 1) {
         if(time_subsets) {
-            ## Time groups
+            ## Time groups
             return(make.time.factor(data, pool = pool_time))
         } else {
             ## Normal groups

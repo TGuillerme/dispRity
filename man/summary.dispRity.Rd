@@ -4,11 +4,13 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(data, quantiles = c(50, 95), cent.tend = median,
-  recall = FALSE, rounding)
+\method{summary}{dispRity}(object, ..., quantiles = c(50, 95),
+  cent.tend = median, recall = FALSE, digits)
 }
 \arguments{
-\item{data}{A \code{dispRity} object.}
+\item{object}{A \code{dispRity} object.}
+
+\item{...}{Additional arguments to be passed to \code{\link{summary}}.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -16,7 +18,7 @@
 
 \item{recall}{\code{logical} value specifying whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).}
 
-\item{rounding}{Optional, a value for rounding the values in the output table (default = 2).}
+\item{digits}{Optional, a value for digits the values in the output table (default = 2).}
 }
 \value{
 A \code{data.frame} with:
@@ -35,7 +37,7 @@ data(disparity)
 ## Summarising the results
 summary(disparity) # default
 ## Using different options
-summary(disparity, quantiles = 75, cent.tend = mean, rounding = 8,
+summary(disparity, quantiles = 75, cent.tend = mean, digits = 8,
      recall = TRUE)
 
 }

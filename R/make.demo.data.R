@@ -6,10 +6,10 @@
 #     data(BeckLee_tree) ; data(BeckLee_mat99) ; data(BeckLee_ages)
 
 #     ## Creating the time subsets
-#     time_subsets <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(90, 80, 70, 60, 50, 40, 30), FADLAD = BeckLee_ages)
+#     time_subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(90, 80, 70, 60, 50, 40, 30), FADLAD = BeckLee_ages)
 
 #     ## Bootstrapping the subsets
-#     bs_subsets <- boot.matrix(time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(90, 80, 70, 60, 50, 40, 30), FADLAD = BeckLee_ages), bootstraps = 100, rarefaction = c(20,15,10,5))
+#     bs_subsets <- boot.matrix(chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = c(90, 80, 70, 60, 50, 40, 30), FADLAD = BeckLee_ages), bootstraps = 100, rarefaction = c(20,15,10,5))
 
 #     ## Calculating disparity
 #     disparity <- dispRity(bs_subsets, metric = c(median, centroids))

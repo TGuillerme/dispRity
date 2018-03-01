@@ -43,7 +43,7 @@
 #' geomorph_val == dispRity_val # all TRUE
 #' }
 #'
-#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[geomorph]{gpagen}}, \code{\link[geomorph]{morphol.disparity}}, \code{\link[stats]{prcomp}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 
 # require(geomorph)
@@ -71,7 +71,7 @@ geomorph.ordination <- function(data, ...) {
     }
 
 
-    ## Ordinating the Procrustes data (code from Emma Sherratt)
+    ## Ordinating the Procrustes data (code from Emma Sherratt)
     columns <- dim(coords)[1] * dim(coords)[2]
     rows <- dim(coords)[3]
     matrix_out <- aperm(coords, c(3, 2, 1))

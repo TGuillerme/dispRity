@@ -77,20 +77,20 @@ char.diff <- function (matrix)  {
 #'
 #' @description Plots a character difference matrix from a discrete character matrix or its character differences density profile.
 #'
-#' @param matrix A discrete matrix or an already computed character difference matrix of class \code{char.diff}.
+#' @param x A discrete matrix or an already computed character difference matrix of class \code{char.diff}.
+#' @param ... Any additional graphical arguments to be passed to \code{image}.
 #' @param type Either \code{"matrix"} (or \code{"m"}) or \code{"density"} (or \code{"d"}) for respectively plotting the matrix of character differences or its character differences density profile.
 #' @param col Two colors for forming the gradient if \code{type = "correlation"} or for the density lines colors if \code{type = "density"}.
 #' @param legend A logical value stating whether to print the legend or not (default = \code{TRUE}).
 #' @param legend.title A \code{character} string to be displayed as the title of the legend (default = \code{Difference}).
 #' @param legend.pos The position of the legend. Can be two \code{numeric}. Default is \code{"topleft"}.
-#' @param legend.round A \code{numeric} value for rounding up legend values. Default is \code{0}.
+#' @param legend.round A \code{numeric} value for digits up legend values. Default is \code{0}.
 #' @param axis A logical value stating whether to print the axis or not (default = \code{TRUE}).
 #' @param xlim Two \code{numeric} values to determine the x axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
 #' @param ylim Two \code{numeric} values to determine the y axis limits. If missing (default), the limits are calculated automatically to fit the plot window.
 #' @param xlab A \code{character} string for the the x axis. Can be missing.
 #' @param ylab A \code{character} string for the the y axis. Can be missing.
 #' @param main An overall title for the plot.
-#' @param ... Any additional graphical arguments to be passed to \code{image}.
 #' 
 #' @examples
 #' ## Comparing two characters
@@ -112,7 +112,9 @@ char.diff <- function (matrix)  {
 #' @export
 #' 
 
-plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main, ...) {
+plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main) {
+
+    matrix <- x
 
     ## Saving the call
     match_call <- match.call()
@@ -225,7 +227,7 @@ plot.char.diff <- function(matrix, type = "matrix", legend = TRUE, legend.title 
             legend("topleft", legend = c(as.character(round(max(matrix, na.rm = TRUE), legend.round)), as.character(round(min(matrix, na.rm = TRUE), legend.round))), title = legend.title, col = col, pch = 19)
         }
     } else {
-        ## Plotting the density profile
+        ## Plotting the density profile
         plot.char.diff.density(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab)
     }
 }

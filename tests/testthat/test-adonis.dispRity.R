@@ -106,7 +106,7 @@ test_that("Correct behaviour with palaeo data", {
     ## Create the subsets
     subset_crown_stem <- custom.subsets(BeckLee_mat50, group = crown_stem)
     subset_dummy_group <- custom.subsets(BeckLee_mat50, group = dummy_group)
-    subset_time <- time.subsets(BeckLee_mat50, BeckLee_tree, method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0))
+    subset_time <- chrono.subsets(BeckLee_mat50, BeckLee_tree, method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0))
 
     ## Calculate disparity
     set.seed(1)
@@ -126,7 +126,7 @@ test_that("Correct behaviour with palaeo data", {
     set.seed(1)
     expect_warning(test_disp_time2 <- adonis.dispRity(disp_time, formula = matrix ~ time, warn = FALSE))
     set.seed(1)
-    test_disp_time3 <- adonis.dispRity(disp_time, formula = matrix ~ time.subsets, warn = FALSE)
+    test_disp_time3 <- adonis.dispRity(disp_time, formula = matrix ~ chrono.subsets, warn = FALSE)
 
     ## test 1 and 2 are the same
     expect_equal(test_disp_time1$aov.tab[[6]][1], test_disp_time2$aov.tab[[6]][1])

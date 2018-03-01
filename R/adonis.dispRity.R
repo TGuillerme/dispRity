@@ -20,7 +20,7 @@
 #' If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
 #' 
 #' @seealso
-#' \code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}.
+#' \code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
 #' 
 #' @examples
 #' ## Adonis with one groups 
@@ -59,7 +59,7 @@
 #' data(BeckLee_mat50)
 #' data(BeckLee_tree)
 #' data(BeckLee_ages)
-#' time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree, 
+#' time_subsets <- chrono.subsets(BeckLee_mat50, BeckLee_tree, 
 #'      method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
 #'      FADLAD = BeckLee_ages)
 #' 
@@ -67,9 +67,9 @@
 #' adonis.dispRity(time_subsets, matrix ~ time)
 #' 
 #' ## Running the NPMANOVA with each time bin as a predictor
-#' adonis.dispRity(time_subsets, matrix ~ time.subsets)
+#' adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 #' 
-#' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}
+#' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -89,7 +89,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## data must have subsets
     if(is.null(data$subsets)) {
-        stop("The data must have subsets. Use custom.subsets() or time.subsets() to create some.")
+        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.")
     } else {
         if(is.na(match(data$call$subsets[1], "customised"))) {
             ## Subsets are time
@@ -111,7 +111,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     if(!formula[[3]] == "group") {
 
         ## Predictor is time
-        if(formula[[3]] == "time" || formula[[3]] == "time.subsets") {
+        if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
                 stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula))
@@ -123,8 +123,8 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             group_variables <- NA
             pool_time <- ifelse(formula[[3]] == "time", TRUE, FALSE)
 
-            ## Update the formula
-            if(formula[[3]] == "time.subsets") {
+            ## Update the formula
+            if(formula[[3]] == "chrono.subsets") {
                 group_names_tmp <- paste0("t", gsub(" - ", "to", names(data$subsets)))
                 series <- paste(group_names_tmp, collapse = " + ")
                 formula <- formula(paste0("matrix ~ ", series))
@@ -216,7 +216,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(pool_time) {
             time_f <- ~time
         } else {
-            time_f <- ~time.subsets
+            time_f <- ~chrono.subsets
         }
         formula[[3]] <- time_f[[2]]
     }

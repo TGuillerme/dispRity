@@ -89,16 +89,27 @@ str(matrix.dispRity(disparity, "50"))
 str(matrix.dispRity(disparity, subsets = 1, bootstrap = 3, rarefaction = 2))
 ```
 
-#### `get.subsets.dispRity`
+#### `get.subsets`
 This function creates a dispRity object that contains only elements from one specific subsets.
 
 ```{r, eval=FALSE}
 ## Extracting all the data for the crown mammals
-(crown_mammals <- get.subsets.dispRity(disp_crown_stemBS, "Group.crown"))
+(crown_mammals <- get.subsets(disp_crown_stemBS, "Group.crown"))
 
 ## The object keeps the properties of the parent object but is composed of only one subsets
 length(crown_mammals$subsets)
 ```
+
+#### `combine.subsets`
+This function allows to merge different subsets.
+If the 
+
+```{r, eval=FALSE}
+## Combine the two first subsets in the dispRity data example
+combine.subsets(disparity, c(1,2))
+```
+
+Note that the computed values (bootstrapped data + disparity metric) are not merge.
 
 #### `extract.dispRity`
 This function extracts the calculated disparity values of a specific matrix.
@@ -112,18 +123,21 @@ extract.dispRity(disparity)
 extract.dispRity(disparity, observed = FALSE, subsets = 2, rarefaction = 10)
 ```
 
-#### `scale.dispRity`
-This is the S3 method of `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object.
+#### `rescale.dispRity`
+This is the modified S3 method for `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object and can take optional arguments (for example the rescaling by dividing by a maximum value).
 
 ```{r, eval=FALSE}
 ## Getting the disparity values of the time subsets
 head(summary(disparity))
 
 ## Scaling the same disparity values
-head(summary(scale(disparity, scale = TRUE)))
+head(summary(rescale.dispRity(disparity, scale = TRUE)))
 
 ## Scaling and centering:
-head(summary(scale(disparity, scale = TRUE, center = TRUE)))
+head(summary(rescale.dispRity(disparity, scale = TRUE, center = TRUE)))
+
+## Rescaling the value by dividing by a maximum value
+head(summary(rescale.dispRity(disparity, max = 10)))
 ```
 
 #### `sort.dispRity`
@@ -136,6 +150,9 @@ head(summary(sort(disparity, decreasing = TRUE)))
 ## Customised sorting
 head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
 ```
+
+
+
 
 ## The `dispRity` object content
 The functions above are utilities to easily and safely access different elements in the `dispRity` object.
@@ -162,7 +179,7 @@ This element of the `dispRity` object is never modified.
 This element contains the information on the `dispRity` object content.
 It is a `list` that can contain the following:
 
- * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"equal.split"`, `"gradual.split"`). This element generated only once via `time.subsets()` and `custom.subsets()`.
+ * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"equal.split"`, `"gradual.split"`). This element generated only once via `chrono.subsets()` and `custom.subsets()`.
  * `$call$dimensions`: either a single `numeric` value indicating how many dimensions to use or a vector of `numeric` values indicating which specific dimensions to use. This element is by default the number of columns in `$matrix` but can be modified through `boot.matrix()` or `dispRity()`.
  * `$call$bootstrap`: this is a `list` containing three elements:
     * `[[1]]`: the number of bootstrap replicates (`numeric`)
