@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2017-12-20">
+<meta name="date" content="2018-03-01">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -301,17 +301,24 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 ##   ..$ : chr [1:15] &quot;n7&quot; &quot;n34&quot; &quot;Maelestes&quot; &quot;n20&quot; ...
 ##   ..$ : NULL</code></pre>
 </div>
-<div id="get.subsets.disprity" class="section level4">
-<h4><span class="header-section-number">6.2.1.4</span> <code>get.subsets.dispRity</code></h4>
+<div id="get.subsets" class="section level4">
+<h4><span class="header-section-number">6.2.1.4</span> <code>get.subsets</code></h4>
 <p>This function creates a dispRity object that contains only elements from one specific subsets.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting all the data for the crown mammals
-(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets.dispRity</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))
+(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))
 
 ## The object keeps the properties of the parent object but is composed of only one subsets
 <span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</code></pre></div>
 </div>
+<div id="combine.subsets" class="section level4">
+<h4><span class="header-section-number">6.2.1.5</span> <code>combine.subsets</code></h4>
+<p>This function allows to merge different subsets. If the</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Combine the two first subsets in the dispRity data example
+<span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p>Note that the computed values (bootstrapped data + disparity metric) are not merge.</p>
+</div>
 <div id="extract.disprity" class="section level4">
-<h4><span class="header-section-number">6.2.1.5</span> <code>extract.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.6</span> <code>extract.dispRity</code></h4>
 <p>This function extracts the calculated disparity values of a specific matrix.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the observed disparity (default)
 <span class="kw">extract.dispRity</span>(disparity)
@@ -320,20 +327,23 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 ## 10th rarefaction level from the second subsets (80 Mya)
 <span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</code></pre></div>
 </div>
-<div id="scale.disprity" class="section level4">
-<h4><span class="header-section-number">6.2.1.6</span> <code>scale.dispRity</code></h4>
-<p>This is the S3 method of <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object.</p>
+<div id="rescale.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.7</span> <code>rescale.dispRity</code></h4>
+<p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the disparity values of the time subsets
 <span class="kw">head</span>(<span class="kw">summary</span>(disparity))
 
 ## Scaling the same disparity values
-<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))
 
 ## Scaling and centering:
-<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</code></pre></div>
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))
+
+## Rescaling the value by dividing by a maximum value
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</code></pre></div>
 </div>
 <div id="sort.disprity" class="section level4">
-<h4><span class="header-section-number">6.2.1.7</span> <code>sort.dispRity</code></h4>
+<h4><span class="header-section-number">6.2.1.8</span> <code>sort.dispRity</code></h4>
 <p>This is the S3 method of <code>sort</code> for sorting the subsets alphabetically (default) or following a specific pattern.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Sorting the disparity subsets in inverse alphabetic order
 <span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))
@@ -361,7 +371,7 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 <h3><span class="header-section-number">6.3.2</span> <code>$call</code></h3>
 <p>This element contains the information on the <code>dispRity</code> object content. It is a <code>list</code> that can contain the following:</p>
 <ul>
-<li><code>$call$subsets</code>: a vector of <code>character</code> with information on the subsets type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>) and their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;random&quot;</code>, <code>&quot;proximity&quot;</code>, <code>&quot;equal.split&quot;</code>, <code>&quot;gradual.split&quot;</code>). This element generated only once via <code>time.subsets()</code> and <code>custom.subsets()</code>.</li>
+<li><code>$call$subsets</code>: a vector of <code>character</code> with information on the subsets type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>) and their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;random&quot;</code>, <code>&quot;proximity&quot;</code>, <code>&quot;equal.split&quot;</code>, <code>&quot;gradual.split&quot;</code>). This element generated only once via <code>chrono.subsets()</code> and <code>custom.subsets()</code>.</li>
 <li><code>$call$dimensions</code>: either a single <code>numeric</code> value indicating how many dimensions to use or a vector of <code>numeric</code> values indicating which specific dimensions to use. This element is by default the number of columns in <code>$matrix</code> but can be modified through <code>boot.matrix()</code> or <code>dispRity()</code>.</li>
 <li><code>$call$bootstrap</code>: this is a <code>list</code> containing three elements:
 <ul>
