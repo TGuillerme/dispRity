@@ -40,7 +40,7 @@ merge.subsets(dummy_subsets, 10)
 
 }
 \seealso{
-\code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 \author{
 Thomas Guillerme

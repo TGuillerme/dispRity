@@ -291,7 +291,7 @@ test_that("summary.dispRity works with small, empty/subsets", {
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
+    silent <- capture_warnings(data <- dispRity(boot.matrix(chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 
     test <- summary(data)
     expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))

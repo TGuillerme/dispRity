@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{dispRity}(x, ..., type, quantiles = c(50, 95),
   cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
-  ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE,
+  ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE,
   density = NULL, element.pch = 15, nclass = 10, coeff = 1)
 }
 \arguments{
@@ -14,7 +14,7 @@
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{chrono.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -32,7 +32,7 @@
 
 \item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
 
-\item{time.subsets}{\code{logical} whether to handle continuous data from the \code{time.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
+\item{chrono.subsets}{\code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
 
@@ -78,7 +78,7 @@ plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
 plot(disparity, type = "continuous")
 
 ## Using different options (with non time.slicing option)
-plot(disparity, type = "continuous", time.subsets = FALSE,
+plot(disparity, type = "continuous", chrono.subsets = FALSE,
      elements = TRUE, col = c("red", "orange", "yellow"))
 
 ## Rarefactions plots

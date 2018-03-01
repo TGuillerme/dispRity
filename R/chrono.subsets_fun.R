@@ -31,7 +31,7 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 
 ## Discrete time subsets
-time.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
     
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
@@ -80,7 +80,7 @@ time.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) 
 }
 
 ## Continuous time subsets
-time.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {

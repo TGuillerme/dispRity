@@ -33,6 +33,8 @@ dispRity 0.2.0 (2016-04-01)
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
   * Improved S3 methods
   * **Changed name**: `scale.dispRity` is now `rescale.dispRity`
+  * **Changed name**: `merge.subsets` is now `combine.subsets`
+  * **Changed name**: `time.subsets` is now `chrono.subsets` - `time.subsets` can still be called as an alias of for the same function
 
 ### BUG FIXES
 

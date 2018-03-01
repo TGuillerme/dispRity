@@ -16,10 +16,10 @@
 #' stratigraphy <- get.bin.ages(BeckLee_tree)
 #' 
 #' ## Making stratigraphic time subsets
-#' time.subsets(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' chrono.subsets(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'                 time = stratigraphy)
 #'
-#' @seealso \code{\link{time.subsets}}
+#' @seealso \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @import geoscale timescales

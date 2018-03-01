@@ -31,7 +31,7 @@ tree.age(rtree(10), order = 'present')
 
 }
 \seealso{
-\code{\link{slice.tree}}, \code{\link{time.subsets}}.
+\code{\link{slice.tree}}, \code{\link{chrono.subsets}}.
 }
 \author{
 Thomas Guillerme

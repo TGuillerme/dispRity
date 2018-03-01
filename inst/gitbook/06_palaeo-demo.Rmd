@@ -63,7 +63,7 @@ strap::geoscalePhylo(BeckLee_tree, cex.tip = 0.7, cex.ts = 0.6)
 One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time subsets that contain the total number of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning).
 Basically, the full morphospace represents the total number of morphologies across all time and will be greater than any of the time subsets of the morphospace.
 
-The `dispRity` package provides a `time.subsets` function that allows users to split the morphospace into time slices (using `method = continuous`) or into time bins (using `method = discrete`).
+The `dispRity` package provides a `chrono.subsets` function that allows users to split the morphospace into time slices (using `method = continuous`) or into time bins (using `method = discrete`).
 In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present.
 We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.
 
@@ -71,8 +71,8 @@ We will also provide to the function a table containing the first and last occur
 ## Creating the vector of time bins ages
 (time_bins <- rev(seq(from = 0, to = 100, by = 20)))
 
-## Splitting the morphospace using the time.subsets function
-(binned_morphospace <- time.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
+## Splitting the morphospace using the chrono.subsets function
+(binned_morphospace <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
     method = "discrete", time = time_bins, inc.nodes = FALSE,
     FADLAD = BeckLee_ages))
 ```

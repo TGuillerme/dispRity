@@ -411,7 +411,7 @@ test_that("adonis and dtt works fine", {
     data(BeckLee_ages)
 
     groups <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = c(ranges))
-    time <- dispRity(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", FADLAD = BeckLee_ages, time = 10), metric = c(ranges))
+    time <- dispRity(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", FADLAD = BeckLee_ages, time = 10), metric = c(ranges))
     
    expect_warning(test_group_adonis <- test.dispRity(data = groups, test = adonis.dispRity))
    expect_warning(test_group_adonis2 <- test.dispRity(groups, test = vegan::adonis))

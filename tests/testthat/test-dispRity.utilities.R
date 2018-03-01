@@ -175,7 +175,7 @@ test_that("matrix.dispRity", {
 test_that("get.subsets", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
-    subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
     bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
     disparity_data <- dispRity(bootstrapped_data, variances)
 
@@ -246,7 +246,7 @@ test_that("get.subsets", {
 ## extract.dispRity
 test_that("extract.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
-    subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+    subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
     bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
     data <- dispRity(bootstrapped_data, c(sum,variances))
 
@@ -357,7 +357,7 @@ test_that("rescale.dispRity", {
 
 test_that("sort.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
-    subsets <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+    subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
     data <- dispRity(subsets, metric = mean)
 
     expect_error(
@@ -382,8 +382,8 @@ test_that("sort.dispRity", {
 
 
 
-## merge.subsets
-test_that("merge.subsets", {
+## combine.subsets
+test_that("combine.subsets", {
     data(disparity)
     data_test1 <- disparity
     expect_warning(data_test2 <- custom.subsets(matrix(rnorm(120), 40), group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20), "d" = c(21:24), "e" = c(25:30), "f" = c(31:40))))
@@ -403,43 +403,43 @@ test_that("merge.subsets", {
 
     ## Errors
     expect_error(
-        merge.subsets("data_test1", c(1,2))
+        combine.subsets("data_test1", c(1,2))
         )
     expect_error(
-        merge.subsets(matrix(100,10), c(1,2))
+        combine.subsets(matrix(100,10), c(1,2))
         )
     expect_error(
-        merge.subsets(data_test2, "c(1,2)")
+        combine.subsets(data_test2, "c(1,2)")
         )
     expect_error(
-        merge.subsets(data_test2, c(13,14))
+        combine.subsets(data_test2, c(13,14))
         )
     expect_error(
-        merge.subsets(data_test2, c("a", "x"))
+        combine.subsets(data_test2, c("a", "x"))
         )
 
     dummy_data1 <- dummy_data2 <- data_test1
     dummy_data1$call$bootstrap <- NULL
-    test1 <- capture_warnings(garbage <-merge.subsets(dummy_data1, c(1,2)))
+    test1 <- capture_warnings(garbage <-combine.subsets(dummy_data1, c(1,2)))
 
     expect_equal(test1, "dummy_data1 contained disparity data that has been discarded in the output.")
 
 
     ## Warnings
     expect_warning(
-        tests[[1]] <- merge.subsets(data_test1, c(2,1,5))
+        tests[[1]] <- combine.subsets(data_test1, c(2,1,5))
         )
     expect_warning(
-        tests[[2]] <- merge.subsets(data_test1, c("90", "80", "50"))
+        tests[[2]] <- combine.subsets(data_test1, c("90", "80", "50"))
         )
     expect_warning(
-        tests[[3]] <- merge.subsets(data_test1, 20)
+        tests[[3]] <- combine.subsets(data_test1, 20)
         )
 
     ## Working fine!
-    tests[[4]] <- merge.subsets(data_test2, c(1,2,3))
-    tests[[5]] <- merge.subsets(data_test2, c("a", "b", "c"))
-    tests[[6]] <- merge.subsets(data_test2, 10)
+    tests[[4]] <- combine.subsets(data_test2, c(1,2,3))
+    tests[[5]] <- combine.subsets(data_test2, c("a", "b", "c"))
+    tests[[6]] <- combine.subsets(data_test2, 10)
 
     for(test in 1:length(tests)) {
         ## Class
@@ -472,7 +472,7 @@ test_that("extinction.subsets works", {
     data(BeckLee_tree)
 
     ## detect.bin.age (internal)
-    data <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 66, 40), inc.nodes = TRUE)
+    data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 66, 40), inc.nodes = TRUE)
     expect_equal(detect.bin.age(data, 66, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
     expect_equal(detect.bin.age(data, 66, greater = FALSE), c("100 - 66" = FALSE, "66 - 40" = TRUE))
     expect_equal(detect.bin.age(data, 60, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
@@ -488,6 +488,6 @@ test_that("extinction.subsets works", {
     expect_equal(extinction.subsets(disparity, 66, names = TRUE, as.list = TRUE), list("60" = c("70", "60")))
     expect_equal(extinction.subsets(disparity, 66, lag = 4), c(3:7))
     expect_warning(expect_equal(extinction.subsets(disparity, 66, lag = 12), c(3:7)))
-    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111.2592), c(1,2))
-    expect_equal(extinction.subsets(time.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111), c(1,2))
+    expect_equal(extinction.subsets(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111.2592), c(1,2))
+    expect_equal(extinction.subsets(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111), c(1,2))
 })

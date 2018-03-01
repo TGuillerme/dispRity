@@ -1,9 +1,9 @@
-#' @title Separating data in time subsets.
-#' @aliases time.series
+#' @title Separating data in chronological subsets.
+#' @aliases time.series time.subsets
 #'
-#' @description Splits the data into a time subsets list.
+#' @description Splits the data into a chronological (time) subsets list.
 #' 
-#' @usage time.subsets(data, tree, method, time, model, inc.nodes = FALSE,
+#' @usage chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
 #'                     FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A \code{matrix} (see details).
@@ -52,16 +52,16 @@
 #'
 #' ## Time binning (discrete method)
 #' ## Generate two discrete time bins from 120 to 40 Ma every 40 Ma
-#' time.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
 #' ## Generate the same time bins but including nodes
-#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
+#' chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete",
 #'      time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
 #'
 #' ## Time slicing (continuous method)
 #' ## Generate five equidistant time slices in the dataset assuming a proximity
 #' ## evolutionary model
-#' time.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
+#' chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 #'      method = "continuous", model = "acctran", time = 5,
 #'      FADLAD = BeckLee_ages)
 #'
@@ -69,9 +69,9 @@
 #' @author Thomas Guillerme
 
 ##Testing
-# warning("DEBUG time.subsets")
+# warning("DEBUG chrono.subsets")
 # source("sanitizing.R")
-# source("time.subsets_fun.R")
+# source("chrono.subsets_fun.R")
 # source("slice.tree_fun.R")
 # data(BeckLee_tree) ; data(BeckLee_mat50)
 # data(BeckLee_mat99) ; data(BeckLee_ages)
@@ -98,7 +98,7 @@
 # abline(v = 40)
 
 
-time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
     ## ----------------------
     ##  SANITIZING
@@ -297,11 +297,11 @@ time.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FAD
     ## -------------------------------
 
     if(method == "discrete") {
-        time_subsets <- time.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
+        time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
     }
 
     if(method == "continuous") {
-        time_subsets <- time.subsets.continuous(data, tree, time, model, FADLAD, verbose)
+        time_subsets <- chrono.subsets.continuous(data, tree, time, model, FADLAD, verbose)
     }
 
     ## Adding the original subsets

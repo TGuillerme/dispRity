@@ -23,7 +23,7 @@ test_that("normal printing", {
     ))
 
     ## Time subsets
-    test <- time.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
+    test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
     expect_equal(capture.output(test), 
         c(
@@ -32,7 +32,7 @@ test_that("normal printing", {
         "    100 - 90, 90 - 50."
     ))
 
-    test <- time.subsets(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
+    test <- chrono.subsets(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
 
     expect_equal(capture.output(test), 
         c(
@@ -62,7 +62,7 @@ test_that("normal printing", {
     ))
 
     ## Bootstrapped + subsets
-    test <- boot.matrix(time.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
+    test <- boot.matrix(chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
 
     expect_equal(capture.output(test), 
         c(

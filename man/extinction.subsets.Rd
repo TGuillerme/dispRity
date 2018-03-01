@@ -37,7 +37,7 @@ test.dispRity(disparity, wilcox.test, comparisons = extinction_time,
 
 }
 \seealso{
-\code{\link{time.subsets}}, \code{\link{test.dispRity}}
+\code{\link{chrono.subsets}}, \code{\link{test.dispRity}}
 }
 \author{
 Thomas Guillerme

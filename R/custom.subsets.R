@@ -44,7 +44,7 @@
 #' custom.subsets(BeckLee_mat50, group = BeckLee_tree)
 #' 
 #'
-#' @seealso \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
+#' @seealso \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{crown.stem}}.
 #'
 #' @author Thomas Guillerme
 

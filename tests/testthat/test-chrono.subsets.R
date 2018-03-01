@@ -1,6 +1,6 @@
-## TESTING time.subsets
+## TESTING chrono.subsets
 
-context("time.subsets")
+context("chrono.subsets")
 
 ## Change the loading data to a simplified version of Beck???
 load("test_data.Rda")
@@ -37,16 +37,16 @@ test_that("adjust.FADLAD works", {
     }
 })
 
-## time.subsets.discrete
+## chrono.subsets.discrete
 time = c(120, 80, 40)
 model = NULL
 inc.nodes = FALSE
 verbose = FALSE
 
-time_subsets <- time.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
-test_that("time.subsets.discrete works properly without nodes", {
+test_that("chrono.subsets.discrete works properly without nodes", {
     ## Test get.interval
     # expect_equal(
     #     as.vector(unlist(get.interval(1, time, adjust.FADLAD(FADLAD, tree, data), inc.nodes = FALSE)))
@@ -77,10 +77,10 @@ test_that("time.subsets.discrete works properly without nodes", {
 inc.nodes = TRUE
 data <- test_data$ord_data_tips_nodes
 
-time_subsets <- time.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
-test_that("time.subsets.discrete works properly with nodes", {
+test_that("chrono.subsets.discrete works properly with nodes", {
     ## class is list
     expect_is(
         time_subsets
@@ -99,16 +99,16 @@ test_that("time.subsets.discrete works properly with nodes", {
 })
 
 
-## time.subsets.continuous
+## chrono.subsets.continuous
 data <- test_data$ord_data_tips_nodes
 time = c(120, 80, 40)
 verbose = FALSE
 
 ## DELTRAN
-time_subsets <- time.subsets.continuous(data, tree, time, model = "deltran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", FADLAD, verbose)
 
 ## Test
-test_that("time.subsets.continuous works properly with deltran model", {
+test_that("chrono.subsets.continuous works properly with deltran model", {
     
     ## Get slice
     # expect_equal(
@@ -139,10 +139,10 @@ test_that("time.subsets.continuous works properly with deltran model", {
 })
 
 ## ACCTRAN
-time_subsets <- time.subsets.continuous(data, tree, time, model = "acctran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "acctran", FADLAD, verbose)
 
 ## Test
-test_that("time.subsets.continuous works properly with acctran model", {
+test_that("chrono.subsets.continuous works properly with acctran model", {
     subsets_1 <- c("n2","n6","n8","n12","n16", "Zhangolestes")
     subsets_2 <- c("Kennalestes","Asioryctes","Ukhaatherium","Cimolestes","Maelestes","Batodon","Zalambdalestes","Barunlestes","Gypsonictops","Leptictis","Oxyclaenus","n20","n23","n26","n29","n35","Cynocephalus","n40","Patriomanis","n45","Icaronycteris","n48")
     subsets_3 <- c("Leptictis","Dasypodidae","n24","Potamogalinae","Dilambdogale","Widanelfarasia","Rhynchocyon","Procavia","Moeritherium","Trichechus","Cynocephalus","Adapis","Patriomanis","Soricidae","Solenodon")
@@ -157,7 +157,7 @@ test_that("time.subsets.continuous works properly with acctran model", {
         , subsets_3)
 })
 
-## time.subsets
+## chrono.subsets
 data = test_data$ord_data_tips_nodes
 tree = test_data$tree_data
 method = "continuous"
@@ -167,65 +167,65 @@ FADLAD = test_data$FADLAD_data
 verbose = FALSE
 
 ## Sanitizing
-test_that("Sanitizing works for time.subsets (wrapper)", {
+test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Data
     expect_error(
-        time.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     ## tree
     expect_error(
-        time.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data, tree = 1, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree = 1, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data, tree = rtree(5), method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree = rtree(5), method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     ## method
     expect_error(
-        time.subsets(data, tree, method = 1, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method = 1, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data, tree, method = "a", time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method = "a", time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data, tree, method = c("c","d"), time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method = c("c","d"), time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     ## time
     expect_error(
-        time.subsets(data, tree, method, time = "time", model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method, time = "time", model, inc.nodes, FADLAD, verbose = FALSE)
         )
     ## model
     expect_error(
-        time.subsets(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
-        time.subsets(data, tree, method, time, model = c("acctran","deltran"), inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data, tree, method, time, model = c("acctran","deltran"), inc.nodes, FADLAD, verbose = FALSE)
         )
     ## FADlAD
     expect_error(
-        time.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE)
+        chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE)
         )
 
     ## t0
     expect_error(
-        time.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE, t0 = "a")
+        chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE, t0 = "a")
         )
     expect_error(
-        time.subsets(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
+        chrono.subsets(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
         )
 })
 
 ## Output
 test_that("Output format is correct", {
-    out_test <- time.subsets(data, tree, method, time, model, inc.nodes, FADLAD)
+    out_test <- chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD)
     ## Class
     expect_is(
         out_test, "dispRity"
@@ -245,7 +245,7 @@ test_that("Output format is correct", {
 ## Example TESTING
 test_that("Example works", {
     data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
-    ex1 <- time.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+    ex1 <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex1)
         , 3)
@@ -262,7 +262,7 @@ test_that("Example works", {
         nrow(ex1$subsets[[2]]$elements)
         ,27)
 
-    ex2 <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
+    ex2 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex2)
         , 3)
@@ -279,7 +279,7 @@ test_that("Example works", {
         nrow(ex2$subsets[[2]]$elements)
         ,47)
 
-    ex3 <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+    ex3 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex3)
         , 3)
@@ -309,7 +309,7 @@ test_that("make.origin.subsets works (internal fun)", {
 })
 
 
-test_that("time.subsets works without tree", {
+test_that("chrono.subsets works without tree", {
 
     FAD_LAD_data <- tree.age(BeckLee_tree)[1:50,]
     rownames(FAD_LAD_data) <- FAD_LAD_data[,2]
@@ -318,11 +318,11 @@ test_that("time.subsets works without tree", {
 
     ## Missing the FADLAD argument
     expect_error(
-        time.subsets(BeckLee_mat50, method = "discrete", time = 5)
+        chrono.subsets(BeckLee_mat50, method = "discrete", time = 5)
         )
 
-    no_tree <- time.subsets(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), FADLAD = FAD_LAD_data)
-    with_tree <- time.subsets(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), tree = BeckLee_tree)
+    no_tree <- chrono.subsets(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), FADLAD = FAD_LAD_data)
+    with_tree <- chrono.subsets(BeckLee_mat50, method = "discrete", time = c(130, 90, 45, 0), tree = BeckLee_tree)
 
     ## Right object
     expect_is(no_tree, "dispRity")
@@ -340,17 +340,17 @@ test_that("time.subsets works without tree", {
 
 test_that("t0 works", {
     data <- test_data$ord_data_tips_nodes
-    test <- time.subsets(data, tree, method = "continuous", model = "acctran", inc.nodes = TRUE, FADLAD = FADLAD, t0 = 100, time = 11)
+    test <- chrono.subsets(data, tree, method = "continuous", model = "acctran", inc.nodes = TRUE, FADLAD = FADLAD, t0 = 100, time = 11)
     expect_is(test, "dispRity")
     expect_equal(names(test$subsets), as.character(rev(seq(from = 0, to = 100, by = 10))))
 })
 
-test_that("time.subsets works for empty subsets", {
+test_that("chrono.subsets works for empty subsets", {
     data <- test_data$ord_data_tips
     time <- c(145, 140, 139, 0)
 
     ## Discrete
-    warnings <- capture_warnings(test <- time.subsets(data, tree, method = "discrete", time = c(145, 140, 139, 0)))
+    warnings <- capture_warnings(test <- chrono.subsets(data, tree, method = "discrete", time = c(145, 140, 139, 0)))
     expect_equal(warnings, c("The interval 145 - 140 is empty.", "The interval 140 - 139 is empty."))
     expect_equal(test$subsets[[1]][[1]][,1], NA)
     expect_equal(test$subsets[[2]][[1]][,1], NA)
@@ -358,7 +358,7 @@ test_that("time.subsets works for empty subsets", {
 
     ## Continuous
     data <- test_data$ord_data_tips_nodes
-    warnings <- capture_warnings(test <- time.subsets(data, tree, model = "acctran", method = "continuous", time = c(145, 140, 139, 0)))
+    warnings <- capture_warnings(test <- chrono.subsets(data, tree, model = "acctran", method = "continuous", time = c(145, 140, 139, 0)))
     expect_equal(warnings, c("The slice 145 is empty.", "The slice 140 is empty."))
     expect_equal(test$subsets[[1]][[1]][,1], NA)
     expect_equal(test$subsets[[2]][[1]][,1], NA)
@@ -372,8 +372,8 @@ test_that("probability models work", {
     data(BeckLee_ages)
     data(BeckLee_tree)
     
-    test1 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-    test2 <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "equal.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "equal.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     expect_is(test1, "dispRity")
     expect_is(test1$subsets[[1]][[1]], "matrix")
