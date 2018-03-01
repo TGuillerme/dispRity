@@ -32,7 +32,7 @@
 
 crown.stem <- function(tree, inc.nodes = TRUE, output.names = TRUE) {
 
-    ## Sanitizing
+    ## Sanitizing
     check.class(tree, "phylo")
     check.class(inc.nodes, "logical")
     check.class(output.names, "logical")
@@ -61,7 +61,7 @@ crown.stem <- function(tree, inc.nodes = TRUE, output.names = TRUE) {
     ## Extract the stem group
     stem_tree <- drop.tip(tree, tip = crown_tree$tip.label)
 
-    ## Transforming the output in names
+    ## Transforming the output in names
     if(output.names) {
         ## Extract the names
         if(inc.nodes) {

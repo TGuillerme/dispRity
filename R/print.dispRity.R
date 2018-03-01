@@ -18,7 +18,7 @@
 #' ## Displaying the full object
 #' print.dispRity(disparity, all = TRUE)
 #'
-#' @seealso \code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -26,14 +26,14 @@
 # warning("DEBUG dispRity.R")
 # library(dispRity)
 # source("sanitizing.R")
-# source("dispRity.R")
+# source("dispRity.R")
 # source("dispRity_fun.R")
 # source("dispRity.metric.R")
 # source("make.dispRity.R")
 # source("fetch.dispRity.R")
 # source("boot.matrix.R") ; source("boot.matrix_fun.R")
 # source("time.subsets.R") ; source("time.subsets_fun.R")
-# source("cust.subsets.R") ; source("cust.subsets_fun.R")
+# source("custom.subsets.R") ; source("custom.subsets_fun.R")
 # data(BeckLee_mat50)
 # data(BeckLee_tree)
 # data_simple <- BeckLee_mat50

@@ -185,7 +185,7 @@ summary.dispRity <- function(object, quantiles = c(50, 95), cent.tend = median, 
     if(any(summary_results$n == 1)) {
         ## Select the values to check
         to_check <- which(summary_results$n == 1)
-        ## Get their replacement values
+        ## Get their replacement values
 
         check.elements.NA <- function(row, summary_results, data) {
             ## Check if the subset contains NA elements
