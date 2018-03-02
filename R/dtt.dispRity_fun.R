@@ -3,7 +3,7 @@
 .dtt.dispRity <- function(phy, data, metric){
 
     phy$node.label<-NULL
-    td<-treedata(phy, data)
+    td<-geiger::treedata(phy, data)
     phy2<-td$phy
     phy<-new2old.phylo(td$phy)
 
