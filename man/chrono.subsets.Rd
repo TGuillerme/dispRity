@@ -80,6 +80,9 @@ chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
      FADLAD = BeckLee_ages)
 
 }
+\references{
+Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
+}
 \seealso{
 \code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }

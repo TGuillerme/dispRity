@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-03-01">
+<meta name="date" content="2018-03-09">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -265,7 +265,7 @@ my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">10<
 <p>Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!</p>
 <div id="a-more-detailed-description" class="section level3">
 <h3><span class="header-section-number">5.1.1</span> A more detailed description</h3>
-<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">Guillerme and Cooper (<a href="#ref-GuillermeCooper">2016</a>)</span> <span class="citation">OReilly et al. (<a href="#ref-OReilly2016">2016</a>)</span> <span class="citation">M. N. Puttick et al. (<a href="#ref-puttick2017uncertain">2017</a>)</span> and <span class="citation">O’Reilly et al. (<a href="#ref-OReilly2017">2017</a>)</span>.</p>
+<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">Thomas Guillerme and Cooper (<a href="#ref-GuillermeCooper">2016</a>)</span> <span class="citation">OReilly et al. (<a href="#ref-OReilly2016">2016</a>)</span> <span class="citation">M. N. Puttick et al. (<a href="#ref-puttick2017uncertain">2017</a>)</span> and <span class="citation">O’Reilly et al. (<a href="#ref-OReilly2017">2017</a>)</span>.</p>
 <ul>
 <li>The first <code>tree</code> argument will be the tree on which to “evolve” the characters and therefore requires branch length. You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">(FitzJohn <a href="#ref-fitzjohndiversitree2012">2012</a>)</span> for example.</li>
 <li>The second argument, <code>character</code> is the number of characters.</li>

@@ -45,6 +45,9 @@
 #' }
 #' N.B. \code{"equal.split"} and \code{"gradual.split"} differ from the punctuated models by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
 #'
+#' @references
+#' Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
+#' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_tree) ; data(BeckLee_mat50)

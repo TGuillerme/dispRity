@@ -36,7 +36,7 @@ Two types of time subsets can be performed by using the `method` option:
  *  Discrete time subsets (or time-binning) using `method = discrete`
  *  Continuous time subsets (or time-slicing) using `method = continuous`
 
-For the time-slicing method details see Cooper and Guillerme (in prep.). <!-- @@@ Change cite appropriately! -->
+For the time-slicing method details see @time-slice. <!-- @@@ Change cite appropriately! -->
 <!-- NC: Or potentially this paper we are writing for the PalAss? TG: totally!-->
 For both methods, the function takes the `time` argument which can be a vector of `numeric` values for:
 
