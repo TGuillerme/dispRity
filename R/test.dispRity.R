@@ -355,7 +355,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
                 return(details_out)
             } else {
                 ## Saving the calling parameters
-                call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.metric.from.call(data, "metric", eval = FALSE), ".\n", sep ="")
+                call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.metric.from.call(data), ".\n", sep ="")
                 ## Creating the results table
                 table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$subsets), ncol = 1, dimnames = list(c(data$subsets)))
                 table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$subsets), ncol = 4,  dimnames = list(c(data$subsets)), byrow = TRUE)

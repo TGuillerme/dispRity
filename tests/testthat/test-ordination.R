@@ -2,6 +2,63 @@
 
 context("ordinations")
 
+
+#Loading Claddis
+require(Claddis)
+
+
+test_that("Claddis.support works", {
+    expect_equal(MorphDistMatrix(Michaux1989), MorphDistMatrix.support(Michaux1989))
+    expect_equal(MorphDistMatrix(Gauthier1986), MorphDistMatrix.support(Gauthier1986))
+
+    #Testing with a more complex (bigger) matrix
+    #Some random matrix
+    matrix <- matrix(sample(c("0", "1", "2", "0&1", "0&2", "1&2", "0&1&2"), 5000, replace=TRUE, prob=c(0.425, 0.42, 0.12, 0.01, 0.01, 0.01, 0.005))
+    , nrow=50, ncol=100, dimnames=list(c(1:50)))
+    #Adding 25% of missing characters
+    matrix[sample(1:5000, 200)] <- NA
+
+    #ordering
+    ordering <- sample(c("unord", "ord"), 100, replace=TRUE, prob=c(0.9,0.1))
+
+    #weights
+    weights <- sample(c(1:3), 100, replace=TRUE, prob=c(0.85,0.1,0.05))
+
+    #Function for making a morph.matrix like object
+    make.nexus<-function(matrix, header, ordering, weights) {
+        nexus<-list()
+        nexus$header<-header
+        nexus$matrix<-matrix
+        nexus$ordering<-ordering
+        nexus$weights<-weights
+        nexus$max.vals<-as.numeric(apply(matrix, 2, max, na.rm=TRUE))
+        nexus$min.vals<-as.numeric(apply(matrix, 2, min, na.rm=TRUE))
+        return(nexus)
+    }
+
+    morph.matrix <- make.nexus(matrix, header="example", ordering, weights)
+
+    expect_equal(MorphDistMatrix(morph.matrix), MorphDistMatrix.support(morph.matrix))
+
+})
+
+# Testing if each individual matrix is corrects
+test_that("Claddis.support works individually", {
+    results_base <- MorphDistMatrix(Michaux1989)
+    results_fast <- MorphDistMatrix.support(Michaux1989)
+    results_raw <- MorphDistMatrix.support(Michaux1989, distance = "Raw")
+    results_GED <- MorphDistMatrix.support(Michaux1989, distance = "GED")
+    results_Gower <- MorphDistMatrix.support(Michaux1989, distance = "Gower")
+    results_Max <- MorphDistMatrix.support(Michaux1989, distance = "Max")
+    results_Comp <- MorphDistMatrix.support(Michaux1989, distance = "Comp")
+    expect_equal(results_base$raw.dist.matrix, results_raw)
+    expect_equal(results_base$GED.dist.matrix, results_GED)
+    expect_equal(results_base$gower.dist.matrix, results_Gower)
+    expect_equal(results_base$max.dist.matrix, results_Max)
+    expect_equal(results_base$comp.char.matrix, results_Comp)
+})
+
+
 test_that("Claddis.ordination works", {
     
     data_matrix <- matrix(c("0", "0", "1", "1", "0", "0", "1", "1", "0", "1", "0", "1", "0", "1", "1", "1", "0", "1", "0", "0", "0", "0", "1", "0", "1", "0", "0", "1", "0", "0", "0", "1", "0", "1", "0", "1", "0", "1", "0", "0", "0", "0", "1", "0"), byrow = FALSE, nrow = 4)

@@ -1,3 +1,9 @@
+<<<<<<< HEAD:NEWS.md
+=======
+----
+<!-- * 2017/10/18 - v1.0 *got you covered*  -->
+
+>>>>>>> master:NEWS.md
 <!-- 
 dispRity 0.2.0 (2016-04-01)
 =========================
@@ -21,10 +27,7 @@ dispRity 0.2.0 (2016-04-01)
 
 [last on release] dispRity v1.0.0 *got CRAN* (2019-02-28)
 =========================
-### NEW FEATURES
 
-  * CRAN release 1
-  
 ### MINOR IMPROVEMENTS
 
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).

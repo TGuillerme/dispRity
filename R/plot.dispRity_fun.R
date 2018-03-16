@@ -90,7 +90,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 }
 
 ## discrete plotting
-plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) {
+plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
@@ -185,7 +185,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 }
 
 ## continuous plotting
-plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
+plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
     
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
