@@ -25,7 +25,11 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
+<<<<<<< HEAD
 <meta name="date" content="2018-03-16">
+=======
+<meta name="date" content="2017-12-20">
+>>>>>>> parent of 436be81... v1.0.0 book
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -268,13 +272,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">data</span>(BeckLee_tree)
 <span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)
 <span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-93-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-92-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)
 strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-94-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-93-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
@@ -282,12 +286,12 @@ strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tre
 <div id="splitting-the-morphospace-through-time" class="section level3">
 <h3><span class="header-section-number">7.2.1</span> Splitting the morphospace through time</h3>
 <p>One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time subsets that contain the total number of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning). Basically, the full morphospace represents the total number of morphologies across all time and will be greater than any of the time subsets of the morphospace.</p>
-<p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>). In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present. We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
+<p>The <code>dispRity</code> package provides a <code>time.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>). In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present. We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating the vector of time bins ages
 (time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</code></pre></div>
 <pre><code>## [1] 100  80  60  40  20   0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Splitting the morphospace using the chrono.subsets function
-(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Splitting the morphospace using the time.subsets function
+(binned_morphospace &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,
     <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,
     <span class="dt">FADLAD =</span> BeckLee_ages))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
@@ -401,7 +405,7 @@ binned_morphospace</code></pre></div>
 ## Plotting the bootstrapped and rarefied results
 <span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)
 <span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-100-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-99-1.png" width="1152" /></p>
 </div>
 </div>
 <div id="testing-differences" class="section level2">
