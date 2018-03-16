@@ -1,30 +1,3 @@
-<<<<<<< HEAD:NEWS.md
-=======
-----
-<!-- * 2017/10/18 - v1.0 *got you covered*  -->
-
->>>>>>> master:NEWS.md
-<!-- 
-dispRity 0.2.0 (2016-04-01)
-=========================
-
-### NEW FEATURES
-
-  * Blabla
-
-### MINOR IMPROVEMENTS
-
-  * Blabla
-
-### BUG FIXES
-
-  * Blabla
-
-### DEPRECATED AND DEFUNCT
-
-  * Blabla
- -->
-
 [last on release] dispRity v1.0.0 *got CRAN* (2019-02-28)
 =========================
 
