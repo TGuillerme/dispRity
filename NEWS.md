@@ -24,9 +24,6 @@ dispRity 0.2.0 (2016-04-01)
 
 [last on release] dispRity v1.0.0 *got CRAN* (2019-02-28)
 =========================
-### NEW FEATURES
-
-  * CRAN release 1
   
 ### MINOR IMPROVEMENTS
 
