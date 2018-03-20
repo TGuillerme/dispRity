@@ -102,5 +102,15 @@ test_that("clean.data works", {
     expect_true(
         is.na(test[[4]])
         )
+
+    ## Tree is OK
+    tree <- rtree(5, tip.label = LETTERS[1:5])
+    dummy_data <- matrix(c(rnorm(6), runif(6)), 6, 2, dimnames = list(LETTERS[1:6], c("var1", "var2")))
+    expect_equal(clean.data(dummy_data, tree)$dropped_tips, NA)
+    
+    ## Data is OK
+    tree <- rtree(6, tip.label = LETTERS[1:6])
+    dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
+    expect_equal(clean.data(dummy_data, tree)$dropped_rows, NA)
 })
 

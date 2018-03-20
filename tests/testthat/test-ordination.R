@@ -12,7 +12,8 @@ test_that("Claddis.support works", {
 
     #Testing with a more complex (bigger) matrix
     #Some random matrix
-    matrix <- matrix(sample(c("0", "1", "2", "0&1", "0&2", "1&2", "0&1&2"), 5000, replace=TRUE, prob=c(0.425, 0.42, 0.12, 0.01, 0.01, 0.01, 0.005))
+    set.seed(1)
+    matrix <- matrix(sample(c("0", "1", "2", "3", "0&1", "0&2", "1&2", "0&1&2"), 5000, replace=TRUE, prob=c(0.425, 0.42, 0.6, 0.6, 0.01, 0.01, 0.01, 0.005))
     , nrow=50, ncol=100, dimnames=list(c(1:50)))
     #Adding 25% of missing characters
     matrix[sample(1:5000, 200)] <- NA
@@ -38,6 +39,32 @@ test_that("Claddis.support works", {
     morph.matrix <- make.nexus(matrix, header="example", ordering, weights)
 
     expect_equal(MorphDistMatrix(morph.matrix), MorphDistMatrix.support(morph.matrix))
+
+
+    ##MorphDistMatrix.support INIT
+
+    ## Error
+    expect_error(MorphDistMatrix.support(morph.matrix, transform.proportional.distances = "bob"))
+
+    ##
+    matrix_all <- MorphDistMatrix.support(morph.matrix)
+    expect_is(matrix_all, "list")
+    expect_equal(names(matrix_all), c("raw.dist.matrix", "GED.dist.matrix", "gower.dist.matrix", "max.dist.matrix", "comp.char.matrix"))
+
+    matrix_Raw <- MorphDistMatrix.support(morph.matrix, distance = "Raw")
+    expect_is(matrix_Raw, "matrix")
+
+    matrix_GED <- MorphDistMatrix.support(morph.matrix, distance = "GED")
+    expect_is(matrix_GED, "matrix")
+
+    matrix_Gower <- MorphDistMatrix.support(morph.matrix, distance = "Gower")
+    expect_is(matrix_Gower, "matrix")
+
+    matrix_Max <- MorphDistMatrix.support(morph.matrix, distance = "Max")
+    expect_is(matrix_Max, "matrix")
+
+    matrix_Comp <- MorphDistMatrix.support(morph.matrix, distance = "Comp")
+    expect_is(matrix_Comp, "matrix")
 
 })
 

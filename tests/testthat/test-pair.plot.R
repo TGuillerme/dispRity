@@ -21,7 +21,10 @@ test_that("testing examples", {
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 
-    pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
+    test <- pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+
     test <- pair.plot(data, what = 2, binary = 0.2, add = "*", cex = 2)
     expect_null(test)
   
@@ -29,4 +32,14 @@ test_that("testing examples", {
     tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
     test <- pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
     expect_null(test)
+
+    expect_error(pair.plot(as.data.frame(tests), what = "bob", binary = 0.05))
+
+    test <- pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "min")
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+    expect_error(pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "bob"))
+
+    data[,1] <- 1
+    test <- pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "min")
 })

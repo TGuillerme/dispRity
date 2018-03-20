@@ -144,9 +144,9 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
 
     ## legend
     legend_class <- check.class(legend, c("logical", "character"))
-    if(legend_class == "character") {
-        check.length(legend.pos, 2, " must be a logical value or two character strings.")
-    }
+    # if(legend_class == "character") {
+    #     check.length(legend.pos, 2, " must be a logical value or two character strings.")
+    # }
     check.class(legend.title, "character")
     check.length(legend.title, 1, " must be a single character string.")
     legend_pos_class <- check.class(legend.pos, c("character", "numeric"))

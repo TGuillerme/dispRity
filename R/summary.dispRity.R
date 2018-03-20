@@ -100,28 +100,28 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     #----------------------
     if(length(class(data)) > 1) {
 
-        ## Model test summary
-        if(class(data)[2] == "model.test") {
-            ## Extracting the AICs and the log likelihoods
-            base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
+        # ## Model test summary
+        # if(class(data)[2] == "model.test") {
+        #     ## Extracting the AICs and the log likelihoods
+        #     base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
 
-            ## Extracting the additional parameters
-            parameters <- sapply(data$full.details, function(x) x$par)
-            base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
+        #     ## Extracting the additional parameters
+        #     parameters <- sapply(data$full.details, function(x) x$par)
+        #     base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
             
-            ## Get the full list of parameters
-            names_list <- lapply(parameters, names)
-            full_param <- unique(unlist(names_list))
+        #     ## Get the full list of parameters
+        #     names_list <- lapply(parameters, names)
+        #     full_param <- unique(unlist(names_list))
 
-            output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
+        #     output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
 
-            ## Rounding
-            summary_results <- digits.fun(output_table, digits, model.test = TRUE)
+        #     ## Rounding
+        #     summary_results <- digits.fun(output_table, digits, model.test = TRUE)
 
-            return(summary_results)
-        } else {
+        #     return(summary_results)
+        # } else {
             stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".")
-        }
+        # }
     } 
 
     #----------------------

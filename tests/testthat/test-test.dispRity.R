@@ -420,7 +420,4 @@ test_that("adonis and dtt works fine", {
     expect_is(test_group_adonis, "adonis")
     expect_is(test_group_adonis2, "adonis")
     expect_is(test_time_adonis, "adonis")
-
-
-
 })

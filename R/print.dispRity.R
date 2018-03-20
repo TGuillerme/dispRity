@@ -72,11 +72,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 return()
             } 
-            if(class(x)[2] == "model.test") {
-                cat("Disparity evolution model fitting:\n")
-                print(x$aic.models)
-                return()
-            }
+            # if(class(x)[2] == "model.test") {
+            #     cat("Disparity evolution model fitting:\n")
+            #     print(x$aic.models)
+            #     return()
+            # }
 
             if(class(x)[2] == "dtt") {
 

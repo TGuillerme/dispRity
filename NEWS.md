@@ -27,11 +27,12 @@ dispRity 0.2.0 (2016-04-01)
   
 ### NEW FEATURES
 
-  * CRAN release 1 with the additional `Claddis.ordination` function.
+  * CRAN release 1 with the additional `Claddis.ordination` function
 
 ### MINOR IMPROVEMENTS
 
-  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
+  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`)
+  * Improved test coverage
 
 [CRAN release] dispRity v1.0.3 *got CRAN* (2019-03-20)
 =========================

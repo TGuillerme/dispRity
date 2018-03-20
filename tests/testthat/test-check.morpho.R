@@ -14,26 +14,26 @@ test_that("check.morpho works", {
         check.morpho("a", parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "a", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
+        check.morpho(random.matrix, parsimony = "a", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = "a", distance = phangorn::RF.dist)
+        check.morpho(random.matrix, parsimony = "fitch", first.tree = "a", distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree = "a", distance = phangorn::RF.dist)
+        check.morpho(random.matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), orig.tree = "a", distance = phangorn::RF.dist)
         )
     expect_error(
-        check.morpho(matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = "a")
+        check.morpho(random.matrix, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = "a")
         )
     expect_error(
-        check.morpho(matrix, parsimony = sum, first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
+        check.morpho(random.matrix, parsimony = sum, first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
 
     set.seed(1)
     wrong_tree <- rtree(10)
     wrong_tree$tip.label <- letters[1:10]
     expect_error(
-        check.morpho(matrix, orig.tree = wrong_tree, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
+        check.morpho(random.matrix, orig.tree = wrong_tree, parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
 
     #Output
