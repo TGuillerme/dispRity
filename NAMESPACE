@@ -19,7 +19,7 @@ importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 # importFrom("RCurl", "getURL", "url.exists")
 
 ##C libraries
-useDynLib(dispRity)
+useDynLib(dispRity, .registration = TRUE)
 
 ## Data utilities
 export(Claddis.ordination)

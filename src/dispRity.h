@@ -45,14 +45,9 @@
 // Function prototypes
 // ~~~~~~~~~~~~~~~~~~~~
 
-// metrics
-// void            R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method);
-// SEXP            matrix_handler(SEXP x, SEXP smethod, SEXP attrs);
-
 // char.diff
 double          character_to_numeric(char c);
 void            Normalise_single_character(double *vector, int count);
-// static double   R_Gower(double *x, int nr, int nc, int i1, int i2); // Declared within the function itself
 void            R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method);
 SEXP            C_char_diff(SEXP x, SEXP smethod, SEXP attrs);
 
