@@ -4,8 +4,7 @@ context("ordinations")
 
 
 #Loading Claddis
-require(Claddis)
-
+if(!require(Claddis)) devtools::install_github("TGuillerme/Claddis")
 
 test_that("Claddis.support works", {
     expect_equal(MorphDistMatrix(Michaux1989), MorphDistMatrix.support(Michaux1989))
