@@ -22,6 +22,10 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
+    list <- capture.output(print.dispRity(test, all = TRUE))
+    expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
+
+
     ## Time subsets
     test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
@@ -93,6 +97,15 @@ test_that("normal printing", {
         "Disparity was calculated as: c(median, centroids)."
     ))
 
+    ## Fully rarefied
+    expect_equal(capture.output(dispRity(boot.matrix(BeckLee_mat50, rarefaction = TRUE), metric = mean)),
+        c(
+        " ---- dispRity object ---- ",
+        "50 elements with 48 dimensions.",
+        "Data was bootstrapped 100 times (method:\"full\") and fully rarefied.",
+        "Disparity was calculated as: mean."
+    ))
+
 })
 
 test_that("randtest printing", {
@@ -107,6 +120,24 @@ test_that("randtest printing", {
         "Simulated p-value: 0.03960396 ", "Alternative hypothesis: two-sided ", 
         "", "      Std.Obs   Expectation      Variance ",
         "-1.400160e-01  3.141577e+29  5.034313e+60 "))
+
+    expect_equal(capture.output(print.dispRity(test, all = TRUE)),
+        c(
+        "[[1]]"                                                                  ,
+        "Monte-Carlo test"                                                       ,
+        "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
+        "    digits = 10)[, 3], alter = alter)"                                  ,
+        ""                                                                       ,
+        "Observation: 6.634e-07 "                                                ,
+        ""                                                                       ,
+        "Based on 100 replicates"                                                ,
+        "Simulated p-value: 0.03960396 "                                         ,
+        "Alternative hypothesis: two-sided "                                     ,
+        ""                                                                       ,
+        "      Std.Obs   Expectation      Variance "                             ,
+        "-1.400160e-01  3.141577e+29  5.034313e+60 "                             ,
+        ""
+        ))
 
 })
 

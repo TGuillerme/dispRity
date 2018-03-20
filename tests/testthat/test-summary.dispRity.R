@@ -100,6 +100,12 @@ test_that("Correct error management", {
     expect_error(summary(make.dispRity()))
     expect_error(summary(disparity, quantiles = c(0.1, 10)))
     expect_error(summary(disparity, quantiles = c(10, 101)))
+
+
+    dummy <- dispRity
+    class(dummy) <- c("dispRity", "bob")
+    expect_error(summary(dummy))
+
 })
 
 #Case 1, no bootstrap

@@ -120,11 +120,19 @@ test_that("plot.dispRity examples work", {
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
-    expect_null(plot(disparity, type = "polygon", quantiles = c(10, 50, 95),cent.tend = mode.val))
+    expect_null(plot(disparity, type = "box", observed = TRUE))
+    expect_null(plot(disparity, type = "polygon", quantiles = c(10, 50, 95), cent.tend = mode.val))
+    expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
+    expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
     expect_null(plot(disparity, type = "continuous"))
     expect_null(plot(disparity, type = "continuous", chrono.subsets = FALSE,elements = TRUE, col = c("red", "orange", "yellow")))
     expect_null(plot(disparity, rarefaction = TRUE))
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
+    expect_error(plot(disparity, rarefaction = 1))
+    expect_null(plot(disparity, rarefaction = 5))
     
 })
 

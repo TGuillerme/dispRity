@@ -153,7 +153,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     
     } else {
         ## Make sure only one inbuilt comparison is given
-        check.length(comparisons, 1, paste(" must be either", paste(all_comparisons, collapse = ", "), "."))        
+        check.length(comparisons, 1, paste(" must be either", paste(all_comparisons, collapse = ", "), "."))
         comp <- comparisons
 
         ## Set specific comparisons if needed
@@ -347,26 +347,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         #     ## Sequential test already formated
         #     return(details_out)
         # }
-
-        ## Null.test results
-        if(details == FALSE && comp == "null.test") {
-            if(length(data$subsets) == 1) {
-                ## Return a single randtest already formatted.
-                return(details_out)
-            } else {
-                ## Saving the calling parameters
-                call <- paste("Monte-Carlo test from ade4::as.randtest with ", match_call$replicates, " replicates and alternative hypothesis set to be ", details_out[[1]]$alter, ".\n", "Null model was defined as: ", match_call$null.distrib, ".\nDisparity was measured as: ", get.metric.from.call(data), ".\n", sep ="")
-                ## Creating the results table
-                table_obs <- matrix(data = summary(data, round = 5)$observed, nrow = length(data$subsets), ncol = 1, dimnames = list(c(data$subsets)))
-                table_sta <- matrix(data =  unlist(lapply(details_out, function(X) return(c(X$expvar, X$pvalue)))), nrow = length(data$subsets), ncol = 4,  dimnames = list(c(data$subsets)), byrow = TRUE)
-
-                table_out <- cbind(table_obs, table_sta)
-                colnames(table_out) <- c("Obs.", "Std.Obs", "Expect", "Var", "p-value")
-
-                cat(call)
-                return(table_out)
-            }
-        }
 
         ## returning the detailed output
         return(details_out)
