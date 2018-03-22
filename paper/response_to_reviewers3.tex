@@ -1,0 +1,79 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{pdflscape}
+\usepackage{fixltx2e}
+\usepackage{textcomp}
+\usepackage{fullpage}
+\usepackage{float}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{ifthen}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{enumerate}
+\usepackage[osf]{mathpazo}
+\usepackage{dcolumn}
+\usepackage{lineno}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\pagenumbering{arabic}
+
+%Pagination style and stuff
+%\linespread{2} 
+
+\raggedright
+\setlength{\parindent}{0.5in}
+\setcounter{secnumdepth}{0} 
+\renewcommand{\section}[1]{%
+\bigskip
+\begin{center}
+\begin{Large}
+\normalfont\scshape #1
+\medskip
+\end{Large}
+\end{center}}
+\renewcommand{\subsection}[1]{%
+\bigskip
+\begin{center}
+\begin{large}
+\normalfont\itshape #1
+\end{large}
+\end{center}}
+\renewcommand{\subsubsection}[1]{%
+\vspace{2ex}
+\noindent
+\textit{#1.}---}
+\renewcommand{\tableofcontents}{}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\textbf{RE: MEE-18-01-025.R1}\\
+\bigskip
+Dear Editor,\\
+\bigskip
+
+I have now submitted the package to the CRAN under version 1.0.3.
+This version does not contain the \texttt{Claddis.ordination} function nor the gitbook vignette since both do not comply with the CRAN requirements (the first one is only available on a development version on GitHub and the second is in an html format sadly not supported by the CRAN vignettes).
+This version prompts an \texttt{onAttach} message suggesting users to visit the associated GitHub page and use the GitHub version of the package (now version 1.1).
+Both version are detailed in the right order in the \texttt{NEWS.md} file attached to the package: \url{https://github.com/TGuillerme/dispRity/blob/master/NEWS.md}.
+
+\bigskip
+
+Best regards,
+
+\bigskip
+
+Thomas Guillerme
+\end{document}

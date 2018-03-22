@@ -238,7 +238,7 @@ The disparity metric is passed through the \texttt{metric} argument and is defin
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=0.8\textwidth]{dispRity_fun.pdf} 
+   \includegraphics[width=0.8\textwidth]{dispRity_fun.pdf}  %../inst/gitbook/dispRity_fun.pdf} 
 \caption{Illustration of the different metric dimension-levels in the \disp package. In this example, each cell corresponds to a single value (e.g. a 8 $\times$ 7 matrix or a vector of eight elements).
 A dimension-level 3 matrix would be a metric output a matrix (e.g. the function \texttt{stats::cor} to calculate the correlation between each dimension), a dimension-level 2 metric would output a vector (i.e. a distribution, e.g. \texttt{dispRity::variances} which calculates the variance within each dimension) and a dimension-level 1 metric would output a single value (e.g. \texttt{stats::sd} which calculates the standard deviation of the input matrix)}.
 \label{Fig:levels}
@@ -545,11 +545,7 @@ The \disp package is based on a modular architecture allowing researchers to sim
 The \disp object allows users to pipeline disparity analysis from the data input (the matrix) to publication standard results (tables, plots, hypothesis testing).
 
 \section{Package location}
-The \disp package is available at \url{https://github.com/TGuillerme/dispRity}.
-The latest released versions can be directly loaded in \texttt{R} using the following command:
-
-\noindent \texttt{> if(!require(devtools)) install.packages("devtools")}\\
-\noindent \texttt{> install\_github("TGuillerme/dispRity", ref = "release")}
+The \disp package is available on the CRAN or at \url{https://github.com/TGuillerme/dispRity} with more associated information.
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging and helping with the writing of this paper and the package manuals.

@@ -23,27 +23,6 @@ These matrices can be observations, pairwise differences between elements, ordin
 Classically, when a high number of variables is used, disparity is calculated from ordinated matrices.
 These can be any type of ordinations (PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa, countries, field experiments) and the dimensions are the columns.
 
-### Ordination matrices from `Claddis`
-
-```{r, eval = TRUE, echo = FALSE, message = FALSE}
-## Checking if Claddis is installed BUILD ONLY
-if(!require(Claddis)) install.packages("Claddis")
-```
-
-`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
-For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
-
-```{r}
-require(Claddis)
-
-## Ordinating the example data from Claddis
-Claddis.ordination(Michaux1989) 
-```
-
-Note that several options are available, namely which type of distance should be computed.
-See more info in the function manual (`?Claddis.ordination`).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
-
 ### Ordination matrices from `geomorph`
 
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
@@ -81,6 +60,29 @@ geomorph.ordination(geomorph_df)
 ```
 
 More about these `dispRity` objects below!
+
+### Ordination matrices from `Claddis` {#Claddis-ordination}
+
+> This functionality is not available on the CRAN version of the package (1.0.3)<!-- versiontagCRAN --> due to CRAN compatibility issues see [to CRAN or not to CRAN?](#noCRAN) for more information and on how to install the GitHub (more complete) version of the package (1.1)<!-- versiontagGH -->.
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if Claddis is installed BUILD ONLY
+if(!require(Claddis)) install.packages("Claddis")
+```
+
+`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
+For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
+
+```{r}
+require(Claddis)
+
+## Ordinating the example data from Claddis
+Claddis.ordination(Michaux1989) 
+```
+
+Note that several options are available, namely which type of distance should be computed.
+See more info in the function manual (`?Claddis.ordination`).
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
 
 ### Other kinds of ordination matrices
 
@@ -251,62 +253,3 @@ plot(disparity_data)
 ## Testing for a difference between the groups
 test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
 ```
-<!-- 
-## Minimalist example
-
-This is the minimal and simplest analysis you can perform in `dispRity`, regardless of the question, data, metric and test.
-I strongly suggest to read [Simple Analysis section](#simpleanalysis) or the [specific tutorials](#specific-tutorial) for more info.
-
- 1. Collect data prior to using the `dispRity` package
-
-```{r}
-## Generating a random space by combining two matrices
-## from two different random normal distributions
-distribution1 <- matrix(rnorm(25, mean = 1), 5, 5, dimnames = list(letters[1:5] ))
-distribution2 <- matrix(rnorm(25, mean = 5), 5, 5, dimnames = list(letters[6:10]))
-random_space <- rbind(distribution1, distribution2)
-```
-
- 2. Load the package
-
-```{r}
-library(dispRity)
-```
-
- 3. Create two subsets (the two different distributions)
-
-```{r}
-## Creating different subsets for each distribution
-(two_subsets <- custom.subsets(random_space, group = list(letters[1:5], letters[6:10])))
-```
-
- 4. Bootstrap the subsets
-
-```{r}
-## Bootstrap the data
-(bootstrapped_subsets <- boot.matrix(two_subsets))
-```
-
- 5. Calculate disparity as the median distance from each group's element to their centroid
-
-```{r}
-## Calculate disparity
-(disparity <- dispRity(bootstrapped_subsets, metric = c(median, centroids)))
-```
-
- 6. Summarising the results
-
-```{r, fig.width=7, fig.height=7}
-## Summarising the results
-summary(disparity)
-
-## Plotting them
-plot(disparity)
-```
-
- 7. Testing whether the groups are different
-
-```{r}
-## Testing if the mean bootstrap values are different between groups
-test.dispRity(disparity, test = t.test)
-``` -->
