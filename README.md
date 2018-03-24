@@ -16,7 +16,7 @@ Developement (master):
 
 CRAN:
 
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/)
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.3.3-6666ff.svg)](https://cran.r-project.org/)
 [![cran version](http://www.r-pkg.org/badges/version/dispRity)](https://cran.r-project.org/package=dispRity)
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/dispRity?)](https://github.com/metacran/cranlogs.app)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846254.svg)](https://doi.org/10.5281/zenodo.846254)
