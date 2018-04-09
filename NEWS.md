@@ -21,8 +21,14 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
+[Next release] dispRity v1.1.1  (2018-04-09)
+=========================
+  
+### MINOR IMPROVEMENTS
 
-[GitHub release] dispRity v1.1 *got CRAN* (2019-03-20)
+  * Removed cascade of warnings triggered by `plot.dispRity.dtt`
+
+[GitHub release] dispRity v1.1 *got CRAN* (2018-03-20)
 =========================
   
 ### NEW FEATURES
@@ -34,7 +40,7 @@ dispRity 0.2.0 (2016-04-01)
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`)
   * Improved test coverage
 
-[CRAN release] dispRity v1.0.3 *got CRAN* (2019-03-20)
+[CRAN release] dispRity v1.0.3 *got CRAN* (2018-03-20)
 =========================
   
 ### NEW FEATURES

@@ -162,6 +162,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
 
+            ## Silence warnings
+            options(warn = -1)
+
             ## Get the ylim
             if(missing(ylim)) {
                 ylim <- c(range(pretty(data$dtt)))
@@ -229,6 +232,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Add the observed disparity
             lines(data$times, data$dtt, col = col[1], lwd = 1.5)
+
+            ## Re-enable warnings
+            options(warn = 0)
         } 
 
          # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
