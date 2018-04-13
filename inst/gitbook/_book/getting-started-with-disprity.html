@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-03-16">
+<meta name="date" content="2018-03-20">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,7 +108,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#why-not-cran"><i class="fa fa-check"></i><b>1.3</b> Why not CRAN?</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#noCRAN"><i class="fa fa-check"></i><b>1.3</b> To CRAN or not to CRAN?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a></li>
 </ul></li>
@@ -118,11 +118,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a><ul>
 <li class="chapter" data-level="3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#what-sort-of-data-does-disprity-work-with"><i class="fa fa-check"></i><b>3.1</b> What sort of data does <code>dispRity</code> work with?</a></li>
 <li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordinated-matrices"><i class="fa fa-check"></i><b>3.2</b> Ordinated matrices</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-claddis"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>Claddis</code></a></li>
-<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#Claddis-ordination"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>Claddis</code></a></li>
 <li class="chapter" data-level="3.2.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#other-kinds-of-ordination-matrices"><i class="fa fa-check"></i><b>3.2.3</b> Other kinds of ordination matrices</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#performing-a-simple-disprity-analysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
+<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#simpleanalysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
 <li class="chapter" data-level="3.3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#example-data"><i class="fa fa-check"></i><b>3.3.1</b> Example data</a></li>
 <li class="chapter" data-level="3.3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-through-time"><i class="fa fa-check"></i><b>3.3.2</b> Disparity through time</a></li>
 <li class="chapter" data-level="3.3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-among-groups"><i class="fa fa-check"></i><b>3.3.3</b> Disparity among groups</a></li>
@@ -237,22 +237,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="ordinated-matrices" class="section level2">
 <h2><span class="header-section-number">3.2</span> Ordinated matrices</h2>
 <p>Classically, when a high number of variables is used, disparity is calculated from ordinated matrices. These can be any type of ordinations (PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa, countries, field experiments) and the dimensions are the columns.</p>
-<div id="ordination-matrices-from-claddis" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Ordination matrices from <code>Claddis</code></h3>
-<p><code>dispRity</code> package can easily take data from <code>Claddis</code> using the <code>Claddis.ordination</code> function. For this, simply input a matrix in the <code>Claddis</code> format to the function and it will automatically calculate and ordinate the distances among taxa:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(Claddis)
-
-## Ordinating the example data from Claddis
-<span class="kw">Claddis.ordination</span>(Michaux1989) </code></pre></div>
-<pre><code>##                      [,1]          [,2]       [,3]
-## Ancilla      0.000000e+00  4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
-## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
-## Amalda      -2.004476e-16 -4.154578e-01  0.2534942</code></pre>
-<p>Note that several options are available, namely which type of distance should be computed. See more info in the function manual (<code>?Claddis.ordination</code>). Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::MorphDistMatrix</code> and <code>stats::cmdscale</code>.</p>
-</div>
 <div id="ordination-matrices-from-geomorph" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Ordination matrices from <code>geomorph</code></h3>
+<h3><span class="header-section-number">3.2.1</span> Ordination matrices from <code>geomorph</code></h3>
 <p>You can also easily use data from <code>geomorph</code> using the <code>geomorph.ordination</code> function. This function simply takes Procrustes aligned data and performs an ordination:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(geomorph)
 
@@ -281,6 +267,23 @@ geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</
 ## 4 customised subsets for 40 elements:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
 <p>More about these <code>dispRity</code> objects below!</p>
+</div>
+<div id="Claddis-ordination" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Ordination matrices from <code>Claddis</code></h3>
+<blockquote>
+<p>This functionality is not available on the CRAN version of the package (1.0.3)<!-- versiontagCRAN --> due to CRAN compatibility issues see <a href="index.html#noCRAN">to CRAN or not to CRAN?</a> for more information and on how to install the GitHub (more complete) version of the package (1.1)<!-- versiontagGH -->.</p>
+</blockquote>
+<p><code>dispRity</code> package can easily take data from <code>Claddis</code> using the <code>Claddis.ordination</code> function. For this, simply input a matrix in the <code>Claddis</code> format to the function and it will automatically calculate and ordinate the distances among taxa:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(Claddis)
+
+## Ordinating the example data from Claddis
+<span class="kw">Claddis.ordination</span>(Michaux1989) </code></pre></div>
+<pre><code>##                      [,1]          [,2]       [,3]
+## Ancilla      0.000000e+00  4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
+## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
+## Amalda      -2.004476e-16 -4.154578e-01  0.2534942</code></pre>
+<p>Note that several options are available, namely which type of distance should be computed. See more info in the function manual (<code>?Claddis.ordination</code>). Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::MorphDistMatrix</code> and <code>stats::cmdscale</code>.</p>
 </div>
 <div id="other-kinds-of-ordination-matrices" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Other kinds of ordination matrices</h3>
@@ -333,7 +336,7 @@ ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(
 <p>Of course any other method for creating the ordination matrix is totally valid, you can also not use any ordination at all! The only requirements for the <code>dispRity</code> functions is that the input is a matrix with elements as rows and dimensions as columns.</p>
 </div>
 </div>
-<div id="performing-a-simple-disprity-analysis" class="section level2">
+<div id="simpleanalysis" class="section level2">
 <h2><span class="header-section-number">3.3</span> Performing a simple dispRity analysis</h2>
 <p>Two <code>dispRity</code> functions allow users to run an analysis pipeline simply by inputting an ordination matrix. These functions allow users to either calculate the disparity through time (<code>dispRity.through.time</code>) or the disparity of user-defined groups (<code>dispRity.per.group</code>).</p>
 <p><strong>IMPORTANT</strong></p>
@@ -376,7 +379,7 @@ BeckLee_mat99[<span class="kw">c</span>(<span class="dv">1</span>, <span class="
 <span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.8</span>) 
 <span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)
 <span class="kw">nodelabels</span>(<span class="dt">cex =</span> <span class="fl">0.5</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Of course you can use your own data as detailed in the <a href="#What-sort-of-data-does-dispRity-work-with">previous chapter</a>.</p>
 </div>
 <div id="disparity-through-time" class="section level3">
@@ -411,7 +414,7 @@ disparity_data</code></pre></div>
 ## 3         44.50368 - 0 16 1.990     1.871 1.716 1.831 1.914 1.942</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing for an difference among the time bins
 disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_data, test = lm, comparisons = &quot;all&quot;): Multiple p-values will be calculated without adjustment!
@@ -469,7 +472,7 @@ disparity_data</code></pre></div>
 ## 2    stem 20 1.715     1.635 1.535 1.610 1.664 1.691</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(disparity_data)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing for a difference between the groups
 <span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> wilcox.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## $`crown : stem`
@@ -528,7 +531,7 @@ gitbook.start({
 "link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/02_getting-started.Rmd",
 "text": "Edit"
 },
-"download": null,
+"download": ["dispRity_manual.pdf"],
 "toc": {
 "collapse": "subsection"
 }

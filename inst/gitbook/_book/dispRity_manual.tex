@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-03-16}
+  \date{2018-03-20}
 
 \usepackage{booktabs}
 
@@ -185,8 +185,18 @@ your multidimensional analysis to the needs of your specific question!
 \section{Installing and running the
 package}\label{installing-and-running-the-package}
 
-You can install this package easily if you use the latest version of
-\texttt{R} (\textgreater{} 3.4.0) and \texttt{devtools}.
+You can install this package easily, directly from the CRAN:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"dispRity"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Alternatively, for the most up to data version and some functionalities
+not compatible with the CRAN, you can use the package through GitHub
+using \texttt{devtool} (see \protect\hyperlink{noCRAN}{to CRAN or not to
+CRAN?} for more details):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -195,26 +205,50 @@ You can install this package easily if you use the latest version of
 
 \NormalTok{## Installing the latest released version directly from GitHub}
 \KeywordTok{install_github}\NormalTok{(}\StringTok{"TGuillerme/dispRity"}\NormalTok{, }\DataTypeTok{ref =} \StringTok{"release"}\NormalTok{)}
-
-\NormalTok{## Loading the package}
-\KeywordTok{library}\NormalTok{(dispRity)}
 \end{Highlighting}
 \end{Shaded}
 
-Note this uses the \texttt{release} branch (version\texttt{0.5}). For
-the piping-hot (but potentially unstable) version, you can change the
-argument \texttt{ref\ =\ release} to \texttt{ref\ =\ master}.
-\texttt{dispRity} depends mainly on the \texttt{ape} package and uses
-functions from several other packages (\texttt{ade4}, \texttt{geometry},
+Anyways to upload it, you can use
+
+Note this uses the \texttt{release} branch (1.1). For the piping-hot
+(but potentially unstable) version, you can change the argument
+\texttt{ref\ =\ release} to \texttt{ref\ =\ master}. \texttt{dispRity}
+depends mainly on the \texttt{ape} package and uses functions from
+several other packages (\texttt{ade4}, \texttt{geometry},
 \texttt{grDevices}, \texttt{hypervolume}, \texttt{paleotree},
 \texttt{snow}, \texttt{Claddis}, \texttt{geomorph} and \texttt{RCurl}).
 
-\section{Why not CRAN?}\label{why-not-cran}
+\hypertarget{noCRAN}{\section{To CRAN or not to CRAN?}\label{noCRAN}}
 
-This package is not available on CRAN. This is mainly because some parts
-are still in development and that the reactivity of GitHub is better for
-implementing new suggestions from users. However, the package follows
-the strict (and useful!) CRAN standards via Travis.
+This package can be installed via \href{}{the CRAN} or via
+\href{https://github.com/TGuillerme/dispRity}{GitHub}.
+
+\begin{itemize}
+\item
+  The CRAN version is a more ``strict'' version of the package that does
+  not include some functionalities (such as
+  \protect\hyperlink{Claddis-ordination}{\texttt{Claddis.ordination}} or
+  this gitbook vignette) because of compatibility issues with the CRAN
+  requirement.
+\item
+  The GitHub version is a more ``reactive'' version (fed by user's
+  suggestions and comments) and can contain more functionalities (see
+  list below). This version exists on a \texttt{"release"} branch which
+  is tested as strictly as the CRAN version with Travis and codecov. The
+  \texttt{"master"} branch contains always the latest ``piping hot'',
+  not yet release version. It might (though rarely) be bugged.
+\end{itemize}
+
+Note however, that apart from the functions listed below, both versions
+of the package have the same tested and implemented functions.
+
+Functions not available on the CRAN version (1.0.3):
+
+\begin{itemize}
+\tightlist
+\item
+  \protect\hyperlink{Claddis-ordination}{\texttt{Claddis.ordination}}
+\end{itemize}
 
 \section{Help}\label{help}
 
@@ -239,9 +273,8 @@ Zenodo. 10.5281/zenodo.55646
 
 Note that this citation is only temporary (but can still be used!). A
 proper description of the package is currently in review in Methods in
-Ecology and Evolution and should be re-submitted this winter. Upon
-acceptance (hopefully!), a proper DOI will be released for this manual
-and the package description.
+Ecology and Evolution. Upon acceptance (hopefully!), a proper DOI will
+be released for this manual and the package description.
 
 \chapter{Glossary}\label{glossary}
 
@@ -368,37 +401,6 @@ calculated from ordinated matrices. These can be any type of ordinations
 countries, field experiments) and the dimensions are the columns.
 
 \subsection{\texorpdfstring{Ordination matrices from
-\texttt{Claddis}}{Ordination matrices from Claddis}}\label{ordination-matrices-from-claddis}
-
-\texttt{dispRity} package can easily take data from \texttt{Claddis}
-using the \texttt{Claddis.ordination} function. For this, simply input a
-matrix in the \texttt{Claddis} format to the function and it will
-automatically calculate and ordinate the distances among taxa:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{require}\NormalTok{(Claddis)}
-
-\NormalTok{## Ordinating the example data from Claddis}
-\KeywordTok{Claddis.ordination}\NormalTok{(Michaux1989) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##                      [,1]          [,2]       [,3]
-## Ancilla      0.000000e+00  4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
-## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
-## Amalda      -2.004476e-16 -4.154578e-01  0.2534942
-\end{verbatim}
-
-Note that several options are available, namely which type of distance
-should be computed. See more info in the function manual
-(\texttt{?Claddis.ordination}). Alternatively, it is of course also
-possible to manual calculate the ordination matrix using the functions
-\texttt{Claddis::MorphDistMatrix} and \texttt{stats::cmdscale}.
-
-\subsection{\texorpdfstring{Ordination matrices from
 \texttt{geomorph}}{Ordination matrices from geomorph}}\label{ordination-matrices-from-geomorph}
 
 You can also easily use data from \texttt{geomorph} using the
@@ -455,6 +457,46 @@ object}!
 \end{verbatim}
 
 More about these \texttt{dispRity} objects below!
+
+\hypertarget{Claddis-ordination}{\subsection{\texorpdfstring{Ordination
+matrices from
+\texttt{Claddis}}{Ordination matrices from Claddis}}\label{Claddis-ordination}}
+
+\begin{quote}
+This functionality is not available on the CRAN version of the package
+(1.0.3) due to CRAN compatibility issues see
+\protect\hyperlink{noCRAN}{to CRAN or not to CRAN?} for more information
+and on how to install the GitHub (more complete) version of the package
+(1.1).
+\end{quote}
+
+\texttt{dispRity} package can easily take data from \texttt{Claddis}
+using the \texttt{Claddis.ordination} function. For this, simply input a
+matrix in the \texttt{Claddis} format to the function and it will
+automatically calculate and ordinate the distances among taxa:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(Claddis)}
+
+\NormalTok{## Ordinating the example data from Claddis}
+\KeywordTok{Claddis.ordination}\NormalTok{(Michaux1989) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      [,1]          [,2]       [,3]
+## Ancilla      0.000000e+00  4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
+## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
+## Amalda      -2.004476e-16 -4.154578e-01  0.2534942
+\end{verbatim}
+
+Note that several options are available, namely which type of distance
+should be computed. See more info in the function manual
+(\texttt{?Claddis.ordination}). Alternatively, it is of course also
+possible to manual calculate the ordination matrix using the functions
+\texttt{Claddis::MorphDistMatrix} and \texttt{stats::cmdscale}.
 
 \subsection{Other kinds of ordination
 matrices}\label{other-kinds-of-ordination-matrices}
@@ -557,8 +599,7 @@ valid, you can also not use any ordination at all! The only requirements
 for the \texttt{dispRity} functions is that the input is a matrix with
 elements as rows and dimensions as columns.
 
-\section{Performing a simple dispRity
-analysis}\label{performing-a-simple-disprity-analysis}
+\section{Performing a simple dispRity analysis}\label{simpleanalysis}
 
 Two \texttt{dispRity} functions allow users to run an analysis pipeline
 simply by inputting an ordination matrix. These functions allow users to
@@ -666,7 +707,7 @@ relationships among the 50 mammals (\texttt{BeckLee\_tree}).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-11-1.pdf}
 
 Of course you can use your own data as detailed in the
 \protect\hyperlink{What-sort-of-data-does-dispRity-work-with}{previous
@@ -757,7 +798,7 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-14-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -884,7 +925,7 @@ test).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-16-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2498,7 +2539,7 @@ number of elements) by using the \texttt{rarefaction} argument.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2529,7 +2570,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-52-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2582,7 +2623,7 @@ central tendency.
 ## Warning in title(...): "quantile" is not a graphical parameter
 \end{verbatim}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2613,7 +2654,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2636,7 +2677,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3078,7 +3119,7 @@ function, is limited to ultrametric trees (only living taxa!)\ldots{}
 ## Warning in title(...): "fig.height" is not a graphical parameter
 \end{verbatim}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 Note that, like in the original \texttt{dtt} function, it is possible to
 change the evolutionary model (see \texttt{?geiger::sim.char}
@@ -3136,7 +3177,7 @@ class and can be plotted as \texttt{randtest} objects using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 For more details on generating spaces see the
 \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}}
@@ -3232,7 +3273,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3455,7 +3496,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -3815,7 +3856,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-78-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -3923,7 +3964,7 @@ below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3985,7 +4026,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4037,7 +4078,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -4082,7 +4123,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -4628,7 +4669,7 @@ dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -4642,7 +4683,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -4937,7 +4978,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-101-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -5100,7 +5141,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-105-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -5119,7 +5160,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -5253,7 +5294,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -5349,7 +5390,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5360,7 +5401,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
