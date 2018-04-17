@@ -16,12 +16,26 @@ description: "dispRity R package vignette"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, eval = TRUE, echo = FALSE}
+## master version
+version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/master/DESCRIPTION")
+version_master <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
+
+## release version
+version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/release/DESCRIPTION")
+version_release <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
+
+## CRAN version
+version_raw <- RCurl::getURL("https://cran.r-project.org/web/packages/dispRity/index.html")
+version_CRAN <- strsplit(strsplit(version_raw, split = "\n<td>Version:</td>\n<td>")[[1]][2], split = "</td>\n</tr>\n<tr>\n<td>Depends:")[[1]][1]
+```
+
 # `dispRity`
 
 This is a package for measuring disparity in `R`.
 It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
 Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is *not* restricted to any type of matrices!
-This manual is based on the version `1.0.0`.
+This manual is based on the version `r version_release`.
 
 ## What is `dispRity`?
 This is a modular package for measuring disparity in `R`.
@@ -62,7 +76,7 @@ library(dispRity)
 set.seed(123)
 ```
 
-Note this uses the `release` branch (1.1)<!-- versiontagGH -->.
+Note this uses the `release` branch (`r version_release`).
 For the piping-hot (but potentially unstable) version, you can change the argument `ref = release` to `ref = master`.
 `dispRity` depends mainly on the `ape` package and uses functions from several other packages (`ade4`, `geometry`, `grDevices`, `hypervolume`, `paleotree`, `snow`, `Claddis`, `geomorph` and `RCurl`).
 
@@ -82,7 +96,7 @@ This package can be installed via [the CRAN]() or via [GitHub](https://github.co
 
 Note however, that apart from the functions listed below, both versions of the package have the same tested and implemented functions.
 
-Functions not available on the CRAN version (1.0.3)<!-- versiontagCRAN -->:
+Functions not available on the CRAN version (`r version_CRAN`):
 
  * [`Claddis.ordination`](#Claddis-ordination)
 

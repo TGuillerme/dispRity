@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-03-20">
+<meta name="date" content="2018-04-17">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -227,7 +227,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="palaeobiology-demo-disparity-through-time-and-within-groups" class="section level1">
 <h1><span class="header-section-number">7</span> Palaeobiology demo: disparity-through-time and within groups</h1>
-<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.0.4) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
+<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.1.0) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
 <p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).</p>
 <div id="before-starting" class="section level2">
 <h2><span class="header-section-number">7.1</span> Before starting</h2>
@@ -268,13 +268,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">data</span>(BeckLee_tree)
 <span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)
 <span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-94-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-95-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)
 strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-95-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-96-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
@@ -401,7 +401,7 @@ binned_morphospace</code></pre></div>
 ## Plotting the bootstrapped and rarefied results
 <span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)
 <span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-101-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-102-1.png" width="1152" /></p>
 </div>
 </div>
 <div id="testing-differences" class="section level2">
@@ -490,7 +490,7 @@ gitbook.start({
 "link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/06_palaeo-demo.Rmd",
 "text": "Edit"
 },
-"download": ["dispRity_manual.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

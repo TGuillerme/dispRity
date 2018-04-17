@@ -16,3 +16,5 @@ R/MarkOrig/*
 inst/old/*
 
 paper/*.fls
+
+inst/gitbook/_bookdown_files/*

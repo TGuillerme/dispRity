@@ -63,7 +63,7 @@ More about these `dispRity` objects below!
 
 ### Ordination matrices from `Claddis` {#Claddis-ordination}
 
-> This functionality is not available on the CRAN version of the package (1.0.3)<!-- versiontagCRAN --> due to CRAN compatibility issues see [to CRAN or not to CRAN?](#noCRAN) for more information and on how to install the GitHub (more complete) version of the package (1.1)<!-- versiontagGH -->.
+> This functionality is not available on the CRAN version of the package (`r version_CRAN`) due to CRAN compatibility issues see [to CRAN or not to CRAN?](#noCRAN) for more information and on how to install the GitHub (more complete) version of the package (`r version_release`).
 
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
 ## Checking if Claddis is installed BUILD ONLY

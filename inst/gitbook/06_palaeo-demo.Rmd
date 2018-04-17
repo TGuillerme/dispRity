@@ -11,7 +11,7 @@ output:
 
 # Palaeobiology demo: disparity-through-time and within groups
 
-This demo aims to give quick overview of the `dispRity` package (v.0.4) for palaeobiology analyses of disparity, including disparity through time analyses.
+This demo aims to give quick overview of the `dispRity` package (v.`r version_release`) for palaeobiology analyses of disparity, including disparity through time analyses.
 
 This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).
 
