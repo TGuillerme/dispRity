@@ -2,36 +2,15 @@
 
 \documentclass[12pt,letterpaper]{article}
 \usepackage{natbib}
-
-%Packages
-
-\usepackage{xcolor}
-\usepackage{color,soul}
 \usepackage{pdflscape}
-\usepackage{fixltx2e}
-\usepackage{textcomp}
 \usepackage{fullpage}
-\usepackage{float}
-\usepackage{latexsym}
 \usepackage{url}
 \usepackage{epsfig}
-\usepackage{graphicx}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{bm}
-\usepackage{array}
-\usepackage[version=3]{mhchem}
-\usepackage{ifthen}
 \usepackage{caption}
 \usepackage{hyperref}
-\usepackage{amsthm}
-\usepackage{amstext}
 \usepackage{enumerate}
-\usepackage[osf]{mathpazo}
 \usepackage{dcolumn}
 \usepackage{lineno}
-\usepackage{dcolumn}
-\usepackage{hyphenat}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{float}
@@ -191,7 +170,6 @@ This package is based on a modular architecture where each decision in multidime
 It implements many commonly used disparity metrics, as well as providing a simple interface for users to implement their own disparity functions.
 The package is described here for the use of discrete morphological data disparity analysis but can be generalised to any type of multidimensional data (see the glossary Table \ref{Tab:terms}).
 
-\begin{landscape}
 \begin{table}
     \begin{tabular}{p{4cm}p{5cm}p{6cm}p{6cm}}
         \hline
@@ -211,7 +189,7 @@ The package is described here for the use of discrete morphological data dispari
     \caption{Glossary and equivalences between this manuscript, the \texttt{dispRity} package and terms commonly used in palaeobiology or ecology. $^1$See Fig. \ref{Fig:levels}.}
     \label{Tab:terms}
 \end{table}
-\end{landscape}
+
 
 \section{Description}
 In brief, the package takes a \texttt{matrix} object (the multidimensional space), calculates a disparity metric from the space and analyse the resulting \texttt{dispRity} object through hypothesis testing and visualisation.
@@ -221,7 +199,7 @@ The matrix is always considered as the final multidimensional space to analyse a
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=1\textwidth]{workflowsvg.pdf} 
+   %\includegraphics[width=1\textwidth]{workflowsvg.eps} 
 \caption{\disp package workflow: rectangles represent matrices; ellipses represent functions; plain black arrows indicate input/output; dashed grey arrows indicate output (though the summary, plot, and test function cannot be applied if no disparity has been calculated).}
 \label{Fig:workflow}
 \end{figure}
@@ -238,7 +216,7 @@ The disparity metric is passed through the \texttt{metric} argument and is defin
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=0.8\textwidth]{dispRity_fun.pdf}  %../inst/gitbook/dispRity_fun.pdf} 
+   %\includegraphics[width=0.8\textwidth]{dispRity_fun.eps}  %../inst/gitbook/dispRity_fun.pdf} 
 \caption{Illustration of the different metric dimension-levels in the \disp package. In this example, each cell corresponds to a single value (e.g. a 8 $\times$ 7 matrix or a vector of eight elements).
 A dimension-level 3 matrix would be a metric output a matrix (e.g. the function \texttt{stats::cor} to calculate the correlation between each dimension), a dimension-level 2 metric would output a vector (i.e. a distribution, e.g. \texttt{dispRity::variances} which calculates the variance within each dimension) and a dimension-level 1 metric would output a single value (e.g. \texttt{stats::sd} which calculates the standard deviation of the input matrix)}.
 \label{Fig:levels}
@@ -288,7 +266,6 @@ Note that this function also allows to work on only a subset of dimensions via t
 \end{table}
 
 \textbf{Table 2 (caption):} Where $k$ is the number of dimensions, $n$ the number of elements, $\Gamma$ is the Gamma distribution, $\lambda_i$ is the eigenvalue of each dimensions, $\sigma^{2}$ is their variance and $Centroid_{k}$ is their mean, $Ancestor_{n}$ is the coordinates of the ancestor of element $n$, $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.), $R$ is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid). $^1$ by default that point is the centroid of the elements; $^2$ this function uses a fast estimation of the eigenvalue that only works in an ordinated space based on MDS or PCO (\textit{not} PCA).
-\label{Tab:metrics}
 
 
 \subsection{Splitting the multidimensional space into subsets}
@@ -421,7 +398,7 @@ To visualise the actual disparity values, one can use the \texttt{summary} or/an
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=1\textwidth]{plot_example_group.pdf} 
+   %\includegraphics[width=1\textwidth]{plot_example_group.eps} 
 \caption{\disp plot of disparity differences between groups.}
 \label{Fig:plot_group}
 \end{figure}
@@ -495,7 +472,7 @@ The resulting \disp object can be summarised and plotted (Table \ref{Tab:summary
 
 \begin{figure}[!htbp]
 \centering
-   \includegraphics[width=1\textwidth]{plot_example_time.pdf} 
+   %\includegraphics[width=1\textwidth]{plot_example_time.eps} 
 \caption{\disp plot of disparity-through-time. The black line represents the median disparity (median sum of variances), the dark grey and light surfaces represent respectively the 50\% and 95\% confidence intervals.}
 \label{Fig:plot_time}
 \end{figure}
@@ -545,7 +522,8 @@ The \disp package is based on a modular architecture allowing researchers to sim
 The \disp object allows users to pipeline disparity analysis from the data input (the matrix) to publication standard results (tables, plots, hypothesis testing).
 
 \section{Package location}
-The \disp package is available on the CRAN or at \url{https://github.com/TGuillerme/dispRity} with more associated information.
+The \disp package is available on the CRAN at \url{https://cran.r-project.org/web/packages/dispRity/index.html} or on GitHub at \url{https://github.com/TGuillerme/dispRity} with more associated information.
+All the versions of the package are archived on ZENODO with associated DOI \url{https://zenodo.org/record/1186467#.WtfbGsi-kW8}.
 
 \section{Acknowledgments}
 Many thanks to Natalie Cooper for encouraging and helping with the writing of this paper and the package manuals.
