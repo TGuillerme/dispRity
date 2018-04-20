@@ -43,9 +43,13 @@ If you're using the `master` branch, see the [patch notes](https://github.com/TG
 > To optimise your `dispRity` usage and speed, make sure you have the last version of `ape` installed (`5.0` - [download here](https://cran.r-project.org/web/packages/ape/index.html))!
 If you get a corruption error while updateding your packages, remove both (`remove.packages(c("ape", "dispRity"))`), quit and relaunch `R` and simply reinstall `dispRity` (`ape` should update automatically).
 
-#### Vignettes
+## Vignettes and manuals
 
-See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or download the pdf version [here](https://github.com/TGuillerme/dispRity/raw/master/inst/gitbook/_book/dispRity_manual.pdf).
+A detailed vignette is available [online](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or as a [pdf](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pd):
+
+ <a href="https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html"><img src="http://tguillerme.github.io/images/rawgit.png" height="30"/></a> <a href="https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf"><img src="http://tguillerme.github.io/images/pdf.gif" height="30"/></a> 
+ 
+Otherwise, each functions has a detailed associated manual with examples in `R` (`?which.function`).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
