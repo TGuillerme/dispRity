@@ -53,7 +53,7 @@ Otherwise, each functions has a detailed associated manual with examples in `R` 
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-##### Latest patch notes
+## Latest patch notes
 * 2018/03/20 - v1.1.0 *got CRAN*
 
   * CRAN release 1 with the additional `Claddis.ordination` function
