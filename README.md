@@ -78,7 +78,7 @@ Citation
 -------
 If you are using this package, please cite the following Zenodo DOI (an associated paper will be added soon):
 
-* Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
+* Guillerme, T. (**2018**). dispRity: a modular R package for measuring disparity. Methods in Ecology and Evolution. [doi:10.1111/2041-210X.13022](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022)
 
  [BibTeX](https://zenodo.org/record/846254/export/hx), [EndNote](https://zenodo.org/record/846254/export/xe), [DataCite](https://zenodo.org/record/846254/export/dcite3), [RefWorks](https://zenodo.org/record/846254/export/xw)
 
