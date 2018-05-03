@@ -78,15 +78,31 @@ print.dispRity <- function(x, all = FALSE, ...) {
             #     return()
             # }
 
-            if(class(x)[2] == "dtt") {
+            if(class(x)[2] == "dtt" && length(x) != 2) {
 
+                ## Tested dtt
+                cat("Disparity-through-time test (modified from geiger:dtt)\n")
+                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+
+                cat(paste0("Observation: ", x$MDI , "\n\n"))
+
+                cat(paste0("Model: ", x$call$model , "\n"))
+                cat(paste0("Based on ", length(x$sim_MDI) , " replicates\n"))
+                cat(paste0("Simulated p-value: ", x$p_value , "\n"))
+                cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
+
+                print(c("Mean.dtt" = mean(x$dtt), "Mean.sim_MDI" = mean(x$sim_MDI), "var.sim_MDI" = var(x$sim_MDI)))
+
+                cat(paste0("\nUse plot.dispRity() to visualise."))
+                return()
+            } else {
+                ## raw dtt
                 ## Fake an object with no attributes
                 x_tmp <- x
                 class(x_tmp) <- "list"
                 print(x_tmp)
                 cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
                 cat(paste0("Use plot.dispRity to visualise."))
-                return()
             }
         }
 

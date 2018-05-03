@@ -64,8 +64,8 @@ test_that("dispRity and dtt give the same results", {
     expect_error(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = var, tree = geiger_data$phy, nsim = 100))
      
     ## Same output
-    expect_equal(length(geiger_dtt)+1, length(dispRity_dtt))
-    expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6)], length)))
+    expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))
+    expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6,7)], length)))
 
     ## dispRity object
     data(disparity)

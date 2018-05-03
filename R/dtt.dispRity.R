@@ -172,8 +172,16 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
         p_value <- get.p.value(sim_MDI, MDI)
 
         ## Sort the output
-        output <- list(dtt = disparity_through_time, times = lineage_through_time, sim = disparity_through_time_sim, MDI = MDI, sim_MDI = sim_MDI, p_value = p_value)
+        output <- list(dtt = disparity_through_time, times = lineage_through_time, sim = disparity_through_time_sim, MDI = MDI, sim_MDI = sim_MDI, p_value = p_value, call = match_call)
 
+        ## Add the model (if it was used as default)
+        if(is.null(output$call$model)) {
+            output$call$model <- model
+        }
+        if(is.null(output$call$alternative)) {
+            output$call$alternative <- alternative
+        }
+        
         ## Calculate the p_value
         p_value <- get.p.value(sim_MDI, MDI)
 

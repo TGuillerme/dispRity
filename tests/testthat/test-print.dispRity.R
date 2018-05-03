@@ -143,6 +143,7 @@ test_that("randtest printing", {
 
 
 test_that("dtt printing", {
+    set.seed(1)
     ## Loading geiger's example data set
     data <- matrix(rnorm(20), ncol = 2)
     rownames(data) <- paste0("t", 1:10)
@@ -156,9 +157,23 @@ test_that("dtt printing", {
 
     print_dtt <- capture.output(dispRity_dtt)
 
-    expect_equal(print_dtt[length(print_dtt)-1],
-        c("- attr(*, \"class\") = \"dispRity\" \"dtt\""))
-    expect_equal(print_dtt[length(print_dtt)],
-        c("Use plot.dispRity to visualise."))
+    expect_equal(print_dtt,
+        c(
+        "Disparity-through-time test (modified from geiger:dtt)" ,
+        "Call: dtt.dispRity(data = data[], metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
+        "",
+        "Observation: 0.683588221189817",
+        "",
+        "Model: BM",
+        "Based on 10 replicates",
+        "Simulated p-value: 0.9",
+        "Alternative hypothesis: two-sided",
+        "",
+        "    Mean.dtt Mean.sim_MDI  var.sim_MDI ",
+        "  1.09400273   0.66802605   0.02601094 ",
+        "",
+        "Use plot.dispRity() to visualise." 
+        ))
+
 
 })
