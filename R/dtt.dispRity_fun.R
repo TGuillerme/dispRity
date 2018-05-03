@@ -1,72 +1,102 @@
 
 ## Modified .dtt function from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R
-.dtt.dispRity <- function(phy, data, metric){
+.dtt.dispRity <- function(phy, data, metric, relative){
 
-    phy$node.label<-NULL
-    td<-geiger::treedata(phy, data)
-    phy2<-td$phy
-    phy<-new2old.phylo(td$phy)
+    ## Combining the tree and the data
+    phy$node.label <- NULL
+    td <- list("phy" = phy, "data" = data) #TG: data is already cleaned prior to the function
+    phy2 <- td$phy
+    ## Converting to old phylo format
+    phy <- new2old.phylo(td$phy)
 
-    result<-numeric()
-
-
-    node.depth<-branching.times(phy2);
-    stem.depth<-numeric();
-    stem.depth[1]<-node.depth[1];
-    for(i in 2:phy2$Nnode) {
-        anc<-which(as.numeric(phy$edge[,2])==-i)
-        stem.depth[i]<-node.depth[names(node.depth)==phy2$edge[anc,1]]
+    ## Getting the node depth from ape if no attributes
+    if(is.null(phy2$root.time)){
+        node.depth <- branching.times(phy2)
+    } else {
+        node.depth <- tree.age(phy2)$ages[-c(1:Ntip(phy2))]
+        names(node.depth) <- 1:length(node.depth) + Ntip(phy2)
     }
 
-    ltt<-sort(node.depth, decreasing=TRUE)
-    node.depth<-node.depth/max(ltt);
-    stem.depth<-stem.depth/max(ltt);
-    ltt<-ltt/max(ltt);
-    if(length(dim(td$data))==2) {
+    stem.depth <- numeric()
+    stem.depth[1] <- node.depth[1]
+    for(i in 2:phy2$Nnode) {
+        anc <- which(as.numeric(phy$edge[,2]) == -i)
+        stem.depth[i] <- node.depth[names(node.depth) == phy2$edge[anc,1]]
+    }
 
+    ## Lineages through time
+    ltt <- sort(node.depth, decreasing = TRUE)
 
-        #d<-disparity(phy2, td$data, index=disp)
-        d <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), digits = 10)$obs)
-        names(d) <- Ntip(phy2)+1:Nnode(phy2)
+    ## Scaling by lineage through time
+    node.depth <- node.depth/max(ltt)
+    stem.depth <- stem.depth/max(ltt)
+    ltt <- ltt/max(ltt)
+
+    result <- numeric()
+
+    ## By matrix
+    if(length(dim(td$data)) == 2) {
+
+        ## Calculate disparity per clade
+        disparity <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), digits = 10)$obs)
+        names(disparity) <- 1:length(node.depth) + Ntip(phy2)
         
+        ## Disparity at the root
+        result[1] <- disparity[1]
 
-        result[1]<-d[1]
+        ## Disparity for the other nodes (average per time slice)
         for(i in 2:length(ltt)) {
-            x<-d[stem.depth>=ltt[i-1]&node.depth<ltt[i-1]]
-            if(length(x)==0) result[i]=0
-            else result[i]<-mean(x);
+            x <- disparity[stem.depth >= ltt[i-1] & node.depth < ltt[i-1]]
+            #result[i] <- ifelse(length(x) == 0, 0, mean(x))                             #TODO: check 0 for non-fossil tree
+            if(length(x) == 0) {
+                result[i] <- 0
+            } else {
+                result[i] <- mean(x)
+            }
         }
-        result[length(ltt)+1]<-0;
-        if(result[1]>0)
-        result<-result/result[1];
+
+        result[length(ltt)+1] <- 0                                                      #TODO: check 0 for non-fossil tree
+
+        ## Scaling the results
+        if(result[1] > 0){                                                              #TODO: check 0 for non-fossil tree
+            result <- result/result[1]
+        }
 
     } else {
+        ## By array
 
-        if(length(dim(td$data))!=3)
-        stop("Error in data");
+        if(length(dim(td$data)) != 3){
+            stop("Error in data: must be a matrix or a array of matrix (length(dim(data)) must be equal to 2 or 3).")
+        }
 
+        ## Looping through the array
         for(i in 1:dim(td$data)[3]) {
 
-            pp <- as.matrix(td$data[,,i])
+            one_matrix <- as.matrix(td$data[,,i])
 
-
-            # d <- disparity(phy2, pp, index=disp)
-            d <- summary(dispRity(custom.subsets(pp, phy2), metric = metric), digits = 10)$obs
+            ## Calculate disparity per clade
+            disparity <- summary(dispRity(custom.subsets(one_matrix, phy2), metric = metric), digits = 10)$obs
             
 
-            y<-numeric()
+            y <- numeric()
 
-            y[1]<-d[1]
+            y[1] <- disparity[1]
             for(j in 2:length(ltt)) {
-                x<-d[stem.depth>=ltt[j-1]&node.depth<ltt[j-1]]
-                if(length(x)==0) y[j]=0
-                else y[j]<-mean(x);
+                x <- disparity[stem.depth >= ltt[j-1] & node.depth < ltt[j-1]]
+                # y[j] <- ifelse(length(x) == 0, 0, mean(x))                                  #TODO: check 0 for non-fossil tree
+                if(length(x) == 0) {
+                    y[j] <- 0
+                } else {
+                    y[j] <- mean(x)
+                }
             }
-            y[length(ltt)+1]<-0;
-            if(y[1]>0)
-            y<-y/y[1];
 
-            result<-cbind(result, y)
+            y[length(ltt) + 1] <- 0                                                         #TODO: check 0 for non-fossil tree
+            if(y[1] > 0){
+                y <- y/y[1]
+            }
+            
+            result <- cbind(result, y)
         }
     }
 
@@ -74,9 +104,7 @@
 }
 
 ## This is the internal function from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R
-.area.between.curves <-
-function(x, f1, f2, xrange=c(0,1))
-{
+.area.between.curves <- function(x, f1, f2, xrange=c(0,1)) {
     a<-0.0;
     for(i in 1:length(x)) {
         if(x[i]>=xrange[1] & x[i]<=xrange[2]) {
@@ -103,14 +131,4 @@ function(x, f1, f2, xrange=c(0,1))
         }
     }
     return(a)
-}
-
-## This is the internal function from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R
-getMDIp<-function(dttRes) {
-    foo<-function(x) {
-        return(.area.between.curves(x= dttRes$times, f1=x, f2=dttRes$dtt))
-    }
-    mdis<-apply(dttRes$sim,2,foo)
-    pVal<-length(which(mdis>=0))/length(mdis)
-    return(pVal)
 }

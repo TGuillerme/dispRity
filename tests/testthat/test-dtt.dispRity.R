@@ -64,12 +64,27 @@ test_that("dispRity and dtt give the same results", {
     expect_error(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = var, tree = geiger_data$phy, nsim = 100))
      
     ## Same output
-    expect_equal(length(geiger_dtt), length(dispRity_dtt))
-    expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-5], length)))
+    expect_equal(length(geiger_dtt)+1, length(dispRity_dtt))
+    expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6)], length)))
 
     ## dispRity object
     data(disparity)
     data(BeckLee_tree)
     expect_warning(dtt_data <- dtt.dispRity(data = disparity, metric = average.sq, tree = BeckLee_tree, nsim = 5))
     expect_is(dtt_data, "dispRity", "dtt")
+
+    ## p-values
+    geiger_data$phy <- drop.tip(geiger_data$phy, "olivacea")
+    ## two-sided
+    set.seed(1)
+    dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "two-sided")
+    expect_equal(dispRity_dtt$p_value, 0.84)
+    ## lesser
+    set.seed(1)
+    dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "lesser")
+    expect_equal(dispRity_dtt$p_value, 0.54)
+    ## two-sided
+    set.seed(1)
+    dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "greater")
+    expect_equal(dispRity_dtt$p_value, 0.46)
 })
