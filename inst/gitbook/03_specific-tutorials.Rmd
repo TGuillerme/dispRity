@@ -449,11 +449,13 @@ We will use this simulated space to demonstrate the different metrics.
 #### Volumes and surface metrics
 The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
 
+Because there is only one subset (i.e. one matrix) in the dispRity object, the operations below are the equivalent of `metric(dummy_space)` (with rounding).
+
 ```{r}
 ## Calculating the ellipsoid volume
 summary(dispRity(dummy_space, metric = ellipse.volume))
 ```
-> Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of `ellipse.volume(dummy_space)` (with digits).
+> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipse.volume`.
 
 ```{r}
 ## Calculating the convex hull surface

@@ -155,6 +155,10 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
 
     # Now testing for PCOA
     dummy_ord <- pcoa(dummy_dis)
@@ -168,6 +172,11 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
+
 
     # # Testing with eigen
     # dummy_ord <- eigen(dummy_dis, symmetric=TRUE)

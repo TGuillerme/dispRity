@@ -19,7 +19,7 @@
 #' \itemize{
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
-#'          \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+#'          \item WARNING: this function uses the matrix' eigen values. These eigen values are only estimated correctly from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}}). For any other type of matrix, the eigen values needs to be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
 #'      }
 #'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
 #'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
@@ -82,7 +82,13 @@
 #' mode.val(rnorm(25))
 #' 
 #' ## Ellipsoid volume of a matrix
-#' ellipse.volume(dummy_matrix) # WARNING: only valid for MDS/PCO matrices
+#' ellipse.volume(dummy_matrix)
+#' ## WARNING: this is only valid without eigen vaues for MDS/PCO matrices.
+#' ## Use the correct eigen values for other types of matrices:
+#' ## Ordination
+#' ordination <- prcomp(dummy_matrix)
+#' ## Calculating the ellipsoid volume
+#' ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
 #' 
 #' ## Convex hull hypersurface of a matrix
 #' convhull.surface(dummy_matrix)
@@ -232,14 +238,18 @@ mode.val <- function(X){
 }
 
 ## Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
-ellipse.volume <- function(matrix) {
+ellipse.volume <- function(matrix, eigen.value) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
-    # The eigenvalue is equal to the sum of the variance/covariance within each axis
-    # multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
-    eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
+    ## The eigenvalue is equal to the sum of the variance/covariance within each axis
+    ## multiplied by the maximum number of dimensions (k-1) - ONLY WORKS FOR MDS OR PCO!
+    if(missing(eigen.value)) {
+        eigen.value <- abs(apply(var(matrix),2, sum)*(nrow(matrix)-1))
+    } else {
+        eigen.value <- eigen.value[1:ncol_matrix]
+    }
 
     ## volume (from Donohue et al 2013, Ecology Letters)
     volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))

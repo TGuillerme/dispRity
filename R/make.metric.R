@@ -63,9 +63,9 @@ make.metric <- function(fun, ..., silent = FALSE) {
     #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
     options(op)
 
-    if(any(test == "try-error")) {
+    if(any(test == "try-error") || is.na(test)) {
         if(silent != TRUE) {
-            stop(paste("The provided metric function generated an error or a warning!\nDoes the following work?\n    ", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))\n(the problem may also come from the optional arguments...)", sep = ""))
+            stop(paste("The provided metric function generated an error or a warning!\nDoes the following work?\n    ", as.expression(match_call$fun),"(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), ".", sep = ""))
         }
     } else {
 
@@ -99,7 +99,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
             } else {
                 ## Function provides a wrong output
                 if(silent != TRUE) {
-                    stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following output a matrix or a numeric vector?\n", as.expression(match_call$fun),"(matrix(rnorm(9),3,3))", sep = ""))
+                    stop(paste("The provided function did not output a matrix or a numeric vector!\nDoes the following output a matrix or a numeric vector?\n    ", as.expression(match_call$fun),"(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...).", sep = ""))
                 }
             }
         }

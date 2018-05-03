@@ -21,12 +21,15 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[Next release] dispRity v1.1.1  (2018-04-09)
+[Next release] dispRity v1.1.1  (2018-05-03)
 =========================
-  
+
 ### MINOR IMPROVEMENTS
 
+  * `ellipse.volume` can now take an explicit eigen value vector (still unnecessary and estimated correctly for PCO and MDS)
+  * Improved metric checking messages from `make.metric` when dealing with optional arguments
   * Removed cascade of warnings triggered by `plot.dispRity.dtt`
+
 
 [GitHub release] dispRity v1.1 *got CRAN* (2018-03-20)
 =========================
