@@ -30,10 +30,10 @@ dispRity 0.2.0 (2016-04-01)
 
 ### MINOR IMPROVEMENTS
 
-  * `dtt.dispRity` now allows alternative hypothesis specification (if `nsim > 0`).
-  * `ellipse.volume` can now take an explicit eigen value vector (still unnecessary and estimated correctly for PCO and MDS)
-  * Improved metric checking messages from `make.metric` when dealing with optional arguments
-  * Removed cascade of warnings triggered by `plot.dispRity.dtt`
+  * `dtt.dispRity` now allows to specify the alternative hypothesis (if `nsim > 0`).
+  * `ellipse.volume` can now take an explicit eigen value vector (the eigen values are still automatically estimated correctly for PCO and MDS).
+  * Improved metric checking messages from `make.metric` when dealing with optional arguments.
+  * Removed cascade of warnings triggered by `plot.dispRity.dtt`.
 
 
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
@@ -44,12 +44,12 @@ dispRity 0.2.0 (2016-04-01)
   
 ### NEW FEATURES
 
-  * CRAN release 1 with the additional `Claddis.ordination` function
+  * CRAN release 1 with the additional `Claddis.ordination` function.
 
 ### MINOR IMPROVEMENTS
 
-  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`)
-  * Improved test coverage
+  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
+  * Improved test coverage.
 
 [CRAN release] dispRity v1.0.3 *got CRAN* (2018-03-20)
 =========================
@@ -60,26 +60,26 @@ dispRity 0.2.0 (2016-04-01)
 
 ### MINOR IMPROVEMENTS
 
-  * Registered C symbols properly
-  * Improved S3 methods
-  * **Changed name**: `scale.dispRity` is now `rescale.dispRity`
-  * **Changed name**: `merge.subsets` is now `combine.subsets`
-  * **Changed name**: `time.subsets` is now `chrono.subsets` - `time.subsets` can still be called as an alias of for the same function
+  * Registered `C` symbols properly.
+  * Overall improvement for the `S3` methods.
+  * **Changed name**: `scale.dispRity` is now `rescale.dispRity`.
+  * **Changed name**: `merge.subsets` is now `combine.subsets`.
+  * **Changed name**: `time.subsets` is now `chrono.subsets` - `time.subsets` can still be called as an alias for the same function.
 
 ### BUG FIXES
 
-  * Minor bug fixes and typos in error messages and manuals
+  * Minor bug fixes and typos in various error messages and in the manual.
 
 ### DEPRECATED AND DEFUNCT
 
-  * Removed `Claddis.ordination` function to comply with the CRAN requirement (this function is still live in the [GitHub version](https://github.com/TGuillerme/dispRity) 1.1)
+  * Removed `Claddis.ordination` function to comply with the CRAN requirement (this function is still live in the [GitHub version](https://github.com/TGuillerme/dispRity) 1.1).
 
 dispRity v0.5 *covered with tests* (2017-12-20)
 =========================
 
 ### NEW FEATURES
 
-  * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
+  * `custom.subset` can now automatically create clade-based groups if a `phylo` object is passed to `group`.
   * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
   * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2). This version is slower that `geiger::dtt` but allows any univariate disparity metric!
   * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
@@ -88,21 +88,21 @@ dispRity v0.5 *covered with tests* (2017-12-20)
   * *New* disparity metric: `pairwise.dist`: the element's pairwise distances.
   * *New* disparity metric: `radius`: the radius of each dimensions.
   * *New* disparity metric: `n.ball.volume`: the *n*-dimensional sphere or ellipsoid volume.
-  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
+  * **New argument** in `time.subsets`, `model = "equal.split"` and `model = "gradual.split"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
     
 ### MINOR IMPROVEMENTS
 
   * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
   * `slice.tree` can now slice through a single edge.
-  * Various small speed improvements.
+  * Various minor speed improvements.
 
 ### BUG FIXES
 
-  * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.
+  * Correct behaviour in `tree.age` to estimate ages for trees with fossils only.
 
 ### DEPRECATED AND DEFUNCT
 
-  * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...)
+  * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...).
   * **Changed argument** in `time.subsets`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
   
   
@@ -133,8 +133,8 @@ dispRity v0.4 *user friendly* (2017-08-21)
   * Entirely rewritten manual (in GitBook)!
   * *New* function: `Claddis.ordination` and `geomorph.ordination` for automatically ordinating data from `Claddis` and `geomorph` packages!
   * *New* function: `char.diff` for calculating character differences and associated plot function (`plot.char.diff`)
-  * *New* utility function: `merge.subsamples` for... merging subsamples!
-  * *New* utility function: `size.subsamples` for... getting the size of subsamples in a disparity object!
+  * *New* utility function: `merge.subsamples` for... merging subsamples.
+  * *New* utility function: `size.subsamples` for getting the size of subsamples in a disparity object.
   * *New* wrapping functions: `dispRity.through.time` and `dispRity.per.group` now runs easy default disparity analysis.
 
 ### MINOR IMPROVEMENTS
@@ -146,8 +146,8 @@ dispRity v0.4 *user friendly* (2017-08-21)
 
 ### DEPRECATED AND DEFUNCT
 
-  * **Removed** `hyper.volume` metric for dependencies reasons
-  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: <2sec for 5k taxa and 10k bootstraps!)
+  * **Removed** `hyper.volume` metric for dependencies reasons,
+  * **Removed** `parallel` option from `boot.matrix` (the new architecture is already super fast: <2sec for 5k taxa and 10k bootstraps!).
   * **Changed name**: `series` as a part of `dispRity` objects is now changed to `subsamples` throughout the whole package.
   * **Changed name**: `time.series` is now renamed `time.subsamples`, if dates are provided and method is `discrete`, this function doesn't need a phylogeny any more.
   * **Changed name**: `get.subsamples.dispRity` is now renamed `get.subsamples`.
@@ -176,15 +176,15 @@ dispRity v0.2.1 *making stuff up* (2016-11-07)
 
 ### NEW FEATURES
 
-  * *New* utility function: `merge.time.series` for cleaning or merging time series
-  * *New* vignette: `dispRity-simulate_data` on how to simulate morphological characters in `dispRity`
-  * *New* function: `sim.morpho` generates morphological matrices 
-  * *New* function: `check.morpho` for checking how "realistic" the simulate morphological matrices are
-  * *New* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices
+  * *New* utility function: `merge.time.series` for cleaning or merging time series,.
+  * *New* vignette: `dispRity-simulate_data` on how to simulate morphological characters in `dispRity`.
+  * *New* function: `sim.morpho` generates morphological matrices.
+  * *New* function: `check.morpho` for checking how "realistic" the simulate morphological matrices are.
+  * *New* utility functions: `get.contrast.matrix` and `apply.inapplicable` functions for morphological matrices.
 
 ### MINOR IMPROVEMENTS
 
-  * Minor graphical functions updates
+  * Minor updates for the graphical functions.
 
 dispRity v0.2 (2016-06-15)
 =========================
@@ -193,18 +193,18 @@ dispRity v0.2 (2016-06-15)
 
   * *New* utility functions: `pair.plot`, `scale.dispRity` and `sort.dispRity`.
   * *New* function: `space.maker` for creating some multidimensional spaces!
-  * *New* disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`
+  * *New* disparity metrics: `convhull.surface`, `convhull.volume` and `hyper.volume`.
   * *New* disparity test `null.test`.
   * *New* `plot.dispRity` arguments: `density` for controlling the polygons density and `add` for adding plots.
 
 ### MINOR IMPROVEMENTS
 
   * Many updates to the functions manual and vignettes.
-  * Some algorithm are now improved for speed
+  * Some algorithm are now greatly improved for speed.
   * Disparity can now be calculated as a distribution (i.e. `dispRity`, `test.dispRity`, `plot.dispRity`, and `summary.dispRity` can now intake one or more distribution rather than just one or more single values of disparity; whether the data is bootstrapped or not).
   * `dispRity` can now intake `dispRity` objects with level 2 disparity metrics.
   * `boot.matrix` and `dispRity` can now run in parallel.
-  * `centroids` disparity metric can now intake a `centroid` argument for fixing the centroid point value.
+  * `centroids` disparity metric can now use a `centroid` argument for fixing the centroid point value.
   * `variances` and `ranges` disparity metrics can now intake a `k.root` argument for scaling the results.
 
 ### BUG FIXES
@@ -216,7 +216,7 @@ dispRity v0.2 (2016-06-15)
   * **Removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
   	* `continuous` disparity curves.
   	* `box` for real boxplots.
-  	* `lines` for the distribution verticale lines.
+  	* `lines` for the distribution vertical lines.
   	* `polygon` for the distribution boxes.
   	
 dispRity v0.1.2 (2015-12-01)
@@ -224,41 +224,41 @@ dispRity v0.1.2 (2015-12-01)
 
 ### NEW FEATURES
 
-  * *New* function: `get.dispRity` for subsampling dispRity objects
-  * *New* function: `extract.dispRity` for extracting disparity results
-  * *New* function: `test.dispRity` for applying tests to `dispRity` objects
-  * *New* function: `make.metric` for helping creating your very own disparity metric
-  * *New* metric: `hyper.volume` for measuring the morphospace hyper-ellipsoid volume
+  * *New* function: `get.dispRity` for subsampling dispRity objects.
+  * *New* function: `extract.dispRity` for extracting disparity results.
+  * *New* function: `test.dispRity` for applying tests to `dispRity` objects.
+  * *New* function: `make.metric` for helping creating your very own disparity metric.
+  * *New* metric: `hyper.volume` for measuring the morphospace hyper-ellipsoid volume.
 
 ### MINOR IMPROVEMENTS
 
-  * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`)
+  * `metric` argument from `dispRity` can now intake up two three functions (see `dispRity.metric` and `make.metric`).
   * Many improved functions manuals and examples!
   * Improved vignettes:
-    * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist
-    * *dispRity ecology demo* a quick demo aimed more for ecologists
-    * *dispRity manual* for people that want to know the package in details
-    * *dispRity metrics* for explaining how the disparity metric implementation works
+    * *dispRity palaeo demo* a quick demo aimed more for palaeobiologist.
+    * *dispRity ecology demo* a quick demo aimed more for ecologists.
+    * *dispRity manual* for people that want to know the package in details.
+    * *dispRity metrics* for explaining how the disparity metric implementation works.
     
 dispRity v0.1.1 (2015-10-08)
 =========================
 
 ### MINOR IMPROVEMENTS
 
-  * `plot.dispRity` options improved (rarefaction + default)
-  * `cust.series` can now intake multiple factors columns
-  * Added example for ecological data
-  * `boot.matrix`, `dispRity`, `summary` and `plot` now also include observed values
-  * `plot` now has an `observed` option to plot the observed disparity
+  * `plot.dispRity` options improved (rarefaction + default).
+  * `cust.series` can now intake multiple factors columns.
+  * Added example for ecological data.
+  * `boot.matrix`, `dispRity`, `summary` and `plot` now also include observed values.
+  * `plot` now has an `observed` option to plot the observed disparity.
 
 ### BUG FIXES
 
-  * Fixed many error/warning messages
+  * Fixed many error/warning messages.
   
 ### DEPRECATED AND DEFUNCT
 
-  * Changed `taxa` to `elements`
-  * `plot` option `diversity` has been renamed `elements`
+  * Changed `taxa` to `elements`.
+  * `plot` option `diversity` has been renamed `elements`.
 
 
 dispRity v0.1 (2015-10-01)
