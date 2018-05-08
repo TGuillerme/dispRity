@@ -5,7 +5,9 @@ branches:
   only:
     - master
     - release
- 
+  except:
+    - CRAN
+
 # Code coverage
 r_packages:
   - covr
