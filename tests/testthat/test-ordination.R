@@ -123,7 +123,7 @@ test_that("geomorph.ordination works", {
     ## Sanitizing
     expect_error(geomorph.ordination(array))
     expect_error(geomorph.ordination(list(coords = array)))
-    expect_error(geomorph.ordination(dummy_procrustes, center = "no"))
+    expect_warning(expect_error(geomorph.ordination(dummy_procrustes, center = "no")))
     dummy_procrustes2 <- dummy_procrustes
     dummy_procrustes2$coords <- NULL
     expect_error(geomorph.ordination(dummy_procrustes2))
