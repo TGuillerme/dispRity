@@ -66,7 +66,7 @@ bm.parameters <- function (data.model.test) {
     return((1/t.step) * ((1/sample.size) * sum(data.model.test.difference ^ 2) - epsilon))
 }
 
-    stasis.parameters <- function (data.model.test) {
+stasis.parameters <- function (data.model.test) {
     
     sample.size <- length(data.model.test$central_tendency)
     var.pooled <- pooled.variance(data.model.test)
@@ -409,7 +409,7 @@ bartlett.variance <- function(model.test_input) {
     pchisq(test.statistic, df = total.group.n - 1, lower.tail = FALSE)
 }
 
-    plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coords=FALSE) {
+plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coords=FALSE) {
     
     model.test_input <- select.model.list(input_disparity)
     xAxis <- max(model.test_input[[4]]) - model.test_input[[4]]
