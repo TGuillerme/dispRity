@@ -1,4 +1,4 @@
-#Get specific elements from call
+## Get specific elements from call
 get.metric.from.call <- function(data) {
     if(length(data$call$disparity$metric[[1]]) > 1) {
         return(lapply(as.list(data$call$disparity$metric[[1]]), function(metric) eval(parse(text = metric)))[-1])
@@ -7,7 +7,7 @@ get.metric.from.call <- function(data) {
     }
 }
 
-#Generating the null model§
+## Generating the null model
 make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, null.scree, scale) {
     if(!scale) {
         null_models_result <- replicate(replicates, summary(dispRity(

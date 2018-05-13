@@ -23,27 +23,6 @@ These matrices can be observations, pairwise differences between elements, ordin
 Classically, when a high number of variables is used, disparity is calculated from ordinated matrices.
 These can be any type of ordinations (PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa, countries, field experiments) and the dimensions are the columns.
 
-### Ordination matrices from `Claddis`
-
-```{r, eval = TRUE, echo = FALSE, message = FALSE}
-## Checking if Claddis is installed BUILD ONLY
-if(!require(Claddis)) install.packages("Claddis")
-```
-
-`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
-For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
-
-```{r}
-require(Claddis)
-
-## Ordinating the example data from Claddis
-Claddis.ordination(Michaux1989) 
-```
-
-Note that several options are available, namely which type of distance should be computed.
-See more info in the function manual (`?Claddis.ordination`).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
-
 ### Ordination matrices from `geomorph`
 
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
@@ -82,6 +61,29 @@ geomorph.ordination(geomorph_df)
 
 More about these `dispRity` objects below!
 
+### Ordination matrices from `Claddis` {#Claddis-ordination}
+
+> This functionality is not available on the CRAN version of the package (`r version_CRAN`) due to CRAN compatibility issues see [to CRAN or not to CRAN?](#noCRAN) for more information and on how to install the GitHub (more complete) version of the package (`r version_release`).
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Checking if Claddis is installed BUILD ONLY
+if(!require(Claddis)) install.packages("Claddis")
+```
+
+`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
+For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
+
+```{r}
+require(Claddis)
+
+## Ordinating the example data from Claddis
+Claddis.ordination(Michaux1989) 
+```
+
+Note that several options are available, namely which type of distance should be computed.
+See more info in the function manual (`?Claddis.ordination`).
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
+
 ### Other kinds of ordination matrices
 
 If you are not using the packages mentioned above (`Claddis` and `geomorph`) you can easily make your own ordination matrices by using the following functions from the `stats` package.
@@ -118,7 +120,7 @@ head(ordinated_matrix)
 Of course any other method for creating the ordination matrix is totally valid, you can also not use any ordination at all!
 The only requirements for the `dispRity` functions is that the input is a matrix with elements as rows and dimensions as columns.
 
-## Performing a simple dispRity analysis
+## Performing a simple dispRity analysis {#simpleanalysis}
 
 Two `dispRity` functions allow users to run an analysis pipeline simply by inputting an ordination matrix.
 These functions allow users to either calculate the disparity through time (`dispRity.through.time`) or the disparity of user-defined groups (`dispRity.per.group`).
@@ -133,7 +135,7 @@ For example, which metric should you use?
 How many bootstraps do you require?
 What model of evolution is most appropriate if you are time slicing?
 Should you rarefy the data?
-See [`time.subsets`](#time-slicing), [`custom.subsets`](#customised-subsets), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
+See [`chrono.subsets`](#time-slicing), [`custom.subsets`](#customised-subsets), [`boot.matrix`](#bootstraps-and-rarefactions) and [`dispRity.metric`](#disparity-metrics) for more details of the defaults used in each of these functions.
 Note that any of these default arguments can be changed within the `disparity.through.time` or `disparity.per.group` functions.
 
 ### Example data

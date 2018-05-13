@@ -16,10 +16,10 @@
 #' stratigraphy <- get.bin.ages(BeckLee_tree)
 #' 
 #' ## Making stratigraphic time subsets
-#' time.subsets(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
+#' chrono.subsets(BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
 #'                 time = stratigraphy)
 #'
-#' @seealso \code{\link{time.subsets}}
+#' @seealso \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @import geoscale timescales
@@ -79,7 +79,7 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
 
     ## Remove eventual recent strats for trees not containing living taxa
     if(node_depth < root_time) {
-        ## Correct recent if tree contains only fossils
+        ## Correct recent if tree contains only fossils
         time_ro_recent <- abs(node_depth - tree$root.time)
         recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree) + time_ro_recent))
     } else {

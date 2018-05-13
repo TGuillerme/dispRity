@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2018-04-17">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,7 +108,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#why-not-cran"><i class="fa fa-check"></i><b>1.3</b> Why not CRAN?</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#noCRAN"><i class="fa fa-check"></i><b>1.3</b> To CRAN or not to CRAN?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a></li>
 </ul></li>
@@ -118,11 +118,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a><ul>
 <li class="chapter" data-level="3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#what-sort-of-data-does-disprity-work-with"><i class="fa fa-check"></i><b>3.1</b> What sort of data does <code>dispRity</code> work with?</a></li>
 <li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordinated-matrices"><i class="fa fa-check"></i><b>3.2</b> Ordinated matrices</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-claddis"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>Claddis</code></a></li>
-<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#Claddis-ordination"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>Claddis</code></a></li>
 <li class="chapter" data-level="3.2.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#other-kinds-of-ordination-matrices"><i class="fa fa-check"></i><b>3.2.3</b> Other kinds of ordination matrices</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#performing-a-simple-disprity-analysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
+<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#simpleanalysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
 <li class="chapter" data-level="3.3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#example-data"><i class="fa fa-check"></i><b>3.3.1</b> Example data</a></li>
 <li class="chapter" data-level="3.3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-through-time"><i class="fa fa-check"></i><b>3.3.2</b> Disparity through time</a></li>
 <li class="chapter" data-level="3.3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-among-groups"><i class="fa fa-check"></i><b>3.3.3</b> Disparity among groups</a></li>
@@ -236,13 +236,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">data</span>(BeckLee_ages)</code></pre></div>
 <div id="time-slicing" class="section level2">
 <h2><span class="header-section-number">4.1</span> Time slicing</h2>
-<p>The function <code>time.subsets</code> allows users to divide the matrix into different time subsets or slices given a dated phylogeny that contains all the elements (i.e. taxa) from the matrix. Each subset generated by this function will then contain all the elements present at a specific point in time or during a specific period in time.</p>
+<p>The function <code>chrono.subsets</code> allows users to divide the matrix into different time subsets or slices given a dated phylogeny that contains all the elements (i.e. taxa) from the matrix. Each subset generated by this function will then contain all the elements present at a specific point in time or during a specific period in time.</p>
 <p>Two types of time subsets can be performed by using the <code>method</code> option:</p>
 <ul>
 <li>Discrete time subsets (or time-binning) using <code>method = discrete</code></li>
 <li>Continuous time subsets (or time-slicing) using <code>method = continuous</code></li>
 </ul>
-<p>For the time-slicing method details see Cooper and Guillerme (in prep.). <!-- @@@ Change cite appropriately! --> <!-- NC: Or potentially this paper we are writing for the PalAss? TG: totally!--> For both methods, the function takes the <code>time</code> argument which can be a vector of <code>numeric</code> values for:</p>
+<p>For the time-slicing method details see <span class="citation">T. Guillerme and Cooper (<a href="#ref-time-slice">2018</a>)</span>. <!-- @@@ Change cite appropriately! --> <!-- NC: Or potentially this paper we are writing for the PalAss? TG: totally!--> For both methods, the function takes the <code>time</code> argument which can be a vector of <code>numeric</code> values for:</p>
 <ul>
 <li>Defining the boundaries of the time bins (when <code>method = discrete</code>)</li>
 <li>Defining the time slices (when <code>method = continuous</code>)</li>
@@ -250,14 +250,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Otherwise, the <code>time</code> argument can be set as a single <code>numeric</code> value for automatically generating a given number of equidistant time-bins/slices. Additionally, it is also possible to input a dataframe containing the first and last occurrence data (FAD/LAD) for taxa that span over a longer time than the given tips/nodes age, so taxa can appear in more than one time bin/slice.</p>
 <p>Here is an example for <code>method = discrete</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating three time bins containing the taxa present every 40 Ma
-<span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
+<span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
                 <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>))</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements:
 ##     120 - 80, 80 - 40, 40 - 0.</code></pre>
 <p>Note that we can also generate equivalent results by just telling the function that we want three time-bins as follow:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Automatically generate three equal length bins:
-<span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
+<span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
                 <span class="dt">time =</span> <span class="dv">3</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements:
@@ -273,7 +273,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating time bins including taxa that might span between them
-<span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
+<span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,
                 <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>), <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements:
@@ -294,14 +294,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Note that the four first models are a proxy for punctuated evolution: the selected data is always either the one of the descendant or the ancestor. In other words, changes along the branches always occur at either ends of it. The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability. These later models perform better when bootstrapped, effectively approximating the “intermediate” state between and the ancestor and the descendants.</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices every 40 million years under a model of proximity evolution
-<span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
+<span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
     <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
     <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 continuous (proximity) time subsets for 99 elements:
 ##     120, 80, 40, 0.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Generating four time slices automatically
-<span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree,
+<span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree,
     <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">4</span>, <span class="dt">FADLAD =</span> BeckLee_ages)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 continuous (proximity) time subsets for 99 elements:
@@ -370,7 +370,7 @@ weird_groups &lt;-<span class="st"> </span><span class="kw">list</span>(<span cl
 <pre><code>##  ---- dispRity object ---- 
 ## 50 elements with 10 dimensions.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
-<p>Of course, one could directly supply the subsets generated above (using <code>time.subsets</code> or <code>custom.subsets</code>) to this function.</p>
+<p>Of course, one could directly supply the subsets generated above (using <code>chrono.subsets</code> or <code>custom.subsets</code>) to this function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating subsets of crown and stem mammals
 crown_stem &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(BeckLee_mat50,
                                 <span class="dt">group =</span> <span class="kw">list</span>(<span class="st">&quot;crown&quot;</span> =<span class="st"> </span><span class="kw">c</span>(<span class="dv">16</span>, <span class="dv">19</span><span class="op">:</span><span class="dv">41</span>, <span class="dv">45</span><span class="op">:</span><span class="dv">50</span>), 
@@ -382,7 +382,7 @@ crown_stem &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(
 ##     crown, stem.
 ## Data was bootstrapped 200 times (method:&quot;full&quot;) and fully rarefied.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating time slice subsets
-time_slices &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
+time_slices &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
                                <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, 
                                <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
                                <span class="dt">FADLAD =</span> BeckLee_ages)
@@ -502,8 +502,8 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring disparity as the standard deviation of the variance of each axis of
 ## the variance covariance matrix (dimension-level 1, 2 and 3 functions).
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(sd, variances, var)), <span class="dt">round =</span> <span class="dv">10</span>)</code></pre></div>
-<pre><code>##   subsets  n          obs
-## 1       1 50 0.0001025857</code></pre>
+<pre><code>##   subsets  n obs
+## 1       1 50   0</code></pre>
 <p>Note that the order of each function in the metric argument does not matter, the <code>dispRity</code> function will automatically detect the function dimension-levels (using <code>make.metric</code>) and apply them to the data in decreasing order (dimension-level 3 &gt; 2 &gt; 1).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Disparity as the standard deviation of the variance of each axis of the
 ## variance covariance matrix:
@@ -555,13 +555,13 @@ disparity1 <span class="op">==</span><span class="st"> </span>disparity2</code><
 <td>1</td>
 <td><code>convhull.surface</code></td>
 <td>The surface of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln$area</code></td>
 </tr>
 <tr class="even">
 <td>1</td>
 <td><code>convhull.volume</code></td>
 <td>The volume of the convex hull formed by all the elements</td>
-<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln</code></td>
+<td><a href="https://cran.r-project.org/web/packages/geometry/index.html"><code>geometry</code></a><code>::convhulln$vol</code></td>
 </tr>
 <tr class="odd">
 <td>1</td>
@@ -591,7 +591,7 @@ disparity1 <span class="op">==</span><span class="st"> </span>disparity2</code><
 <td>2</td>
 <td><code>pairwise.dist</code></td>
 <td>The pairwise distances between elements</td>
-<td><a href="https://cran.r-project.org/web/packages/stats/index.html"><code>stats</code></a><code>::dist</code></td>
+<td><a href="https://cran.r-project.org/web/packages/vegan/index.html"><code>vegan</code></a><code>::vegist</code></td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -669,7 +669,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <pre><code>##   subsets  n   obs
 ## 1       1 10 257.8</code></pre>
 <blockquote>
-<p>Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of <code>ellipse.volume(dummy_space)</code> (with rounding).</p>
+<p>Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of <code>ellipse.volume(dummy_space)</code> (with digits).</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the convex hull surface
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.surface))</code></pre></div>
@@ -683,9 +683,9 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> n.ball.volume))</code></pre></div>
 <pre><code>##   subsets  n  obs
 ## 1       1 10 4.43</code></pre>
-<p>The convex hull functions make a (good) estimation of the multidimensional properties of the ordinated space.</p>
+<p>The convex hull based functions are a call to the <code>geometry::convhulln</code> function with the <code>&quot;FA&quot;</code> option (computes total area and volume). Also note that they are really sensitive to the size of the dataset.</p>
 <blockquote>
-<p>Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> that often results in near 0 disparity values.</p>
+<p>Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> that often results in near 0 disparity values. I strongly recommend reading <a href="https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners">this really intuitive explanation</a> from <a href="https://github.com/tophtucker">Toph Tucker</a>.</p>
 </blockquote>
 </div>
 <div id="ranges-variances-radius-pairwise-distance-modal-value-and-diagonal" class="section level4">
@@ -733,7 +733,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(mean, radius), <span class="dt">type =</span> mean))</code></pre></div>
 <pre><code>##   subsets  n   obs
 ## 1       1 10 0.652</code></pre>
-<p>The pairwise distances uses the function <code>stats::dist</code> and can take the normal <code>dist</code> options:</p>
+<p>The pairwise distances uses the function <code>vegan::vegdist</code> and can take the normal <code>vegdist</code> options:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The average pairwise euclidean distance
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> <span class="kw">c</span>(mean, pairwise.dist)))</code></pre></div>
 <pre><code>##   subsets  n   obs
@@ -742,6 +742,7 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> pairwise.dist, <span class="dt">method =</span> <span class="st">&quot;manhattan&quot;</span>))</code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      3.619 2.566 3.335 5.672  9.63</code></pre>
+<p>Note that this function is a direct call to <code>vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)</code>.</p>
 <p>The <code>diagonal</code> function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space). The <code>mode.val</code> function measures the modal value of the matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ordinated space&#39;s diagonal
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> diagonal))</code></pre></div>
@@ -821,7 +822,7 @@ boot_crown_stem &lt;-<span class="st"> </span><span class="kw">boot.matrix</span
 disparity_crown_stem &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_crown_stem, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))
 
 ## Creating time slice subsets
-time_slices &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
+time_slices &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
     <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>),
     <span class="dt">FADLAD =</span> BeckLee_ages)
 ## Bootstrapping the time slice subsets
@@ -830,7 +831,7 @@ boot_time_slices &lt;-<span class="st"> </span><span class="kw">boot.matrix</spa
 disparity_time_slices &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_time_slices, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))
 
 ## Creating time bin subsets
-time_bins &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
+time_bins &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree, 
     <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">80</span>, <span class="dv">40</span>, <span class="dv">0</span>), <span class="dt">FADLAD =</span> BeckLee_ages,
     <span class="dt">inc.nodes =</span> <span class="ot">TRUE</span>)
 ## Bootstrapping the time bin subsets
@@ -858,19 +859,19 @@ disparity_time_bins &lt;-<span class="st"> </span><span class="kw">dispRity</spa
 <ul>
 <li><code>quantile</code> values for the confidence interval levels (by default, the 50 and 95 quantiles are calculated)</li>
 <li><code>cent.tend</code> for the central tendency to use for summarising the results (default is <code>median</code>)</li>
-<li>rounding<code>option corresponding to the number of decimal places to print (default is</code>2`)</li>
+<li>digits<code>option corresponding to the number of decimal places to print (default is</code>2`)</li>
 <li><code>recall</code> option for printing the call of the <code>dispRity</code> object as well (default is <code>FALSE</code>)</li>
 </ul>
 <p>These options can easily be changed from the defaults as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Same as above but using the 88th quantile and the standard deviation as the summary 
 <span class="kw">summary</span>(disparity_time_slices, <span class="dt">quantile =</span> <span class="dv">88</span>, <span class="dt">cent.tend =</span> sd)</code></pre></div>
-<pre><code>##   subsets  n   obs bs.sd    6%   94%
-## 1     120  5 2.823 0.380 1.489 2.654
-## 2      80 19 3.233 0.127 2.869 3.224
-## 3      40 15 3.359 0.189 2.815 3.394
-## 4       0 10 4.055 0.205 3.291 3.885</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the details of the object and rounding the values to the 5th decimal place
-<span class="kw">summary</span>(disparity_time_slices, <span class="dt">recall =</span> <span class="ot">TRUE</span>, <span class="dt">rounding =</span> <span class="dv">5</span>)</code></pre></div>
+<pre><code>##   subsets  n   obs bs.sd  2.5%   25%   75% 97.5%
+## 1     120  5 2.823 0.380 1.398 2.037 2.563 2.767
+## 2      80 19 3.233 0.127 2.785 2.973 3.133 3.266
+## 3      40 15 3.359 0.189 2.764 2.996 3.285 3.443
+## 4       0 10 4.055 0.205 3.169 3.453 3.760 3.961</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the details of the object and digits the values to the 5th decimal place
+<span class="kw">summary</span>(disparity_time_slices, <span class="dt">recall =</span> <span class="ot">TRUE</span>, <span class="dt">digits =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 continuous (proximity) time subsets for 99 elements with 97 dimensions:
 ##     120, 80, 40, 0.
@@ -913,7 +914,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 
 ## As above but using polygons while also displaying the number of elements
 <span class="kw">plot</span>(disparity_crown_stem, <span class="dt">type =</span> <span class="st">&quot;polygon&quot;</span>, <span class="dt">elements =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-51-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-53-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>Since <code>plot.dispRity</code> uses the arguments from the generic <code>plot</code> method, it is of course possible to change pretty much everything using the regular plot arguments:</p>
@@ -930,7 +931,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
                              <span class="st">&quot;Confidence interval 1&quot;</span>,
                             <span class="st">&quot;Confidence interval 2&quot;</span>),
       <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;green&quot;</span>), <span class="dt">pch =</span> <span class="dv">19</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-52-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-54-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>In addition to the classic <code>plot</code> arguments, the function can also take arguments that are specific to <code>plot.dispRity</code> like adding the number of elements or rarefaction level (as described above), and also changing the values of the quantiles to plot as well as the central tendency.</p>
@@ -940,10 +941,19 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## Plotting the results with some plot.dispRity arguments
 <span class="kw">plot</span>(disparity_time_slices, <span class="dt">quantile =</span> <span class="kw">c</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">10</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>)),
     <span class="dt">cent.tend =</span> sd, <span class="dt">type =</span> <span class="st">&quot;c&quot;</span>, <span class="dt">elements =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;black&quot;</span>, <span class="kw">rainbow</span>(<span class="dv">10</span>)),
-    <span class="dt">ylab =</span> <span class="kw">c</span>(<span class="st">&quot;Disparity&quot;</span>, <span class="st">&quot;Diversity&quot;</span>), <span class="dt">time.subsets =</span> <span class="ot">FALSE</span>,
+    <span class="dt">ylab =</span> <span class="kw">c</span>(<span class="st">&quot;Disparity&quot;</span>, <span class="st">&quot;Diversity&quot;</span>), <span class="dt">chrono.subsets =</span> <span class="ot">FALSE</span>,
     <span class="dt">xlab =</span> <span class="st">&quot;Time (in in units from past to present)&quot;</span>, <span class="dt">observed =</span> <span class="ot">TRUE</span>,
     <span class="dt">main =</span> <span class="st">&quot;Many more options...&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-53-1.png" width="768" /></p>
+<pre><code>## Warning in plot.window(...): &quot;quantile&quot; is not a graphical parameter</code></pre>
+<pre><code>## Warning in plot.xy(xy, type, ...): &quot;quantile&quot; is not a graphical parameter</code></pre>
+<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;quantile&quot; is
+## not a graphical parameter
+
+## Warning in axis(side = side, at = at, labels = labels, ...): &quot;quantile&quot; is
+## not a graphical parameter</code></pre>
+<pre><code>## Warning in box(...): &quot;quantile&quot; is not a graphical parameter</code></pre>
+<pre><code>## Warning in title(...): &quot;quantile&quot; is not a graphical parameter</code></pre>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-55-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <blockquote>
@@ -958,7 +968,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## Adding the discrete data
 <span class="kw">plot</span>(disparity_time_bins, <span class="dt">type =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>), <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
     <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-54-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-56-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the <code>rarefaction = TRUE</code> argument:</p>
@@ -967,7 +977,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 
 ## Plotting the rarefaction curves
 <span class="kw">plot</span>(disparity_crown_stem, <span class="dt">rarefaction =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-55-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-57-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 </div>
@@ -1101,9 +1111,9 @@ multi_groups &lt;-<span class="st"> </span><span class="kw">custom.subsets</span
 ## g2         1       5.7   5.700 0.46609 0.02477  0.998
 ## Residuals 17     207.9  12.229         0.90352       
 ## Total     19     230.1                 1.00000</code></pre>
-<p>Finally, it is possible to use objects generated by <code>time.subsets</code>. In this case, <code>adonis.dispRity</code> will applied the <code>matrix ~ time</code> formula by default:</p>
+<p>Finally, it is possible to use objects generated by <code>chrono.subsets</code>. In this case, <code>adonis.dispRity</code> will applied the <code>matrix ~ time</code> formula by default:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating time series
-time_subsets &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(BeckLee_mat50, BeckLee_tree, 
+time_subsets &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(BeckLee_mat50, BeckLee_tree, 
      <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">85</span>, <span class="dv">65</span>, <span class="dv">0</span>),
      <span class="dt">FADLAD =</span> BeckLee_ages)
 
@@ -1128,15 +1138,15 @@ time_subsets &lt;-<span class="st"> </span><span class="kw">time.subsets</span>(
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Note that the function warns you that the input data was transformed into a distance matrix. This is reflected in the Call part of the output (<code>formula = dist(matrix) ~ time</code>).</p>
-<p>To use each time subset as a separate predictor, you can use the <code>matrix ~ time.subsets</code> formula; this is equivalent to <code>matrix ~ first_time_subset + second_time_subset + ...</code>:</p>
+<p>To use each time subset as a separate predictor, you can use the <code>matrix ~ chrono.subsets</code> formula; this is equivalent to <code>matrix ~ first_time_subset + second_time_subset + ...</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Running the NPMANOVA with each time bin as a predictor
-<span class="kw">adonis.dispRity</span>(time_subsets, matrix <span class="op">~</span><span class="st"> </span>time.subsets)</code></pre></div>
-<pre><code>## Warning in adonis.dispRity(time_subsets, matrix ~ time.subsets): The input data for adonis.dispRity is a distance matrix.
+<span class="kw">adonis.dispRity</span>(time_subsets, matrix <span class="op">~</span><span class="st"> </span>chrono.subsets)</code></pre></div>
+<pre><code>## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity is a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!</code></pre>
 <pre><code>## 
 ## Call:
-## vegan::adonis(formula = dist(matrix) ~ time.subsets, data = time_subsets,      method = &quot;euclidean&quot;) 
+## vegan::adonis(formula = dist(matrix) ~ chrono.subsets, data = time_subsets,      method = &quot;euclidean&quot;) 
 ## 
 ## Permutation: free
 ## Number of permutations: 999
@@ -1165,24 +1175,7 @@ dispRity_dtt &lt;-<span class="st"> </span><span class="kw">dtt.dispRity</span>(
 ## variances), : The following tip(s) was not present in the data: olivacea.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(dispRity_dtt, <span class="dt">fig.width=</span><span class="dv">8</span>, <span class="dt">fig.height=</span><span class="dv">8</span>)</code></pre></div>
-<pre><code>## Warning in plot.window(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.window(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy, type, ...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy, type, ...): &quot;fig.height&quot; is not a graphical
-## parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.width&quot; is
-## not a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.height&quot;
-## is not a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.width&quot; is
-## not a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.height&quot;
-## is not a graphical parameter</code></pre>
-<pre><code>## Warning in box(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in box(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in title(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in title(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-61-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
 <p>Note that, like in the original <code>dtt</code> function, it is possible to change the evolutionary model (see <code>?geiger::sim.char</code> documentation).</p>
 </div>
 <div id="null-morphospace-testing-with-null.test" class="section level3">
@@ -1212,7 +1205,7 @@ obs_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(nor
 <p>These results have an attributed <code>dispRity</code> and <code>randtest</code> class and can be plotted as <code>randtest</code> objects using the <code>dispRity</code> S3 <code>plot</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(results, <span class="dt">main =</span> <span class="st">&quot;Is this space normal?&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-63-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-65-1.png" width="768" /></p>
 <p>For more details on generating spaces see the <a href="#Simulating-multidimensional-spaces"><code>space.maker</code></a> function tutorial.</p>
 </div>
 </div>
@@ -1250,7 +1243,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <span class="kw">plot</span>(disparity_centroids, <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)
 <span class="kw">plot</span>(disparity_centroids_median,
      <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-67-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap in the distribution of medians
@@ -1357,7 +1350,7 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)
 ## Adding the p-value
 <span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-73-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-75-1.png" width="1152" /></p>
 <p>As expected, the results are pretty similar in pattern but different in terms of scale. The median centroids distance is expressed in km in the “Distance differences” plots and in Euclidean units of variation in the “Ordinated differences” plots.</p>
 
 </div>
@@ -1366,6 +1359,9 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <div id="refs" class="references">
 <div id="ref-beckancient2014">
 <p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. doi:<a href="https://doi.org/10.1098/rspb.2014.1278">10.1098/rspb.2014.1278</a>.</p>
+</div>
+<div id="ref-time-slice">
+<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em>. doi:<a href="https://doi.org/10.1111/pala.12364">10.1111/pala.12364</a>.</p>
 </div>
 <div id="ref-diaz2016global">
 <p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167.</p>
@@ -1409,7 +1405,7 @@ gitbook.start({
 "link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/03_specific-tutorials.Rmd",
 "text": "Edit"
 },
-"download": ["dispRity_manual.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

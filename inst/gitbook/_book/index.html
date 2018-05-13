@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-01-03">
+<meta name="date" content="2018-04-17">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,7 +108,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#why-not-cran"><i class="fa fa-check"></i><b>1.3</b> Why not CRAN?</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#noCRAN"><i class="fa fa-check"></i><b>1.3</b> To CRAN or not to CRAN?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a></li>
 </ul></li>
@@ -118,11 +118,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a><ul>
 <li class="chapter" data-level="3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#what-sort-of-data-does-disprity-work-with"><i class="fa fa-check"></i><b>3.1</b> What sort of data does <code>dispRity</code> work with?</a></li>
 <li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordinated-matrices"><i class="fa fa-check"></i><b>3.2</b> Ordinated matrices</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-claddis"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>Claddis</code></a></li>
-<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>geomorph</code></a></li>
+<li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#Claddis-ordination"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>Claddis</code></a></li>
 <li class="chapter" data-level="3.2.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#other-kinds-of-ordination-matrices"><i class="fa fa-check"></i><b>3.2.3</b> Other kinds of ordination matrices</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#performing-a-simple-disprity-analysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
+<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#simpleanalysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
 <li class="chapter" data-level="3.3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#example-data"><i class="fa fa-check"></i><b>3.3.1</b> Example data</a></li>
 <li class="chapter" data-level="3.3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-through-time"><i class="fa fa-check"></i><b>3.3.2</b> Disparity through time</a></li>
 <li class="chapter" data-level="3.3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-among-groups"><i class="fa fa-check"></i><b>3.3.3</b> Disparity among groups</a></li>
@@ -228,11 +228,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="header">
 <h1 class="title">dispRity manual</h1>
 <h4 class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) and Natalie Cooper (<a href="mailto:natalie.cooper@nhm.ac.uk">natalie.cooper@nhm.ac.uk</a>)</em></h4>
-<h4 class="date"><em>2018-01-03</em></h4>
+<h4 class="date"><em>2018-04-17</em></h4>
 </div>
 <div id="disprity" class="section level1">
 <h1><span class="header-section-number">1</span> <code>dispRity</code></h1>
-<p>This is a package for measuring disparity in <code>R</code>. It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity). Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is <em>not</em> restricted to any type of matrices! This manual is based on the version <code>0.5.0</code>.</p>
+<p>This is a package for measuring disparity in <code>R</code>. It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity). Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is <em>not</em> restricted to any type of matrices! This manual is based on the version 1.1.0.</p>
 <div id="what-is-disprity" class="section level2">
 <h2><span class="header-section-number">1.1</span> What is <code>dispRity</code>?</h2>
 <p>This is a modular package for measuring disparity in <code>R</code>. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) to perform some multidimensional analysis. Typically, these analysis are used in palaeobiology and evolutionary biology to study the changes in morphology through time. However, there are many more applications in ecology, evolution and beyond.</p>
@@ -243,22 +243,31 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="installing-and-running-the-package" class="section level2">
 <h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
-<p>You can install this package easily if you use the latest version of <code>R</code> (&gt; 3.4.0) and <code>devtools</code>.</p>
+<p>You can install this package easily, directly from the CRAN:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;dispRity&quot;</span>)</code></pre></div>
+<p>Alternatively, for the most up to data version and some functionalities not compatible with the CRAN, you can use the package through GitHub using <code>devtool</code> (see <a href="index.html#noCRAN">to CRAN or not to CRAN?</a> for more details):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Checking if devtools is already installed
 <span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
 
 ## Installing the latest released version directly from GitHub
-<span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dispRity&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;release&quot;</span>)
-
-## Loading the package
-<span class="kw">library</span>(dispRity)</code></pre></div>
-<p>Note this uses the <code>release</code> branch (version<code>0.5</code>). <!-- @@@ --> For the piping-hot (but potentially unstable) version, you can change the argument <code>ref = release</code> to <code>ref = master</code>. <code>dispRity</code> depends mainly on the <code>ape</code> package and uses functions from several other packages (<code>ade4</code>, <code>geometry</code>, <code>grDevices</code>, <code>hypervolume</code>, <code>paleotree</code>, <code>snow</code>, <code>Claddis</code>, <code>geomorph</code> and <code>RCurl</code>).</p>
+<span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dispRity&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;release&quot;</span>)</code></pre></div>
+<p>Anyways to upload it, you can use</p>
+<p>Note this uses the <code>release</code> branch (1.1.0). For the piping-hot (but potentially unstable) version, you can change the argument <code>ref = release</code> to <code>ref = master</code>. <code>dispRity</code> depends mainly on the <code>ape</code> package and uses functions from several other packages (<code>ade4</code>, <code>geometry</code>, <code>grDevices</code>, <code>hypervolume</code>, <code>paleotree</code>, <code>snow</code>, <code>Claddis</code>, <code>geomorph</code> and <code>RCurl</code>).</p>
 </div>
-<div id="why-not-cran" class="section level2">
-<h2><span class="header-section-number">1.3</span> Why not CRAN?</h2>
-<p>This package is not available on CRAN. This is mainly because some parts are still in development and that the reactivity of GitHub is better for implementing new suggestions from users. However, the package follows the strict (and useful!) CRAN standards via Travis.</p>
+<div id="noCRAN" class="section level2">
+<h2><span class="header-section-number">1.3</span> To CRAN or not to CRAN?</h2>
+<p>This package can be installed via <a href="">the CRAN</a> or via <a href="https://github.com/TGuillerme/dispRity">GitHub</a>.</p>
+<ul>
+<li><p>The CRAN version is a more “strict” version of the package that does not include some functionalities (such as <a href="getting-started-with-disprity.html#Claddis-ordination"><code>Claddis.ordination</code></a> or this gitbook vignette) because of compatibility issues with the CRAN requirement.</p></li>
+<li><p>The GitHub version is a more “reactive” version (fed by user’s suggestions and comments) and can contain more functionalities (see list below). This version exists on a <code>&quot;release&quot;</code> branch which is tested as strictly as the CRAN version with Travis and codecov. The <code>&quot;master&quot;</code> branch contains always the latest “piping hot”, not yet release version. It might (though rarely) be bugged.</p></li>
+</ul>
 <!-- badges out start -->
-<p><a href="https://travis-ci.org/TGuillerme/dispRity"><img src="https://travis-ci.org/TGuillerme/dispRity.svg?branch=release" alt="Build Status" /></a> <a href="https://codecov.io/gh/TGuillerme/dispRity"><img src="https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg" alt="codecov" /></a> <a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active - The project has reached a stable, usable state and is being actively developed." /></a> <!-- badges out end   --></p>
+<p><a href="https://travis-ci.org/TGuillerme/dispRity"><img src="https://travis-ci.org/TGuillerme/dispRity.svg?branch=release" alt="Build Status" /></a> <a href="https://codecov.io/gh/TGuillerme/dispRity"><img src="https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg" alt="codecov" /></a> <a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active - The project has reached a stable, usable state and is being actively developed." /></a> <!-- badges out end   --></p>
+<p>Note however, that apart from the functions listed below, both versions of the package have the same tested and implemented functions.</p>
+<p>Functions not available on the CRAN version (1.0.3):</p>
+<ul>
+<li><a href="getting-started-with-disprity.html#Claddis-ordination"><code>Claddis.ordination</code></a></li>
+</ul>
 </div>
 <div id="help" class="section level2">
 <h2><span class="header-section-number">1.4</span> Help</h2>
@@ -271,7 +280,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646</p>
 </blockquote>
 <!-- > Guillerme, T. & Cooper, N. (2016). The dispRity R package manual. Fighsare XXXX -->
-<p>Note that this citation is only temporary (but can still be used!). A proper description of the package is currently in review in Methods in Ecology and Evolution and should be re-submitted this winter. Upon acceptance (hopefully!), a proper DOI will be released for this manual and the package description.</p>
+<p>Note that this citation is only temporary (but can still be used!). A proper description of the package is currently in review in Methods in Ecology and Evolution. Upon acceptance (hopefully!), a proper DOI will be released for this manual and the package description.</p>
 
 </div>
 </div>
@@ -313,7 +322,7 @@ gitbook.start({
 "link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/index.Rmd",
 "text": "Edit"
 },
-"download": ["dispRity_manual.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

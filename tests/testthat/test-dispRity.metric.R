@@ -2,6 +2,14 @@
 
 context("dispRity.metric")
 
+test_that("dimension generic", {
+    expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ranges\n?variances\n?centroids\n?ancestral.dist\n?pairwise.dist\n?radius")
+    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 12 functions implemented in dispRity:\n?ellipse.volume\n?convhull.surface\n?convhull.volume\n?diagonal\n?mode.val\n?span.tree.length\n?n.ball.volume")
+
+
+})
+
 
 
 #Testing the metrics
@@ -147,6 +155,10 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
 
     # Now testing for PCOA
     dummy_ord <- pcoa(dummy_dis)
@@ -160,6 +172,11 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
+
 
     # # Testing with eigen
     # dummy_ord <- eigen(dummy_dis, symmetric=TRUE)

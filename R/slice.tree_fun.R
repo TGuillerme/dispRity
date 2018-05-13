@@ -3,7 +3,7 @@
 get.node.ID <- function(node, tree) {
     ## Check if it's a node
     is_node <- which(tree$node.label == node)
-    ## Return the node or the tip
+    ## Return the node or the tip
     return(ifelse(length(is_node) > 0, is_node + Ntip(tree), which(tree$tip.label == node)))
 }
 
@@ -50,7 +50,7 @@ get.branch.length <- function(node1, node2, tree, full_tree) {
             anc_subID <- get.node.ID(ancestor[1], tree)
         }
 
-        ## Get the distance between the slice and the closest ancestor (in the subtree)
+        ## Get the distance between the slice and the closest ancestor (in the subtree)
         distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
 
         ## Get it's ID in the full tree
@@ -141,7 +141,7 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     while(exists("offspring_node")) {
 
         if(offspring_node == tip) {
-            ## The offspring is just the tip
+            ## The offspring is just the tip
             return(parent_node)
         }
 
@@ -158,7 +158,7 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         precision <- num.decimals(c(off_nod_age, age))
         ## If precision are different and not equal to at least 1
         #if(length(precision) > 1 && sort(precision)[1] != 1) {
-        ## Round the node ages
+        ## Round the node ages
         num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
         off_nod_age <- round(off_nod_age, digits = num_digits)
         age <- round(age, digits = num_digits)

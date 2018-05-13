@@ -6,10 +6,10 @@
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
-#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{time.subsets}} for the models description.
+#' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{chrono.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
-#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{time.subsets}}.
+#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{chrono.subsets}}.
 #'
 #' @examples
 #' set.seed(1)
@@ -92,7 +92,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
         ## Adjusting the FADLAD
         adjust.prob <- function(one_proba, FAD, LAD, age) {
-            ## If age is lower (more recent) than FAD of descendant, set probability of ancestor to 0
+            ## If age is lower (more recent) than FAD of descendant, set probability of ancestor to 0
             if(age < FAD[which(FAD[,2] == one_proba[2]), 1]) {
                 one_proba[3] <- "0"
             }

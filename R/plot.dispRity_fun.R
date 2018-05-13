@@ -90,7 +90,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 }
 
 ## discrete plotting
-plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) {
+plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
@@ -185,7 +185,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, type, y
 }
 
 ## continuous plotting
-plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
+plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
     
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
@@ -546,7 +546,7 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
     xlim <- data_sub$plot$xlim
     ylim <- c(0, max(data_sub$plot$hist$count))
 
-    ## Plotting the simulated data
+    ## Plotting the simulated data
     plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
 
     ## Adding the observed data
@@ -558,18 +558,18 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
 }
 
 ## Plotting model tests results
-plot.model.test.support <- function(data, col, ylab, ylim, ...) {
+# plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 
-        ## Extracting the weighted aicc
-        weight_aicc <- data$aic.models[,3]
+#         ## Extracting the weighted aicc
+#         weight_aicc <- data$aic.models[,3]
 
-        ## Ordering the weighted aicc
-        ordered_aicc <- weight_aicc[order(weight_aicc, decreasing = TRUE)]
+#         ## Ordering the weighted aicc
+#         ordered_aicc <- weight_aicc[order(weight_aicc, decreasing = TRUE)]
 
-        ## Plot
-        plotcoords <- barplot(ordered_aicc, col = col, ylim = ylim,  ...)
-        # plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights") ; warning("DEBUG model.test plot")
-}
+#         ## Plot
+#         plotcoords <- barplot(ordered_aicc, col = col, ylim = ylim,  ...)
+#         # plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights") ; warning("DEBUG model.test plot")
+# }
 
 # ~~~~~~~~~~
 # sequential.test plots
@@ -587,7 +587,7 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 #         if(!is.null(token.args)) check.class(token.args, "list")
 
 #         #Creating the table results
-#         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, rounding = 10, results = "coefficients", match_call = list(cent.tend = NULL))
+#         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, digits = 10, results = "coefficients", match_call = list(cent.tend = NULL))
 
 #         #Checking if distribution
 #         is_distribution <- ifelse(length(data$models[[1]]) == 1, FALSE, TRUE)

@@ -2,7 +2,7 @@
 
 ## Should be properly implemented as an import once the newest version is live.
 
-## @author: Graeme Lloyd and Thomas Guillerme
+## @author: Graeme Lloyd and Thomas Guillerme
 
 MorphDistMatrix.support <- function(morph.matrix, distance = c("Raw", "GED", "Gower", "Max", "Comp"), transform.proportional.distances="arcsine_sqrt") {
   # Check format of transform.proportional.distances:

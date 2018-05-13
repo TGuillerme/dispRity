@@ -2,8 +2,9 @@
 #'
 #' @description Plots a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
-#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{time.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
+#' @param x A \code{dispRity} object.
+#' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
+#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{chrono.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
@@ -12,7 +13,7 @@
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the graph.
-#' @param time.subsets \code{logical} whether to handle continuous data from the \code{time.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
+#' @param chrono.subsets \code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
@@ -22,7 +23,6 @@
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
 #' @param nclass when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).
 #' @param coeff when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).
-#' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
 #'
 #' @details
 #' The different \code{type} arguments are:
@@ -58,7 +58,7 @@
 #' plot(disparity, type = "continuous")
 #' 
 #' ## Using different options (with non time.slicing option)
-#' plot(disparity, type = "continuous", time.subsets = FALSE,
+#' plot(disparity, type = "continuous", chrono.subsets = FALSE,
 #'      elements = TRUE, col = c("red", "orange", "yellow"))
 #' 
 #' ## Rarefactions plots
@@ -105,7 +105,7 @@
 # cent.tend=median
 # rarefaction = NULL
 # elements = FALSE
-# time.subsets = FALSE
+# chrono.subsets = FALSE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -123,7 +123,9 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, time.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1, ...){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+
+    data <- x
 
     #SANITIZING
     #DATA
@@ -159,6 +161,9 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
+
+            ## Silence warnings
+            options(warn = -1)
 
             ## Get the ylim
             if(missing(ylim)) {
@@ -227,25 +232,28 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
 
             ## Add the observed disparity
             lines(data$times, data$dtt, col = col[1], lwd = 1.5)
+
+            ## Re-enable warnings
+            options(warn = 0)
         } 
 
-         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
-            ## Colours
-            if(missing(col)) {
-                col <- "grey"
-            }
-            ## Ylab
-            if(missing(ylab)) {
-                ylab <- "Akaike weights"
-            }
-            ## Ylim
-            if(missing(ylim)) {
-                ylim <- NULL
-            }
+         # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+         #    ## Colours
+         #    if(missing(col)) {
+         #        col <- "grey"
+         #    }
+         #    ## Ylab
+         #    if(missing(ylab)) {
+         #        ylab <- "Akaike weights"
+         #    }
+         #    ## Ylim
+         #    if(missing(ylim)) {
+         #        ylim <- NULL
+         #    }
 
-            ## Plotting the model support
-            plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         }
+         #    ## Plotting the model support
+         #    plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
+         # }
         return(invisible())
     }
 
@@ -317,13 +325,13 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     }
 
     ## If continuous, set time to continuous Ma (default)
-    if(type == "continuous" & time.subsets) {
+    if(type == "continuous" & chrono.subsets) {
         ## Check if time.slicing was used (saved in call)
         if(data$call$subsets[1] == "continuous") {
             time_slicing <- names(data$subsets)
         }
     } 
-    if(!time.subsets) {
+    if(!chrono.subsets) {
         time_slicing <- FALSE
     } else {
         time_slicing <- names(data$subsets)
@@ -362,7 +370,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(!is.null(data$call$subsets) && data$call$subsets != "customised" && time.subsets != FALSE && rarefaction != TRUE) {
+        if(!is.null(data$call$subsets) && data$call$subsets != "customised" && chrono.subsets != FALSE && rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {
@@ -416,7 +424,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
     ## PREPARING THE PLOT
 
     ## summarising the data
-    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, rounding = 5)
+    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
 
     ## Setting the default arguments
     default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
@@ -461,7 +469,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
-        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
+        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
         # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
@@ -477,7 +485,7 @@ plot.dispRity <- function(data, type, quantiles = c(50, 95), cent.tend = median,
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         ## Personalised discrete plots
-        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density, ...) 
+        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) 
         # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)

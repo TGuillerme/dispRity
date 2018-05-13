@@ -16,12 +16,26 @@ description: "dispRity R package vignette"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, eval = TRUE, echo = FALSE}
+## master version
+version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/master/DESCRIPTION")
+version_master <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
+
+## release version
+version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/release/DESCRIPTION")
+version_release <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
+
+## CRAN version
+version_raw <- RCurl::getURL("https://cran.r-project.org/web/packages/dispRity/index.html")
+version_CRAN <- strsplit(strsplit(version_raw, split = "\n<td>Version:</td>\n<td>")[[1]][2], split = "</td>\n</tr>\n<tr>\n<td>Depends:")[[1]][1]
+```
+
 # `dispRity`
 
 This is a package for measuring disparity in `R`.
 It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
 Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is *not* restricted to any type of matrices!
-This manual is based on the version `0.5.0`.
+This manual is based on the version `r version_release`.
 
 ## What is `dispRity`?
 This is a modular package for measuring disparity in `R`.
@@ -37,7 +51,13 @@ This will allow you to finely tune your multidimensional analysis to the needs o
 
 ## Installing and running the package
 
-You can install this package easily if you use the latest version of `R` (> 3.4.0) and `devtools`.
+You can install this package easily, directly from the CRAN:
+
+```{r, eval = FALSE}
+install.packages("dispRity")
+```
+
+Alternatively, for the most up to data version and some functionalities not compatible with the CRAN, you can use the package through GitHub using `devtool` (see [to CRAN or not to CRAN?](#noCRAN) for more details):
 
 ```{r, eval=FALSE}
 ## Checking if devtools is already installed
@@ -45,10 +65,9 @@ if(!require(devtools)) install.packages("devtools")
 
 ## Installing the latest released version directly from GitHub
 install_github("TGuillerme/dispRity", ref = "release")
-
-## Loading the package
-library(dispRity)
 ```
+
+Anyways to upload it, you can use 
 
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
 ## loading the package and setting up the start seed.
@@ -57,21 +76,30 @@ library(dispRity)
 set.seed(123)
 ```
 
-Note this uses the `release` branch (version`0.5`). <!-- @@@ -->
+Note this uses the `release` branch (`r version_release`).
 For the piping-hot (but potentially unstable) version, you can change the argument `ref = release` to `ref = master`.
 `dispRity` depends mainly on the `ape` package and uses functions from several other packages (`ade4`, `geometry`, `grDevices`, `hypervolume`, `paleotree`, `snow`, `Claddis`, `geomorph` and `RCurl`).
 
-## Why not CRAN?
+## To CRAN or not to CRAN? {#noCRAN}
 
-This package is not available on CRAN.
-This is mainly because some parts are still in development and that the reactivity of GitHub is better for implementing new suggestions from users.
-However, the package follows the strict (and useful!) CRAN standards via Travis.
+This package can be installed via [the CRAN]() or via [GitHub](https://github.com/TGuillerme/dispRity).
+
+ * The CRAN version is a more "strict" version of the package that does not include some functionalities (such as [`Claddis.ordination`](#Claddis-ordination) or this gitbook vignette) because of compatibility issues with the CRAN requirement.
+
+ * The GitHub version is a more "reactive" version (fed by user's suggestions and comments) and can contain more functionalities (see list below). This version exists on a `"release"` branch which is tested as strictly as the CRAN version with Travis and codecov. The `"master"` branch contains always the latest "piping hot", not yet release version. It might (though rarely) be bugged.
 
 <!-- badges out start -->
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
-[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
+[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 <!-- badges out end   -->
+
+Note however, that apart from the functions listed below, both versions of the package have the same tested and implemented functions.
+
+Functions not available on the CRAN version (`r version_CRAN`):
+
+ * [`Claddis.ordination`](#Claddis-ordination)
+
 
 ## Help
 
@@ -88,5 +116,5 @@ You can cite both the package or this manual with the following citation:
 <!-- > Guillerme, T. & Cooper, N. (2016). The dispRity R package manual. Fighsare XXXX -->
 
 Note that this citation is only temporary (but can still be used!).
-A proper description of the package is currently in review in Methods in Ecology and Evolution and should be re-submitted this winter.
+A proper description of the package is currently in review in Methods in Ecology and Evolution.
 Upon acceptance (hopefully!), a proper DOI will be released for this manual and the package description.

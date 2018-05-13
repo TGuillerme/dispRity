@@ -16,7 +16,7 @@
 #' ## A random tree with the distance since the root.
 #' tree.age(rtree(10), order = 'present')
 #'
-#' @seealso \code{\link{slice.tree}}, \code{\link{time.subsets}}.
+#' @seealso \code{\link{slice.tree}}, \code{\link{chrono.subsets}}.
 #'
 #' @author Thomas Guillerme
 

@@ -17,7 +17,7 @@
 #' Claddis.ordination(Claddis::Michaux1989)
 #' }
 #'
-#' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -29,7 +29,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     ## Data
     error_msg <- paste0("data does not contain a matrix.\nUse Claddis::ReadMorphNexus to generate the proper data format.")
     check.class(data, "list", msg = error_msg)
-    ## Must have at least one matrix
+    ## Must have at least one matrix
     if(!any(names(data) %in% "matrix")) {
         stop(error_msg, call. = FALSE)
     }
@@ -59,7 +59,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     ## Transforming the Claddis data
 
     ## Compute the distance
-    distance <- MorphDistMatrix.support(data, distance = distance) #TG: Change to the proper version
+    distance <- MorphDistMatrix.support(data, distance = distance)
 
     ## Ordinate the matrix
     ordination <- stats::cmdscale(distance, k = k, add = add, ...)

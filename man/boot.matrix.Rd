@@ -8,7 +8,7 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
   verbose = FALSE, boot.type = "full")
 }
 \arguments{
-\item{data}{A \code{matrix} or a list of matrices (typically output from \link{time.subsets} or \link{custom.subsets} - see details).}
+\item{data}{A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).}
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
@@ -65,7 +65,7 @@ boot.matrix(matrix_list, bootstraps = 20)
 
 }
 \seealso{
-\code{\link{cust.subsets}}, \code{\link{time.subsets}}, \code{\link{dispRity}}.
+\code{\link{cust.subsets}}, \code{\link{chrono.subsets}}, \code{\link{dispRity}}.
 }
 \author{
 Thomas Guillerme

@@ -1,0 +1,148 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{pdflscape}
+\usepackage{fixltx2e}
+\usepackage{textcomp}
+\usepackage{fullpage}
+\usepackage{float}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{ifthen}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{enumerate}
+\usepackage[osf]{mathpazo}
+\usepackage{dcolumn}
+\usepackage{lineno}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\pagenumbering{arabic}
+
+%Pagination style and stuff
+%\linespread{2} 
+
+\raggedright
+\setlength{\parindent}{0.5in}
+\setcounter{secnumdepth}{0} 
+\renewcommand{\section}[1]{%
+\bigskip
+\begin{center}
+\begin{Large}
+\normalfont\scshape #1
+\medskip
+\end{Large}
+\end{center}}
+\renewcommand{\subsection}[1]{%
+\bigskip
+\begin{center}
+\begin{large}
+\normalfont\itshape #1
+\end{large}
+\end{center}}
+\renewcommand{\subsubsection}[1]{%
+\vspace{2ex}
+\noindent
+\textit{#1.}---}
+\renewcommand{\tableofcontents}{}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\textbf{RE: MEE-18-01-025}\\
+\bigskip
+Dear Editor,\\
+\bigskip
+
+I have taken all the reviewers comments on board (except the CRAN release - see below) and updated the manuscript and the package accordingly (the new released version is now 1.0.2).
+Please find my detailed response below.
+To save some words, I have also cut down some text in the section describing the time-slice models and directly refer to the new publication detailing the models (Guillerme and Cooper 2018, Palaeontology 10.1111/pala.12364 - in the ``Splitting the multidimensional space into subsets'' section in this manuscript).
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% REVIEWER 1
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+\section{Reviewer 2}
+
+\begin{enumerate}
+
+\item{\textcolor{blue}{- In table 1 the singular of strata is stratum.}}
+
+I have fixed this typo.
+
+\item{\textcolor{blue}{- Rows in Tables 1 and 2 are not well distinguished, i.e., I had to look at multiple columns to know where text broke over a line versus a new row.}}
+
+I have added horizontal lines to this table.
+
+\item{\textcolor{blue}{L187 - Sentence seems to peter out. Close parenthesis and period?}}
+
+I am not sure what this reviewer refers to.
+I have double checked punctuation in this paragraph.
+
+\item{\textcolor{blue}{L304 - Probably shouldn't use exclamation marks in a scientific paper unless they are factorials.}}
+
+I have removed the exclamation mark.
+
+\end{enumerate}
+
+
+\section{Reviewer 3}
+
+\begin{enumerate}
+
+\item{\textcolor{blue}{To not publish this package on CRAN would be a large mistake, in my opinion.}}
+
+I do understand the reviewer's concern and believe that having the package on the CRAN would allow greater visibility for this package.
+However, I do not wish to submit the package to the CRAN.
+In fact, one main draw back for packages on CRAN is that they do not allow to easily add/fix features regularly (the waiting period between two submissions should be at least 2 month).
+Furthermore, many features in the \texttt{dispRity} package cannot pass the CRAN checks, including the unit testing, the gitbook vignette or the use of functions implemented in other packages (or packages versions) not released on the CRAN.
+Therefore, a CRAN version of the \texttt{dispRity} package would contain less features than the one currently on GitHub.
+
+\item{\textcolor{blue}{First, CRAN's archival system makes it possible to go back in time and install previous versions of package. This is extremely useful, even if a reason to do that does not seem obvious.}}
+
+The \texttt{dispRity} releases are archived regularly on ZENODO (since the last three years - \url{https://zenodo.org/search?page=1&size=20&q=conceptrecid:%22593021%22&sort=-version&all_versions=True}).
+Each major release thus has an attached and citeable DOI and can be downloaded as ``time capsules'' (i.e. the version of the package as it was at the time of release).
+
+\item{\textcolor{blue}{Second, CRAN checks all dependencies and reverse dependencies on package updates, and makes sure packages are compliant with R updates. This is important if this package is supposed to work with other packages, which is rather true in this case. Finally (but perhaps not comprehensively), publishing packages on CRAN means performing CRAN checks that are much more involved than the excellent tool offered by devtools, guaranteeing compatibility with multiple operating systems.}}
+
+The \texttt{dispRity} package is constantly tested through Travis (\url{https://travis-ci.org/TGuillerme/dispRity/branches}).
+These tests include the normal CRAN checks (dependencies, compilation on different OS and different architectures) but also a thorough unit test of the functions themselves (currently at 91\% and I am aiming for a full coverage in the future - \url{https://codecov.io/gh/TGuillerme/dispRity}).
+
+Additionally, the package meets MEE policies on publishing code (\url{(http://besjournals.onlinelibrary.wiley.com/hub/journal/10.1111/(ISSN)2041-210X/journal-resources/policy-on-publishing-code.html}).
+
+
+\item{\textcolor{blue}{Table 2 seems to be lacking a caption and part of it just seems to have wandered into the text on page 12. }}
+
+The caption is part of the table in the LaTeX document.
+However, due to the table size, it doesn't fit in the page and was thus written separately.
+I have now forced the table to appear on the page before the caption.
+
+\item{\textcolor{blue}{I wondered, as pairwise.dist just vectorizes a distance matrix from vegan::vegdist, if these functions might be more so necessary internal functions that the author chose to externalize for users? 
+If that is the case, maybe some careful wording - more than just citing the original sources - is needed to not portray all of these as features of the new package.
+One suggestion is to offer, e.g., convhulln\$vol rather than convhull.volume as the function that calculates hull volume, in Table 2, and indicate that convhull.volume similarly returns the \$vol part of a convhull object, so one does not have to sift through a list. 
+(The idea is to do this with all cloned functions.) 
+Alternatively, write new bare functions (maybe the C++ coding could be improved for geometry::convhull?).
+Regardless of solution, the current help page for Disparity Metrics states things like, " Both convhull functions are based on the convhulln function."  They are not based on this function, they ARE this function.  Some effort should be made to either better credit original sources or avoid cloning functions, altogether.}}
+
+I have now specifically made clear that \texttt{convhull.surface}, \texttt{convhull.volume} and \texttt{pairwise.dist} are just duplicates of their associated original functions, both in the manuscript, package and vignettes.
+I will develop more C implementations for the package metrics and core functions in the future.
+
+\item{\textcolor{blue}{Finally, there were some English irregularities (e.g., data is the plural form of datum) that could be fixed with some proofing from a native English-speaking scientist.}}
+
+A colleague has double checked the manuscript for typos.
+
+\end{enumerate}
+
+\end{document}

@@ -69,7 +69,7 @@ adonis.dispRity(multi_groups, matrix ~ g1 + g2)
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data(BeckLee_ages)
-time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree, 
+time_subsets <- chrono.subsets(BeckLee_mat50, BeckLee_tree, 
      method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
      FADLAD = BeckLee_ages)
 
@@ -77,13 +77,13 @@ time_subsets <- time.subsets(BeckLee_mat50, BeckLee_tree,
 adonis.dispRity(time_subsets, matrix ~ time)
 
 ## Running the NPMANOVA with each time bin as a predictor
-adonis.dispRity(time_subsets, matrix ~ time.subsets)
+adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 
 }
 \seealso{
-\code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}.
+\code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
 
-\code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{time.subsets}}
+\code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}
 }
 \author{
 Thomas Guillerme

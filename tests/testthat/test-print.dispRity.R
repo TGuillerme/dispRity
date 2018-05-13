@@ -22,8 +22,12 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
+    list <- capture.output(print.dispRity(test, all = TRUE))
+    expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
+
+
     ## Time subsets
-    test <- time.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
+    test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
     expect_equal(capture.output(test), 
         c(
@@ -32,7 +36,7 @@ test_that("normal printing", {
         "    100 - 90, 90 - 50."
     ))
 
-    test <- time.subsets(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
+    test <- chrono.subsets(BeckLee_mat99, time = c(100,90,80,70,50,60,40), method = "continuous", tree = BeckLee_tree, model = "ACCTRAN")
 
     expect_equal(capture.output(test), 
         c(
@@ -62,7 +66,7 @@ test_that("normal printing", {
     ))
 
     ## Bootstrapped + subsets
-    test <- boot.matrix(time.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
+    test <- boot.matrix(chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree))
 
     expect_equal(capture.output(test), 
         c(
@@ -93,6 +97,15 @@ test_that("normal printing", {
         "Disparity was calculated as: c(median, centroids)."
     ))
 
+    ## Fully rarefied
+    expect_equal(capture.output(dispRity(boot.matrix(BeckLee_mat50, rarefaction = TRUE), metric = mean)),
+        c(
+        " ---- dispRity object ---- ",
+        "50 elements with 48 dimensions.",
+        "Data was bootstrapped 100 times (method:\"full\") and fully rarefied.",
+        "Disparity was calculated as: mean."
+    ))
+
 })
 
 test_that("randtest printing", {
@@ -108,10 +121,29 @@ test_that("randtest printing", {
         "", "      Std.Obs   Expectation      Variance ",
         "-1.400160e-01  3.141577e+29  5.034313e+60 "))
 
+    expect_equal(capture.output(print.dispRity(test, all = TRUE)),
+        c(
+        "[[1]]"                                                                  ,
+        "Monte-Carlo test"                                                       ,
+        "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
+        "    digits = 10)[, 3], alter = alter)"                                  ,
+        ""                                                                       ,
+        "Observation: 6.634e-07 "                                                ,
+        ""                                                                       ,
+        "Based on 100 replicates"                                                ,
+        "Simulated p-value: 0.03960396 "                                         ,
+        "Alternative hypothesis: two-sided "                                     ,
+        ""                                                                       ,
+        "      Std.Obs   Expectation      Variance "                             ,
+        "-1.400160e-01  3.141577e+29  5.034313e+60 "                             ,
+        ""
+        ))
+
 })
 
 
 test_that("dtt printing", {
+    set.seed(1)
     ## Loading geiger's example data set
     data <- matrix(rnorm(20), ncol = 2)
     rownames(data) <- paste0("t", 1:10)
@@ -125,9 +157,23 @@ test_that("dtt printing", {
 
     print_dtt <- capture.output(dispRity_dtt)
 
-    expect_equal(print_dtt[length(print_dtt)-1],
-        c("- attr(*, \"class\") = \"dispRity\" \"dtt\""))
-    expect_equal(print_dtt[length(print_dtt)],
-        c("Use plot.dispRity to visualise."))
+    expect_equal(print_dtt,
+        c(
+        "Disparity-through-time test (modified from geiger:dtt)" ,
+        "Call: dtt.dispRity(data = data[], metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
+        "",
+        "Observation: 0.683588221189817",
+        "",
+        "Model: BM",
+        "Based on 10 replicates",
+        "Simulated p-value: 0.9",
+        "Alternative hypothesis: two-sided",
+        "",
+        "    Mean.dtt Mean.sim_MDI  var.sim_MDI ",
+        "  1.09400273   0.66802605   0.02601094 ",
+        "",
+        "Use plot.dispRity() to visualise." 
+        ))
+
 
 })

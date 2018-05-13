@@ -23,6 +23,12 @@ test_that("internal function char.diff", {
     matrix <- list(as.character(A), as.character(B))
     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
 
+    ## char.diff_R
+    A <- c(1,2,3,1,1,3)
+    B <- c(NA,2,3,NA,1,3)
+    matrix <- list(as.character(A), as.character(B))
+    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+
 })
 
 test_that("char.diff pair", {
@@ -131,6 +137,16 @@ test_that("char.diff plot (graphic)", {
     ## Pairwise comparisons in a morphological matrix
     morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 
+    ## Errors
+    expect_error(plot.char.diff("bob", type = "density"))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", legend.pos = 1)))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", main = c("main", "bob"))))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", col = "blue")))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "matrix", col = "blue")))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", xlab = c("main", "bob"))))
+    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", ylab = c("main", "bob"))))
+
+
     ## Plotting a matrix
     capture_warnings(test <- plot.char.diff(morpho_matrix))
     expect_equal(names(test), c("rect", "text"))
@@ -139,6 +155,13 @@ test_that("char.diff plot (graphic)", {
     ## Plotting the density profile of a char.diff object
     capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
     test <- plot(char.diff_matrix, type = "density")
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+
+    ## With NA
+    morpho_matrix[, 1] <- NA
+    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix))
+    expect_equal(warn, "NAs introduced by coercion")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })

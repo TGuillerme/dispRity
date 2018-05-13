@@ -170,7 +170,7 @@ test_that("null.test example works", {
     expect_is(results, c("dispRity", "randtest"))
 
     for(test in 1:length(results)) {
-        expect_equal(round(results[[test]][[1]], digits = 6), summary(sum_variances, rounding = 6)$obs[test])
+        expect_equal(round(results[[test]][[1]], digits = 6), summary(sum_variances, digits = 6)$obs[test])
         expect_equal(results[[test]][[5]], 0.09090909)
     }
 

@@ -2,7 +2,6 @@
 % Please edit documentation in R/dispRity.metric.R
 \name{dispRity.metric}
 \alias{dispRity.metric}
-\alias{k.root}
 \alias{dimension.level3.fun}
 \alias{dimension.level2.fun}
 \alias{dimension.level1.fun}
@@ -28,9 +27,9 @@ dimension.level1.fun(X, ...)
 \arguments{
 \item{matrix}{A matrix.}
 
-\item{X}{A vector.}
-
 \item{...}{Optional arguments to be passed to the function.}
+
+\item{X}{A vector.}
 }
 \description{
 Different implemented disparity metrics.
@@ -42,12 +41,12 @@ The currently implemented dimension-level 1 metrics are:
 \itemize{
   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{
-         \item WARNING: this function only calculates the exact volume from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}})
+         \item WARNING: this function uses the matrix' eigen values. These eigen values are only estimated correctly from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}}). For any other type of matrix, the eigen values needs to be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
      }
-  \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix.
-  \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix.
+  \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
+  \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
      \itemize{
-         \item Both \code{convhull} functions are based on the \code{\link[geometry]{convhulln}} function
+         \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
          \item WARNING: both \code{convhull} functions can be computationally intensive!
      }
   \item \code{diagonal}: calculates the longest distance in the ordinated space.
@@ -69,7 +68,7 @@ The currently implemented dimension-level 2 metrics are:
 
   \item \code{ancestral.dist}: calculates the Euclidean distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}).
 
-  \item \code{pairwise.dist}: calculates the pairwise distance between elements. The distance type can be changed via the \code{method} argument (see \code{\link[stats]{dist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
+  \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)}. The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C.
 
   \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
 
@@ -100,7 +99,13 @@ centroids(dummy_matrix, centroid = 0)
 mode.val(rnorm(25))
 
 ## Ellipsoid volume of a matrix
-ellipse.volume(dummy_matrix) # WARNING: only valid for MDS/PCO matrices
+ellipse.volume(dummy_matrix)
+## WARNING: this is only valid without eigen vaues for MDS/PCO matrices.
+## Use the correct eigen values for other types of matrices:
+## Ordination
+ordination <- prcomp(dummy_matrix)
+## Calculating the ellipsoid volume
+ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
 
 ## Convex hull hypersurface of a matrix
 convhull.surface(dummy_matrix)

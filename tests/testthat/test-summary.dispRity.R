@@ -4,7 +4,7 @@ context("summary.dispRity")
  
 # Loading the data
 load("test_data.Rda")
-data<-test_data$ord_data_tips
+data <- test_data$ord_data_tips
 data(disparity)
 
 #######################
@@ -75,18 +75,18 @@ test_that("get.digit", {
 
 test_that("round.column", {
     column <- c(12.123, 1.1234)
-    expect_equal(round.column(column, rounding = "default"), c(12.12, 1.12))
-    expect_equal(round.column(column, rounding = 5), c(12.12300, 1.12340))
-    expect_equal(round.column(column, rounding = 1), c(12.1, 1.1))
-    expect_equal(round.column(column, rounding = 0), c(12, 1))
-    expect_equal(round.column(column, rounding = -1), c(10, 0))
+    expect_equal(round.column(column, digits = "default"), c(12.12, 1.12))
+    expect_equal(round.column(column, digits = 5), c(12.12300, 1.12340))
+    expect_equal(round.column(column, digits = 1), c(12.1, 1.1))
+    expect_equal(round.column(column, digits = 0), c(12, 1))
+    expect_equal(round.column(column, digits = -1), c(10, 0))
 })
 
-test_that("rounding.fun", {
+test_that("digits.fun", {
     test <- matrix(c(1, 1, 123.123456), nrow = 1)
-    expect_equal(rounding.fun(test, rounding = "default")[1,3], 123.1)
-    expect_equal(rounding.fun(test, rounding = 3)[1,3], 123.123)
-    expect_equal(rounding.fun(test, rounding = -2)[1,3], 100)
+    expect_equal(digits.fun(test, digits = "default")[1,3], 123.1)
+    expect_equal(digits.fun(test, digits = 3)[1,3], 123.123)
+    expect_equal(digits.fun(test, digits = -2)[1,3], 100)
 })
 
 #######################
@@ -100,6 +100,12 @@ test_that("Correct error management", {
     expect_error(summary(make.dispRity()))
     expect_error(summary(disparity, quantiles = c(0.1, 10)))
     expect_error(summary(disparity, quantiles = c(10, 101)))
+
+
+    dummy <- dispRity
+    class(dummy) <- c("dispRity", "bob")
+    expect_error(summary(dummy))
+
 })
 
 #Case 1, no bootstrap
@@ -253,10 +259,10 @@ test_that("Example works", {
         dim(summary(sum_of_ranges)), c(2,8)
         )
     expect_is(
-        summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0), "data.frame"
+        summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0), "data.frame"
         )
     expect_equal(
-        dim(summary(sum_of_ranges, quantile=75, cent.tend=median, rounding=0)), c(2,6)
+        dim(summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0)), c(2,8)
         )
 })
 
@@ -291,7 +297,7 @@ test_that("summary.dispRity works with small, empty/subsets", {
     data <- test_data$ord_data_tips_nodes
     FADLAD <- test_data$FADLAD_data
 
-    silent <- capture_warnings(data <- dispRity(boot.matrix(time.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
+    silent <- capture_warnings(data <- dispRity(boot.matrix(chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 
     test <- summary(data)
     expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))

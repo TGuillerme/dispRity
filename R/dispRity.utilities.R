@@ -159,7 +159,7 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
 # bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
 # disparity_data <- dispRity(bootstrapped_data, variances)
 # get.subsets(bootstrapped_data, subsets = "66.75552") # 1 subsets for 23 elements
@@ -216,7 +216,7 @@ get.subsets <- function(data, subsets) {
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets_full <- time.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
+# subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
 # bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
 # data <- dispRity(bootstrapped_data, c(sum,variances))
 # extract.dispRity(data, observed = FALSE, rarefaction = 5,subsets = 2)
@@ -228,7 +228,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     
     ## Data
     check.class(data, "dispRity")
-    ## Data must have disparity values
+    ## Data must have disparity values
     if(is.null(data$call$disparity)) {
         stop("dispRity object does not contain disparity values.")
     }
@@ -267,7 +267,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     }
 }
 
-#' @title Scaling and centering disparity results.
+#' @title Rescaling and centering disparity results.
 #'
 #' @description Scales or/and centers the disparity measurements.
 #'
@@ -283,9 +283,9 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' 
 #' ## Scaling the data
 #' summary(disparity) # No scaling
-#' summary(scale(disparity)) # Dividing by the maximum
+#' summary(rescale.dispRity(disparity)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(scale.dispRity(disparity, max = 0.1))
+#' summary(rescale.dispRity(disparity, max = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
 #'
@@ -301,11 +301,12 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 # summary(data) # No scaling
-# summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
-# summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
-# summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {
@@ -351,7 +352,7 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 #'
 #' @description Sort (or order) the subsets of a \code{dispRity} object.
 #'
-#' @param data A \code{dispRity} object.
+#' @param x A \code{dispRity} object.
 #' @param decreasing \code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.
 #' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsets.
 #' @param ... optional arguments to be passed to \code{sort}.
@@ -373,13 +374,14 @@ scale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, 
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets <- time.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+# subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
 # data <- dispRity(subsets, metric = mean)
 # summary(data)
 # summary(sort(data, decreasing = TRUE))
 # summary(sort(data, sort = c(7,1,3,4,5,2,6)))
 
-sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
+sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
+    data <- x
 
     ## Sanitizing
 
@@ -432,6 +434,7 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 #' A \code{dispRity} object containing the original matrix and subsets.
 #' NOTE: if the data are already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
 #' 
+#' 
 #' @examples
 #' ## Generate subsets from a dummy matrix
 #' dummy_matrix <- matrix(rnorm(120), 40)
@@ -440,20 +443,20 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 #'                   "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
 #' 
 #' ## Merging the two first subsets
-#' merge.subsets(dummy_subsets, c(1,2))
+#' combine.subsets(dummy_subsets, c(1,2))
 #' 
 #' ## Merging the three subsets by name
-#' merge.subsets(dummy_subsets, c("d", "c", "e"))
+#' combine.subsets(dummy_subsets, c("d", "c", "e"))
 #' 
 #' ## Merging the subsets to contain at least 20 taxa
-#' merge.subsets(dummy_subsets, 10)
+#' combine.subsets(dummy_subsets, 10)
 #' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
 #For testing
-# stop("DEBUG merge.time.subsets")
+# stop("DEBUG merge.chrono.subsets")
 # source("sanitizing.R")
 # source("dispRity.utilities_fun.R")
 
@@ -463,7 +466,7 @@ sort.dispRity <- function(data, decreasing = FALSE, sort, ...) {
 # data2 <- time_binsEQ_Beck
 # after = TRUE
 
-merge.subsets <- function(data, subsets) {
+combine.subsets <- function(data, subsets) {
 
     ## Internal cleaning function for only selecting the elements of the list in a subset
     select.elements <- function(subset) {
@@ -473,7 +476,7 @@ merge.subsets <- function(data, subsets) {
 
     ## Saving the call
     match_call <- match.call()
-    # match_call <- list(data = "data") ; warning("DEBUG merge.subsets")
+    # match_call <- list(data = "data") ; warning("DEBUG combine.subsets")
 
     ## Sanitizing
 
@@ -538,7 +541,7 @@ merge.subsets <- function(data, subsets) {
     }
 
     if(clean_data) {
-        ## Cleaning the data
+        ## Cleaning the data
         for(subs in 1:(length(data$subsets) - 1)) {
             ## Loop oversize buffer
             if(subs > (length(data$subsets) - 1)) {break}
@@ -584,7 +587,7 @@ merge.subsets <- function(data, subsets) {
 #' ## What are the number of elements per subsets?
 #' size.subsets(disparity)
 #' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{time.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -624,7 +627,7 @@ size.subsets <- function(data) {
 #' test.dispRity(disparity, wilcox.test, comparisons = extinction_time,
 #'               correction = "bonferroni")
 #' 
-#' @seealso
+#' @seealso \code{\link{chrono.subsets}}, \code{\link{test.dispRity}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -634,7 +637,7 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
     ## data
     check.class(data, "dispRity")
     if(is.null(data$subsets)) {
-        stop("data has no subsets. Use the time.subsets to generate some.")
+        stop("data has no subsets. Use the chrono.subsets to generate some.")
     }
 
     ## extinction

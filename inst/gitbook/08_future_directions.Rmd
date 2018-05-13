@@ -30,7 +30,7 @@ I am slowly implementing parallel disparity calculation as well as C implementat
 ## More modularity
 
 I am equally slowly developing functions to allow more of the options in the package to be modular (in the same way as the `metric` argument in `dispRity`).
-The next arguments to benefit this increased modularity will be `time.subsets`'s `model` argument and `boot.matrix`'s `type` argument.
+The next arguments to benefit this increased modularity will be `chrono.subsets`'s `model` argument and `boot.matrix`'s `type` argument.
 
 ## More suggestions?
 
