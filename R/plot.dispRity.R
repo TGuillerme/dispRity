@@ -237,23 +237,23 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             options(warn = 0)
         } 
 
-         # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
-         #    ## Colours
-         #    if(missing(col)) {
-         #        col <- "grey"
-         #    }
-         #    ## Ylab
-         #    if(missing(ylab)) {
-         #        ylab <- "Akaike weights"
-         #    }
-         #    ## Ylim
-         #    if(missing(ylim)) {
-         #        ylim <- NULL
-         #    }
+         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+            ## Colours
+            if(missing(col)) {
+                col <- "grey"
+            }
+            ## Ylab
+            if(missing(ylab)) {
+                ylab <- "Akaike weights"
+            }
+            ## Ylim
+            if(missing(ylim)) {
+                ylim <- NULL
+            }
 
-         #    ## Plotting the model support
-         #    plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         # }
+            ## Plotting the model support
+            plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
+         }
         return(invisible())
     }
 
