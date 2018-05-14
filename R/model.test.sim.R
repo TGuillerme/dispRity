@@ -5,13 +5,17 @@
 #' @description Fit simulate models of disparity change through time
 #'
 #' @param number.sim The number of seperate simulations 
-#' @param model The named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model 
+
+ 
+#TG: maybe change these arguments to single names for the three first ones? Like sim, models, return?
+
+
+#' @param model.type.in The named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model 
 #' @param return.full Option to return just the disaprity measure (FALSE, default) or to return the full dispRity.model.test object. If return.full=TRUE and and number.sim > 1 the return is a list of lists
 #' @param time.split The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models
 #' @param time.span The length of the sequence of class numeric. If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to time.span in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.
 #' @param variance The variance of each sample of class numeric. If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the variance of each sample in the sequence
 #' @param sample.size The sample.size of each sample of class numeric. If one number is supplied this is the sample.size for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the sample.size of each sample in the sequence
-#' @param time.split A vector of the age or ages at which the mode or optima changes
 #' @param ancestral.state The ancestral state at the start of the sequence (i.e., time = 0)
 #' @param sigma.squared The step-variance of the Brownian motion-type processes
 #' @param optima.1 The optima applied to the first phase of the OU processes
@@ -20,6 +24,14 @@
 #' @param theta.1 The theta applied to the first phase of the Stasis processes
 #' @param theta.2 The theta applied to the second phase of the Stasis processes
 #' @param theta.3 The theta applied to the third phase of the Stasis processes
+
+
+#TG: for the optimas, thetas and alpha and omega, it might be more efficient to pass them as a list defined by the user into an argument named "parameters".
+#TG: e.g. parameters = list(optima.1 = 42, theta.1 = 42, alpha = 42)
+#TG: this might be easier to parallel in the future and will probably allow a better management of default arguments.
+#TG: for example, if omega is not passed it can be defaulted as a if(is.null(parameters$omega)) {parameters$omega <- default.value}
+
+
 #' @param alpha The attraction parameter of the OU processes
 #' @param omega The attraction parameter of the Stasis process
 #' @param eb.rate The exponential decrease parameter of the early burst process
