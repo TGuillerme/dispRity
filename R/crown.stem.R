@@ -45,14 +45,14 @@ crown.stem <- function(tree, inc.nodes = TRUE, output.names = TRUE) {
     living_taxa <- as.character(tree_ages[which(tree_ages[,1] == 0), 2])
 
     if(length(living_taxa) == 0) {
-        stop(paste0("No taxa with age 0 found in", match_call, "."))
+        stop(paste0("No taxa with age 0 found in", match_call, "."), call. = FALSE)
     }
 
     ## Finding the MRCA for these species
     MRCA <- getMRCA(tree, tip = living_taxa)
 
     if(is.null(MRCA)) {
-        stop(paste0("Only one taxon of age 0 found (", living_taxa ,")."))
+        stop(paste0("Only one taxon of age 0 found (", living_taxa ,")."), call. = FALSE)
     }
 
     ## Extract the crown group

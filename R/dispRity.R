@@ -117,7 +117,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     } else {
         ## Making sure matrix exist
         if(is.null(data$matrix)) {
-            stop(paste(match_call$data, "must contain a matrix."))
+            stop(paste(match_call$data, "must contain a matrix."), call. = FALSE)
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
@@ -130,7 +130,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
-        stop("Impossible to apply a dimension-level 3 metric on disparity data.")
+        stop("Impossible to apply a dimension-level 3 metric on disparity data.", call. = FALSE)
     }
 
     ## Dimensions
@@ -138,7 +138,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         ## Else must be a single numeric value (proportional)
         silent <- check.class(dimensions, c("numeric", "integer"), " must be a number or proportion of dimensions to keep.")
         check.length(dimensions, 1, " must be a number or proportion of dimensions to keep.", errorif = FALSE)
-        if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
+        if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.", call. = FALSE)
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
         if(dimensions > ncol(data$matrix)) {
             warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))

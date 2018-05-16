@@ -60,14 +60,14 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         #model is not a sure function
         implemented_parsimony <- c("fitch", "sankoff")
         if(all(is.na(match(parsimony, implemented_parsimony)))) {
-            stop("The parsimony argument must be either a user's function or one of the following: ", paste(implemented_parsimony, collapse=", "), sep="")
+            stop("The parsimony argument must be either a user's function or one of the following: ", paste(implemented_parsimony, collapse=", "), sep="", call. = FALSE)
         }
         #setting the parsimony algorithm
         use.optim.parsimony <- TRUE
         parsimony.algorithm <- phangorn::optim.parsimony
         method <- parsimony
     } else {
-        stop("User functions not implemented yet for parsimony argument.")
+        stop("User functions not implemented yet for parsimony argument.", call. = FALSE)
         # use.optim.parsimony <- FALSE
         # parsimony.algorithm <- phangorn::parsimony
     }
@@ -75,7 +75,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     #first.tree
     if(class(first.tree) != "function") {
         if(any(unlist(lapply(first.tree, class)) != "function")) {
-            stop("first.tree argument must be a list of functions to calculate the first tree.")
+            stop("first.tree argument must be a list of functions to calculate the first tree.", call. = FALSE)
         }
     }
 
@@ -84,7 +84,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         check.class(orig.tree, "phylo")
         #must be same size as the matrix
         if(any(sort(row.names(matrix)) != sort(orig.tree$tip.label))) {
-            stop("Provided orig.tree has not the same taxa as the matrix.")
+            stop("Provided orig.tree has not the same taxa as the matrix.", call. = FALSE)
         }
         #distance
         check.class(distance, "function")
