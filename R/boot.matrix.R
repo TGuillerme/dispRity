@@ -95,10 +95,10 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         ## With the correct names
         data_names <- names(data)
         if(is.null(data_names)) {
-            stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."))
+            stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."), call. = FALSE)
         } else {
             if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsets") {
-                stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."))
+                stop(paste(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions."), call. = FALSE)
             }
         }
 
@@ -195,7 +195,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         check.length(dimensions, 1, " must be a proportional threshold value.", errorif = FALSE)
         if(dimensions < 0) stop("Number of dimensions to remove cannot be less than 0.")
         if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.")
+        if(dimensions > ncol(data$matrix)) stop("Number of dimensions to remove cannot be more than the number of columns in the matrix.", call. = FALSE)
         data$call$dimensions <- dimensions
     } else {
         data$call$dimensions <- ncol(data$matrix)

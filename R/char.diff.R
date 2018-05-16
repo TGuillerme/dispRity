@@ -121,7 +121,7 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
 
     ## Checking the input type
     if(!any(class(matrix) == "matrix")) {
-        stop(paste(match_call$matrix, "must be a matrix."))
+        stop(paste(match_call$matrix, "must be a matrix."), call. = FALSE)
     } else {
         ## If the input is just a matrix, calculate the characters differences
         if(!any(class(matrix) == "char.diff")) {

@@ -67,7 +67,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
         results <- data[, which(colnames(data) == what)]
     }
     if(length(results) == 0) {
-        stop("What argument was not found in the data.frame.")
+        stop("What argument was not found in the data.frame.", call. = FALSE)
     }
 
     #col
@@ -94,7 +94,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
         if(class(diag) == "character") {
             check.length(diag, 1, " must be a single numeric character or 'max' or 'min'.")
             if(diag != "max" && diag != "min") {
-                stop("Diag argument must be a single numeric character or 'max' or 'min'.")
+                stop("Diag argument must be a single numeric character or 'max' or 'min'.", call. = FALSE)
             }     
         } else {
             check.class(diag, "numeric")
@@ -109,10 +109,10 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     if(!missing(add)) {
         check.length(add, 1, " must be a single 'numeric' or 'character' string.")
         if(class(add) != "character" && class(add) != "numeric") {
-            stop("Add must be a single 'numeric' or 'character' string.")
+            stop("Add must be a single 'numeric' or 'character' string.", call. = FALSE)
         }
         if(missing(binary)) {
-            stop("A threshold for binary argument must be provided.")
+            stop("A threshold for binary argument must be provided.", call. = FALSE)
         }
         #Deactivate legend
         legend <- FALSE

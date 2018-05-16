@@ -69,7 +69,7 @@ fill.dispRity <- function(data) {
     if(!is.null(data$matrix)) {
         check.class(data$matrix, "matrix")
     } else {
-        stop("dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
+        stop("dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)", call. = FALSE)
     }
 
     ## Dimensions
@@ -230,7 +230,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     check.class(data, "dispRity")
     ## Data must have disparity values
     if(is.null(data$call$disparity)) {
-        stop("dispRity object does not contain disparity values.")
+        stop("dispRity object does not contain disparity values.", call. = FALSE)
     }
 
     ## Observed
@@ -248,7 +248,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
         check.class(rarefaction, c("numeric", "integer"))
         check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
         if(data$call$bootstrap[[3]][1] != "full" & any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {
-            stop("Rarefaction level not found.")
+            stop("Rarefaction level not found.", call. = FALSE)
         }
         if(observed) {warning("Observed value cannot be extract if rarefaction is not FALSE.")}
     } 
@@ -310,7 +310,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE
     ## data
     check.class(data, "dispRity")
     if(is.null(data$call$disparity)) {
-        stop("dispRity object does not contain disparity values.")
+        stop("dispRity object does not contain disparity values.", call. = FALSE)
     }
 
     ## Get the whole distribution
@@ -389,7 +389,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
     check.class(data, "dispRity")
     ## Initialising subsets length variable
     length_subsets <- length(data$subsets)
-    if(length_subsets == 1) stop("Data contains only one subset.")
+    if(length_subsets == 1) stop("Data contains only one subset.", call. = FALSE)
 
     ## decreasing
     check.class(decreasing, "logical")
@@ -399,7 +399,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
         check.class(sort, "numeric")
         check.length(sort, length_subsets, " must be the same length as the number of subsets in data.")
         if(all.equal(sort(sort), seq(from = 1, to = length_subsets)) != TRUE) {
-            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_subsets, ".", sep = ""))
+            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_subsets, ".", sep = ""), call. = FALSE)
         }
     } else {
         if(decreasing == FALSE) sort <- seq(from = 1, to = length_subsets)
@@ -512,7 +512,7 @@ combine.subsets <- function(data, subsets) {
         ## Subsamples is the minimum per subsets
         clean_data <- TRUE
         if(subsets > nrow(data$matrix)) {
-            stop(paste("Minimum sample size (", subsets, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""))
+            stop(paste("Minimum sample size (", subsets, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ").", sep = ""), call. = FALSE)
         }
 
     } else {
@@ -525,19 +525,19 @@ combine.subsets <- function(data, subsets) {
             ## Must be present in the subsets names
             matches <- subsets %in% names(data$subsets)
             if(any(matches == FALSE)) {
-                stop(paste(paste(subsets[!matches], collapse = " and "), "don't match with any of the subset names in", match_call$data))
+                stop(paste(paste(subsets[!matches], collapse = " and "), "don't match with any of the subset names in", match_call$data), call. = FALSE)
             } else {
                 subsets <- match(subsets, names(data$subsets))
             }
         } else {
             if(any(subsets > length(data$subsets))) {
-                stop(paste("subsets", paste(subsets[which(subsets > length(data$subsets))], collapse = " and "), "don't match with any of the subsets in", match_call$data))
+                stop(paste("subsets", paste(subsets[which(subsets > length(data$subsets))], collapse = " and "), "don't match with any of the subsets in", match_call$data), call. = FALSE)
             }
         }
     }
 
     if(length(data$subsets) < length(subsets)) {
-        stop(paste(match_call$data, "does not contain enough subsets!"))
+        stop(paste(match_call$data, "does not contain enough subsets!"), call. = FALSE)
     }
 
     if(clean_data) {
@@ -637,7 +637,7 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
     ## data
     check.class(data, "dispRity")
     if(is.null(data$subsets)) {
-        stop("data has no subsets. Use the chrono.subsets to generate some.")
+        stop("data has no subsets. Use the chrono.subsets to generate some.", call. = FALSE)
     }
 
     ## extinction
@@ -646,14 +646,14 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
     ## check if the extinction is within the range
     data_range <- range(as.numeric(unlist(strsplit(names(data$subsets), split = " - "))))
     if(extinction < data_range[1] || extinction > data_range[2]) {
-        stop(paste0("extinction argument must be a numeric value between ", data_range[1], " and ", data_range[2], "."))
+        stop(paste0("extinction argument must be a numeric value between ", data_range[1], " and ", data_range[2], "."), call. = FALSE)
     }
 
     check.class(lag, c("numeric", "integer"))
     check.length(lag, 1, errorif = FALSE, msg = "lag argument must be a single numeric argument.")
     lag <- round(lag)
     if(lag < 1) {
-        stop("lag argument must be at least 1.")
+        stop("lag argument must be at least 1.", call. = FALSE)
     }
 
     check.class(names, "logical")
@@ -686,7 +686,7 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
         warning(paste0("Lag is too long! It was automatically set to subset number ", lag, "."))
     }
     if(extinction == lag) {
-        stop("No lag subset available after the extinction subset.")
+        stop("No lag subset available after the extinction subset.", call. = FALSE)
     }
 
     ## Adding the lag effect bins

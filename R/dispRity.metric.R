@@ -259,16 +259,12 @@ ellipse.volume <- function(matrix, eigen.value) {
 
 ## Calculate the convex hull hypersurface
 convhull.surface <- function(matrix) {
-    ## Algorithm warning
-    if(all(dim(matrix) > 20)) message("WARNING: Your ordinated space is too big: convhull.surface function is likely to crash!")
     ## calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
 
 ## Calculate the convex hull hyper-volume
 convhull.volume <- function(matrix) {
-    ## Algorithm warn
-    if(all(dim(matrix) > 20)) message("WARNING: Your ordinated space is too big: convhull.surface function is likely to crash!")
     ## calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
