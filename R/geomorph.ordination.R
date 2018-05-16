@@ -64,7 +64,7 @@ geomorph.ordination <- function(data, ...) {
 
     ## coords
     if(is.null(data$coords)) {
-        stop(paste(match_call$data, " must contain coordinates in $coords."), call. = FALSE)
+        stop(paste(match_call$data, " must contain coordinates in $coords."))
     } else {
         coords <- data$coords
         check.class(coords, "array")

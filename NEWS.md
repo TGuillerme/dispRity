@@ -21,7 +21,7 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[Next release] dispRity v1.1.2  (2018-05-16)
+[Next release] dispRity v1.1.1  (2018-05-03)
 =========================
 
 ### NEW FEATURES
@@ -30,7 +30,6 @@ dispRity 0.2.0 (2016-04-01)
 
 ### MINOR IMPROVEMENTS
 
-  * tydiversed most of the error messages.
   * `dtt.dispRity` now allows to specify the alternative hypothesis (if `nsim > 0`).
   * `ellipse.volume` can now take an explicit eigen value vector (the eigen values are still automatically estimated correctly for PCO and MDS).
   * Improved metric checking messages from `make.metric` when dealing with optional arguments.

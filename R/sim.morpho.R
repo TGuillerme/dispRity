@@ -77,7 +77,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
     #states
     check.class(states, "numeric")
     if(sum(states) != 1) {
-        stop("States argument must sum up to 1.", call. = FALSE)
+        stop("States argument must sum up to 1.")
     }
     #Set to 1 if model is HKY
     if(length(states) > 1 && model == "HKY") {
@@ -121,7 +121,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
         # Check if arguments work
         test <- NULL ; try(test <- sample.distribution(1, rates), silent = TRUE)
         if(length(test) != 1) {
-            stop("Error in rates argument format. Should be c(function, arg1, arg2, ...).", call. = FALSE)
+            stop("Error in rates argument format. Should be c(function, arg1, arg2, ...).")
         }
     }
 
@@ -135,7 +135,7 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
         # Check if arguments work
         test <- NULL ; try(test <- sample.distribution(1, substitution), silent = TRUE)
         if(length(test) != 1) {
-            stop("Error in substitution argument format. Should be c(function, arg1, arg2, ...).", call. = FALSE)
+            stop("Error in substitution argument format. Should be c(function, arg1, arg2, ...).")
         }
     }
 
