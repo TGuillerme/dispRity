@@ -11,15 +11,22 @@ elements.sampler  <- function(elements) {
 boot.full <- function(elements, rarefaction) {
     return(sample(elements, rarefaction, replace = TRUE))
 }
+
 ## Proba version
 boot.full.proba <- function(elements, rarefaction) {
-    return(sample(elements.sampler(elements), rarefaction, replace = TRUE))
+    if(is.na(elements[1,2])) {
+        ## Simple sampling
+        return(sample(elements[,1], rarefaction, prob = elements[,3], replace = TRUE))
+    } else {
+        ## Dual sampling
+        return(sample(elements.sampler(elements), rarefaction, replace = TRUE))
+    }
 }
 
 
 ## Single bootstrap: for each bootstrap, select one row and replace it by a 
 ## randomly chosen remaining row (for n rows, only one row can be present twice).
-boot.single <- function(elements, rarefaction) {
+boot.single <- function(elements, rarefaction, ...) {
     ## Rarefy the data
     rarefied_sample <- sample(elements, rarefaction, replace = FALSE)
     ## Select the row to remove
@@ -28,12 +35,20 @@ boot.single <- function(elements, rarefaction) {
     rarefied_sample[row_in_out[1]] <- rarefied_sample[row_in_out[2]]
     return(rarefied_sample)
 }
+
 ## Proba version
 boot.single.proba <- function(elements, rarefaction) {
-    ## Rarefy the data
-    rarefied_sample <- sample(elements.sampler(elements), rarefaction, replace = FALSE)
-    ## Select the row to remove
-    row_in_out <- sample(1:length(rarefied_sample), 2)
+    if(is.na(elements[1,2])) {
+        ## Simple sampling (rarefy)
+        rarefied_sample <- sample(elements[,1], rarefaction, replace = FALSE)
+        ## Select the row to remove
+        row_in_out <- sample(1:length(rarefied_sample), 2, prob = elements[,3])
+    } else {
+        ## Dual sampling (rarefy)
+        rarefied_sample <- sample(elements.sampler(elements), rarefaction, replace = FALSE)
+        ## Select the row to remove
+        row_in_out <- sample(1:length(rarefied_sample), 2)
+    }
     ## Replace the row
     rarefied_sample[row_in_out[1]] <- rarefied_sample[row_in_out[2]]
     return(rarefied_sample)

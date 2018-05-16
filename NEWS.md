@@ -26,6 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 
 ### NEW FEATURES
 
+  * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
   * S3 `print` method for objects of class `"dtt"` and `"dispRity"` (from `dtt.dispRity`).
 
 ### MINOR IMPROVEMENTS
