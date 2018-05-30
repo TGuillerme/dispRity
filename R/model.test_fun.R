@@ -12,7 +12,7 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
             ## Calculate the variance from the disparity data
             variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var))
         } else {
-            ## Extract directly the variance from the data
+            ## Extract directly the variance from the data
             variance <- sapply(data[[3]], function(x) var(data[[1]][x[[1]]]))
         }
 
@@ -82,16 +82,16 @@ get.parameters <- function(model.output.pars, models, time.split, fixed.optima=N
         }
     if(first.model == "multi.OU") {
         if(length(time.split) == 1) {
-        		parameters.out <- model.output.pars[c(1:4, 9)]
-        		if(fixed.optima) parameters.out <- parameters.out[-4]
+                parameters.out <- model.output.pars[c(1:4, 9)]
+                if(fixed.optima) parameters.out <- parameters.out[-4]
         }
         if(length(time.split) == 2) {
-        		parameters.out <- model.output.pars[c(1:4, 9:10)]
-        		if(fixed.optima) parameters.out <- parameters.out[-4]
+                parameters.out <- model.output.pars[c(1:4, 9:10)]
+                if(fixed.optima) parameters.out <- parameters.out[-4]
         }
         if(length(time.split) == 3) {
-        		parameters.out <- model.output.pars[c(1:4, 9:11)]
-        		if(fixed.optima) parameters.out <- parameters.out[-4]
+                parameters.out <- model.output.pars[c(1:4, 9:11)]
+                if(fixed.optima) parameters.out <- parameters.out[-4]
         }
     }
 
@@ -506,28 +506,28 @@ plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coord
 ### Function from Murrell D.J. 2018. 'Global envelope test to detect non-random bursts of trait evolution'. Methods Ecol. Evol. doi:10.1111/2041-210X.13006
 ####################################################
 #
-#	Generic function to compute rank envelope test
+#   Generic function to compute rank envelope test
 #
-#	two tailed test: test="two.sided"
-#	one sided tests: test="less" OR test="greater"
+#   two tailed test: test="two.sided"
+#   one sided tests: test="less" OR test="greater"
 #
 ####################################################
 
 rank_env_dtt<-function(x, Plot=T, test="two.sided") {
-	spp_num<-length(x$subsets)		
-	sims<-x$sim
-	sims<-as.matrix(sims)
-	s1<-sims[-c(1),]
-	r<-x$subsets[-c(1)]
-	r<-as.vector(r)
-	obs<-as.vector(x$central_tendency)
-	obs<-obs[-c(1)]
-	c1<-list(r,obs, s1)
-	names(c1)=c("r","obs","sim_m") 
-	c2<-create_curve_set(c1)
-	res<-rank_envelope(c2, alternative=test)
-	if(Plot == TRUE)
-	plot(res, xlab="Relative time", ylab="Disparity", main="")	
-	return(res)	
+    spp_num<-length(x$subsets)      
+    sims<-x$sim
+    sims<-as.matrix(sims)
+    s1<-sims[-c(1),]
+    r<-x$subsets[-c(1)]
+    r<-as.vector(r)
+    obs<-as.vector(x$central_tendency)
+    obs<-obs[-c(1)]
+    c1<-list(r,obs, s1)
+    names(c1)=c("r","obs","sim_m") 
+    c2<-create_curve_set(c1)
+    res<-rank_envelope(c2, alternative=test)
+    if(Plot == TRUE)
+    plot(res, xlab="Relative time", ylab="Disparity", main="")  
+    return(res) 
 }
 

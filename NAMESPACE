@@ -15,6 +15,8 @@ importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 importFrom("mnormt", "dmnorm")
 # importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
 # importFrom("Claddis", "MorphDistMatrixFast")
+# importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
+# importFrom("Claddis", "MorphDistMatrixFast")
 # importFrom("geomorph", "gpagen")
 # importFrom("RCurl", "getURL", "url.exists")
 
@@ -63,6 +65,7 @@ export(dtt.dispRity)
 # export(sequential.test)
 export(model.test)
 export(model.test.sim)
+# export(dispRity.models)
 
 ##dispRity object utilities
 export(make.dispRity)

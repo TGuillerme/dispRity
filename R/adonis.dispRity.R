@@ -89,7 +89,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## data must have subsets
     if(is.null(data$subsets)) {
-        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.")
+        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.", call. = FALSE)
     } else {
         if(is.na(match(data$call$subsets[1], "customised"))) {
             ## Subsets are time
@@ -114,7 +114,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
-                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula))
+                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula), call. = FALSE)
             }
             
             ## Set up the model details

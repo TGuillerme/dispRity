@@ -5,7 +5,7 @@
 \title{Bootstraps and rarefies data.}
 \usage{
 boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
-  verbose = FALSE, boot.type = "full")
+  verbose = FALSE, boot.type = "full", prob)
 }
 \arguments{
 \item{data}{A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).}
@@ -19,6 +19,8 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
+
+\item{prob}{Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a rownames or names attribute that corresponds to the elements in \code{data}.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
@@ -35,11 +37,18 @@ Bootstraps and rarefies either a matrix or a list of matrices.
 \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 
 \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
+
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
 }
+
+\code{prob}: This option allows to attribute specific probability to each element to be drawn.
+A probability of 0 will never sample the element, a probability of 1 will sample.
+This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
+If the argument is a \code{matrix}, it must have rownames attrbiutes corresponding to the element names.
+If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
 }
 \examples{
 ## Load the Beck & Lee 2014 matrix
@@ -54,6 +63,8 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
 ## Bootstrapping an ordinated matrix with only 3 dimensions
 boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
+## Bootstrapping an the matrix but without sampling Cimolestes and sampling Maelestes 10x more
+boot.matrix(BeckLee_mat50, bootstraps = 20, prob = c("Cimolestes" = 0, "Maelestes" = 10))
 
 ## Bootstrapping a subsets of matrices
 ## Generating a dummy subsets of matrices

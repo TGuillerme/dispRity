@@ -325,16 +325,81 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
-# test_that("boot.type is a matrix", {
 
-#     ## Creating a probability matrix
-#     data(BeckLee_mat50)
-#     data(BeckLee_tree)
-#     elements <- rownames(BeckLee_mat50)
-#     prob_matrix <- matrix(runif(length(elements)), dimnames = list(elements))
-#     data <- custom.subsets(BeckLee_mat50, crown.stem(BeckLee_tree, inc.nodes = FALSE))
+test_that("boot.matrsix works with the prob option (for probabilities sampling)", {
 
-#     bs <- boot.matrix(data, bootstraps = 7, boot.type = prob_matrix)
+    
+    ## Custom subsets
+    ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
+    groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+    cust_test <- custom.subsets(ordinated_matrix, groups)
+
+    ## Probas
+    prob_v <- c("a" = 0.125, "b" = 1, "c" = 0, "j" = 8, "h" = 0.125)
+    prob_m <- matrix(c(1,9,3,0,1), ncol = 1)
 
 
-# })
+    ## Errors
+    expect_error(
+        boot.matrix(cust_test, prob = "a")
+        )
+    expect_error( # Matrix without dimnames
+        boot.matrix(cust_test, prob = prob_m)
+        )
+    rownames(prob_m) <- names(prob_v)
+    expect_error( # Matrix with two columns
+        boot.matrix(cust_test, prob = cbind(prob_m, prob_m))
+        )
+    expect_error( # wrong name
+        boot.matrix(cust_test, prob = c("A" = 0.125))
+        )
+    expect_error( # Negative probabilities
+        boot.matrix(cust_test, prob = c("a" = -0.125))
+        )
+
+    ## Working with vector
+    set.seed(1)
+    test <- boot.matrix(cust_test, prob = prob_v)
+    expect_is(test, "dispRity")
+    results <- table(as.vector(unlist(lapply(test$subsets, function(X) return(X[[2]])))))
+    expect_equal( #no 3
+        names(results), as.character(seq(1:10)[-3])
+        )
+    expect_equal( #10 oversampled
+        names(which(results == max(results))), "10"
+        )
+
+    ## Working with a matrix
+    set.seed(1)
+    test <- boot.matrix(cust_test, prob = prob_m)
+    expect_is(test, "dispRity")
+    results <- table(as.vector(unlist(lapply(test$subsets, function(X) return(X[[2]])))))
+    expect_equal( #no 10
+        names(results), as.character(seq(1:10)[-10])
+        )
+    expect_equal( #2 oversampled
+        names(which(results == max(results))), "2"
+        )
+
+    ## Chrono subsets
+    data(BeckLee_mat99)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+    slice_disc <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 60, 0), inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    no_nodes <- rep(0, 49)
+    names(no_nodes) <- paste0("n", seq(1:49))
+    
+    ## Working with a chrono.subset
+    set.seed(1)
+    test <- boot.matrix(slice_disc, prob = no_nodes)
+    expect_is(test, "dispRity")
+    results <- table(as.vector(unlist(lapply(test$subsets, function(X) return(X[[2]])))))
+    expect_equal( #no nodes
+        length(results), 49
+        )
+
+    ## TODO
+    # slice_cont <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+
+
+})

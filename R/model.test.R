@@ -104,28 +104,28 @@
 # time.split <- 66
 # test <- model.test(data, models, time.split = 66)
 
-	# data = data
-	# model = models
-	# pool.variance = NULL
-	# time.split=66
-	# fixed.optima = TRUE
-	# control.list = list(fnscale = -1)
-	# verbose = TRUE
+    # data = data
+    # model = models
+    # pool.variance = NULL
+    # time.split=66
+    # fixed.optima = TRUE
+    # control.list = list(fnscale = -1)
+    # verbose = TRUE
 
 model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE) {
-	
+    
     match_call <- match.call()
 
     ## data
     check.class(data, c("dispRity", "dispRity.sim"))
    
     if(class(data) == "dispRity") {
-    	model_test_input <- select.model.list(data)
+        model_test_input <- select.model.list(data)
     } else {
-    		model_test_input <- data
-	}
+            model_test_input <- data
+    }
     
-	## models
+    ## models
     check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
     n_models <- length(model)
 
@@ -178,14 +178,14 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
             all.times <- max(model_test_input[[4]]) - model_test_input[[4]]                
 
             if(length(all.times) > 31) {
-            	
-            		ten.times <- all.times[(9: (length(all.times) - 11))]
+                
+                    ten.times <- all.times[(9: (length(all.times) - 11))]
                 run.time.split <- TRUE
 
                 if(verbose) cat(paste0("Running ",  paste0(model.type, collapse=":") ," on ", length(ten.times), " shift times...\n"))
 
                 model.test.all.times <- lapply(ten.times, function(x) {
-                		
+                        
                     if(verbose) cat(paste0("    model ", match(x, ten.times), " of ", length(ten.times), " at ", signif(x, 3), "\n"))
                     model.test.lik(model_test_input, model.type, time.split=x, control.list, fixed.optima=fixed.optima)
                 })
@@ -215,20 +215,20 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
             if(verbose) cat(paste0("Running ", paste(model.type, collapse = ":"), " model..."))
             model.return <- model.test.lik(model.test_input = model_test_input, model.type.in = model.type, time.split, control.list, fixed.optima=fixed.optima)
             if(length(model.type) || model.type == "multi.OU") {
-            		model.return$split.time <- time.split
-            	}
+                    model.return$split.time <- time.split
+                }
             if(verbose) cat(paste0("Done. Log-likelihood = ", round(model.return$value, digit = 3), "\n"))
         }
         return(model.return)
     })
 
-	model_names <- sapply(model, function(x) paste(x, collapse = ":"))
+    model_names <- sapply(model, function(x) paste(x, collapse = ":"))
 
-	if(any(sapply(models_out, is.null))) {
-		drop.model <- which(sapply(models_out, is.null))
-		models_out <- models_out[-drop.model]
-		model_names <- model_names[-drop.model]
-		}
+    if(any(sapply(models_out, is.null))) {
+        drop.model <- which(sapply(models_out, is.null))
+        models_out <- models_out[-drop.model]
+        model_names <- model_names[-drop.model]
+        }
 
     ## judge all models using AICc values
     ## Calculate the models AIC and AICc

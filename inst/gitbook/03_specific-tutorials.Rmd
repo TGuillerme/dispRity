@@ -185,7 +185,7 @@ boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(6:8, 3))
 ```
 
-One additional important argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
+One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
 When missing, all dimensions from the ordinated matrix are used.
 
 ```{r, eval=TRUE}
@@ -194,6 +194,16 @@ boot.matrix(BeckLee_mat50, dimensions = 0.5)
 
 ## Using the first 10 dimensions
 boot.matrix(BeckLee_mat50, dimensions = 10)
+```
+
+It is also possible to specify the sampling probability in the bootstrap for each elements.
+This can be useful for weighting analysis for example (i.e. giving more importance to specific elements).
+These probabilities can be passed to the `prob` argument individually with a vector with the elements names or with a matrix with the rownames as elements names.
+The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).
+
+```{r, eval=TRUE}
+## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
+boot.matrix(BeckLee_mat50, prob = c("Cimolestes" = 0, "Maelestes" = 10))
 ```
 
 Of course, one could directly supply the subsets generated above (using `chrono.subsets` or `custom.subsets`) to this function.

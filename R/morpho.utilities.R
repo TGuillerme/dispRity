@@ -132,24 +132,24 @@ apply.NA <- function(matrix, NAs, tree, invariant = FALSE, verbose = FALSE){#, .
         inap.source_options <- c("character", "clade")
 
         if(!all(NAs %in% inap.source_options)) {
-            stop("NAs argument must be a vector containing at least one of the following: ", paste(inap.source_options, collapse=", "), sep="")
+            stop("NAs argument must be a vector containing at least one of the following: ", paste(inap.source_options, collapse = ", "), sep = "", call. = FALSE)
         }        
         if(length(NAs) > ncol(matrix)/2) {
-            stop("Only half the number of characters can be NAs")
+            stop("Only half the number of characters can be NAs.", call. = FALSE)
         }
     } else {
-        if(NAs > ncol(matrix)/2) stop("Only half the number of characters can be NAs")
+        if(NAs > ncol(matrix)/2) stop("Only half the number of characters can be NAs.", call. = FALSE)
         NAs <- rep("character", NAs)
     }
 
     ## tree
     if(any(NAs == "clade") && missing(tree)) {
-        stop("Tree argument is missing for applying inapplicable characters on random clades.")
+        stop("Tree argument is missing for applying inapplicable characters on random clades.", call. = FALSE)
     } else {
         if(any(NAs == "clade")) {
             ## tree must be same size as the matrix
             if(any(sort(row.names(matrix)) != sort(tree$tip.label))) {
-                stop("Provided tree doe not have the same taxa as the matrix.")
+                stop("Provided tree doe not have the same taxa as the matrix.", call. = FALSE)
             }
         }
     }

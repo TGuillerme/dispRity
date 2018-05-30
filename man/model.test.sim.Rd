@@ -4,56 +4,34 @@
 \alias{model.test.sim}
 \title{Simulate Model Test}
 \usage{
-model.test.sim(number.sim = 1, model.type.in, time.split = NULL,
-  return.full = FALSE, time.span = 100, sample.size = 100,
-  variance = 0.1, sigma.squared = 1, ancestral.state = 0.15, alpha = 1,
-  optima.1 = 0.15, theta.1 = 1, omega = 1, eb.rate = -0.1,
-  trend = 0.1, optima.2 = 0.15, optima.3 = 0.15, theta.2 = 1,
-  theta.3 = 1, fixed.optima = F)
+model.test.sim(sim = 1, model, time.split = NULL, time.span = 100,
+  variance = 1, sample.size = 100, parameters = list(),
+  fixed.optima = FALSE, model.rank = 1)
 }
 \arguments{
-\item{number.sim}{The number of seperate simulations}
+\item{sim}{The number of seperate simulations}
 
-\item{model.type.in}{The named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model}
+\item{model}{Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model or (ii) the an object of class \code{dispRity.sim} from the \code{model.test} function. If the \code{model.test} (ii) is supplied, all remaining arguments apart from \code{sim} are ignored as the model specified by the input model is used}
 
 \item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models}
 
-\item{return.full}{Option to return just the disaprity measure (FALSE, default) or to return the full dispRity.model.test object. If return.full=TRUE and and number.sim > 1 the return is a list of lists}
-
 \item{time.span}{The length of the sequence of class numeric. If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to time.span in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
-
-\item{sample.size}{The sample.size of each sample of class numeric. If one number is supplied this is the sample.size for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the sample.size of each sample in the sequence}
 
 \item{variance}{The variance of each sample of class numeric. If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the variance of each sample in the sequence}
 
-\item{sigma.squared}{The step-variance of the Brownian motion-type processes}
+\item{sample.size}{The sample.size of each sample of class numeric. If one number is supplied this is the sample.size for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the sample.size of each sample in the sequence}
 
-\item{ancestral.state}{The ancestral state at the start of the sequence (i.e., time = 0)}
+\item{parameters}{\code{list}  The model parameters used for simulations: ancestral.state (default = 0.01), sigma.squared (default = 1), alpha (default = 1), optima.1, optima.2, optima.3 (default = 0.15), theta.1, theta.2, theta.3 (default = 1), omega (default = 1), trend (default = 0.5), eb.rate (default = -0.1).}
 
-\item{alpha}{The attraction parameter of the OU processes}
+\item{fixed.optima}{A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).}
 
-\item{optima.1}{The optima applied to the first phase of the OU processes}
-
-\item{theta.1}{The theta applied to the first phase of the Stasis processes}
-
-\item{omega}{The attraction parameter of the Stasis process}
-
-\item{eb.rate}{The exponential decrease parameter of the early burst process}
-
-\item{trend}{Trend parameters}
-
-\item{optima.2}{The optima applied to the second phase of the OU processes}
-
-\item{optima.3}{The optima applied to the third phase of the OU processes}
-
-\item{theta.2}{The theta applied to the second phase of the Stasis processes}
-
-\item{theta.3}{The theta applied to the third phase of the Stasis processes}
-
-\item{fixed.optima}{Logical to use an estimated optimum value in OU models (fixed.optima = FALSE), or whether to set the OU optimum to the ancestral value (fixed.optima = TRUE)}
+\item{model.rank}{If a \code{dispRity.sim} is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if rank=1 (default) the best-fitting model is used for simulation}
+}
+\value{
+A list of class \code{dispRity.sim}. Each list element contains the simulated central_tendency, as well as the variance, sample_size, and subsets useds to simulate the data.
 }
 \description{
-Fit simulate models of disparity change through time
+Simulate models of disparity change through time
 }
 \examples{
 ## To Add
