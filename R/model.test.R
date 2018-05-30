@@ -12,10 +12,10 @@
 #' @param control.list A \code{list} of fine-tune control inputs for the optim function.
 #' @param verbose \code{logical}, whether to display the model results as computed (\code{TRUE} - default).
 #' 
-#' @details The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. For the time split model if a time value is provided, then the shift is tested at that value only. If no time shift is supplied then all shift times that allow for there to be at least 10 samples in each time bin are tested. If the sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, c("BM", "OU") would fit a model in which the process starts with a BM model and shifts toan OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of 'multi.OU') can be fit to the data:
+#' @details The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, c("BM", "OU") would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of 'multi.OU') can be fit to the data:
 #' 
 #' \itemize{
-#'         \item{"BM"}{Fits a unbiased random walk model of evolution (Felsenstein 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
+#'         \item{"BM"}{Fits a unbiased random walk model of evolution (Felsenstein 1973; 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
 #'  
 #'         \item{"OU"}{The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values. If this is the case the model is similar to a trend model. If the argument, fixed.optima is set to TRUE, the model will not estimate optima but constrain it to the first value in the sequence}
 #' 
@@ -25,7 +25,7 @@
 #' 
 #'         \item{"Early Burst(EB)"}{Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease}
 #' 
-#'         \item{"multi.OU"}{Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multiOU system can be be fit to the model only}
+#'         \item{"multi.OU"}{Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multiOU system can be fit to the model only}
 #' }
 #' 
 #' @return A list of class \code{dispRity} and \code{model.test} that can be plotted and summarised via \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}.
@@ -104,16 +104,29 @@
 # time.split <- 66
 # test <- model.test(data, models, time.split = 66)
 
-model.test <- function(data, model, pool.variance = NULL, time.split, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE) {
-    
+	# data = data
+	# model = models
+	# pool.variance = NULL
+	# time.split=66
+	# fixed.optima = TRUE
+	# control.list = list(fnscale = -1)
+	# verbose = TRUE
+
+model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE) {
+	
     match_call <- match.call()
 
     ## data
-    check.class(data, "dispRity")
-    model_test_input <- select.model.list(data)
-
-    ## models
-    check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "models")
+    check.class(data, c("dispRity", "dispRity.sim"))
+   
+    if(class(data) == "dispRity") {
+    	model_test_input <- select.model.list(data)
+    } else {
+    		model_test_input <- data
+	}
+    
+	## models
+    check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
     n_models <- length(model)
 
     ## pool.variance
@@ -153,34 +166,37 @@ model.test <- function(data, model, pool.variance = NULL, time.split, fixed.opti
     }
     
     models_out <- lapply(1:n_models, function(model_n) {
-        
+        model.return <- NULL
         model.type <- model[[model_n]]
         
         if(length(model.type) == 1 && model.type != "multi.OU") {
             time.split <- NULL
         }
-            
+        
         if(is.null(time.split) && length(model.type) == 2 || is.null(time.split) && model.type == "multi.OU") {
             
             all.times <- max(model_test_input[[4]]) - model_test_input[[4]]                
-            
+
             if(length(all.times) > 31) {
-                ten.times <- 9 : (length(all.times) - 11)
+            	
+            		ten.times <- all.times[(9: (length(all.times) - 11))]
                 run.time.split <- TRUE
 
-                if(verbose) cat(paste0("Running ",  model.type ," on ", length(ten_times), " shift times...\n"))
+                if(verbose) cat(paste0("Running ",  paste0(model.type, collapse=":") ," on ", length(ten.times), " shift times...\n"))
 
                 model.test.all.times <- lapply(ten.times, function(x) {
-                    if(verbose) cat(paste0("    model ", x - 8, " of ", length(ten.times), "\n"))
+                		
+                    if(verbose) cat(paste0("    model ", match(x, ten.times), " of ", length(ten.times), " at ", signif(x, 3), "\n"))
                     model.test.lik(model_test_input, model.type, time.split=x, control.list, fixed.optima=fixed.optima)
                 })
                 
                 best.model <- which.max(sapply(model.test.all.times, function(x) x[[2]]))
                 model.return <- model.test.all.times[best.model][[1]]    
+                model.return$split.time <- ten.times[best.model]
                 
                 if(verbose) {
-                    cat(paste0("    best split time found at ", ten.times[best.model], "\n"))
-                    cat(paste0("Done. Log-likelihood = ", round(model.return$value, digit = 3), ".\n"))
+                    cat(paste0("    best split time found at ", signif(ten.times[best.model],4), "\n"))
+                    cat(paste0("Done. Best log-likelihood = ", round(model.return$value, digit = 3), " at ",  signif(ten.times[best.model],4), ".\n"))
                 
                 }      
             } else {
@@ -197,15 +213,28 @@ model.test <- function(data, model, pool.variance = NULL, time.split, fixed.opti
         } else {
         
             if(verbose) cat(paste0("Running ", paste(model.type, collapse = ":"), " model..."))
-            model.return <- model.test.lik(model_test_input, model.type.in = model.type, time.split, control.list, fixed.optima=fixed.optima)
+            model.return <- model.test.lik(model.test_input = model_test_input, model.type.in = model.type, time.split, control.list, fixed.optima=fixed.optima)
+            if(length(model.type) || model.type == "multi.OU") {
+            		model.return$split.time <- time.split
+            	}
             if(verbose) cat(paste0("Done. Log-likelihood = ", round(model.return$value, digit = 3), "\n"))
         }
         return(model.return)
     })
-    
+
+	model_names <- sapply(model, function(x) paste(x, collapse = ":"))
+
+	if(any(sapply(models_out, is.null))) {
+		drop.model <- which(sapply(models_out, is.null))
+		models_out <- models_out[-drop.model]
+		model_names <- model_names[-drop.model]
+		}
+
     ## judge all models using AICc values
     ## Calculate the models AIC and AICc
-    model_parameters <- sapply(model, length) - 1 + sapply(models_out, function(x) length(x[[1]]))
+    
+    model.len <- sapply(models_out, function(x) length(x[[2]])) - 1
+    model_parameters <- model.len + sapply(models_out, function(x) length(x[[1]]))
     model_likelihoods <- unlist(sapply(models_out, function(x) x[2]))
     sample_size <- length(model_test_input[[1]])
     aic <- (-2 * model_likelihoods) + (2 * model_parameters)
@@ -214,11 +243,11 @@ model.test <- function(data, model, pool.variance = NULL, time.split, fixed.opti
     weight_aicc <- exp(-0.5 * delta_aicc) / sum(exp(-0.5 * delta_aicc))
 
     ## Get the model names
-    model_names <- sapply(model, function(x) paste(x, collapse = ":"))
     names(weight_aicc) <- names(delta_aicc) <- names(aicc) <- names(aic) <- names(models_out) <- model_names
-
+    
     ## Generate the output format
-    output <- list("aic.models" = cbind(aicc, delta_aicc, weight_aicc), "full.details" = models_out, "call" = match_call)
+    # MP _ I;ve added 'model.data' and 'fixed.optima' so the whole output can be used as input into 'model.test.sim'
+    output <- list("aic.models" = cbind(aicc, delta_aicc, weight_aicc), "full.details" = models_out, "call" = match_call, "model.data" = model_test_input, "fixed.optima" = fixed.optima)
     class(output) <- c("dispRity", "model.test")
     return(output)
 }    
