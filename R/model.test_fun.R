@@ -513,21 +513,15 @@ plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coord
 #
 ####################################################
 
-rank_env_dtt<-function(x, Plot=T, test="two.sided") {
-    spp_num<-length(x$subsets)      
-    sims<-x$sim
-    sims<-as.matrix(sims)
-    s1<-sims[-c(1),]
-    r<-x$subsets[-c(1)]
-    r<-as.vector(r)
-    obs<-as.vector(x$central_tendency)
-    obs<-obs[-c(1)]
-    c1<-list(r,obs, s1)
-    names(c1)=c("r","obs","sim_m") 
-    c2<-create_curve_set(c1)
-    res<-rank_envelope(c2, alternative=test)
-    if(Plot == TRUE)
-    plot(res, xlab="Relative time", ylab="Disparity", main="")  
+rank_env_dtt <- function(x, alternative) {
+    spp_num <- length(x$subsets)      
+    sims <- as.matrix(x$sim)
+    s1 <- sims[-c(1),]
+    r <- as.vector(x$subsets[-c(1)])
+    obs <- as.vector(x$central_tendency)[-c(1)]
+    c1 <- list("r" = r, "obs" = obs, "sim_m" = s1)
+    c2 <- GET::create_curve_set(c1)
+    res <- GET::rank_envelope(c2, alternative = alternative)
     return(res) 
 }
 

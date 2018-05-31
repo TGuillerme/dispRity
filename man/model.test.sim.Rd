@@ -6,38 +6,61 @@
 \usage{
 model.test.sim(sim = 1, model, time.split = NULL, time.span = 100,
   variance = 1, sample.size = 100, parameters = list(),
-  fixed.optima = FALSE, model.rank = 1)
+  fixed.optima = FALSE, model.rank = 1, alternative = "two-sided")
 }
 \arguments{
-\item{sim}{The number of seperate simulations}
+\item{sim}{The number of separate simulations.}
 
-\item{model}{Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model or (ii) the an object of class \code{dispRity.sim} from the \code{model.test} function. If the \code{model.test} (ii) is supplied, all remaining arguments apart from \code{sim} are ignored as the model specified by the input model is used}
+\item{model}{Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model (see list in \code{\link{model.test}}) or (ii) an object of class \code{dispRity} returned from \code{model.test} function. If a \code{dispRity} object is supplied, all remaining arguments apart from \code{sim} and \code{model.rank} are ignored as the model specified by the input model is used}
 
 \item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models}
 
-\item{time.span}{The length of the sequence of class numeric. If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to time.span in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
+\item{time.span}{The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
 
-\item{variance}{The variance of each sample of class numeric. If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the variance of each sample in the sequence}
+\item{variance}{The variance of each sample (\code{numeric}). If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the variance of each sample in the sequence}
 
-\item{sample.size}{The sample.size of each sample of class numeric. If one number is supplied this is the sample.size for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the sample.size of each sample in the sequence}
+\item{sample.size}{The sample size of each sample (\code{numeric}). If one number is supplied this is the sample size for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the sample size of each sample in the sequence}
 
-\item{parameters}{\code{list}  The model parameters used for simulations: ancestral.state (default = 0.01), sigma.squared (default = 1), alpha (default = 1), optima.1, optima.2, optima.3 (default = 0.15), theta.1, theta.2, theta.3 (default = 1), omega (default = 1), trend (default = 0.5), eb.rate (default = -0.1).}
+\item{parameters}{A \code{list} of model parameters used for simulations. See details.}
 
 \item{fixed.optima}{A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).}
 
-\item{model.rank}{If a \code{dispRity.sim} is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if rank=1 (default) the best-fitting model is used for simulation}
+\item{model.rank}{If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.}
+
+\item{alternative}{If the simulation is based on a \code{dispRity} object, what is the alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.}
 }
 \value{
-A list of class \code{dispRity.sim}. Each list element contains the simulated central_tendency, as well as the variance, sample_size, and subsets useds to simulate the data.
+A list of class \code{dispRity}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
 }
 \description{
 Simulate models of disparity change through time
 }
+\details{
+The \code{parameters} is a list of arguments to be passed to the models.
+These arguments can be:
+\itemize{
+     \item{\code{ancestral.state}}, ancestral value of the disparity (default = \code{0.01}).
+     \item{\code{sigma.squared}}, [@@] (default = \code{1}).
+     \item{\code{alpha}}, [@@] (default = \code{1}).
+     \item{\code{optima.1}}, [@@] (default = \code{0.15}).
+     \item{\code{optima.2}}, [@@] (default = \code{0.15}).
+     \item{\code{optima.3}}, [@@] (default = \code{0.15}).
+     \item{\code{theta.1}}, [@@] (default = \code{1}).
+     \item{\code{theta.2}}, [@@] (default = \code{1}).
+     \item{\code{theta.3}}, [@@] (default = \code{1}).
+     \item{\code{omega}}, [@@] (default = \code{1}).
+     \item{\code{trend}}, [@@] (default = \code{0.5}).
+     \item{\code{eb.rate}}, [@@] (default = \code{-0.1}).
+}
+}
 \examples{
 ## To Add
+
 }
 \references{
-To Add: Hunt 2006, Hunt 2008, Harmon 2010,
+To Add: Hunt 2006, Hunt 2008, Harmon 2010, Murrell 2018,
+
+Citation for the envelope code:
 }
 \seealso{
 \code{\link{model.test}}.

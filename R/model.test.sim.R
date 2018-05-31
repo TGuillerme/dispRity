@@ -13,6 +13,8 @@
 #' @param parameters A \code{list} of model parameters used for simulations. See details.
 #' @param fixed.optima A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).
 #' @param model.rank If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.
+#' @param alternative If the simulation is based on a \code{dispRity} object, what is the alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.
+
 #' 
 #' @return A list of class \code{dispRity}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
 #' 
@@ -40,12 +42,25 @@
 #' @seealso \code{\link{model.test}}.
 #'
 #' @references
-#' To Add: Hunt 2006, Hunt 2008, Harmon 2010, 
+#' To Add: Hunt 2006, Hunt 2008, Harmon 2010, Murrell 2018,
 #' 
-#' @require mnormt
+#' Citation for the envelope code:
+# @misc{david_murrell_2018_1197535,
+#  author       = {David Murrell},
+#  title        = {{djmurrell/DTT-Envelope-code: Rank envelope test 
+#                   for disparity through time}},
+#  month        = mar,
+#  year         = 2018,
+#  doi          = {10.5281/zenodo.1197535},
+#  url          = {https://doi.org/10.5281/zenodo.1197535}
+#}
+#' 
+#' 
+#' @importFrom mnormt rmnorm
 #' @author Mark N Puttick and Thomas Guillerme
 #' @export
 
+# source("sanitizing.R")
 # # sim=1
 # time.split=66
 # time.span=120
@@ -54,13 +69,13 @@
 # model=tests
 # model.rank <- NULL
 
-model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE, model.rank = 1) {
+model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE, model.rank = 1, alternative = "two-sided") {
     
     match_call <- match.call
 
     ## Sanitizing
     ## sim must be a positive whole number
-    check.class(sim, c("numeric", "integer"))
+    silent <- check.class(sim, c("numeric", "integer"))
     check.length(sim, 1, msg = " must be the number of simulations to run.")
     sim <- round(sim)
     if(sim < 0) {
@@ -82,6 +97,9 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         model_inherit <- TRUE
     }
 
+    ## Setting up the parameters names (used latter in sanitzing)
+    param_names <- c("ancestral.state", "sigma.squared", "alpha", "optima.1", "theta.1", "omega", "trend", "eb.rate","optima.2", "optima.3", "theta.2", "theta.3")
+
     ## Check the optional arguments
     if(model_inherit) {
         ## Check if any argument is provided (but rank and sim).
@@ -91,7 +109,7 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
             } else {
                 check <- arg != default
             }
-            if(check) {
+            if(length(check) != 0 && check) {
                 warning(paste0(strsplit(as.character(expression(match_call$time.split)), split = "\\$")[[1]][2], " argument ignored (inherited from ", inherit, ")."), call. = FALSE)
             }
         }
@@ -104,53 +122,22 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         check.arg.inherit(match_call$fixed.optima, FALSE, match_call$model)
 
         ## model.rank
-        check.class(model.rank, c("numeric", "integer"))
+        silent <- check.class(model.rank, c("numeric", "integer"))
         check.length(model.rank, 1, " must be the value of ranked model to simulate.")
         if(model.rank > nrow(model$aic.models)) {
             stop("model.rank must be the value of ranked model to simulate.", call. = FALSE)
         }
-    } else {
 
-        ## time.split
-        check.class(time.split, c("numeric", "integer"))
-
-        ## time.span
-        check.class(time.span, "numeric")
-        multi_time.span <- ifelse(length(time.span) == 1, FALSE, TRUE)
-
-        ## variance
-        check.class(variance, "numeric")
-        multi_variance <- ifelse(length(variance) == 1, FALSE, TRUE)
-        if(multi_variance) {
-            check.length(variance, length(time.span), " must be a vector of numeric values equal to the length of time.span.")
-        }
-
-        ## sample.size
-        check.class(sample.size, "numeric")
-        multi_sample.size <- ifelse(length(sample.size) == 1, FALSE, TRUE)
-        if(multi_sample.size) {
-            check.length(sample.size, length(time.span), " must be a vector of numeric values equal to the length of time.span.")
-        }
-
-        ## parameters
-        check.class(parameters, "list")
-        param_names <- c("ancestral.state", "sigma.squared", "alpha", "optima.1", "optima.2", "optima.3", "theta.1", "theta.2", "theta.3", "omega", "trend", "eb.rate")
-        check.method(names(parameters), param_names, "parameters names") 
-
-        ## fixed.optima
-        check.class(fixed.optima, "logical")
-    }
+        ## Alternative
+        check.method(alternative, c("two-sided", "greater", "lesser"), msg = "alternative")
 
 
-    ## Simulating the models
-
-    if(model_inherit) {
-            
+        ## Get parameters from previous models
         test.p <- TRUE
-        empirical.model <- model            
+        empirical.model <- model
             
         model.rank <- order(model[[1]][,1])[model.rank]
-        model.details <- model[[2]][model.rank][[1]]    
+        model.details <- model[[2]][model.rank][[1]]
         model.name <- rownames(model[[1]])[model.rank]
         parameters <- model[[2]][[model.rank]]$par
             
@@ -171,78 +158,97 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         parameters <- lapply(parameters, function(x) x)
         model <- model.name
         model <- strsplit(model, ":")[[1]]
-            
+
     } else {
-        
-        if (length(time.span) == 1) {
+
+        ## time.span
+        check.class(time.span, "numeric")
+        if(length(time.span) == 1) {
             time.span <- c(1:(time.span))
-            }
-    
+        }
+
+        ## Setting the sample_length
         sample_length <- length(time.span)
-        
+
+        ## variance
+        check.class(variance, "numeric")
         if (length(variance) != sample_length) {
             variance <- rep(variance, sample_length)
-            }
-        
+        }
+
+        ## sample.size
+        check.class(sample.size, "numeric")
         if (length(sample.size) != sample_length) {
             sample.size <- rep(sample.size, sample_length)
-            }
-    
+        }
+
+        ## Setting the model parameters
         data.model.test <- list(variance, sample.size, time.span)
         names(data.model.test) <- c("variance", "sample_size", "subsets")
-    
-        if(!is.null(time.split)) time.split <-  sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[3]])))))
-        
+
+        ## time.split
+        silent <- check.class(time.split, c("numeric", "integer"))
+        if(!is.null(time.split)) {
+            time.split <- sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[3]])))))
+        }
+
+        ## parameters
+        check.class(parameters, "list")
+        check.method(names(parameters), param_names, "parameters names") 
+
+        ## fixed.optima
+        check.class(fixed.optima, "logical")
     }
-             
+
+    ## Filling default parameters
     if(is.null(parameters$ancestral.state)) {
         parameters$ancestral.state <- 1e-2
-        }
+    }
     if(is.null(parameters$sigma.squared)) {
         parameters$sigma.squared <- 1
-        }   
-     if(is.null(parameters$alpha)) {
+    }
+    if(is.null(parameters$alpha)) {
         parameters$alpha <- 1
-        }      
-     if(is.null(parameters$optima.1)) {
+    }
+    if(is.null(parameters$optima.1)) {
         parameters$optima.1 <- 0.15
-        }      
-     if(is.null(parameters$theta.1)) {
+    }
+    if(is.null(parameters$theta.1)) {
         parameters$theta.1 <- 1
-        }           
-     if(is.null(parameters$omega)) {
+    }
+    if(is.null(parameters$omega)) {
         parameters$omega <- 1
-        }    
-     if(is.null(parameters$trend)) {
+    }
+    if(is.null(parameters$trend)) {
         parameters$trend <- 0.5
-        }               
-     if(is.null(parameters$eb.rate)) {
+    }
+    if(is.null(parameters$eb.rate)) {
         parameters$eb.rate <- -0.1
-        }       
-     if(is.null(parameters$optima.2)) {
+    }
+    if(is.null(parameters$optima.2)) {
         parameters$optima.2 <- 0.15
-        }   
-     if(is.null(parameters$optima.3)) {
+    }
+    if(is.null(parameters$optima.3)) {
         parameters$optima.3 <- 0.15
-        }
+    }
     if(is.null(parameters$theta.2)) {
         parameters$theta.2 <- 1
-        }           
-     if(is.null(parameters$theta.3)) {
+    }
+    if(is.null(parameters$theta.3)) {
         parameters$theta.3 <- 1
-        }     
-        
-    p <- unlist(parameters)  
-    ord.p <- match(c("ancestral.state", "sigma.squared", "alpha", "optima.1", "theta.1", "omega", "trend", "eb.rate <- -0.1","optima.2", "optima.3", "theta.2", "theta.3"), names(p))
-    p <- p[ord.p]
+    }
+
+    ## Reorder the parameters
+    p <- unlist(parameters)[match(param_names, names(parameters))]
 
     total.n <- length(time.span)
     sample.time <- 1:total.n
     split.here.vcv <- c(1, time.split)
     split.here.2.vcv <- c(time.split - 1, total.n)        
     ou.mean <- NULL
-    
+
     any.model <- which(model == "multi.OU")
+
     if(any(any.model, na.rm=T)) {
         split.here.vcv <- split.here.2.vcv <- NULL
         ou.mean <- c(1, time.split, max(time.span))
@@ -251,7 +257,7 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
     }
 
     total_VCV <- matrix(0, nrow=total.n, ncol=total.n)
-    total_mean <-  c()
+    total_mean <- c()
     optima.level.ou <- optima.level.stasis <-1
     model.anc <- model.alpha <- NULL
     time.int <- 1
@@ -260,11 +266,11 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
 
         time.x <- time.int
 
-        if(time.x == 1) {        
+        if(time.x == 1) {
                 
             data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])
-            output.vcv <- est.VCV(p, data.model.test.int, model.type=model[time.x])
-            output.mean <- est.mean(p, data.model.test.int, model.type=model[time.x], optima.level.ou=optima.level.ou, optima.level.stasis= optima.level.stasis, fixed.optima=fixed.optima, est.anc=T, split.time=ou.mean)
+            output.vcv <- est.VCV(p, data.model.test.int, model.type = model[time.x])
+            output.mean <- est.mean(p, data.model.test.int, model.type = model[time.x], optima.level.ou = optima.level.ou, optima.level.stasis = optima.level.stasis, fixed.optima = fixed.optima, est.anc = TRUE, split.time = ou.mean)
 
             if(model[1] == "BM") {
                 est.anc <- FALSE
@@ -292,7 +298,7 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
                 time.int <- time.x + 1
             }
                 
-    } else {
+        } else {
         
             data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])    
             time.out <- data.model.test.int[[3]]
@@ -334,36 +340,39 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
                 time.int <- time.x + 1
             }
             
+        }
+
+        total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
+        total_mean <-  c(total_mean, output.mean)
+    
+    }
+    
+    output.values <- t(mnormt::rmnorm(n = sim, mean =  total_mean, varcov = total_VCV))
+    if(dim(output.values)[1] == 1) {
+        output.values <- t(output.values)
     }
 
-    total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
-    total_mean <-  c(total_mean, output.mean)
-    }
-    
-    output.values <- t(rmnorm(n = sim, mean =  total_mean, varcov = total_VCV))
-    if(dim(output.values)[1] == 1) output.values <- t(output.values)
-    output.simulation <- lapply(1:sim, function(x) {
-            output.full <- list(output.values[,x], data.model.test[[1]], data.model.test[[2]], data.model.test[[3]])
+    run.one.simulation <- function(X, output.values, data.model.test) {
+        output.full <- list(output.values[,X], data.model.test[[1]], data.model.test[[2]], data.model.test[[3]])
         names(output.full) <- c("central_tendency", "variance", "sample_size", "subsets")
-        class(output.full) <- "dispRity.sim"
-        output.full
-        }
-    )
+        class(output.full) <- c("dispRity", "model.sim")
+        return(output.full)
+    }
+
+    output.simulation <- lapply(1:sim, run.one.simulation, output.values, data.model.test)
     
     output <- c()
-    output$simulation.data <-  output.simulation
+    output$simulation.data <- output.simulation
     
     if(test.p) {
-            x <- c()
+        x <- c()
         x$sim <- sapply(output.simulation, function(x) x$central_tendency)
         x$central_tendency <- as.numeric(empirical.model[[4]]$central_tendency) 
         x$subsets <- as.numeric(empirical.model[[4]]$subsets)
-        p.values <- rank_env_dtt(x, Plot = FALSE)
-            output$p.value <- p.values
-        
+        output$p.value <- rank_env_dtt(x, alternative)
     }
 
-    class(output) <- "dispRity.sim"
+    class(output) <- c("dispRity", "model.sim")
     return(output)
         
 }

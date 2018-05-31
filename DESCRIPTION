@@ -21,8 +21,11 @@ Imports:
 	phangorn,
 	vegan,
 	geiger,
-	geoscale
+	geoscale,
+	GET
 License: GPL-3 | file LICENSE
+Remotes:
+    github::myllym/GET@master
 VignetteBuilder: knitr
 Suggests:
     testthat,
