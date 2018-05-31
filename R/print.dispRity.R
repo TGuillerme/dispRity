@@ -57,7 +57,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
     } else {
 
         ## ~~~~~~~
-        ## Composite dispRity objects
+        ## Composite dispRity objects (subclasses)
         ## ~~~~~~~
 
 
@@ -93,6 +93,24 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 return()
             }
 
+            if(class(x)[2] == "model.sim") {
+
+                cat("Disparity evolution model simulation:\n")
+                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                cat(paste0("Model simulated (", x$nsim, " times):\n"))
+
+                print(x$model)
+
+                cat("\n")
+
+                if(!is.null(x$p.value)) {
+                    print(x$p.value)
+                }
+
+                return()
+            }
+
+
             if(class(x)[2] == "dtt") {
                 if(length(x) != 2){
                     ## Tested dtt
@@ -119,16 +137,6 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
                     cat(paste0("Use plot.dispRity to visualise."))
                 }
-            }
-            if(class(x)[2] == "model.sim") {
-
-                ## NO PRINTING CLASS YET
-
-                tmp <- x
-                class(tmp) <- "list"
-                print(tmp)
-
-
             }
         }
 
