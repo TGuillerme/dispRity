@@ -42,7 +42,11 @@
 # data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 # data <- dispRity(data_subsets_boot, metric = c(variances))
 
+ 
 print.dispRity <- function(x, all = FALSE, ...) {
+
+    match_call <- match.call()
+    x_name <- match_call$x
 
     if(all) {
         ## Print everything
@@ -74,7 +78,13 @@ print.dispRity <- function(x, all = FALSE, ...) {
             } 
             if(class(x)[2] == "model.test") {
                 cat("Disparity evolution model fitting:\n")
+                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                
                 print(x$aic.models)
+
+                cat(paste0("\nUse ", x_name, "$full.details for displaying the models details\n"))
+                cat(paste0("or summary(", x_name, ") for summarising them.\n"))
+
                 return()
             }
 

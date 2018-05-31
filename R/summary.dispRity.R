@@ -50,6 +50,8 @@
 # match_call <- list() ; match_call$cent.tend <- "median"
 
 summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = median, recall = FALSE, digits){#, results = "coefficients") {
+    
+    ## Renaming object
     data <- object
 
     #----------------------
