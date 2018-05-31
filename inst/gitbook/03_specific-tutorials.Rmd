@@ -948,6 +948,101 @@ plot(results, main = "Is this space normal?")
 
 For more details on generating spaces see the [`space.maker`](#Simulating-multidimensional-spaces) function tutorial.
 
+
+### Disparity model fitting with `model.test`
+
+[The model.test does blabalbalb]
+
+First let's create a fine scaled disparity through time dataset:
+
+```{r}
+data(BeckLee_mat99)
+data(BeckLee_tree)
+
+## Making a time slicing analysis every million years
+slice120 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "proximity",
+                       time = seq(from = 0, to = 120, by = 1))
+## Calculating disparity as the sum of variance on the bootstrapped data
+disparity_data <- dispRity(boot.matrix(slice120), metric = c(sum, variances))
+```
+
+We can then check which mode of changes of disparity-through-time best fits the observed data.
+Here we are going to tests 7 different models:
+
+ * A simple Brownian Motion ("BM")
+ * A simple Ornstein-Uhlenbeck process ("OU")
+ * An early burst model ("EB") which is a rapid increase in variance followed by an OU model
+ * A multiple OU model ("multi.OU") which is an OU model but with varying alpha parameters (the sometimes called "selection" parameter)
+ * An OU model followed by a Trend model (the Trend model is an OU model with increasing mean through time)
+ * A Trend model followed by an OU model.
+
+Note that the models can be any combination of the based implemented models which are `"BM"`, `"OU"`, `"EB"` and `"Trend"`.
+For example, one could test a model `c("EB", "Trend", "OU", "BM", "OU", "BM")` for a (weird) model with an early burst, followed by a trend and a cycle of variance constrain (the OU parts) and releases (the BM parts).
+
+```{r}
+## The list of models to test
+models_to_test <- list("BM", "OU", "EB", "multi.OU", "Trend", c("OU", "Trend"), c("Trend", "OU"))
+
+## Testing all the models on the observed data (with fixed optima)
+model_test_output <- model.test(disparity_data, models_to_test,
+                                time.split = 66, fixed.optima = TRUE)
+```
+
+We can now visualise the results of the model using the normal S3 associated methods (`print`, `summary` and `plot`):
+
+```{r, fig.width=8, fig.height=8}
+## The model fitting results
+model_test_output
+
+## The summary table of all the models
+summary(model_test_output)
+
+## The visualisation of the models AICs
+plot(model_test_output)
+```
+
+We can then test whether out model is significant based on simulation replicates:
+
+
+```{r}
+## Simulate 1000 datasets for the best fitting model ("Trend") and compare it to the observed result
+model_simulation <- model.test.sim(sim = 1000, model = model_test_output)
+```
+
+Again, these results can be visualised easily as before:
+
+```{r}
+## The simulation results
+model_simulation
+
+# ## The summary table of the simulations
+# summary(model_simulation)
+
+# ## Plotting the simulations
+
+  
+# #### plot for simulated data versus real data - could this be incorporated into the plot functions?
+# outputs.sim <- sapply(model_simulation$simulation.data, function(x) x$central_tendency)  
+
+# plot(disparity_data, ylim=c(0, max(c(outputs.sim))))
+
+# min.max <- t(apply(outputs.sim, 1, range))
+
+# time.span <- as.numeric(outputs.sim[[4]][[4]])
+
+# polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col="#ff000030", border=F)
+```
+
+
+```{r}
+
+# #### re-analyse simulated data (just the first five for demonstration)
+# five.models <- sapply(model.test.sim.output$simulation.data[1:5], function(x) model.test(data=x, model=models.to.test, time.split=66.02, fixed.optima=TRUE, pool.variance=FALSE, verbose=FALSE)[[1]][,1])
+
+# # model support (split between multi.OU and Trend) - it seems very difficult to choose between the two (at least with this miniscule sample size). We could maybe repeat this with x1000 or x10000 for publication
+# table(rownames(five.models)[apply(five.models, 2, which.min)])
+```
+
 ## Disparity as a distribution
 
 Disparity is often regarded as a summary value of the position of the all elements in the ordinated space.
