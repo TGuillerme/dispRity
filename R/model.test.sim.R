@@ -1,22 +1,42 @@
-##' @name model.test.sim
+#' @name model.test.sim
 #'
 #' @title Simulate Model Test
 #'
 #' @description Simulate models of disparity change through time
 #'
-#' @param sim The number of seperate simulations 
-#' @param model Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model or (ii) the an object of class \code{dispRity.sim} from the \code{model.test} function. If the \code{model.test} (ii) is supplied, all remaining arguments apart from \code{sim} are ignored as the model specified by the input model is used
+#' @param sim The number of separate simulations.
+#' @param model Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model (see list in \code{\link{model.test}}) or (ii) an object of class \code{dispRity} returned from \code{model.test} function. If a \code{dispRity} object is supplied, all remaining arguments apart from \code{sim} and \code{model.rank} are ignored as the model specified by the input model is used
 #' @param time.split The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models
-#' @param time.span The length of the sequence of class numeric. If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to time.span in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.
-#' @param variance The variance of each sample of class numeric. If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the variance of each sample in the sequence
-#' @param sample.size The sample.size of each sample of class numeric. If one number is supplied this is the sample.size for all samples in the sequence. If a vector of equal length to the time.span vector is supplied, this is used for the sample.size of each sample in the sequence
-#' @param parameters \code{list}  The model parameters used for simulations: ancestral.state (default = 0.01), sigma.squared (default = 1), alpha (default = 1), optima.1, optima.2, optima.3 (default = 0.15), theta.1, theta.2, theta.3 (default = 1), omega (default = 1), trend (default = 0.5), eb.rate (default = -0.1). 
+#' @param time.span The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.
+#' @param variance The variance of each sample (\code{numeric}). If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the variance of each sample in the sequence
+#' @param sample.size The sample size of each sample (\code{numeric}). If one number is supplied this is the sample size for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the sample size of each sample in the sequence
+#' @param parameters A \code{list} of model parameters used for simulations. See details.
 #' @param fixed.optima A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).
-#' @param model.rank If a \code{dispRity.sim} is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if rank=1 (default) the best-fitting model is used for simulation
-#' @return A list of class \code{dispRity.sim}. Each list element contains the simulated central_tendency, as well as the variance, sample_size, and subsets useds to simulate the data.
+#' @param model.rank If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.
+#' 
+#' @return A list of class \code{dispRity}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
+#' 
+#' @details
+#' The \code{parameters} is a list of arguments to be passed to the models.
+#' These arguments can be:
+#' \itemize{
+#'      \item{\code{ancestral.state}}, ancestral value of the disparity (default = \code{0.01}).
+#'      \item{\code{sigma.squared}}, [@@@] (default = \code{1}).
+#'      \item{\code{alpha}}, [@@@] (default = \code{1}).
+#'      \item{\code{optima.1}}, [@@@] (default = \code{0.15}).
+#'      \item{\code{optima.2}}, [@@@] (default = \code{0.15}).
+#'      \item{\code{optima.3}}, [@@@] (default = \code{0.15}).
+#'      \item{\code{theta.1}}, [@@@] (default = \code{1}).
+#'      \item{\code{theta.2}}, [@@@] (default = \code{1}).
+#'      \item{\code{theta.3}}, [@@@] (default = \code{1}).
+#'      \item{\code{omega}}, [@@@] (default = \code{1}).
+#'      \item{\code{trend}}, [@@@] (default = \code{0.5}).
+#'      \item{\code{eb.rate}}, [@@@] (default = \code{-0.1}).
+#' }
 #'
 #' @examples
 #' ## To Add
+#' 
 #' @seealso \code{\link{model.test}}.
 #'
 #' @references
@@ -34,9 +54,97 @@
 # model=tests
 # model.rank <- NULL
 
-model.test.sim <- function(sim=1, model, time.split=NULL, time.span=100, variance=1, sample.size=100, parameters=list(), fixed.optima=FALSE, model.rank=1) {
+model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE, model.rank = 1) {
     
-    if(length(class(model)) == 2 && class(model)[2] == "model.test") {
+    match_call <- match.call
+
+    ## Sanitizing
+    ## sim must be a positive whole number
+    check.class(sim, c("numeric", "integer"))
+    check.length(sim, 1, msg = " must be the number of simulations to run.")
+    sim <- round(sim)
+    if(sim < 0) {
+        sim <- abs(sim)
+    }
+
+    ## Model
+    class <- check.class(model, c("character", "dispRity"), msg = " must be either a model name (character) or a dispRity object from model.test().")
+    if(class == "character") {
+        ## Model is provided
+        model_inherit <- FALSE
+        check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
+
+    } else {
+        if(class(model)[[2]] != "model.test") {
+            stop(paste0(match_call$model, " must be a dispRity object output from model.test.\nTry running model.test(", match_call$model, ") first."), call. = FALSE)
+        }
+        ## Model is inherited from the dispRity object
+        model_inherit <- TRUE
+    }
+
+    ## Check the optional arguments
+    if(model_inherit) {
+        ## Check if any argument is provided (but rank and sim).
+        check.arg.inherit <- function(arg, default, inherit) {
+            if(is.null(default)) {
+                check <- !is.null(arg)
+            } else {
+                check <- arg != default
+            }
+            if(check) {
+                warning(paste0(strsplit(as.character(expression(match_call$time.split)), split = "\\$")[[1]][2], " argument ignored (inherited from ", inherit, ")."), call. = FALSE)
+            }
+        }
+        ## Warn that arguments are ignored
+        check.arg.inherit(match_call$time.split, NULL, match_call$model)
+        check.arg.inherit(match_call$time.span, 100, match_call$model)
+        check.arg.inherit(match_call$variance, 1, match_call$model)
+        check.arg.inherit(match_call$sample.size, 100, match_call$model)
+        check.arg.inherit(match_call$parameters, list(), match_call$model)
+        check.arg.inherit(match_call$fixed.optima, FALSE, match_call$model)
+
+        ## model.rank
+        check.class(model.rank, c("numeric", "integer"))
+        check.length(model.rank, 1, " must be the value of ranked model to simulate.")
+        if(model.rank > nrow(model$aic.models)) {
+            stop("model.rank must be the value of ranked model to simulate.", call. = FALSE)
+        }
+    } else {
+
+        ## time.split
+        check.class(time.split, c("numeric", "integer"))
+
+        ## time.span
+        check.class(time.span, "numeric")
+        multi_time.span <- ifelse(length(time.span) == 1, FALSE, TRUE)
+
+        ## variance
+        check.class(variance, "numeric")
+        multi_variance <- ifelse(length(variance) == 1, FALSE, TRUE)
+        if(multi_variance) {
+            check.length(variance, length(time.span), " must be a vector of numeric values equal to the length of time.span.")
+        }
+
+        ## sample.size
+        check.class(sample.size, "numeric")
+        multi_sample.size <- ifelse(length(sample.size) == 1, FALSE, TRUE)
+        if(multi_sample.size) {
+            check.length(sample.size, length(time.span), " must be a vector of numeric values equal to the length of time.span.")
+        }
+
+        ## parameters
+        check.class(parameters, "list")
+        param_names <- c("ancestral.state", "sigma.squared", "alpha", "optima.1", "optima.2", "optima.3", "theta.1", "theta.2", "theta.3", "omega", "trend", "eb.rate")
+        check.method(names(parameters), param_names, "parameters names") 
+
+        ## fixed.optima
+        check.class(fixed.optima, "logical")
+    }
+
+
+    ## Simulating the models
+
+    if(model_inherit) {
             
         test.p <- TRUE
         empirical.model <- model            
