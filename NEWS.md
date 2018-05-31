@@ -27,6 +27,7 @@ dispRity 0.2.0 (2016-04-01)
 
 ### NEW FEATURES
 
+  * *New* test functions: `model.test` and `model.test.sim` for fitting models to disparity curves (mainly developed by [Mark Puttick](https://puttickbiology.wordpress.com/)).
   * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
   * S3 `print` method for objects of class `"dtt"` and `"dispRity"` (from `dtt.dispRity`).
 
