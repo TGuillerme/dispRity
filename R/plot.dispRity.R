@@ -131,6 +131,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     #DATA
     if(length(class(data)) > 1) {
 
+        ## Subclass plots
+
         ## randtests plots
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
             ## sanitising
@@ -237,7 +239,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             options(warn = 0)
         } 
 
-         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
             ## Colours
             if(missing(col)) {
                 col <- "grey"
@@ -253,7 +255,43 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the model support
             plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         }
+        }
+        
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
+            
+
+            stop("DEBUG: no S3 method implemented for plotting yet.")
+
+            #TG: The plot needs to work with:
+            #- The models only
+            #- The models + adding the real data on top of it (e.g:)
+            # plot(model_simulations)
+            # plot(observed_data, add = TRUE, col = "blue")
+
+
+            # ## Extracting the central tendencies
+            # cent_tend <- sapply(data$simulation.data, function(x) x$central_tendency)
+
+            # ## Getting the y limits
+            # if(missing(ylim)) {
+            #     ylim <- range(cent_tend)
+            # }
+
+            # c(min(summarised_data[, -c(1:2)], na.rm = TRUE) - min(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[, -c(1:2)], na.rm = TRUE) + max(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02)
+
+
+            # #### plot for simulated data versus real data - could this be incorporated into the plot functions?
+            # outputs.sim <- sapply(model.test.sim.output$simulation.data, function(x) x$central_tendency)  
+            # plot(data, ylim=c(0, max(c(outputs.sim))))
+            # min.max <- t(apply(outputs.sim, 1, range))
+            # time.span <- as.numeric(model.test.output[[4]][[4]])
+            # polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col="#ff000030", border=F)
+
+            # ## Plotting the model support
+            # plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
+        }
+        
+        ## Exit subclass plots
         return(invisible())
     }
 

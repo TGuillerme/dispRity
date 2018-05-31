@@ -61,7 +61,17 @@
 #' @export
 
 # source("sanitizing.R")
+# source("model.test_fun.R")
 # # sim=1
+## Defaults
+# time.split = NULL
+# time.span = 100
+# variance = 1
+# sample.size = 100
+# parameters = list()
+# fixed.optima = FALSE
+# model.rank = 1
+# alternative = "two-sided"
 # time.split=66
 # time.span=120
 # sample.size=100
@@ -71,7 +81,7 @@
 
 model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE, model.rank = 1, alternative = "two-sided") {
     
-    match_call <- match.call
+    match_call <- match.call()
 
     ## Sanitizing
     ## sim must be a positive whole number
@@ -130,6 +140,13 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
 
         ## Alternative
         check.method(alternative, c("two-sided", "greater", "lesser"), msg = "alternative")
+        ## Translate the h1 for GET
+        if(alternative == "two-sided") {
+            alternative <- "two.sided"
+        }
+        if(alternative == "lesser") {
+            alternative <- "less"
+        }
 
 
         ## Get parameters from previous models
@@ -372,7 +389,19 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         output$p.value <- rank_env_dtt(x, alternative)
     }
 
+    ## Add the model call
+    output$call <- match_call
+    output$nsim <- sim
+
+    ## Add the inheritence from the previous object
+    if(model_inherit) {
+        model_results <- summary(empirical.model)[model.rank,]
+        model_results <- model_results[-c(which(is.na(model_results)), 2, 3)] #TG: also removing the wheighted and delta aic
+        output$model <- matrix(model_results, nrow = 1, dimnames = list(model.name, names(model_results)))
+    } else {
+        output$model <- match_call$model
+    }
+
     class(output) <- c("dispRity", "model.sim")
-    return(output)
-        
+    return(output)   
 }
