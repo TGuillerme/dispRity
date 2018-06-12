@@ -287,7 +287,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' ## Multiplying by 10 (dividing by 0.1)
 #' summary(rescale.dispRity(disparity, max = 0.1))
 #'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 #'
 #' @author Thomas Guillerme
 #' @export

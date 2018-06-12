@@ -75,5 +75,4 @@ NULL
 #'
 #' @format one \code{dispRity} object.
 #' @name disparity
-#' @seealso McClean_data BeckLee_data
 NULL
