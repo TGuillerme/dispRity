@@ -560,15 +560,14 @@ plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
 # Plotting model tests results
 plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 
-        ## Extracting the weighted aicc
-        weight_aicc <- data$aic.models[,3]
+    ## Extracting the weighted aicc
+    plot_aic <- data$aic.models[, 3]
 
-        ## Ordering the weighted aicc
-        ordered_aicc <- weight_aicc[order(weight_aicc, decreasing = TRUE)]
+    ## Ordering the weighted aicc
+    ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
 
-        ## Plot
-        plotcoords <- barplot(ordered_aicc, col = col, ylim = ylim,  ...)
-        # plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights") ; warning("DEBUG model.test plot")
+    ## Plot
+    plotcoords <- barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
 }
 
 # ~~~~~~~~~~

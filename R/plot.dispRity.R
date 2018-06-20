@@ -126,6 +126,7 @@
 plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
+    match_call <- match.call()
 
     #SANITIZING
     #DATA
@@ -240,21 +241,23 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         } 
 
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+
             ## Colours
             if(missing(col)) {
                 col <- "grey"
             }
             ## Ylab
             if(missing(ylab)) {
-                ylab <- "Akaike weights"
+                ylab <- "weighted AIC"
             }
+
             ## Ylim
             if(missing(ylim)) {
                 ylim <- NULL
             }
 
             ## Plotting the model support
-            plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
+            plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
         }
         
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
