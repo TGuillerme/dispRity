@@ -50,7 +50,7 @@
 # match_call <- list() ; match_call$cent.tend <- "median"
 
 summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = median, recall = FALSE, digits){#, results = "coefficients") {
-    
+
     ## Renaming object
     data <- object
 
@@ -127,7 +127,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         if(class(data)[2] == "model.sim") {
 
             if(recall){
-                 print.dispRity(data)
+                print.dispRity(data)
             }
 
             ## Extract the central tendencies
@@ -137,15 +137,9 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             simulation_results <- apply(simulation_data_matrix, 1, get.summary, cent.tend = cent.tend, quantiles = quantiles)
             simulation_results <- cbind(do.call(rbind, lapply(simulation_results, function(X) rbind(X$cent_tend[[1]]))),
                                         do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))
-            colnames(simulation_results)[1] <- match_call$cent.tend
-
+            colnames(simulation_results)[1] <- as.character(match_call$cent.tend)
 
             ## Output table
-
-
-            ##TODO: check the order!
-
-
             output_table <- cbind("subsets" = rev(data$simulation.data$fix$subsets),
                                   "n" = data$simulation.data$fix$sample_size,
                                   "var" = unname(data$simulation.data$fix$variance),
