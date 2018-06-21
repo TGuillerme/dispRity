@@ -149,3 +149,13 @@ test_that("plot.dispRity continuous with NAs", {
     expect_null(plot(test_data))
   
 })
+
+
+
+# test_that("plot.dispRity with model.test data", {
+
+# })
+
+# test_that("plot.dispRity with model.sim data", {
+
+# })

@@ -177,3 +177,13 @@ test_that("dtt printing", {
 
 
 })
+
+
+
+# test_that("print.dispRity with model.test data", {
+
+# })
+
+# test_that("print.dispRity with model.sim data", {
+
+# })
