@@ -92,6 +92,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 ## discrete plotting
 plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) {
 
+
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
 
@@ -102,7 +103,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
     ## Empty plot
     if(add == FALSE) {
         boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001,, type = "n", ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n")) ; warning("DEBUG: plot")
+        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n") ; warning("DEBUG: plot")
     }
 
     ## Set the shift parameter (for add)
@@ -408,6 +409,45 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
     return(output)
 }
 
+## The following is a modified version of plot.randtest from ade4 v1.4-3
+plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
+    
+    ## Observed data
+    observed <- data_sub$obs
+    ## Hist info
+    histogram <- data_sub$plot$hist
+    ## Plot info
+    xlim <- data_sub$plot$xlim
+    ylim <- c(0, max(data_sub$plot$hist$count))
+
+    ## Plotting the simulated data
+    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
+
+    ## Adding the observed data
+    lines(c(observed, observed), c(ylim[2]/2, 0))
+    points(observed, ylim[2]/2, pch = 18, cex = 2)
+
+    ## Adding the legend (test results)
+    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
+}
+
+# Plotting model tests results
+plot.model.test.support <- function(data, col, ylab, ylim, ...) {
+
+    ## Extracting the weighted aicc
+    plot_aic <- data$aic.models[, 3]
+
+    ## Ordering the weighted aicc
+    ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
+
+    ## Plot
+    plotcoords <- barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
+}
+
+# ~~~~~~~~~~
+# sequential.test plots
+# ~~~~~~~~~~
+
 
 ## Adding a line
 # add.line <- function(xs, ys, lines.args) {
@@ -533,46 +573,6 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
 #         significance.token(x_coords, y_coords, p_value, token.args)
 #     }
 # }
-
-
-## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
-    
-    ## Observed data
-    observed <- data_sub$obs
-    ## Hist info
-    histogram <- data_sub$plot$hist
-    ## Plot info
-    xlim <- data_sub$plot$xlim
-    ylim <- c(0, max(data_sub$plot$hist$count))
-
-    ## Plotting the simulated data
-    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
-
-    ## Adding the observed data
-    lines(c(observed, observed), c(ylim[2]/2, 0))
-    points(observed, ylim[2]/2, pch = 18, cex = 2)
-
-    ## Adding the legend (test results)
-    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
-}
-
-# Plotting model tests results
-plot.model.test.support <- function(data, col, ylab, ylim, ...) {
-
-    ## Extracting the weighted aicc
-    plot_aic <- data$aic.models[, 3]
-
-    ## Ordering the weighted aicc
-    ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
-
-    ## Plot
-    plotcoords <- barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
-}
-
-# ~~~~~~~~~~
-# sequential.test plots
-# ~~~~~~~~~~
 
 
 #Plot sequential.test shortcut
