@@ -488,19 +488,19 @@ bartlett.variance <- function(model.test_input) {
     pchisq(test.statistic, df = total.group.n - 1, lower.tail = FALSE)
 }
 
-plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coords=FALSE) {
+# plot.disparity.time <- function(input_disparity, plot.variance=FALSE, plot.coords=FALSE) {
     
-    model.test_input <- select.model.list(input_disparity)
-    xAxis <- max(model.test_input[[4]]) - model.test_input[[4]]
-    plot(xAxis, model.test_input[[1]], type="l", xlim=c(max(xAxis), 0), xlab="Time", ylab="disparity measure", las=1)
-    if(plot.variance) {
-        varUp <- model.test_input[[1]] + model.test_input[[2]]
-        varDown <- model.test_input[[1]] - model.test_input[[2]]
-        polygon(x=c(xAxis, rev(xAxis)), c(varUp, rev(varDown)), col="grey", border=F)
-    }    
-    lines(xAxis, model.test_input[[1]], col="grey50")
-    if(plot.coords) return(cbind(xAxis, model.test_input[[1]]))
-}
+#     model.test_input <- select.model.list(input_disparity)
+#     xAxis <- max(model.test_input[[4]]) - model.test_input[[4]]
+#     plot(xAxis, model.test_input[[1]], type="l", xlim=c(max(xAxis), 0), xlab="Time", ylab="disparity measure", las=1)
+#     if(plot.variance) {
+#         varUp <- model.test_input[[1]] + model.test_input[[2]]
+#         varDown <- model.test_input[[1]] - model.test_input[[2]]
+#         polygon(x=c(xAxis, rev(xAxis)), c(varUp, rev(varDown)), col="grey", border=F)
+#     }    
+#     lines(xAxis, model.test_input[[1]], col="grey50")
+#     if(plot.coords) return(cbind(xAxis, model.test_input[[1]]))
+# }
 
 
 ### Function from Murrell D.J. 2018. 'Global envelope test to detect non-random bursts of trait evolution'. Methods Ecol. Evol. doi:10.1111/2041-210X.13006

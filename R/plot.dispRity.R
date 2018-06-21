@@ -262,8 +262,54 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
             
+            ## xlab
+            if(missing(xlab)) { 
+                xlab <- "default"
+            } 
 
-            stop("DEBUG: no S3 method implemented for plotting yet.")
+            ## ylab
+            if(missing(ylab)) {
+                ylab <- "default"
+            }
+
+            ## col
+            if(missing(col)) {
+                col <- "default"
+            }
+    
+            ## ylim
+            if(missing(ylim)) {
+                ylim <- "default"
+            }
+
+            ## add
+            check.class(add, "logical")
+
+            ## density
+            if(!is.null(density)) {
+                check.class(density, "numeric")
+                check.length(density, 1, " must be a single numeric value.")
+            }
+
+            ## Preparing the data and the arguments
+            summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
+            colnames(summarised_data)[3] <- "obs"
+
+            ## Setting the default arguments
+            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
+            ylim <- default_arg[[1]]
+            xlab <- default_arg[[2]]
+            ylab <- default_arg[[3]]
+            if(length(ylab) == 0) {
+                ylab <- "disparity (simulated)"
+            }
+            col <- default_arg[[4]]
+
+            ## Plotting the model
+            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, add, density, ...)
+            
+            # stop("DEBUG: no S3 method implemented for plotting yet.")
+
 
             #TG: The plot needs to work with:
             #- The models only
