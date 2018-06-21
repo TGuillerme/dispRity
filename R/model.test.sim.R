@@ -134,6 +134,9 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         ## model.rank
         silent <- check.class(model.rank, c("numeric", "integer"))
         check.length(model.rank, 1, " must be the value of ranked model to simulate.")
+
+        ##TODO: allow multiple model ranks
+        
         if(model.rank > nrow(model$aic.models)) {
             stop("model.rank must be the value of ranked model to simulate.", call. = FALSE)
         }
@@ -360,7 +363,7 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         }
 
         total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
-        total_mean <-  c(total_mean, output.mean)
+        total_mean <- c(total_mean, output.mean)
     
     }
     
@@ -369,23 +372,26 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         output.values <- t(output.values)
     }
 
-    run.one.simulation <- function(X, output.values, data.model.test) {
-        output.full <- list(output.values[,X], data.model.test[[1]], data.model.test[[2]], data.model.test[[3]])
-        names(output.full) <- c("central_tendency", "variance", "sample_size", "subsets")
-        class(output.full) <- c("dispRity", "model.sim")
-        return(output.full)
-    }
+    # run.one.simulation <- function(X, output.values, data.model.test) {
+    #     output.full <- list(output.values[,X], data.model.test[[1]], data.model.test[[2]], data.model.test[[3]])
+    #     names(output.full) <- c("central_tendency", "variance", "sample_size", "subsets")
+    #     class(output.full) <- c("dispRity", "model.sim")
+    #     return(output.full)
+    # }
 
-    output.simulation <- lapply(1:sim, run.one.simulation, output.values, data.model.test)
+    ## Transform the rmnorm into a list
+    output.simulation <- apply(output.values, 2, function(X) {return(list("central_tendency" = X))})
+    # output.simulation <- lapply(1:sim, run.one.simulation, output.values, data.model.test)
     
-    output <- c()
-    output$simulation.data <- output.simulation
+    output <- list()
+    output$simulation.data <- list("sim" = output.simulation, "fix" = list("variance" = data.model.test[[1]], "sample_size" = data.model.test[[2]], "subsets" = data.model.test[[3]]))
+    # output$simulation.data <- output.simulation
     
     if(test.p) {
-        x <- c()
-        x$sim <- sapply(output.simulation, function(x) x$central_tendency)
-        x$central_tendency <- as.numeric(empirical.model[[4]]$central_tendency) 
-        x$subsets <- as.numeric(empirical.model[[4]]$subsets)
+        x <- list()
+        x$sim <- sapply(output.simulation, function(x) x$central_tendency) #DEBUG: a 120*7 matrix
+        x$central_tendency <- as.numeric(empirical.model[[4]]$central_tendency) #DEBUG: a 120 vector
+        x$subsets <- as.numeric(empirical.model[[4]]$subsets) #DEBUG: a 120 vector
         output$p.value <- rank_env_dtt(x, alternative)
     }
 
@@ -403,5 +409,5 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
     }
 
     class(output) <- c("dispRity", "model.sim")
-    return(output)   
+    return(output)
 }
