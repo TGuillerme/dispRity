@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.1.2  (2018-05-31)
+[Next release] dispRity v1.2.0  (2018-06-22)
 =========================
 
 ### NEW FEATURES

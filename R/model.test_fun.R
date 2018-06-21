@@ -520,8 +520,8 @@ rank_env_dtt <- function(x, alternative) {
     r <- as.vector(x$subsets[-c(1)])
     obs <- as.vector(x$central_tendency)[-c(1)]
     c1 <- list("r" = r, "obs" = obs, "sim_m" = s1)
-    c2 <- GET::create_curve_set(c1)
-    res <- GET::rank_envelope(c2, alternative = alternative)
+    c2 <- spptest::create_curve_set(c1)
+    res <- spptest::rank_envelope(c2, alternative = alternative)
     return(res) 
 }
 
