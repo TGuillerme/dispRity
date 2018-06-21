@@ -153,9 +153,11 @@ test_that("plot.dispRity continuous with NAs", {
 
 
 # test_that("plot.dispRity with model.test data", {
+#     load("model_test_data.Rda")
 
 # })
 
 # test_that("plot.dispRity with model.sim data", {
+#     load("model_test_data.Rda")
 
 # })

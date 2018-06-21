@@ -308,10 +308,12 @@ test_that("summary.dispRity works with small, empty/subsets", {
 
 
 # test_that("summary.dispRity with model.test data", {
+#     load("model_test_data.Rda")
 
 # })
 
 # test_that("summary.dispRity with model.sim data", {
+#     load("model_test_data.Rda")
 
 # })
 

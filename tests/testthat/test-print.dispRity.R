@@ -181,9 +181,11 @@ test_that("dtt printing", {
 
 
 # test_that("print.dispRity with model.test data", {
+#     load("model_test_data.Rda")
 
 # })
 
 # test_that("print.dispRity with model.sim data", {
+#     load("model_test_data.Rda")
 
 # })
