@@ -307,15 +307,44 @@ test_that("summary.dispRity works with small, empty/subsets", {
 
 
 
-# test_that("summary.dispRity with model.test data", {
-#     load("model_test_data.Rda")
 
-# })
+test_that("summary.dispRity with model.test data", {
+    load("model_test_data.Rda")
 
-# test_that("summary.dispRity with model.sim data", {
-#     load("model_test_data.Rda")
+    ## Run two models (silent)
+    models <- list("BM", "OU")
+    set.seed(42)
+    tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
+    summary_model.tests <- summary(tested_models)
 
-# })
+    expect_is(summary_model.tests, "matrix")
+    expect_equal(dim(summary_model.tests), c(2,8))
+    expect_equal(colnames(summary_model.tests), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha"))
+    expect_equal(rownames(summary_model.tests), unlist(models))
+})
+
+test_that("summary.dispRity with model.sim data", {
+    load("model_test_data.Rda")
+
+    ## Testing normal model
+    model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
+    summary_model.sim1 <- summary(model_simulation_empty)
+
+    expect_is(summary_model.sim1, "matrix")
+    expect_equal(dim(summary_model.sim1), c(100,8))
+    expect_equal(colnames(summary_model.sim1), c("subsets", "n", "var", "median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(rownames(summary_model.sim1), as.character(model_simulation_empty$simulation.data$fix$subsets))
+
+    ## Testing inherited model
+    set.seed(42)
+    model_simulation_empty <- model.test.sim(sim = 10, model = tested_models)
+    summary_model.sim2 <- summary(model_simulation_empty)
+
+    expect_is(summary_model.sim2, "matrix")
+    expect_equal(dim(summary_model.sim2), c(25,8))
+    expect_equal(colnames(summary_model.sim2), c("subsets", "n", "var", "median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(rownames(summary_model.sim2), as.character(rev(25:1)))
+})
 
 
 # test_that("Test seq.test object management", {
