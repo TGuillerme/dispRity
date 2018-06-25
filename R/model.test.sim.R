@@ -62,8 +62,9 @@
 
 # source("sanitizing.R")
 # source("model.test_fun.R")
-# # sim=1
 ## Defaults
+# sim = 1
+# model = "BM"
 # time.split = NULL
 # time.span = 100
 # variance = 1
@@ -72,12 +73,6 @@
 # fixed.optima = FALSE
 # model.rank = 1
 # alternative = "two-sided"
-# time.split=66
-# time.span=120
-# sample.size=100
-# variance=1e-1
-# model=tests
-# model.rank <- NULL
 
 model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE, model.rank = 1, alternative = "two-sided") {
     
@@ -207,17 +202,22 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         names(data.model.test) <- c("variance", "sample_size", "subsets")
 
         ## time.split
-        silent <- check.class(time.split, c("numeric", "integer"))
         if(!is.null(time.split)) {
+            silent <- check.class(time.split, c("numeric", "integer"))
             time.split <- sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[3]])))))
         }
 
         ## parameters
         check.class(parameters, "list")
-        check.method(names(parameters), param_names, "parameters names") 
+        if(!is.null(names(parameters))) {
+            check.method(names(parameters), param_names, "parameters names") 
+        }
 
         ## fixed.optima
         check.class(fixed.optima, "logical")
+
+        ## Don't test p
+        test.p <- FALSE
     }
 
     ## Filling default parameters
