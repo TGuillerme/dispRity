@@ -321,10 +321,6 @@ test_that("summary.dispRity with model.test data", {
     expect_equal(dim(summary_model.tests), c(2,8))
     expect_equal(colnames(summary_model.tests), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha"))
     expect_equal(rownames(summary_model.tests), unlist(models))
-})
-
-test_that("summary.dispRity with model.sim data", {
-    load("model_test_data.Rda")
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")

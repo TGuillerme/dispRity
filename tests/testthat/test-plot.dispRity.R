@@ -164,10 +164,6 @@ test_that("plot.dispRity with model.test data", {
     summary_model.tests <- summary(tested_models)
 
     expect_null(plot(tested_models))
-})
-
-test_that("plot.dispRity with model.sim data", {
-    load("model_test_data.Rda")
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")

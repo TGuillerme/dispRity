@@ -206,10 +206,7 @@ test_that("print.dispRity with model.test data", {
          " or summary(item) for summarising them.",
         " or summary(value) for summarising them."
         ))
-})
 
-test_that("print.dispRity with model.sim data", {
-    load("model_test_data.Rda")
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
