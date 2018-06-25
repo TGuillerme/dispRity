@@ -307,37 +307,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the model
             plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, add, density, ...)
-            
-            # stop("DEBUG: no S3 method implemented for plotting yet.")
-
-
-            #TG: The plot needs to work with:
-            #- The models only
-            #- The models + adding the real data on top of it (e.g:)
-            # plot(model_simulations)
-            # plot(observed_data, add = TRUE, col = "blue")
-
-
-            # ## Extracting the central tendencies
-            # cent_tend <- sapply(data$simulation.data, function(x) x$central_tendency)
-
-            # ## Getting the y limits
-            # if(missing(ylim)) {
-            #     ylim <- range(cent_tend)
-            # }
-
-            # c(min(summarised_data[, -c(1:2)], na.rm = TRUE) - min(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[, -c(1:2)], na.rm = TRUE) + max(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02)
-
-
-            # #### plot for simulated data versus real data - could this be incorporated into the plot functions?
-            # outputs.sim <- sapply(model.test.sim.output$simulation.data, function(x) x$central_tendency)  
-            # plot(data, ylim=c(0, max(c(outputs.sim))))
-            # min.max <- t(apply(outputs.sim, 1, range))
-            # time.span <- as.numeric(model.test.output[[4]][[4]])
-            # polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col="#ff000030", border=F)
-
-            # ## Plotting the model support
-            # plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
         }
         
         ## Exit subclass plots

@@ -337,8 +337,8 @@ test_that("summary.dispRity with model.sim data", {
 
     ## Testing inherited model
     set.seed(42)
-    model_simulation_empty <- model.test.sim(sim = 10, model = tested_models)
-    summary_model.sim2 <- summary(model_simulation_empty)
+    model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
+    summary_model.sim2 <- summary(model_simulation_inherit)
 
     expect_is(summary_model.sim2, "matrix")
     expect_equal(dim(summary_model.sim2), c(25,8))

@@ -226,8 +226,8 @@ test_that("print.dispRity with model.sim data", {
 
     ## Testing inherited model
     set.seed(42)
-    model_simulation_empty <- model.test.sim(sim = 10, model = tested_models)
-    print_model.sim2 <- capture.output(model_simulation_empty)
+    model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
+    print_model.sim2 <- capture.output(model_simulation_inherit)
 
     expect_equal(print_model.sim2,
         c("Disparity evolution model simulation:",
