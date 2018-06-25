@@ -180,12 +180,65 @@ test_that("dtt printing", {
 
 
 
-# test_that("print.dispRity with model.test data", {
-#     load("model_test_data.Rda")
+test_that("print.dispRity with model.test data", {
+    load("model_test_data.Rda")
 
-# })
+    ## Run two models (silent)
+    models <- list("BM", "OU")
+    set.seed(42)
+    tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
+    print_model.test <- capture.output(tested_models)
 
-# test_that("print.dispRity with model.sim data", {
-#     load("model_test_data.Rda")
+    expect_equal(print_model.test,
+        c("Disparity evolution model fitting:",
+         "Call: model.test(data = model_test_data, model = models, time.split = 65, fixed.optima = TRUE, verbose = FALSE) ",
+         "",
+         "         aicc delta_aicc weight_aicc",
+         "BM -11.860377   0.000000   0.7856166",
+         "OU  -9.262971   2.597406   0.2143834",
+         "",
+         "Use $$full.details for displaying the models details",
+         " ",
+         "Use item$full.details for displaying the models details",
+         " ",
+         "Use value$full.details for displaying the models details",
+         "or summary($) for summarising them.",
+         " or summary(item) for summarising them.",
+        " or summary(value) for summarising them."
+        ))
+})
 
-# })
+test_that("print.dispRity with model.sim data", {
+    load("model_test_data.Rda")
+
+    ## Testing normal model
+    model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
+    print_model.sim1 <- capture.output(model_simulation_empty)
+
+    expect_equal(print_model.sim1,
+        c("Disparity evolution model simulation:",
+          "Call: model.test.sim(sim = 10, model = \"BM\") ",
+          "",
+          "Model simulated (10 times):",
+          "[1] \"BM\"",
+          ""
+        ))
+
+    ## Testing inherited model
+    set.seed(42)
+    model_simulation_empty <- model.test.sim(sim = 10, model = tested_models)
+    print_model.sim2 <- capture.output(model_simulation_empty)
+
+    expect_equal(print_model.sim2,
+        c("Disparity evolution model simulation:",
+          "Call: model.test.sim(sim = 10, model = tested_models) ",
+          "",
+          "Model simulated (10 times):",
+          "    aicc log.lik param ancestral state sigma squared",
+          "BM -11.9   8.203     2           2.662         0.004",
+          "",
+          "Rank envelope test",
+          " p-value of the test: 0.3636364 (ties method: midrank)",
+          " p-interval         : (0.09090909, 0.6363636)" 
+        ))
+})
