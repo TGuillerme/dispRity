@@ -22,27 +22,49 @@
 #' The \code{parameters} is a list of arguments to be passed to the models.
 #' These arguments can be:
 #' \itemize{
-#'      \item{\code{ancestral.state}}, ancestral value of the disparity (default = \code{0.01}).
-#'      \item{\code{sigma.squared}}, [@@@] (default = \code{1}).
-#'      \item{\code{alpha}}, [@@@] (default = \code{1}).
-#'      \item{\code{optima.1}}, [@@@] (default = \code{0.15}).
-#'      \item{\code{optima.2}}, [@@@] (default = \code{0.15}).
-#'      \item{\code{optima.3}}, [@@@] (default = \code{0.15}).
-#'      \item{\code{theta.1}}, [@@@] (default = \code{1}).
-#'      \item{\code{theta.2}}, [@@@] (default = \code{1}).
-#'      \item{\code{theta.3}}, [@@@] (default = \code{1}).
-#'      \item{\code{omega}}, [@@@] (default = \code{1}).
-#'      \item{\code{trend}}, [@@@] (default = \code{0.5}).
-#'      \item{\code{eb.rate}}, [@@@] (default = \code{-0.1}).
+#'      \item{\code{ancestral.state}}, ancestral value of the disparity applicable to all models (default = \code{0.01}).
+#'      \item{\code{sigma.squared}}, rate of step variance to all models except Stasis (default = \code{1}).
+#'      \item{\code{alpha}}, strength of attraction to the optimum in OU models (default = \code{1}).
+#'      \item{\code{optima.1}}, the value of the optimum in a OU model, or the first bin optimum in a multi-OU model (default = \code{0.15}).
+#'      \item{\code{optima.2}}, the second bin optimum in a multi-OU model (default = \code{0.15}).
+#'      \item{\code{optima.3}}, the third bin optimum in a multi-OU model (default = \code{0.15}).
+#'      \item{\code{theta.1}}, the mean in a Stasis model, or the first bin mean in a multi-Stasis model (default = \code{1}).
+#'      \item{\code{theta.2}}, the second bin optimum in a multi-OU model (default = \code{1}).
+#'      \item{\code{theta.3}}, the third bin optimum in a multi-OU model (default = \code{1}).
+#'      \item{\code{omega}}, the variance in a Stasis model (default = \code{1}).
+#'      \item{\code{trend}}, the trend parameter in the Trend model (default = \code{0.5}).
+#'      \item{\code{eb.rate}}, the rate of exponential rate decrease in the EB model (default = \code{-0.1}).
 #' }
 #'
 #' @examples
-#' ## To Add
+#'  
+#'  ## Mammal disparity through time
+#'  data(BeckLee_disparity)
+#'  models <- list("Trend", "BM")
+#'  model.test.output <- model.test(BeckLee_disparity, models, time.split = 66)
+#'  
+#'  ## simulations using the output from model.test
+#'  model.test.sim.output <- model.test.sim(sim=10000, model=model.test.output)
+#'   
+#'  plot(model.test.sim.output)
+#'  plot(BeckLee_disparity, add=T, col=c("pink", "#ff000050", "#ff000050"))
+#' 
+#'  ## simulations using input model parameters
+#'   model.sim.output <- model.test.sim(sim=1000, model="BM", time.span=120, variance=0.1, sample.size=100, parameters=list(ancestral.state=0, sigma.squared=0.1))
+#'  # plot(model.sim.output)
+#'  # plot.dispRity(BeckLee_disparity, add=T, col=c("pink", "#ff000050", "#ff000050"))
 #' 
 #' @seealso \code{\link{model.test}}.
 #'
-#' @references
-#' To Add: Hunt 2006, Hunt 2008, Harmon 2010, Murrell 2018,
+#' @references Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution.  \bold{57}, 717-745.
+#' @references Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
+#' @references Harmon LJ, \emph{et al}. 2010. Early bursts of body size and shape evolution are rare in comparative data. \bold{64}, 2385-2396.
+#' @references Hunt G. 2006. Fitting and comparing models of phyletic evolution: random walks and beyond. Paleobiology. \bold{32}, 578-601. DOI: 10.1666/05070.1.
+#' @references Hunt G, Hopkins MJ & Lidgard S. 2015. Simple versus complex models of trait evolution and stasis as a response to environmental change. Proceedings of the National Academy of Sciences. \bold{112}, 4885-4890. DOI: 10.1073/pnas.1403662111
+#' @references Felsenstein J. 1973. Maximum-likelihood estimation of evolutionary trees from continuous characters. American Journal of Human Genetics. \bold{25}, 471-492.
+#' @references Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist. \bold{51}, 1-15.
+#' @references Murrell DJ. 2018. A global envelope test to detect non‐random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
+
 #' 
 #' Citation for the envelope code:
 # @misc{david_murrell_2018_1197535,

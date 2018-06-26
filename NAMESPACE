@@ -64,6 +64,7 @@ export(adonis.dispRity)
 export(dtt.dispRity)
 export(model.test)
 export(model.test.sim)
+export(rank.model.test)
 # export(sequential.test)
 
 ##dispRity object utilities

@@ -5,9 +5,9 @@
 #' @description Fit models of disparity change through time
 #'
 #' @param data A \code{dispRity} object used to test models of evolution through time.
-#' @param model The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model. A single model can be used as input or multiple modes can be supplied in a vector. If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}. If a list is supplied different models will be fit to the data (See \bold{Details}).
+#' @param model The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model, either using a single input or a list containing different models (See \bold{Details}). If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}.
 #' @param pool.variance If \code{NULL} (default) the difference in variances will be calculated using \code{\link[stats]{bartlett.test}} of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.
-#' @param time.split The age of the change in mode (\code{numeric}). The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}).
+#' @param time.split The age of the change in mode (\code{numeric}). The age is measured in positive units as the time before the most recent sample, and multiple ages can be supplied in a vector. If no age is supplied for models then all possible time shifts are fit in the model, and the highest likelihood model is returned. Note this only applies to heterogenous models (See \bold{Details}).
 #' @param fixed.optima A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).
 #' @param control.list A \code{list} of fine-tune control inputs for the optim function.
 #' @param verbose \code{logical}, whether to display the model results as computed (\code{TRUE} - default).
@@ -15,57 +15,35 @@
 #' @details The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, c("BM", "OU") would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of 'multi.OU') can be fit to the data:
 #' 
 #' \itemize{
-#'         \item{"BM"}{Fits a unbiased random walk model of evolution (Felsenstein 1973; 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
+#'         \item{BM}{ Fits a unbiased random walk model of Brownian motion evolution (Felsenstein 1973; 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
 #'  
-#'         \item{"OU"}{The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values. If this is the case the model is similar to a trend model. If the argument, fixed.optima is set to TRUE, the model will not estimate optima but constrain it to the first value in the sequence}
+#'         \item{OU}{ The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values, and thus the model can resemble a trend. If the argument, fixed.optima is TRUE, the model will not estimate optima but constrain it to the first (ancestral) value in the sequence as is done in phylogenetic OU models}
 #' 
-#'         \item{"Trend"}{Fits a Brownian motion model with a directional component. This model is also known as the General Random Walk (Hunt 2006). This model has three parameters: the ancestral state, the 'step-variance' (sigma-squared), and the trend component.}
+#'         \item{Trend}{ Fits a Brownian motion model with a directional component. This model is also known as the General Random Walk (Hunt 2006). This model has three parameters: the ancestral state, the 'step-variance' (sigma-squared), and the positive or negative trend.}
 #' 
-#'         \item{"Stasis"}{Fits a model in which traits evolve with variance (omega) around a mean (theta). This model is time-independent in that the model is guided only by the variance and attraction to the mean (Hunt 2006)}
+#'         \item{Stasis}{ Fits a model in which traits evolve with variance (omega) around a mean (theta). This model is time-independent in that the model is guided only by the variance and attraction to the mean (Hunt 2006)}
 #' 
-#'         \item{"Early Burst(EB)"}{Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease}
+#'         \item{Early Burst(EB)}{ Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease. Note this model expects the mean to remain unchanged through the model, so does not explicitly model a rapid change to a new mean or optimum value.}
 #' 
-#'         \item{"multi.OU"}{Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multiOU system can be fit to the model only}
+#'         \item{multi.OU}{ Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multiOU system can be fit to the model only}
 #' }
 #' 
 #' @return A list of class \code{dispRity} and \code{model.test} that can be plotted and summarised via \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}.
 #' The list is composed of:
 #' \itemize{
-#  \item{"$models.data"}{the models raw data}
-#'     \item{"$aic.models"}{the list of models AICs}
-#'     \item{"$full.models"}{the list of the full models outputs}
-#     \item{"$call"}{the function call}
+#' 	\item{$aic.models}{ summary for each model's small sample Akaike Information Criterion (AICc), delta AICc, and AICc weight}
+#' 	\item{$full.models}{ the list of the full models outputs from \code{\link{optim}} with the estimated parameters, log-likelihood, convergence statistics, and the split.time if applicable }
+#' 	\item{$call}{ the model input}
+#' 	\item{$models.data}{ input data used by the model(s)}
+#' 	\item{$fixed.optima}{ Logical indicating whether a fixed optima was assummed for OU model(s)}
 #' }
 #' 
 #' @examples
-#' set.seed(123)
 #' 
-#' ## Loading the data
-#' data(disparity)
-#' 
-#' ## Testing simple models
-#' models_to_test <- list("BM", "OU", "Stasis", "EB", "Trend")
-#' tests <- model.test(disparity, models = models_to_test, verbose = FALSE)
-#' 
-#' ## Summarising the models
-#' summary(tests)
-#' 
-#' ## Plotting the models
-#' plot(tests)
-#' 
-#' \dontrun{
-#' ## Loading more data
-#' data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
-#' 
-#' ## Calculating finer scale disparity
-#' data <- time.subsets(BeckLee_mat99, BeckLee_tree,
-#'                           method = "continuous", model = "proximity",
-#'                           time = rev(seq(from = 0, to = 120, length.out = 120)))
-#' data <- dispRity(boot.matrix(data), metric = c(sum, variances))
-#' 
-#' ## Testing more complex models
+#' ## Mammal disparity through time
+#' data(BeckLee_disparity)
 #' models <- list("BM", "OU", "multi.OU", c("BM", "OU"))
-#' tests <- model.test(data, models, time.split = 66)
+#' tests <- model.test(BeckLee_disparity, models, time.split = 66)
 #' 
 #' ## Summarising the models
 #' summary(tests)
@@ -73,14 +51,16 @@
 #' ## Plotting only the models support
 #' plot(tests, type = "support")
 #' 
-#' ## Plotting only the best model
-#' plot(tests, type = "best")
-#' }
-#' 
 #' @seealso \code{\link{model.test.sim}}.
-#'
-#' @references
-#' To Add: Hunt 2006, Hunt 2008, Harmon 2010, 
+#' 
+#' @references Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution.  \bold{57}, 717-745.
+#' @references Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
+#' @references Harmon LJ, \emph{et al}. 2010. Early bursts of body size and shape evolution are rare in comparative data. \bold{64}, 2385-2396.
+#' @references Hunt G. 2006. Fitting and comparing models of phyletic evolution: random walks and beyond. Paleobiology. \bold{32}, 578-601. DOI: 10.1666/05070.1.
+#' @references Hunt G, Hopkins MJ & Lidgard S. 2015. Simple versus complex models of trait evolution and stasis as a response to environmental change. Proceedings of the National Academy of Sciences. \bold{112}, 4885-4890. DOI: 10.1073/pnas.1403662111
+#' @references Felsenstein J. 1973. Maximum-likelihood estimation of evolutionary trees from continuous characters. American Journal of Human Genetics. \bold{25}, 471-492.
+#' @references Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist. \bold{51}, 1-15.
+#' @references Murrell DJ. 2018. A global envelope test to detect non‐random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 #' 
 #' @author Mark N Puttick and Thomas Guillerme
 #' @export

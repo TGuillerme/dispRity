@@ -301,7 +301,12 @@ est.VCV <- function(p, data.model.test, model.type, est.anc=TRUE, model.anc) {
         sigma.squared <- p[2]
         r.rate <- p[8]
         time.out.eb <- data.model.test$subsets
-        VCV <- outer(sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), FUN=pmin)    
+        # VCV <- outer(sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate), FUN=pmin)    
+        
+        exponential.change <- sigma.squared * ((exp(r.rate * time.out.eb) - 1) / r.rate)
+        exponential.matrix <- 1 - (exponential.change / max(exponential.change))
+        exponential.matrix[which(done < 1e-7)] <- 1e-8
+        VCV <- outer(exponential.matrix, exponential.matrix, FUN=pmin)  
         diag(VCV) <- diag(VCV) + data.model.test$variance / data.model.test$sample_size
         return(VCV)
     }

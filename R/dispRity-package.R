@@ -38,6 +38,7 @@ NULL
 #'   \item \code{BeckLee_mat50} The ordinated matrix based on the 50 taxa cladistic distances
 #'   \item \code{BeckLee_mat99} The ordinated matrix based on the 50 taxa + 49 nodes cladistic distances
 #'   \item \code{BeckLee_ages} A list of first and last occurrence data for fossil taxa
+#'   \item \code{BeckLee_disparity} a \code{dispRity} object with estimated sum of variances in 120 time bins, boostrapped 100 times from the Beck and Lee data
 #' }
 #'
 #' @format three matrices and one phylogenetic tree.
