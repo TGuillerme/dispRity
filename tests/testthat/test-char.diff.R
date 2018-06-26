@@ -1,65 +1,35 @@
 context("char.diff")
 
-test_that("internal function char.diff", {
-
-    A <- c(1,0,0,0,0)
-    B <- c(0,1,1,1,1)
-    C <- c(9,8,8,8,8)
-
-    ## Convert character works (translate digits in letters)
-    expect_equal(convert.character(A), c("B", rep("A", 4)))
-
-    ## Normalise character works (translate digits in normalised way)
-    expect_true(all(is.na(normalise.character(A, c("a","b")))))
-    expect_equal(normalise.character(A, c(0,1)), normalise.character(B, c(1,0)))
-    expect_equal(normalise.character(A, c(0,1)), normalise.character(C, c(9,8)))
-    expect_equal(normalise.character(B, c(1,0)), normalise.character(C, c(9,8)))
-
-    ## char.diff_R is the same as char.diff for a list
-    matrix <- list(A, B)
-    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
-
-    ## char.diff works with characters
-    matrix <- list(as.character(A), as.character(B))
-    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
-
-    ## char.diff_R
-    A <- c(1,2,3,1,1,3)
-    B <- c(NA,2,3,NA,1,3)
-    matrix <- list(as.character(A), as.character(B))
-    expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
-
-})
 
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
     B <- c(0,1,1,1,1)
 
     ## Difference is 0
-    expect_equal(char.diff(list(A,B)), 0)
+    expect_warning(expect_equal(char.diff(list(A,B)), 0))
     ## Difference is triangular
-    expect_equal(char.diff(list(A,B)), char.diff(list(A,B)))
+    expect_warning(expect_equal(char.diff(list(A,B)), char.diff(list(A,B))))
 
     C <- c(1,1,0,0,0)
 
-    ## Difference is 0.4
-    expect_equal(char.diff(list(A,C)), 0.4)
+    ## Difference is 0.25
+    expect_warning(expect_equal(char.diff(list(A,C)), 0.25))
     ## Difference is triangular
-    expect_equal(char.diff(list(A,C)), char.diff(list(C,A)))
+    expect_warning(expect_equal(char.diff(list(A,C)), char.diff(list(C,A))))
 
     D <- c(0,1,1,0,0)
 
-    ## Difference is 0.4
-    expect_equal(char.diff(list(A,D)), 0.8)
+    ## Difference is 0.5
+    expect_warning(expect_equal(char.diff(list(A,D)), 0.5))
     ## Difference is triangular
-    expect_equal(char.diff(list(A,D)), char.diff(list(D,A)))
+    expect_warning(expect_equal(char.diff(list(A,D)), char.diff(list(D,A))))
 
     E <- c(1,0,0,1,1)
 
     ## Difference is equal to D
-    expect_equal(char.diff(list(D,E)), 0)
+    expect_warning(expect_equal(char.diff(list(D,E)), 0))
     ## Difference is triangular (with D)
-    expect_equal(char.diff(list(A,E)), char.diff(list(A,D)))
+    expect_warning(expect_equal(char.diff(list(A,E)), char.diff(list(A,D))))
 })
 
 ## Matrices                     #A,B,C,D,E
@@ -86,14 +56,15 @@ colnames(matrix_simple) <- LETTERS[1:3]
 
 test_that("char.diff matrix", {
     tests <- list()
-    expect_warning(tests[[1]] <- char.diff(matrix_simple))
-    expect_warning(tests[[2]] <- char.diff(matrix_multi))
-    expect_warning(tests[[3]] <- char.diff(matrix_binary))
+    expect_warning(tests[[1]] <- round(char.diff(matrix_simple), digits = 7))
+    expect_warning(tests[[2]] <- round(char.diff(matrix_multi), digits = 7))
+    expect_warning(tests[[3]] <- round(char.diff(matrix_binary), digits = 7))
 
     expect_dims <- list(c(3,3), c(7,7), c(5,5))
-    expect_diff <- list(c(0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 1.0, 0.5, 0.0), 
-                        c(0.0, 0.0, 0.8, 0.8, 0.4, 0.4, 0.4, 0.0, 0.0, 0.8, 0.8, 0.4, 0.4, 0.4, 0.8, 0.8, 0.0, 0.0, 0.8, 0.8, 0.8, 0.8, 0.8, 0.0, 0.0, 0.8, 0.8, 0.8, 0.4, 0.4, 0.8, 0.8, 0.0, 0.0, 0.4, 0.4, 0.4, 0.8, 0.8, 0.0, 0.0, 0.4, 0.4, 0.4, 0.8, 0.8, 0.4, 0.4, 0.0),
-                        c(0.0, 0.0, 0.4, 0.8, 0.8, 0.0, 0.0, 0.4, 0.8, 0.8, 0.4, 0.4, 0.0, 0.8, 0.8, 0.8, 0.8, 0.8, 0.0, 0.0, 0.8, 0.8, 0.8, 0.0, 0.0))
+    expect_diff <- list(c(0.0, 0.0, 1.0, 0.0, 0.0, 0.3333333, 1.0, 0.3333333, 0.0), 
+                        c(0.00, 0.00, 0.50, 0.50, 0.25, 0.25, 0.25, 0.00, 0.00, 0.50, 0.50, 0.25, 0.25, 0.25, 0.50, 0.50, 0.00, 0.00, 0.75, 0.75, 0.75, 0.50, 0.50, 0.00, 0.00, 0.75, 0.75, 0.75, 0.25, 0.25, 0.75, 0.75, 0.00, 0.00, 0.25, 0.25, 0.25, 0.75, 0.75, 0.00, 0.00, 0.25, 0.25, 0.25, 0.75, 0.75, 0.25, 0.25, 0.00),
+                        c(0.00, 0.00, 0.25, 0.50, 0.50, 0.00, 0.00, 0.25, 0.50, 0.50, 0.25, 0.25, 0.00, 0.75, 0.75, 0.50, 0.50, 0.75, 0.00, 0.00, 0.50, 0.50, 0.75, 0.00, 0.0)
+                        )
 
     for(test in 1:length(tests)) {
         expect_equal(
@@ -108,7 +79,7 @@ test_that("char.diff matrix", {
     set.seed(1)
     matrix_alpha <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
     matrix_alpha <- apply(matrix_alpha, 2, as.character)
-    capture_warnings(test <- char.diff(matrix_alpha))
+    expect_warning(test <- char.diff(matrix_alpha))
     expect_is(test, c("matrix", "char.diff"))
 })
 
