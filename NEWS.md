@@ -37,6 +37,9 @@ dispRity 0.2.0 (2016-04-01)
   * Improved metric checking messages from `make.metric` when dealing with optional arguments.
   * Removed cascade of warnings triggered by `plot.dispRity.dtt`.
 
+### BUG FIXES
+
+  * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
 
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
