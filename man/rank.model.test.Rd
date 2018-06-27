@@ -4,18 +4,30 @@
 \alias{rank.model.test}
 \title{rank.model.test}
 \usage{
-rank.model.test(sim = 1000, model)
+rank.model.test(sim = 1000, model, plot.sim = TRUE,
+  col.simulation = c("grey30", "#00000020", "#00000020"),
+  col.observed = "hotpink", lwd.obs = 2, show.p = FALSE)
 }
 \arguments{
 \item{sim}{The number of separate simulations.}
 
 \item{model}{An object of class \code{dispRity} returned from \code{model.test} function.}
+
+\item{plot.sim}{Logical. If \code{TRUE} the plots of the simulated and observed disparity are returned for all models}
+
+\item{col.simulation}{Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details}
+
+\item{col.observed}{Colour of the observed data on the plot}
+
+\item{lwd.obs}{Line width of the observed value}
+
+\item{show.p}{Logical. If \code{TRUE} the p values from the Rank Envelope Test are shown on each plot}
 }
 \value{
-A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model
+A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model, and a plot of simulated data from each model alongside observed data for each model if plot.sim is \code{TRUE}
 }
 \description{
-A wrapper function for \code{\link{model.test.sim}} to summarise relative fit of multiple models from \code{\link{model.test}}. Gives the relative fit of \code{model.test} output using log-likelihood and AICc values, as well as a significance test to elucidate if empirical data is significantly different to simulated data modelled using the estimated model parameters from \code{model.test}
+A wrapper function for \code{\link{model.test.sim}} to summarise relative fit of multiple models from \code{\link{model.test}}. Gives the relative fit of \code{model.test} output using log-likelihood and AICc values, as well as the Rank Envelope Test significance to elucidate if empirical data is significantly different to simulated data modelled using the estimated model parameters from \code{model.test}
 }
 \examples{
 
@@ -25,7 +37,7 @@ models <- list("BM", "OU", "multi.OU", "Trend")
 models.out <- model.test(BeckLee_disparity, models, time.split = 66)
 
 ## assess the significance of simulated data against the empirical distribution
-rank.model.test(sim=1000, model=models.out)
+rank.model.test(sim=1000, model=models.out, plot.sim=TRUE)
 
 }
 \references{

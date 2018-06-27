@@ -195,6 +195,9 @@ model.test.sim <- function(sim = 1, model, time.split = NULL, time.span = 100, v
         parameters <- lapply(parameters, function(x) x)
         model <- model.name
         model <- strsplit(model, ":")[[1]]
+        
+        # MP: necessary for the combination of 'multi.OU' and 'fixed.optima=TRUE'
+        if(fixed.optima && model == "multi.OU") parameters$optima.1 <- parameters$ancestral.state
 
     } else {
 

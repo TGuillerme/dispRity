@@ -106,7 +106,19 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
     }
     
     ## models
-    check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
+    
+    # MP: allow a single 'multi-mode' model to be used as an input without an error - could this be incorporated into an existing function?
+    
+    # check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
+
+	check.method.edit <- function (argument, all_arguments, msg) {
+    if (any(is.na(match(argument, all_arguments)))) {
+        stop(paste(msg, " must be one of the following: ", paste(all_arguments, 
+            collapse = ", "), ".", sep = ""), call. = FALSE)
+    	}
+	}
+        
+    check.method.edit(unlist(model), c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
     n_models <- length(model)
 
     ## pool.variance
@@ -129,8 +141,8 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
         
     ## use Bartlett's test of variance to decide whether to pool variance or not (not used if pool variance is specified as TRUE or FALSE before-hand)
     if(is.null(pool.variance)) {
-        p_test <- bartlett.variance(model_test_input)
-        #p_test <- stats::bartlett.test(model_test_input)$p.value TG: is this equivalent?
+       #p_test <- bartlett.variance(model_test_input)
+       p_test <- stats::bartlett.test(model_test_input)$p.value # TG: is this equivalent?
         if(p_test < 0.05) {
             pool.variance <- FALSE
             if(verbose) cat(paste0("Evidence of equal variance (Bartlett's test of equal variances p = ", round(p_test, 3), ").\nVariance is not pooled.\n"))
