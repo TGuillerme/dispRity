@@ -23,9 +23,9 @@ Imports:
 	geiger,
 	geoscale,
 	spptest
+License: GPL-3 | file LICENSE
 Remotes:
     github::myllym/spptest@master
-License: GPL-3 | file LICENSE
 VignetteBuilder: knitr
 Suggests:
     testthat,

@@ -112,7 +112,7 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
     if(count == 0) {
         return NA_REAL;
     } else {
-        dist = dist/(count - 1);
+        dist = dist/count;
         return dist;
     }
 }

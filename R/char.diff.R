@@ -27,62 +27,49 @@
 
 
 char.diff <- function (matrix)  {
-
-    options(warn = -1)
-
     ## Sanitizing
     matrix_class <- check.class(matrix, c("matrix", "list"))
     ## Method is Gower by default
     method = "Gower"
 
-    if(matrix_class == "list") {
+    if(matrix_class == "matrix") {
+        ## Convert matrix (if not numeric)
+        if(!all(apply(matrix, 2, class) == "numeric")) {
+            options(warn = -1)
+            matrix <- apply(matrix, 2, as.numeric)
+            options(warn = 0)
+        }
 
-        ## Check length
-        check.length(matrix, 2, " must contain only two elements", errorif = FALSE)
+        ## Options to remove:
+        diag = FALSE
+        upper = FALSE
 
-        ## Convert into a matrix
-        matrix <- matrix(c(unlist(matrix)), byrow = FALSE, ncol = 2)
-    }
+        ## Getting the matrix parameters
+        matrix <- t(matrix)
+        N <- nrow(matrix)
+        
+        ## Setting the attributes
+        attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
 
-    ## Convert matrix (if not numeric)
-    if(!all(apply(matrix, 2, class) == "numeric")) {
-        #options(warn = -1)
-        matrix <- apply(matrix, 2, as.numeric)
-        #options(warn = 0)
-    }
-
-    ## Options to remove:
-    diag = FALSE
-    upper = FALSE
-
-    ## Getting the matrix parameters
-    matrix <- t(matrix)
-    N <- nrow(matrix)
-    
-    ## Setting the attributes
-    attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
-
-    ## Calculating the gower distance
-    #options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
-    #options(warn = 0)
-
-    ## Calculating the character difference
-    #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
-    output <- round(output, digits = 10)
-
-    if(ncol(output) == 2) {
-        ## Return a single numeric value if comparing two characters
-        output <- as.numeric(output[1,2])
+        ## Calculating the gower distance
+        options(warn = -1) #TG: NA's get introduced. Don't care!
+        output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
         options(warn = 0)
+
+        ## Calculating the character difference
+        output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
+
+        class(output) <- c("matrix", "char.diff")
+
         return(output)
+
+    } else {
+
+        check.length(matrix, 2, " must contain only two elements", errorif = FALSE)
+        ## Run the slower R version
+        return(char.diff_R(matrix[[1]], matrix[[2]]))
+
     }
-
-    class(output) <- c("matrix", "char.diff")
-    
-    options(warn = 0)
-
-    return(output)
 }
 
 
