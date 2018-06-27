@@ -2,6 +2,8 @@
 *.pdf
 *.Rapp.history
 
+*.DS_Store
+
 # tex files in the doc (use just Rnw)
 doc/*.tex
 doc/*.fls
