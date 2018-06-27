@@ -20,7 +20,7 @@
 #' 
 #' @seealso \code{\link{model.test}} and \code{\link{model.test.sim}}.
 #'
-#' @references Murrell DJ. 2018. A global envelope test to detect non‐random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
+#' @references Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 #' 
 #' @author Mark N Puttick and Thomas Guillerme
 #' @export
@@ -39,7 +39,7 @@ rank.model.test <- function(sim=1000, model) {
         sim <- abs(sim)
     }
     
-    ## Model
+    ## Model
     class <- check.class(model, "dispRity", msg = " must be a dispRity object from model.test().")
   	if(class(model)[[2]] != "model.test") {
             stop(paste0(match_call$model, " must be a dispRity object output from model.test.\nTry running model.test(", match_call$model, ") first."), call. = FALSE)

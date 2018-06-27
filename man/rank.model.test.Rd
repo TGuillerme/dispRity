@@ -29,7 +29,7 @@ rank.model.test(sim=1000, model=models.out)
 
 }
 \references{
-Murrell DJ. 2018. A global envelope test to detect non‐random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
+Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 }
 \seealso{
 \code{\link{model.test}} and \code{\link{model.test.sim}}.

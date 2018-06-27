@@ -70,7 +70,7 @@ plot(tests, type = "support")
 \references{
 Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution.  \bold{57}, 717-745.
 
-Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
+Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
 
 Harmon LJ, \emph{et al}. 2010. Early bursts of body size and shape evolution are rare in comparative data. \bold{64}, 2385-2396.
 
@@ -78,11 +78,11 @@ Hunt G. 2006. Fitting and comparing models of phyletic evolution: random walks a
 
 Hunt G, Hopkins MJ & Lidgard S. 2015. Simple versus complex models of trait evolution and stasis as a response to environmental change. Proceedings of the National Academy of Sciences. \bold{112}, 4885-4890. DOI: 10.1073/pnas.1403662111
 
-Felsenstein J. 1973. Maximum-likelihood estimation of evolutionary trees from continuous characters. American Journal of Human Genetics. \bold{25}, 471-492.
+Felsenstein J. 1973. Maximum-likelihood estimation of evolutionary trees from continuous characters. American Journal of Human Genetics. \bold{25}, 471-492.
 
-Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist. \bold{51}, 1-15.
+Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist. \bold{51}, 1-15.
 
-Murrell DJ. 2018. A global envelope test to detect non‐random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
+Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 }
 \seealso{
 \code{\link{model.test.sim}}.
