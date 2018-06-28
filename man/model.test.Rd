@@ -85,7 +85,7 @@ Felsenstein J. 1985. Phylogenies and the comparative method. The American Natura
 Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 }
 \seealso{
-\code{\link{model.test.sim}}.
+\code{\link{model.test.wrapper}} and \code{\link{model.test.sim}}.
 }
 \author{
 Mark N Puttick and Thomas Guillerme

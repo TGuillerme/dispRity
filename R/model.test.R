@@ -51,7 +51,7 @@
 #' ## Plotting only the models support
 #' plot(tests, type = "support")
 #' 
-#' @seealso \code{\link{model.test.sim}}.
+#' @seealso \code{\link{model.test.wrapper}} and \code{\link{model.test.sim}}.
 #' 
 #' @references Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution.  \bold{57}, 717-745.
 #' @references Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
@@ -107,7 +107,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
     
     ## models
     
-    # MP: allow a single 'multi-mode' model to be used as an input without an error - could this be incorporated into an existing function?
+    # MP: allow a single 'multi-mode' model to be used as an input without an error - could this be incorporated into an existing function, or is it ok here as it'll only be used once?
     
     # check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
 
@@ -141,8 +141,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
         
     ## use Bartlett's test of variance to decide whether to pool variance or not (not used if pool variance is specified as TRUE or FALSE before-hand)
     if(is.null(pool.variance)) {
-       #p_test <- bartlett.variance(model_test_input)
-       p_test <- stats::bartlett.test(model_test_input)$p.value # TG: is this equivalent?
+       p_test <- stats::bartlett.test(model_test_input)$p.value
         if(p_test < 0.05) {
             pool.variance <- FALSE
             if(verbose) cat(paste0("Evidence of equal variance (Bartlett's test of equal variances p = ", round(p_test, 3), ").\nVariance is not pooled.\n"))
