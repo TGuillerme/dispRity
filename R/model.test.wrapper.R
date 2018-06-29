@@ -31,7 +31,8 @@
 #' ## The models to be fit to disparity data
 #' models <- list("BM", "OU", "multi.OU", "Trend")
 #' 
-#' ## test all models, and assess the significance of simulated data against the empirical distribution for each
+#' ## test all models, and assess the significance of simulated data
+#' ## against the empirical distribution for each
 #' model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE,
 #'                    time.split = 66, show.p = TRUE)
 #' 
@@ -70,7 +71,6 @@
 # model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, legend = TRUE)
 
 model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
-	
 	
 	match_call <- match.call()
 	
