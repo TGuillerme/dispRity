@@ -296,19 +296,23 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     total.n <- length(time.span)
     sample.time <- 1:total.n
     split.here.vcv <- c(1, time.split)
-    split.here.2.vcv <- c(time.split - 1, total.n)        
+    split.here.2.vcv <- c(time.split - 1, total.n)
     ou.mean <- NULL
+
+    ##TG: Seems to be a potential bug here and throughout the code:
+        ##TG: time.span and time.split, should refer to the IDs of the subsets in the data
+        ##TG: e.g. if we have subsets from 0 to 10 with a split at 5 or subsets from 200 to 100 with a subset at 150, the 0 and 100 are the first positions, the splits are in the 6th and 51th positions and 10 and 200 and the 11th and 201th positions...
 
     any.model <- which(model == "multi.OU")
 
-    if(any(any.model, na.rm=T)) {
+    if(any(any.model, na.rm = TRUE)) {
         split.here.vcv <- split.here.2.vcv <- NULL
         ou.mean <- c(1, time.split, max(time.span))
         split.here.vcv <- c(1, split.here.vcv)
         split.here.2.vcv <- c(split.here.2.vcv, max(time.span))
     }
 
-    total_VCV <- matrix(0, nrow=total.n, ncol=total.n)
+    total_VCV <- matrix(0, nrow = total.n, ncol = total.n)
     total_mean <- c()
     optima.level.ou <- optima.level.stasis <-1
     model.anc <- model.alpha <- NULL
@@ -399,7 +403,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     
     }
     
-    output.values <- t(mnormt::rmnorm(n = sim, mean =  total_mean, varcov = total_VCV))
+    output.values <- t(mnormt::rmnorm(n = sim, mean = total_mean, varcov = total_VCV))
     if(dim(output.values)[1] == 1) {
         output.values <- t(output.values)
     }
