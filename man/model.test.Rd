@@ -18,9 +18,9 @@ model.test(data, model, pool.variance = NULL, time.split = NULL,
 
 \item{fixed.optima}{A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).}
 
-\item{control.list}{A \code{list} of fine-tune control inputs for the optim function.}
+\item{control.list}{A \code{list} of fine-tune control inputs for the \code{\link[stats]{optim}} function.}
 
-\item{verbose}{\code{logical}, whether to display the model results as computed (\code{TRUE} - default).}
+\item{verbose}{\code{logical}, whether to display the model results while they are computed (\code{TRUE} - default).}
 }
 \value{
 A list of class \code{dispRity} and \code{model.test} that can be plotted and summarised via \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}.
@@ -30,45 +30,49 @@ The list is composed of:
 	\item{$full.models}{ the list of the full models outputs from \code{\link{optim}} with the estimated parameters, log-likelihood, convergence statistics, and the split.time if applicable }
 	\item{$call}{ the model input}
 	\item{$models.data}{ input data used by the model(s)}
-	\item{$fixed.optima}{ Logical indicating whether a fixed optima was assummed for OU model(s)}
+	\item{$fixed.optima}{ Logical indicating whether a fixed optima was assumed for OU model(s)}
 }
 }
 \description{
 Fit models of disparity change through time
 }
 \details{
-The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the control.list argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, c("BM", "OU") would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of 'multi.OU') can be fit to the data:
+The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, \code{c("BM", "OU")} would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of \code{"multi.OU"}) can be fit to the data:
 
 \itemize{
         \item{BM}{ Fits a unbiased random walk model of Brownian motion evolution (Felsenstein 1973; 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
  
-        \item{OU}{ The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values, and thus the model can resemble a trend. If the argument, fixed.optima is TRUE, the model will not estimate optima but constrain it to the first (ancestral) value in the sequence as is done in phylogenetic OU models}
+        \item{OU}{ The Ornstein-Uhlenbeck model of evolution in which the change in variance is constrained to an optimum value (Hansen 1997). In this model there are three parameters: optima, alpha, and ancestral state. The strength of attraction based on the parameter alpha and the ancestral state is estimated from the data. The optima value is estimated from the data, and this can lead to optima being found outside the known data values, and thus the model can resemble a trend. If the argument \code{fixed.optima = TRUE}, the model will not estimate optima but constrain it to the first (ancestral) value in the sequence as is done in phylogenetic OU models}
 
         \item{Trend}{ Fits a Brownian motion model with a directional component. This model is also known as the General Random Walk (Hunt 2006). This model has three parameters: the ancestral state, the 'step-variance' (sigma-squared), and the positive or negative trend.}
 
         \item{Stasis}{ Fits a model in which traits evolve with variance (omega) around a mean (theta). This model is time-independent in that the model is guided only by the variance and attraction to the mean (Hunt 2006)}
 
-        \item{Early Burst(EB)}{ Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease. Note this model expects the mean to remain unchanged through the model, so does not explicitly model a rapid change to a new mean or optimum value.}
+        \item{EB}{ Early-Burst. Trait variance accumulates early in the evolution of a trait and decreases exponentially through time (Blomberg et al. 2003; Harmon et al. 2010). This model has three parameters: ancestral state, sigma-squared, and the exponential rate of decrease. Note this model expects the mean to remain unchanged through the model, so does not explicitly model a rapid change to a new mean or optimum value.}
 
-        \item{multi.OU}{ Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multiOU system can be fit to the model only}
+        \item{multi.OU}{ Fits a model in which the value of the optima shifts at one or more time splits. The values of the 'step-variance' (sigma squared) and attraction to the optima (alpha) are shared across all the samples. This model can not be fit with other models - the multi.OU system can be fit to the model only}
 }
 }
 \examples{
 
 ## Mammal disparity through time
 data(BeckLee_disparity)
+
+## The four models to fit
 models <- list("BM", "OU", "multi.OU", c("BM", "OU"))
+
+## Fitting the four models to the disparity data
 tests <- model.test(BeckLee_disparity, models, time.split = 66)
 
 ## Summarising the models
 summary(tests)
 
 ## Plotting only the models support
-plot(tests, type = "support")
+plot(tests)
 
 }
 \references{
-Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution.  \bold{57}, 717-745.
+Blomberg SP, Garland T Jr, & Ives AR. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution. \bold{57}, 717-745.
 
 Hansen TF. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. \bold{51}, 1341-1351.
 
@@ -85,7 +89,7 @@ Felsenstein J. 1985. Phylogenies and the comparative method. The American Natura
 Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 }
 \seealso{
-\code{\link{model.test.wrapper}} and \code{\link{model.test.sim}}.
+\code{\link{model.test.wrapper}}, \code{\link{model.test.sim}}, \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}
 }
 \author{
 Mark N Puttick and Thomas Guillerme

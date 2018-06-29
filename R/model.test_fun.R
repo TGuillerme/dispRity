@@ -338,7 +338,7 @@ model.test.lik <- function(model.test_input, model.type.in, time.split, control.
     lower.bounds <- c(NA, 1e-8, 1e-8, NA, NA, 1e-8, -100, -100, NA, NA, NA, NA)
     upper.bounds <- c(NA, 100, 100, NA, NA, 20, 100, -1e-8, NA, NA, NA, NA)
     
-    model.output <- optim(par=p, fn=opt.mode,  method="L", control = control.list, model.type.in=model.type.in, time.split=time.split, data.model.test = model.test_input, lower=lower.bounds, upper=upper.bounds, fixed.optima=fixed.optima)
+    model.output <- stats::optim(par=p, fn=opt.mode,  method="L", control = control.list, model.type.in=model.type.in, time.split=time.split, data.model.test = model.test_input, lower=lower.bounds, upper=upper.bounds, fixed.optima=fixed.optima)
     
     model.type.in
     

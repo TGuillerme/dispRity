@@ -29,5 +29,5 @@ Morphological clocks and the antiquity of placental mammals.
 Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 }
 \seealso{
-McClean_data disparity
+BeckLee_disparity disparity
 }

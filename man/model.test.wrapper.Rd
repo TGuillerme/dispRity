@@ -2,17 +2,17 @@
 % Please edit documentation in R/model.test.wrapper.R
 \name{model.test.wrapper}
 \alias{model.test.wrapper}
-\title{model.test.wrapper}
+\title{Model test wrapper}
 \usage{
 model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
   fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE,
-  sim = 1000, plot.sim = TRUE, col.simulation = c("grey30", "#00000020",
-  "#00000020"), col.observed = "hotpink", lwd.obs = 2, show.p = FALSE)
+  sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink",
+  lwd.obs = 2, show.p = FALSE, legend = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object used to test models of evolution through time.}
 
-\item{model}{The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model, either using a single input or a list containing different models (See \bold{Details}). If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}.}
+\item{model}{The model(s) of evolution to allow for changes in disparity-through-time using a homogenous or hetergenous model, either using a single input or a list containing different models (see list in \code{\link{model.test}}). If a vector with multiple modes is supplied then the model will test for shifts in modes at the time supplied by \code{time.split}.}
 
 \item{pool.variance}{If \code{NULL} (default) the difference in variances will be calculated using \code{\link[stats]{bartlett.test}} of equal variances. If there is no significant difference among variances, then variance in samples will be pooled and the same variance will be used for all samples. A significance difference will not pool variances and the original variance will be used for model-testing. If argument \code{TRUE} or \code{FALSE} are used, Bartlett's test will be ignored and the analyses will use the user-set pooling of variances.}
 
@@ -26,31 +26,40 @@ model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
 
 \item{sim}{The number of separate simulations.}
 
-\item{plot.sim}{Logical. If \code{TRUE} the plots of the simulated and observed disparity are returned for all models}
+\item{plot.sim}{Logical. If \code{TRUE} (default) the plots of the simulated and observed disparity are returned for all models.}
 
-\item{col.simulation}{Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details}
+\item{col.sim}{Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details.}
 
-\item{col.observed}{Colour of the observed data on the plot}
+\item{col.obs}{Colour of the observed data on the plot.}
 
-\item{lwd.obs}{Line width of the observed value}
+\item{lwd.obs}{Line width of the observed value.}
 
-\item{show.p}{Logical. If \code{TRUE} the p values from the Rank Envelope Test are shown on each plot}
+\item{show.p}{Logical, when \code{plot.sim = TRUE}, whether to display the p-value of rank envelope tests (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{legend}{Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{...}{Any additional arguments to be passed to \code{\link{plot.dispRity}} or \code{\link{summary.dispRity}}.}
 }
 \value{
 A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model, and a plot of simulated data from each model alongside observed data for each model if plot.sim is \code{TRUE}
 }
 \description{
-A wrapper function for \code{\link{model.test}} to summarise relative fit of multiple models. Gives the relative fit of \code{model.test} output using log-likelihood and AICc values, as well as the Rank Envelope Test significance to elucidate if empirical data is significantly different to simulated data modelled using the estimated model parameters from \code{model.test.sim}
+A wrapper function for \code{\link{model.test}} to perform a model fitting analysis on disparity through time data.
+}
+\details{
+This function gives the relative fit of \code{model.test} output using log-likelihood and AICc values, as well as the Rank Envelope Test significance to elucidate if empirical data is significantly different to simulated data modelled using the estimated model parameters from \code{\link{model.test.sim}}. This is equivalent to running \code{test <- model.test.sim(sim = 1000, model = model.test(data, model)); summary(test) ; plot(test) ; plot(data, add = TRUE)}.
 }
 \examples{
 
 ## Mammal disparity through time
 data(BeckLee_disparity)
-## models to be fit to disparity data
+
+## The models to be fit to disparity data
 models <- list("BM", "OU", "multi.OU", "Trend")
 
 ## test all models, and assess the significance of simulated data against the empirical distribution for each
-model.test.wrapper(sim=1000, data=BeckLee_disparity, model=models, fixed.optima=TRUE, plot.sim=TRUE, time.split=66)
+model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE,
+                   time.split = 66, show.p = TRUE)
 
 }
 \references{
@@ -71,7 +80,7 @@ Felsenstein J. 1985. Phylogenies and the comparative method. The American Natura
 Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 }
 \seealso{
-\code{\link{model.test}}, \code{\link{model.test.sim}}.
+\code{\link{model.test}}, \code{\link{model.test.sim}}, \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}
 }
 \author{
 Mark N Puttick and Thomas Guillerme

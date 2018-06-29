@@ -86,7 +86,7 @@ NULL
 #'
 #' This matrix is based on the \code{\link{BeckLee}} dataset and split into 120 continuous subsets (\code{\link{chrono.subsets}}).
 #' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
-#' Disparity was calculated as the \code{\link[stats]{sum}} of the \code{\link{variances}} (\code{\link{dispRity}}).
+#' Disparity was calculated as the \code{\link[base]{sum}} of the \code{\link{variances}} (\code{\link{dispRity}}).
 #'
 #' @format one \code{dispRity} object.
 #' @name BeckLee_disparity

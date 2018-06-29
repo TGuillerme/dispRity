@@ -4,16 +4,20 @@
 \alias{model.test.sim}
 \title{Simulate Model Test}
 \usage{
-model.test.sim(sim = 1, model, time.split = NULL, time.span = 100,
-  variance = 1, sample.size = 100, parameters = list(),
-  fixed.optima = FALSE, model.rank = 1, alternative = "two-sided")
+model.test.sim(sim = 1, model, model.rank = 1, alternative = "two-sided",
+  time.split = NULL, time.span = 100, variance = 1, sample.size = 100,
+  parameters = list(), fixed.optima = FALSE)
 }
 \arguments{
-\item{sim}{The number of separate simulations.}
+\item{sim}{The number of separate simulations to run.}
 
-\item{model}{Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model (see list in \code{\link{model.test}}) or (ii) an object of class \code{dispRity} returned from \code{model.test} function. If a \code{dispRity} object is supplied, all remaining arguments apart from \code{sim} and \code{model.rank} are ignored as the model specified by the input model is used}
+\item{model}{Either (i) the named model of evolution to simulate for changes in disparity-through-time using a homogenous or hetergenous model (see list in \code{\link{model.test}}) or (ii) an object of class \code{dispRity} returned from \code{model.test} function. If a \code{dispRity} object is supplied, all remaining arguments apart from \code{sim} and \code{model.rank} and \code{alternative} are ignored as the model specified by the input model is used.}
 
-\item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models}
+\item{model.rank}{If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.}
+
+\item{alternative}{If the simulation is based on a \code{dispRity} object, what is the alternative hypothesis: can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.}
+
+\item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models.}
 
 \item{time.span}{The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
 
@@ -24,13 +28,9 @@ model.test.sim(sim = 1, model, time.split = NULL, time.span = 100,
 \item{parameters}{A \code{list} of model parameters used for simulations. See details.}
 
 \item{fixed.optima}{A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).}
-
-\item{model.rank}{If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.}
-
-\item{alternative}{If the simulation is based on a \code{dispRity} object, what is the alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.}
 }
 \value{
-A list of class \code{dispRity}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
+A list of class \code{dispRity} and \code{model.sim}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
 }
 \description{
 Simulate models of disparity change through time
@@ -54,22 +54,30 @@ These arguments can be:
 }
 }
 \examples{
- 
- ## Mammal disparity through time
- data(BeckLee_disparity)
- models <- list("Trend", "BM")
- model.test.output <- model.test(BeckLee_disparity, models, time.split = 66)
- 
- ## simulations using the output from model.test
- model.test.sim.output <- model.test.sim(sim=10000, model=model.test.output)
-  
- plot(model.test.sim.output)
- plot(BeckLee_disparity, add=T, col=c("pink", "#ff000050", "#ff000050"))
+## Disparity through time data
+data(BeckLee_disparity)
 
- ## simulations using input model parameters
-  model.sim.output <- model.test.sim(sim=1000, model="BM", time.span=120, variance=0.1, sample.size=100, parameters=list(ancestral.state=0, sigma.squared=0.1))
- # plot(model.sim.output)
- # plot.dispRity(BeckLee_disparity, add=T, col=c("pink", "#ff000050", "#ff000050"))
+## List of models to test
+models <- list("Trend", "BM")
+
+## Testing the models on the observed disparity
+model_test_output <- model.test(BeckLee_disparity, models, time.split = 66)
+ 
+## simulations using the output from model.test
+model_test_sim_output <- model.test.sim(sim = 1000, model= model_test_output)
+ 
+## Plot the simulated best model
+plot(model_test_sim_output)
+## Add the observed data
+plot(BeckLee_disparity, add = TRUE, col = c("pink", "#ff000050", "#ff000050"))
+
+## Simulating a specific model with specific parameters parameters
+model_simulation <- model.test.sim(sim = 1000, model = "BM", time.span = 120, variance = 0.1,
+                                   sample.size = 100, parameters = list(ancestral.state = 0,
+                                   sigma.squared = 0.1))
+
+## Summarising the results
+plot(model_simulation, main = "A simple Brownian motion")
 
 }
 \references{
@@ -92,7 +100,7 @@ Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait ev
 Citation for the envelope code:
 }
 \seealso{
-\code{\link{model.test}}.
+\code{\link{model.test}}, \code{\link{model.test.wrapper}}, \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}
 }
 \author{
 Mark N Puttick and Thomas Guillerme
