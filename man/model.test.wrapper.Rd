@@ -6,8 +6,9 @@
 \usage{
 model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
   fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE,
-  sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink",
-  lwd.obs = 2, show.p = FALSE, legend = FALSE, ...)
+  sim = 1000, plot.sim = TRUE, col.sim = c("grey20", "#00000040",
+  "#00000040"), col.obs = "hotpink", lwd.obs = 2, show.p = FALSE,
+  legend = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object used to test models of evolution through time.}
@@ -24,7 +25,7 @@ model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
 
 \item{verbose}{\code{logical}, whether to display the model results as computed (\code{TRUE} - default).}
 
-\item{sim}{The number of separate simulations.}
+\item{sim}{The number of separate simulations (default = 1000).}
 
 \item{plot.sim}{Logical. If \code{TRUE} (default) the plots of the simulated and observed disparity are returned for all models.}
 
@@ -57,7 +58,8 @@ data(BeckLee_disparity)
 ## The models to be fit to disparity data
 models <- list("BM", "OU", "multi.OU", "Trend")
 
-## test all models, and assess the significance of simulated data against the empirical distribution for each
+## test all models, and assess the significance of simulated data
+## against the empirical distribution for each
 model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE,
                    time.split = 66, show.p = TRUE)
 

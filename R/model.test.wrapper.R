@@ -12,7 +12,7 @@
 #' @param fixed.optima A \code{logical} value, whether to use an estimated optimum value in OU models (\code{FALSE} - default), or whether to set the OU optimum to the ancestral value (\code{TRUE}).
 #' @param control.list A \code{list} of fine-tune control inputs for the optim function.
 #' @param verbose \code{logical}, whether to display the model results as computed (\code{TRUE} - default).
-#' @param sim The number of separate simulations.
+#' @param sim The number of separate simulations (default = 1000).
 #' @param plot.sim Logical. If \code{TRUE} (default) the plots of the simulated and observed disparity are returned for all models.
 #' @param col.sim Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details.
 #' @param col.obs Colour of the observed data on the plot.
@@ -20,7 +20,7 @@
 #' @param show.p Logical, when \code{plot.sim = TRUE}, whether to display the p-value of rank envelope tests (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param legend Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param ... Any additional arguments to be passed to \code{\link{plot.dispRity}} or \code{\link{summary.dispRity}}.
-#' 
+#'
 #' @return A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model, and a plot of simulated data from each model alongside observed data for each model if plot.sim is \code{TRUE} 
 #'
 #' @examples
@@ -49,8 +49,6 @@
 #
 #' @author Mark N Puttick and Thomas Guillerme
 #' @export
-#' 
-
 
 # DEBUG
 # data(BeckLee_disparity)
@@ -70,7 +68,7 @@
 #  show.p = FALSE
 # model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, legend = TRUE)
 
-model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
+model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim = c("grey20", "#00000040", "#00000040"), col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
 	
 	match_call <- match.call()
 	
@@ -97,12 +95,19 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     ## Summarise the models
     summary.models <- summary(models.out)
     n.models <- dim(summary.models)[1]
-    outputs <- suppressWarnings(lapply(1:n.models, function(x) model.test.sim(sim, models.out, model.rank = x)))
+    outputs <- suppressWarnings(lapply(1:n.models, function(x) model.test.sim(sim, model=models.out, model.rank = x)))
     p.int <- t(sapply(outputs, function(u) c(u$p[[4]], u$p[[5]])))
     results <- cbind(summary.models)
     results <- results[order(results[, 2]), ]
-    results <- cbind(results, p.int)
-    colnames(results)[(dim(results)[2] - 2):dim(results)[2]] <- c("median p value", "lower p value", "upper p value")
+    # MP: allow a single model to be used as input for model.test.wrapper (may be a bit pointless but prevents an error)
+    if(is(results)[1] == "matrix") {
+    	results <- cbind(results, p.int)
+    	colnames(results)[(dim(results)[2] - 2):dim(results)[2]] <- c("median p value", "lower p value", "upper p value")
+    	} else {
+    	name.res <- names(results)
+    	results <- matrix(c(results, p.int), nrow=1, dimnames=list("", c(name.res, "median p value", "lower p value", "upper p value")))	
+    	}
+    
     
  	if(plot.sim) {
 
@@ -136,7 +141,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
 	    	plot(outputs[[one_model]], ylim = max.range, col = dots$col, xlab = dots$xlab, ylab = dots$ylab, main = paste0(rownames(results)[one_model], " (Delta aicc = ", round(results[one_model,2], digits = 2) ,")"))
 
             ## Plot the observed data
-	    	lines(obs.data[,1], obs.data[,2], col = col.obs, lwd = lwd.obs)
+	    	lines(obs.data[,2], col = col.obs, lwd = lwd.obs)
 	    	
             ## Add the legend
             if(legend && one_model == 1) {

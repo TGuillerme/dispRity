@@ -292,6 +292,11 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
 
     ## Reorder the parameters
     p <- unlist(parameters)[match(param_names, names(parameters))]
+    
+    
+    # convert time.split to the closest integer in the time list object - same as is done for model.test
+    if(is.numeric(time.split)) time.split <- sort(sapply(time.split, function(u) which.min(abs(u - rev(time.span)))))
+
 
     total.n <- length(time.span)
     sample.time <- 1:total.n
@@ -299,17 +304,13 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     split.here.2.vcv <- c(time.split - 1, total.n)
     ou.mean <- NULL
 
-    ##TG: Seems to be a potential bug here and throughout the code:
-        ##TG: time.span and time.split, should refer to the IDs of the subsets in the data
-        ##TG: e.g. if we have subsets from 0 to 10 with a split at 5 or subsets from 200 to 100 with a subset at 150, the 0 and 100 are the first positions, the splits are in the 6th and 51th positions and 10 and 200 and the 11th and 201th positions...
-
     any.model <- which(model == "multi.OU")
 
     if(any(any.model, na.rm = TRUE)) {
         split.here.vcv <- split.here.2.vcv <- NULL
-        ou.mean <- c(1, time.split, max(time.span))
+        ou.mean <- c(1, time.split, length(time.span))
         split.here.vcv <- c(1, split.here.vcv)
-        split.here.2.vcv <- c(split.here.2.vcv, max(time.span))
+        split.here.2.vcv <- c(split.here.2.vcv, length(time.span))
     }
 
     total_VCV <- matrix(0, nrow = total.n, ncol = total.n)
@@ -437,9 +438,14 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
 
     ## Add the inheritence from the previous object
     if(model_inherit) {
-        model_results <- summary(empirical.model)[model.rank,]
-        model_results <- model_results[-c(which(is.na(model_results)), 2, 3)] #TG: also removing the wheighted and delta aic
-        output$model <- matrix(model_results, nrow = 1, dimnames = list(model.name, names(model_results)))
+       	 if(length(model) == 1) {
+        	model_results <- empirical.model
+        	} else {
+        	model_results <- summary(empirical.model)[model.rank,]
+        	}
+        
+        # model_results <- model_results[-c(which(is.na(model_results)), 2, 3)] #TG: also removing the wheighted and delta aic
+        # output$model <- matrix(model_results, nrow = 1, dimnames = list(model.name, names(model_results)))
     } else {
         output$model <- match_call$model
     }

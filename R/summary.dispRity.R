@@ -109,14 +109,22 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
             ## Extracting the additional parameters
             parameters <- sapply(data$full.details, function(x) x$par)
+
+			# MP: allow summaries to work on a single model
+            if(!is(parameters)[1] == "list")  {
+            	param.tmp <- c(parameters)
+            	names(param.tmp) <- rownames(parameters)
+            	parameters <- list(param.tmp)
+            	}
             base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
             
             ## Get the full list of parameters
-            names_list <- lapply(parameters, names)
-            full_param <- unique(unlist(names_list))
+            
+           	names_list <- lapply(parameters, names)
+           	full_param <- unique(unlist(names_list))
 
             output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
-
+           
             ## Rounding
             summary_results <- digits.fun(output_table, digits, model.test = TRUE)
 
