@@ -133,7 +133,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
 	    n.sq <- ceiling(sqrt(n.models))
 	    obs.data <- cbind(models.out$model.data$subsets, models.out$model.data$central_tendency)
 	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim)))), obs.data[,2])
-	    par(mfrow = c(n.sq, n.sq))
+	    op <- par(mfrow = c(n.sq, n.sq))
 	    
 	    for(one_model in 1:n.models) {
 
@@ -149,9 +149,11 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
             }
 
 	    	if(show.p) {
-                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 2], 3), ":", round( p.int[one_model, 3], 3)), cex = 1)
+                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 2], 3), ":", round( p.int[one_model, 3], 3)), cex = 0.6)
 	    	}
 	    }
+        ## Reset default
+        par(op)
     }
 	
 	return(results)

@@ -145,74 +145,19 @@ test_that("model.test.sim example works", {
 test_that("model.test.wrapper example works", {
     set.seed(42)
     data(BeckLee_disparity)
-    models <- list("Trend", "BM")
-    model_test_output <- model.test(BeckLee_disparity, models, time.split = 66, verbose = FALSE)
-    expect_is(model_test_output, c("dispRity", "model.test"))
-    expect_equal(length(model_test_output), 5)
-    expect_equal(lapply(model_test_output, length),
-                list("aic.models" = 6,
-                     "full.details" = 2,
-                     "call" = 5,
-                     "model.data" = 4,
-                     "fixed.optima" = 1))
-     
-    ## simulations using the output from model.test
-    model_test_sim_output <- model.test.sim(sim = 1000, model= model_test_output)
-     
-    expect_is(model_test_sim_output, c("dispRity", "model.sim"))
-    expect_equal(length(model_test_sim_output), 5)
-    expect_equal(lapply(model_test_sim_output, length),
-                list("simulation.data" = 2,
-                     "p.value" = 12,
-                     "call" = 3,
-                     "nsim" = 1,
-                     "model" = 6))
+    models <- list("BM", "OU", "multi.OU", "Trend")
 
-    ## Plot the simulated best model
-    expect_null(plot(model_test_sim_output))
-    ## Add the observed data
-    expect_null(plot(BeckLee_disparity, add = TRUE, col = c("pink", "#ff000050", "#ff000050")))
-    
-    ## Simulating a specific model with specific parameters parameters
-    model_simulation <- model.test.sim(sim = 1000, model = "BM", time.span = 120, variance = 0.1,
-                                       sample.size = 100, parameters = list(ancestral.state = 0,
-                                       sigma.squared = 0.1))
-    expect_is(model_simulation, c("dispRity", "model.sim"))
-    expect_equal(length(model_simulation), 4)
-    expect_equal(lapply(model_simulation, length),
-                list("simulation.data" = 2,
-                     "call" = 7,
-                     "nsim" = 1,
-                     "model" = 1))
-    
-    ## Summarising the results
-    expect_null(plot(model_simulation, main = "A simple Brownian motion"))
+    ## Some errors
+    expect_error(model.test.wrapper(data = BeckLee_disparity, model = "BIM", fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
+    expect_error(model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = "a"))
+    expect_error(model.test.wrapper(data = "a", model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
+    expect_error(model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 10))
+
+    test <- model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10)
+
+    ## Check test
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4, 13))
+    expect_equal(rownames(test), c("Trend", "multi.OU", "BM", "OU"))
+    expect_equal(colnames(test), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha", "optima.2", "trend", "median p value", "lower p value",  "upper p value"))
 })
-
-# data(BeckLee_disparity)
-# data = BeckLee_disparity
-# model <- list("BM", "OU", "multi.OU", "Trend")
-# fixed.optima = TRUE
-# time.split = 66
-# show.p = TRUE
-# pool.variance = NULL
-# control.list = list(fnscale = -1)
-# verbose = TRUE
-# sim = 1000
-# plot.sim = TRUE
-# col.sim = c("grey30", "#00000020", "#00000020")
-# col.obs = "hotpink"
-#  lwd.obs = 2
-#  show.p = FALSE
-# model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE)
-
-
-# ## Mammal disparity through time
-# data(BeckLee_disparity)
-
-# ## The models to be fit to disparity data
-# models <- list("BM", "OU", "multi.OU", "Trend")
-
-# ## test all models, and assess the significance of simulated data
-# ## against the empirical distribution for each
-# model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE)
