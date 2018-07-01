@@ -23,6 +23,7 @@ Imports:
 	vegan,
 	geiger,
 	geoscale,
+	mnormt,
 	spptest
 License: GPL-3 | file LICENSE
 Remotes:
