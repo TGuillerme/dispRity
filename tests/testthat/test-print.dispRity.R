@@ -197,14 +197,8 @@ test_that("print.dispRity with model.test data", {
          "BM -13.28305   0.000000   0.7856166",
          "OU -10.68564   2.597406   0.2143834",
          "",
-         "Use $$full.details for displaying the models details",
-         " ",
-         "Use item$full.details for displaying the models details",
-         " ",
-         "Use value$full.details for displaying the models details",
-         "or summary($) for summarising them.",
-         " or summary(item) for summarising them.",
-        " or summary(value) for summarising them."
+         "Use x$full.details for displaying the models details",
+         "or summary(x) for summarising them."
         ))
 
 

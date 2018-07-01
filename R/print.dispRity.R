@@ -87,8 +87,8 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 
                 print(x$aic.models)
 
-                cat(paste0("\nUse ", x_name, "$full.details for displaying the models details\n"))
-                cat(paste0("or summary(", x_name, ") for summarising them.\n"))
+                cat(paste0("\nUse x$full.details for displaying the models details\n"))
+                cat(paste0("or summary(x) for summarising them.\n"))
 
                 return()
             }

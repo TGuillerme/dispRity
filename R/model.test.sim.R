@@ -438,14 +438,9 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
 
     ## Add the inheritence from the previous object
     if(model_inherit) {
-       	 if(length(model) == 1) {
-        	model_results <- empirical.model
-        	} else {
-        	model_results <- summary(empirical.model)[model.rank,]
-        	}
-        
-        # model_results <- model_results[-c(which(is.na(model_results)), 2, 3)] #TG: also removing the wheighted and delta aic
-        # output$model <- matrix(model_results, nrow = 1, dimnames = list(model.name, names(model_results)))
+        model_results <- summary(empirical.model)[model.rank,]
+        model_results <- model_results[-c(which(is.na(model_results)), 2, 3)]
+        output$model <- matrix(model_results, nrow = 1, dimnames = list(model.name, names(model_results)))
     } else {
         output$model <- match_call$model
     }

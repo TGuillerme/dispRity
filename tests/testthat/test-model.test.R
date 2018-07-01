@@ -205,3 +205,14 @@ test_that("model.test.wrapper example works", {
 #  lwd.obs = 2
 #  show.p = FALSE
 # model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE)
+
+
+# ## Mammal disparity through time
+# data(BeckLee_disparity)
+
+# ## The models to be fit to disparity data
+# models <- list("BM", "OU", "multi.OU", "Trend")
+
+# ## test all models, and assess the significance of simulated data
+# ## against the empirical distribution for each
+# model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE)
