@@ -441,7 +441,7 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
     ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
 
     ## Plot
-    plotcoords <- barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
+    plotcoords <- graphics::barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
 }
 
 # ~~~~~~~~~~

@@ -18,7 +18,7 @@
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom utils combn data capture.output
+#' @importFrom utils combn data capture.output tail
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
 #' @importFrom vegan adonis vegdist

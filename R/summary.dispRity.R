@@ -111,7 +111,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             parameters <- sapply(data$full.details, function(x) x$par)
 
 			# MP: allow summaries to work on a single model
-            if(!is(parameters)[1] == "list")  {
+            if(class(parameters)[1] != "list")  {
             	param.tmp <- c(parameters)
             	names(param.tmp) <- rownames(parameters)
             	parameters <- list(param.tmp)

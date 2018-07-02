@@ -338,7 +338,7 @@ model.test.lik <- function(model.test_input, model.type.in, time.split, control.
     lower.bounds <- c(NA, 1e-8, 1e-8, NA, NA, 1e-8, -100, -100, NA, NA, NA, NA)
     upper.bounds <- c(NA, 100, 100, NA, NA, 20, 100, -1e-8, NA, NA, NA, NA)
     
-    model.output <- stats::optim(par=p, fn=opt.mode,  method="L", control = control.list, model.type.in=model.type.in, time.split=time.split, data.model.test = model.test_input, lower=lower.bounds, upper=upper.bounds, fixed.optima=fixed.optima)
+    model.output <- stats::optim(par = p, fn = opt.mode,  method = "L", control = control.list, model.type.in = model.type.in, time.split=time.split, data.model.test = model.test_input, lower = lower.bounds, upper = upper.bounds, fixed.optima = fixed.optima)
     
     model.type.in
     
@@ -393,7 +393,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
             if(model.type.in[1] == "OU") {
                 optima.level.ou <- optima.level.ou + 1
                 est.anc <- FALSE
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 time.int <- time.x + 1
             }
             
@@ -405,7 +405,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
             }
             
             if(model.type.in[1] == "Trend" || model.type.in[1] == "EB") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }
@@ -444,13 +444,13 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
             }
             
             if(model.type.in[time.x] == "Trend") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }
             
             if(model.type.in[time.x] == "EB") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }

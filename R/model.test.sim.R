@@ -338,7 +338,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
             if(model[1] == "OU") {
                 optima.level.ou <- optima.level.ou + 1
                 est.anc <- FALSE
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 time.int <- time.x + 1
             }
             
@@ -350,7 +350,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
             }
             
             if(model[1] == "Trend" || model[1] == "EB") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }
@@ -386,13 +386,13 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
             }
             
             if(model[time.x] == "Trend") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }
             
             if(model[time.x] == "EB") {
-                model.anc <- tail(output.mean, 1)
+                model.anc <- utils::tail(output.mean, 1)
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }

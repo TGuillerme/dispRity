@@ -100,7 +100,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     results <- cbind(summary.models)
     results <- results[order(results[, 2]), ]
     # MP: allow a single model to be used as input for model.test.wrapper (may be a bit pointless but prevents an error)
-    if(is(results)[1] == "matrix") {
+    if(class(results)[1] == "matrix") {
     	results <- cbind(results, p.int)
     	colnames(results)[(dim(results)[2] - 2):dim(results)[2]] <- c("median p value", "lower p value", "upper p value")
     	} else {

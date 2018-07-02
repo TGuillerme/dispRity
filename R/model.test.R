@@ -183,7 +183,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
                 
                 if(verbose) {
                     cat(paste0("    best split time found at ", signif(ten.times[best.model],4), "\n"))
-                    cat(paste0("Done. Best log-likelihood = ", round(model.return$value, digit = 3), " at ",  signif(ten.times[best.model],4), ".\n"))
+                    cat(paste0("Done. Best log-likelihood = ", round(model.return$value, digits = 3), " at ",  signif(ten.times[best.model],4), ".\n"))
                 
                 }      
             } else {
@@ -204,7 +204,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
             if(length(model.type) || model.type == "multi.OU") {
                     model.return$split.time <- time.split
                 }
-            if(verbose) cat(paste0("Done. Log-likelihood = ", round(model.return$value, digit = 3), "\n"))
+            if(verbose) cat(paste0("Done. Log-likelihood = ", round(model.return$value, digits = 3), "\n"))
         }
         return(model.return)
     })
