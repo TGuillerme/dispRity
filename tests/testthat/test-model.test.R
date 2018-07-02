@@ -68,11 +68,10 @@ test_that("multiple.models work", {
 test_that("model.test example works", {
     set.seed(42)
     ## Mammal disparity through time
-    data(BeckLee_disparity)
     models <- list("BM", "OU", "multi.OU", c("BM", "OU"))
 
     ## Fitting the four models to the disparity data
-    tests <- model.test(BeckLee_disparity, models, time.split = 66, verbose = FALSE)
+    tests <- model.test(data, models, time.split = 66, verbose = FALSE)
 
     expect_is(tests, c("dispRity", "model.test"))
     expect_equal(length(tests), 5)
@@ -96,9 +95,8 @@ test_that("model.test example works", {
 
 test_that("model.test.sim example works", {
     set.seed(42)
-    data(BeckLee_disparity)
     models <- list("Trend", "BM")
-    model_test_output <- model.test(BeckLee_disparity, models, time.split = 66, verbose = FALSE)
+    model_test_output <- model.test(data, models, time.split = 66, verbose = FALSE)
     expect_is(model_test_output, c("dispRity", "model.test"))
     expect_equal(length(model_test_output), 5)
     expect_equal(lapply(model_test_output, length),
@@ -123,7 +121,7 @@ test_that("model.test.sim example works", {
     ## Plot the simulated best model
     expect_null(plot(model_test_sim_output))
     ## Add the observed data
-    expect_null(plot(BeckLee_disparity, add = TRUE, col = c("pink", "#ff000050", "#ff000050")))
+    expect_null(plot(data, add = TRUE, col = c("pink", "#ff000050", "#ff000050")))
     
     ## Simulating a specific model with specific parameters parameters
     model_simulation <- model.test.sim(sim = 1000, model = "BM", time.span = 120, variance = 0.1,
@@ -144,20 +142,19 @@ test_that("model.test.sim example works", {
 
 test_that("model.test.wrapper example works", {
     set.seed(42)
-    data(BeckLee_disparity)
     models <- list("BM", "OU", "multi.OU", "Trend")
 
     ## Some errors
-    expect_error(model.test.wrapper(data = BeckLee_disparity, model = "BIM", fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
-    expect_error(model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = "a"))
+    expect_error(model.test.wrapper(data = data, model = "BIM", fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = "a"))
     expect_error(model.test.wrapper(data = "a", model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
-    expect_error(model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 10))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 10))
 
-    test <- model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10)
+    test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10)
 
     ## Check test
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4, 13))
-    expect_equal(rownames(test), c("Trend", "multi.OU", "BM", "OU"))
+    expect_equal(rownames(test), c("Trend", "BM", "multi.OU", "OU"))
     expect_equal(colnames(test), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha", "optima.2", "trend", "median p value", "lower p value",  "upper p value"))
 })
