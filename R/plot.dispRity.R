@@ -126,10 +126,13 @@
 plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
+    match_call <- match.call()
 
     #SANITIZING
     #DATA
     if(length(class(data)) > 1) {
+
+        ## Subclass plots
 
         ## randtests plots
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
@@ -237,23 +240,76 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             options(warn = 0)
         } 
 
-         # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
-         #    ## Colours
-         #    if(missing(col)) {
-         #        col <- "grey"
-         #    }
-         #    ## Ylab
-         #    if(missing(ylab)) {
-         #        ylab <- "Akaike weights"
-         #    }
-         #    ## Ylim
-         #    if(missing(ylim)) {
-         #        ylim <- NULL
-         #    }
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
 
-         #    ## Plotting the model support
-         #    plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         # }
+            ## Colours
+            if(missing(col)) {
+                col <- "grey"
+            }
+            ## Ylab
+            if(missing(ylab)) {
+                ylab <- "weighted AIC"
+            }
+
+            ## Ylim
+            if(missing(ylim)) {
+                ylim <- NULL
+            }
+
+            ## Plotting the model support
+            plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
+        }
+        
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
+            
+            ## xlab
+            if(missing(xlab)) { 
+                xlab <- "default"
+            } 
+
+            ## ylab
+            if(missing(ylab)) {
+                ylab <- "default"
+            }
+
+            ## col
+            if(missing(col)) {
+                col <- "default"
+            }
+    
+            ## ylim
+            if(missing(ylim)) {
+                ylim <- "default"
+            }
+
+            ## add
+            check.class(add, "logical")
+
+            ## density
+            if(!is.null(density)) {
+                check.class(density, "numeric")
+                check.length(density, 1, " must be a single numeric value.")
+            }
+
+            ## Preparing the data and the arguments
+            summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
+            colnames(summarised_data)[3] <- "obs"
+
+            ## Setting the default arguments
+            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
+            ylim <- default_arg[[1]]
+            xlab <- default_arg[[2]]
+            ylab <- default_arg[[3]]
+            if(length(ylab) == 0) {
+                ylab <- "disparity (simulated)"
+            }
+            col <- default_arg[[4]]
+
+            ## Plotting the model
+            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, add, density, ...)
+        }
+        
+        ## Exit subclass plots
         return(invisible())
     }
 

@@ -91,20 +91,20 @@ digits.fun <- function(results_table, digits, model.test = FALSE) {
 }
 
 
-# ## match parameters lapply (for model.test summaries)
-# match.parameters <- function(one_param, full_param) {
-#     ## Which parameters are present:
-#     available_param <- full_param %in% names(one_param)
-#     if(any(!available_param)) {
-#         ## Making the missing parameters NAs
-#         output_param <- rep(NA, length(full_param))
-#         names(output_param) <- full_param
-#         output_param[available_param] <- one_param
-#         return(output_param)
-#     } else {
-#         return(one_param)
-#     }
-# }
+## match parameters lapply (for model.test summaries)
+match.parameters <- function(one_param, full_param) {
+    ## Which parameters are present:
+    available_param <- full_param %in% names(one_param)
+    if(any(!available_param)) {
+        ## Making the missing parameters NAs
+        output_param <- rep(NA, length(full_param))
+        names(output_param) <- full_param
+        output_param[available_param] <- one_param
+        return(output_param)
+    } else {
+        return(one_param)
+    }
+}
 
 
 

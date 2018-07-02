@@ -3,6 +3,7 @@ warnings_are_errors: false
 
 branches:
   only:
+    - model-test2
     - master
     - release
   except:

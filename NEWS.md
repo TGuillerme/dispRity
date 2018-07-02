@@ -169,7 +169,7 @@ dispRity v0.3 *dispRity lite* (2017-01-25)
 ### MINOR IMPROVEMENTS
 
   * `sim.morpho` can now use `model = "mixed"` for using both `HKY-binary` and `Mk` in characters simulation.
-  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities`	manual with appropriate S3 methods.
+  * `dispRity` object utilities are now all grouped under the `?dispRity.utilities` manual with appropriate S3 methods.
   
 ### DEPRECATED AND DEFUNCT
 
@@ -219,11 +219,11 @@ dispRity v0.2 (2016-06-15)
 ### DEPRECATED AND DEFUNCT
 
   * **Removed** `type_discrete` argument in `plot.dispRity` and `type` argument can now be:
-  	* `continuous` disparity curves.
-  	* `box` for real boxplots.
-  	* `lines` for the distribution vertical lines.
-  	* `polygon` for the distribution boxes.
-  	
+    * `continuous` disparity curves.
+    * `box` for real boxplots.
+    * `lines` for the distribution vertical lines.
+    * `polygon` for the distribution boxes.
+    
 dispRity v0.1.2 (2015-12-01)
 =========================
 

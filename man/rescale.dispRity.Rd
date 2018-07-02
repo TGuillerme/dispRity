@@ -33,7 +33,7 @@ summary(rescale.dispRity(disparity, max = 0.1))
 
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{link[base]{scale}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 }
 \author{
 Thomas Guillerme

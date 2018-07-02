@@ -5,7 +5,7 @@
 \title{disparity}
 \format{one \code{dispRity} object.}
 \description{
-And example of a \code{dispRity} object.
+An example of a \code{dispRity} object.
 }
 \details{
 This matrix is based on the \code{\link{BeckLee}} dataset and split into seven continuous subsets (\code{\link{chrono.subsets}}).
@@ -13,5 +13,5 @@ It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction 
 Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 }
 \seealso{
-McClean_data BeckLee_data
+BeckLee_disparity BeckLee
 }

@@ -42,7 +42,11 @@
 # data_subsets_boot <- boot.matrix(data_subsets_simple, bootstraps = 11, rarefaction = c(5,6))
 # data <- dispRity(data_subsets_boot, metric = c(variances))
 
+ 
 print.dispRity <- function(x, all = FALSE, ...) {
+
+    match_call <- match.call()
+    x_name <- match_call$x
 
     if(all) {
         ## Print everything
@@ -51,6 +55,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
         print(tmp)
 
     } else {
+
+        ## ~~~~~~~
+        ## Composite dispRity objects (subclasses)
+        ## ~~~~~~~
+
 
         if(length(class(x)) > 1) {
             ## randtest
@@ -72,39 +81,70 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 return()
             } 
-            # if(class(x)[2] == "model.test") {
-            #     cat("Disparity evolution model fitting:\n")
-            #     print(x$aic.models)
-            #     return()
-            # }
-
-            if(class(x)[2] == "dtt" && length(x) != 2) {
-
-                ## Tested dtt
-                cat("Disparity-through-time test (modified from geiger:dtt)\n")
+            if(class(x)[2] == "model.test") {
+                cat("Disparity evolution model fitting:\n")
                 cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                
+                print(x$aic.models)
 
-                cat(paste0("Observation: ", x$MDI , "\n\n"))
+                cat(paste0("\nUse x$full.details for displaying the models details\n"))
+                cat(paste0("or summary(x) for summarising them.\n"))
 
-                cat(paste0("Model: ", x$call$model , "\n"))
-                cat(paste0("Based on ", length(x$sim_MDI) , " replicates\n"))
-                cat(paste0("Simulated p-value: ", x$p_value , "\n"))
-                cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
-
-                print(c("Mean.dtt" = mean(x$dtt), "Mean.sim_MDI" = mean(x$sim_MDI), "var.sim_MDI" = var(x$sim_MDI)))
-
-                cat(paste0("\nUse plot.dispRity() to visualise."))
                 return()
-            } else {
-                ## raw dtt
-                ## Fake an object with no attributes
-                x_tmp <- x
-                class(x_tmp) <- "list"
-                print(x_tmp)
-                cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
-                cat(paste0("Use plot.dispRity to visualise."))
+            }
+
+            if(class(x)[2] == "model.sim") {
+
+                cat("Disparity evolution model simulation:\n")
+                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                cat(paste0("Model simulated (", x$nsim, " times):\n"))
+
+                print(x$model)
+
+                cat("\n")
+
+                if(!is.null(x$p.value)) {
+                    print(x$p.value)
+                }
+
+                return()
+            }
+
+
+            if(class(x)[2] == "dtt") {
+                if(length(x) != 2){
+                    ## Tested dtt
+                    cat("Disparity-through-time test (modified from geiger:dtt)\n")
+                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+
+                    cat(paste0("Observation: ", x$MDI , "\n\n"))
+
+                    cat(paste0("Model: ", x$call$model , "\n"))
+                    cat(paste0("Based on ", length(x$sim_MDI) , " replicates\n"))
+                    cat(paste0("Simulated p-value: ", x$p_value , "\n"))
+                    cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
+
+                    print(c("Mean.dtt" = mean(x$dtt), "Mean.sim_MDI" = mean(x$sim_MDI), "var.sim_MDI" = var(x$sim_MDI)))
+
+                    cat(paste0("\nUse plot.dispRity() to visualise."))
+                    return()
+                } else {
+                    ## raw dtt
+                    ## Fake an object with no attributes
+                    x_tmp <- x
+                    class(x_tmp) <- "list"
+                    print(x_tmp)
+                    cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
+                    cat(paste0("Use plot.dispRity to visualise."))
+                }
             }
         }
+
+        
+        ## ~~~~~~~
+        ## Simple dispRity objects
+        ## ~~~~~~~
+
 
         if(length(x$call) == 0) {
             if(!is.null(x$matrix) && class(x$matrix) == "matrix") {

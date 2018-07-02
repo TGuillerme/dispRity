@@ -26,7 +26,7 @@ check.morpho(matrix, orig.tree, parsimony = "fitch",
 \item{verbose}{Whether to be verbose or not (\code{default = FALSE}).}
 }
 \value{
-Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \\code{\link[phangorn]{RI}}) from the most parsimonious tree obtained from the matrix.
+Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \code{\link[phangorn]{RI}}) from the most parsimonious tree obtained from the matrix.
 Can also return the topological distance from the original tree if provided.
 }
 \description{

@@ -18,7 +18,7 @@
 #' @importFrom grDevices colorRampPalette grey 
 #' @importFrom caper comparative.data 
 #' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom utils combn data capture.output
+#' @importFrom utils combn data capture.output tail
 #' @importFrom phyclust gen.seq.HKY 
 #' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
 #' @importFrom vegan adonis vegdist
@@ -38,6 +38,7 @@ NULL
 #'   \item \code{BeckLee_mat50} The ordinated matrix based on the 50 taxa cladistic distances
 #'   \item \code{BeckLee_mat99} The ordinated matrix based on the 50 taxa + 49 nodes cladistic distances
 #'   \item \code{BeckLee_ages} A list of first and last occurrence data for fossil taxa
+#'   \item \code{BeckLee_disparity} a \code{dispRity} object with estimated sum of variances in 120 time bins, boostrapped 100 times from the Beck and Lee data
 #' }
 #'
 #' @format three matrices and one phylogenetic tree.
@@ -47,7 +48,7 @@ NULL
 #' Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278
 #' @name BeckLee
 #' @aliases BeckLee_tree BeckLee_mat50 BeckLee_mat99 BeckLee_ages
-#' @seealso McClean_data disparity
+#' @seealso BeckLee_disparity disparity
 NULL
 
 # #' McClean dataset
@@ -67,7 +68,7 @@ NULL
 
 #' disparity
 #'
-#' And example of a \code{dispRity} object.
+#' An example of a \code{dispRity} object.
 #'
 #' This matrix is based on the \code{\link{BeckLee}} dataset and split into seven continuous subsets (\code{\link{chrono.subsets}}).
 #' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
@@ -75,5 +76,19 @@ NULL
 #'
 #' @format one \code{dispRity} object.
 #' @name disparity
-#' @seealso McClean_data BeckLee_data
+#' @seealso BeckLee_disparity BeckLee
+NULL
+
+
+#' BeckLee_disparity
+#'
+#' An example of a \code{dispRity} object.
+#'
+#' This matrix is based on the \code{\link{BeckLee}} dataset and split into 120 continuous subsets (\code{\link{chrono.subsets}}).
+#' It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
+#' Disparity was calculated as the \code{\link[base]{sum}} of the \code{\link{variances}} (\code{\link{dispRity}}).
+#'
+#' @format one \code{dispRity} object.
+#' @name BeckLee_disparity
+#' @seealso BeckLee disparity
 NULL
