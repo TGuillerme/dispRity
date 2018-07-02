@@ -52,6 +52,7 @@ This function gives the relative fit of \code{model.test} output using log-likel
 }
 \examples{
 
+\dontrun{
 ## Mammal disparity through time
 data(BeckLee_disparity)
 
@@ -62,6 +63,7 @@ models <- list("BM", "OU", "multi.OU", "Trend")
 ## against the empirical distribution for each
 model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE,
                    time.split = 66, show.p = TRUE)
+}
 
 }
 \references{

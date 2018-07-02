@@ -55,6 +55,7 @@ The models are fit using maximum likelihood optimisation using the function opti
 }
 \examples{
 
+\dontrun{
 ## Mammal disparity through time
 data(BeckLee_disparity)
 
@@ -69,6 +70,7 @@ summary(tests)
 
 ## Plotting only the models support
 plot(tests)
+}
 
 }
 \references{

@@ -40,6 +40,7 @@
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' ## Mammal disparity through time
 #' data(BeckLee_disparity)
 #' 
@@ -54,6 +55,7 @@
 #' 
 #' ## Plotting only the models support
 #' plot(tests)
+#' }
 #' 
 #' @seealso \code{\link{model.test.wrapper}}, \code{\link{model.test.sim}}, \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}
 #' 

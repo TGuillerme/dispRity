@@ -25,6 +25,7 @@
 #'
 #' @examples
 #' 
+#' \dontrun{
 #' ## Mammal disparity through time
 #' data(BeckLee_disparity)
 #' 
@@ -35,6 +36,7 @@
 #' ## against the empirical distribution for each
 #' model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE,
 #'                    time.split = 66, show.p = TRUE)
+#' }
 #' 
 #' @seealso \code{\link{model.test}}, \code{\link{model.test.sim}}, \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}
 #'
