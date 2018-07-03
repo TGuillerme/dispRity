@@ -21,11 +21,12 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[Next release] dispRity v1.1.2  (2018-05-16)
+[Next release] dispRity v1.1.9 *pre-release* (2018-07-03)
 =========================
 
 ### NEW FEATURES
 
+  * *New* functions: `model.test`, `model.test.sim` and `model.test.wrapper` for fitting models of disparity evolution through time (with associated manuals, vignettes and `S3` methods! Thanks to [Mark Puttick](https://github.com/PuttickMacroevolution)).
   * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
   * S3 `print` method for objects of class `"dtt"` and `"dispRity"` (from `dtt.dispRity`).
 
