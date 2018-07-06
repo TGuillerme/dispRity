@@ -14,8 +14,8 @@
 #' @param verbose \code{logical}, whether to display the model results as computed (\code{TRUE} - default).
 #' @param sim The number of separate simulations (default = 1000).
 #' @param plot.sim Logical. If \code{TRUE} (default) the plots of the simulated and observed disparity are returned for all models.
-#' @param col.sim Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details.
-#' @param col.obs Colour of the observed data on the plot.
+#' @param col.sim Colour options used for the plotting of simulated values. See \code{\link{plot.dispRity}} for more details. If missing, the default colours \code{c("black", "lightgrey", "grey")} are used.
+#' @param col.obs Colour of the observed data on the plot. Default colour is \code{"hotpink"}
 #' @param lwd.obs Line width of the observed value.
 #' @param show.p Logical, when \code{plot.sim = TRUE}, whether to display the p-value of rank envelope tests (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param legend Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).
@@ -70,7 +70,7 @@
 #  show.p = FALSE
 # model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, legend = TRUE)
 
-model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim = c("grey20", "#00000040", "#00000040"), col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
+model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
 	
 	match_call <- match.call()
 	
@@ -97,7 +97,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     ## Summarise the models
     summary.models <- summary(models.out)
     n.models <- dim(summary.models)[1]
-    outputs <- suppressWarnings(lapply(1:n.models, function(x) model.test.sim(sim, model=models.out, model.rank = x)))
+    outputs <- suppressWarnings(lapply(1:n.models, function(x) model.test.sim(sim, model = models.out, model.rank = x)))
     p.int <- t(sapply(outputs, function(u) c(u$p[[4]], u$p[[5]])))
     results <- cbind(summary.models)
     results <- results[order(results[, 2]), ]
@@ -105,10 +105,10 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     if(class(results)[1] == "matrix") {
     	results <- cbind(results, p.int)
     	colnames(results)[(dim(results)[2] - 2):dim(results)[2]] <- c("median p value", "lower p value", "upper p value")
-    	} else {
+    } else {
     	name.res <- names(results)
-    	results <- matrix(c(results, p.int), nrow=1, dimnames=list("", c(name.res, "median p value", "lower p value", "upper p value")))	
-    	}
+    	results <- matrix(c(results, p.int), nrow = 1, dimnames = list("", c(name.res, "median p value", "lower p value", "upper p value")))	
+    }
     
     
  	if(plot.sim) {

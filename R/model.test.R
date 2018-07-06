@@ -98,19 +98,14 @@
     # control.list = list(fnscale = -1)
     # verbose = TRUE
 
-model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE) {
+model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE) {
     
     match_call <- match.call()
 
     ## data
-    check.class(data, c("dispRity", "dispRity.sim"))
-   
-    if(class(data) == "dispRity") {
-        model_test_input <- select.model.list(data)
-    } else {
-            model_test_input <- data
-    }
-    
+    check.class(data, "dispRity")
+    model_test_input <- select.model.list(data)
+
     ## models
     
     # MP: allow a single 'multi-mode' model to be used as an input without an error - could this be incorporated into an existing function, or is it ok here as it'll only be used once?
@@ -139,19 +134,18 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
         
     ## use Bartlett's test of variance to decide whether to pool variance or not (not used if pool variance is specified as TRUE or FALSE before-hand)
     if(is.null(pool.variance)) {
-       p_test <- stats::bartlett.test(model_test_input)$p.value
+        p_test <- stats::bartlett.test(model_test_input)$p.value
         if(p_test < 0.05) {
             pool.variance <- FALSE
             if(verbose) cat(paste0("Evidence of equal variance (Bartlett's test of equal variances p = ", round(p_test, 3), ").\nVariance is not pooled.\n"))
         } else {
             pool.variance <- TRUE
             if(verbose) cat(paste0("Evidence of unequal variance (Bartlett's test of equal variances p = ", round(p_test, 3), ").\nVariance is pooled.\n"))
-            model_test_input <- pooled.variance(model_test_input, TRUE)
         }
-    } else {
-        if(pool.variance) {
-            model_test_input <- pooled.variance(model_test_input, TRUE)
-        }
+    } 
+    ## Pool the variance (or not)
+    if(pool.variance) {
+        model_test_input <- pooled.variance(model_test_input, TRUE)
     }
     
     models_out <- lapply(1:n_models, function(model_n) {
@@ -162,13 +156,13 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
             time.split <- NULL
         }
         
-        if(is.null(time.split) && length(model.type) == 2 || is.null(time.split) && model.type == "multi.OU") {
+        if((is.null(time.split) && length(model.type) == 2) || (is.null(time.split) && model.type == "multi.OU")) {
             
             all.times <- max(model_test_input[[4]]) - model_test_input[[4]]                
 
             if(length(all.times) > 31) {
                 
-                    ten.times <- all.times[(9: (length(all.times) - 11))]
+                ten.times <- all.times[(9: (length(all.times) - 11))]
                 run.time.split <- TRUE
 
                 if(verbose) cat(paste0("Running ",  paste0(model.type, collapse=":") ," on ", length(ten.times), " shift times...\n"))
@@ -187,16 +181,12 @@ model.test <- function(data, model, pool.variance = NULL, time.split=NULL, fixed
                     cat(paste0("    best split time found at ", signif(ten.times[best.model],4), "\n"))
                     cat(paste0("Done. Best log-likelihood = ", round(model.return$value, digits = 3), " at ",  signif(ten.times[best.model],4), ".\n"))
                 
-                }      
-            } else {
-
-                if(verbose) {
-                    cat(paste0("Fewer than 30 samples are available - time split models was not run!\n"))
-                } else {
-                    warning(paste0("Fewer than 30 samples are available - time split models was not run!\n"))
                 }
 
-                run.time.split <- FALSE
+            } else {
+
+                ## Can't run multi.OU
+                stop("Fewer than 30 samples are available.\nThe \"multi.OU\" model cannot be run with time.split = NULL.\n", call. = FALSE)
             }
         
         } else {
