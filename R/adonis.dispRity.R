@@ -88,7 +88,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     check.class(data, "dispRity")
 
     ## data must have subsets
-    if(is.null(data$subsets)) {
+    if(is.null(data$subsets) || length(data$subsets) == 0) {
         stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.", call. = FALSE)
     } else {
         if(is.na(match(data$call$subsets[1], "customised"))) {
@@ -105,7 +105,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     ## formula must have the right response/predictors
     formula_error_format <- "Formula must be of type: matrix ~ predictor(s) (where matrix is the response)."
     check.length(formula, 3, msg = formula_error_format)
-    if(!formula[[1]] == "~") stop(formula_error_format)
+    # if(!formula[[1]] == "~") stop(formula_error_format) #TG: Tested from formula
     if(!formula[[2]] == "matrix") stop(formula_error_format)
     ## Non-default predictors
     if(!formula[[3]] == "group") {
@@ -114,7 +114,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
-                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula), call. = FALSE)
+                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)), call. = FALSE)
             }
             
             ## Set up the model details
