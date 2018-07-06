@@ -7,6 +7,11 @@ context("ordinations")
 if(!require(Claddis)) devtools::install_github("TGuillerme/Claddis")
 
 test_that("Claddis.support works", {
+
+    ## Errors
+    expect_error(Claddis.ordination(matrix(1)))
+    expect_error(Claddis.ordination(Michaux1989, distance = "blob"))
+
     expect_equal(MorphDistMatrix(Michaux1989), MorphDistMatrix.support(Michaux1989))
     expect_equal(MorphDistMatrix(Gauthier1986), MorphDistMatrix.support(Gauthier1986))
 
@@ -45,6 +50,19 @@ test_that("Claddis.support works", {
 
     ## Error
     expect_error(MorphDistMatrix.support(morph.matrix, transform.proportional.distances = "bob"))
+
+    ## Transformation works
+    test1 <- MorphDistMatrix.support(Michaux1989, distance = c("Gower", "Max"), transform.proportional.distances = "sqrt")
+    test2 <- MorphDistMatrix.support(Michaux1989, distance = c("Gower", "Max"), transform.proportional.distances = "none")
+    expect_is(test1, "list")
+    expect_is(test2, "list")
+    expect_equal(lapply(test1, class), list("gower.dist.matrix" = "matrix", "max.dist.matrix" = "matrix"))
+    expect_equal(lapply(test2, class), list("gower.dist.matrix" = "matrix", "max.dist.matrix" = "matrix"))
+    expect_equal(test1[[1]][,1], test1[[2]][,1])
+    expect_equal(test2[[1]][,1], test2[[2]][,1])
+    expect_false(all(test2[[1]][,1] == test1[[1]][,1]))
+
+
 
     ##
     matrix_all <- MorphDistMatrix.support(morph.matrix)
