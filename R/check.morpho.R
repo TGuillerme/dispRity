@@ -106,11 +106,11 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
 
     #Creating the contrast matrix
     if(missing(contrast.matrix)) {
-        constrast.matrix <- get.contrast.matrix(matrix)
+        contrast.matrix <- get.contrast.matrix(matrix)
     }
 
     #Creating the phyDat object
-    matrix_phyDat <- phangorn::phyDat(data = matrix, type = "USER", contrast = constrast.matrix)
+    matrix_phyDat <- phangorn::phyDat(data = matrix, type = "USER", contrast = contrast.matrix)
 
     #Calcualte the first tree
     if(class(first.tree) == "function") {
