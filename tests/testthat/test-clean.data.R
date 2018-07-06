@@ -105,12 +105,20 @@ test_that("clean.data works", {
 
     ## Tree is OK
     tree <- rtree(5, tip.label = LETTERS[1:5])
+    multi_tree <- rmtree(5, 5)
+    multi_tree <- lapply(multi_tree, function(X) {X$tip.label <- LETTERS[1:5]; return(X)})
+    class(multi_tree) <- "multiPhylo"
     dummy_data <- matrix(c(rnorm(6), runif(6)), 6, 2, dimnames = list(LETTERS[1:6], c("var1", "var2")))
     expect_equal(clean.data(dummy_data, tree)$dropped_tips, NA)
+    expect_equal(clean.data(dummy_data, multi_tree)$dropped_tips, NA)
     
     ## Data is OK
     tree <- rtree(6, tip.label = LETTERS[1:6])
+    multi_tree <- rmtree(5, 6)
+    multi_tree <- lapply(multi_tree, function(X) {X$tip.label <- LETTERS[1:6]; return(X)})
+    class(multi_tree) <- "multiPhylo"
     dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
     expect_equal(clean.data(dummy_data, tree)$dropped_rows, NA)
+    expect_equal(clean.data(dummy_data, multi_tree)$dropped_rows, NA)
 })
 
