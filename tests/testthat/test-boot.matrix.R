@@ -92,6 +92,9 @@ test_that("Sanitizing works correctly", {
     expect_error(
         boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
         )
+    expect_error(
+        boot.matrix(data, bootstraps, rarefaction, dimensions = 49)
+        )
     ## Wrong data input
     dutu <- list(1,2,3) ; class(dutu) <- "dispRity"
     expect_error(
@@ -386,9 +389,16 @@ test_that("boot.matrsix works with the prob option (for probabilities sampling)"
     data(BeckLee_ages)
     data(BeckLee_tree)
     slice_disc <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 60, 0), inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    slice_grad <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "gradual.split", time = c(100, 60, 0), inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
     no_nodes <- rep(0, 49)
+    no_nodes_nonames <- rep(0, 49)
     names(no_nodes) <- paste0("n", seq(1:49))
     
+    ## Errors
+    expect_error(boot.matrix(slice_grad, prob = no_nodes))
+    expect_error(boot.matrix(slice_disc, prob = no_nodes_nonames))
+
+
     ## Working with a chrono.subset
     set.seed(1)
     test <- boot.matrix(slice_disc, prob = no_nodes)
