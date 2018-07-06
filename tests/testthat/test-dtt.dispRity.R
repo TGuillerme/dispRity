@@ -62,6 +62,11 @@ test_that("dispRity and dtt give the same results", {
     expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100))
     plot(dispRity_dtt)
     expect_error(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = var, tree = geiger_data$phy, nsim = 100))
+
+    ## Error when recycling dispRity objects
+    data(disparity)
+    expect_error(dtt.dispRity(data = disparity, metric = var, tree = BeckLee_tree, nsim = 10))
+
      
     ## Same output
     expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))
@@ -87,4 +92,9 @@ test_that("dispRity and dtt give the same results", {
     set.seed(1)
     dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "greater")
     expect_equal(dispRity_dtt$p_value, 0.46)
+
+    ## But also works without testing
+    dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 0)
+    expect_is(dispRity_dtt, c("dispRity", "dtt"))
+    expect_is(names(dispRity_dtt), c("dtt", "time"))
 })

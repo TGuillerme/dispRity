@@ -171,4 +171,14 @@ test_that("geomorph.ordination works", {
     expect_equal(dimnames(test$matrix)[[1]], letters[1:10])
     expect_equal(dimnames(test$matrix)[[2]], paste0("PC", 1:10))
 
+
+    ## Properly inherits the dimnames
+    attr(array, "dimnames")[[3]] <- letters[1:10]
+    dummy_procrustes <- list(coords = array)
+    class(dummy_procrustes) <- "gpagen"
+    dummy_geomorph_df <- list(coords = array, factor1 = as.factor(sample(LETTERS[1:2], 10, replace = TRUE)), factor2 = as.factor(c(rep(1, 5), rep(2, 5))))
+    class(dummy_geomorph_df) <- "geomorph.data.frame"
+    test <- geomorph.ordination(dummy_geomorph_df)
+    expect_equal(rownames(test$matrix), letters[1:10])
+
 })
