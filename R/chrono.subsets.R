@@ -172,7 +172,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## time must be at least three if discrete
         if(time < 2) stop("Time must be greater or equal than 2.", call. = FALSE)
 
-        if(missing(tree)) {
+        if(tree_was_missing) {
             ## Set tmax
             tmax <- min(FADLAD$LAD)
             ## Set t0
@@ -273,7 +273,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         } else {
             ## Check if FAD/LAD is in the right order (else reorder)
             if(colnames(FADLAD)[1] == "LAD") {
-                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], rownames = rownames(FADLAD))
+                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], row.names = rownames(FADLAD))
             }
         }
 
