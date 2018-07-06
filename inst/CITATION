@@ -7,7 +7,7 @@ citEntry(entry = "Article",
          year = "2018",
          volume = "in press",
          doi = "10.1111/2041-210X.13022",
-         textVersion = "Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;00:1–9. https://doi.org/10.1111/2041-210X.13022"
+         textVersion = "Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;00:1-9. https://doi.org/10.1111/2041-210X.13022"
          )
 
 citHeader("To cite the dispRity manual, please use:")
@@ -34,5 +34,5 @@ citEntry(entry = "Article",
          number = "4",
          pages = "481-493",
          doi = "doi:10.1111/pala.12364",
-         textVersion = "Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. Palaeontology, 61: 481-493. doi:10.1111/pala.12364"
+         textVersion = "Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. doi:10.1111/pala.12364"
          )

@@ -251,4 +251,10 @@ test_that("sim.morpho works", {
     expect_equal(dim(matrixMk1), c(15,50))
     expect_equal(dim(matrixMk2), c(15,50))
     expect_equal(dim(matrixMixed), c(15,50))
+
+
+    ## Verbose
+    verbose <- capture.output(matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions, verbose = TRUE))
+    expect_equal(verbose,
+        "Generating a matrix of 50 characters for 15 taxa:..................................................Done.")
 })
