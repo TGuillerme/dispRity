@@ -96,5 +96,5 @@ test_that("dispRity and dtt give the same results", {
     ## But also works without testing
     dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 0)
     expect_is(dispRity_dtt, c("dispRity", "dtt"))
-    expect_is(names(dispRity_dtt), c("dtt", "time"))
+    expect_equal(names(dispRity_dtt), c("dtt", "times"))
 })

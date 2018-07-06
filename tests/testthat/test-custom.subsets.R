@@ -76,12 +76,6 @@ test_that("Sanitizing works", {
     expect_error(
         custom.subsets(data[1:9,], tree)
     )
-    tree <- rtree(10)
-    tree$tip.label <- letters[1:10]
-    tree$node.label <- letters[11:19]
-    expect_error(
-        custom.subsets(data, tree)
-    )
 })
 
 ## Results

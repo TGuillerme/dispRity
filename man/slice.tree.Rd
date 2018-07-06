@@ -33,6 +33,9 @@ tree$root.time <- max(tree.age(tree)$ages)
 tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 
 }
+\references{
+Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
+}
 \seealso{
 \code{\link[paleotree]{timeSliceTree}}, \code{\link{chrono.subsets}}.
 }
