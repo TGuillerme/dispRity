@@ -303,8 +303,8 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
         if(!missing(tree) && !missing(full)) {
             nodes.coords <- nodes.coordinates(matrix, tree, full)
         } else {
+            warning("Missing tree and full argument for nodes.coordinates.\nSee ?nodes.coordinates manual.\nThe centroids function was applied instead.")
             return(centroids(matrix, ...))
-            warning("Missing tree and full argument for nodes.coordinates.\nSee ?nodes.coordinates manual.\nCentroids function applied instead.")
         }
     }
     
