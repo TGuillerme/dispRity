@@ -73,7 +73,7 @@ custom.subsets <- function(data, group) {
 
     ## data must have rownames
     if(is.null(rownames(data))) {
-        warning(paste("Rownames generated for ", match_call$data, " as seq(1:", nrow(data) ,")", sep = ""))
+        warning(paste("Rownames generated for ", as.expression(match_call$data), " as seq(1:", nrow(data) ,")", sep = ""))
         rownames(data) <- seq(1:nrow(data))
     } 
 

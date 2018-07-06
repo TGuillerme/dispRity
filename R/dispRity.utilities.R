@@ -389,7 +389,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
     check.class(data, "dispRity")
     ## Initialising subsets length variable
     length_subsets <- length(data$subsets)
-    if(length_subsets == 1) stop("Data contains only one subset.", call. = FALSE)
+    if(length_subsets == 1) stop("The data contains no subsets.", call. = FALSE)
 
     ## decreasing
     check.class(decreasing, "logical")
@@ -487,21 +487,21 @@ combine.subsets <- function(data, subsets) {
     has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
     has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
     if(has_disparity && has_bootstrap) {
-        warning(paste(match_call$data, "contained bootstrap and disparity data that has been discarded in the output."))
+        warning(paste(as.expression(match_call$data), "contained bootstrap and disparity data that has been discarded in the output."))
         data$disparity <- NULL
         data$call$disparity <- NULL
         data$call$bootstrap <- NULL
         data$subsets <- lapply(data$subsets, select.elements)
     } else {
         if(has_disparity && !has_bootstrap) {
-            warning(paste(match_call$data, "contained disparity data that has been discarded in the output."))
+            warning(paste(as.expression(match_call$data), "contained disparity data that has been discarded in the output."))
             data$disparity <- NULL
             data$call$disparity <- NULL
         } else {
             if(!has_disparity && has_bootstrap) {
-                warning(paste(match_call$data, "contained bootstrap data that has been discarded in the output."))
+                warning(paste(as.expression(match_call$data), "contained bootstrap data that has been discarded in the output."))
                 data$call$bootstrap <- NULL
-                data$subsets <- lapply(data$subsets, "[[", 1)
+                data$subsets <- lapply(data$subsets, function(X){return(X[1])})
             }
         }
     }
@@ -516,11 +516,16 @@ combine.subsets <- function(data, subsets) {
         }
 
     } else {
+
+        if(length(data$subsets) < length(subsets)) {
+            stop(paste(as.expression(match_call$data), "does not contain enough subsets!"), call. = FALSE)
+        }
+
         clean_data <- FALSE
         ## Must be at least two long
-        if(length(subsets) < 2) stop("Subsamples argument must contain at least two values.")
+        if(length(subsets) < 2) stop("Subsamples argument must contain at least two values.", call. = FALSE)
         ## Must not contain duplicates
-        if(length(subsets) != length(unique(subsets))) stop("Subsamples argument must not contain duplicates.")
+        if(length(subsets) != length(unique(subsets))) stop("Subsamples argument must not contain duplicates.", call. = FALSE)
         if(subsets_class == "character") {
             ## Must be present in the subsets names
             matches <- subsets %in% names(data$subsets)
@@ -534,10 +539,6 @@ combine.subsets <- function(data, subsets) {
                 stop(paste("subsets", paste(subsets[which(subsets > length(data$subsets))], collapse = " and "), "don't match with any of the subsets in", match_call$data), call. = FALSE)
             }
         }
-    }
-
-    if(length(data$subsets) < length(subsets)) {
-        stop(paste(match_call$data, "does not contain enough subsets!"), call. = FALSE)
     }
 
     if(clean_data) {
@@ -636,7 +637,7 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
     ## data
     check.class(data, "dispRity")
-    if(is.null(data$subsets)) {
+    if(length(data$subsets) < 2) {
         stop("data has no subsets. Use the chrono.subsets to generate some.", call. = FALSE)
     }
 
@@ -685,9 +686,9 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
         lag <- length(data$subsets)
         warning(paste0("Lag is too long! It was automatically set to subset number ", lag, "."))
     }
-    if(extinction == lag) {
-        stop("No lag subset available after the extinction subset.", call. = FALSE)
-    }
+    # if(extinction == lag) {
+    #     stop("No lag subset available after the extinction subset.", call. = FALSE)
+    # }
 
     ## Adding the lag effect bins
     extinction_subset <- seq(from = extinction_subset, to = lag)

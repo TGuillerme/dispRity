@@ -258,6 +258,13 @@ test_that("extract.dispRity", {
         extract.dispRity(data, 1, rarefaction = 4, observed = FALSE)
         )
 
+    expect_warning(
+        test1 <- extract.dispRity(data, 1, rarefaction = 3, observed = TRUE)
+        )
+    expect_equal(test1,
+        extract.dispRity(data, 1, observed = TRUE)
+        )
+
 
     test <- extract.dispRity(data)
     expect_is(
@@ -374,10 +381,19 @@ test_that("sort.dispRity", {
         all(summary(sorted) == summary(data)[5:1,])
         )
 
+    sorted <- sort(data, decreasing = FALSE)
+    expect_true(
+        all(summary(sorted) == summary(data)[1:5,])
+        )
+
     sorted <- sort(data, sort = c(1,3,4,5,2))
     expect_true(
         all(summary(sorted) == summary(data)[c(1,3,4,5,2),])
         )
+
+    data2 <- dispRity(BeckLee_mat99, metric = mean)
+    expect_error(sort(data2))
+
 })
 
 
@@ -416,6 +432,19 @@ test_that("combine.subsets", {
         )
     expect_error(
         combine.subsets(data_test2, c("a", "x"))
+        )
+
+    expect_warning(
+        bs <- combine.subsets(boot.matrix(data_test2), c(1,2))
+        )
+    expect_error(
+        combine.subsets(data_test2, (nrow(data_test2$matrix)+1))
+        )
+    expect_error(
+        combine.subsets(data_test2, "a")
+        )
+    expect_error(
+        combine.subsets(data_test2, c(1,2,3,4,5,6,7))
         )
 
     dummy_data1 <- dummy_data2 <- data_test1
@@ -471,6 +500,11 @@ test_that("extinction.subsets works", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
 
+    ## Errors
+    data <- dispRity(BeckLee_mat50, metric = mean)
+    expect_error(extinction.subsets(data, 66))
+
+
     ## detect.bin.age (internal)
     data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "discrete", time = c(100, 66, 40), inc.nodes = TRUE)
     expect_equal(detect.bin.age(data, 66, greater = TRUE), c("100 - 66" = TRUE, "66 - 40" = FALSE))
@@ -483,6 +517,7 @@ test_that("extinction.subsets works", {
     expect_error(extinction.subsets(disparity, 66, names = "TRUE", as.list = TRUE))
     expect_error(extinction.subsets(disparity, 66, names = TRUE, as.list = "TRUE"))
     expect_error(extinction.subsets(disparity, 91, names = TRUE, as.list = TRUE))
+    expect_error(extinction.subsets(disparity, 66, names = TRUE, as.list = TRUE, lag = 0))
 
     ## Normal behaviour
     expect_equal(extinction.subsets(disparity, 66, names = TRUE, as.list = TRUE), list("60" = c("70", "60")))
