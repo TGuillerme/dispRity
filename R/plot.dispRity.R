@@ -320,7 +320,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.", call. = FALSE)
+    if(is.na(match("disparity", names(data)))) stop(paste0(as.expression(match_call$x), " must be contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"), call. = FALSE)
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     ## Check the bootstraps

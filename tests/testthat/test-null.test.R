@@ -130,6 +130,14 @@ test_that("null.test works", {
         )
 
 
+    data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_ages)
+    subset <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
+
+    expect_error(
+        null.test(subset, replicates = 10, null.distrib = rnorm, null.args = NULL, scale = FALSE)
+        )
+
+
 
     #Right output
     expect_is(

@@ -118,16 +118,25 @@ test_that("plot.dispRity examples work", {
 
     data(disparity)
 
+    ## No data
+    ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
+    expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
+    expect_error(plot(data))
+
+    ## Rarefaction is ignored if no BS
+    expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
     expect_null(plot(disparity, type = "box", observed = TRUE))
-    expect_null(plot(disparity, type = "polygon", quantiles = c(10, 50, 95), cent.tend = mode.val))
+    expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
     expect_null(plot(disparity, type = "continuous"))
-    expect_null(plot(disparity, type = "continuous", chrono.subsets = FALSE,elements = TRUE, col = c("red", "orange", "yellow")))
+    expect_null(plot(disparity, type = "continuous", chrono.subsets = FALSE, elements = TRUE, col = c("red", "orange", "yellow")))
     expect_null(plot(disparity, rarefaction = TRUE))
+    expect_null(plot(disparity, elements = TRUE))
     data(BeckLee_mat50)
     data(BeckLee_tree)
     expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
@@ -149,9 +158,6 @@ test_that("plot.dispRity continuous with NAs", {
     expect_null(plot(test_data))
   
 })
-
-
-
 
 
 test_that("plot.dispRity with model.test data", {
@@ -177,4 +183,32 @@ test_that("plot.dispRity with model.test data", {
     ## Works with adding the plot
     expect_null(plot(model_test_data))
     expect_null(plot(model_simulation_inherit, add = TRUE))
+})
+
+
+test_that("plot subclasses works", {
+  
+    ## Randtest
+
+    data(BeckLee_mat50)
+    ## Calculating the disparity as the ellipsoid volume
+    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+    ## Testing against normal distribution
+    results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm)
+    expect_is(results, c("dispRity", "randtest"))
+    expect_null(plot(results))
+
+    ## DTT
+    ## Loading geiger's example data set
+    require(geiger)
+    geiger_data <- get(data(geospiza))
+    average.sq <- function(X) mean(pairwise.dist(X)^2)
+    expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
+
+    ## Plotting the results
+    expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
+    expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
+    expect_error(plot(dispRity_dtt, cent.tend = var))
+
+
 })
