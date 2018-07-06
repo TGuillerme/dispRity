@@ -60,6 +60,28 @@ test_that("Sanitizing works", {
     expect_error(
         custom.subsets(data, group)
         )
+    ## Wrong tree
+    expect_error(
+        custom.subsets(data, rtree(10))
+    )
+    tree <- rtree(9)
+    tree$tip.label <- letters[1:9]
+    tree$node.label <- NULL
+    expect_error(
+        custom.subsets(data, tree)
+    )
+    tree <- rtree(5)
+    tree$tip.label <- letters[1:5]
+    tree$node.label <- letters[7:10]
+    expect_error(
+        custom.subsets(data[1:9,], tree)
+    )
+    tree <- rtree(10)
+    tree$tip.label <- letters[1:10]
+    tree$node.label <- letters[11:19]
+    expect_error(
+        custom.subsets(data, tree)
+    )
 })
 
 ## Results

@@ -79,7 +79,7 @@ custom.subsets <- function(data, group) {
 
     ## group
     ## group is a matrix or a data.frame
-    if(class(group) == "matrix" | class(group) == "data.frame") {
+    if(class(group) == "matrix" || class(group) == "data.frame") {
         group_class <- "data.frame"
         group <- as.data.frame(group)
     } else {
@@ -94,7 +94,7 @@ custom.subsets <- function(data, group) {
                     stop("Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.", call. = FALSE)
                 }
 
-                if(is.null(group$node.labe)) {
+                if(is.null(group$node.label)) {
                     ## No nodes
                     if(nrow(data) != Ntip(group)) {
                         stop("Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.", call. = FALSE)
