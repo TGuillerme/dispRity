@@ -11,19 +11,19 @@ Depends:
     ape,
     stats
 Imports:
-	methods,
-	paleotree,
-	geometry,
 	ade4,
-	grDevices,
-	graphics,
-	utils,
-	phyclust,
-	phangorn,
-	vegan,
 	geiger,
+	geometry,
 	geoscale,
+	graphics,
+	grDevices,
+	methods,
 	mnormt,
+	paleotree,
+	phangorn,
+	phyclust,
+	utils,
+	vegan,
 	spptest
 License: GPL-3 | file LICENSE
 Remotes:
