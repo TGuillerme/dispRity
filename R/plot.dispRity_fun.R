@@ -81,7 +81,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
         }
     } else {
         ## Rarefaction level
-        if(what != "rows") {
+        if(!(what == "rows")) {
             return(summarised_data[which(summarised_data$n == rarefaction), what])
         } else {
             return(which(summarised_data$n == rarefaction))
@@ -292,9 +292,8 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_di
 }
 
 ## Plotting elements
-plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, element.pch, ...) {
+plot.elements <- function(summarised_data, rarefaction, type, ylab, col, element.pch, ...) {
 
-    div.log = FALSE
     ## Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]] <- "Elements"
@@ -303,32 +302,16 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
     ## Add the lines
     if(type == "continuous") {
         ## Continuous (straightforward)
-        if(div.log == FALSE) {
-            plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
-        } else {
-            plot(log(extract.from.summary(summarised_data, 2, rarefaction)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
-        }
+        plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
     } else {
         ## Creating the dummy data table
         points_n <- length(unique(summarised_data$subsets))
         dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
-        if(div.log == FALSE) {
-
-            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
-            for(line in 1:points_n) {
-                # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
-                points(line, summarised_data[line,2], pch = element.pch, col = col)
-            }
-
-        } else {
-            
-            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
-            for(line in 1:points_n) {
-                points(line, log(summarised_data[line,2]), pch = element.pch, col = col)
-                # lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
-            }
-
+        boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
+        for(line in 1:points_n) {
+            # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+            points(line, summarised_data[line,2], pch = element.pch, col = col)
         }
     }
     ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)

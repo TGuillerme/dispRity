@@ -19,7 +19,7 @@ model.test.sim(sim = 1, model, model.rank = 1, alternative = "two-sided",
 
 \item{time.split}{The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models.}
 
-\item{time.span}{The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
+\item{time.span}{The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.}
 
 \item{variance}{The variance of each sample (\code{numeric}). If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the variance of each sample in the sequence}
 

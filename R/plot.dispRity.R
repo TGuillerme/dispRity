@@ -529,7 +529,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -545,7 +545,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -573,7 +573,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
 
         return(invisible())

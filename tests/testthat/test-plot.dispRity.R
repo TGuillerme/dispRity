@@ -125,6 +125,8 @@ test_that("plot.dispRity examples work", {
 
     ## Rarefaction is ignored if no BS
     expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+    expect_null(plot(dispRity(data, metric = mean), type = "l"))
+    expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
@@ -135,13 +137,21 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
     expect_null(plot(disparity, type = "continuous"))
     expect_null(plot(disparity, type = "continuous", chrono.subsets = FALSE, elements = TRUE, col = c("red", "orange", "yellow")))
-    expect_null(plot(disparity, rarefaction = TRUE))
+    expect_null(plot(disparity, rarefaction = TRUE, col = "blue"))
     expect_null(plot(disparity, elements = TRUE))
     data(BeckLee_mat50)
     data(BeckLee_tree)
     expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
     expect_error(plot(disparity, rarefaction = 1))
     expect_null(plot(disparity, rarefaction = 5))
+
+    ## Testing additional behaviours for plot.discrete/continuous
+    expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
+    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
+
+
+
+
     
 })
 
