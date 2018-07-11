@@ -125,7 +125,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
 
     } else {
         if(class(model)[[2]] != "model.test") {
-            stop(paste0(match_call$model, " must be a dispRity object output from model.test.\nTry running model.test(", match_call$model, ") first."), call. = FALSE)
+            stop(paste0(as.expression(match_call$model), " must be a dispRity object output from model.test.\nTry running model.test(", as.expression(match_call$model), ") first."), call. = FALSE)
         }
         ## Model is inherited from the dispRity object
         model_inherit <- TRUE

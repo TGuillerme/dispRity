@@ -50,7 +50,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
     check.class(fun, "function")
 
     ## Getting the function name
-    match_call<-match.call()
+    match_call <- match.call()
 
     ## Testing the metric
     ## making the testing matrix

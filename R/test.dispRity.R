@@ -101,7 +101,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## ...and have disparity data
     if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
     ## ...and must have more than one subsets
-    if(length(data$subsets) == 1) stop(paste(match_call$data, "must have more than one subset."))
+    if(length(data$subsets) == 1) stop(paste(as.expression(match_call$data), "must have more than one subset."))
 
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
@@ -110,7 +110,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
 
     ## Stop if disparity is not a distribution, nor bootstrapped
-    if(!is_bootstrapped & !is_distribution) stop(paste(match_call$data, "is neither a distribution nor bootstrapped: impossible to compare single values."))
+    if(!is_bootstrapped & !is_distribution) stop(paste(as.expression(match_call$data), "is neither a distribution nor bootstrapped: impossible to compare single values."))
     
     ## Stop if disparity is not bootstrapped and rarefaction is required
     if(!is_bootstrapped & !is.null(rarefaction)) stop("Impossible to use a rarefaction level for non-bootstrapped data.")
@@ -254,7 +254,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## running the tests
         try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
-        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
+        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", as.expression(match_call$test)))
 
         if(concatenate == FALSE) warning("Comparison type \"all\" is based on concatenated data.\nlm or aov type tests will have an inflated type I error!")
     }

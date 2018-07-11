@@ -67,7 +67,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     check.class(cent.tend, "function")
     #The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop(paste(match_call$cent.tend), " cannot be used for measuring the central tendency.", call. = FALSE)
+        stop(paste(as.expression(match_call$cent.tend)), " cannot be used for measuring the central tendency.", call. = FALSE)
     }
     ## Update match_call if argument is empty
     if(is.null(match_call$cent.tend)) match_call$cent.tend <- "median"
@@ -195,7 +195,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     ## Add the observed values
     if(is_distribution) {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend), elements))), row.names = NULL)
-        names(summary_results)[3] <- paste("obs", match_call$cent.tend, sep=".")
+        names(summary_results)[3] <- paste("obs", as.expression(match_call$cent.tend), sep = ".")
     } else {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, disparity_values, elements))), row.names = NULL)
         names(summary_results)[3] <- "obs"
@@ -205,7 +205,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
-        names(summary_results)[4:length(summary_results)] <- c(paste("bs", match_call$cent.tend, sep="."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+        names(summary_results)[4:length(summary_results)] <- c(paste("bs", as.expression(match_call$cent.tend), sep = "."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
     } else {
         if(is_distribution) {
             ## Calculate the quantiles

@@ -114,7 +114,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
-                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)), call. = FALSE)
+                stop(paste0(as.expression(match_call$data), " has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)), call. = FALSE)
             }
             
             ## Set up the model details
@@ -146,7 +146,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             ## Check the predictors
             for(predictor in 1:n_predictors) {
                 if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
-                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets.\n"))
+                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", as.expression(match_call$data), " subsets.\n"))
                 }
             
             }

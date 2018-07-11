@@ -117,7 +117,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     } else {
         ## Making sure matrix exist
         if(is.null(data$matrix)) {
-            stop(paste(match_call$data, "must contain a matrix."), call. = FALSE)
+            stop(paste(as.expression(match_call$data), "must contain a matrix."), call. = FALSE)
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {

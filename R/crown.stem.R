@@ -45,7 +45,7 @@ crown.stem <- function(tree, inc.nodes = TRUE, output.names = TRUE) {
     living_taxa <- as.character(tree_ages[which(tree_ages[,1] == 0), 2])
 
     if(length(living_taxa) == 0) {
-        stop(paste0("No taxa with age 0 found in ", match_call$tree, "."), call. = FALSE)
+        stop(paste0("No taxa with age 0 found in ", as.expression(match_call$tree), "."), call. = FALSE)
     }
 
     ## Finding the MRCA for these species
