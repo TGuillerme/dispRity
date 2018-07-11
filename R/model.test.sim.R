@@ -9,7 +9,7 @@
 #' @param model.rank If a \code{dispRity} object is supplied, which model is used for simulation. The rank refers to the order of models as specified by AICc, so if \code{model.rank = 1} (default) the best-fitting model is used for simulation.
 #' @param alternative If the simulation is based on a \code{dispRity} object, what is the alternative hypothesis: can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.
 #' @param time.split The age of the change in mode. The age is measured as the time before the most recent sample, and multiple ages can be supplied in a vector. Note this only applies to heterogenous models.
-#' @param time.span The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If the a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.
+#' @param time.span The length of the sequence (\code{numeric}). If one number is supplied this is treated as the length of the sequence and the time span is treated as sequence from 0 to \code{time.span} in unit increments. If a vector of length > 1 is supplied, this is treated as the the age of each sample in the sequence.
 #' @param variance The variance of each sample (\code{numeric}). If one number is supplied this is the variance for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the variance of each sample in the sequence
 #' @param sample.size The sample size of each sample (\code{numeric}). If one number is supplied this is the sample size for all samples in the sequence. If a vector of equal length to the \code{time.span} vector is supplied, this is used for the sample size of each sample in the sequence
 #' @param parameters A \code{list} of model parameters used for simulations. See details.
@@ -209,7 +209,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     } else {
 
         ## time.span
-        check.class(time.span, "numeric")
+        check.class(time.span, c("numeric", "integer"))
         if(length(time.span) == 1) {
             time.span <- c(1:(time.span))
         }
@@ -218,13 +218,13 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         sample_length <- length(time.span)
 
         ## variance
-        check.class(variance, "numeric")
+        check.class(variance, c("numeric", "integer"))
         if (length(variance) != sample_length) {
             variance <- rep(variance, sample_length)
         }
 
         ## sample.size
-        check.class(sample.size, "numeric")
+        check.class(sample.size, c("numeric", "integer"))
         if (length(sample.size) != sample_length) {
             sample.size <- rep(sample.size, sample_length)
         }
@@ -321,9 +321,9 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         
     for(rec.model in 1:length(model)) {
 
-        time.x <- time.int
+        time.x <- time.int #TG: time.int is always fixed to 1
 
-        if(time.x == 1) {
+        # if(time.x == 1) {
                 
             data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])
             output.vcv <- est.VCV(p, data.model.test.int, model.type = model[time.x])
@@ -355,49 +355,49 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
                 time.int <- time.x + 1
             }
                 
-        } else {
+        # } else {
         
-            data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])    
-            time.out <- data.model.test.int[[3]]
-            time.out.diff <- diff(time.out[1:2])
-            time.out.2 <- time.out - (min(time.out) - time.out.diff)
-            data.model.test.int[[3]] <- time.out.2
-            output.vcv <- est.VCV(p, data.model.test.int, model.type=model[time.x])
-            output.mean <- est.mean(p, data.model.test.in=data.model.test.int, model.type=model[time.x], optima.level.ou= optima.level.ou, optima.level.stasis= optima.level.stasis, fixed.optima=fixed.optima, est.anc=est.anc, model.anc=model.anc, split.time=NULL)
+        #     data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])    
+        #     time.out <- data.model.test.int[[3]]
+        #     time.out.diff <- diff(time.out[1:2])
+        #     time.out.2 <- time.out - (min(time.out) - time.out.diff)
+        #     data.model.test.int[[3]] <- time.out.2
+        #     output.vcv <- est.VCV(p, data.model.test.int, model.type=model[time.x])
+        #     output.mean <- est.mean(p, data.model.test.in=data.model.test.int, model.type=model[time.x], optima.level.ou= optima.level.ou, optima.level.stasis= optima.level.stasis, fixed.optima=fixed.optima, est.anc=est.anc, model.anc=model.anc, split.time=NULL)
                     
-            if(model[time.x] == "BM") {
-                est.anc <- FALSE
-                model.anc <- p[1]
-                time.int <- time.x + 1
-            }
+        #     if(model[time.x] == "BM") {
+        #         est.anc <- FALSE
+        #         model.anc <- p[1]
+        #         time.int <- time.x + 1
+        #     }
             
-            if(model[time.x] == "OU") {
-                optima.level.ou <- optima.level.ou + 1
-                est.anc <- FALSE
-                model.anc <- p[1]
-                time.int <- time.x + 1
-            }
+        #     if(model[time.x] == "OU") {
+        #         optima.level.ou <- optima.level.ou + 1
+        #         est.anc <- FALSE
+        #         model.anc <- p[1]
+        #         time.int <- time.x + 1
+        #     }
             
-            if(model[time.x] == "Stasis") {
-                optima.level.stasis <- optima.level.stasis + 1
-                model.anc <- p[5]
-                est.anc <- FALSE
-                time.int <- time.x + 1
-            }
+        #     if(model[time.x] == "Stasis") {
+        #         optima.level.stasis <- optima.level.stasis + 1
+        #         model.anc <- p[5]
+        #         est.anc <- FALSE
+        #         time.int <- time.x + 1
+        #     }
             
-            if(model[time.x] == "Trend") {
-                model.anc <- utils::tail(output.mean, 1)
-                est.anc <- FALSE
-                time.int <- time.x + 1
-            }
+        #     if(model[time.x] == "Trend") {
+        #         model.anc <- utils::tail(output.mean, 1)
+        #         est.anc <- FALSE
+        #         time.int <- time.x + 1
+        #     }
             
-            if(model[time.x] == "EB") {
-                model.anc <- utils::tail(output.mean, 1)
-                est.anc <- FALSE
-                time.int <- time.x + 1
-            }
+        #     if(model[time.x] == "EB") {
+        #         model.anc <- utils::tail(output.mean, 1)
+        #         est.anc <- FALSE
+        #         time.int <- time.x + 1
+        #     }
             
-        }
+        # }
 
         total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
         total_mean <- c(total_mean, output.mean)
