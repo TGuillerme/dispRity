@@ -295,6 +295,18 @@ test_that("Output format is correct", {
 })
 
 
+## Verbose
+test_that("Output format is correct", {
+    output_continuous <- capture_message(test <- chrono.subsets(data, tree, method = "continuous", time, model, inc.nodes, FADLAD, verbose = TRUE))
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+
+    output_discrete <- capture_message(test <- chrono.subsets(data, tree, method = "discrete", time, model, inc.nodes, FADLAD, verbose = TRUE))
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+})
+
+
+
+
 ## Example TESTING
 test_that("Example works", {
     data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)

@@ -32,11 +32,7 @@ tree.age <- function(tree, age, order = 'past', fossil = TRUE, digits = 3){
     #age
     if(missing(age)) {
         ## Using the tree height as age if age is missing
-        age <- max(dist.nodes(tree)[, Ntip(tree)+1])
-        ## Correct age to root time or arbitrary to 1 if NA
-        if(is.na(age)) {
-            age <- ifelse(is.null(tree$root.time), 0, tree$root.time)
-        }
+        age <- max(dist.nodes(tree)[, Ntip(tree)+1], na.rm = TRUE)
     }
     check.class(age, 'numeric', ' must be a numerical value.')
     check.length(age, '1', ' must a a single value.')

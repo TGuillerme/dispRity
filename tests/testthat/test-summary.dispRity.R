@@ -102,7 +102,7 @@ test_that("Correct error management", {
     expect_error(summary(disparity, quantiles = c(10, 101)))
 
 
-    dummy <- dispRity
+    dummy <- disparity
     class(dummy) <- c("dispRity", "bob")
     expect_error(summary(dummy))
 
@@ -124,6 +124,14 @@ test_that("Works without bootstraps", {
     expect_equal(
         ncol(test), 3
         )
+
+    ## Recall works as well
+    out <- capture.output(test <- summary(data, recall = TRUE))
+    expect_equal(out,
+        c(" ---- dispRity object ---- ",
+          "50 elements with 48 dimensions.",
+          "Disparity was calculated as: c(sum, ranges)."))
+
 })
 
 #Case 2, bootstraps

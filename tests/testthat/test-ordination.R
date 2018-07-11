@@ -10,6 +10,7 @@ test_that("Claddis.support works", {
 
     ## Errors
     expect_error(Claddis.ordination(matrix(1)))
+    expect_error(Claddis.ordination(list(matrix(1))))
     expect_error(Claddis.ordination(Michaux1989, distance = "blob"))
 
     expect_equal(MorphDistMatrix(Michaux1989), MorphDistMatrix.support(Michaux1989))

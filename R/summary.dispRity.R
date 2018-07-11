@@ -134,9 +134,9 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         # Model sim summary
         if(class(data)[2] == "model.sim") {
 
-            if(recall){
-                print.dispRity(data)
-            }
+            # if(recall){
+            #     print.dispRity(data)
+            # }
 
             ## Extract the central tendencies
             simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)

@@ -174,8 +174,6 @@ test_that("dtt printing", {
         "",
         "Use plot.dispRity() to visualise." 
         ))
-
-
 })
 
 

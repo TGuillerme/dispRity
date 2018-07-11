@@ -257,4 +257,13 @@ test_that("sim.morpho works", {
     verbose <- capture.output(matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions, verbose = TRUE))
     expect_equal(verbose,
         "Generating a matrix of 50 characters for 15 taxa:..................................................Done.")
+
+    ## Verbose
+    set.seed(1)
+    verbose <- capture.output(matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions, verbose = TRUE, invariant = FALSE))
+    expect_equal(verbose,
+        c("Generating a matrix of 50 characters for 15 taxa:..................................................Done.",
+            "Re-simulating 17 invariant characters:.........................Done.")
+        )
+
 })
