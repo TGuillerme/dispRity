@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>dispRity manual</title>
   <meta name="description" content="dispRity R package vignette">
-  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="dispRity manual" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-04-17">
+<meta name="date" content="2018-07-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,6 +148,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
+<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
@@ -359,7 +360,7 @@ weird_groups &lt;-<span class="st"> </span><span class="kw">list</span>(<span cl
 <pre><code>##  ---- dispRity object ---- 
 ## 50 elements with 48 dimensions.
 ## Data was bootstrapped 20 times (method:&quot;full&quot;) and rarefied to 6, 7, 8, 3 elements.</code></pre>
-<p>One additional important argument is <code>dimensions</code> that specifies how many dimensions from the matrix should be used for further analysis. When missing, all dimensions from the ordinated matrix are used.</p>
+<p>One other argument is <code>dimensions</code> that specifies how many dimensions from the matrix should be used for further analysis. When missing, all dimensions from the ordinated matrix are used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Using the first 50% of the dimensions
 <span class="kw">boot.matrix</span>(BeckLee_mat50, <span class="dt">dimensions =</span> <span class="fl">0.5</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
@@ -369,6 +370,12 @@ weird_groups &lt;-<span class="st"> </span><span class="kw">list</span>(<span cl
 <span class="kw">boot.matrix</span>(BeckLee_mat50, <span class="dt">dimensions =</span> <span class="dv">10</span>)</code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 50 elements with 10 dimensions.
+## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
+<p>It is also possible to specify the sampling probability in the bootstrap for each elements. This can be useful for weighting analysis for example (i.e. giving more importance to specific elements). These probabilities can be passed to the <code>prob</code> argument individually with a vector with the elements names or with a matrix with the rownames as elements names. The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
+<span class="kw">boot.matrix</span>(BeckLee_mat50, <span class="dt">prob =</span> <span class="kw">c</span>(<span class="st">&quot;Cimolestes&quot;</span> =<span class="st"> </span><span class="dv">0</span>, <span class="st">&quot;Maelestes&quot;</span> =<span class="st"> </span><span class="dv">10</span>))</code></pre></div>
+<pre><code>##  ---- dispRity object ---- 
+## 50 elements with 48 dimensions.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
 <p>Of course, one could directly supply the subsets generated above (using <code>chrono.subsets</code> or <code>custom.subsets</code>) to this function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating subsets of crown and stem mammals
@@ -419,9 +426,9 @@ dummy_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span 
 
 ## Example of dimension-level 1 functions
 <span class="kw">mean</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.3227241</code></pre>
+<pre><code>## [1] 0.4719271</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -0.2690165</code></pre>
+<pre><code>## [1] 0.4816107</code></pre>
 <p>Any summary metric such as mean or median are good examples of dimension-level 1 functions as they reduce the matrix to a single dimension (i.e. one value).</p>
 </div>
 <div id="dimension-level-2-functions" class="section level4">
@@ -432,7 +439,7 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 
 ## A dimension-level 2 metric
 <span class="kw">prod.rows</span>(dummy_matrix)</code></pre></div>
-<pre><code>## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790</code></pre>
+<pre><code>## [1] -0.1693259  0.1151639  0.4023232  0.2070852</code></pre>
 <p>Several dimension-level 2 functions are implemented in <code>dispRity</code> (see <code>?dispRity.metric</code>) such as the <code>variances</code> or <code>ranges</code> functions that calculate the variance or the range of each dimension of the ordinated matrix respectively.</p>
 </div>
 <div id="dimension-level-3-functions" class="section level4">
@@ -440,17 +447,17 @@ prod.rows &lt;-<span class="st"> </span><span class="cf">function</span>(matrix)
 <p>Finally a dimension-level 3 function will transform the matrix into another matrix. Note that the dimension of the output matrix doesn’t need to match the the input matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric
 <span class="kw">var</span>(dummy_matrix)</code></pre></div>
-<pre><code>##          [,1]      [,2]      [,3]
-## [1,] 1.916420 1.9501955 0.2907060
-## [2,] 1.950196 3.2948635 0.3958234
-## [3,] 0.290706 0.3958234 0.6704976</code></pre>
+<pre><code>##           [,1]      [,2]      [,3]
+## [1,] 0.2275789 0.2927228 0.2720648
+## [2,] 0.2927228 0.6394468 0.6796798
+## [3,] 0.2720648 0.6796798 1.9455929</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A dimension-level 3 metric with a forced matrix output
 <span class="kw">as.matrix</span>(<span class="kw">dist</span>(dummy_matrix))</code></pre></div>
-<pre><code>##          1        2        3        4
-## 1 0.000000 5.140790 4.005068 3.120827
-## 2 5.140790 0.000000 2.179318 2.982267
-## 3 4.005068 2.179318 0.000000 2.174896
-## 4 3.120827 2.982267 2.174896 0.000000</code></pre>
+<pre><code>##          1        2         3         4
+## 1 0.000000 2.284299 3.1469895 3.2820238
+## 2 2.284299 0.000000 1.8652681 1.9829745
+## 3 3.146990 1.865268 0.0000000 0.6684051
+## 4 3.282024 1.982975 0.6684051 0.0000000</code></pre>
 </div>
 </div>
 <div id="make.metric" class="section level3">
@@ -664,12 +671,13 @@ dummy_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div id="volumes-and-surface-metrics" class="section level4">
 <h4><span class="header-section-number">4.4.6.1</span> Volumes and surface metrics</h4>
 <p>The functions <code>ellipse.volume</code>, <code>convhull.surface</code>, <code>convhull.volume</code> and <code>n.ball.volume</code> all measure the surface or the volume of the ordinated space occupied:</p>
+<p>Because there is only one subset (i.e. one matrix) in the dispRity object, the operations below are the equivalent of <code>metric(dummy_space)</code> (with rounding).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the ellipsoid volume
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> ellipse.volume))</code></pre></div>
 <pre><code>##   subsets  n   obs
 ## 1       1 10 257.8</code></pre>
 <blockquote>
-<p>Because there is only one subset (i.e. one matrix) in the dispRity object, this operation is the equivalent of <code>ellipse.volume(dummy_space)</code> (with digits).</p>
+<p>WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in <code>?ellipse.volume</code>.</p>
 </blockquote>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating the convex hull surface
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(dummy_space, <span class="dt">metric =</span> convhull.surface))</code></pre></div>
@@ -788,9 +796,11 @@ all_anc_centroids &lt;-<span class="st"> </span><span class="kw">nodes.coordinat
 
 ## Calculating the distances from the ancestral nodes
 ancestral_dist &lt;-<span class="st"> </span><span class="kw">dispRity</span>(dummy_space2, <span class="dt">metric =</span> ancestral.dist,
-                           <span class="dt">nodes.coords =</span> all_anc_centroids)
-
-## Calculating disparity as the sum of the distances from all the ancestral nodes
+                           <span class="dt">nodes.coords =</span> all_anc_centroids)</code></pre></div>
+<pre><code>## Warning in fun(matrix, ...): Missing tree and full argument for nodes.coordinates.
+## See ?nodes.coordinates manual.
+## The centroids function was applied instead.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the sum of the distances from all the ancestral nodes
 <span class="kw">summary</span>(<span class="kw">dispRity</span>(ancestral_dist, <span class="dt">metric =</span> sum))</code></pre></div>
 <pre><code>##   subsets n   obs
 ## 1       1 9 36.56</code></pre>
@@ -914,7 +924,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 
 ## As above but using polygons while also displaying the number of elements
 <span class="kw">plot</span>(disparity_crown_stem, <span class="dt">type =</span> <span class="st">&quot;polygon&quot;</span>, <span class="dt">elements =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-53-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-54-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>Since <code>plot.dispRity</code> uses the arguments from the generic <code>plot</code> method, it is of course possible to change pretty much everything using the regular plot arguments:</p>
@@ -931,7 +941,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
                              <span class="st">&quot;Confidence interval 1&quot;</span>,
                             <span class="st">&quot;Confidence interval 2&quot;</span>),
       <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;orange&quot;</span>, <span class="st">&quot;green&quot;</span>), <span class="dt">pch =</span> <span class="dv">19</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-54-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-55-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>In addition to the classic <code>plot</code> arguments, the function can also take arguments that are specific to <code>plot.dispRity</code> like adding the number of elements or rarefaction level (as described above), and also changing the values of the quantiles to plot as well as the central tendency.</p>
@@ -953,7 +963,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## not a graphical parameter</code></pre>
 <pre><code>## Warning in box(...): &quot;quantile&quot; is not a graphical parameter</code></pre>
 <pre><code>## Warning in title(...): &quot;quantile&quot; is not a graphical parameter</code></pre>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-55-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-56-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <blockquote>
@@ -968,7 +978,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## Adding the discrete data
 <span class="kw">plot</span>(disparity_time_bins, <span class="dt">type =</span> <span class="st">&quot;line&quot;</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>), <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
     <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-56-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-57-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 <p>Finally, if your data has been fully rarefied, it is also possible to easily look at rarefaction curves by using the <code>rarefaction = TRUE</code> argument:</p>
@@ -977,7 +987,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 
 ## Plotting the rarefaction curves
 <span class="kw">plot</span>(disparity_crown_stem, <span class="dt">rarefaction =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-57-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-58-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Resetting graphical parameters
 <span class="kw">par</span>(op)</code></pre></div>
 </div>
@@ -1044,7 +1054,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 ## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)
 <span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!</code></pre>
+## This can inflate Type I error!</code></pre>
 <pre><code>##                    bhatt.coeff
 ## 120 - 80 : 80 - 40    0.000000
 ## 120 - 80 : 40 - 0     0.000000
@@ -1119,7 +1129,7 @@ time_subsets &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span
 
 ## Running the NPMANOVA with time as a predictor
 <span class="kw">adonis.dispRity</span>(time_subsets)</code></pre></div>
-<pre><code>## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity is a distance matrix.
+<pre><code>## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!</code></pre>
 <pre><code>## 
@@ -1141,7 +1151,7 @@ time_subsets &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span
 <p>To use each time subset as a separate predictor, you can use the <code>matrix ~ chrono.subsets</code> formula; this is equivalent to <code>matrix ~ first_time_subset + second_time_subset + ...</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Running the NPMANOVA with each time bin as a predictor
 <span class="kw">adonis.dispRity</span>(time_subsets, matrix <span class="op">~</span><span class="st"> </span>chrono.subsets)</code></pre></div>
-<pre><code>## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity is a distance matrix.
+<pre><code>## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!</code></pre>
 <pre><code>## 
@@ -1175,7 +1185,7 @@ dispRity_dtt &lt;-<span class="st"> </span><span class="kw">dtt.dispRity</span>(
 ## variances), : The following tip(s) was not present in the data: olivacea.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(dispRity_dtt, <span class="dt">fig.width=</span><span class="dv">8</span>, <span class="dt">fig.height=</span><span class="dv">8</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
 <p>Note that, like in the original <code>dtt</code> function, it is possible to change the evolutionary model (see <code>?geiger::sim.char</code> documentation).</p>
 </div>
 <div id="null-morphospace-testing-with-null.test" class="section level3">
@@ -1205,8 +1215,121 @@ obs_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(nor
 <p>These results have an attributed <code>dispRity</code> and <code>randtest</code> class and can be plotted as <code>randtest</code> objects using the <code>dispRity</code> S3 <code>plot</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the results
 <span class="kw">plot</span>(results, <span class="dt">main =</span> <span class="st">&quot;Is this space normal?&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-65-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-66-1.png" width="768" /></p>
 <p>For more details on generating spaces see the <a href="#Simulating-multidimensional-spaces"><code>space.maker</code></a> function tutorial.</p>
+</div>
+<div id="disparity-model-fitting-with-model.test" class="section level3">
+<h3><span class="header-section-number">4.6.4</span> Disparity model fitting with <code>model.test</code></h3>
+<p>[The model.test does blabalbalb]</p>
+<p>First let’s create a fine scaled disparity through time dataset:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BeckLee_mat99)
+<span class="kw">data</span>(BeckLee_tree)
+
+## Making a time slicing analysis every million years
+slice120 &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(BeckLee_mat99, BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,
+                       <span class="dt">time =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">120</span>, <span class="dt">by =</span> <span class="dv">1</span>))
+## Calculating disparity as the sum of variance on the bootstrapped data
+disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(slice120), <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</code></pre></div>
+<p>We can then check which mode of changes of disparity-through-time best fits the observed data. Here we are going to tests 7 different models:</p>
+<ul>
+<li>A simple Brownian Motion (“BM”)</li>
+<li>A simple Ornstein-Uhlenbeck process (“OU”)</li>
+<li>An early burst model (“EB”) which is a rapid increase in variance followed by an OU model</li>
+<li>A multiple OU model (“multi.OU”) which is an OU model but with varying alpha parameters (the sometimes called “selection” parameter)</li>
+<li>An OU model followed by a Trend model (the Trend model is an OU model with increasing mean through time)</li>
+<li>A Trend model followed by an OU model.</li>
+</ul>
+<p>Note that the models can be any combination of the based implemented models which are <code>&quot;BM&quot;</code>, <code>&quot;OU&quot;</code>, <code>&quot;EB&quot;</code> and <code>&quot;Trend&quot;</code>. For example, one could test a model <code>c(&quot;EB&quot;, &quot;Trend&quot;, &quot;OU&quot;, &quot;BM&quot;, &quot;OU&quot;, &quot;BM&quot;)</code> for a (weird) model with an early burst, followed by a trend and a cycle of variance constrain (the OU parts) and releases (the BM parts).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The list of models to test
+models_to_test &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;EB&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>))
+
+## Testing all the models on the observed data (with fixed optima)
+model_test_output &lt;-<span class="st"> </span><span class="kw">model.test</span>(disparity_data, models_to_test,
+                                <span class="dt">time.split =</span> <span class="dv">66</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM model...Done. Log-likelihood = 122.101
+## Running OU model...Done. Log-likelihood = 122.101
+## Running EB model...Done. Log-likelihood = 112.284
+## Running multi.OU model...Done. Log-likelihood = 125.623
+## Running Trend model...Done. Log-likelihood = 125.258
+## Running OU:Trend model...Done. Log-likelihood = 103.52
+## Running Trend:OU model...Done. Log-likelihood = 124.022</code></pre>
+<p>We can now visualise the results of the model using the normal S3 associated methods (<code>print</code>, <code>summary</code> and <code>plot</code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The model fitting results
+model_test_output</code></pre></div>
+<pre><code>## Disparity evolution model fitting:
+## Call: model.test(data = disparity_data, model = models_to_test, time.split = 66, fixed.optima = TRUE) 
+## 
+##               aicc delta_aicc  weight_aicc
+## BM       -240.1012   4.209161 7.203331e-02
+## OU       -237.9978   6.312600 2.516387e-02
+## EB       -218.3619  25.948460 1.370580e-06
+## multi.OU -242.9007   1.409677 2.920341e-01
+## Trend    -244.3104   0.000000 5.909368e-01
+## OU:Trend -198.6960  45.614366 7.353724e-11
+## Trend:OU -237.5214   6.788969 1.983057e-02
+## 
+## Use x$full.details for displaying the models details
+## or summary(x) for summarising them.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The summary table of all the models
+<span class="kw">summary</span>(model_test_output)</code></pre></div>
+<pre><code>##          aicc delta_aicc weight_aicc log.lik param ancestral state
+## BM       -240       4.21       0.072   122.1     2           2.638
+## OU       -238       6.31       0.025   122.1     3           2.638
+## EB       -218      25.95       0.000   112.3     3           4.055
+## multi.OU -243       1.41       0.292   125.6     4           2.619
+## Trend    -244       0.00       0.591   125.3     3           2.626
+## OU:Trend -199      45.61       0.000   103.5     4           2.827
+## Trend:OU -238       6.79       0.020   124.0     5           2.626
+##          sigma squared alpha     eb optima.2 trend optima.1
+## BM               0.003    NA     NA       NA    NA       NA
+## OU               0.003 0.000     NA       NA    NA       NA
+## EB               0.002    NA -0.015       NA    NA       NA
+## multi.OU         0.002 0.010     NA    4.616    NA       NA
+## Trend            0.002    NA     NA       NA 0.012       NA
+## OU:Trend         0.004 0.007     NA       NA 0.019       NA
+## Trend:OU         0.003 0.013     NA       NA 0.000    4.055</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The visualisation of the models AICs
+<span class="kw">plot</span>(model_test_output)</code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
+<p>We can then test whether out model is significant based on simulation replicates:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulate 1000 datasets for the best fitting model (&quot;Trend&quot;) and compare it to the observed result
+model_simulation &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> model_test_output)</code></pre></div>
+<p>Again, these results can be visualised easily as before:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The simulation results
+model_simulation</code></pre></div>
+<pre><code>## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = model_test_output) 
+## 
+## Model simulated (1000 times):
+##       aicc log.lik param ancestral state sigma squared trend
+## Trend -244   125.3     3           2.626         0.002 0.012
+## 
+## Rank envelope test
+##  p-value of the test: 0.9345654 (ties method: midrank)
+##  p-interval         : (0.9330669, 0.9360639)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ## The summary table of the simulations</span>
+<span class="co"># summary(model_simulation)</span>
+
+<span class="co"># ## Plotting the simulations</span>
+
+  
+<span class="co"># #### plot for simulated data versus real data - could this be incorporated into the plot functions?</span>
+<span class="co"># outputs.sim &lt;- sapply(model_simulation$simulation.data, function(x) x$central_tendency)  </span>
+
+<span class="co"># plot(disparity_data, ylim=c(0, max(c(outputs.sim))))</span>
+
+<span class="co"># min.max &lt;- t(apply(outputs.sim, 1, range))</span>
+
+<span class="co"># time.span &lt;- as.numeric(outputs.sim[[4]][[4]])</span>
+
+<span class="co"># polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col=&quot;#ff000030&quot;, border=F)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># #### re-analyse simulated data (just the first five for demonstration)</span>
+<span class="co"># five.models &lt;- sapply(model.test.sim.output$simulation.data[1:5], function(x) model.test(data=x, model=models.to.test, time.split=66.02, fixed.optima=TRUE, pool.variance=FALSE, verbose=FALSE)[[1]][,1])</span>
+
+<span class="co"># # model support (split between multi.OU and Trend) - it seems very difficult to choose between the two (at least with this miniscule sample size). We could maybe repeat this with x1000 or x10000 for publication</span>
+<span class="co"># table(rownames(five.models)[apply(five.models, 2, which.min)])</span></code></pre></div>
 </div>
 </div>
 <div id="disparity-as-a-distribution" class="section level2">
@@ -1243,13 +1366,13 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <span class="kw">plot</span>(disparity_centroids, <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)
 <span class="kw">plot</span>(disparity_centroids_median,
      <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-76-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap in the distribution of medians
 <span class="kw">test.dispRity</span>(disparity_centroids_median, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!</code></pre>
+## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
 ## 120 : 80   0.1905968
 ## 120 : 40   0.1936492
@@ -1262,7 +1385,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap for the full distributions
 <span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!</code></pre>
+## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
 ## 120 : 80   0.6286805
 ## 120 : 40   0.6631398
@@ -1275,7 +1398,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Boostrapped probability of overlap for the full distributions
 <span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff, <span class="dt">concatenate =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!</code></pre>
+## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff      2.5%       25%       75%     97.5%
 ## 120 : 80   0.2507287 0.0000000 0.1450953 0.3829003 0.5431424
 ## 120 : 40   0.3184407 0.0000000 0.2000000 0.4312174 0.7651213
@@ -1350,7 +1473,7 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)
 ## Adding the p-value
 <span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-75-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-82-1.png" width="1152" /></p>
 <p>As expected, the results are pretty similar in pattern but different in terms of scale. The median centroids distance is expressed in km in the “Distance differences” plots and in Euclidean units of variation in the “Ordinated differences” plots.</p>
 
 </div>
@@ -1384,17 +1507,18 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
 <script>
-require(["gitbook"], function(gitbook) {
+gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -1418,9 +1542,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

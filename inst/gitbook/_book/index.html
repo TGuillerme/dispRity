@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>dispRity manual</title>
   <meta name="description" content="dispRity R package vignette">
-  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="dispRity manual" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-04-17">
+<meta name="date" content="2018-07-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,6 +148,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
+<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
@@ -228,7 +229,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="header">
 <h1 class="title">dispRity manual</h1>
 <h4 class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) and Natalie Cooper (<a href="mailto:natalie.cooper@nhm.ac.uk">natalie.cooper@nhm.ac.uk</a>)</em></h4>
-<h4 class="date"><em>2018-04-17</em></h4>
+<h4 class="date"><em>2018-07-12</em></h4>
 </div>
 <div id="disprity" class="section level1">
 <h1><span class="header-section-number">1</span> <code>dispRity</code></h1>
@@ -275,12 +276,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="citations" class="section level2">
 <h2><span class="header-section-number">1.5</span> Citations</h2>
-<p>You can cite both the package or this manual with the following citation:</p>
+<p>To cite the package, this manual or some specific functionalities, you can use the following references:</p>
+<p>The package main paper:</p>
 <blockquote>
-<p>Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646</p>
+<p>Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;9:1755–1763. <a href="https://doi.org/10.1111/2041-210X.13022">doi.org/10.1111/2041-210X.13022</a>.</p>
 </blockquote>
-<!-- > Guillerme, T. & Cooper, N. (2016). The dispRity R package manual. Fighsare XXXX -->
-<p>Note that this citation is only temporary (but can still be used!). A proper description of the package is currently in review in Methods in Ecology and Evolution. Upon acceptance (hopefully!), a proper DOI will be released for this manual and the package description.</p>
+<p>The package manual (regularly updated!):</p>
+<blockquote>
+<p>Guillerme, T. &amp; Cooper, N. (2018): dispRity manual. figshare. Preprint. <a href="https://doi.org/10.6084/m9.figshare.6187337.v1">10.6084/m9.figshare.6187337.v1</a>.</p>
+</blockquote>
+<p>The time-slicing method implemented in <code>chrono.subsets</code> (unfortunately not Open Access, but you can still get a <a href="https://tguillerme.github.io/papers/Guillerme&amp;Cooper-2018-Palaeontology.pdf">free copy from here</a>):</p>
+<blockquote>
+<p>Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. <a href="https://scholar.google.co.uk/scholar?hl=en&amp;as_sdt=0%2C5&amp;q=Guillerme%2C+T.+and+Cooper%2C+N.+%282018%29%2C+Time+for+a+rethink%3A+time+sub-sampling+methods+in+disparity-through-time+analyses.+Palaeontology%2C&amp;btnG=">doi:10.1111/pala.12364</a>.</p>
+</blockquote>
+<!-- ## Associated papers -->
+<!-- Here are some papers that have used the `dispRity` package: -->
 
 </div>
 </div>
@@ -301,17 +311,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
 <script>
-require(["gitbook"], function(gitbook) {
+gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -335,9 +346,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

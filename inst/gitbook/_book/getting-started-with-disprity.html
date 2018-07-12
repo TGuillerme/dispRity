@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>dispRity manual</title>
   <meta name="description" content="dispRity R package vignette">
-  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="dispRity manual" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-04-17">
+<meta name="date" content="2018-07-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,6 +148,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
+<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
@@ -319,9 +320,9 @@ ordinated_matrix &lt;-<span class="st"> </span>ordination<span class="op">$</spa
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A matrix of distances between cities
 <span class="kw">str</span>(eurodist)</code></pre></div>
-<pre><code>## Class &#39;dist&#39;  atomic [1:210] 3313 2963 3175 3339 2762 ...
-##   ..- attr(*, &quot;Size&quot;)= num 21
-##   ..- attr(*, &quot;Labels&quot;)= chr [1:21] &quot;Athens&quot; &quot;Barcelona&quot; &quot;Brussels&quot; &quot;Calais&quot; ...</code></pre>
+<pre><code>##  &#39;dist&#39; num [1:210] 3313 2963 3175 3339 2762 ...
+##  - attr(*, &quot;Size&quot;)= num 21
+##  - attr(*, &quot;Labels&quot;)= chr [1:21] &quot;Athens&quot; &quot;Barcelona&quot; &quot;Brussels&quot; &quot;Calais&quot; ...</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Ordinating the matrix using cmdscale() with k = 5 dimensions 
 ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="dv">5</span>)
 <span class="kw">head</span>(ordinated_matrix)</code></pre></div>
@@ -418,7 +419,7 @@ disparity_data</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing for an difference among the time bins
 disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm, <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_data, test = lm, comparisons = &quot;all&quot;): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!</code></pre>
+## This can inflate Type I error!</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_lm)</code></pre></div>
 <pre><code>## 
 ## Call:
@@ -510,17 +511,18 @@ disparity_data</code></pre></div>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
 <script>
-require(["gitbook"], function(gitbook) {
+gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -544,9 +546,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

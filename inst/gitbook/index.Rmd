@@ -109,12 +109,20 @@ Thus if you have suggestions or comments on on what has already been developed o
 
 ## Citations
 
-You can cite both the package or this manual with the following citation:
+To cite the package, this manual or some specific functionalities, you can use the following references:
 
-> Guillerme, T. (2016). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.55646
+The package main paper:
 
-<!-- > Guillerme, T. & Cooper, N. (2016). The dispRity R package manual. Fighsare XXXX -->
+> Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;9:1755–1763. [doi.org/10.1111/2041-210X.13022](https://doi.org/10.1111/2041-210X.13022).
 
-Note that this citation is only temporary (but can still be used!).
-A proper description of the package is currently in review in Methods in Ecology and Evolution.
-Upon acceptance (hopefully!), a proper DOI will be released for this manual and the package description.
+The package manual (regularly updated!):
+
+> Guillerme, T. & Cooper, N. (2018): dispRity manual. figshare. Preprint. [10.6084/m9.figshare.6187337.v1](https://doi.org/10.6084/m9.figshare.6187337.v1).
+
+The time-slicing method implemented in `chrono.subsets` (unfortunately not Open Access, but you can still get a [free copy from here](https://tguillerme.github.io/papers/Guillerme&Cooper-2018-Palaeontology.pdf)):
+
+> Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. [doi:10.1111/pala.12364](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Guillerme%2C+T.+and+Cooper%2C+N.+%282018%29%2C+Time+for+a+rethink%3A+time+sub-sampling+methods+in+disparity-through-time+analyses.+Palaeontology%2C&btnG=).
+
+<!-- ## Associated papers -->
+
+<!-- Here are some papers that have used the `dispRity` package: -->

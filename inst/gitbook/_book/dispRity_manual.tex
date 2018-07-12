@@ -127,7 +127,7 @@ Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-04-17}
+  \date{2018-07-12}
 
 \usepackage{booktabs}
 
@@ -140,8 +140,11 @@ Cooper
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
 \begin{document}
 \maketitle
 
@@ -263,18 +266,35 @@ are a GitHub user, directly create an issue on the
 
 \section{Citations}\label{citations}
 
-You can cite both the package or this manual with the following
-citation:
+To cite the package, this manual or some specific functionalities, you
+can use the following references:
+
+The package main paper:
 
 \begin{quote}
-Guillerme, T. (2016). dispRity: a package for measuring disparity in R.
-Zenodo. 10.5281/zenodo.55646
+Guillerme T. dispRity: A modular R package for measuring disparity.
+Methods Ecol Evol. 2018;9:1755--1763.
+\href{https://doi.org/10.1111/2041-210X.13022}{doi.org/10.1111/2041-210X.13022}.
 \end{quote}
 
-Note that this citation is only temporary (but can still be used!). A
-proper description of the package is currently in review in Methods in
-Ecology and Evolution. Upon acceptance (hopefully!), a proper DOI will
-be released for this manual and the package description.
+The package manual (regularly updated!):
+
+\begin{quote}
+Guillerme, T. \& Cooper, N. (2018): dispRity manual. figshare. Preprint.
+\href{https://doi.org/10.6084/m9.figshare.6187337.v1}{10.6084/m9.figshare.6187337.v1}.
+\end{quote}
+
+The time-slicing method implemented in \texttt{chrono.subsets}
+(unfortunately not Open Access, but you can still get a
+\href{https://tguillerme.github.io/papers/Guillerme\&Cooper-2018-Palaeontology.pdf}{free
+copy from here}):
+
+\begin{quote}
+Guillerme, T. and Cooper, N. (2018), Time for a rethink: time
+sub-sampling methods in disparity-through-time analyses. Palaeontology,
+61: 481-493.
+\href{https://scholar.google.co.uk/scholar?hl=en\&as_sdt=0\%2C5\&q=Guillerme\%2C+T.+and+Cooper\%2C+N.+\%282018\%29\%2C+Time+for+a+rethink\%3A+time+sub-sampling+methods+in+disparity-through-time+analyses.+Palaeontology\%2C\&btnG=}{doi:10.1111/pala.12364}.
+\end{quote}
 
 \chapter{Glossary}\label{glossary}
 
@@ -568,9 +588,9 @@ dimensions (PC 1 to 4). For an alternative method, see the
 \end{Shaded}
 
 \begin{verbatim}
-## Class 'dist'  atomic [1:210] 3313 2963 3175 3339 2762 ...
-##   ..- attr(*, "Size")= num 21
-##   ..- attr(*, "Labels")= chr [1:21] "Athens" "Barcelona" "Brussels" "Calais" ...
+##  'dist' num [1:210] 3313 2963 3175 3339 2762 ...
+##  - attr(*, "Size")= num 21
+##  - attr(*, "Labels")= chr [1:21] "Athens" "Barcelona" "Brussels" "Calais" ...
 \end{verbatim}
 
 \begin{Shaded}
@@ -809,7 +829,7 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 
 \begin{verbatim}
 ## Warning in test.dispRity(disparity_data, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## This can inflate Type I error!
 \end{verbatim}
 
 \begin{Shaded}
@@ -1317,9 +1337,9 @@ elements.
 ## Data was bootstrapped 20 times (method:"full") and rarefied to 6, 7, 8, 3 elements.
 \end{verbatim}
 
-One additional important argument is \texttt{dimensions} that specifies
-how many dimensions from the matrix should be used for further analysis.
-When missing, all dimensions from the ordinated matrix are used.
+One other argument is \texttt{dimensions} that specifies how many
+dimensions from the matrix should be used for further analysis. When
+missing, all dimensions from the ordinated matrix are used.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1344,6 +1364,28 @@ When missing, all dimensions from the ordinated matrix are used.
 \begin{verbatim}
 ##  ---- dispRity object ---- 
 ## 50 elements with 10 dimensions.
+## Data was bootstrapped 100 times (method:"full").
+\end{verbatim}
+
+It is also possible to specify the sampling probability in the bootstrap
+for each elements. This can be useful for weighting analysis for example
+(i.e.~giving more importance to specific elements). These probabilities
+can be passed to the \texttt{prob} argument individually with a vector
+with the elements names or with a matrix with the rownames as elements
+names. The elements with no specified probability will be assigned a
+probability of 1 (or 1/maximum weight if the argument is weights rather
+than probabilities).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Attributing a weight of 0 to Cimolestes and 10 to Maelestes}
+\KeywordTok{boot.matrix}\NormalTok{(BeckLee_mat50, }\DataTypeTok{prob =} \KeywordTok{c}\NormalTok{(}\StringTok{"Cimolestes"}\NormalTok{ =}\StringTok{ }\DecValTok{0}\NormalTok{, }\StringTok{"Maelestes"}\NormalTok{ =}\StringTok{ }\DecValTok{10}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  ---- dispRity object ---- 
+## 50 elements with 48 dimensions.
 ## Data was bootstrapped 100 times (method:"full").
 \end{verbatim}
 
@@ -1459,7 +1501,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -0.3227241
+## [1] 0.4719271
 \end{verbatim}
 
 \begin{Shaded}
@@ -1469,7 +1511,7 @@ A dimension-level 1 function will decompose a \texttt{matrix} or a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -0.2690165
+## [1] 0.4816107
 \end{verbatim}
 
 Any summary metric such as mean or median are good examples of
@@ -1493,7 +1535,7 @@ A dimension-level 2 function will decompose a \texttt{matrix} into a
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -1.2630799  0.2148864 -0.1797556 -0.2421790
+## [1] -0.1693259  0.1151639  0.4023232  0.2070852
 \end{verbatim}
 
 Several dimension-level 2 functions are implemented in \texttt{dispRity}
@@ -1516,10 +1558,10 @@ need to match the the input matrix:
 \end{Shaded}
 
 \begin{verbatim}
-##          [,1]      [,2]      [,3]
-## [1,] 1.916420 1.9501955 0.2907060
-## [2,] 1.950196 3.2948635 0.3958234
-## [3,] 0.290706 0.3958234 0.6704976
+##           [,1]      [,2]      [,3]
+## [1,] 0.2275789 0.2927228 0.2720648
+## [2,] 0.2927228 0.6394468 0.6796798
+## [3,] 0.2720648 0.6796798 1.9455929
 \end{verbatim}
 
 \begin{Shaded}
@@ -1530,11 +1572,11 @@ need to match the the input matrix:
 \end{Shaded}
 
 \begin{verbatim}
-##          1        2        3        4
-## 1 0.000000 5.140790 4.005068 3.120827
-## 2 5.140790 0.000000 2.179318 2.982267
-## 3 4.005068 2.179318 0.000000 2.174896
-## 4 3.120827 2.982267 2.174896 0.000000
+##          1        2         3         4
+## 1 0.000000 2.284299 3.1469895 3.2820238
+## 2 2.284299 0.000000 1.8652681 1.9829745
+## 3 3.146990 1.865268 0.0000000 0.6684051
+## 4 3.282024 1.982975 0.6684051 0.0000000
 \end{verbatim}
 
 \subsection{\texorpdfstring{\texttt{make.metric}}{make.metric}}\label{make.metric}
@@ -1932,6 +1974,10 @@ The functions \texttt{ellipse.volume}, \texttt{convhull.surface},
 \texttt{convhull.volume} and \texttt{n.ball.volume} all measure the
 surface or the volume of the ordinated space occupied:
 
+Because there is only one subset (i.e.~one matrix) in the dispRity
+object, the operations below are the equivalent of
+\texttt{metric(dummy\_space)} (with rounding).
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Calculating the ellipsoid volume}
@@ -1945,9 +1991,9 @@ surface or the volume of the ordinated space occupied:
 \end{verbatim}
 
 \begin{quote}
-Because there is only one subset (i.e.~one matrix) in the dispRity
-object, this operation is the equivalent of
-\texttt{ellipse.volume(dummy\_space)} (with digits).
+WARNING: in such dummy space, this gives the estimation of the ellipsoid
+volume, not the real ellipsoid volume! See the cautionary note in
+\texttt{?ellipse.volume}.
 \end{quote}
 
 \begin{Shaded}
@@ -2295,7 +2341,17 @@ tree and node coordinates as additional arguments:
 \NormalTok{## Calculating the distances from the ancestral nodes}
 \NormalTok{ancestral_dist <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(dummy_space2, }\DataTypeTok{metric =}\NormalTok{ ancestral.dist,}
                            \DataTypeTok{nodes.coords =}\NormalTok{ all_anc_centroids)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Warning in fun(matrix, ...): Missing tree and full argument for nodes.coordinates.
+## See ?nodes.coordinates manual.
+## The centroids function was applied instead.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Calculating disparity as the sum of the distances from all the ancestral nodes}
 \KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(ancestral_dist, }\DataTypeTok{metric =}\NormalTok{ sum))}
 \end{Highlighting}
@@ -2539,7 +2595,7 @@ number of elements) by using the \texttt{rarefaction} argument.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2570,7 +2626,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2623,7 +2679,7 @@ central tendency.
 ## Warning in title(...): "quantile" is not a graphical parameter
 \end{verbatim}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2654,7 +2710,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2677,7 +2733,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2815,7 +2871,7 @@ Here we are using the variables generated in the
 
 \begin{verbatim}
 ## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## This can inflate Type I error!
 \end{verbatim}
 
 \begin{verbatim}
@@ -2957,7 +3013,7 @@ applied the \texttt{matrix\ \textasciitilde{}\ time} formula by default:
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity is a distance matrix.
+## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!
 \end{verbatim}
@@ -2997,7 +3053,7 @@ equivalent to
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity is a distance matrix.
+## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!
 \end{verbatim}
@@ -3066,7 +3122,7 @@ function, is limited to ultrametric trees (only living taxa!)\ldots{}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 Note that, like in the original \texttt{dtt} function, it is possible to
 change the evolutionary model (see \texttt{?geiger::sim.char}
@@ -3124,11 +3180,209 @@ class and can be plotted as \texttt{randtest} objects using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 For more details on generating spaces see the
 \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}}
 function tutorial.
+
+\subsection{\texorpdfstring{Disparity model fitting with
+\texttt{model.test}}{Disparity model fitting with model.test}}\label{disparity-model-fitting-with-model.test}
+
+{[}The model.test does blabalbalb{]}
+
+First let's create a fine scaled disparity through time dataset:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(BeckLee_mat99)}
+\KeywordTok{data}\NormalTok{(BeckLee_tree)}
+
+\NormalTok{## Making a time slicing analysis every million years}
+\NormalTok{slice120 <-}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(BeckLee_mat99, BeckLee_tree, }\DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{,}
+                       \DataTypeTok{time =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{0}\NormalTok{, }\DataTypeTok{to =} \DecValTok{120}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\NormalTok{))}
+\NormalTok{## Calculating disparity as the sum of variance on the bootstrapped data}
+\NormalTok{disparity_data <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(slice120), }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
+\end{Highlighting}
+\end{Shaded}
+
+We can then check which mode of changes of disparity-through-time best
+fits the observed data. Here we are going to tests 7 different models:
+
+\begin{itemize}
+\tightlist
+\item
+  A simple Brownian Motion (``BM'')
+\item
+  A simple Ornstein-Uhlenbeck process (``OU'')
+\item
+  An early burst model (``EB'') which is a rapid increase in variance
+  followed by an OU model
+\item
+  A multiple OU model (``multi.OU'') which is an OU model but with
+  varying alpha parameters (the sometimes called ``selection''
+  parameter)
+\item
+  An OU model followed by a Trend model (the Trend model is an OU model
+  with increasing mean through time)
+\item
+  A Trend model followed by an OU model.
+\end{itemize}
+
+Note that the models can be any combination of the based implemented
+models which are \texttt{"BM"}, \texttt{"OU"}, \texttt{"EB"} and
+\texttt{"Trend"}. For example, one could test a model
+\texttt{c("EB",\ "Trend",\ "OU",\ "BM",\ "OU",\ "BM")} for a (weird)
+model with an early burst, followed by a trend and a cycle of variance
+constrain (the OU parts) and releases (the BM parts).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The list of models to test}
+\NormalTok{models_to_test <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"EB"}\NormalTok{, }\StringTok{"multi.OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"Trend"}\NormalTok{, }\StringTok{"OU"}\NormalTok{))}
+
+\NormalTok{## Testing all the models on the observed data (with fixed optima)}
+\NormalTok{model_test_output <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(disparity_data, models_to_test,}
+                                \DataTypeTok{time.split =} \DecValTok{66}\NormalTok{, }\DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM model...Done. Log-likelihood = 122.101
+## Running OU model...Done. Log-likelihood = 122.101
+## Running EB model...Done. Log-likelihood = 112.284
+## Running multi.OU model...Done. Log-likelihood = 125.623
+## Running Trend model...Done. Log-likelihood = 125.258
+## Running OU:Trend model...Done. Log-likelihood = 103.52
+## Running Trend:OU model...Done. Log-likelihood = 124.022
+\end{verbatim}
+
+We can now visualise the results of the model using the normal S3
+associated methods (\texttt{print}, \texttt{summary} and \texttt{plot}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The model fitting results}
+\NormalTok{model_test_output}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Disparity evolution model fitting:
+## Call: model.test(data = disparity_data, model = models_to_test, time.split = 66, fixed.optima = TRUE) 
+## 
+##               aicc delta_aicc  weight_aicc
+## BM       -240.1012   4.209161 7.203331e-02
+## OU       -237.9978   6.312600 2.516387e-02
+## EB       -218.3619  25.948460 1.370580e-06
+## multi.OU -242.9007   1.409677 2.920341e-01
+## Trend    -244.3104   0.000000 5.909368e-01
+## OU:Trend -198.6960  45.614366 7.353724e-11
+## Trend:OU -237.5214   6.788969 1.983057e-02
+## 
+## Use x$full.details for displaying the models details
+## or summary(x) for summarising them.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The summary table of all the models}
+\KeywordTok{summary}\NormalTok{(model_test_output)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          aicc delta_aicc weight_aicc log.lik param ancestral state
+## BM       -240       4.21       0.072   122.1     2           2.638
+## OU       -238       6.31       0.025   122.1     3           2.638
+## EB       -218      25.95       0.000   112.3     3           4.055
+## multi.OU -243       1.41       0.292   125.6     4           2.619
+## Trend    -244       0.00       0.591   125.3     3           2.626
+## OU:Trend -199      45.61       0.000   103.5     4           2.827
+## Trend:OU -238       6.79       0.020   124.0     5           2.626
+##          sigma squared alpha     eb optima.2 trend optima.1
+## BM               0.003    NA     NA       NA    NA       NA
+## OU               0.003 0.000     NA       NA    NA       NA
+## EB               0.002    NA -0.015       NA    NA       NA
+## multi.OU         0.002 0.010     NA    4.616    NA       NA
+## Trend            0.002    NA     NA       NA 0.012       NA
+## OU:Trend         0.004 0.007     NA       NA 0.019       NA
+## Trend:OU         0.003 0.013     NA       NA 0.000    4.055
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The visualisation of the models AICs}
+\KeywordTok{plot}\NormalTok{(model_test_output)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+
+We can then test whether out model is significant based on simulation
+replicates:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Simulate 1000 datasets for the best fitting model ("Trend") and compare it to the observed result}
+\NormalTok{model_simulation <-}\StringTok{ }\KeywordTok{model.test.sim}\NormalTok{(}\DataTypeTok{sim =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model_test_output)}
+\end{Highlighting}
+\end{Shaded}
+
+Again, these results can be visualised easily as before:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The simulation results}
+\NormalTok{model_simulation}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = model_test_output) 
+## 
+## Model simulated (1000 times):
+##       aicc log.lik param ancestral state sigma squared trend
+## Trend -244   125.3     3           2.626         0.002 0.012
+## 
+## Rank envelope test
+##  p-value of the test: 0.9345654 (ties method: midrank)
+##  p-interval         : (0.9330669, 0.9360639)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# ## The summary table of the simulations}
+\CommentTok{# summary(model_simulation)}
+
+\CommentTok{# ## Plotting the simulations}
+
+  
+\CommentTok{# #### plot for simulated data versus real data - could this be incorporated into the plot functions?}
+\CommentTok{# outputs.sim <- sapply(model_simulation$simulation.data, function(x) x$central_tendency)  }
+
+\CommentTok{# plot(disparity_data, ylim=c(0, max(c(outputs.sim))))}
+
+\CommentTok{# min.max <- t(apply(outputs.sim, 1, range))}
+
+\CommentTok{# time.span <- as.numeric(outputs.sim[[4]][[4]])}
+
+\CommentTok{# polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col="#ff000030", border=F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# #### re-analyse simulated data (just the first five for demonstration)}
+\CommentTok{# five.models <- sapply(model.test.sim.output$simulation.data[1:5], function(x) model.test(data=x, model=models.to.test, time.split=66.02, fixed.optima=TRUE, pool.variance=FALSE, verbose=FALSE)[[1]][,1])}
+
+\CommentTok{# # model support (split between multi.OU and Trend) - it seems very difficult to choose between the two (at least with this miniscule sample size). We could maybe repeat this with x1000 or x10000 for publication}
+\CommentTok{# table(rownames(five.models)[apply(five.models, 2, which.min)])}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{disparity-as-a-distribution}{\section{Disparity as a
 distribution}\label{disparity-as-a-distribution}}
@@ -3220,7 +3474,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3241,7 +3495,7 @@ above.
 
 \begin{verbatim}
 ## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## This can inflate Type I error!
 \end{verbatim}
 
 \begin{verbatim}
@@ -3275,7 +3529,7 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## This can inflate Type I error!
 \end{verbatim}
 
 \begin{verbatim}
@@ -3309,7 +3563,7 @@ A second solution is to compare the distributions to each other
 
 \begin{verbatim}
 ## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
-## This will inflate Type I error!
+## This can inflate Type I error!
 \end{verbatim}
 
 \begin{verbatim}
@@ -3443,7 +3697,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -3803,7 +4057,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -3911,7 +4165,7 @@ below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3973,7 +4227,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-89-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4025,7 +4279,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-83-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -4070,7 +4324,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-84-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -4616,7 +4870,7 @@ dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -4630,7 +4884,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-96-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -4925,7 +5179,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -5088,7 +5342,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -5107,7 +5361,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -5241,7 +5495,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-120-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -5267,7 +5521,7 @@ using the \texttt{test.dispRity} option.
 \end{verbatim}
 
 \begin{verbatim}
-## Warning in adonis.dispRity(data, ...): The input data for adonis.dispRity is a distance matrix.
+## Warning in adonis.dispRity(data, ...): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).
 ## Make sure that this is the desired methodological approach!
 \end{verbatim}
@@ -5337,7 +5591,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-122-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5348,7 +5602,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-116-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
@@ -5393,7 +5647,7 @@ email (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) or if
 you are a GitHub user, directly create an issue on the
 \href{https://github.com/TGuillerme/dispRity}{GitHub page}.
 
-\bibliography{packages.bib,References.bib}
+\bibliography{References.bib,packages.bib}
 
 
 \end{document}
