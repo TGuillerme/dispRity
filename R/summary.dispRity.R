@@ -113,7 +113,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             # MP: allow summaries to work on a single model
             if(length(parameters) == 1)  {
             	param.tmp <- c(parameters[[1]])
-            	names(param.tmp) <- rownames(parameters[[1]])
+            	#names(param.tmp) <- rownames(parameters[[1]])
             	parameters <- list(param.tmp)
             	}
             base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
