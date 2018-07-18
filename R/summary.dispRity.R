@@ -108,12 +108,12 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
 
             ## Extracting the additional parameters
-            parameters <- sapply(data$full.details, function(x) x$par)
+            parameters <- lapply(data$full.details, function(x) x$par)
 
             # MP: allow summaries to work on a single model
-            if(class(parameters)[1] != "list")  {
-            	param.tmp <- c(parameters)
-            	names(param.tmp) <- rownames(parameters)
+            if(length(parameters) == 1)  {
+            	param.tmp <- c(parameters[[1]])
+            	names(param.tmp) <- rownames(parameters[[1]])
             	parameters <- list(param.tmp)
             	}
             base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))

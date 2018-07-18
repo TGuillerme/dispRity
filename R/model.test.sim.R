@@ -92,16 +92,16 @@
 # source("sanitizing.R")
 # source("model.test_fun.R")
 ## Defaults
-# sim = 1
-# model = "BM"
-# time.split = NULL
-# time.span = 100
-# variance = 1
-# sample.size = 100
-# parameters = list()
-# fixed.optima = FALSE
-# model.rank = 1
-# alternative = "two-sided"
+sim = 1000
+model = "BM"
+time.split = NULL
+time.span = 100
+variance = 1
+sample.size = 100
+parameters = list()
+fixed.optima = FALSE
+model.rank = 3
+alternative = "two-sided"
 
 model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-sided", time.split = NULL, time.span = 100, variance = 1, sample.size = 100, parameters = list(), fixed.optima = FALSE) {
     
@@ -205,6 +205,8 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         
         # MP: necessary for the combination of 'multi.OU' and 'fixed.optima=TRUE' otherwise simulations take wrong optimum
         if(fixed.optima && model == "multi.OU") parameters$optima.1 <- parameters$ancestral.state
+        
+        if(model[1] == "Stasis")  parameters$ancestral.state <- parameters$theta.1
 
     } else {
 

@@ -99,7 +99,7 @@ match.parameters <- function(one_param, full_param) {
         ## Making the missing parameters NAs
         output_param <- rep(NA, length(full_param))
         names(output_param) <- full_param
-        output_param[available_param] <- one_param
+        output_param[available_param] <- one_param[order(match(names(one_param), full_param))]
         return(output_param)
     } else {
         return(one_param)
