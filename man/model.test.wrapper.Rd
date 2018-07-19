@@ -7,7 +7,7 @@
 model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
   fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE,
   sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink",
-  lwd.obs = 2, show.p = FALSE, legend = FALSE, ...)
+  lwd.obs = 2, show.p = FALSE, cex.p, legend = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object used to test models of evolution through time.}
@@ -35,6 +35,8 @@ model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
 \item{lwd.obs}{Line width of the observed value.}
 
 \item{show.p}{Logical, when \code{plot.sim = TRUE}, whether to display the p-value of rank envelope tests (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{cex.p}{A numerical value for the the font size of the displayed p-value (if \code{show.p = TRUE}). If missing, the value is set to 1.}
 
 \item{legend}{Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).}
 

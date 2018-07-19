@@ -210,8 +210,9 @@ test_that("model.test.wrapper example works", {
     expect_error(model.test.wrapper(data = "a", model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
     expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 10))
     expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10, col.sim = 1))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10, cex.p = "a"))
 
-    test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = -10, legend = TRUE)
+    test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = -10, legend = TRUE, cex.p = 0.6)
 
     ## Check test
     expect_is(test, "matrix")

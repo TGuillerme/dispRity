@@ -18,6 +18,7 @@
 #' @param col.obs Colour of the observed data on the plot. Default colour is \code{"hotpink"}
 #' @param lwd.obs Line width of the observed value.
 #' @param show.p Logical, when \code{plot.sim = TRUE}, whether to display the p-value of rank envelope tests (\code{TRUE}) or not (\code{FALSE} - default).
+#' @param cex.p A numerical value for the the font size of the displayed p-value (if \code{show.p = TRUE}). If missing, the value is set to 1.
 #' @param legend Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param ... Any additional arguments to be passed to \code{\link{plot.dispRity}} or \code{\link{summary.dispRity}}.
 #'
@@ -70,7 +71,7 @@
 #  show.p = FALSE
 # model.test.wrapper(data = BeckLee_disparity, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, legend = TRUE)
 
-model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, legend = FALSE, ...) {
+model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE, sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2, show.p = FALSE, cex.p, legend = FALSE, ...) {
 	
 	match_call <- match.call()
 	
@@ -90,6 +91,13 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     silent <- check.class(lwd.obs, c("numeric", "integer"))
     check.length(lwd.obs, 1, msg = " must be a single numeric value for the observed central tendency line plot thickness.", errorif = FALSE)
     check.class(show.p, "logical")
+    if(show.p) {
+        if(missing(cex.p)) {
+            cex.p <- 1
+        } else {
+            check.class(cex.p, "numeric")
+        }
+    }
 
 	## Run model.test
 	models.out <- model.test(data = data, model = model, pool.variance = pool.variance, time.split = time.split, fixed.optima = fixed.optima, control.list = control.list, verbose = verbose)
@@ -150,7 +158,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
             }
 
 	    	if(show.p) {
-                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 2], 3), ":", round( p.int[one_model, 3], 3)), cex = 0.6)
+                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 2], 3), ":", round( p.int[one_model, 3], 3)), cex = cex.p)
 	    	}
 	    }
         ## Reset default
