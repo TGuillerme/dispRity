@@ -1,0 +1,372 @@
+---
+title: "dispRity model test"
+author: "Mark Puttick and Thomas Guillerme"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output: 
+  html_document:
+      toc: true
+      theme: united
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+Changes in patterns in disparity through time are of key interest in macroevolution.
+By analysing patterns of disparity in groups of taxa we can understand aspects of their tempo and mode evolution, patterns of innovation, and responses to environmental or biotic change. 
+
+This vignette will detail the use of the functions [```model.test```](#model.test) and [```model.test.wrapper```](#model.test.wrapper) in the R package [```dispRity```](#dispRity) to fit competing models that describe changes in disparity through time. 
+
+As input ```model.test``` takes disparity data that are placed into time bins, and then the relative fit of models that describe disparity changes across all bins are compared.
+Models can evaluate whether disparity remains largely constant through time, fluctuates randomly, follows a trend, or if changes in disparity slow through time.
+Additionally, more than one mode of change can be fit to the data, so at a certain time(s) there is a distinct shift to a new mode.
+This can be used to test if disparity changes dramatically following an event such as a mass extinction, and the model also allows for testing of multiple shift points with no *a priori* expectations. 
+
+The code used for these models is based on those developed by Gene Hunt [@hunt2006fitting; @hunt2012measuring; @hunt2015simple].
+So we acknowledge and thank Gene Hunt for developing these models and writing the original R code that served as inspiration for these models.
+
+## `dispRity`
+
+This vignette uses the [dispRity package](https://cran.r-project.org/web/packages/dispRity/index.html) in R [@guillermedisprity].
+For a more general introduction to the package please see this guide to [dispRity](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) written by Thomas Guillerme and Natalie Cooper.
+
+This code is only available in the `dispRity` package version `1.2` or higher.
+Make sure the right version is installed by checking it either from the CRAN:
+
+```{r, eval = FALSE}
+## Installing the CRAN version of dispRity
+install.packages("dispRity")
+library(dispRity)
+
+## Is the version 1.2 or higher?
+packageVersion("dispRity")
+```
+
+Or from GitHub to have the latest released version:
+
+```{r, eval = FALSE}
+## Checking if devtools is already installed
+if(!require(devtools)) install.packages("devtools")
+
+## Installing the GitHub version of dispRity
+install_github("TGuillerme/dispRity", ref = "release")
+library(dispRity)
+
+## Is the version 1.2 or higher?
+packageVersion("dispRity")
+```
+
+```{r, echo = FALSE}
+library(dispRity)
+```
+
+# Fitting modes of evolution to disparity data
+
+## Input data format
+
+For these examples we will use data from [@beckancient2014] available directly from ```dispRity```  (see `?BeckLee` for information on the dataset).
+These data represent 120 "gradual.split" continuous subsets of the Beck and Lee matrix, from 120 million years ago (Mya) to the present.
+The data were bootstrapped 100 times (`boot.matrix`) with four rarefaction levels. Finally, disparity was calculated as the sum of the variances
+
+```{r}
+data(BeckLee_disparity)
+BeckLee_disparity
+```
+
+However, it is likely your data will not be in this format.
+Specifically, the object ```BeckLee_disparity``` data were constructed using a tree of 50 taxa (```BeckLee_tree```), an ordinated matrix of tip and internal node states (```BeckLee_mat99```), and the ages of fossil tip (```BeckLee_ages```) - your data may be in a similar format.
+
+The following code is not necessary to be run and is just given as an example:
+
+```{r, eval = FALSE}
+## Loading the ordinated matrix
+data(BeckLee_mat99)
+
+## Loading the temporal data
+data(BeckLee_ages)
+
+## Loading the tree
+data(BeckLee_tree)
+
+## Creating gradual split subsets
+continuous_data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",
+                                 time = seq(120, 0, length.out = 120), model = "gradual.split")
+
+## Bootstrapping the data
+continuous_data_bootstrap <- boot.matrix(continuous_data)
+
+## Measuring disparity
+BeckLee_disparity <- dispRity(continuous_data_bootstrap, c(sum, variances))
+```
+
+For input into `model.test` we will call these data from ```dispRity```, and then place them into 120 bins of 1 million year duration, bootstrap these data, and then calculate are disparity metric - the sum of variances.
+
+
+```{r}
+model_data <- BeckLee_disparity
+```
+
+We now have our disparity data to examine trends through time!
+
+## Simple modes of disparity change through time
+
+### `model.test`
+
+Changes in disparity-through-time can follow a range of models, such as random walks, stasis, constrained evolution, trends, or an early burst model of evolution.
+We will start with by fitting the simplest modes of evolution to our data.
+For example we may have a null expectation of time-invariant change in disparity in which values fluctuate with a variance around the mean - this would be best describe by a Stasis model:
+
+```{r}
+disp_time <- model.test(data = model_data, model = "Stasis")
+```
+
+We can see the standard output from ```model.test```.
+The first output message tells us it has tested for equal variances in each sample.
+The model uses Bartlett's test of equal variances to assess if variances are equal, so if p > 0.05 then variance is treated as the same for all samples, but if (p < 0.05) then each bin variance is unique.
+Here we have p < 0.05, so variance is not pooled between samples. 
+
+By default ```model.test``` will use Bartlett's test to assess for homogeneity of variances, and then use this to decide to pool variances or not.
+This is ignored if the argument ```pool.variance``` in ```model.test``` is changed from the default ```NULL``` to ```TRUE``` or ```FALSE```.
+For example, to ignore Bartlett's test and pool variances manually we would do the following:
+
+```{r}
+disp_time_pooled <- model.test(data = model_data, model = "Stasis", pool.variance = TRUE)
+```
+
+However, unless you have good reason to choose otherwise it is recommended to use the default of ```pool.variance = NULL```:
+
+```{r}
+disp_time <- model.test(data = model_data, model = "Stasis", pool.variance = NULL)
+disp_time
+```
+
+The remaining output gives us the log-likelihood of the Stasis model of -59.501 (you may notice this change when we pooled variances above).
+The output also gives us the small sample Akaike Information Criterion (AICc), the delta AICc (the distance from the best fitting model), and the AICc weights (~the relative support of this model compared to all models, scaled to one). 
+
+These are all metrics of relative fit, so when we test a single model they are not useful.
+By using the function summary in ```dispRity``` we can see the maximum likelihood estimates of the model parameters:
+
+```{r}
+summary(disp_time)
+```
+
+So we again see the AICc, delta AICc, AICc weight, and the log-likelihood we saw previously.
+We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = 0.01) and the mean (theta.1 = 3.4).
+
+The ```model.test``` function is designed to test relative model fit, so we need to test more than one model to make relative comparisons.
+So let's compare to the fit of the Stasis model to another model with two parameters: the Brownian motion.
+Brownian motion assumes a constant mean that is equal to the ancestral estimate of the sequence, and the variance around this mean increases linearly with time.
+The easier way to compare these models is to simply add `"BM"` to the ```models``` vector argument:
+
+```{r}
+disp_time <- model.test(data = model_data, model = c("Stasis", "BM"))
+disp_time
+```
+
+Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and AICc weight Brownian motion has a much better relative fit to these data than the Stasis model.
+Brownian motion has a relative AICc fit 366 units better than Stasis, and virtually has a AICc weight of 1. 
+
+We can also all the information about the relative fit of models alongside the maximum likelihood estimates of model parameters using the summary function
+
+```{r}
+summary(disp_time)
+```
+
+Not that because the parameters per models differ, the summary includes `NA` for inapplicable parameters per models (e.g. the theta and omega parameters from the Stasis models are inapplicable for a Brownian motion model).
+
+
+We can plot the relative fit of our models using the ```plot``` function
+
+```{r plot1, fig.align="center", fig.cap = "relative fit (AICc weight) of Stasis and Brownian models of disparity through time", echo = TRUE, fig.height = 6, fig.width = 6}
+plot(disp_time)
+```
+
+Here we see and overwhelming support for the Brownian motion model.
+
+Alternatively, we could test all available models single modes: Stasis, Brownian motion, Ornstein-Uhlenbeck (evolution constrained to an optima), Trend (increasing or decreasing mean through time), and Early Burst (exponentially decreasing rate through time)
+
+```{r}
+disp_time <- model.test(data = model_data, model = c("Stasis", "BM", "OU", "Trend", "EB"))
+summary(disp_time)
+```
+
+These models indicate support for a Trend model, and we can plot the relative support of all model AICc weights
+
+```{r plot2, fig.align="center", fig.cap = "relative fit (AICc weight) of various modes of evolution", echo = TRUE, fig.height = 6, fig.width = 6}
+plot(disp_time)
+```
+
+Is this a trend of increasing or decreasing disparity through time? One way to find out is to look at the summary function for the Trend model:
+
+```{r}
+summary(disp_time)["Trend",]
+```
+
+This show a positive trend (0.01) of increasing disparity through time.
+
+## Plot and run simulation tests in a single step
+
+### `model.test.wrapper`
+
+Patterns of evolution can be fit using ```model.test```, but the ```model.test.wrapper``` fits the same models as `model.test` as well as running predictive tests and plots.
+
+The predictive tests use the maximum likelihood estimates of model parameters to simulate a number of datasets (default = 1000), and analyse whether this is significantly different to the empirical input data using the Rank Envelope test [@murrell2018global].
+Finally we can plot the empirical data, simulated data, and the Rank Envelope test p values.
+This can all be done using the function ```model.test.wrapper```, and we will set the argument ```show.p = TRUE``` so _p_ values from the Rank Envelope test are printed on the plot:
+
+```{r plot3, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models", echo = TRUE, fig.height = 18, fig.width = 12}
+disp_time <- model.test.wrapper(data = model_data, model = c("Stasis", "BM", "OU", "Trend", "EB"),
+                                show.p = TRUE)
+disp_time
+```
+
+From this plot we can see the empirical estimates of disparity through time (pink) compared to the predictive data based upon the simulations using the estimated parameters from each model.
+There is no significant differences between the empirical data and simulated data, except for the Early Burst model.
+
+Trend is the best-fitting model but the plot suggests the OU model also follows a trend-like pattern.
+This is because the optima for the OU model (5.7) is different to the ancestral state 2.835 and outside the observed value.
+This is potentially unrealistic, and one way to alleviate this issue is to set the optima of the OU model to equal the ancestral estimate - this is the normal practice for OU models in comparative phylogenetics.
+To set the optima to the ancestral value we change the argument ```fixed.optima = TRUE```:
+
+```{r plot4, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value", echo = TRUE, fig.height = 18, fig.width = 12}
+disp_time <- model.test.wrapper(data = model_data, model = c("Stasis", "BM", "OU", "Trend", "EB"),
+                                show.p = TRUE, fixed.optima = TRUE)
+disp_time
+```
+
+The relative fit of the OU model is decreased by constraining the fit of the optima to equal the ancestral state value.
+In fact as the OU attraction parameter (alpha) is zero, the model is equal to a Brownian motion model but is penalised by having an extra parameter. 
+Note that indeed, the plots of the BM model and the OU model look nearly identical.
+
+## Multiple modes of evolution (time shifts)
+
+As well as fitting a single model to a sequence of disparity values we can also allow for the mode of evolution to shift at a single or multiple points in time.
+The timing of a shift in mode can be based on an a prior expectation, such as a mass extinction event, or the model can test multiple points to allow to find time shift point with the highest likelihood.
+
+Models can be fit using `model.test` but it can be more convenient to use `model.test.wrapper`.
+Here we will compare the relative fit of Brownian motion, Trend, Ornstein-Uhlenbeck and a multi-mode Ornstein Uhlenbck model in which the optima changes at 66 million years ago, the Cretaceous-Palaeogene boundary.
+
+For example, we could be testing the hypothesis that the extinction of non-avian dinosaurs allowed mammals to go from scurrying in the undergrowth (low optima/low disparity) to dominating all habitats (high optima/high disparity).
+We will constrain the optima of OU model in the first time begin (i.e, pre-66 Mya) to equal the ancestral value:
+
+```{r plot5, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma", echo = TRUE, fig.height = 12, fig.width = 12}
+disp_time <- model.test.wrapper(data = model_data, model = c("BM", "Trend", "OU", "multi.OU"),
+                                time.split = 66, pool.variance = NULL, show.p = TRUE,
+                                fixed.optima = TRUE)
+disp_time
+```
+
+The multi-OU model shows an increase an optima at the Cretaceous-Palaeogene boundary, indicating a shift in disparity.
+However, this model does not fit as well as a model in which there is an increasing trend through time.
+We can also fit a model in which the we specify a heterogeneous model but we do not give a `time.split`.
+In this instance the model will test all splits that have at least 10 time slices on either side of the split.
+That's 102 potential time shifts in this example dataset so be warned, the following code will estimate 105 models!
+
+```{r, eval = FALSE}
+## An example of a time split model in which all potential splits are tested
+## WARNING: this will take between 20 minutes and half and hour to run!
+disp_time <- model.test.wrapper(data = model_data, model = c("BM", "Trend", "OU", "multi.OU"),
+                                show.p = TRUE, fixed.optima = TRUE)
+```
+
+As well as specifying a multi-OU model we can run any combination of models.
+For example we could fit a model at the Cretaceous-Palaeogene boundary that goes from an OU to a BM model, a Trend to an OU model, a Stasis to a Trend model or any combination you want to use.
+The only model that can't be used in combination is a multi-OU model.
+
+These can be introduced by changing the input for the models into a list, and supplying a vector with the two models.
+This is easier to see with an example:
+
+```{r plot6, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for a variety of models with a shift in optima allowed at 66 Ma", echo = TRUE, fig.height = 18, fig.width = 12}
+## The models to test
+my_models <- list(c("BM", "OU"),
+                  c("Stasis", "OU"),
+                  c("BM", "Stasis"),
+                  c("OU", "Trend"),
+                  c("Stasis", "BM"))
+
+## Testing the models
+disp_time <- model.test.wrapper(data = model_data, model = my_models, time.split = 66,
+                                show.p = TRUE, fixed.optima = TRUE)
+disp_time
+```
+
+## `model.test.sim`
+
+Note that all the models above where run using the `model.test.wrapper` function that is a... wrapping function!
+In practice, this function runs two main functions from the `dispRity` package and then plots the results:
+
+ * `model.test` and
+ * `model.test.sim`
+
+The `model.test.sim` allows to simulate disparity evolution given a `dispRity` object input (as in `model.test.wrapper`) or given a model and its specification.
+For example, it is possible to simulate a simple Brownian motion model (or any of the other models or models combination described above):
+
+```{r}
+## A simple BM model
+model_simulation <- model.test.sim(sim = 1000, model = "BM", time.span = 50, variance = 0.1,
+                                   sample.size = 100, parameters = list(ancestral.state = 0))
+model_simulation
+```
+
+This will simulate 1000 Brownian motions for 50 units of time with 100 sampled elements, a variance of 0.1 and an ancestral state of 0.
+We can also pass multiple models in the same way we did it for `model.test`
+This model can then be summarised and plotted as most `dispRity` objects:
+
+```{r plot7, fig.align="center", fig.cap = "A simulated Brownian motion", echo = TRUE, fig.height = 6, fig.width = 6}
+## Displaying the 5 first rows of the summary
+head(summary(model_simulation))
+
+## Plotting the simulations
+plot(model_simulation)
+```
+
+Note that these functions can take all the arguments that can be passed to `plot`, `summary`, `plot.dispRity` and `summary.dispRity`.
+
+### Simulating tested models
+
+Maybe more interestingly though, it is possible to pass the output of `model.test` directly to `model.test.sim` to simulate the models that fits the data the best and calculate the Rank Envelope test _p_ value.
+Let's see that using the simple example from the start:
+
+```{r}
+## Fitting multiple models on the data set
+disp_time <- model.test(data = model_data, model = c("Stasis", "BM", "OU", "Trend", "EB"))
+summary(disp_time)
+```
+
+As seen before, the Trend model fitted this dataset the best.
+To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with `model.test` (here the ancestral state being 2.839, the sigma squared beeing 0.002 and the trend of 0.01), we can simply pass this model to `model.test.sim`:
+
+```{r}
+## Simulating 1000 Trend model with the observed parameters
+sim_trend <- model.test.sim(sim = 1000, model = disp_time)
+sim_trend
+```
+
+By default, the model simulated is the one with the lowest AICc (`model.rank = 1`) but it is possible to choose any ranked model, for example, the OU (second one):
+
+```{r}
+## Simulating 1000 OU model with the observed parameters
+sim_OU <- model.test.sim(sim = 1000, model = disp_time, model.rank = 2)
+sim_OU
+```
+
+And as the example above, the simulated data can be plotted or summarised:
+
+```{r}
+head(summary(sim_trend))
+head(summary(sim_OU))
+```
+
+```{r plot8, fig.align="center", fig.cap = "The best fitted model (Trend) and the observed disparity through time", echo = TRUE, fig.height = 6, fig.width = 6}
+## The trend model with some graphical options
+plot(sim_trend, xlab = "Time (Mya)", ylab = "sum of variances",
+    col = c("#F65205", "#F38336", "#F7B27E"))
+
+## Adding the observed disparity through time
+plot(model_data, add = TRUE, col = c("#3E9CBA", "#98D4CF90", "#BFE4E390"))
+```
+
+# References
