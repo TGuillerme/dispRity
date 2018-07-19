@@ -132,10 +132,9 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
             dots$col <- col.sim
         }
 
-	    n.sq <- ceiling(sqrt(n.models))
 	    obs.data <- cbind(models.out$model.data$subsets, models.out$model.data$central_tendency)
 	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim)))), obs.data[,2])
-	    op <- par(mfrow = c(n.sq, n.sq))
+	    op <- par(mfrow = c(ceiling(sqrt(n.models)), round(sqrt(n.models))))
 	    
 	    for(one_model in 1:n.models) {
 
