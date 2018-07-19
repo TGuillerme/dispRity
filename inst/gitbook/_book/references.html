@@ -22,10 +22,10 @@
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-07-12">
+<meta name="date" content="2018-07-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,10 +148,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
-<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
-<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#fitting-modes-of-evolution-to-disparity-data"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simple-modes-of-disparity-change-through-time"><i class="fa fa-check"></i><b>4.7.1</b> Simple modes of disparity change through time</a></li>
+<li class="chapter" data-level="4.7.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plot-and-run-simulation-tests-in-a-single-step"><i class="fa fa-check"></i><b>4.7.2</b> Plot and run simulation tests in a single step</a></li>
+<li class="chapter" data-level="4.7.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multiple-modes-of-evolution-time-shifts"><i class="fa fa-check"></i><b>4.7.3</b> Multiple modes of evolution (time shifts)</a></li>
+<li class="chapter" data-level="4.7.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model.test.sim"><i class="fa fa-check"></i><b>4.7.4</b> <code>model.test.sim</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
+<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -234,13 +239,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. doi:<a href="https://doi.org/10.1098/rspb.2014.1278">10.1098/rspb.2014.1278</a>.</p>
 </div>
 <div>
-<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167.</p>
+<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167. <a href="http://dx.doi.org/10.1038/nature16489" class="uri">http://dx.doi.org/10.1038/nature16489</a>.</p>
+</div>
+<div>
+<p>E., OReilly Joseph, Puttick Mark N., Pisani Davide, and Donoghue Philip C. J. n.d. “Probabilistic Methods Surpass Parsimony When Assessing Clade Support in Phylogenetic Analyses of Discrete Morphological Data.” <em>Palaeontology</em> 61 (1): 105–18. doi:<a href="https://doi.org/10.1111/pala.12330">10.1111/pala.12330</a>.</p>
 </div>
 <div>
 <p>FitzJohn, Richard G. 2012. “Diversitree: Comparative Phylogenetic Analyses of Diversification in R.” <em>Methods in Ecology and Evolution</em> 3 (6). Blackwell Publishing Ltd: 1084–92. doi:<a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">10.1111/j.2041-210X.2012.00234.x</a>.</p>
 </div>
 <div>
-<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em>. doi:<a href="https://doi.org/10.1111/pala.12364">10.1111/pala.12364</a>.</p>
+<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em> 61 (4): 481–93. doi:<a href="https://doi.org/10.1111/pala.12364">10.1111/pala.12364</a>.</p>
 </div>
 <div>
 <p>Guillerme, Thomas, and Natalie Cooper. 2016. “Effects of Missing Data on Topological Inference Using a Total Evidence Approach.” <em>Molecular Phylogenetics and Evolution</em> 94, Part A: 146–58. doi:<a href="https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023">http://dx.doi.org/10.1016/j.ympev.2015.08.023</a>.</p>
@@ -249,16 +257,25 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Hasegawa, M., H. Kishino, and T. A. Yano. 1985. “Dating of the Human Ape Splitting by a Molecular Clock of Mitochondrial-DNA.” <em>Journal of Molecular Evolution</em> 22 (2): 160–74.</p>
 </div>
 <div>
+<p>Hunt, Gene. 2006. “Fitting and Comparing Models of Phyletic Evolution: Random Walks and Beyond.” <em>Paleobiology</em> 32 (4). Cambridge University Press: 578–601. <a href="https://doi.org/10.1666/05070.1" class="uri">https://doi.org/10.1666/05070.1</a>.</p>
+</div>
+<div>
+<p>———. 2012. “Measuring Rates of Phenotypic Evolution and the Inseparability of Tempo and Mode.” <em>Paleobiology</em> 38 (3). GeoScienceWorld: 351–73. <a href="https://doi.org/10.1666/11047.1" class="uri">https://doi.org/10.1666/11047.1</a>.</p>
+</div>
+<div>
+<p>Hunt, Gene, Melanie J Hopkins, and Scott Lidgard. 2015. “Simple Versus Complex Models of Trait Evolution and Stasis as a Response to Environmental Change.” <em>Proceedings of the National Academy of Sciences</em>. National Acad Sciences, 201403662. <a href="https://doi.org/10.1073/pnas.1403662111" class="uri">https://doi.org/10.1073/pnas.1403662111</a>.</p>
+</div>
+<div>
 <p>Lewis, P. 2001. “A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data.” <em>Systematic Biology</em> 50 (6): 913–25. doi:<a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>.</p>
+</div>
+<div>
+<p>Murrell, David J. 2018. “A Global Envelope Test to Detect Non-Random Bursts of Trait Evolution.” <em>Methods in Ecology and Evolution</em> 9 (7). Wiley Online Library: 1739–48. <a href="https://doi.org/10.1111/2041-210X.13006" class="uri">https://doi.org/10.1111/2041-210X.13006</a>.</p>
 </div>
 <div>
 <p>OReilly, Joseph E., Mark N. Puttick, Luke Parry, Alastair R. Tanner, James E. Tarver, James Fleming, Davide Pisani, and Philip C. J. Donoghue. 2016. “Bayesian Methods Outperform Parsimony but at the Expense of Precision in the Estimation of Phylogeny from Discrete Morphological Data.” <em>Biology Letters</em> 12 (4). The Royal Society. doi:<a href="https://doi.org/10.1098/rsbl.2016.0081">10.1098/rsbl.2016.0081</a>.</p>
 </div>
 <div>
-<p>O’Reilly, Joseph E, Mark N Puttick, Davide Pisani, and Philip CJ Donoghue. 2017. “Probabilistic Methods Surpass Parsimony When Assessing Clade Support in Phylogenetic Analyses of Discrete Morphological Data.” <em>Palaeontology</em>. Wiley Online Library.</p>
-</div>
-<div>
-<p>Puttick, Mark N, Joseph E O’Reilly, Alastair R Tanner, James F Fleming, James Clark, Lucy Holloway, Jesus Lozano-Fernandez, et al. 2017. “Uncertain-Tree: Discriminating Among Competing Approaches to the Phylogenetic Analysis of Phenotype Data.” <em>Proceedings of the Royal Society B</em> 284 (1846). The Royal Society: 20162290.</p>
+<p>Puttick, Mark N, Joseph E O’Reilly, Alastair R Tanner, James F Fleming, James Clark, Lucy Holloway, Jesus Lozano-Fernandez, et al. 2017. “Uncertain-Tree: Discriminating Among Competing Approaches to the Phylogenetic Analysis of Phenotype Data.” <em>Proceedings of the Royal Society B</em> 284 (1846). The Royal Society: 20162290. <a href="http://dx.doi.org/10.1098/rspb.2016.2290" class="uri">http://dx.doi.org/10.1098/rspb.2016.2290</a>.</p>
 </div>
 <div>
 <p>Wills, Matthew A., Derek E. G. Briggs, and Richard A. Fortey. 1994–4AD. “Disparity as an Evolutionary Index: A Comparison of Cambrian and Recent Arthropods.” <em>Paleobiology</em> 20 (2). Paleontological Society: 93–130. doi:<a href="https://doi.org/10.2307/2401014">10.2307/2401014</a>.</p>

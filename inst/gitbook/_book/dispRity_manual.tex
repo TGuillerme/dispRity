@@ -25,7 +25,7 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={dispRity manual},
-            pdfauthor={Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)},
+            pdfauthor={Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -120,14 +120,16 @@
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
   \author{Thomas Guillerme
-(\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) and Natalie
-Cooper
+(\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}), Mark
+Puttick
+(\href{mailto:marknputtick@gmail.com}{\nolinkurl{marknputtick@gmail.com}})
+and Natalie Cooper
 (\href{mailto:natalie.cooper@nhm.ac.uk}{\nolinkurl{natalie.cooper@nhm.ac.uk}})}
   \preauthor{\centering\large\emph}
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-07-12}
+  \date{2018-07-19}
 
 \usepackage{booktabs}
 
@@ -293,7 +295,7 @@ copy from here}):
 Guillerme, T. and Cooper, N. (2018), Time for a rethink: time
 sub-sampling methods in disparity-through-time analyses. Palaeontology,
 61: 481-493.
-\href{https://scholar.google.co.uk/scholar?hl=en\&as_sdt=0\%2C5\&q=Guillerme\%2C+T.+and+Cooper\%2C+N.+\%282018\%29\%2C+Time+for+a+rethink\%3A+time+sub-sampling+methods+in+disparity-through-time+analyses.+Palaeontology\%2C\&btnG=}{doi:10.1111/pala.12364}.
+\href{https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364}{doi:10.1111/pala.12364}.
 \end{quote}
 
 \chapter{Glossary}\label{glossary}
@@ -3186,203 +3188,838 @@ For more details on generating spaces see the
 \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}}
 function tutorial.
 
-\subsection{\texorpdfstring{Disparity model fitting with
-\texttt{model.test}}{Disparity model fitting with model.test}}\label{disparity-model-fitting-with-model.test}
+\section{Fitting modes of evolution to disparity
+data}\label{fitting-modes-of-evolution-to-disparity-data}
 
-{[}The model.test does blabalbalb{]}
+The code used for these models is based on those developed by Gene Hunt
+\citep{hunt2006fitting, hunt2012measuring, hunt2015simple}. So we
+acknowledge and thank Gene Hunt for developing these models and writing
+the original R code that served as inspiration for these models.
 
-First let's create a fine scaled disparity through time dataset:
+\subsection{Simple modes of disparity change through
+time}\label{simple-modes-of-disparity-change-through-time}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{data}\NormalTok{(BeckLee_mat99)}
-\KeywordTok{data}\NormalTok{(BeckLee_tree)}
+\subsubsection{\texorpdfstring{\texttt{model.test}}{model.test}}\label{model.test}
 
-\NormalTok{## Making a time slicing analysis every million years}
-\NormalTok{slice120 <-}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(BeckLee_mat99, BeckLee_tree, }\DataTypeTok{method =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{model =} \StringTok{"proximity"}\NormalTok{,}
-                       \DataTypeTok{time =} \KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{0}\NormalTok{, }\DataTypeTok{to =} \DecValTok{120}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\NormalTok{))}
-\NormalTok{## Calculating disparity as the sum of variance on the bootstrapped data}
-\NormalTok{disparity_data <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(slice120), }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
-\end{Highlighting}
-\end{Shaded}
-
-We can then check which mode of changes of disparity-through-time best
-fits the observed data. Here we are going to tests 7 different models:
-
-\begin{itemize}
-\tightlist
-\item
-  A simple Brownian Motion (``BM'')
-\item
-  A simple Ornstein-Uhlenbeck process (``OU'')
-\item
-  An early burst model (``EB'') which is a rapid increase in variance
-  followed by an OU model
-\item
-  A multiple OU model (``multi.OU'') which is an OU model but with
-  varying alpha parameters (the sometimes called ``selection''
-  parameter)
-\item
-  An OU model followed by a Trend model (the Trend model is an OU model
-  with increasing mean through time)
-\item
-  A Trend model followed by an OU model.
-\end{itemize}
-
-Note that the models can be any combination of the based implemented
-models which are \texttt{"BM"}, \texttt{"OU"}, \texttt{"EB"} and
-\texttt{"Trend"}. For example, one could test a model
-\texttt{c("EB",\ "Trend",\ "OU",\ "BM",\ "OU",\ "BM")} for a (weird)
-model with an early burst, followed by a trend and a cycle of variance
-constrain (the OU parts) and releases (the BM parts).
+Changes in disparity-through-time can follow a range of models, such as
+random walks, stasis, constrained evolution, trends, or an early burst
+model of evolution. We will start with by fitting the simplest modes of
+evolution to our data. For example we may have a null expectation of
+time-invariant change in disparity in which values fluctuate with a
+variance around the mean - this would be best describe by a Stasis
+model:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## The list of models to test}
-\NormalTok{models_to_test <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"EB"}\NormalTok{, }\StringTok{"multi.OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\KeywordTok{c}\NormalTok{(}\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\StringTok{"Trend"}\NormalTok{, }\StringTok{"OU"}\NormalTok{))}
-
-\NormalTok{## Testing all the models on the observed data (with fixed optima)}
-\NormalTok{model_test_output <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(disparity_data, models_to_test,}
-                                \DataTypeTok{time.split =} \DecValTok{66}\NormalTok{, }\DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{## Loading premade disparity data}
+\KeywordTok{data}\NormalTok{(BeckLee_disparity)}
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \StringTok{"Stasis"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running BM model...Done. Log-likelihood = 122.101
-## Running OU model...Done. Log-likelihood = 122.101
-## Running EB model...Done. Log-likelihood = 112.284
-## Running multi.OU model...Done. Log-likelihood = 125.623
-## Running Trend model...Done. Log-likelihood = 125.258
-## Running OU:Trend model...Done. Log-likelihood = 103.52
-## Running Trend:OU model...Done. Log-likelihood = 124.022
+## Running Stasis model...Done. Log-likelihood = -59.501
 \end{verbatim}
 
-We can now visualise the results of the model using the normal S3
-associated methods (\texttt{print}, \texttt{summary} and \texttt{plot}):
+We can see the standard output from \texttt{model.test}. The first
+output message tells us it has tested for equal variances in each
+sample. The model uses Bartlett's test of equal variances to assess if
+variances are equal, so if p \textgreater{} 0.05 then variance is
+treated as the same for all samples, but if (p \textless{} 0.05) then
+each bin variance is unique. Here we have p \textless{} 0.05, so
+variance is not pooled between samples.
+
+By default \texttt{model.test} will use Bartlett's test to assess for
+homogeneity of variances, and then use this to decide to pool variances
+or not. This is ignored if the argument \texttt{pool.variance} in
+\texttt{model.test} is changed from the default \texttt{NULL} to
+\texttt{TRUE} or \texttt{FALSE}. For example, to ignore Bartlett's test
+and pool variances manually we would do the following:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## The model fitting results}
-\NormalTok{model_test_output}
+\NormalTok{disp_time_pooled <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \StringTok{"Stasis"}\NormalTok{, }\DataTypeTok{pool.variance =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Running Stasis model...Done. Log-likelihood = -58.233
+\end{verbatim}
+
+However, unless you have good reason to choose otherwise it is
+recommended to use the default of \texttt{pool.variance\ =\ NULL}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \StringTok{"Stasis"}\NormalTok{, }\DataTypeTok{pool.variance =} \OtherTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Disparity evolution model fitting:
-## Call: model.test(data = disparity_data, model = models_to_test, time.split = 66, fixed.optima = TRUE) 
+## Call: model.test(data = BeckLee_disparity, model = "Stasis", pool.variance = NULL) 
 ## 
-##               aicc delta_aicc  weight_aicc
-## BM       -240.1012   4.209161 7.203331e-02
-## OU       -237.9978   6.312600 2.516387e-02
-## EB       -218.3619  25.948460 1.370580e-06
-## multi.OU -242.9007   1.409677 2.920341e-01
-## Trend    -244.3104   0.000000 5.909368e-01
-## OU:Trend -198.6960  45.614366 7.353724e-11
-## Trend:OU -237.5214   6.788969 1.983057e-02
+##            aicc delta_aicc weight_aicc
+## Stasis 123.1027          0           1
 ## 
 ## Use x$full.details for displaying the models details
 ## or summary(x) for summarising them.
 \end{verbatim}
 
+The remaining output gives us the log-likelihood of the Stasis model of
+-59.501 (you may notice this change when we pooled variances above). The
+output also gives us the small sample Akaike Information Criterion
+(AICc), the delta AICc (the distance from the best fitting model), and
+the AICc weights (\textasciitilde{}the relative support of this model
+compared to all models, scaled to one).
+
+These are all metrics of relative fit, so when we test a single model
+they are not useful. By using the function summary in \texttt{dispRity}
+we can see the maximum likelihood estimates of the model parameters:
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## The summary table of all the models}
-\KeywordTok{summary}\NormalTok{(model_test_output)}
+\KeywordTok{summary}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis 123.1          0           1   -59.5     2     3.4   0.1
+\end{verbatim}
+
+So we again see the AICc, delta AICc, AICc weight, and the
+log-likelihood we saw previously. We now also see the number of
+parameters from the model (2: theta and omega), and their estimates so
+the variance (omega = 0.01) and the mean (theta.1 = 3.4).
+
+The \texttt{model.test} function is designed to test relative model fit,
+so we need to test more than one model to make relative comparisons. So
+let's compare to the fit of the Stasis model to another model with two
+parameters: the Brownian motion. Brownian motion assumes a constant mean
+that is equal to the ancestral estimate of the sequence, and the
+variance around this mean increases linearly with time. The easier way
+to compare these models is to simply add \texttt{"BM"} to the
+\texttt{models} vector argument:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Disparity evolution model fitting:
+## Call: model.test(data = BeckLee_disparity, model = c("Stasis", "BM")) 
+## 
+##             aicc delta_aicc  weight_aicc
+## Stasis  123.1027   366.8774 2.155677e-80
+## BM     -243.7747     0.0000 1.000000e+00
+## 
+## Use x$full.details for displaying the models details
+## or summary(x) for summarising them.
+\end{verbatim}
+
+Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and
+AICc weight Brownian motion has a much better relative fit to these data
+than the Stasis model. Brownian motion has a relative AICc fit 366 units
+better than Stasis, and virtually has a AICc weight of 1.
+
+We can also all the information about the relative fit of models
+alongside the maximum likelihood estimates of model parameters using the
+summary function
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      366.9           0   -59.5     2   3.403  0.15
+## BM     -244        0.0           1   123.9     2      NA    NA
+##        ancestral state sigma squared
+## Stasis              NA            NA
+## BM               2.858         0.003
+\end{verbatim}
+
+Not that because the parameters per models differ, the summary includes
+\texttt{NA} for inapplicable parameters per models (e.g.~the theta and
+omega parameters from the Stasis models are inapplicable for a Brownian
+motion model).
+
+We can plot the relative fit of our models using the \texttt{plot}
+function
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot1-1} 
+
+}
+
+\caption{relative fit (AICc weight) of Stasis and Brownian models of disparity through time}\label{fig:plot1}
+\end{figure}
+
+Here we see and overwhelming support for the Brownian motion model.
+
+Alternatively, we could test all available models single modes: Stasis,
+Brownian motion, Ornstein-Uhlenbeck (evolution constrained to an
+optima), Trend (increasing or decreasing mean through time), and Early
+Burst (exponentially decreasing rate through time)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"EB"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Stasis              NA            NA    NA       NA    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## EB               4.055         0.002    NA       NA    NA -0.014
+\end{verbatim}
+
+These models indicate support for a Trend model, and we can plot the
+relative support of all model AICc weights
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot2-1} 
+
+}
+
+\caption{relative fit (AICc weight) of various modes of evolution}\label{fig:plot2}
+\end{figure}
+
+Is this a trend of increasing or decreasing disparity through time? One
+way to find out is to look at the summary function for the Trend model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_time)[}\StringTok{"Trend"}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            aicc      delta_aicc     weight_aicc         log.lik 
+##        -247.000           0.000           0.617         126.400 
+##           param         theta.1           omega ancestral state 
+##           3.000              NA              NA           2.839 
+##   sigma squared           alpha        optima.1           trend 
+##           0.002              NA              NA           0.010 
+##              eb 
+##              NA
+\end{verbatim}
+
+This show a positive trend (0.01) of increasing disparity through time.
+
+\subsection{Plot and run simulation tests in a single
+step}\label{plot-and-run-simulation-tests-in-a-single-step}
+
+\subsubsection{\texorpdfstring{\texttt{model.test.wrapper}}{model.test.wrapper}}\label{model.test.wrapper}
+
+Patterns of evolution can be fit using \texttt{model.test}, but the
+\texttt{model.test.wrapper} fits the same models as \texttt{model.test}
+as well as running predictive tests and plots.
+
+The predictive tests use the maximum likelihood estimates of model
+parameters to simulate a number of datasets (default = 1000), and
+analyse whether this is significantly different to the empirical input
+data using the Rank Envelope test \citep{murrell2018global}. Finally we
+can plot the empirical data, simulated data, and the Rank Envelope test
+p values. This can all be done using the function
+\texttt{model.test.wrapper}, and we will set the argument
+\texttt{show.p\ =\ TRUE} so \emph{p} values from the Rank Envelope test
+are printed on the plot:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test.wrapper}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"EB"}\NormalTok{),}
+                                \DataTypeTok{show.p =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081
+\end{verbatim}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot3-1} 
+
+}
+
+\caption{Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models}\label{fig:plot3}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## EB               4.055         0.002    NA       NA    NA -0.014
+## Stasis              NA            NA    NA       NA    NA     NA
+##        median p value lower p value upper p value
+## Trend      0.97902098   0.978021978     0.9800200
+## OU         0.93406593   0.934065934     0.9340659
+## BM         0.33266733   0.322677323     0.3426573
+## EB         0.06293706   0.000999001     0.1248751
+## Stasis     1.00000000   1.000000000     1.0000000
+\end{verbatim}
+
+From this plot we can see the empirical estimates of disparity through
+time (pink) compared to the predictive data based upon the simulations
+using the estimated parameters from each model. There is no significant
+differences between the empirical data and simulated data, except for
+the Early Burst model.
+
+Trend is the best-fitting model but the plot suggests the OU model also
+follows a trend-like pattern. This is because the optima for the OU
+model (5.7) is different to the ancestral state 2.835 and outside the
+observed value. This is potentially unrealistic, and one way to
+alleviate this issue is to set the optima of the OU model to equal the
+ancestral estimate - this is the normal practice for OU models in
+comparative phylogenetics. To set the optima to the ancestral value we
+change the argument \texttt{fixed.optima\ =\ TRUE}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test.wrapper}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"EB"}\NormalTok{),}
+                                \DataTypeTok{show.p =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 123.938
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081
+\end{verbatim}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot4-1} 
+
+}
+
+\caption{Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value}\label{fig:plot4}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Trend  -247        0.0       0.745   126.4     3      NA    NA
+## BM     -244        2.7       0.189   123.9     2      NA    NA
+## OU     -242        4.8       0.066   123.9     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+##        ancestral state sigma squared alpha trend     eb median p value
+## Trend            2.839         0.002    NA  0.01     NA     0.97402597
+## BM               2.858         0.003    NA    NA     NA     0.29870130
+## OU               2.858         0.003     0    NA     NA     0.35864136
+## EB               4.055         0.002    NA    NA -0.014     0.06393606
+## Stasis              NA            NA    NA    NA     NA     1.00000000
+##        lower p value upper p value
+## Trend    0.973026973     0.9750250
+## BM       0.285714286     0.3116883
+## OU       0.347652348     0.3696304
+## EB       0.000999001     0.1268731
+## Stasis   1.000000000     1.0000000
+\end{verbatim}
+
+The relative fit of the OU model is decreased by constraining the fit of
+the optima to equal the ancestral state value. In fact as the OU
+attraction parameter (alpha) is zero, the model is equal to a Brownian
+motion model but is penalised by having an extra parameter. Note that
+indeed, the plots of the BM model and the OU model look nearly
+identical.
+
+\subsection{Multiple modes of evolution (time
+shifts)}\label{multiple-modes-of-evolution-time-shifts}
+
+As well as fitting a single model to a sequence of disparity values we
+can also allow for the mode of evolution to shift at a single or
+multiple points in time. The timing of a shift in mode can be based on
+an a prior expectation, such as a mass extinction event, or the model
+can test multiple points to allow to find time shift point with the
+highest likelihood.
+
+Models can be fit using \texttt{model.test} but it can be more
+convenient to use \texttt{model.test.wrapper}. Here we will compare the
+relative fit of Brownian motion, Trend, Ornstein-Uhlenbeck and a
+multi-mode Ornstein Uhlenbck model in which the optima changes at 66
+million years ago, the Cretaceous-Palaeogene boundary.
+
+For example, we could be testing the hypothesis that the extinction of
+non-avian dinosaurs allowed mammals to go from scurrying in the
+undergrowth (low optima/low disparity) to dominating all habitats (high
+optima/high disparity). We will constrain the optima of OU model in the
+first time begin (i.e, pre-66 Mya) to equal the ancestral value:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test.wrapper}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"multi.OU"}\NormalTok{),}
+                                \DataTypeTok{time.split =} \DecValTok{66}\NormalTok{, }\DataTypeTok{pool.variance =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{show.p =} \OtherTok{TRUE}\NormalTok{,}
+                                \DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM model...Done. Log-likelihood = 123.938
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running OU model...Done. Log-likelihood = 123.938
+## Running multi.OU model...Done. Log-likelihood = 126.469
+\end{verbatim}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot5-1} 
+
+}
+
+\caption{Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma}\label{fig:plot5}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{disp_time}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##          aicc delta_aicc weight_aicc log.lik param ancestral state
-## BM       -240       4.21       0.072   122.1     2           2.638
-## OU       -238       6.31       0.025   122.1     3           2.638
-## EB       -218      25.95       0.000   112.3     3           4.055
-## multi.OU -243       1.41       0.292   125.6     4           2.619
-## Trend    -244       0.00       0.591   125.3     3           2.626
-## OU:Trend -199      45.61       0.000   103.5     4           2.827
-## Trend:OU -238       6.79       0.020   124.0     5           2.626
-##          sigma squared alpha     eb optima.2 trend optima.1
-## BM               0.003    NA     NA       NA    NA       NA
-## OU               0.003 0.000     NA       NA    NA       NA
-## EB               0.002    NA -0.015       NA    NA       NA
-## multi.OU         0.002 0.010     NA    4.616    NA       NA
-## Trend            0.002    NA     NA       NA 0.012       NA
-## OU:Trend         0.004 0.007     NA       NA 0.019       NA
-## Trend:OU         0.003 0.013     NA       NA 0.000    4.055
+## Trend    -247      0.000       0.580   126.4     3           2.839
+## multi.OU -245      1.922       0.222   126.5     4           2.836
+## BM       -244      2.742       0.147   123.9     2           2.858
+## OU       -242      4.845       0.051   123.9     3           2.858
+##          sigma squared trend alpha optima.2 median p value lower p value
+## Trend            0.002  0.01    NA       NA      0.9920080     0.9920080
+## multi.OU         0.002    NA 0.005    5.526      0.6308691     0.6263736
+## BM               0.003    NA    NA       NA      0.3506494     0.3396603
+## OU               0.003    NA 0.000       NA      0.3666334     0.3576424
+##          upper p value
+## Trend        0.9920080
+## multi.OU     0.6353646
+## BM           0.3616384
+## OU           0.3756244
 \end{verbatim}
 
+The multi-OU model shows an increase an optima at the
+Cretaceous-Palaeogene boundary, indicating a shift in disparity.
+However, this model does not fit as well as a model in which there is an
+increasing trend through time. We can also fit a model in which the we
+specify a heterogeneous model but we do not give a \texttt{time.split}.
+In this instance the model will test all splits that have at least 10
+time slices on either side of the split. That's 102 potential time
+shifts in this example dataset so be warned, the following code will
+estimate 105 models!
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## The visualisation of the models AICs}
-\KeywordTok{plot}\NormalTok{(model_test_output)}
+\NormalTok{## An example of a time split model in which all potential splits are tested}
+\NormalTok{## }\AlertTok{WARNING}\NormalTok{: this will take between 20 minutes and half and hour to run!}
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test.wrapper}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"multi.OU"}\NormalTok{),}
+                                \DataTypeTok{show.p =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+As well as specifying a multi-OU model we can run any combination of
+models. For example we could fit a model at the Cretaceous-Palaeogene
+boundary that goes from an OU to a BM model, a Trend to an OU model, a
+Stasis to a Trend model or any combination you want to use. The only
+model that can't be used in combination is a multi-OU model.
 
-We can then test whether out model is significant based on simulation
-replicates:
+These can be introduced by changing the input for the models into a
+list, and supplying a vector with the two models. This is easier to see
+with an example:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## Simulate 1000 datasets for the best fitting model ("Trend") and compare it to the observed result}
-\NormalTok{model_simulation <-}\StringTok{ }\KeywordTok{model.test.sim}\NormalTok{(}\DataTypeTok{sim =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ model_test_output)}
+\NormalTok{## The models to test}
+\NormalTok{my_models <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{),}
+                  \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"OU"}\NormalTok{),}
+                  \KeywordTok{c}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\StringTok{"Stasis"}\NormalTok{),}
+                  \KeywordTok{c}\NormalTok{(}\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{),}
+                  \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{))}
+
+\NormalTok{## Testing the models}
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test.wrapper}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =}\NormalTok{ my_models, }\DataTypeTok{time.split =} \DecValTok{66}\NormalTok{,}
+                                \DataTypeTok{show.p =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixed.optima =} \OtherTok{TRUE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Again, these results can be visualised easily as before:
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM:OU model...Done. Log-likelihood = 115.367
+## Running Stasis:OU model...Done. Log-likelihood = 80.16
+## Running BM:Stasis model...Done. Log-likelihood = 34.278
+## Running OU:Trend model...Done. Log-likelihood = 118.166
+## Running Stasis:BM model...Done. Log-likelihood = 80.16
+\end{verbatim}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot6-1} 
+
+}
+
+\caption{Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for a variety of models with a shift in optima allowed at 66 Ma}\label{fig:plot6}
+\end{figure}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{## The simulation results}
+\NormalTok{disp_time}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           aicc delta_aicc weight_aicc log.lik param ancestral state
+## OU:Trend  -228        0.0       0.943   118.2     4           3.051
+## BM:OU     -222        5.6       0.057   115.4     4           3.052
+## Stasis:BM -154       73.9       0.000    80.2     3              NA
+## Stasis:OU -150       78.2       0.000    80.2     5              NA
+## BM:Stasis  -60      167.8       0.000    34.3     4           2.858
+##           sigma squared alpha optima.1 theta.1 omega trend median p value
+## OU:Trend          0.003 0.039       NA      NA    NA 0.015      0.4840160
+## BM:OU             0.003 0.000    4.055      NA    NA    NA      0.7857143
+## Stasis:BM         0.004    NA       NA   3.109 0.025    NA      0.9860140
+## Stasis:OU         0.004 0.000    4.055   3.109 0.025    NA      0.9635365
+## BM:Stasis         0.002    NA       NA   3.648 0.113    NA      0.9615385
+##           lower p value upper p value
+## OU:Trend      0.4685315     0.4995005
+## BM:OU         0.7792208     0.7922078
+## Stasis:BM     0.9850150     0.9870130
+## Stasis:OU     0.9610390     0.9660340
+## BM:Stasis     0.9560440     0.9670330
+\end{verbatim}
+
+\subsection{\texorpdfstring{\texttt{model.test.sim}}{model.test.sim}}\label{model.test.sim}
+
+Note that all the models above where run using the
+\texttt{model.test.wrapper} function that is a\ldots{} wrapping
+function! In practice, this function runs two main functions from the
+\texttt{dispRity} package and then plots the results:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{model.test} and
+\item
+  \texttt{model.test.sim}
+\end{itemize}
+
+The \texttt{model.test.sim} allows to simulate disparity evolution given
+a \texttt{dispRity} object input (as in \texttt{model.test.wrapper}) or
+given a model and its specification. For example, it is possible to
+simulate a simple Brownian motion model (or any of the other models or
+models combination described above):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## A simple BM model}
+\NormalTok{model_simulation <-}\StringTok{ }\KeywordTok{model.test.sim}\NormalTok{(}\DataTypeTok{sim =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{model =} \StringTok{"BM"}\NormalTok{, }\DataTypeTok{time.span =} \DecValTok{50}\NormalTok{, }\DataTypeTok{variance =} \FloatTok{0.1}\NormalTok{,}
+                                   \DataTypeTok{sample.size =} \DecValTok{100}\NormalTok{, }\DataTypeTok{parameters =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{ancestral.state =} \DecValTok{0}\NormalTok{))}
 \NormalTok{model_simulation}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Disparity evolution model simulation:
-## Call: model.test.sim(sim = 1000, model = model_test_output) 
+## Call: model.test.sim(sim = 1000, model = "BM", time.span = 50, variance = 0.1, sample.size = 100, parameters = list(ancestral.state = 0)) 
 ## 
 ## Model simulated (1000 times):
-##       aicc log.lik param ancestral state sigma squared trend
-## Trend -244   125.3     3           2.626         0.002 0.012
-## 
-## Rank envelope test
-##  p-value of the test: 0.9345654 (ties method: midrank)
-##  p-interval         : (0.9330669, 0.9360639)
+## [1] "BM"
+\end{verbatim}
+
+This will simulate 1000 Brownian motions for 50 units of time with 100
+sampled elements, a variance of 0.1 and an ancestral state of 0. We can
+also pass multiple models in the same way we did it for
+\texttt{model.test} This model can then be summarised and plotted as
+most \texttt{dispRity} objects:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Displaying the 5 first rows of the summary}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(model_simulation))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets   n var      median      2.5%       25%       75%    97.5%
+## 1      50 100 0.1 -0.09312806 -1.718481 -0.712478 0.5854576 1.772700
+## 2      49 100 0.1 -0.01881396 -2.697017 -0.967495 0.9105681 2.712452
+## 3      48 100 0.1 -0.06914146 -3.443629 -1.205211 1.1171606 3.185465
+## 4      47 100 0.1 -0.01584249 -3.897544 -1.474240 1.3762412 3.639836
+## 5      46 100 0.1 -0.04118287 -4.402526 -1.496096 1.5347916 4.239536
+## 6      45 100 0.1 -0.17175251 -4.764863 -1.697076 1.5894314 4.349500
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# ## The summary table of the simulations}
-\CommentTok{# summary(model_simulation)}
-
-\CommentTok{# ## Plotting the simulations}
-
-  
-\CommentTok{# #### plot for simulated data versus real data - could this be incorporated into the plot functions?}
-\CommentTok{# outputs.sim <- sapply(model_simulation$simulation.data, function(x) x$central_tendency)  }
-
-\CommentTok{# plot(disparity_data, ylim=c(0, max(c(outputs.sim))))}
-
-\CommentTok{# min.max <- t(apply(outputs.sim, 1, range))}
-
-\CommentTok{# time.span <- as.numeric(outputs.sim[[4]][[4]])}
-
-\CommentTok{# polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col="#ff000030", border=F)}
+\NormalTok{## Plotting the simulations}
+\KeywordTok{plot}\NormalTok{(model_simulation)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot7-1} 
+
+}
+
+\caption{A simulated Brownian motion}\label{fig:plot7}
+\end{figure}
+
+Note that these functions can take all the arguments that can be passed
+to \texttt{plot}, \texttt{summary}, \texttt{plot.dispRity} and
+\texttt{summary.dispRity}.
+
+\subsubsection{Simulating tested models}\label{simulating-tested-models}
+
+Maybe more interestingly though, it is possible to pass the output of
+\texttt{model.test} directly to \texttt{model.test.sim} to simulate the
+models that fits the data the best and calculate the Rank Envelope test
+\emph{p} value. Let's see that using the simple example from the start:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# #### re-analyse simulated data (just the first five for demonstration)}
-\CommentTok{# five.models <- sapply(model.test.sim.output$simulation.data[1:5], function(x) model.test(data=x, model=models.to.test, time.split=66.02, fixed.optima=TRUE, pool.variance=FALSE, verbose=FALSE)[[1]][,1])}
-
-\CommentTok{# # model support (split between multi.OU and Trend) - it seems very difficult to choose between the two (at least with this miniscule sample size). We could maybe repeat this with x1000 or x10000 for publication}
-\CommentTok{# table(rownames(five.models)[apply(five.models, 2, which.min)])}
+\NormalTok{## Fitting multiple models on the data set}
+\NormalTok{disp_time <-}\StringTok{ }\KeywordTok{model.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee_disparity, }\DataTypeTok{model =} \KeywordTok{c}\NormalTok{(}\StringTok{"Stasis"}\NormalTok{, }\StringTok{"BM"}\NormalTok{, }\StringTok{"OU"}\NormalTok{, }\StringTok{"Trend"}\NormalTok{, }\StringTok{"EB"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Evidence of equal variance (Bartlett's test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(disp_time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Stasis              NA            NA    NA       NA    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## EB               4.055         0.002    NA       NA    NA -0.014
+\end{verbatim}
+
+As seen before, the Trend model fitted this dataset the best. To
+simulate what 1000 Trend models would look like using the same
+parameters as the ones estimated with \texttt{model.test} (here the
+ancestral state being 2.839, the sigma squared beeing 0.002 and the
+trend of 0.01), we can simply pass this model to
+\texttt{model.test.sim}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Simulating 1000 Trend model with the observed parameters}
+\NormalTok{sim_trend <-}\StringTok{ }\KeywordTok{model.test.sim}\NormalTok{(}\DataTypeTok{sim =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ disp_time)}
+\NormalTok{sim_trend}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = disp_time) 
+## 
+## Model simulated (1000 times):
+##       aicc log.lik param ancestral state sigma squared trend
+## Trend -247   126.4     3           2.839         0.002  0.01
+## 
+## Rank envelope test
+##  p-value of the test: 0.987013 (ties method: midrank)
+##  p-interval         : (0.987013, 0.987013)
+\end{verbatim}
+
+By default, the model simulated is the one with the lowest AICc
+(\texttt{model.rank\ =\ 1}) but it is possible to choose any ranked
+model, for example, the OU (second one):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Simulating 1000 OU model with the observed parameters}
+\NormalTok{sim_OU <-}\StringTok{ }\KeywordTok{model.test.sim}\NormalTok{(}\DataTypeTok{sim =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{model =}\NormalTok{ disp_time, }\DataTypeTok{model.rank =} \DecValTok{2}\NormalTok{)}
+\NormalTok{sim_OU}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = disp_time, model.rank = 2) 
+## 
+## Model simulated (1000 times):
+##    aicc log.lik param ancestral state sigma squared alpha optima.1
+## OU -245   126.4     4           2.835         0.002 0.004    5.707
+## 
+## Rank envelope test
+##  p-value of the test: 0.8971029 (ties method: midrank)
+##  p-interval         : (0.8941059, 0.9000999)
+\end{verbatim}
+
+And as the example above, the simulated data can be plotted or
+summarised:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(sim_trend))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n        var   median     2.5%      25%      75%    97.5%
+## 1     120 5 0.06056490 2.837869 2.614855 2.760862 2.908493 3.059927
+## 2     119 5 0.07453663 2.858233 2.598562 2.756114 2.945448 3.106885
+## 3     118 6 0.07556947 2.856971 2.589279 2.769942 2.941288 3.129721
+## 4     117 6 0.07556947 2.870782 2.584536 2.777017 2.965582 3.147397
+## 5     116 6 0.07556947 2.869144 2.589171 2.769528 2.978955 3.173132
+## 6     115 7 0.06590243 2.883672 2.593479 2.790683 2.978769 3.179178
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(sim_OU))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n        var   median     2.5%      25%      75%    97.5%
+## 1     120 5 0.06056490 2.832068 2.618984 2.759091 2.908017 3.051097
+## 2     119 5 0.07453663 2.849006 2.592719 2.759753 2.940149 3.115460
+## 3     118 6 0.07556947 2.858304 2.579423 2.767239 2.946567 3.125425
+## 4     117 6 0.07556947 2.872844 2.585720 2.782702 2.971421 3.142925
+## 5     116 6 0.07556947 2.881609 2.599897 2.779863 2.985630 3.168541
+## 6     115 7 0.06590243 2.897410 2.602577 2.790346 2.998301 3.182402
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The trend model with some graphical options}
+\KeywordTok{plot}\NormalTok{(sim_trend, }\DataTypeTok{xlab =} \StringTok{"Time (Mya)"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"sum of variances"}\NormalTok{,}
+    \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"#F65205"}\NormalTok{, }\StringTok{"#F38336"}\NormalTok{, }\StringTok{"#F7B27E"}\NormalTok{))}
+
+\NormalTok{## Adding the observed disparity through time}
+\KeywordTok{plot}\NormalTok{(BeckLee_disparity, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"#3E9CBA"}\NormalTok{, }\StringTok{"#98D4CF90"}\NormalTok{, }\StringTok{"#BFE4E390"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{dispRity_manual_files/figure-latex/plot8-1} 
+
+}
+
+\caption{The best fitted model (Trend) and the observed disparity through time}\label{fig:plot8}
+\end{figure}
 
 \hypertarget{disparity-as-a-distribution}{\section{Disparity as a
 distribution}\label{disparity-as-a-distribution}}
@@ -3474,7 +4111,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3697,7 +4334,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -4057,7 +4694,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-86-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -4165,7 +4802,7 @@ below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-88-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-96-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4227,7 +4864,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4279,7 +4916,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -4324,7 +4961,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -4870,7 +5507,7 @@ dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -4884,7 +5521,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -5179,7 +5816,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-117-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -5342,7 +5979,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-122-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -5361,7 +5998,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -5495,7 +6132,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-120-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-128-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -5591,7 +6228,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-122-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-130-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5602,7 +6239,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-131-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
@@ -5647,7 +6284,7 @@ email (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) or if
 you are a GitHub user, directly create an issue on the
 \href{https://github.com/TGuillerme/dispRity}{GitHub page}.
 
-\bibliography{References.bib,packages.bib}
+\bibliography{../References.bib,../packages.bib}
 
 
 \end{document}

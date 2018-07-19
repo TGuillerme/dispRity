@@ -22,10 +22,10 @@
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-07-12">
+<meta name="date" content="2018-07-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,10 +148,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
-<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
-<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#fitting-modes-of-evolution-to-disparity-data"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simple-modes-of-disparity-change-through-time"><i class="fa fa-check"></i><b>4.7.1</b> Simple modes of disparity change through time</a></li>
+<li class="chapter" data-level="4.7.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plot-and-run-simulation-tests-in-a-single-step"><i class="fa fa-check"></i><b>4.7.2</b> Plot and run simulation tests in a single step</a></li>
+<li class="chapter" data-level="4.7.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multiple-modes-of-evolution-time-shifts"><i class="fa fa-check"></i><b>4.7.3</b> Multiple modes of evolution (time shifts)</a></li>
+<li class="chapter" data-level="4.7.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model.test.sim"><i class="fa fa-check"></i><b>4.7.4</b> <code>model.test.sim</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
+<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -274,13 +279,13 @@ variances &lt;-<span class="st"> </span>variances<span class="op">/</span><span 
 <span class="kw">plot</span>(petal_space[, <span class="dv">1</span>], petal_space[, <span class="dv">2</span>], <span class="dt">col =</span> species,
     <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 1 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
     <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 2 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-114-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-122-1.png" width="576" /></p>
 <p>This shows the distribution of the different species in the petal-space along the two first axis of variation. This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA). However, in this case we are ignoring the two other dimensions of the ordination! If we look at the two other axis we see a totally different result:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the two second axis of the petal-space
 <span class="kw">plot</span>(petal_space[, <span class="dv">3</span>], petal_space[, <span class="dv">4</span>], <span class="dt">col =</span> species,
     <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 3 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">3</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
     <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 4 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">4</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-115-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-123-1.png" width="576" /></p>
 <p>Additionally, these two represented dimensions do not represent a biological reality <em>per se</em>; i.e. the values on the first dimension do not represent a continuous trait (e.g. petal length), instead they just represent the ordinations of correlations between the data and some factors.</p>
 <p>Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a <em>n</em>-dimensional object.</p>
 </div>
@@ -338,7 +343,7 @@ petal_subsets</code></pre></div>
 
 ## Plotting the disparity in the petal_space
 <span class="kw">plot</span>(petal_disparity)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-120-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-128-1.png" width="576" /></p>
 <p>Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!</p>
 </div>
 <div id="testing-hypothesis" class="section level3">
@@ -393,12 +398,12 @@ petal_subsets</code></pre></div>
 disparity_uniform &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
     <span class="dt">null.distrib =</span> runif, <span class="dt">scale =</span> <span class="ot">FALSE</span>)
 <span class="kw">plot</span>(disparity_uniform)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-122-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-130-1.png" width="576" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing against a normal distribution
 disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
     <span class="dt">null.distrib =</span> rnorm, <span class="dt">scale =</span> <span class="ot">TRUE</span>)
 <span class="kw">plot</span>(disparity_normal)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-123-1.png" width="576" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-131-1.png" width="576" /></p>
 <p>In both cases we can see that our petal-space is not entirely normal or uniform. This is expected because of the simplicity of these parameters.</p>
 
 </div>
@@ -408,7 +413,7 @@ disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>
 <h3>References</h3>
 <div id="refs" class="references">
 <div id="ref-diaz2016global">
-<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167.</p>
+<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167. <a href="http://dx.doi.org/10.1038/nature16489" class="uri">http://dx.doi.org/10.1038/nature16489</a>.</p>
 </div>
 </div>
             </section>

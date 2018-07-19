@@ -22,10 +22,10 @@
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-07-12">
+<meta name="date" content="2018-07-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -148,10 +148,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
-<li class="chapter" data-level="4.6.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-model-fitting-with-model.test"><i class="fa fa-check"></i><b>4.6.4</b> Disparity model fitting with <code>model.test</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.7</b> Disparity as a distribution</a></li>
-<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.8</b> Disparity from other matrices</a></li>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#fitting-modes-of-evolution-to-disparity-data"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simple-modes-of-disparity-change-through-time"><i class="fa fa-check"></i><b>4.7.1</b> Simple modes of disparity change through time</a></li>
+<li class="chapter" data-level="4.7.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plot-and-run-simulation-tests-in-a-single-step"><i class="fa fa-check"></i><b>4.7.2</b> Plot and run simulation tests in a single step</a></li>
+<li class="chapter" data-level="4.7.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multiple-modes-of-evolution-time-shifts"><i class="fa fa-check"></i><b>4.7.3</b> Multiple modes of evolution (time shifts)</a></li>
+<li class="chapter" data-level="4.7.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model.test.sim"><i class="fa fa-check"></i><b>4.7.4</b> <code>model.test.sim</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
+<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -243,7 +248,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Discrete time subsets (or time-binning) using <code>method = discrete</code></li>
 <li>Continuous time subsets (or time-slicing) using <code>method = continuous</code></li>
 </ul>
-<p>For the time-slicing method details see <span class="citation">T. Guillerme and Cooper (<a href="#ref-time-slice">2018</a>)</span>. <!-- @@@ Change cite appropriately! --> <!-- NC: Or potentially this paper we are writing for the PalAss? TG: totally!--> For both methods, the function takes the <code>time</code> argument which can be a vector of <code>numeric</code> values for:</p>
+<p>For the time-slicing method details see <span class="citation">T. Guillerme and Cooper (<a href="#ref-time-slice">2018</a>)</span>. For both methods, the function takes the <code>time</code> argument which can be a vector of <code>numeric</code> values for:</p>
 <ul>
 <li>Defining the boundaries of the time bins (when <code>method = discrete</code>)</li>
 <li>Defining the time slices (when <code>method = continuous</code>)</li>
@@ -1218,122 +1223,411 @@ obs_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(nor
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-66-1.png" width="768" /></p>
 <p>For more details on generating spaces see the <a href="#Simulating-multidimensional-spaces"><code>space.maker</code></a> function tutorial.</p>
 </div>
-<div id="disparity-model-fitting-with-model.test" class="section level3">
-<h3><span class="header-section-number">4.6.4</span> Disparity model fitting with <code>model.test</code></h3>
-<p>[The model.test does blabalbalb]</p>
-<p>First let’s create a fine scaled disparity through time dataset:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(BeckLee_mat99)
-<span class="kw">data</span>(BeckLee_tree)
-
-## Making a time slicing analysis every million years
-slice120 &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(BeckLee_mat99, BeckLee_tree, <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,
-                       <span class="dt">time =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">120</span>, <span class="dt">by =</span> <span class="dv">1</span>))
-## Calculating disparity as the sum of variance on the bootstrapped data
-disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(slice120), <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</code></pre></div>
-<p>We can then check which mode of changes of disparity-through-time best fits the observed data. Here we are going to tests 7 different models:</p>
-<ul>
-<li>A simple Brownian Motion (“BM”)</li>
-<li>A simple Ornstein-Uhlenbeck process (“OU”)</li>
-<li>An early burst model (“EB”) which is a rapid increase in variance followed by an OU model</li>
-<li>A multiple OU model (“multi.OU”) which is an OU model but with varying alpha parameters (the sometimes called “selection” parameter)</li>
-<li>An OU model followed by a Trend model (the Trend model is an OU model with increasing mean through time)</li>
-<li>A Trend model followed by an OU model.</li>
-</ul>
-<p>Note that the models can be any combination of the based implemented models which are <code>&quot;BM&quot;</code>, <code>&quot;OU&quot;</code>, <code>&quot;EB&quot;</code> and <code>&quot;Trend&quot;</code>. For example, one could test a model <code>c(&quot;EB&quot;, &quot;Trend&quot;, &quot;OU&quot;, &quot;BM&quot;, &quot;OU&quot;, &quot;BM&quot;)</code> for a (weird) model with an early burst, followed by a trend and a cycle of variance constrain (the OU parts) and releases (the BM parts).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The list of models to test
-models_to_test &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;EB&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="kw">c</span>(<span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>))
-
-## Testing all the models on the observed data (with fixed optima)
-model_test_output &lt;-<span class="st"> </span><span class="kw">model.test</span>(disparity_data, models_to_test,
-                                <span class="dt">time.split =</span> <span class="dv">66</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+</div>
+<div id="fitting-modes-of-evolution-to-disparity-data" class="section level2">
+<h2><span class="header-section-number">4.7</span> Fitting modes of evolution to disparity data</h2>
+<p>The code used for these models is based on those developed by Gene Hunt <span class="citation">(Hunt <a href="#ref-hunt2006fitting">2006</a>; Hunt <a href="#ref-hunt2012measuring">2012</a>; Hunt, Hopkins, and Lidgard <a href="#ref-hunt2015simple">2015</a>)</span>. So we acknowledge and thank Gene Hunt for developing these models and writing the original R code that served as inspiration for these models.</p>
+<div id="simple-modes-of-disparity-change-through-time" class="section level3">
+<h3><span class="header-section-number">4.7.1</span> Simple modes of disparity change through time</h3>
+<div id="model.test" class="section level4">
+<h4><span class="header-section-number">4.7.1.1</span> <code>model.test</code></h4>
+<p>Changes in disparity-through-time can follow a range of models, such as random walks, stasis, constrained evolution, trends, or an early burst model of evolution. We will start with by fitting the simplest modes of evolution to our data. For example we may have a null expectation of time-invariant change in disparity in which values fluctuate with a variance around the mean - this would be best describe by a Stasis model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading premade disparity data
+<span class="kw">data</span>(BeckLee_disparity)
+disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>)</code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
-## Running BM model...Done. Log-likelihood = 122.101
-## Running OU model...Done. Log-likelihood = 122.101
-## Running EB model...Done. Log-likelihood = 112.284
-## Running multi.OU model...Done. Log-likelihood = 125.623
-## Running Trend model...Done. Log-likelihood = 125.258
-## Running OU:Trend model...Done. Log-likelihood = 103.52
-## Running Trend:OU model...Done. Log-likelihood = 124.022</code></pre>
-<p>We can now visualise the results of the model using the normal S3 associated methods (<code>print</code>, <code>summary</code> and <code>plot</code>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The model fitting results
-model_test_output</code></pre></div>
+## Running Stasis model...Done. Log-likelihood = -59.501</code></pre>
+<p>We can see the standard output from <code>model.test</code>. The first output message tells us it has tested for equal variances in each sample. The model uses Bartlett’s test of equal variances to assess if variances are equal, so if p &gt; 0.05 then variance is treated as the same for all samples, but if (p &lt; 0.05) then each bin variance is unique. Here we have p &lt; 0.05, so variance is not pooled between samples.</p>
+<p>By default <code>model.test</code> will use Bartlett’s test to assess for homogeneity of variances, and then use this to decide to pool variances or not. This is ignored if the argument <code>pool.variance</code> in <code>model.test</code> is changed from the default <code>NULL</code> to <code>TRUE</code> or <code>FALSE</code>. For example, to ignore Bartlett’s test and pool variances manually we would do the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time_pooled &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>, <span class="dt">pool.variance =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Running Stasis model...Done. Log-likelihood = -58.233</code></pre>
+<p>However, unless you have good reason to choose otherwise it is recommended to use the default of <code>pool.variance = NULL</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>, <span class="dt">pool.variance =</span> <span class="ot">NULL</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
 <pre><code>## Disparity evolution model fitting:
-## Call: model.test(data = disparity_data, model = models_to_test, time.split = 66, fixed.optima = TRUE) 
+## Call: model.test(data = BeckLee_disparity, model = &quot;Stasis&quot;, pool.variance = NULL) 
 ## 
-##               aicc delta_aicc  weight_aicc
-## BM       -240.1012   4.209161 7.203331e-02
-## OU       -237.9978   6.312600 2.516387e-02
-## EB       -218.3619  25.948460 1.370580e-06
-## multi.OU -242.9007   1.409677 2.920341e-01
-## Trend    -244.3104   0.000000 5.909368e-01
-## OU:Trend -198.6960  45.614366 7.353724e-11
-## Trend:OU -237.5214   6.788969 1.983057e-02
+##            aicc delta_aicc weight_aicc
+## Stasis 123.1027          0           1
 ## 
 ## Use x$full.details for displaying the models details
 ## or summary(x) for summarising them.</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The summary table of all the models
-<span class="kw">summary</span>(model_test_output)</code></pre></div>
+<p>The remaining output gives us the log-likelihood of the Stasis model of -59.501 (you may notice this change when we pooled variances above). The output also gives us the small sample Akaike Information Criterion (AICc), the delta AICc (the distance from the best fitting model), and the AICc weights (~the relative support of this model compared to all models, scaled to one).</p>
+<p>These are all metrics of relative fit, so when we test a single model they are not useful. By using the function summary in <code>dispRity</code> we can see the maximum likelihood estimates of the model parameters:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_time)</code></pre></div>
+<pre><code>##         aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis 123.1          0           1   -59.5     2     3.4   0.1</code></pre>
+<p>So we again see the AICc, delta AICc, AICc weight, and the log-likelihood we saw previously. We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = 0.01) and the mean (theta.1 = 3.4).</p>
+<p>The <code>model.test</code> function is designed to test relative model fit, so we need to test more than one model to make relative comparisons. So let’s compare to the fit of the Stasis model to another model with two parameters: the Brownian motion. Brownian motion assumes a constant mean that is equal to the ancestral estimate of the sequence, and the variance around this mean increases linearly with time. The easier way to compare these models is to simply add <code>&quot;BM&quot;</code> to the <code>models</code> vector argument:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
+<pre><code>## Disparity evolution model fitting:
+## Call: model.test(data = BeckLee_disparity, model = c(&quot;Stasis&quot;, &quot;BM&quot;)) 
+## 
+##             aicc delta_aicc  weight_aicc
+## Stasis  123.1027   366.8774 2.155677e-80
+## BM     -243.7747     0.0000 1.000000e+00
+## 
+## Use x$full.details for displaying the models details
+## or summary(x) for summarising them.</code></pre>
+<p>Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and AICc weight Brownian motion has a much better relative fit to these data than the Stasis model. Brownian motion has a relative AICc fit 366 units better than Stasis, and virtually has a AICc weight of 1.</p>
+<p>We can also all the information about the relative fit of models alongside the maximum likelihood estimates of model parameters using the summary function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_time)</code></pre></div>
+<pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      366.9           0   -59.5     2   3.403  0.15
+## BM     -244        0.0           1   123.9     2      NA    NA
+##        ancestral state sigma squared
+## Stasis              NA            NA
+## BM               2.858         0.003</code></pre>
+<p>Not that because the parameters per models differ, the summary includes <code>NA</code> for inapplicable parameters per models (e.g. the theta and omega parameters from the Stasis models are inapplicable for a Brownian motion model).</p>
+<p>We can plot the relative fit of our models using the <code>plot</code> function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(disp_time)</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:plot1"></span>
+<img src="dispRity_manual_files/figure-html/plot1-1.png" alt="relative fit (AICc weight) of Stasis and Brownian models of disparity through time" width="576" />
+<p class="caption">
+Figure 4.1: relative fit (AICc weight) of Stasis and Brownian models of disparity through time
+</p>
+</div>
+<p>Here we see and overwhelming support for the Brownian motion model.</p>
+<p>Alternatively, we could test all available models single modes: Stasis, Brownian motion, Ornstein-Uhlenbeck (evolution constrained to an optima), Trend (increasing or decreasing mean through time), and Early Burst (exponentially decreasing rate through time)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_time)</code></pre></div>
+<pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Stasis              NA            NA    NA       NA    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## EB               4.055         0.002    NA       NA    NA -0.014</code></pre>
+<p>These models indicate support for a Trend model, and we can plot the relative support of all model AICc weights</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(disp_time)</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:plot2"></span>
+<img src="dispRity_manual_files/figure-html/plot2-1.png" alt="relative fit (AICc weight) of various modes of evolution" width="576" />
+<p class="caption">
+Figure 4.2: relative fit (AICc weight) of various modes of evolution
+</p>
+</div>
+<p>Is this a trend of increasing or decreasing disparity through time? One way to find out is to look at the summary function for the Trend model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_time)[<span class="st">&quot;Trend&quot;</span>,]</code></pre></div>
+<pre><code>##            aicc      delta_aicc     weight_aicc         log.lik 
+##        -247.000           0.000           0.617         126.400 
+##           param         theta.1           omega ancestral state 
+##           3.000              NA              NA           2.839 
+##   sigma squared           alpha        optima.1           trend 
+##           0.002              NA              NA           0.010 
+##              eb 
+##              NA</code></pre>
+<p>This show a positive trend (0.01) of increasing disparity through time.</p>
+</div>
+</div>
+<div id="plot-and-run-simulation-tests-in-a-single-step" class="section level3">
+<h3><span class="header-section-number">4.7.2</span> Plot and run simulation tests in a single step</h3>
+<div id="model.test.wrapper" class="section level4">
+<h4><span class="header-section-number">4.7.2.1</span> <code>model.test.wrapper</code></h4>
+<p>Patterns of evolution can be fit using <code>model.test</code>, but the <code>model.test.wrapper</code> fits the same models as <code>model.test</code> as well as running predictive tests and plots.</p>
+<p>The predictive tests use the maximum likelihood estimates of model parameters to simulate a number of datasets (default = 1000), and analyse whether this is significantly different to the empirical input data using the Rank Envelope test <span class="citation">(Murrell <a href="#ref-murrell2018global">2018</a>)</span>. Finally we can plot the empirical data, simulated data, and the Rank Envelope test p values. This can all be done using the function <code>model.test.wrapper</code>, and we will set the argument <code>show.p = TRUE</code> so <em>p</em> values from the Rank Envelope test are printed on the plot:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),
+                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:plot3"></span>
+<img src="dispRity_manual_files/figure-html/plot3-1.png" alt="Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models" width="1152" />
+<p class="caption">
+Figure 4.3: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
+<pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## EB               4.055         0.002    NA       NA    NA -0.014
+## Stasis              NA            NA    NA       NA    NA     NA
+##        median p value lower p value upper p value
+## Trend      0.97902098   0.978021978     0.9800200
+## OU         0.93406593   0.934065934     0.9340659
+## BM         0.33266733   0.322677323     0.3426573
+## EB         0.06293706   0.000999001     0.1248751
+## Stasis     1.00000000   1.000000000     1.0000000</code></pre>
+<p>From this plot we can see the empirical estimates of disparity through time (pink) compared to the predictive data based upon the simulations using the estimated parameters from each model. There is no significant differences between the empirical data and simulated data, except for the Early Burst model.</p>
+<p>Trend is the best-fitting model but the plot suggests the OU model also follows a trend-like pattern. This is because the optima for the OU model (5.7) is different to the ancestral state 2.835 and outside the observed value. This is potentially unrealistic, and one way to alleviate this issue is to set the optima of the OU model to equal the ancestral estimate - this is the normal practice for OU models in comparative phylogenetics. To set the optima to the ancestral value we change the argument <code>fixed.optima = TRUE</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),
+                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 123.938
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:plot4"></span>
+<img src="dispRity_manual_files/figure-html/plot4-1.png" alt="Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value" width="1152" />
+<p class="caption">
+Figure 4.4: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
+<pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Trend  -247        0.0       0.745   126.4     3      NA    NA
+## BM     -244        2.7       0.189   123.9     2      NA    NA
+## OU     -242        4.8       0.066   123.9     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+##        ancestral state sigma squared alpha trend     eb median p value
+## Trend            2.839         0.002    NA  0.01     NA     0.97402597
+## BM               2.858         0.003    NA    NA     NA     0.29870130
+## OU               2.858         0.003     0    NA     NA     0.35864136
+## EB               4.055         0.002    NA    NA -0.014     0.06393606
+## Stasis              NA            NA    NA    NA     NA     1.00000000
+##        lower p value upper p value
+## Trend    0.973026973     0.9750250
+## BM       0.285714286     0.3116883
+## OU       0.347652348     0.3696304
+## EB       0.000999001     0.1268731
+## Stasis   1.000000000     1.0000000</code></pre>
+<p>The relative fit of the OU model is decreased by constraining the fit of the optima to equal the ancestral state value. In fact as the OU attraction parameter (alpha) is zero, the model is equal to a Brownian motion model but is penalised by having an extra parameter. Note that indeed, the plots of the BM model and the OU model look nearly identical.</p>
+</div>
+</div>
+<div id="multiple-modes-of-evolution-time-shifts" class="section level3">
+<h3><span class="header-section-number">4.7.3</span> Multiple modes of evolution (time shifts)</h3>
+<p>As well as fitting a single model to a sequence of disparity values we can also allow for the mode of evolution to shift at a single or multiple points in time. The timing of a shift in mode can be based on an a prior expectation, such as a mass extinction event, or the model can test multiple points to allow to find time shift point with the highest likelihood.</p>
+<p>Models can be fit using <code>model.test</code> but it can be more convenient to use <code>model.test.wrapper</code>. Here we will compare the relative fit of Brownian motion, Trend, Ornstein-Uhlenbeck and a multi-mode Ornstein Uhlenbck model in which the optima changes at 66 million years ago, the Cretaceous-Palaeogene boundary.</p>
+<p>For example, we could be testing the hypothesis that the extinction of non-avian dinosaurs allowed mammals to go from scurrying in the undergrowth (low optima/low disparity) to dominating all habitats (high optima/high disparity). We will constrain the optima of OU model in the first time begin (i.e, pre-66 Mya) to equal the ancestral value:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),
+                                <span class="dt">time.split =</span> <span class="dv">66</span>, <span class="dt">pool.variance =</span> <span class="ot">NULL</span>, <span class="dt">show.p =</span> <span class="ot">TRUE</span>,
+                                <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM model...Done. Log-likelihood = 123.938
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running OU model...Done. Log-likelihood = 123.938
+## Running multi.OU model...Done. Log-likelihood = 126.469</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:plot5"></span>
+<img src="dispRity_manual_files/figure-html/plot5-1.png" alt="Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma" width="1152" />
+<p class="caption">
+Figure 4.5: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
 <pre><code>##          aicc delta_aicc weight_aicc log.lik param ancestral state
-## BM       -240       4.21       0.072   122.1     2           2.638
-## OU       -238       6.31       0.025   122.1     3           2.638
-## EB       -218      25.95       0.000   112.3     3           4.055
-## multi.OU -243       1.41       0.292   125.6     4           2.619
-## Trend    -244       0.00       0.591   125.3     3           2.626
-## OU:Trend -199      45.61       0.000   103.5     4           2.827
-## Trend:OU -238       6.79       0.020   124.0     5           2.626
-##          sigma squared alpha     eb optima.2 trend optima.1
-## BM               0.003    NA     NA       NA    NA       NA
-## OU               0.003 0.000     NA       NA    NA       NA
-## EB               0.002    NA -0.015       NA    NA       NA
-## multi.OU         0.002 0.010     NA    4.616    NA       NA
-## Trend            0.002    NA     NA       NA 0.012       NA
-## OU:Trend         0.004 0.007     NA       NA 0.019       NA
-## Trend:OU         0.003 0.013     NA       NA 0.000    4.055</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The visualisation of the models AICs
-<span class="kw">plot</span>(model_test_output)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-69-1.png" width="768" /></p>
-<p>We can then test whether out model is significant based on simulation replicates:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulate 1000 datasets for the best fitting model (&quot;Trend&quot;) and compare it to the observed result
-model_simulation &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> model_test_output)</code></pre></div>
-<p>Again, these results can be visualised easily as before:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The simulation results
+## Trend    -247      0.000       0.580   126.4     3           2.839
+## multi.OU -245      1.922       0.222   126.5     4           2.836
+## BM       -244      2.742       0.147   123.9     2           2.858
+## OU       -242      4.845       0.051   123.9     3           2.858
+##          sigma squared trend alpha optima.2 median p value lower p value
+## Trend            0.002  0.01    NA       NA      0.9920080     0.9920080
+## multi.OU         0.002    NA 0.005    5.526      0.6308691     0.6263736
+## BM               0.003    NA    NA       NA      0.3506494     0.3396603
+## OU               0.003    NA 0.000       NA      0.3666334     0.3576424
+##          upper p value
+## Trend        0.9920080
+## multi.OU     0.6353646
+## BM           0.3616384
+## OU           0.3756244</code></pre>
+<p>The multi-OU model shows an increase an optima at the Cretaceous-Palaeogene boundary, indicating a shift in disparity. However, this model does not fit as well as a model in which there is an increasing trend through time. We can also fit a model in which the we specify a heterogeneous model but we do not give a <code>time.split</code>. In this instance the model will test all splits that have at least 10 time slices on either side of the split. That’s 102 potential time shifts in this example dataset so be warned, the following code will estimate 105 models!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## An example of a time split model in which all potential splits are tested
+## <span class="al">WARNING</span>: this will take between 20 minutes and half and hour to run!
+disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),
+                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>As well as specifying a multi-OU model we can run any combination of models. For example we could fit a model at the Cretaceous-Palaeogene boundary that goes from an OU to a BM model, a Trend to an OU model, a Stasis to a Trend model or any combination you want to use. The only model that can’t be used in combination is a multi-OU model.</p>
+<p>These can be introduced by changing the input for the models into a list, and supplying a vector with the two models. This is easier to see with an example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The models to test
+my_models &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>),
+                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;OU&quot;</span>),
+                  <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Stasis&quot;</span>),
+                  <span class="kw">c</span>(<span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>),
+                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))
+
+## Testing the models
+disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> my_models, <span class="dt">time.split =</span> <span class="dv">66</span>,
+                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running BM:OU model...Done. Log-likelihood = 115.367
+## Running Stasis:OU model...Done. Log-likelihood = 80.16
+## Running BM:Stasis model...Done. Log-likelihood = 34.278
+## Running OU:Trend model...Done. Log-likelihood = 118.166
+## Running Stasis:BM model...Done. Log-likelihood = 80.16</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:plot6"></span>
+<img src="dispRity_manual_files/figure-html/plot6-1.png" alt="Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for a variety of models with a shift in optima allowed at 66 Ma" width="1152" />
+<p class="caption">
+Figure 4.6: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for a variety of models with a shift in optima allowed at 66 Ma
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disp_time</code></pre></div>
+<pre><code>##           aicc delta_aicc weight_aicc log.lik param ancestral state
+## OU:Trend  -228        0.0       0.943   118.2     4           3.051
+## BM:OU     -222        5.6       0.057   115.4     4           3.052
+## Stasis:BM -154       73.9       0.000    80.2     3              NA
+## Stasis:OU -150       78.2       0.000    80.2     5              NA
+## BM:Stasis  -60      167.8       0.000    34.3     4           2.858
+##           sigma squared alpha optima.1 theta.1 omega trend median p value
+## OU:Trend          0.003 0.039       NA      NA    NA 0.015      0.4840160
+## BM:OU             0.003 0.000    4.055      NA    NA    NA      0.7857143
+## Stasis:BM         0.004    NA       NA   3.109 0.025    NA      0.9860140
+## Stasis:OU         0.004 0.000    4.055   3.109 0.025    NA      0.9635365
+## BM:Stasis         0.002    NA       NA   3.648 0.113    NA      0.9615385
+##           lower p value upper p value
+## OU:Trend      0.4685315     0.4995005
+## BM:OU         0.7792208     0.7922078
+## Stasis:BM     0.9850150     0.9870130
+## Stasis:OU     0.9610390     0.9660340
+## BM:Stasis     0.9560440     0.9670330</code></pre>
+</div>
+<div id="model.test.sim" class="section level3">
+<h3><span class="header-section-number">4.7.4</span> <code>model.test.sim</code></h3>
+<p>Note that all the models above where run using the <code>model.test.wrapper</code> function that is a… wrapping function! In practice, this function runs two main functions from the <code>dispRity</code> package and then plots the results:</p>
+<ul>
+<li><code>model.test</code> and</li>
+<li><code>model.test.sim</code></li>
+</ul>
+<p>The <code>model.test.sim</code> allows to simulate disparity evolution given a <code>dispRity</code> object input (as in <code>model.test.wrapper</code>) or given a model and its specification. For example, it is possible to simulate a simple Brownian motion model (or any of the other models or models combination described above):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A simple BM model
+model_simulation &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> <span class="st">&quot;BM&quot;</span>, <span class="dt">time.span =</span> <span class="dv">50</span>, <span class="dt">variance =</span> <span class="fl">0.1</span>,
+                                   <span class="dt">sample.size =</span> <span class="dv">100</span>, <span class="dt">parameters =</span> <span class="kw">list</span>(<span class="dt">ancestral.state =</span> <span class="dv">0</span>))
 model_simulation</code></pre></div>
 <pre><code>## Disparity evolution model simulation:
-## Call: model.test.sim(sim = 1000, model = model_test_output) 
+## Call: model.test.sim(sim = 1000, model = &quot;BM&quot;, time.span = 50, variance = 0.1, sample.size = 100, parameters = list(ancestral.state = 0)) 
+## 
+## Model simulated (1000 times):
+## [1] &quot;BM&quot;</code></pre>
+<p>This will simulate 1000 Brownian motions for 50 units of time with 100 sampled elements, a variance of 0.1 and an ancestral state of 0. We can also pass multiple models in the same way we did it for <code>model.test</code> This model can then be summarised and plotted as most <code>dispRity</code> objects:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Displaying the 5 first rows of the summary
+<span class="kw">head</span>(<span class="kw">summary</span>(model_simulation))</code></pre></div>
+<pre><code>##   subsets   n var      median      2.5%       25%       75%    97.5%
+## 1      50 100 0.1 -0.09312806 -1.718481 -0.712478 0.5854576 1.772700
+## 2      49 100 0.1 -0.01881396 -2.697017 -0.967495 0.9105681 2.712452
+## 3      48 100 0.1 -0.06914146 -3.443629 -1.205211 1.1171606 3.185465
+## 4      47 100 0.1 -0.01584249 -3.897544 -1.474240 1.3762412 3.639836
+## 5      46 100 0.1 -0.04118287 -4.402526 -1.496096 1.5347916 4.239536
+## 6      45 100 0.1 -0.17175251 -4.764863 -1.697076 1.5894314 4.349500</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the simulations
+<span class="kw">plot</span>(model_simulation)</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:plot7"></span>
+<img src="dispRity_manual_files/figure-html/plot7-1.png" alt="A simulated Brownian motion" width="576" />
+<p class="caption">
+Figure 4.7: A simulated Brownian motion
+</p>
+</div>
+<p>Note that these functions can take all the arguments that can be passed to <code>plot</code>, <code>summary</code>, <code>plot.dispRity</code> and <code>summary.dispRity</code>.</p>
+<div id="simulating-tested-models" class="section level4">
+<h4><span class="header-section-number">4.7.4.1</span> Simulating tested models</h4>
+<p>Maybe more interestingly though, it is possible to pass the output of <code>model.test</code> directly to <code>model.test.sim</code> to simulate the models that fits the data the best and calculate the Rank Envelope test <em>p</em> value. Let’s see that using the simple example from the start:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Fitting multiple models on the data set
+disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</code></pre></div>
+<pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
+## Variance is not pooled.
+## Running Stasis model...Done. Log-likelihood = -59.501
+## Running BM model...Done. Log-likelihood = 123.938
+## Running OU model...Done. Log-likelihood = 126.431
+## Running Trend model...Done. Log-likelihood = 126.361
+## Running EB model...Done. Log-likelihood = 113.081</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(disp_time)</code></pre></div>
+<pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega
+## Stasis  123      369.6       0.000   -59.5     2   3.403  0.15
+## BM     -244        2.7       0.157   123.9     2      NA    NA
+## OU     -245        2.0       0.227   126.4     4      NA    NA
+## Trend  -247        0.0       0.617   126.4     3      NA    NA
+## EB     -220       26.6       0.000   113.1     3      NA    NA
+##        ancestral state sigma squared alpha optima.1 trend     eb
+## Stasis              NA            NA    NA       NA    NA     NA
+## BM               2.858         0.003    NA       NA    NA     NA
+## OU               2.835         0.002 0.004    5.707    NA     NA
+## Trend            2.839         0.002    NA       NA  0.01     NA
+## EB               4.055         0.002    NA       NA    NA -0.014</code></pre>
+<p>As seen before, the Trend model fitted this dataset the best. To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with <code>model.test</code> (here the ancestral state being 2.839, the sigma squared beeing 0.002 and the trend of 0.01), we can simply pass this model to <code>model.test.sim</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulating 1000 Trend model with the observed parameters
+sim_trend &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time)
+sim_trend</code></pre></div>
+<pre><code>## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = disp_time) 
 ## 
 ## Model simulated (1000 times):
 ##       aicc log.lik param ancestral state sigma squared trend
-## Trend -244   125.3     3           2.626         0.002 0.012
+## Trend -247   126.4     3           2.839         0.002  0.01
 ## 
 ## Rank envelope test
-##  p-value of the test: 0.9345654 (ties method: midrank)
-##  p-interval         : (0.9330669, 0.9360639)</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ## The summary table of the simulations</span>
-<span class="co"># summary(model_simulation)</span>
+##  p-value of the test: 0.987013 (ties method: midrank)
+##  p-interval         : (0.987013, 0.987013)</code></pre>
+<p>By default, the model simulated is the one with the lowest AICc (<code>model.rank = 1</code>) but it is possible to choose any ranked model, for example, the OU (second one):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulating 1000 OU model with the observed parameters
+sim_OU &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time, <span class="dt">model.rank =</span> <span class="dv">2</span>)
+sim_OU</code></pre></div>
+<pre><code>## Disparity evolution model simulation:
+## Call: model.test.sim(sim = 1000, model = disp_time, model.rank = 2) 
+## 
+## Model simulated (1000 times):
+##    aicc log.lik param ancestral state sigma squared alpha optima.1
+## OU -245   126.4     4           2.835         0.002 0.004    5.707
+## 
+## Rank envelope test
+##  p-value of the test: 0.8971029 (ties method: midrank)
+##  p-interval         : (0.8941059, 0.9000999)</code></pre>
+<p>And as the example above, the simulated data can be plotted or summarised:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">summary</span>(sim_trend))</code></pre></div>
+<pre><code>##   subsets n        var   median     2.5%      25%      75%    97.5%
+## 1     120 5 0.06056490 2.837869 2.614855 2.760862 2.908493 3.059927
+## 2     119 5 0.07453663 2.858233 2.598562 2.756114 2.945448 3.106885
+## 3     118 6 0.07556947 2.856971 2.589279 2.769942 2.941288 3.129721
+## 4     117 6 0.07556947 2.870782 2.584536 2.777017 2.965582 3.147397
+## 5     116 6 0.07556947 2.869144 2.589171 2.769528 2.978955 3.173132
+## 6     115 7 0.06590243 2.883672 2.593479 2.790683 2.978769 3.179178</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">summary</span>(sim_OU))</code></pre></div>
+<pre><code>##   subsets n        var   median     2.5%      25%      75%    97.5%
+## 1     120 5 0.06056490 2.832068 2.618984 2.759091 2.908017 3.051097
+## 2     119 5 0.07453663 2.849006 2.592719 2.759753 2.940149 3.115460
+## 3     118 6 0.07556947 2.858304 2.579423 2.767239 2.946567 3.125425
+## 4     117 6 0.07556947 2.872844 2.585720 2.782702 2.971421 3.142925
+## 5     116 6 0.07556947 2.881609 2.599897 2.779863 2.985630 3.168541
+## 6     115 7 0.06590243 2.897410 2.602577 2.790346 2.998301 3.182402</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The trend model with some graphical options
+<span class="kw">plot</span>(sim_trend, <span class="dt">xlab =</span> <span class="st">&quot;Time (Mya)&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;sum of variances&quot;</span>,
+    <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#F65205&quot;</span>, <span class="st">&quot;#F38336&quot;</span>, <span class="st">&quot;#F7B27E&quot;</span>))
 
-<span class="co"># ## Plotting the simulations</span>
-
-  
-<span class="co"># #### plot for simulated data versus real data - could this be incorporated into the plot functions?</span>
-<span class="co"># outputs.sim &lt;- sapply(model_simulation$simulation.data, function(x) x$central_tendency)  </span>
-
-<span class="co"># plot(disparity_data, ylim=c(0, max(c(outputs.sim))))</span>
-
-<span class="co"># min.max &lt;- t(apply(outputs.sim, 1, range))</span>
-
-<span class="co"># time.span &lt;- as.numeric(outputs.sim[[4]][[4]])</span>
-
-<span class="co"># polygon(x=c(time.span, rev(time.span), time.span, rev(time.span)), y=c(min.max[,1], rev(min.max[,2]), min.max[,1], rev(min.max[,2])), col=&quot;#ff000030&quot;, border=F)</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># #### re-analyse simulated data (just the first five for demonstration)</span>
-<span class="co"># five.models &lt;- sapply(model.test.sim.output$simulation.data[1:5], function(x) model.test(data=x, model=models.to.test, time.split=66.02, fixed.optima=TRUE, pool.variance=FALSE, verbose=FALSE)[[1]][,1])</span>
-
-<span class="co"># # model support (split between multi.OU and Trend) - it seems very difficult to choose between the two (at least with this miniscule sample size). We could maybe repeat this with x1000 or x10000 for publication</span>
-<span class="co"># table(rownames(five.models)[apply(five.models, 2, which.min)])</span></code></pre></div>
+## Adding the observed disparity through time
+<span class="kw">plot</span>(BeckLee_disparity, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#3E9CBA&quot;</span>, <span class="st">&quot;#98D4CF90&quot;</span>, <span class="st">&quot;#BFE4E390&quot;</span>))</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:plot8"></span>
+<img src="dispRity_manual_files/figure-html/plot8-1.png" alt="The best fitted model (Trend) and the observed disparity through time" width="576" />
+<p class="caption">
+Figure 4.8: The best fitted model (Trend) and the observed disparity through time
+</p>
+</div>
+</div>
 </div>
 </div>
 <div id="disparity-as-a-distribution" class="section level2">
-<h2><span class="header-section-number">4.7</span> Disparity as a distribution</h2>
+<h2><span class="header-section-number">4.8</span> Disparity as a distribution</h2>
 <p>Disparity is often regarded as a summary value of the position of the all elements in the ordinated space. For example, the sum of variances, the product of ranges or the median distance between the elements and their centroid will summarise disparity as a single value. This value can be pseudo-replicated (bootstrapped) to obtain a distribution of the summary metric with estimated error. However, another way to perform disparity analysis is to use the <em>whole distribution</em> rather than just a summary metric (e.g. the variances or the ranges).</p>
 <p>This is possible in the <code>dispRity</code> package by calculating disparity as a dimension-level 2 metric only! Let’s have a look using our <a href="#summarising-dispRity-data-plots">previous example</a> of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring disparity as a whole distribution
@@ -1366,7 +1660,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <span class="kw">plot</span>(disparity_centroids, <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)
 <span class="kw">plot</span>(disparity_centroids_median,
      <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-76-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-84-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Probability of overlap in the distribution of medians
@@ -1409,7 +1703,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bt
 <p>These results show the median overlap among pairs of distributions in the first column (<code>bhatt.coeff</code>) and then the distribution of these overlaps among each pair of bootstraps. In other words, when two distributions are compared, they are now compared for each bootstrap pseudo-replicate, thus effectively creating a distribution of probabilities of overlap. For example, when comparing the slices 120 and 80, we have a mean probability of overlap of 0.28 and a probability between 0.18 and 0.43 in 50% of the pseudo-replicates. Note that the quantiles and central tendencies can be modified via the <code>conc.quantiles</code> option.</p>
 </div>
 <div id="disparity-from-other-matrices" class="section level2">
-<h2><span class="header-section-number">4.8</span> Disparity from other matrices</h2>
+<h2><span class="header-section-number">4.9</span> Disparity from other matrices</h2>
 <p>In the example so far, disparity was measured from an ordinated multidimensional space (i.e. a PCO of the distances between taxa based on discrete morphological characters). This is a common approach in palaeobiology, morphometrics or ecology but ordinated matrices are not mandatory for the <code>dispRity</code> package! It is totally possible to perform the same analysis detailed above using other types of matrices as long as your elements are rows in your matrix.</p>
 <p>For example, we can use the data set <code>eurodist</code>, an <code>R</code> inbuilt dataset that contains the distances (in km) between European cities. We can check for example, if Northern European cities are closer to each other than Southern ones:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Making the eurodist data set into a matrix (rather than &quot;dist&quot; object)
@@ -1473,7 +1767,7 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)
 ## Adding the p-value
 <span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-82-1.png" width="1152" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-90-1.png" width="1152" /></p>
 <p>As expected, the results are pretty similar in pattern but different in terms of scale. The median centroids distance is expressed in km in the “Distance differences” plots and in Euclidean units of variation in the “Ordinated differences” plots.</p>
 
 </div>
@@ -1484,10 +1778,22 @@ euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</
 <p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. doi:<a href="https://doi.org/10.1098/rspb.2014.1278">10.1098/rspb.2014.1278</a>.</p>
 </div>
 <div id="ref-time-slice">
-<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em>. doi:<a href="https://doi.org/10.1111/pala.12364">10.1111/pala.12364</a>.</p>
+<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em> 61 (4): 481–93. doi:<a href="https://doi.org/10.1111/pala.12364">10.1111/pala.12364</a>.</p>
 </div>
 <div id="ref-diaz2016global">
-<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167.</p>
+<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167. <a href="http://dx.doi.org/10.1038/nature16489" class="uri">http://dx.doi.org/10.1038/nature16489</a>.</p>
+</div>
+<div id="ref-hunt2006fitting">
+<p>Hunt, Gene. 2006. “Fitting and Comparing Models of Phyletic Evolution: Random Walks and Beyond.” <em>Paleobiology</em> 32 (4). Cambridge University Press: 578–601. <a href="https://doi.org/10.1666/05070.1" class="uri">https://doi.org/10.1666/05070.1</a>.</p>
+</div>
+<div id="ref-hunt2012measuring">
+<p>Hunt, Gene. 2012. “Measuring Rates of Phenotypic Evolution and the Inseparability of Tempo and Mode.” <em>Paleobiology</em> 38 (3). GeoScienceWorld: 351–73. <a href="https://doi.org/10.1666/11047.1" class="uri">https://doi.org/10.1666/11047.1</a>.</p>
+</div>
+<div id="ref-hunt2015simple">
+<p>Hunt, Gene, Melanie J Hopkins, and Scott Lidgard. 2015. “Simple Versus Complex Models of Trait Evolution and Stasis as a Response to Environmental Change.” <em>Proceedings of the National Academy of Sciences</em>. National Acad Sciences, 201403662. <a href="https://doi.org/10.1073/pnas.1403662111" class="uri">https://doi.org/10.1073/pnas.1403662111</a>.</p>
+</div>
+<div id="ref-murrell2018global">
+<p>Murrell, David J. 2018. “A Global Envelope Test to Detect Non-Random Bursts of Trait Evolution.” <em>Methods in Ecology and Evolution</em> 9 (7). Wiley Online Library: 1739–48. <a href="https://doi.org/10.1111/2041-210X.13006" class="uri">https://doi.org/10.1111/2041-210X.13006</a>.</p>
 </div>
 </div>
             </section>

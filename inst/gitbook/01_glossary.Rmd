@@ -2,7 +2,7 @@
 title: "Glossary"
 author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
-bibliography: [References.bib, packages.bib]
+bibliography: [../References.bib, ../packages.bib]
 output:
   html_document: default
   pdf_document: default

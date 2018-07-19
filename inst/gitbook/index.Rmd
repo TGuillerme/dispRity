@@ -1,11 +1,11 @@
 --- 
 title: "dispRity manual"
-author: "Thomas Guillerme (guillert@tcd.ie) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+author: "Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and  Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [References.bib, packages.bib]
+bibliography: [../References.bib, ../packages.bib]
 link-citations: yes
 github-repo: TGuillerme/dispRity
 description: "dispRity R package vignette"
@@ -121,7 +121,7 @@ The package manual (regularly updated!):
 
 The time-slicing method implemented in `chrono.subsets` (unfortunately not Open Access, but you can still get a [free copy from here](https://tguillerme.github.io/papers/Guillerme&Cooper-2018-Palaeontology.pdf)):
 
-> Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. [doi:10.1111/pala.12364](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Guillerme%2C+T.+and+Cooper%2C+N.+%282018%29%2C+Time+for+a+rethink%3A+time+sub-sampling+methods+in+disparity-through-time+analyses.+Palaeontology%2C&btnG=).
+> Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364).
 
 <!-- ## Associated papers -->
 
