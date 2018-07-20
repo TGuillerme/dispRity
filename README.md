@@ -42,6 +42,8 @@ library(dispRity)
 The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref = "release"` option with `ref = "master"`.
 If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) for the latest developments.
 
+The package is available in the [CRAN Task Views](https://cran.r-project.org/web/views/) in [Phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html).
+
 ## Vignettes and manuals
 
 A detailed vignette is available [online](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or as a [pdf](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf):
