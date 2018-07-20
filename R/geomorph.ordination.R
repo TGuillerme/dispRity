@@ -18,7 +18,7 @@
 #' data(plethodon)
 #' 
 #' ## Performing a Procrustes transform
-#' procrustes <- geomorph::gpagen(plethodon$land,PrinAxes=FALSE)
+#' procrustes <- geomorph::gpagen(plethodon$land, PrinAxes = FALSE)
 #' 
 #' ## Obtaining the ordination matrix
 #' geomorph.ordination(procrustes)
@@ -37,7 +37,7 @@
 #' 
 #' ## Extracting the raw disparity values
 #' geomorph_val <- round(as.numeric(geomorph_disparity$Procrustes.var), 15)
-#' dispRity_val <- as.vector(summary(dispRity_disparity, round = 15)$obs)
+#' dispRity_val <- as.vector(summary(dispRity_disparity, digits = 15)$obs)
 #' 
 #' ## Comparing the values (to the 15th decimal!)
 #' geomorph_val == dispRity_val # all TRUE
