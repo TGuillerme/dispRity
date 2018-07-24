@@ -223,14 +223,13 @@ centroids <- function(matrix, centroid) {
 
     if(missing(centroid)) {
         ## Calculating the centroid point
-        centroid <- apply(matrix, 2, mean)
+        centroid <- colMeans(matrix)
     } 
 
     ## Calculate centroid distance with a single centroid
     cent.dist <- apply(matrix, 1, fun.dist, centroid = centroid)
     return(cent.dist)
 }
-
 
 ## Calculate the mode of a vector
 mode.val <- function(X){
@@ -372,7 +371,7 @@ pairwise.dist <- function(matrix, method = "euclidean", ...) {
 ## Calculate the radius for each dimensions
 radius <- function(matrix, type = max) {
     ## Calculate the maximum distance from the centres per axis
-    differences <- mapply(function(x, y) abs(x - y), unlist(apply(matrix, 2, list), recursive = FALSE), as.list(apply(matrix, 2, mean)), SIMPLIFY = FALSE)
+    differences <- mapply(function(x, y) abs(x - y), unlist(apply(matrix, 2, list), recursive = FALSE), as.list(colMeans(matrix)), SIMPLIFY = FALSE)
 
     ## Getting the radius
     return(unlist(lapply(differences, type)))
