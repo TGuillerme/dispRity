@@ -63,22 +63,25 @@ rm src/*.o
 rm src/*.so
 rm src/*.rds
 
+## Version number
+version_number=$(grep "Version:" DESCRIPTION | sed 's/Version: //g')
 
-##
 # CHANGE THE WARNING zzz.R
+sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version ('"$version_number"') of the package.\\nFor more functionalities, news, vignettes and releases,\\nvisit https:\/\/github.com\/TGuillerme\/dispRity/g' > ${TMPPATH}/R/zzz.R
 
-##
 # CHANGE THE VIGNETTES
 
-##
 # Exclude some code
 
 # ## Exclude some code!
-# if [ -z ${MODULES+x} ]
+# if [ -z ${exclude+x} ]
 # then
 #     silent="1"
 # else 
-#     echo "## Load modules" >> ${SCRIPT}.job
+
+#     ## REMOVE FROM NAMESPACE (if grep)
+
+#     ## REMOVE FROM R// (if grep)
 #     if echo $MODULES | grep , > /dev/null
 #     then
 #         echo "module load $(echo $MODULES | sed 's/,/ /g')" >> ${SCRIPT}.job
