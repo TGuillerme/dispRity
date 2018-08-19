@@ -21,7 +21,14 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[Next release] dispRity v1.2 *model test* (2018-08-19)
+[GitHub release] dispRity v1.2.1 *model tests* (2018-08-19)
+=========================
+  
+### NEW FEATURES
+
+  * CRAN release 2 (v.1.2) with the additional `Claddis.ordination` function.
+
+[CRAN release] dispRity v1.2 *model tests* (2018-08-19)
 =========================
 
 ### NEW FEATURES
@@ -45,7 +52,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-[GitHub release] dispRity v1.1 *got CRAN* (2018-03-20)
+dispRity v1.1 *got CRAN* (2018-03-20)
 =========================
   
 ### NEW FEATURES
