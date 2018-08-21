@@ -26,13 +26,13 @@ citEntry(entry = "Article",
 citHeader("To cite the time-slicing method, please use:")
 
 citEntry(entry = "Article",
-		 title = "dispRity: A modular R package for measuring disparity",
+		 title = "Time for a rethink: time sub-sampling methods in disparity-through-time analyses",
          author = personList(as.person("Thomas Guillerme"), as.person("Natalie Cooper")),
          journal = "Paleontology",
          year = "2018",
          volume = "61",
          number = "4",
          pages = "481-493",
-         doi = "doi:10.1111/pala.12364",
+         doi = "https://doi.org/10.1111/pala.12364",
          textVersion = "Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. doi:10.1111/pala.12364"
          )

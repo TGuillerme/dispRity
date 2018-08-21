@@ -51,7 +51,7 @@
 
 summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = median, recall = FALSE, digits){#, results = "coefficients") {
 
-    ## Renaming object
+    ## Renaming object
     data <- object
 
     #----------------------
@@ -141,7 +141,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             ## Extract the central tendencies
             simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)
 
-            ## Get the quantiles
+            ## Get the quantiles
             simulation_results <- apply(simulation_data_matrix, 1, get.summary, cent.tend = cent.tend, quantiles = quantiles)
             simulation_results <- cbind(do.call(rbind, lapply(simulation_results, function(X) rbind(X$cent_tend[[1]]))),
                                         do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))

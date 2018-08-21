@@ -6,7 +6,7 @@
     phy$node.label <- NULL
     td <- list("phy" = phy, "data" = data) #TG: data is already cleaned prior to the function
     phy2 <- td$phy
-    ## Converting to old phylo format
+    ## Converting to old phylo format
     phy <- new2old.phylo(td$phy)
 
     ## Getting the node depth from ape if no attributes
@@ -37,7 +37,7 @@
     ## By matrix
     if(length(dim(td$data)) == 2) {
 
-        ## Calculate disparity per clade
+        ## Calculate disparity per clade
         disparity <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), digits = 10)$obs)
         names(disparity) <- 1:length(node.depth) + Ntip(phy2)
         
@@ -63,7 +63,7 @@
         }
 
     } else {
-        ## By array
+        ## By array
 
         if(length(dim(td$data)) != 3){
             stop("Error in data: must be a matrix or a array of matrix (length(dim(data)) must be equal to 2 or 3).")
@@ -74,7 +74,7 @@
 
             one_matrix <- as.matrix(td$data[,,i])
 
-            ## Calculate disparity per clade
+            ## Calculate disparity per clade
             disparity <- summary(dispRity(custom.subsets(one_matrix, phy2), metric = metric), digits = 10)$obs
             
 
