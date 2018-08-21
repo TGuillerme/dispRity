@@ -24,14 +24,14 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[GitHub release] dispRity v1.2.1 *model tests* (2018-08-19)
+[GitHub release] dispRity v1.2.1 *model tests* (2018-08-21)
 =========================
   
 ### NEW FEATURES
 
   * CRAN release 2 (v.1.2) with the additional `Claddis.ordination` function.
 
-[CRAN release] dispRity v1.2 *model tests* (2018-08-19)
+[CRAN release] dispRity v1.2 *model tests* (2018-08-21)
 =========================
 
 ### NEW FEATURES

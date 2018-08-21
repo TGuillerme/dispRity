@@ -92,6 +92,12 @@ sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version 
 #     fi
 # fi
 
+## Remove Claddis ordination (to be done automatically through -e)
+
+rm R/Claddis.ordination.R
+rm R/Claddis.support.R
+rm man/Claddis.ordination.Rd
+
 
 ## Compile the package
 cd cran_tmp/

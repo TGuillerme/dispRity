@@ -165,7 +165,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
 
-            ## Silence warnings
+            ## Silence warnings
             options(warn = -1)
 
             ## Get the ylim
@@ -291,7 +291,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.length(density, 1, " must be a single numeric value.")
             }
 
-            ## Preparing the data and the arguments
+            ## Preparing the data and the arguments
             summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
             colnames(summarised_data)[3] <- "obs"
 
