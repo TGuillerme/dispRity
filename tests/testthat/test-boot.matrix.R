@@ -332,8 +332,6 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
-<<<<<<< HEAD
-=======
 
 test_that("boot.matrsix works with the prob option (for probabilities sampling)", {
 
@@ -419,4 +417,3 @@ test_that("boot.matrsix works with the prob option (for probabilities sampling)"
 
 
 })
->>>>>>> master
