@@ -292,6 +292,12 @@ test_that("test.dispRity works fine", {
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
+    ## Errors
+    expect_error(test.dispRity(customised_subsets, t.test))
+    expect_error(test.dispRity(dispRity(BeckLee_mat50, mean), t.test))
+    expect_error(test.dispRity(dispRity(customised_subsets, metric = c(sum, ranges)), t.test))
+    expect_error(test.dispRity(dispRity(customised_subsets, metric = ranges), t.test, rarefaction = 10))
+    expect_error(expect_warning(test.dispRity(sum_of_ranges, t.test, comparisons = "all")))
 
     ## Correction
     expect_warning(test <- test.dispRity(sum_of_ranges, t.test, correction = "none"))
@@ -345,6 +351,9 @@ test_that("example works fine", {
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
         , "data.frame"))
+    expect_warning(expect_is(
+        test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise", details = TRUE)
+        , "list"))
     expect_warning(expect_equal(
     	dim(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
         , c(3,1)))
@@ -355,6 +364,9 @@ test_that("example works fine", {
     ## Measuring differences from a reference_subsets
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
+        , "list"))
+    expect_warning(expect_is(
+        test.dispRity(sum_of_ranges, wilcox.test, "referential", details = TRUE)
         , "list"))
     expect_warning(expect_equal(
     	length(test.dispRity(sum_of_ranges, wilcox.test, "referential"))
@@ -368,7 +380,12 @@ test_that("example works fine", {
 
     ## Measuring disparity as a distribution
     disparity_var <- dispRity(bootstrapped_data, metric = variances)
+
     expect_warning(test1 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE))
+    expect_warning(expect_is(
+        test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE, details = TRUE)
+        , "list"))
+
     expect_is(
         test1
         ,"list")
@@ -379,6 +396,10 @@ test_that("example works fine", {
         unique(unlist(lapply(test1, dim)))
         ,c(3,1))
     expect_warning(test2 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE))
+    expect_warning(expect_is(
+        test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE, details = TRUE)
+        , "list"))
+
     expect_is(
         test2
         ,"list")

@@ -75,13 +75,13 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     ## Sanitizing
     check.class(data, "dispRity")
-    if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
+    if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "", call. = FALSE)
 
     ## is_distribution?
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     if(is_distribution) {
         stop(paste("null.test cannot take disparity distributions yet.\nTry averaging disparity to a dimension-level 1 using:\n",
-            paste("  ", match_call$data, " <- dispRity(", match_call$data, ", metric = median)\n", sep = "")))
+            paste("  ", as.expression(match_call$data), " <- dispRity(", as.expression(match_call$data), ", metric = median)\n", sep = "")), call. = FALSE)
     }
 
     ## replicates

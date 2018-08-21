@@ -69,6 +69,10 @@ test_that("tree.age works", {
     expect_equal(
     	max(tree_age[,1]), 1
     	)
+
+    ## Works also when age = 0
+    expect_is(tree.age(rtree(5), age = 0), "data.frame")
+
 })
 
 ## Testing the example

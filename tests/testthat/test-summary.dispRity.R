@@ -102,7 +102,7 @@ test_that("Correct error management", {
     expect_error(summary(disparity, quantiles = c(10, 101)))
 
 
-    dummy <- dispRity
+    dummy <- disparity
     class(dummy) <- c("dispRity", "bob")
     expect_error(summary(dummy))
 
@@ -124,6 +124,14 @@ test_that("Works without bootstraps", {
     expect_equal(
         ncol(test), 3
         )
+
+    ## Recall works as well
+    out <- capture.output(test <- summary(data, recall = TRUE))
+    expect_equal(out,
+        c(" ---- dispRity object ---- ",
+          "50 elements with 48 dimensions.",
+          "Disparity was calculated as: c(sum, ranges)."))
+
 })
 
 #Case 2, bootstraps
@@ -303,6 +311,43 @@ test_that("summary.dispRity works with small, empty/subsets", {
     expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))
     expect_equal(as.numeric(test[2,]), c(4, 1, rep(NA, 6)))
     expect_false(all(is.na(test[3,])))
+})
+
+
+
+
+test_that("summary.dispRity with model.test data", {
+    load("model_test_data.Rda")
+
+    ## Run two models (silent)
+    models <- list("BM", "OU")
+    set.seed(42)
+    tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
+    summary_model.tests <- summary(tested_models)
+
+    expect_is(summary_model.tests, "matrix")
+    expect_equal(dim(summary_model.tests), c(2,8))
+    expect_equal(colnames(summary_model.tests), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha"))
+    expect_equal(rownames(summary_model.tests), unlist(models))
+
+    ## Testing normal model
+    model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
+    summary_model.sim1 <- summary(model_simulation_empty)
+
+    expect_is(summary_model.sim1, "matrix")
+    expect_equal(dim(summary_model.sim1), c(100,8))
+    expect_equal(colnames(summary_model.sim1), c("subsets", "n", "var", "median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(rownames(summary_model.sim1), as.character(model_simulation_empty$simulation.data$fix$subsets))
+
+    ## Testing inherited model
+    set.seed(42)
+    model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
+    summary_model.sim2 <- summary(model_simulation_inherit)
+
+    expect_is(summary_model.sim2, "matrix")
+    expect_equal(dim(summary_model.sim2), c(25,8))
+    expect_equal(colnames(summary_model.sim2), c("subsets", "n", "var", "median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(rownames(summary_model.sim2), as.character(rev(25:1)))
 })
 
 

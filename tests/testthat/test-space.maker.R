@@ -74,6 +74,7 @@ test_that("space.maker works", {
     expect_equal(
         dim(space.maker(5, 3, c(rnorm, runif, rgamma), list(list(mean = 30, sd = 50), NULL, list(shape = 0.25))))
         , c(5,3)) 
+    expect_warning(space.maker(5, 2, c(rnorm, runif, rgamma), list(list(mean = 30, sd = 50), NULL, list(shape = 0.25)))) 
 })
 
 
@@ -141,8 +142,10 @@ test_that("random.circle works", {
     ## Test if it works with space maker
     test <- space.maker(elements = 10, dimensions = 2, distribution = random.circle, arguments = list(list(distribution = runif)))
     expect_equal(dim(test), c(10, 2))
+    expect_error(test <- space.maker(elements = 10, dimensions = 2, distribution = random.circle))
     expect_warning(test <- space.maker(elements = 10, dimensions = 5, distribution = random.circle, arguments = list(list(distribution = runif))))
     expect_equal(dim(test), c(10, 4))
+    expect_warning(test <- space.maker(elements = 10, dimensions = 4, distribution = c(random.circle, runif), arguments = list(list(distribution = runif), list(max = 1, min = 0))))
 
     ## Test if it works with space maker (mixed distributions)
     test <- space.maker(elements = 10, dimensions = 3, distribution = c(random.circle, runif), arguments = list(list(distribution = runif, inner = 0.5, outer = 1), list(min = 0, max = 1)))

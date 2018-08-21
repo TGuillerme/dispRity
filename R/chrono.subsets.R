@@ -37,7 +37,7 @@
 #'      }
 #'      \item Gradual models:
 #'      \itemize{
-#'          \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+#'          \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50\% probability each.
 #'          \item \code{"gradual.split"}: selects the ancestral node or the descendant with a probability relative to branch length.
 #'      }
 #' }
@@ -115,7 +115,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     if(!missing(tree)) {
         check.class(tree, "phylo")
         ## tree must be dated
-        if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.")
+        if(length(tree$root.time) != 1) stop("Tree must be a dated tree with a $root.time element.", call. = FALSE)
         ## tree.age_tree variable declaration
         tree.age_tree <- tree.age(tree)
     }
@@ -137,14 +137,14 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## If the tree is missing, the method can intake a star tree (i.e. no phylogeny)
     if(missing(tree)) {
-        if(missing(FADLAD)) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
-        if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".")
+        if(missing(FADLAD)) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.", call. = FALSE)
+        if(method == "continuous") stop("If no phylogeny is provided, method must be \"discrete\".", call. = FALSE)
         tree_was_missing <- TRUE
 
         ## Checking FADLAD disponibilities
         names_data <- rownames(data)
         ## All names must be present in the data
-        if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.")
+        if(!all(names_data %in% rownames(FADLAD))) stop("If no phylogeny is provided, all elements must be present in the FADLAD argument.", call. = FALSE)
         ## Generating the star tree
         tree <- stree(nrow_data, tip.label = names_data)
         tree$root.time <- max(FADLAD)
@@ -168,9 +168,9 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
         ## time must be at least three if discrete
-        if(time < 2) stop("Time must be greater or equal than 2.")
+        if(time < 2) stop("Time must be greater or equal than 2.", call. = FALSE)
 
-        if(missing(tree)) {
+        if(tree_was_missing) {
             ## Set tmax
             tmax <- min(FADLAD$LAD)
             ## Set t0
@@ -196,7 +196,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
                 }
             } else {
                 if(t0 > max(tree.age_tree[,1]) || t0 < min(tree.age_tree[,1])) {
-                    stop("t0 is out of the tree age range.")
+                    stop("t0 is out of the tree age range.", call. = FALSE)
                 }
             }
         }
@@ -231,7 +231,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## else inc.nodes must be logical
         check.class(inc.nodes, "logical")
         if(tree_was_missing && inc.nodes) {
-            stop("If no phylogeny is provided, inc.nodes must be FALSE.")
+            stop("If no phylogeny is provided, inc.nodes must be FALSE.", call. = FALSE)
         }
     } else {
         ## Include nodes is mandatory
@@ -243,17 +243,17 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree
         if(any(is.na(match(rownames(data), tree$tip.label)))) {
-            stop("The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+            stop("The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).", call. = FALSE)
         }
     } else {
         ## Check if the tree has node labels
         if(length(tree$node.label) != 0) {
             ## Check if the tree and the table are the same length
-            if(nrow_data != (Ntip_tree + Nnode(tree))) stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
+            if(nrow_data != (Ntip_tree + Nnode(tree))) stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.", call. = FALSE)
             ## Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the matrix and in the tree do not match!\nCheck especially the node labels in the tree and the matrix.")
+            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) stop("The labels in the matrix and in the tree do not match!\nCheck especially the node labels in the tree and the matrix.", call. = FALSE)
         } else {
-            stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
+            stop("The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.", call. = FALSE)
         }
     }
 
@@ -267,11 +267,11 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         check.class(FADLAD, "data.frame")
 
         if(!all(colnames(FADLAD) %in% c("FAD", "LAD"))) {
-            stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
+            stop("FADLAD must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).", call. = FALSE)
         } else {
             ## Check if FAD/LAD is in the right order (else reorder)
             if(colnames(FADLAD)[1] == "LAD") {
-                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], rownames = rownames(FADLAD))
+                FADLAD <- data.frame("FAD" = FADLAD[,2], "LAD" = FADLAD[,1], row.names = rownames(FADLAD))
             }
         }
 

@@ -12,6 +12,12 @@ test_that("Works with one or more groups", {
     random_groups <- list("group1" = random_groups[1:10],  "group2" = random_groups[11:20])
     ## Generating a dispRity object
     random_disparity <- custom.subsets(distance_matrix, random_groups)
+    
+    ## Some errors
+    expect_error(adonis.dispRity(make.dispRity(distance_matrix)))
+    expect_error(adonis.dispRity(random_disparity, matrix ~ time))
+
+
     ## Running a default NPMANOVA
     set.seed(1)
     test1 <- adonis.dispRity(random_disparity)
@@ -39,6 +45,16 @@ test_that("Works with one or more groups", {
     expect_equal(as.character(test2$call), c("vegan::adonis", "dist(matrix) ~ g1 + g2", "multi_groups", "10", "manhattan"))
     expect_equal(test2$aov.tab$Df, c(1, 1, 7, 9))
     expect_equal(round(test2$aov.tab[[6]], digit =5), round(c(0.18182, 0.18182, NA, NA), digit = 5))
+
+    ## Works well on non distance matrices
+
+    ## Calculating the distance matrix (PCO)
+    distance_matrix <- cmdscale(as.matrix(dist(character_matrix)), k = 19)
+    ## Generating a dispRity object
+    random_disparity <- custom.subsets(distance_matrix, random_groups)    
+    expect_warning(tests <- adonis.dispRity(random_disparity))
+    expect_is(tests, "adonis")
+
 
 
     ## Testing formula management

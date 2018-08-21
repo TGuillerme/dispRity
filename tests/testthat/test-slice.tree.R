@@ -179,6 +179,9 @@ test_that("slice.tree works properly", {
         slice.tree(tree, 0, 'proximity'), 'phylo'
         )
     expect_is(
+        slice.tree(tree, 0, 'random'), 'phylo'
+        )
+    expect_is(
         slice.tree(tree, 0, 'randOM'), 'phylo'
         )
     expect_is(
@@ -243,7 +246,7 @@ test_that("slice.tree works on a single edge", {
 
     tree <- read.tree(text = "((A:1, B:5):1, C:1);")
     tree$node.label <- as.character(paste0("n",seq(1:2)))
-
+    expect_equal(slice.tree(tree, age = 1, model = "acctran"), "B")
     expect_equal(slice.tree(tree, age = 1, model = "acctran"), "B")
     expect_equal(slice.tree(tree, age = 1, "deltran"), "n2")
     expect_equal(slice.tree(tree, age = 1, "proximity"), "B")

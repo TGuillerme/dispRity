@@ -221,6 +221,59 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     expect_error(
         chrono.subsets(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
         )
+
+    data(BeckLee_mat99)
+    data(BeckLee_mat50)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+
+    ## Method shortcuts
+    continous_shortcut <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "c", time = 3, model = "acctran")
+    discrete_shortcut <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "d", time = 3, inc.nodes = TRUE)
+
+    expect_is(continous_shortcut, "dispRity")
+    expect_is(discrete_shortcut, "dispRity")
+    expect_equal(continous_shortcut$call$subsets[1], "continuous")
+    expect_equal(discrete_shortcut$call$subsets[1], "discrete")
+    
+    ## Error when no phy and no/wrong FADLAD
+    expect_error(chrono.subsets(BeckLee_mat99, method = "continuous", time = 3, model = "acctran"))
+    expect_error(chrono.subsets(BeckLee_mat99, method = "discrete", time = 3, FADLAD = BeckLee_ages))
+    ## Error when only one time slice
+    expect_error(chrono.subsets(BeckLee_mat99, method = "discrete", time = 1, tree = BeckLee_tree))
+    
+    ## 10 and tmax works with all FADLADs
+    FADLAD_tmp <- tree.age(BeckLee_tree)
+    FADLAD_tmp <- FADLAD_tmp[-c(51:99),]
+    FADLAD_tmp <- data.frame("FAD" = FADLAD_tmp[,1], "LAD" = FADLAD_tmp[,1], row.names = FADLAD_tmp[,2])
+    test <- chrono.subsets(BeckLee_mat50, method = "discrete", time = 3, FADLAD = FADLAD_tmp)
+    expect_is(test, "dispRity")
+
+    ## Wrong t0
+    expect_error(chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "c", time = 3, model = "acctran", t0 = 10000))
+
+    ## Inc nodes with no tree
+    expect_error(chrono.subsets(BeckLee_mat50, method = "discrete", time = 3, FADLAD = FADLAD_tmp, inc.nodes = TRUE))
+
+    ## Tree doesn't match
+    wrong_tree <- rtree(50)
+    wrong_tree$root.time <- 100
+    expect_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = FALSE))
+    expect_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = TRUE))
+
+    ## FADLAD is inverse
+    FADLAD_tmp <- FADLAD_tmp[,c(2,1)]
+    test <- chrono.subsets(BeckLee_mat50, BeckLee_tree, method = "discrete", time = 3, FADLAD = FADLAD_tmp)
+    expect_is(test, "dispRity")
+
+    ## FADLAD contains too many taxa
+    FADLAD_tmp2 <- rbind(BeckLee_ages, data.frame("FAD" = 1, "LAD" = 2, row.names = "Bob"))
+    test <- chrono.subsets(BeckLee_mat50, BeckLee_tree, method = "discrete", time = 3, FADLAD = FADLAD_tmp2)
+    expect_is(test, "dispRity")
+
+    ## Verbose works
+    expect_message(chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "c", time = 3, model = "acctran", verbose = TRUE))
+
 })
 
 ## Output
@@ -240,6 +293,18 @@ test_that("Output format is correct", {
         , c("matrix", "call", "subsets")
         )
 })
+
+
+## Verbose
+test_that("Output format is correct", {
+    output_continuous <- capture_message(test <- chrono.subsets(data, tree, method = "continuous", time, model, inc.nodes, FADLAD, verbose = TRUE))
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+
+    output_discrete <- capture_message(test <- chrono.subsets(data, tree, method = "discrete", time, model, inc.nodes, FADLAD, verbose = TRUE))
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+})
+
+
 
 
 ## Example TESTING

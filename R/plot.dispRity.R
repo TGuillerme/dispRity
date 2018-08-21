@@ -126,10 +126,13 @@
 plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
+    match_call <- match.call()
 
     #SANITIZING
     #DATA
     if(length(class(data)) > 1) {
+
+        ## Subclass plots
 
         ## randtests plots
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
@@ -161,6 +164,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
+
+            ## Silence warnings
+            options(warn = -1)
 
             ## Get the ylim
             if(missing(ylim)) {
@@ -199,7 +205,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 }
                 ## Are quantiles proper proportions
                 if(any(quantiles < 0) | any(quantiles > 100)) {
-                    stop("quantiles(s) must be any value between 0 and 100.")
+                    stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
                 }
                 quantiles_n <- length(quantiles)
 
@@ -207,7 +213,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.class(cent.tend, "function")
                 ## The function must work
                 if(make.metric(cent.tend, silent = TRUE) != "level1") {
-                    stop("cent.tend argument must be a function that outputs a single numeric value.")
+                    stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
                 }
 
 
@@ -229,25 +235,81 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Add the observed disparity
             lines(data$times, data$dtt, col = col[1], lwd = 1.5)
+
+            ## Re-enable warnings
+            options(warn = 0)
         } 
 
-         # if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
-         #    ## Colours
-         #    if(missing(col)) {
-         #        col <- "grey"
-         #    }
-         #    ## Ylab
-         #    if(missing(ylab)) {
-         #        ylab <- "Akaike weights"
-         #    }
-         #    ## Ylim
-         #    if(missing(ylim)) {
-         #        ylim <- NULL
-         #    }
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
 
-         #    ## Plotting the model support
-         #    plot.model.test.support(data = data, col= col, ylab = ylab, ylim = ylim,...)
-         # }
+            ## Colours
+            if(missing(col)) {
+                col <- "grey"
+            }
+            ## Ylab
+            if(missing(ylab)) {
+                ylab <- "weighted AIC"
+            }
+
+            ## Ylim
+            if(missing(ylim)) {
+                ylim <- NULL
+            }
+
+            ## Plotting the model support
+            plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
+        }
+        
+        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
+            
+            ## xlab
+            if(missing(xlab)) { 
+                xlab <- "default"
+            } 
+
+            ## ylab
+            if(missing(ylab)) {
+                ylab <- "default"
+            }
+
+            ## col
+            if(missing(col)) {
+                col <- "default"
+            }
+    
+            ## ylim
+            if(missing(ylim)) {
+                ylim <- "default"
+            }
+
+            ## add
+            check.class(add, "logical")
+
+            ## density
+            if(!is.null(density)) {
+                check.class(density, "numeric")
+                check.length(density, 1, " must be a single numeric value.")
+            }
+
+            ## Preparing the data and the arguments
+            summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
+            colnames(summarised_data)[3] <- "obs"
+
+            ## Setting the default arguments
+            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
+            ylim <- default_arg[[1]]
+            xlab <- default_arg[[2]]
+            ylab <- default_arg[[3]]
+            if(length(ylab) == 0) {
+                ylab <- "disparity (simulated)"
+            }
+            col <- default_arg[[4]]
+
+            ## Plotting the model
+            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, add, density, ...)
+        }
+        
+        ## Exit subclass plots
         return(invisible())
     }
 
@@ -258,7 +320,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop("Data must be a 'dispRity' object.")
+    if(is.na(match("disparity", names(data)))) stop(paste0(as.expression(match_call$x), " must be contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"), call. = FALSE)
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     ## Check the bootstraps
@@ -276,7 +338,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         ## Are quantiles proper proportions
         if(any(quantiles < 0) | any(quantiles > 100)) {
-            stop("quantiles(s) must be any value between 0 and 100.")
+            stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
         }
     }
 
@@ -285,7 +347,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(cent.tend, "function")
     ## The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop("cent.tend argument must be a function that outputs a single numeric value.")
+        stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
     }
 
     ## type
@@ -380,7 +442,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
-            if(length(ylab) > 2) stop("ylab can have maximum of two elements.")
+            if(length(ylab) > 2) stop("ylab can have maximum of two elements.", call. = FALSE)
         }
     }
 
@@ -467,7 +529,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -483,7 +545,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
         return(invisible())
     }
@@ -511,7 +573,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         if(elements) {
             par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", div.log = FALSE, cex.lab = saved_par$cex.lab, element.pch = element.pch)
+            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
         }
 
         return(invisible())

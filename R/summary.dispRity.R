@@ -50,6 +50,8 @@
 # match_call <- list() ; match_call$cent.tend <- "median"
 
 summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = median, recall = FALSE, digits){#, results = "coefficients") {
+
+    ## Renaming object
     data <- object
 
     #----------------------
@@ -65,7 +67,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     check.class(cent.tend, "function")
     #The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop(paste(match_call$cent.tend), " cannot be used for measuring the central tendency.")
+        stop(paste(as.expression(match_call$cent.tend)), " cannot be used for measuring the central tendency.", call. = FALSE)
     }
     ## Update match_call if argument is empty
     if(is.null(match_call$cent.tend)) match_call$cent.tend <- "median"
@@ -86,13 +88,13 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     check.class(data, "dispRity")
     #Check if it is a bootstrapped dispRity object
     if(is.null(data$disparity) && is.na(class(data)[2])) {
-        stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "")
+        stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "", call. = FALSE)
     }
     
     #Check quantiles
     check.class(quantiles, "numeric", " must be any value between 1 and 100.")
     if(any(quantiles < 1) | any(quantiles > 100)) {
-        stop("quantiles(s) must be any value between 1 and 100.")
+        stop("quantiles(s) must be any value between 1 and 100.", call. = FALSE)
     }
 
     #----------------------
@@ -100,28 +102,62 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     #----------------------
     if(length(class(data)) > 1) {
 
-        # ## Model test summary
-        # if(class(data)[2] == "model.test") {
-        #     ## Extracting the AICs and the log likelihoods
-        #     base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
+        ## Model test summary
+        if(class(data)[2] == "model.test") {
+            ## Extracting the AICs and the log likelihoods
+            base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
 
-        #     ## Extracting the additional parameters
-        #     parameters <- sapply(data$full.details, function(x) x$par)
-        #     base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
+            ## Extracting the additional parameters
+            parameters <- lapply(data$full.details, function(x) x$par)
+
+            # MP: allow summaries to work on a single model
+            if(length(parameters) == 1)  {
+            	param.tmp <- c(parameters[[1]])
+            	#names(param.tmp) <- rownames(parameters[[1]])
+            	parameters <- list(param.tmp)
+            	}
+            base_results <- cbind(base_results, "param" = unlist(lapply(parameters, length)))
             
-        #     ## Get the full list of parameters
-        #     names_list <- lapply(parameters, names)
-        #     full_param <- unique(unlist(names_list))
+            ## Get the full list of parameters
+            
+           	names_list <- lapply(parameters, names)
+           	full_param <- unique(unlist(names_list))
 
-        #     output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
+            output_table <- cbind(base_results, do.call(rbind, lapply(parameters, match.parameters, full_param)))
+           
+            ## Rounding
+            summary_results <- digits.fun(output_table, digits, model.test = TRUE)
 
-        #     ## Rounding
-        #     summary_results <- digits.fun(output_table, digits, model.test = TRUE)
+            return(summary_results)
+        }
+        
+        # Model sim summary
+        if(class(data)[2] == "model.sim") {
 
-        #     return(summary_results)
-        # } else {
-            stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".")
-        # }
+            # if(recall){
+            #     print.dispRity(data)
+            # }
+
+            ## Extract the central tendencies
+            simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)
+
+            ## Get the quantiles
+            simulation_results <- apply(simulation_data_matrix, 1, get.summary, cent.tend = cent.tend, quantiles = quantiles)
+            simulation_results <- cbind(do.call(rbind, lapply(simulation_results, function(X) rbind(X$cent_tend[[1]]))),
+                                        do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))
+            colnames(simulation_results)[1] <- as.character(match_call$cent.tend)
+
+            ## Output table
+            output_table <- cbind("subsets" = rev(data$simulation.data$fix$subsets),
+                                  "n" = data$simulation.data$fix$sample_size,
+                                  "var" = unname(data$simulation.data$fix$variance),
+                                  simulation_results)
+            rownames(output_table) <- seq(1:nrow(output_table))
+            return(output_table)
+        }
+
+        ## No dual class summary available
+        stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".", call. = FALSE)
     } 
 
     #----------------------
@@ -159,7 +195,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     ## Add the observed values
     if(is_distribution) {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend), elements))), row.names = NULL)
-        names(summary_results)[3] <- paste("obs", match_call$cent.tend, sep=".")
+        names(summary_results)[3] <- paste("obs", as.expression(match_call$cent.tend), sep = ".")
     } else {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, disparity_values, elements))), row.names = NULL)
         names(summary_results)[3] <- "obs"
@@ -169,7 +205,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
-        names(summary_results)[4:length(summary_results)] <- c(paste("bs", match_call$cent.tend, sep="."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+        names(summary_results)[4:length(summary_results)] <- c(paste("bs", as.expression(match_call$cent.tend), sep = "."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
     } else {
         if(is_distribution) {
             ## Calculate the quantiles

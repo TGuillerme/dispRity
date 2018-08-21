@@ -7,6 +7,12 @@ context("ordinations")
 if(!require(Claddis)) devtools::install_github("TGuillerme/Claddis")
 
 test_that("Claddis.support works", {
+
+    ## Errors
+    expect_error(Claddis.ordination(matrix(1)))
+    expect_error(Claddis.ordination(list(matrix(1))))
+    expect_error(Claddis.ordination(Michaux1989, distance = "blob"))
+
     expect_equal(MorphDistMatrix(Michaux1989), MorphDistMatrix.support(Michaux1989))
     expect_equal(MorphDistMatrix(Gauthier1986), MorphDistMatrix.support(Gauthier1986))
 
@@ -45,6 +51,19 @@ test_that("Claddis.support works", {
 
     ## Error
     expect_error(MorphDistMatrix.support(morph.matrix, transform.proportional.distances = "bob"))
+
+    ## Transformation works
+    test1 <- MorphDistMatrix.support(Michaux1989, distance = c("Gower", "Max"), transform.proportional.distances = "sqrt")
+    test2 <- MorphDistMatrix.support(Michaux1989, distance = c("Gower", "Max"), transform.proportional.distances = "none")
+    expect_is(test1, "list")
+    expect_is(test2, "list")
+    expect_equal(lapply(test1, class), list("gower.dist.matrix" = "matrix", "max.dist.matrix" = "matrix"))
+    expect_equal(lapply(test2, class), list("gower.dist.matrix" = "matrix", "max.dist.matrix" = "matrix"))
+    expect_equal(test1[[1]][,1], test1[[2]][,1])
+    expect_equal(test2[[1]][,1], test2[[2]][,1])
+    expect_false(all(test2[[1]][,1] == test1[[1]][,1]))
+
+
 
     ##
     matrix_all <- MorphDistMatrix.support(morph.matrix)
@@ -123,7 +142,7 @@ test_that("geomorph.ordination works", {
     ## Sanitizing
     expect_error(geomorph.ordination(array))
     expect_error(geomorph.ordination(list(coords = array)))
-    expect_error(geomorph.ordination(dummy_procrustes, center = "no"))
+    expect_warning(expect_error(geomorph.ordination(dummy_procrustes, center = "no")))
     dummy_procrustes2 <- dummy_procrustes
     dummy_procrustes2$coords <- NULL
     expect_error(geomorph.ordination(dummy_procrustes2))
@@ -152,5 +171,15 @@ test_that("geomorph.ordination works", {
     test <- geomorph.ordination(dummy_geomorph_df2)
     expect_equal(dimnames(test$matrix)[[1]], letters[1:10])
     expect_equal(dimnames(test$matrix)[[2]], paste0("PC", 1:10))
+
+
+    ## Properly inherits the dimnames
+    attr(array, "dimnames")[[3]] <- letters[1:10]
+    dummy_procrustes <- list(coords = array)
+    class(dummy_procrustes) <- "gpagen"
+    dummy_geomorph_df <- list(coords = array, factor1 = as.factor(sample(LETTERS[1:2], 10, replace = TRUE)), factor2 = as.factor(c(rep(1, 5), rep(2, 5))))
+    class(dummy_geomorph_df) <- "geomorph.data.frame"
+    test <- geomorph.ordination(dummy_geomorph_df)
+    expect_equal(rownames(test$matrix), letters[1:10])
 
 })

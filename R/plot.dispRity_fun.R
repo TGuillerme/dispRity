@@ -81,7 +81,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
         }
     } else {
         ## Rarefaction level
-        if(what != "rows") {
+        if(!(what == "rows")) {
             return(summarised_data[which(summarised_data$n == rarefaction), what])
         } else {
             return(which(summarised_data$n == rarefaction))
@@ -91,6 +91,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 
 ## discrete plotting
 plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) {
+
 
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
@@ -102,7 +103,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
     ## Empty plot
     if(add == FALSE) {
         boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001,, type = "n", ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n")) ; warning("DEBUG: plot")
+        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n") ; warning("DEBUG: plot")
     }
 
     ## Set the shift parameter (for add)
@@ -291,9 +292,8 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_di
 }
 
 ## Plotting elements
-plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log, element.pch, ...) {
+plot.elements <- function(summarised_data, rarefaction, type, ylab, col, element.pch, ...) {
 
-    div.log = FALSE
     ## Check if ylab2 exists
     if(length(ylab) == 1) {
         ylab[[2]] <- "Elements"
@@ -302,32 +302,16 @@ plot.elements <- function(summarised_data, rarefaction, type, ylab, col, div.log
     ## Add the lines
     if(type == "continuous") {
         ## Continuous (straightforward)
-        if(div.log == FALSE) {
-            plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
-        } else {
-            plot(log(extract.from.summary(summarised_data, 2, rarefaction)), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
-        }
+        plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
     } else {
         ## Creating the dummy data table
         points_n <- length(unique(summarised_data$subsets))
         dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = points_n)
         colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
-        if(div.log == FALSE) {
-
-            boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
-            for(line in 1:points_n) {
-                # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
-                points(line, summarised_data[line,2], pch = element.pch, col = col)
-            }
-
-        } else {
-            
-            boxplot(log(dummy_mat), xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
-            for(line in 1:points_n) {
-                points(line, log(summarised_data[line,2]), pch = element.pch, col = col)
-                # lines(c(line-0.25, (line+0.25)), rep(log(summarised_data[line,2]), 2), lty = 2, lwd = 1.5)
-            }
-
+        boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/points_n, lty = 2, border = "white", type = "n")
+        for(line in 1:points_n) {
+            # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
+            points(line, summarised_data[line,2], pch = element.pch, col = col)
         }
     }
     ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)
@@ -407,6 +391,45 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
 
     return(output)
 }
+
+## The following is a modified version of plot.randtest from ade4 v1.4-3
+plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
+    
+    ## Observed data
+    observed <- data_sub$obs
+    ## Hist info
+    histogram <- data_sub$plot$hist
+    ## Plot info
+    xlim <- data_sub$plot$xlim
+    ylim <- c(0, max(data_sub$plot$hist$count))
+
+    ## Plotting the simulated data
+    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
+
+    ## Adding the observed data
+    lines(c(observed, observed), c(ylim[2]/2, 0))
+    points(observed, ylim[2]/2, pch = 18, cex = 2)
+
+    ## Adding the legend (test results)
+    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
+}
+
+# Plotting model tests results
+plot.model.test.support <- function(data, col, ylab, ylim, ...) {
+
+    ## Extracting the weighted aicc
+    plot_aic <- data$aic.models[, 3]
+
+    ## Ordering the weighted aicc
+    ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
+
+    ## Plot
+    plotcoords <- graphics::barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
+}
+
+# ~~~~~~~~~~
+# sequential.test plots
+# ~~~~~~~~~~
 
 
 ## Adding a line
@@ -533,47 +556,6 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
 #         significance.token(x_coords, y_coords, p_value, token.args)
 #     }
 # }
-
-
-## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
-    
-    ## Observed data
-    observed <- data_sub$obs
-    ## Hist info
-    histogram <- data_sub$plot$hist
-    ## Plot info
-    xlim <- data_sub$plot$xlim
-    ylim <- c(0, max(data_sub$plot$hist$count))
-
-    ## Plotting the simulated data
-    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
-
-    ## Adding the observed data
-    lines(c(observed, observed), c(ylim[2]/2, 0))
-    points(observed, ylim[2]/2, pch = 18, cex = 2)
-
-    ## Adding the legend (test results)
-    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
-}
-
-## Plotting model tests results
-# plot.model.test.support <- function(data, col, ylab, ylim, ...) {
-
-#         ## Extracting the weighted aicc
-#         weight_aicc <- data$aic.models[,3]
-
-#         ## Ordering the weighted aicc
-#         ordered_aicc <- weight_aicc[order(weight_aicc, decreasing = TRUE)]
-
-#         ## Plot
-#         plotcoords <- barplot(ordered_aicc, col = col, ylim = ylim,  ...)
-#         # plotcoords <- barplot(ordered_aicc, col = col, ylab = "Akaike weights") ; warning("DEBUG model.test plot")
-# }
-
-# ~~~~~~~~~~
-# sequential.test plots
-# ~~~~~~~~~~
 
 
 #Plot sequential.test shortcut

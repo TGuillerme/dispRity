@@ -3,7 +3,7 @@ title: "Future directions and references"
 author: "Thomas Guillerme"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: [References.bib, packages.bib]
+bibliography: [../References.bib, ../packages.bib]
 bst: sysbio.bst
 vignette: >
   %\VignetteIndexEntry{future directions}

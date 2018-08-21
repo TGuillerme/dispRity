@@ -28,6 +28,9 @@
 #' @author Thomas Guillerme
 #' @export
 #' 
+#' @references
+#' Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
+#' 
 
 # DEBUG
 # warning("DEBUG slice.tree")
@@ -46,7 +49,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     check.class(tree, "phylo")
     check.class(age, c("numeric", "integer"), " must be a single numeric value.")
     check.length(age, 1, " must be a single numeric value.")
-    check.class(model, "character", " must be one of the following: acctran, deltran, random, proximity.")
+    check.class(model, "character", " must be one of the following: \"acctran\", \"deltran\", \"random\", \"proximity\", \"equal.split\" or \"gradual.split\".")
     model <- tolower(model)
     check.method(model, c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split"), "Slicing model")
 

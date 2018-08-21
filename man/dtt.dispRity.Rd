@@ -4,7 +4,8 @@
 \alias{dtt.dispRity}
 \title{dtt dispRity (from \code{geiger::dtt})}
 \usage{
-dtt.dispRity(data, metric, tree, nsim = 0, model = "BM")
+dtt.dispRity(data, metric, tree, nsim = 0, model = "BM",
+  alternative = "two-sided", ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object or a \code{matrix}}
@@ -16,6 +17,10 @@ dtt.dispRity(data, metric, tree, nsim = 0, model = "BM")
 \item{nsim}{The number of simulations to calculate null disparity-through-time.}
 
 \item{model}{A evolutionary model for the simulations (see \code{\link[geiger]{sim.char}} - default is \code{"BM"}).}
+
+\item{alternative}{The H1 alternative (for calculating the p-value). Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}; see details.}
+
+\item{...}{Any other arguments to be passed to \code{\link[geiger]{dtt}}.}
 }
 \description{
 A wrapper for the \code{\link[geiger]{dtt}} function working with any disparity metric.

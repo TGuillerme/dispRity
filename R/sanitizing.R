@@ -77,9 +77,9 @@ check.length <- function(object, length, msg, errorif = FALSE) {
 }
 
 ## Checking if a method matches the authorized method
-check.method <- function(argument, all_arguments, msg) {
-    if(all(is.na(match(argument, all_arguments)))) {
-        stop(paste(msg, " must be one of the following: ", paste(all_arguments, collapse = ", "), ".", sep = ""),  call. = FALSE)
+check.method <- function(argument, all_arguments, msg, condition = all) {
+    if(condition(is.na(match(argument, all_arguments)))) {
+        stop(paste(msg, " must be one of the following: ", paste(all_arguments, collapse = ", "), ".", sep = ""), call. = FALSE)
     }
 }
 

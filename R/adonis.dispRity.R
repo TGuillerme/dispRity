@@ -88,8 +88,8 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     check.class(data, "dispRity")
 
     ## data must have subsets
-    if(is.null(data$subsets)) {
-        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.")
+    if(is.null(data$subsets) || length(data$subsets) == 0) {
+        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.", call. = FALSE)
     } else {
         if(is.na(match(data$call$subsets[1], "customised"))) {
             ## Subsets are time
@@ -105,7 +105,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     ## formula must have the right response/predictors
     formula_error_format <- "Formula must be of type: matrix ~ predictor(s) (where matrix is the response)."
     check.length(formula, 3, msg = formula_error_format)
-    if(!formula[[1]] == "~") stop(formula_error_format)
+    # if(!formula[[1]] == "~") stop(formula_error_format) #TG: Tested from formula
     if(!formula[[2]] == "matrix") stop(formula_error_format)
     ## Non-default predictors
     if(!formula[[3]] == "group") {
@@ -114,7 +114,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
-                stop(paste0(match_call$data, " has no time subsets.\nImpossible to use the following formula: ", match_call$formula))
+                stop(paste0(as.expression(match_call$data), " has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)), call. = FALSE)
             }
             
             ## Set up the model details
@@ -146,7 +146,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             ## Check the predictors
             for(predictor in 1:n_predictors) {
                 if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
-                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", match_call$data, " subsets.\n"))
+                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", as.expression(match_call$data), " subsets.\n"))
                 }
             
             }
@@ -181,7 +181,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     was_dist <- matrix[[2]]
     matrix <- matrix[[1]]
     if(warn && !was_dist) {
-        warning("The input data for adonis.dispRity is a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).\nMake sure that this is the desired methodological approach!")
+        warning("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).\nMake sure that this is the desired methodological approach!")
     }
 
     ## Making the predictors table

@@ -12,7 +12,7 @@
 #' @param verbose Whether to be verbose or not (\code{default = FALSE}).
 #'
 #' @return
-#' Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \\code{\link[phangorn]{RI}}) from the most parsimonious tree obtained from the matrix.
+#' Returns the parsimony score (using \code{\link[phangorn]{parsimony}}), the consistency and retention indices (using \code{\link[phangorn]{CI}} and \code{\link[phangorn]{RI}}) from the most parsimonious tree obtained from the matrix.
 #' Can also return the topological distance from the original tree if provided.
 #' 
 #' @details
@@ -60,14 +60,14 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         #model is not a sure function
         implemented_parsimony <- c("fitch", "sankoff")
         if(all(is.na(match(parsimony, implemented_parsimony)))) {
-            stop("The parsimony argument must be either a user's function or one of the following: ", paste(implemented_parsimony, collapse=", "), sep="")
+            stop("The parsimony argument must be either a user's function or one of the following: ", paste(implemented_parsimony, collapse=", "), sep="", call. = FALSE)
         }
         #setting the parsimony algorithm
         use.optim.parsimony <- TRUE
         parsimony.algorithm <- phangorn::optim.parsimony
         method <- parsimony
     } else {
-        stop("User functions not implemented yet for parsimony argument.")
+        stop("User functions not implemented yet for parsimony argument.", call. = FALSE)
         # use.optim.parsimony <- FALSE
         # parsimony.algorithm <- phangorn::parsimony
     }
@@ -75,7 +75,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     #first.tree
     if(class(first.tree) != "function") {
         if(any(unlist(lapply(first.tree, class)) != "function")) {
-            stop("first.tree argument must be a list of functions to calculate the first tree.")
+            stop("first.tree argument must be a list of functions to calculate the first tree.", call. = FALSE)
         }
     }
 
@@ -84,7 +84,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         check.class(orig.tree, "phylo")
         #must be same size as the matrix
         if(any(sort(row.names(matrix)) != sort(orig.tree$tip.label))) {
-            stop("Provided orig.tree has not the same taxa as the matrix.")
+            stop("Provided orig.tree has not the same taxa as the matrix.", call. = FALSE)
         }
         #distance
         check.class(distance, "function")
@@ -106,11 +106,11 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
 
     #Creating the contrast matrix
     if(missing(contrast.matrix)) {
-        constrast.matrix <- get.contrast.matrix(matrix)
+        contrast.matrix <- get.contrast.matrix(matrix)
     }
 
     #Creating the phyDat object
-    matrix_phyDat <- phangorn::phyDat(data = matrix, type = "USER", contrast = constrast.matrix)
+    matrix_phyDat <- phangorn::phyDat(data = matrix, type = "USER", contrast = contrast.matrix)
 
     #Calcualte the first tree
     if(class(first.tree) == "function") {

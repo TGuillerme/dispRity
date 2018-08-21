@@ -155,6 +155,10 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
 
     # Now testing for PCOA
     dummy_ord <- pcoa(dummy_dis)
@@ -168,6 +172,11 @@ test_that("ellipse.volume metric", {
     expect_equal(
     	true_vol, test_vol
     	)
+    # test with the eigen val estimation
+    expect_equal(
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        )
+
 
     # # Testing with eigen
     # dummy_ord <- eigen(dummy_dis, symmetric=TRUE)
@@ -247,9 +256,6 @@ test_that("convhull.surface metric", {
     expect_error(
         convhull.surface(list(matrix))
         )
-    expect_message(
-        convhull.surface(space.maker(22, 21, rnorm))
-        ) 
 
     #Works fine!
     expect_is(
@@ -281,9 +287,7 @@ test_that("convhull.volume metric", {
     expect_error(
         convhull.volume(list(matrix))
         )
-    expect_message(
-        convhull.volume(space.maker(22, 21, rnorm))
-        ) 
+
 
     #Works fine!
     expect_is(
@@ -352,41 +356,52 @@ test_that("ancestral.dist", {
         get.ancestors(4, tree, full = FALSE),
         c(10))
 
-
     set.seed(1)
     matrix <- matrix(rnorm(90), 9, 10)
     tree <- rtree(5)
     tree$node.label <- paste0("n", 1:4)
     rownames(matrix) <- c(tree$tip.label, tree$node.label)
 
-     test <- nodes.coordinates(matrix, tree, full = FALSE)
-     expect_is(test, "matrix")
-     expect_equal(rownames(test), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
+    test <- nodes.coordinates(matrix, tree, full = FALSE)
+    expect_is(test, "matrix")
+    expect_equal(rownames(test), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
 
-     test <- nodes.coordinates(matrix, tree, full = TRUE)
-     expect_is(test[[1]], "matrix")
-     expect_is(test[[2]], "matrix")
-     expect_is(test[[3]], "matrix")
+    test <- nodes.coordinates(matrix, tree, full = TRUE)
+    expect_is(test[[1]], "matrix")
+    expect_is(test[[2]], "matrix")
+    expect_is(test[[3]], "matrix")
 
-     expect_equal(rownames(test[[1]]), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
-     expect_equal(rownames(test[[2]]), c("n1", "n1", "n1", "n3", "n3", NA, NA, NA, "n1"))
-     expect_equal(rownames(test[[3]]), c(NA, NA, NA, "n1", "n1", NA, NA, NA, NA))
+    expect_equal(rownames(test[[1]]), c("n2", "n2", "n3", "n4", "n4", "n1", "n1", "n1", "n3"))
+    expect_equal(rownames(test[[2]]), c("n1", "n1", "n1", "n3", "n3", NA, NA, NA, "n1"))
+    expect_equal(rownames(test[[3]]), c(NA, NA, NA, "n1", "n1", NA, NA, NA, NA))
 
-     set.seed(1)
-     matrix <- matrix(rnorm(90), 9, 10)
-     tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
-     rownames(matrix) <- c(tree$tip.label, tree$node.label)
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
 
-     direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
-     all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
+    direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
+    all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
 
-     test1 <- ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
-     test2 <- ancestral.dist(matrix, nodes.coords = all_anc_centroids)
+    test1 <- ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
+    test2 <- ancestral.dist(matrix, nodes.coords = all_anc_centroids)
 
-     expect_equal(test1[6], c("n1" = 0))
-     expect_equal(test2[6], c("n1" = 0))
-     expect_lt(test1[1], test2[1])
-     expect_equal(test1[7], test2[7])
+    expect_equal(test1[6], c("n1" = 0))
+    expect_equal(test2[6], c("n1" = 0))
+    expect_lt(test1[1], test2[1])
+    expect_equal(test1[7], test2[7])
+
+
+    ## Ancestral dist without node coordinates
+    test3 <- ancestral.dist(matrix, tree = tree, full = TRUE)
+    expect_warning(test4 <- ancestral.dist(matrix))
+    expect_equal(names(test3), c(tree$tip.label, tree$node.label))
+    expect_equal(names(test4), c(tree$tip.label, tree$node.label))
+    expect_equal(test4, centroids(matrix))
+    
+    ## Ancestral dist with fixed node coordinates
+    test5 <- ancestral.dist(matrix, nodes.coords = rep(0, ncol(matrix)))
+    expect_equal(test5, centroids(matrix, 0))
 
 })
 
@@ -403,6 +418,15 @@ test_that("span.tree.length", {
     dist <- as.matrix(dist(matrix))
 
     expect_equal(test, round(span.tree.length(dist), digit = 5))
+
+    ## Working for a non-distance matrix
+    set.seed(1)
+    matrix <- matrix(rnorm(25), 5, 5)
+    test1 <- round(span.tree.length(matrix), digit = 5)
+    test2 <- round(span.tree.length(matrix, method = "euclidean"), digit = 5)
+    expect_error(span.tree.length(matrix, method = "wooops"))
+    expect_equal(test1, test2)
+
 })
 
 test_that("pairwise.dist", {

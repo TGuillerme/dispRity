@@ -11,6 +11,9 @@ test_that("get.bin.ages works", {
 
     ## Sanitising
     expect_error(get.bin.ages("tree", what = "Start", type = "Age", ICS = 2015))
+    tree_tmp <- tree
+    tree_tmp$root.time <- NULL
+    expect_error(get.bin.ages(tree_tmp))
     expect_error(get.bin.ages(tree, what = "bla", type = "Age", ICS = 2015))
     expect_error(get.bin.ages(tree, what = "Start", type = "age", ICS = 2015))
     expect_error(get.bin.ages(tree, what = "Start", type = "Age", ICS = 1989))

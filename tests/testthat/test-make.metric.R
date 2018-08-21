@@ -23,6 +23,17 @@ test_that("Output is correct", {
     	make.metric(function(x)as.character(x))
     	)
 
+    ## Verbose
+    error <- capture_error(make.metric(function(x) as.character(x), verbose = TRUE))
+    expect_equal(as.character(error),
+        "Error: The provided function did not output a matrix or a numeric vector!\nDoes the following output a matrix or a numeric vector?\n    function(x) as.character(x)(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...).\n"
+        )
+
+    error <- capture_error(make.metric(function(x) as.character(x), silent = FALSE))
+    expect_equal(as.character(error),
+        "Error: The provided function did not output a matrix or a numeric vector!\nDoes the following output a matrix or a numeric vector?\n    function(x) as.character(x)(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...).\n"
+        )
+
     expect_equal(
     	make.metric(mean, silent=TRUE), "level1"
     	)

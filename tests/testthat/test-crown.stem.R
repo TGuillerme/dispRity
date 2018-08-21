@@ -8,8 +8,6 @@ tree1 <- BeckLee_tree
 set.seed(1)
 tree2 <- rtree(10)
 
-
-
 ## Test
 test_that("crown.stem works", {
     ## Sanitizing
@@ -22,6 +20,10 @@ test_that("crown.stem works", {
     expect_error(
         crown.stem(tree2)
         )
+
+    ## No crown
+    tree_no_crown <- drop.tip(tree1, tip = tree1$tip.label[which(tree.age(tree1)$ages == 0)])
+    expect_error(crown.stem(tree_no_crown))
 
     ## Testing
     output1 <- crown.stem(tree1)

@@ -1,9 +1,31 @@
+Release:
+
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
-[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
+[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.2.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846254.svg)](https://doi.org/10.5281/zenodo.846254)
 
-**dispRity** is a `R` modular package for measuring disparity from multidimensional matrices.
+Development (master):
+
+[![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
+[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.2.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846254.svg)](https://doi.org/10.5281/zenodo.846254)
+
+CRAN:
+
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.3.3-6666ff.svg)](https://cran.r-project.org/)
+[![cran version](http://www.r-pkg.org/badges/version/dispRity)](https://cran.r-project.org/package=dispRity)
+[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/dispRity)](https://github.com/metacran/cranlogs.app)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.846254.svg)](https://doi.org/10.5281/zenodo.846254)
+<!-- ![](http://cranlogs.r-pkg.org/badges/dispRity)-->
+
+### **`dispRity`** is a `R` modular package for measuring disparity from multidimensional matrices.
+
+<a href="https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022"><img src="http://tguillerme.github.io/images/OA.png" height="15" widht="15"/></a> 
+Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022) associated with this package.
 
 <a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
 Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the package's novel features.
@@ -17,54 +39,58 @@ library(dispRity)
 ```
 
 The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref = "release"` option with `ref = "master"`.
-If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/patch_notes.md) for the latest developments.
+If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) for the latest developments.
 
-> Installation problems? Make sure you're using the latest R version (or at least `> 3.3.0`) and try again.
+The package is available in the [CRAN Task Views](https://cran.r-project.org/web/views/) in [Phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html).
 
-> To optimise your `dispRity` usage and speed, make sure you have the last version of `ape` installed (`5.0` - [download here](https://cran.r-project.org/web/packages/ape/index.html))!
-If you get a corruption error while updateding your packages, remove both (`remove.packages(c("ape", "dispRity"))`), quit and relaunch `R` and simply reinstall `dispRity` (`ape` should update automatically).
+## Vignettes and manuals
 
-#### Vignettes
+A detailed vignette is available [online](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or as a [pdf](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf):
 
-See the package manual online [here](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or download the pdf version [here](https://github.com/TGuillerme/dispRity/raw/master/inst/gitbook/_book/dispRity_manual.pdf).
+ <a href="https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html"><img src="http://tguillerme.github.io/images/rawgit.png" height="30"/></a> <a href="https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf"><img src="http://tguillerme.github.io/images/pdf.gif" height="30"/></a> 
+ 
+Otherwise, each functions has a detailed associated manual with examples in `R` (`?which.function`).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-##### Latest patch notes
-* 2018/02/28 - v1.0.0 *got CRAN*
-  * `custom.subset` can now automatically create clade groups if a `phylo` object is passed to `group`.
-  * *New* utility function: `extinction.subsets`, to get the list to be passed to `test.dispRity` for testing the effect of extinction.
-  * *New* test function: `dtt.dispRity`, a wrapper for [`geiger::dtt`](https://github.com/mwpennell/geiger-v2). This version is slower that `geiger::dtt` but allows any univariate disparity metric!
-  * *New* test function: `adonis.dispRity`, a wrapper for [`vegan::adonis`](https://github.com/vegandevs/vegan).
-  * *New* utility function: `crown.stem` for separating a tree into crown and stem groups.
-  * *New* disparity metric: `span.tree.length` the length of the minimum spanning tree.
-  * *New* disparity metric: `pairwise.dist`: the element's pairwise distances.
-  * *New* disparity metric: `radius`: the radius of each dimensions.
-  * *New* disparity metric: `n.ball.volume`: the *n*-dimensional sphere or ellipsoid volume.
-  * **New argument** in `time.subsets`, `model = "punctuated"` and `model = "gradual"` that retain the probability of being either the descendant or the ancestor. This probability is passed to `boot.matrix` .
-  * Changed calls to `stats::dist` to `vegan::vegdist` to allow more distances to be passed through `methods` arguments.
-  * `slice.tree` can now slice through a single edge.
-  * Various small speed improvements.
-  * Correct behaviour in `tree.age` to estimate correct ages for trees with fossils only.
-  * **Change name** throughout the package, `subsample` is now replaced by `subset` (e.g. `time.subsamples` is now renamed `time.subsets`, `data$subsamples` is now `data$subsets`, etc...)
-  * **Changed argument** in `time.subsets`, `model = "gradual"` is now replaced by `model = "proximity"` and `model = "punctuated"` is now replaced by `model = "random"`.
-     
+## Latest patch notes
+* 2018/03/20 - v1.1.0 *got CRAN*
+
+  * CRAN release 1 with the additional `Claddis.ordination` function
+  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`)
+  * Improved test coverage
+  * Registered C symbols properly
+  * Improved S3 methods
+  * **Changed name**: `scale.dispRity` is now `rescale.dispRity`
+  * **Changed name**: `merge.subsets` is now `combine.subsets`
+  * **Changed name**: `time.subsets` is now `chrono.subsets` - `time.subsets` can still be called as an alias of for the same function
+
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
-Authors
+Authors and contributors
 -------
 
 * [Thomas Guillerme](http://tguillerme.github.io)
 * [Natalie Cooper](http://nhcooper123.github.io)
 * [Mark Puttick](https://puttickbiology.wordpress.com/)
 
-Citation
+Citations
 -------
-If you are using this package, please cite the following Zenodo DOI (an associated paper will be added soon):
+If you are using this package, please cite the paper:
 
-* Guillerme, T. (**2015**). dispRity: a package for measuring disparity in R. Zenodo. 10.5281/zenodo.31742
+* Guillerme, T. (**2018**). dispRity: a modular R package for measuring disparity. *Methods in Ecology and Evolution*. [doi:10.1111/2041-210X.13022](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022)
 
- [BibTeX](https://zenodo.org/record/846254/export/hx), [EndNote](https://zenodo.org/record/846254/export/xe), [DataCite](https://zenodo.org/record/846254/export/dcite3), [RefWorks](https://zenodo.org/record/846254/export/xw)
+
+<!-- [BibTeX](https://zenodo.org/record/846254/export/hx), [EndNote](https://zenodo.org/record/846254/export/xe), [DataCite](https://zenodo.org/record/846254/export/dcite3), [RefWorks](https://zenodo.org/record/846254/export/xw)-->
+
+To cite the [`dispRity` manual](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf), please use:
+
+* Guillerme, T. & Cooper, N. (**2018**): dispRity manual. *figshare*. Preprint. 10.6084/m9.figshare.6187337.v1
+
+To cite the [time slicing method](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364) from the `chrono.subsets` function, please use:
+
+* Guillerme, T. & Cooper, N. (**2018**): Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. *Palaeontology*, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364)
+
 
 Acknowledgments
 -------

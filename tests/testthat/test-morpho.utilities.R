@@ -107,6 +107,7 @@ test_that("apply.NA", {
     expect_error(apply.NA("matrix", 4))
     expect_error(apply.NA(matrix, "4"))
     expect_error(apply.NA(matrix, 51))
+    expect_error(apply.NA(matrix, rep("character", 51)))
     expect_error(apply.NA(matrix, c("1", "character")))
     expect_error(apply.NA(matrix, c("clade", "character")))
     expect_error(apply.NA(matrix, c("clade", "character"), "tree"))

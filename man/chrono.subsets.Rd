@@ -51,7 +51,7 @@ If \code{method = "continuous"} and when the sampling is done along an edge of t
      }
      \item Gradual models:
      \itemize{
-         \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50% probability each.
+         \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50\% probability each.
          \item \code{"gradual.split"}: selects the ancestral node or the descendant with a probability relative to branch length.
      }
 }
