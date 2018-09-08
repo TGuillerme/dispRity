@@ -79,20 +79,32 @@ Citations
 -------
 If you are using this package, please cite the paper:
 
-* Guillerme, T. (**2018**). dispRity: a modular R package for measuring disparity. *Methods in Ecology and Evolution*. [doi:10.1111/2041-210X.13022](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022)
+* Guillerme, T. (**2018**) dispRity: a modular R package for measuring disparity. *Methods in Ecology and Evolution*. [doi:10.1111/2041-210X.13022](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/2041-210X.13022)
 
 
 <!-- [BibTeX](https://zenodo.org/record/846254/export/hx), [EndNote](https://zenodo.org/record/846254/export/xe), [DataCite](https://zenodo.org/record/846254/export/dcite3), [RefWorks](https://zenodo.org/record/846254/export/xw)-->
 
 To cite the [`dispRity` manual](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf), please use:
 
-* Guillerme, T. & Cooper, N. (**2018**): dispRity manual. *figshare*. Preprint. 10.6084/m9.figshare.6187337.v1
+* Guillerme, T. & Cooper, N. (**2018**) dispRity manual. *figshare*. Preprint. 10.6084/m9.figshare.6187337.v1
 
 To cite the [time slicing method](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364) from the `chrono.subsets` function, please use:
 
-* Guillerme, T. & Cooper, N. (**2018**): Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. *Palaeontology*, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364)
+* Guillerme, T. & Cooper, N. (**2018**) Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. *Palaeontology*, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364)
 
 
 Acknowledgments
 -------
 Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
+
+Used in
+-------
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Whole-Genome+Duplication+and+Plant+Macroevolution&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+JW Clark, PCJ Donoghue (**2018**) Whole-Genome Duplication and Plant Macroevolution. *Trends in plant science*. [DOI: 10.1016/j.tplants.2018.07.006](https://www.sciencedirect.com/science/article/pii/S1360138518301596)
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=The+long-term+ecology+and+evolution+of+marine+reptiles+in+a+Jurassic+seaway&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+D Foffa, MT Young, TL Stubbs, KG Dexter, SL Brusatte (**2018**) The long-term ecology and evolution of marine reptiles in a Jurassic seaway. *Nature Ecology & Evolution*. [DOI: 10.1038/s41559-018-0656-6](https://www.nature.com/articles/s41559-018-0656-6)
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Time+for+a+rethink%3A+time+sub%E2%80%90sampling+methods+in+disparity%E2%80%90through%E2%80%90time+analyses&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+T Guillerme, N Cooper (**2018**) Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. *Palaeontology*. 61: 481-493. [DOI: 10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364)
