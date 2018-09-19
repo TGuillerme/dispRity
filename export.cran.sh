@@ -93,10 +93,17 @@ sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version 
 # fi
 
 ## Remove Claddis ordination (to be done automatically through -e)
+rm ${TMPPATH}/R/Claddis.ordination.R
+rm ${TMPPATH}/R/Claddis.support.R
+rm ${TMPPATH}/man/Claddis.ordination.Rd
 
-rm R/Claddis.ordination.R
-rm R/Claddis.support.R
-rm man/Claddis.ordination.Rd
+## Remove Claddis ordination from the tests
+sed '5,125d' ${TMPPATH}/tests/testthat/test-ordination.R > ${TMPPATH}/tests/testthat/test-ordination.R.tmp
+mv ${TMPPATH}/tests/testthat/test-ordination.R.tmp ${TMPPATH}/tests/testthat/test-ordination.R
+
+## Remove Claddis ordination from the NAMESPACE
+sed 's/export(Claddis.ordination)//g' ${TMPPATH}/NAMESPACE > ${TMPPATH}/NAMESPACE.tmp
+mv ${TMPPATH}/NAMESPACE.tmp ${TMPPATH}/NAMESPACE
 
 
 ## Compile the package
