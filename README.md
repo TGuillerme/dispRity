@@ -54,17 +54,19 @@ Otherwise, each functions has a detailed associated manual with examples in `R` 
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
-## Latest patch notes
-* 2018/03/20 - v1.1.0 *got CRAN*
 
-  * CRAN release 1 with the additional `Claddis.ordination` function
-  * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`)
-  * Improved test coverage
-  * Registered C symbols properly
-  * Improved S3 methods
-  * **Changed name**: `scale.dispRity` is now `rescale.dispRity`
-  * **Changed name**: `merge.subsets` is now `combine.subsets`
-  * **Changed name**: `time.subsets` is now `chrono.subsets` - `time.subsets` can still be called as an alias of for the same function
+## Latest patch notes
+* 2018/09/19 -  v1.2 *model tests*
+
+  * *New* functions: `model.test`, `model.test.sim` and `model.test.wrapper` for fitting models of disparity evolution through time (with associated manuals, vignettes and `S3` methods! Thanks to [Mark Puttick](https://github.com/PuttickMacroevolution)).
+  * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
+  * S3 `print` method for objects of class `"dtt"` and `"dispRity"` (from `dtt.dispRity`).
+  * tydiversed most of the error messages.
+  * `dtt.dispRity` now allows to specify the alternative hypothesis (if `nsim > 0`).
+  * `ellipse.volume` can now take an explicit eigen value vector (the eigen values are still automatically estimated correctly for PCO and MDS).
+  * Improved metric checking messages from `make.metric` when dealing with optional arguments.
+  * Removed cascade of warnings triggered by `plot.dispRity.dtt`.
+  * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 

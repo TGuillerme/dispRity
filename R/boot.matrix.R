@@ -179,7 +179,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                 stop("Probabilities given to prob argument must be positive.", call. = FALSE)
             }
 
-            ## Check if probabilities are weights
+            ## Check if probabilities are weights
             if(any(prob > 1)) {
                 prob <- prob/max(prob)
             }
