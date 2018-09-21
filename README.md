@@ -56,7 +56,7 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
 
 
 ## Latest patch notes
-* 2018/09/19 -  v1.2 *model tests*
+* 2018/09/19 -  v1.2.1 *model tests*
 
   * *New* functions: `model.test`, `model.test.sim` and `model.test.wrapper` for fitting models of disparity evolution through time (with associated manuals, vignettes and `S3` methods! Thanks to [Mark Puttick](https://github.com/PuttickMacroevolution)).
   * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
