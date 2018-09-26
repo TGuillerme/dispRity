@@ -21,6 +21,18 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
+
+[Next release] dispRity v1.2.2 (2018-09-26)
+=========================
+
+<!-- ### MINOR IMPROVEMENTS -->
+  
+<!--  * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`. -->
+  
+### BUG FIXES
+
+  * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is a non-bootstrapped distribution.
+
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================
   

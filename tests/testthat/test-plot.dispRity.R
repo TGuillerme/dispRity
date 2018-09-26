@@ -84,18 +84,29 @@ test_that("transpose.box works", {
         transpose.box(disparity, rarefaction = 99, is_bootstrapped = TRUE)
         )
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
-        ,c(100, 7))
+        length(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
+        ,7)
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
-        ,c(100, 7))
+        length(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
+        ,7)
 
     test <- transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE)
     for(subsets in 1:length(disparity$subsets)) {
         expect_equal(
-            test[,subsets]
+            as.vector(test[[subsets]])
             ,as.vector(disparity$disparity[[subsets]][[2]]))
     }
+    ## Unequal boxes test
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = centroids)
+    subset_length <- unique(unlist(lapply(data$subsets, function(x) return(length(x[[1]])))))
+    names(subset_length) <- c("crown", "stem") 
+    test <- transpose.box(data, rarefaction = FALSE, is_bootstrapped = FALSE)
+    expect_is(test, "list")
+    expect_equal(names(test), c("crown", "stem"))
+    expect_equal(unlist(lapply(test, length)), subset_length)
+
 })
 
 test_that("split.summary.data works", {
@@ -144,15 +155,12 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
     expect_error(plot(disparity, rarefaction = 1))
     expect_null(plot(disparity, rarefaction = 5))
+    expect_null(plot(disparity, observed = TRUE))
+    expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
 
     ## Testing additional behaviours for plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
-
-
-
-
-    
+    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))    
 })
 
 

@@ -396,10 +396,10 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 
     ## sort
     if(!missing(sort)) {
-        check.class(sort, "numeric")
+        check.class(sort, c("numeric", "integer"))
         check.length(sort, length_subsets, " must be the same length as the number of subsets in data.")
         if(all.equal(sort(sort), seq(from = 1, to = length_subsets)) != TRUE) {
-            stop(paste("Sort argument can only contain unique numbers between 1 and ", length_subsets, ".", sep = ""), call. = FALSE)
+            stop(paste("The sort argument can only contain unique numbers between 1 and ", length_subsets, ".", sep = ""), call. = FALSE)
         }
     } else {
         if(decreasing == FALSE) sort <- seq(from = 1, to = length_subsets)

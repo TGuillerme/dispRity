@@ -34,7 +34,7 @@
 
 \item{chrono.subsets}{\code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
 
-\item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).}
+\item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
@@ -83,6 +83,12 @@ plot(disparity, type = "continuous", chrono.subsets = FALSE,
 
 ## Rarefactions plots
 plot(disparity, rarefaction = TRUE)
+
+## Observed data
+plot(disparity, observed = TRUE)
+
+## Observed data with graphical details
+plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 
 \dontrun{
 ## Geoscale plots
