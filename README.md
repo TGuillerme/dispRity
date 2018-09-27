@@ -44,6 +44,8 @@ If you're using the `master` branch, see the [patch notes](https://github.com/TG
 
 The package is available in the [CRAN Task Views in Phylogenetics](https://CRAN.R-project.org/view=Phylogenetics).
 
+[How do I know which version to choose?](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html#version)
+
 ## Vignettes and manuals
 
 A detailed vignette is available [online](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html) or as a [pdf](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/dispRity_manual.pdf):

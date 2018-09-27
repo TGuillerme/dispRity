@@ -129,7 +129,7 @@ and Natalie Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-09-21}
+  \date{2018-09-27}
 
 \usepackage{booktabs}
 
@@ -225,7 +225,8 @@ several other packages (\texttt{ade4}, \texttt{geometry},
 
 \hypertarget{noCRAN}{\section{To CRAN or not to CRAN?}\label{noCRAN}}
 
-This package can be installed via \href{}{the CRAN} or via
+This package can be installed via
+\href{https://cran.r-project.org/package=dispRity}{the CRAN} or via
 \href{https://github.com/TGuillerme/dispRity}{GitHub}.
 
 \begin{itemize}
@@ -254,6 +255,67 @@ Functions not available on the CRAN version (1.2):
 \item
   \protect\hyperlink{Claddis-ordination}{\texttt{Claddis.ordination}}
 \end{itemize}
+
+\subsection{So which version do I choose?}\label{version}
+
+There are always three version of the package available:
+
+\begin{itemize}
+\tightlist
+\item
+  The CRAN one
+\item
+  The GitHub \texttt{release} one
+\item
+  The GitHub \texttt{master} one
+\end{itemize}
+
+The differences between the CRAN one and the GitHub \texttt{release} or
+\texttt{master} ones is explained just above. For the the GitHub
+version, the differences are that the \texttt{release} one is more
+stable (i.e.~more rarely modified) and the \texttt{master} one is more
+live one (i.e.~bug fixes and new functionalities are added as they
+come).
+
+If you want the latest-latest version of the package I suggest using the
+GitHub \texttt{master} one, especially if you recently emailed me
+reporting a minor bug or wanting a new functionality! Note however that
+\emph{it can happen} that the \texttt{master} version can sometimes be
+bugged (especially when there are major \texttt{R} and \texttt{R}
+packages updates), however, the status of the package state on both the
+\texttt{release} and the \texttt{master} version is constantly displayed
+on the \href{https://github.com/TGuillerme/dispRity/}{\texttt{README}
+page} of the package with the nice badges displaying these different
+(and constantly tested) information
+
+\begin{itemize}
+\tightlist
+\item
+  The build status:
+  \href{https://travis-ci.org/TGuillerme/dispRity}{\includegraphics{https://travis-ci.org/TGuillerme/dispRity.svg?branch=master}}
+  which tests whether the package compiles (i.e.~can be installed on
+  your computer).
+\item
+  The code coverage:
+  \href{https://codecov.io/gh/TGuillerme/dispRity}{\includegraphics{https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg}}
+  which indicates the percentage of lines in the code that have been
+  tested for expected behaviour.
+\item
+  The project status:
+  \href{http://www.repostatus.org/\#active}{\includegraphics{http://www.repostatus.org/badges/latest/active.svg}}
+  which indicates whether this package is maintained regularly or
+  forgotten in the abyss of internet.
+\item
+  The development version:
+  \href{https://github.com/TGuillerme/dispRity}{\includegraphics{https://img.shields.io/badge/devel\%20version-1.2.1-green.svg?style=flat}}
+  which indicates which version of the package you are about to install.
+\end{itemize}
+
+Note that when we (the \texttt{dispRity} package collaborators!) are
+developing some more major versions, including some more complex
+features for example, they will never be released on either the the
+versions described above. Therefore you can rest assure that you will
+never use a badly bugged version of \texttt{dispRity}! Enjoy!
 
 \section{Help}\label{help}
 
