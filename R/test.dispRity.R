@@ -209,7 +209,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## correction
     check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-    if(!is.null(data$call$bootstrap) && correction == "none" && length(data$subsets) > 2 && match_call$test != "adonis.dispRity") {
+    if((is_bootstrapped || is_distribution)  && correction == "none" && length(data$subsets) > 2 && match_call$test != "adonis.dispRity") {
         warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
     }
 
@@ -227,7 +227,13 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
 
     ## Extracting the data (sends error if data is not bootstrapped)
-    extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+    if(is_distribution && !is_bootstrapped) {
+        extracted_data <- extract.dispRity(data, observed = TRUE, rarefaction = rarefaction, concatenate = concatenate)
+        ## Transform into the listed structure
+        extracted_data <- lapply(extracted_data, list)
+    } else {
+        extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+    }
 
     ## Custom, pairwise, sequential and referential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {

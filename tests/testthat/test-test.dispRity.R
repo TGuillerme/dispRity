@@ -331,6 +331,12 @@ test_that("test.dispRity works fine", {
         test.dispRity(disparity, t.test, comparisons = "sequential", correction = "none")
     )
 
+    ## Works fine with observed distributions
+    data <- dispRity(customised_subsets, metric = centroids)
+    expect_warning(results <- test.dispRity(data, t.test, "sequential"))
+    expect_is(results, "list")
+    expect_equal(unlist(lapply(results, dim)), rep(c(2,1), 3))
+
 })
 
 test_that("example works fine", {

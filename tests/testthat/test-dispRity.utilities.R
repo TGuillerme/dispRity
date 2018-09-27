@@ -319,6 +319,13 @@ test_that("extract.dispRity", {
         ,names(data$subsets)[c(1,5)])
 
 
+    ## Test whithout disparity but with distribution
+    data <- dispRity(BeckLee_mat99, metric = centroids)
+    expect_error(extract.dispRity(data, observed = FALSE))
+    test <- extract.dispRity(data, observed = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
+
 })
 
 test_that("rescale.dispRity", {

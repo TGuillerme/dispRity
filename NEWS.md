@@ -22,16 +22,17 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.2 (2018-09-26)
+[Next release] dispRity v1.2.2 (2018-09-27)
 =========================
 
-<!-- ### MINOR IMPROVEMENTS -->
+### MINOR IMPROVEMENTS
   
-<!--  * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`. -->
+  * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`.
   
 ### BUG FIXES
 
-  * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is a non-bootstrapped distribution.
+  * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is an observed distribution.
+  * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
 
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================
