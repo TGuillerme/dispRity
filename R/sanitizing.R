@@ -83,6 +83,59 @@ check.method <- function(argument, all_arguments, msg, condition = all) {
     }
 }
 
+## Checking if a matrix is a distance matrix
+check.dist.matrix <- function(matrix, method, just.check = FALSE) {
+
+    ## Is distance
+    was_dist <- FALSE
+
+    ## Is the matrix square?
+    if(dim(matrix)[1] == dim(matrix)[2] &&
+       all(diag(matrix) == 0) &&
+       all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
+
+        ## It was a distance matrix!
+        was_dist <- TRUE
+    }
+
+    if(just.check) {
+        ## Simply return the check
+        return(was_dist)
+    } else {
+        ## Return a matrix
+        if(was_dist) {
+            return(list(stats::as.dist(matrix), "was_dist" = TRUE))
+        } else {
+            return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
+        }
+    }
+}
+
+
+#     ## Is the matrix square?
+#     if(dim(matrix)[1] == dim(matrix)[2]) {
+
+#         ## Check if the diagonal is equal to 0
+#         if(all(diag(matrix) == 0)) {
+
+#             ## Check if both triangles are equal
+#             if(all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
+#                 return(list(stats::as.dist(matrix), "was_dist" = TRUE))
+#             } else {
+#                 return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
+#             }
+#         } else {
+#             return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
+#         }
+#     } else {
+#         return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
+#     }
+# }
+
+
+
+
+
 ## Transforming a tree to binary with no zero length branches.
 # bin.tree <- function(tree){
 #     if(!is.binary.tree(tree)) {

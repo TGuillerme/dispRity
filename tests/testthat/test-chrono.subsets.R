@@ -452,3 +452,20 @@ test_that("probability models work", {
     expect_true(all(test2$subsets[[1]][[1]][,1:2] >= 1))
     expect_true(all(test2$subsets[[1]][[1]][,3] < 1))
 })
+
+
+
+
+test_that("chrono.subsets detects distance matrices", {
+    non_dist <- matrix(1:100, 10, 10)
+    rownames(non_dist) <- letters[1:10]
+    is_dist <- as.matrix(dist(non_dist))
+
+    set.seed(1)
+    tree <- rtree(10, tip.label = letters[1:10])
+    tree$root.time <- max(tree.age(tree)$age)
+
+    expect_warning(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
+    msg <- capture_warnings(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
+    expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+})

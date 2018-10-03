@@ -99,3 +99,24 @@ test_that("check.method works", {
     expect_error(check.method("c", methods))
     expect_null(check.method(c("a", "c"), methods))
 })
+
+## Test distance
+test_that("check.dist.matrix works", {
+    non_dist <- matrix(1:9, 3, 3)
+    is_dist <- as.matrix(dist(non_dist))
+
+    expect_error(check.dist.matrix(non_dist, just.check = "blabla"))
+    expect_error(check.dist.matrix(non_dist, just.check = FALSE))
+    expect_false(check.dist.matrix(non_dist, just.check = TRUE))
+    expect_true(check.dist.matrix(is_dist, just.check = TRUE))
+    test <- check.dist.matrix(non_dist, just.check = FALSE, method = "euclidean")
+    expect_equal(class(test), "list")
+    expect_equal(class(test[[1]]), "dist")
+    expect_false(test[[2]])
+    test <- check.dist.matrix(is_dist, just.check = FALSE, method = "euclidean")
+    expect_equal(class(test), "list")
+    expect_equal(class(test[[1]]), "dist")
+    expect_true(test[[2]])
+    expect_true(all(test[[1]] == dist(non_dist)))
+})
+

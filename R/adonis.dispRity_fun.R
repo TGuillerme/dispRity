@@ -1,25 +1,3 @@
-
-## Checking if the matrix is a distance matrix
-check.dist.matrix <- function(matrix, method) {
-
-    ## Is the matrix square?
-    if(dim(matrix)[1] == dim(matrix)[2]) {
-        ## Check if the diagonal is equal to 0
-        if(all(diag(matrix) == 0)) {
-            ## Check if both triangles are equal
-            if(all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
-                return(list(stats::as.dist(matrix), "was_dist" = TRUE))
-            } else {
-                return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
-            }
-        } else {
-            return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
-        }
-    } else {
-        return(list(vegan::vegdist(matrix, method = method), "was_dist" = FALSE))
-    }
-}
-
 ## Make the factors for the dispRity object
 make.factors <- function(data, group_names, group_variables, time_subsets, pool_time) {
     ## Extracting the factors

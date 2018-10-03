@@ -69,7 +69,12 @@ custom.subsets <- function(data, group) {
     ## ----------------------
     ## DATA
     ## data must be a matrix
-    check.class(data, 'matrix')
+    check.class(data, "matrix")
+
+    ## Check whether it is a distance matrix
+    if(check.dist.matrix(data, just.check = TRUE)) {
+        warning("custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+    }
 
     ## data must have rownames
     if(is.null(rownames(data))) {

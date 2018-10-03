@@ -109,6 +109,12 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## DATA
     ## data must be a matrix
     check.class(data, "matrix")
+
+    ## Check whether it is a distance matrix
+    if(check.dist.matrix(data, just.check = TRUE)) {
+        warning("chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+    }
+
     ## nrow_data variable declaration
     nrow_data <- nrow(data)
 

@@ -93,6 +93,12 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     if(class(data) != "dispRity") {
         ## Data must be a matrix
         check.class(data, "matrix")
+
+        ## Check whether it is a distance matrix
+        if(check.dist.matrix(data, just.check = TRUE)) {
+            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+        }
+
         ## Creating the dispRity object
         dispRity_object <- make.dispRity(data = data)
         #dispRity_object$subsets$origin$elements <- seq(1:nrow(data))
