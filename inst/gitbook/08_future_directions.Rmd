@@ -12,30 +12,17 @@ vignette: >
 ---
 
 
-# Future directions
+# Developing `dispRity`
 
-## More tests!
+Everyone is more than welcome to help developing this package, whether it is through developing functions (metrics, tests, plots, etc...), the manual (more examples, typos, etc...) or completely new functionalities!
 
-Some more tests are being developed such as a `sequential.test` to run sequential linear models for testing hypothesis in disparity through time or a `model.test` developed in collaboration with [Mark Puttick](https://puttickbiology.wordpress.com/) to fit modes of evolution to disparity curves.
-Stay tuned!
 
-## More rarefactions!
 
-I am working on including several "clever" bootstrap and rarefaction algorithms for palaeobiology studies based on geological sampling (following:and Butler et al. 2012 *Evolution* and Kotric and Knoll 2015 *Palaeobiology*).
+## More functions
 
-## Faster disparity calculations
+## More manuals
 
-I am slowly implementing parallel disparity calculation as well as C implementations of some disparity metrics to increase significantly improve the speed of the `dispRity` function.
 
-## More modularity
-
-I am equally slowly developing functions to allow more of the options in the package to be modular (in the same way as the `metric` argument in `dispRity`).
-The next arguments to benefit this increased modularity will be `chrono.subsets`'s `model` argument and `boot.matrix`'s `type` argument.
-
-## More suggestions?
-
-More generally, I welcome any suggestions or collaborations for developing some additional specific ideas.
-Feel free to contact me via email (<guillert@tcd.ie>) or if you are a GitHub user, directly create an issue on the [GitHub page](https://github.com/TGuillerme/dispRity).
 
 <!-- 
 * Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
