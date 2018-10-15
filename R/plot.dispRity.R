@@ -122,7 +122,7 @@
 # token.args=NULL
 
 # data(disparity)
-# data <- dispRity
+# data <- disparity
 # type = "line"
 # elements = TRUE
 # ylim = c(0, 5)
@@ -211,7 +211,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 }
                 ## Are quantiles proper proportions
                 if(any(quantiles < 0) | any(quantiles > 100)) {
-                    stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
+                    stop.call("", "quantiles(s) must be any value between 0 and 100.")
                 }
                 quantiles_n <- length(quantiles)
 
@@ -219,7 +219,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.class(cent.tend, "function")
                 ## The function must work
                 if(make.metric(cent.tend, silent = TRUE) != "level1") {
-                    stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
+                    stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
                 }
 
 
@@ -326,7 +326,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop(paste0(as.expression(match_call$x), " must be contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"), call. = FALSE)
+    if(is.na(match("disparity", names(data)))) {
+        stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+    }
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     ## Check the bootstraps
@@ -344,7 +346,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         ## Are quantiles proper proportions
         if(any(quantiles < 0) | any(quantiles > 100)) {
-            stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
+            stop.call("", "quantiles(s) must be any value between 0 and 100.")
         }
     }
 
@@ -353,7 +355,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(cent.tend, "function")
     ## The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
+        stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
     }
 
     ## type
@@ -422,7 +424,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## Check if subsets have no rarefaction
         if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
             wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
-            stop(paste("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), ".", sep = "" ))
+            stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
         }
     }
 
@@ -456,7 +458,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
-            if(length(ylab) > 2) stop("ylab can have maximum of two elements.", call. = FALSE)
+            if(length(ylab) > 2) {
+                stop.call("", "ylab can have maximum of two elements.")
+            }
         }
     }
 

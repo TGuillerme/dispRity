@@ -89,7 +89,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## data must have subsets
     if(is.null(data$subsets) || length(data$subsets) == 0) {
-        stop("The data must have subsets. Use custom.subsets() or chrono.subsets() to create some.", call. = FALSE)
+        stop.call(match_call$data, " must have subsets. Use custom.subsets() or chrono.subsets() to create some.")
     } else {
         if(is.na(match(data$call$subsets[1], "customised"))) {
             ## Subsets are time
@@ -106,7 +106,9 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     formula_error_format <- "Formula must be of type: matrix ~ predictor(s) (where matrix is the response)."
     check.length(formula, 3, msg = formula_error_format)
     # if(!formula[[1]] == "~") stop(formula_error_format) #TG: Tested from formula
-    if(!formula[[2]] == "matrix") stop(formula_error_format)
+    if(!formula[[2]] == "matrix") {
+        stop.call("", formula_error_format)
+    }
     ## Non-default predictors
     if(!formula[[3]] == "group") {
 
@@ -114,7 +116,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         if(formula[[3]] == "time" || formula[[3]] == "chrono.subsets") {
 
             if(!time_subsets) {
-                stop(paste0(as.expression(match_call$data), " has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)), call. = FALSE)
+                stop.call(match_call$data, paste0(" has no time subsets.\nImpossible to use the following formula: ", as.expression(match_call$formula)))
             }
             
             ## Set up the model details
@@ -146,7 +148,7 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             ## Check the predictors
             for(predictor in 1:n_predictors) {
                 if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
-                    stop(paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in ", as.expression(match_call$data), " subsets.\n"))
+                    stop.call(msg.pre = paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in "), call = as.expression(match_call$data), msg = " subsets.")
                 }
             
             }

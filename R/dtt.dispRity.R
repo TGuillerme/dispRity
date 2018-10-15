@@ -86,7 +86,7 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
-        stop("Impossible to apply a dimension-level 3 metric on disparity data.", call. = FALSE)
+        stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
     }
 
     ## tree

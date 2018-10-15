@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.2 (2018-10-11)
+[Next release] dispRity v1.2.2 (2018-10-15)
 =========================
 
 ### MINOR IMPROVEMENTS
@@ -30,6 +30,7 @@ dispRity 0.2.0 (2016-04-01)
   * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`.
   * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
+  * better internal handling of error messages.
 
   
 ### BUG FIXES

@@ -31,7 +31,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     check.class(data, "list", msg = error_msg)
     ## Must have at least one matrix
     if(!any(names(data) %in% "matrix")) {
-        stop(error_msg, call. = FALSE)
+        stop.call("", error_msg)
     }
     ## Matrix must be a matrix
     check.class(data$matrix, "matrix", msg = error_msg)
@@ -52,7 +52,7 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
         check.class(k, "numeric")
         check.length(k, 1, " must be a single numeric value.")
         if(k > max_k) {
-            stop(paste("k cannot be greater than the number of rows in data - 1 (data has", max_k, "rows).", sep = ""))
+            stop.call("", paste0("k cannot be greater than the number of rows in data - 1 (data has", max_k, "rows)."))
         }
     }
 

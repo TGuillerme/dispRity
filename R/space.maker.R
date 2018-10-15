@@ -160,7 +160,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         }
     } else {
         if(circle_fun) {
-            stop("random.circle requires arguments!", call. = FALSE)
+            stop.call("", "random.circle requires arguments!")
         }
     }
 
@@ -168,7 +168,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     if(!is.null(cor.matrix)) {
         check.class(cor.matrix, "matrix")
         if(any(dim(cor.matrix) != dimensions)) {
-            stop(paste0("cor.matrix must be a square matrix of size ", dimensions, "x", dimensions, "."), call. = FALSE)
+            stop.call("", paste0("cor.matrix must be a square matrix of size ", dimensions, "*", dimensions, "."))
         }
     }
 
@@ -177,7 +177,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         check.class(scree, "numeric")
         check.length(scree, dimensions, msg = " must be of the same length as the dimensions argument", errorif = FALSE)
         if(sum(scree) != 1) {
-            stop("scree argument must be a numeric vector summing to 1.", call. = FALSE)
+            stop.call("", "scree argument must be a numeric vector summing to 1.")
         }
     }
 
