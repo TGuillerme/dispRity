@@ -120,3 +120,29 @@ test_that("check.dist.matrix works", {
     expect_true(all(test[[1]] == dist(non_dist)))
 })
 
+
+## Stop call
+test_that("stop.call works", {
+
+    return.match.call <- function(character, numeric, fun, formula, matrix) {
+        match_call <- match.call()
+        return(match_call)
+    }
+
+    my_matrix <- matrix(NA)
+    call <- return.match.call("a", 1, mean, ~ a + b, my_matrix)
+
+    test <- capture_error(stop.call(call$character, " works."))
+    expect_equal(test[[1]], "a works.")
+    test <- capture_error(stop.call(call$numeric, " works."))
+    expect_equal(test[[1]], "1 works.")
+    test <- capture_error(stop.call(call$fun, " works."))
+    expect_equal(test[[1]], "mean works.")
+    test <- capture_error(stop.call(call$formula, " works."))
+    expect_equal(test[[1]], "~a + b works.")
+    test <- capture_error(stop.call(call$matrix, " works."))
+    expect_equal(test[[1]], "my_matrix works.")
+
+    test <- capture_error(stop.call(call$character, " works.", "look: "))
+    expect_equal(test[[1]], "look: a works.")
+})

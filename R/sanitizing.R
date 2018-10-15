@@ -111,6 +111,10 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE) {
     }
 }
 
+## Stop with call message wrapper function
+stop.call <- function(call, msg, msg.pre = "") {
+    stop(paste0(msg.pre, as.expression(call), msg), call. = FALSE)
+}
 
 #     ## Is the matrix square?
 #     if(dim(matrix)[1] == dim(matrix)[2]) {
