@@ -45,8 +45,11 @@ lapply.get.elements <- function(subsets, bootstrapped = TRUE) {
 
 ## lapply wrapper for getting the disparity observed values
 lapply.observed <- function(disparity) {
-    output <- ifelse(any(is.na(disparity$elements)), NA, c(disparity$elements))
-    return(output)
+    output <- if(any(is.na(disparity$elements))) {
+        return(NA)
+    } else {
+        return(c(disparity$elements))
+    }
 }
 
 ## mapply wrapper for getting the disparity observed values
