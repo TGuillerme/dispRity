@@ -31,6 +31,10 @@ Check out the [paper](https://besjournals.onlinelibrary.wiley.com/doi/abs/10.111
 <a href="https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546"><img src="http://tguillerme.github.io/images/logo-FS.png" height="15" widht="15"/></a> 
 Check out the [presentation](https://figshare.com/articles/New_approaches_to_disparity-through-time_analysis/3437546) or the [video](https://www.youtube.com/watch?v=ZzipKw8W8KQ) of some of the package's novel features.
 
+<!-- Link available until August 2019
+https://programme.europa-organisation.com/slides/programme_jointCongressEvolBiology-2018/webconf/683_19082018_1140_antigone1_Thomas_Guillerme_480/index.html
+ -->
+
 ## Installing dispRity
 ```r
 if(!require(devtools)) install.packages("devtools")
