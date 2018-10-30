@@ -34,7 +34,6 @@ procrustes <- geomorph::gpagen(plethodon$land, PrinAxes = FALSE)
 ## Obtaining the ordination matrix
 geomorph.ordination(procrustes)
 
-
 ## Using a geomorph.data.frame
 geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species)
 

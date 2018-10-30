@@ -186,4 +186,9 @@ test_that("geomorph.ordination works", {
     test <- geomorph.ordination(dummy_geomorph_df)
     expect_equal(rownames(test$matrix), letters[1:10])
 
+    ## No factor
+    dummy_geomorph_df <- list(coords = array, factor1 = sample(LETTERS[1:2], 10, replace = TRUE), factor2 = c(rep(1, 5), rep(2, 5)))
+    class(dummy_geomorph_df) <- "geomorph.data.frame"
+    expect_warning(geomorph.ordination(dummy_geomorph_df), "Attempting to coerce variables in dummy_geomorph_df as factor")
+
 })

@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.2 (2018-10-17)
+[Next release] dispRity v1.2.2 (2018-10-30)
 =========================
 
 ### MINOR IMPROVEMENTS
@@ -31,13 +31,13 @@ dispRity 0.2.0 (2016-04-01)
   * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
   * better internal handling of error messages.
-
   
 ### BUG FIXES
 
   * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is an observed distribution.
   * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
   * `summary.dispRity` handles non-bootstrapped distributions display properly.
+  * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
 
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================

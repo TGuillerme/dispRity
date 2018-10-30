@@ -23,7 +23,6 @@
 #' 
 #' ## Obtaining the ordination matrix
 #' geomorph.ordination(procrustes)
-#'
 #' 
 #' ## Using a geomorph.data.frame
 #' geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species)
@@ -94,6 +93,17 @@ geomorph.ordination <- function(data, ordinate = TRUE, ...) {
     if(class(data) == "geomorph.data.frame") {
         ## Get the meta data
         factors <- which(unlist(lapply(data, class)) == "factor")
+
+        if(length(factors) == 0) {
+            ## Try coercing the into factors
+            no_factors <- which(names(data) == "Csize" | names(data) == "coords")
+            data_tmp <- data[-no_factors]
+            warning(paste0("Attempting to coerce variables in ", as.expression(match_call$data), " as factor."), call. = FALSE)
+            data[-no_factors] <- lapply(data_tmp, as.factor)
+
+            ## Get the meta data
+            factors <- which(unlist(lapply(data, class)) == "factor")
+        }
 
         ## Get the list of subsets
         group_list <- unlist(lapply(data[factors], make.groups.factors), recursive = FALSE)
