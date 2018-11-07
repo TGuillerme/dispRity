@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.2 (2018-10-30)
+[Next release] dispRity v1.2.2 (2018-11-07)
 =========================
 
 ### MINOR IMPROVEMENTS
@@ -38,6 +38,7 @@ dispRity 0.2.0 (2016-04-01)
   * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
   * `summary.dispRity` handles non-bootstrapped distributions display properly.
   * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
+  * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
 
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================

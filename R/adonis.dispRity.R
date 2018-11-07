@@ -147,10 +147,13 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
             
             ## Check the predictors
             for(predictor in 1:n_predictors) {
-                if(is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))) {
-                    stop.call(msg.pre = paste0("Predictor ", as.character(formula[[3]][[predictor + 1]]), " not found in "), call = as.expression(match_call$data), msg = " subsets.")
+                nas <- is.na(match(as.character(formula[[3]][[predictor + 1]]), group_names))
+                if(any(nas)) {
+                    arithmetic_signs <- c("+", "-", "/", "*", ":", "|")
+                    if(!(as.character(formula[[3]][[predictor + 1]])[nas] %in% arithmetic_signs)) {
+                        stop.call(msg.pre = paste0("Predictor ", as.character(formula[[3]][[predictor + 1]])[nas], " not found in "), call = as.expression(match_call$data), msg = " subsets.")
+                    }
                 }
-            
             }
         }
     } else {
