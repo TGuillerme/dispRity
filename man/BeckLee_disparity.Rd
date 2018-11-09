@@ -12,6 +12,24 @@ This matrix is based on the \code{\link{BeckLee}} dataset and split into 120 con
 It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 Disparity was calculated as the \code{\link[base]{sum}} of the \code{\link{variances}} (\code{\link{dispRity}}).
 }
+\examples{
+## Loading the data
+data(BeckLee_mat99)
+data(BeckLee_tree)
+data(BeckLee_ages)
+
+## Creating the 7 subsets
+subsets <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
+                          time = seq(from = 0, to = 120, by = 1),
+                          method = "continuous", model = "proximity",
+                          FADLAD = BeckLee_ages)
+
+## Bootstrapping and rarefying
+bootstraps <- boot.matrix(subsets, bootstraps = 100)
+
+## Calculating disparity
+BeckLee_disparity <- dispRity(bootstraps, metric = c(sum, variances))
+}
 \seealso{
 BeckLee disparity
 }
