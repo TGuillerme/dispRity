@@ -98,15 +98,19 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     ## NULL TESTING
 
+    ## Handle the disparity metrics
+    metric <- get.metric.from.call(data, what = "fun")
+    args <- get.metric.from.call(data, what = "args")
+
     ## Generating the null models
     if(length(data$subsets) != 1) {
         ## Subdivide the data per subsets
         sub_data <- lapply(as.list(seq(1:length(data$subsets))), function(X) get.subsets(data, X))
         ## Apply the data to all subsets
-        null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, null.scree, scale)
+        null_models_results <- lapply(sub_data, make.null.model, replicates, null.distrib, null.args, null.cor, null.scree, scale, metric, args)
     } else {
         ## Apply the data to one subsets
-        null_models_results <- make.null.model(data, replicates, null.distrib, null.args, null.cor, null.scree, scale)
+        null_models_results <- make.null.model(data, replicates, null.distrib, null.args, null.cor, null.scree, scale, metric, args)
     }
 
     ## testing the null hypothesis
