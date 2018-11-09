@@ -22,7 +22,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
     
     ## ylab
     if(ylab[[1]] == "default") {
-        ylab <- as.character(data$call$disparity$metrics)
+        ylab <- as.character(data$call$disparity$metrics$name)
         if(elements == TRUE) {
             ylab[2] <- "Elements"
         }

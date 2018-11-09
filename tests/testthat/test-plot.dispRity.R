@@ -21,7 +21,7 @@ test_that("set.default works", {
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
     expect_equal(
         round(test[[1]], 5)
-        , round(c(0.96824, 2.02266), 5))
+        , round(c(0.84084, 2.01246), 5))
     expect_equal(
         test[[2]]
         , "Subsets")
@@ -72,7 +72,7 @@ test_that("extract.from.summary works", {
         ,as.numeric(rep(NA, 7)))
     expect_equal(
         extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
-        ,c(1.776, 1.808, 1.881, 1.880, 1.902, 1.885, 1.823))
+        ,c(1.772, 1.796, 1.871, 1.878, 1.900, 1.884, 1.808))
 })
 
 test_that("transpose.box works", {
@@ -177,7 +177,6 @@ test_that("plot.dispRity continuous with NAs", {
   
 })
 
-
 test_that("plot.dispRity with model.test data", {
     load("model_test_data.Rda")
 
@@ -202,7 +201,6 @@ test_that("plot.dispRity with model.test data", {
     expect_null(plot(model_test_data))
     expect_null(plot(model_simulation_inherit, add = TRUE))
 })
-
 
 test_that("plot subclasses works", {
   

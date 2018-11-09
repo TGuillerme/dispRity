@@ -27,7 +27,7 @@ dispRity 0.2.0 (2016-04-01)
 
 ### NEW FEATURE
 
- * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. `null.test` or `model.test`).
+ * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. in `null.test`).
 
 ### MINOR IMPROVEMENTS
 

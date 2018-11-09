@@ -109,7 +109,7 @@ test_that("disparity.bootstraps internal works", {
     ## which should be recorded by the way
     expect_equal(
         dim(test0)
-        ,as.numeric(c(data$call$dimensions,data$call$dimensions, data$call$bootstrap[[1]])))
+        ,as.numeric(c(data$call$dimensions, data$call$dimensions, data$call$bootstrap[[1]])))
     ## test0 and test0v are the same
     expect_true(all(test0 == test0v))
 
@@ -460,6 +460,34 @@ test_that("dispRity deals with probabilities subsets", {
 
 })
 
+
+test_that("dispRity works with function recycling", {
+
+    set.seed(1)
+    mat <- matrix(rnorm(25), 5, 5)
+    level2 <- dispRity(mat, metric = centroids)
+    expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun"))
+    expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
+
+    level1 <- dispRity(level2, metric = mean)
+    expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat)))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun"))
+    expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
+
+    ## With arguments
+    level2 <- dispRity(mat, metric = centroids, centroid = 0)
+    expect_equal(extract.dispRity(level2)[[1]], centroids(mat, centroid = 0))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
+    expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
+
+    level1 <- dispRity(level2, metric = mean)
+    expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat, centroid = 0)))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
+    expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
+})
 
 
 # test_that("dispRity works in parallel", {
