@@ -106,6 +106,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     
     ## Saving the call
     match_call <- match.call()
+    dots <- list(...)
 
     # warning("DEBUG") ; return(match_call)
 
@@ -261,7 +262,22 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     data$disparity <- disparity
 
     ## Update the call
-    data$call$disparity$metrics <- c(data$call$disparity$metrics, match_call$metric)
+    data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)
+    if(!is.null(data$call$disparity$metrics$fun)) {
+        data$call$disparity$metrics$fun <- list(unlist(data$call$disparity$metrics$fun, recursive = FALSE), metric)
+    } else {
+        data$call$disparity$metrics$fun <- metric
+    }
+
+    if(!is.null(data$call$disparity$metrics$args)) {
+        if(length(dots) != 0) {
+            data$call$disparity$metrics$args <- list(unlist(data$call$disparity$metrics$args, recursive = FALSE), dots)
+        }
+    } else {
+        if(length(dots) != 0) {
+            data$call$disparity$metrics$args <- dots
+        }
+    }
 
     return(data)
 }
