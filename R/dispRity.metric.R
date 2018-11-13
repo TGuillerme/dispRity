@@ -167,7 +167,7 @@ dimension.level2.fun <- function(matrix, ...) {
 }
 
 dimension.level1.fun <- function(X, ...) {
-    cat("Dimension level 12 functions implemented in dispRity:\n")
+    cat("Dimension level 1 functions implemented in dispRity:\n")
     cat("?ellipse.volume\n")
     cat("?convhull.surface\n")
     cat("?convhull.volume\n")
