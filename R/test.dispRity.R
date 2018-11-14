@@ -142,20 +142,20 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         
         ## must be pairs
         if(length(unlist(comparisons))%%2 != 0) {
-            stop.call(match_call$comparisons, paste0(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsets."))
+            stop.call("", paste0("comparisons must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsets."))
         }
         
         ## If character, input must match the subsets
         if(class(unlist(comparisons)) == "character") {
-            if(any(is.na(match(unlist(comparisons), data$subsets)))){
-                stop.call(match_call$comparions, ": at least one subset was not found.")
+            if(any(is.na(match(unlist(comparisons), names(data$subsets))))){
+                stop.call("", "comparisons: at least one subset was not found.")
             }
         }
 
         ## If numeric, input must match de subsets numbers
         if(class(unlist(comparisons)) == "numeric") {
             if(any(is.na(match(unlist(comparisons), seq(1:length(data$subsets)))))){
-                stop.call(match_call$comparisons, ": at least one subset was not found.")
+                stop.call("",  "comparisons : at least one subset was not found.")
             }
         }
 
@@ -225,9 +225,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## correction
     check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-    if((is_bootstrapped || is_distribution)  && correction == "none" && length(data$subsets) > 2 && match_call$test != "adonis.dispRity") {
-        warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
-    }
 
     ## ----------------------
     ##  APPLYING THE TEST
@@ -255,6 +252,11 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         ## Get the list of comparisons
         comp_subsets <- set.comparisons.list(comp, extracted_data, comparisons)
+
+        ## Check the correction
+        if((is_bootstrapped || is_distribution) && correction == "none" && length(comp_subsets) > 1 && match_call$test != "adonis.dispRity") {
+            warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
+        }
 
         ## Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, test, ...)

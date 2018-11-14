@@ -331,6 +331,11 @@ test_that("test.dispRity works fine", {
         test.dispRity(disparity, t.test, comparisons = "sequential", correction = "none")
     )
 
+    ## Works with comparisons as a named list
+    test_pass <- test.dispRity(sum_of_ranges, t.test, comparisons = list(c("V1.1", "V1.2")))
+    expect_is(test_pass, "list")
+    expect_equal(length(test_pass), 3)
+
     ## Works fine with observed distributions
     data <- dispRity(customised_subsets, metric = centroids)
     expect_warning(results <- test.dispRity(data, t.test, "sequential"))
@@ -417,15 +422,15 @@ test_that("example works fine", {
         ,c(3,5))
 
     ## Testing the effect of the groups
-    expect_warning(expect_is(
+    expect_is(
         test.dispRity(sum_of_ranges, lm, "all")
-        , "lm"))
-    expect_warning(expect_equal(
+        , "lm")
+    expect_equal(
         test.dispRity(sum_of_ranges, lm, "all")$rank
-        , 3))
-    expect_warning(expect_equal(
+        , 3)
+    expect_equal(
         as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
-        , c(24.048441,2.053728,9.798655)))
+        , c(24.048441,2.053728,9.798655))
 })
 
 
