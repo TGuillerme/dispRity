@@ -138,9 +138,8 @@ test_that("ellipse.volume metric", {
     }
 
     # Dummy data
-    dummy_cla <- replicate(50, sample(c(0,1,2), 20, replace=T, prob=c(0.45,0.45,0.1)))
+    dummy_cla <- replicate(50, sample(c(0,1,2), 20, replace = TRUE, prob = c(0.45,0.45,0.1)))
     rownames(dummy_cla) <- LETTERS[1:20]
-    dummy_tre <- rtree(20, tip.label=LETTERS[1:20])
 
     # Dummy ordination
     dummy_dis <- as.matrix(dist(dummy_cla, method="euclidean"))
@@ -148,7 +147,7 @@ test_that("ellipse.volume metric", {
     dummy_eig <- dummy_ord$eig
     dummy_ord <- dummy_ord$points
     # Calculate the true volume (with eigen values)
-    true_vol <- volume.true(dummy_ord, dummy_eig)
+    true_vol <- volume.true(dummy_ord, dummy_eig/(nrow(dummy_dis)-1))
     # Calculate the volume without the eigen values
     test_vol <- ellipse.volume(dummy_ord)
     # test
@@ -157,7 +156,7 @@ test_that("ellipse.volume metric", {
     	)
     # test with the eigen val estimation
     expect_equal(
-        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
         )
 
     # Now testing for PCOA
@@ -165,7 +164,7 @@ test_that("ellipse.volume metric", {
     dummy_eig <- dummy_ord$values[,1]
     dummy_ord <- dummy_ord$vectors
     # Calculate the true volume (with eigen values)
-    true_vol <- volume.true(dummy_ord, dummy_eig)
+    true_vol <- volume.true(dummy_ord, dummy_eig/(nrow(dummy_dis)-1))
     # Calculate the volume without the eigen values
     test_vol <- ellipse.volume(dummy_ord)
     # test
@@ -174,68 +173,58 @@ test_that("ellipse.volume metric", {
     	)
     # test with the eigen val estimation
     expect_equal(
-        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig)
+        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
         )
 
 
-    # # Testing with eigen
-    # dummy_ord <- eigen(dummy_dis, symmetric=TRUE)
-    # dummy_eig <- dummy_ord$values
-    # dummy_ord <- dummy_ord$vectors
-    # # Calculate the true volume (with eigen values)
-    # true_vol <- volume.true(dummy_ord, dummy_eig)
-    # # Calculate the volume without the eigen values
-    # test_vol <- ellipse.volume(dummy_ord)
-    # # test
-    # expect_equal(
-    #	true_vol, test_vol
-    #	)
+    ## Eigen values functions
+    eigen.val.var <- function(x) return(eigen(var(x))$values)
+    eigen.val.cov <- function(x) return(eigen(cov(x))$values)
+    eigen.val.pca <- function(x) return(prcomp(x)$sdev^2)
+    eigen.val.pco <- function(x) return(abs(apply(var(x), 2, sum)))
+    # plot(microbenchmark(eigen.val.var(pca$x),eigen.val.cov(pca$x), eigen.val.pca(pca$x), eigen.val.pco(pca$x)))
+    # ## The pco one is fastest by a margin
 
-    # # Now testing with PCA (from cladistic data)
-    # dummy_ord <- prcomp(dummy_cla)
-    # dummy_eig <- dummy_ord$sdev^2 # Squared since the sdev is sqrt(eig)
-    # dummy_ord <- dummy_ord$x
-    # # Calculate the true volume (with eigen values)
-    # true_vol <- volume.true(dummy_ord, dummy_eig)
-    # # Calculate the volume without the eigen values
-    # test_vol <- ellipse.volume(dummy_ord)
-    # # test
-    # expect_equal(
-    #	true_vol, test_vol
-    #	)
 
-    # ## DOES NOT WORK FOR PCA!
+    ## Checking for equality
+    check.equal <- function(x,y, round = 7) {
+        expect_equal(unname(round(x, digits = round)), unname(round(y, digits = round)))
+    }
 
-    # # Now testing with PCA (from distance data)
-    # dummy_ord <- prcomp(dummy_dis)
-    # dummy_eig <- dummy_ord$sdev^2 # Squared since the sdev is sqrt(eig)
-    # dummy_ord <- dummy_ord$x
-    # # Calculate the true volume (with eigen values)
-    # true_vol <- volume.true(dummy_ord, dummy_eig)
-    # # Calculate the volume without the eigen values
-    # test_vol <- ellipse.volume(dummy_ord)
-    # # test
-    # expect_equal(
-    #	true_vol, test_vol
-    #	)
+    ## Matrices
+    pco <- cmdscale(dist(dummy_cla), k=19, eig=TRUE)
+    pcoa <- ape::pcoa(dist(dummy_cla))
+    pca <- prcomp(space.maker(20, 50, rnorm))
+    whatever <- space.maker(20, 50, rnorm)
 
-    # ## DOES NOT WORK FOR PCA!
+    ## True eigen values
+    true_eigen_pco <- pco$eig
+    true_eigen_pcoa <- pcoa$values$Eigenvalues
+    true_eigen_pca <- pca$sdev^2
 
-    # dummy_ord <- prcomp(dummy_dis, center=FALSE, scale=TRUE)
-    # dummy_eig <- dummy_ord$sdev^2 # Squared since the sdev is sqrt(eig)
-    # dummy_ord <- dummy_ord$x
-    # # Calculate the true volume (with eigen values)
-    # true_vol <- volume.true(dummy_ord, dummy_eig)
-    # # Calculate the volume without the eigen values
-    # test_vol <- ellipse.volume(dummy_ord)
-    # # test
-    # expect_equal(
-    #	true_vol, test_vol
-    #) ## Getting closer...
+    true_eigen_pco[1]/true_eigen_pco[length(true_eigen_pco)-1]
+    true_eigen_pca[1]/true_eigen_pca[length(true_eigen_pca)-1]
 
-    # #And with svd?
+    ## The true eigen value is eigen.val.var(matrix); if pco, it is eigen.val.var(matrix)*(nrow-1)
+    check.equal(true_eigen_pco[1:19], true_eigen_pcoa)
+    check.equal(true_eigen_pco[1:19], eigen.val.var(pco$points)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pco[1:19], eigen.val.cov(pco$points)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pco[1:19], eigen.val.pca(pco$points)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pco[1:19], eigen.val.pco(pco$points)*(nrow(pco$points)-1))
 
-    # svd(dummy_dis)
+    check.equal(true_eigen_pcoa, eigen.val.var(pcoa$vectors)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pcoa, eigen.val.cov(pcoa$vectors)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pcoa, eigen.val.pca(pcoa$vectors)*(nrow(pcoa$vectors)-1))
+    check.equal(true_eigen_pcoa, eigen.val.pco(pcoa$vectors)*(nrow(pco$points)-1))
+
+    check.equal(true_eigen_pca, eigen.val.var(pca$x))
+    check.equal(true_eigen_pca, eigen.val.cov(pca$x))
+    check.equal(true_eigen_pca, eigen.val.pca(pca$x))
+    check.equal(true_eigen_pca, eigen.val.pco(pca$x))
+
+    check.equal(eigen.val.var(t(whatever)), eigen.val.cov(t(whatever)))
+    # check.equal(eigen.val.var(t(whatever)), eigen.val.pca(whatever))/(nrow(whatever)-1))
+    # check.equal(eigen.val.var(t(whatever)), eigen.val.pco(t(whatever)))
 })
 
 test_that("convhull.surface metric", {

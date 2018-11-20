@@ -41,7 +41,7 @@ The currently implemented dimension-level 1 metrics are:
 \itemize{
   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
      \itemize{
-         \item WARNING: this function uses the matrix' eigen values. These eigen values are only estimated correctly from MDS or PCO (PCoA) ordinations (e.g. \code{\link[stats]{cmdscale}}, \code{\link[ape]{pcoa}}). For any other type of matrix, the eigen values needs to be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+         \item WARNING: this function calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
      }
   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
@@ -100,9 +100,7 @@ mode.val(rnorm(25))
 
 ## Ellipsoid volume of a matrix
 ellipse.volume(dummy_matrix)
-## WARNING: this is only valid without eigen vaues for MDS/PCO matrices.
-## Use the correct eigen values for other types of matrices:
-## Ordination
+## Calculating the same volume with provided eigen values
 ordination <- prcomp(dummy_matrix)
 ## Calculating the ellipsoid volume
 ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)

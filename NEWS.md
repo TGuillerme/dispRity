@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.3 (2018-11-14)
+[Next release] dispRity v1.2.3 (2018-11-20)
 =========================
 
 ### NEW FEATURE
@@ -35,6 +35,7 @@ dispRity 0.2.0 (2016-04-01)
   * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
   * better internal handling of error messages.
+  * `faster` eigen value estimations in `ellipse.volume` when the argument is left missing.
   
 ### BUG FIXES
 
