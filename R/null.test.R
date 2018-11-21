@@ -118,6 +118,8 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         ## Apply the randtest to one subsets
         test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[, 3], sim = null_models_results, alter = alter, ...)
         # test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[,3], sim = null_models_results, alter = alter)
+        ## Adding the simulated data
+        test_out$sim <- null_models_results
         ## Store it as a list of one element (to be consistent for S3 methods)
         test_out <- list(test_out)
     } else {
@@ -125,6 +127,10 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         summary_observed <- as.list(summary(data, digits = 10)[, 3])
         test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter, ...), SIMPLIFY = FALSE)
         # test_out <- mapply(ade4::as.randtest, null_models_results, summary_observed, MoreArgs = list(alter = alter), SIMPLIFY = FALSE) ; warning("DEBUG")
+        ## Adding the simulated data
+        for(subset in 1:length(data$subsets)) {
+            test_out[[subset]]$sim <- null_models_results[[subset]]
+        }
         ## Attributing the subsets names
         names(test_out) <- names(data$subsets)
     }
