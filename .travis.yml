@@ -1,5 +1,22 @@
 language: r
+cache: packages
+sudo: required
 warnings_are_errors: false
+
+r_binary_packages:
+  - ade4
+  - ape
+	- geometry
+	- geoscale
+ 	- mnormt
+	- paleotree
+	- phangorn
+	- phyclust
+	- vegan
+  - covr
+
+r:
+- release
 
 branches:
   only:
