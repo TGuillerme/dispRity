@@ -6,13 +6,13 @@ warnings_are_errors: false
 r_binary_packages:
   - ade4
   - ape
-	- geometry
-	- geoscale
- 	- mnormt
-	- paleotree
-	- phangorn
-	- phyclust
-	- vegan
+  - geometry
+  - geoscale
+  - mnormt
+  - paleotree
+  - phangorn
+  - phyclust
+  - vegan
   - covr
 
 r:
