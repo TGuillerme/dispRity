@@ -88,11 +88,11 @@ This package can be installed via [the CRAN](https://cran.r-project.org/package=
 
  * The GitHub version is a more "reactive" version (fed by user's suggestions and comments) and can contain more functionalities (see list below). This version exists on a `"release"` branch which is tested as strictly as the CRAN version with Travis and codecov. The `"master"` branch contains always the latest "piping hot", not yet release version. It might (though rarely) be bugged.
 
-<!-- badges out start -->
+<!-- badges out start 
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-<!-- badges out end   -->
+<-- badges out end   -->
 
 Note however, that apart from the functions listed below, both versions of the package have the same tested and implemented functions.
 
@@ -112,12 +112,15 @@ The differences between the CRAN one and the GitHub `release` or `master` ones i
 For the the GitHub version, the differences are that the `release` one is more stable (i.e. more rarely modified) and the `master` one is more live one (i.e. bug fixes and new functionalities are added as they come).
 
 If you want the latest-latest version of the package I suggest using the GitHub `master` one, especially if you recently emailed me reporting a minor bug or wanting a new functionality!
-Note however that *it can happen* that the `master` version can sometimes be bugged (especially when there are major `R` and `R` packages updates), however, the status of the package state on both the `release` and the `master` version is constantly displayed on the [`README` page](https://github.com/TGuillerme/dispRity/) of the package with the nice badges displaying these different (and constantly tested) information
+Note however that *it can happen* that the `master` version can sometimes be bugged (especially when there are major `R` and `R` packages updates), however, the status of the package state on both the `release` and the `master` version is constantly displayed on the [`README` page](https://github.com/TGuillerme/dispRity/) of the package with the nice badges displaying these different (and constantly tested) information.
 
+<!-- badges out start
  * The build status: [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity) which tests whether the package compiles (i.e. can be installed on your computer).
  * The code coverage: [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity) which indicates the percentage of lines in the code that have been tested for expected behaviour.
  * The project status: [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) which indicates whether this package is maintained regularly or forgotten in the abyss of internet.
  * The development version: [![develVersion](https://img.shields.io/badge/devel%20version-1.2.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity) which indicates which version of the package you are about to install.
+
+<-- badges out end   -->
 
 Note that when we (the `dispRity` package collaborators!) are developing some more major versions, including some more complex features for example, they will never be released on either the the versions described above.
 Therefore you can rest assure that you will never use a badly bugged version of `dispRity`! Enjoy!

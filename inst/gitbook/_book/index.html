@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-09-27">
+<meta name="date" content="2019-01-18">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -205,12 +205,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>9</b> Future directions</a><ul>
-<li class="chapter" data-level="9.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>9.1</b> More tests!</a></li>
-<li class="chapter" data-level="9.2" data-path="future-directions.html"><a href="future-directions.html#more-rarefactions"><i class="fa fa-check"></i><b>9.2</b> More rarefactions!</a></li>
-<li class="chapter" data-level="9.3" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>9.3</b> Faster disparity calculations</a></li>
-<li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
-<li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
+<li class="chapter" data-level="9" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>9</b> Developing <code>dispRity</code></a><ul>
+<li class="chapter" data-level="9.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>9.1</b> More functions</a></li>
+<li class="chapter" data-level="9.2" data-path="developing-disprity.html"><a href="developing-disprity.html#more-manuals"><i class="fa fa-check"></i><b>9.2</b>  More manuals</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -236,7 +233,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="header">
 <h1 class="title">dispRity manual</h1>
 <h4 class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Mark Puttick (<a href="mailto:marknputtick@gmail.com">marknputtick@gmail.com</a>) and Natalie Cooper (<a href="mailto:natalie.cooper@nhm.ac.uk">natalie.cooper@nhm.ac.uk</a>)</em></h4>
-<h4 class="date"><em>2018-09-27</em></h4>
+<h4 class="date"><em>2019-01-18</em></h4>
 </div>
 <div id="disprity" class="section level1">
 <h1><span class="header-section-number">1</span> <code>dispRity</code></h1>
@@ -285,13 +282,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>The GitHub <code>master</code> one</li>
 </ul>
 <p>The differences between the CRAN one and the GitHub <code>release</code> or <code>master</code> ones is explained just above. For the the GitHub version, the differences are that the <code>release</code> one is more stable (i.e. more rarely modified) and the <code>master</code> one is more live one (i.e. bug fixes and new functionalities are added as they come).</p>
-<p>If you want the latest-latest version of the package I suggest using the GitHub <code>master</code> one, especially if you recently emailed me reporting a minor bug or wanting a new functionality! Note however that <em>it can happen</em> that the <code>master</code> version can sometimes be bugged (especially when there are major <code>R</code> and <code>R</code> packages updates), however, the status of the package state on both the <code>release</code> and the <code>master</code> version is constantly displayed on the <a href="https://github.com/TGuillerme/dispRity/"><code>README</code> page</a> of the package with the nice badges displaying these different (and constantly tested) information</p>
+<p>If you want the latest-latest version of the package I suggest using the GitHub <code>master</code> one, especially if you recently emailed me reporting a minor bug or wanting a new functionality! Note however that <em>it can happen</em> that the <code>master</code> version can sometimes be bugged (especially when there are major <code>R</code> and <code>R</code> packages updates), however, the status of the package state on both the <code>release</code> and the <code>master</code> version is constantly displayed on the <a href="https://github.com/TGuillerme/dispRity/"><code>README</code> page</a> of the package with the nice badges displaying these different (and constantly tested) information.</p>
+<!-- badges out start -->
 <ul>
 <li>The build status: <a href="https://travis-ci.org/TGuillerme/dispRity"><img src="https://travis-ci.org/TGuillerme/dispRity.svg?branch=master" alt="Build Status" /></a> which tests whether the package compiles (i.e. can be installed on your computer).</li>
 <li>The code coverage: <a href="https://codecov.io/gh/TGuillerme/dispRity"><img src="https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg" alt="codecov" /></a> which indicates the percentage of lines in the code that have been tested for expected behaviour.</li>
 <li>The project status: <a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active - The project has reached a stable, usable state and is being actively developed." /></a> which indicates whether this package is maintained regularly or forgotten in the abyss of internet.</li>
 <li>The development version: <a href="https://github.com/TGuillerme/dispRity"><img src="https://img.shields.io/badge/devel%20version-1.2.1-green.svg?style=flat" alt="develVersion" /></a> which indicates which version of the package you are about to install.</li>
 </ul>
+<!-- badges out end   -->
 <p>Note that when we (the <code>dispRity</code> package collaborators!) are developing some more major versions, including some more complex features for example, they will never be released on either the the versions described above. Therefore you can rest assure that you will never use a badly bugged version of <code>dispRity</code>! Enjoy!</p>
 </div>
 </div>

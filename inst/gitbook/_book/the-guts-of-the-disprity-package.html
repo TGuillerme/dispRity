@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-09-27">
+<meta name="date" content="2019-01-18">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -205,12 +205,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>9</b> Future directions</a><ul>
-<li class="chapter" data-level="9.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>9.1</b> More tests!</a></li>
-<li class="chapter" data-level="9.2" data-path="future-directions.html"><a href="future-directions.html#more-rarefactions"><i class="fa fa-check"></i><b>9.2</b> More rarefactions!</a></li>
-<li class="chapter" data-level="9.3" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>9.3</b> Faster disparity calculations</a></li>
-<li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
-<li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
+<li class="chapter" data-level="9" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>9</b> Developing <code>dispRity</code></a><ul>
+<li class="chapter" data-level="9.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>9.1</b> More functions</a></li>
+<li class="chapter" data-level="9.2" data-path="developing-disprity.html"><a href="developing-disprity.html#more-manuals"><i class="fa fa-check"></i><b>9.2</b>  More manuals</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -304,9 +301,9 @@ disparity_obj<span class="op">$</span>call</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
 ## (15 elements) from the second group (80 Mya)
 <span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</code></pre></div>
-<pre><code>##  num [1:15, 1:97] -0.7161 0.3496 -0.573 -0.0445 -0.1427 ...
+<pre><code>##  num [1:15, 1:97] -0.6937 -0.0445 -0.673 -0.7161 -0.2046 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
-##   ..$ : chr [1:15] &quot;n7&quot; &quot;n34&quot; &quot;Maelestes&quot; &quot;n20&quot; ...
+##   ..$ : chr [1:15] &quot;Kennalestes&quot; &quot;n20&quot; &quot;Batodon&quot; &quot;n7&quot; ...
 ##   ..$ : NULL</code></pre>
 </div>
 <div id="get.subsets" class="section level4">

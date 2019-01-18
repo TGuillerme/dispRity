@@ -1,5 +1,5 @@
 #FUNCTIONS FOR DISPRITY
-get.dispRity.metric.handle <- function(metric, match_call) {
+get.dispRity.metric.handle <- function(metric, match_call, ...) {
     level3.fun <- NULL
     level2.fun <- NULL
     level1.fun <- NULL
@@ -17,7 +17,7 @@ get.dispRity.metric.handle <- function(metric, match_call) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE)
+        level <- make.metric(metric, silent = TRUE, ...)
         if(level == "level3") {
             stop(paste(as.expression(match_call$metric), " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
         } else {

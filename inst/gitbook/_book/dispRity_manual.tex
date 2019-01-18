@@ -129,7 +129,7 @@ and Natalie Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2018-09-27}
+  \date{2019-01-18}
 
 \usepackage{booktabs}
 
@@ -286,30 +286,7 @@ packages updates), however, the status of the package state on both the
 \texttt{release} and the \texttt{master} version is constantly displayed
 on the \href{https://github.com/TGuillerme/dispRity/}{\texttt{README}
 page} of the package with the nice badges displaying these different
-(and constantly tested) information
-
-\begin{itemize}
-\tightlist
-\item
-  The build status:
-  \href{https://travis-ci.org/TGuillerme/dispRity}{\includegraphics{https://travis-ci.org/TGuillerme/dispRity.svg?branch=master}}
-  which tests whether the package compiles (i.e.~can be installed on
-  your computer).
-\item
-  The code coverage:
-  \href{https://codecov.io/gh/TGuillerme/dispRity}{\includegraphics{https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg}}
-  which indicates the percentage of lines in the code that have been
-  tested for expected behaviour.
-\item
-  The project status:
-  \href{http://www.repostatus.org/\#active}{\includegraphics{http://www.repostatus.org/badges/latest/active.svg}}
-  which indicates whether this package is maintained regularly or
-  forgotten in the abyss of internet.
-\item
-  The development version:
-  \href{https://github.com/TGuillerme/dispRity}{\includegraphics{https://img.shields.io/badge/devel\%20version-1.2.1-green.svg?style=flat}}
-  which indicates which version of the package you are about to install.
-\end{itemize}
+(and constantly tested) information.
 
 Note that when we (the \texttt{dispRity} package collaborators!) are
 developing some more major versions, including some more complex
@@ -887,16 +864,6 @@ perform statistical tests on it (e.g.~a simple \texttt{lm}):
 \begin{Highlighting}[]
 \NormalTok{## Testing for an difference among the time bins}
 \NormalTok{disp_lm <-}\StringTok{ }\KeywordTok{test.dispRity}\NormalTok{(disparity_data, }\DataTypeTok{test =}\NormalTok{ lm, }\DataTypeTok{comparisons =} \StringTok{"all"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning in test.dispRity(disparity_data, test = lm, comparisons = "all"): Multiple p-values will be calculated without adjustment!
-## This can inflate Type I error!
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \KeywordTok{summary}\NormalTok{(disp_lm)}
 \end{Highlighting}
 \end{Shaded}
@@ -2050,7 +2017,7 @@ object, the operations below are the equivalent of
 
 \begin{verbatim}
 ##   subsets  n   obs
-## 1       1 10 257.8
+## 1       1 10 1.061
 \end{verbatim}
 
 \begin{quote}
@@ -2144,7 +2111,7 @@ principle and measure the range/variance/radius of each dimension:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      2.431 1.673 2.431 2.908 3.645
+## 1       1 10      2.736 1.673 2.431 2.908 3.645
 \end{verbatim}
 
 \begin{Shaded}
@@ -2190,7 +2157,7 @@ principle and measure the range/variance/radius of each dimension:
 
 \begin{verbatim}
 ##   subsets  n obs.median 2.5%   25%   75% 97.5%
-## 1       1 10      0.609 0.38 0.609 0.913 1.121
+## 1       1 10      0.654 0.38 0.609 0.913 1.121
 \end{verbatim}
 
 \begin{Shaded}
@@ -2285,7 +2252,7 @@ take the normal \texttt{vegdist} options:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      3.619 2.566 3.335 5.672  9.63
+## 1       1 10      4.427 2.566 3.335 5.672  9.63
 \end{verbatim}
 
 Note that this function is a direct call to
@@ -2342,7 +2309,7 @@ their centroid (centre point):
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      2.214 0.788 1.267 1.993 3.167
+## 1       1 10      1.435 0.788 1.267 1.993 3.167
 \end{verbatim}
 
 \begin{Shaded}
@@ -2370,7 +2337,7 @@ number of dimensions:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5% 25%   75% 97.5%
-## 1       1 10      2.323 0.785 1.2 2.044 3.176
+## 1       1 10      1.487 0.785 1.2 2.044 3.176
 \end{verbatim}
 
 \begin{Shaded}
@@ -2382,7 +2349,7 @@ number of dimensions:
 
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
-## 1       1 10      4.675 4.293 5.032 6.155 6.957
+## 1       1 10      5.489 4.293 5.032 6.155 6.957
 \end{verbatim}
 
 The \texttt{ancestral.dist} metric works on a similar principle as the
@@ -2404,13 +2371,15 @@ tree and node coordinates as additional arguments:
 \NormalTok{## Calculating the distances from the ancestral nodes}
 \NormalTok{ancestral_dist <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(dummy_space2, }\DataTypeTok{metric =}\NormalTok{ ancestral.dist,}
                            \DataTypeTok{nodes.coords =}\NormalTok{ all_anc_centroids)}
+
+\NormalTok{## The ancestral distances distributions}
+\KeywordTok{summary}\NormalTok{(ancestral_dist)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Warning in fun(matrix, ...): Missing tree and full argument for nodes.coordinates.
-## See ?nodes.coordinates manual.
-## The centroids function was applied instead.
+##   subsets n obs.median  2.5%   25%   75% 97.5%
+## 1       1 9      3.862 0.343 1.729 4.789  9.52
 \end{verbatim}
 
 \begin{Shaded}
@@ -2508,10 +2477,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 2.823     2.295 1.398 2.037 2.563 2.767
-## 2      80 19 3.233     3.065 2.785 2.973 3.133 3.266
-## 3      40 15 3.359     3.149 2.764 2.996 3.285 3.443
-## 4       0 10 4.055     3.685 3.169 3.453 3.760 3.961
+## 1     120  5 2.823     2.297 1.263 2.119 2.579 2.767
+## 2      80 19 3.233     3.060 2.815 2.986 3.126 3.212
+## 3      40 15 3.359     3.139 2.660 3.045 3.250 3.433
+## 4       0 10 4.055     3.692 3.169 3.459 3.768 3.961
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed
@@ -2526,12 +2495,12 @@ specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 1.995     1.933 1.873 1.915 1.943 1.972
-## 2   crown 29    NA     1.935 1.861 1.906 1.953 1.976
-## 3   crown 28    NA     1.929 1.872 1.910 1.945 1.970
-## 4   crown 27    NA     1.933 1.852 1.905 1.947 1.981
-## 5   crown 26    NA     1.932 1.867 1.910 1.948 1.971
-## 6   crown 25    NA     1.929 1.847 1.913 1.949 1.975
+## 1   crown 30 1.995     1.931 1.878 1.914 1.947 1.968
+## 2   crown 29    NA     1.931 1.861 1.908 1.951 1.976
+## 3   crown 28    NA     1.931 1.862 1.907 1.951 1.973
+## 4   crown 27    NA     1.935 1.849 1.909 1.951 1.970
+## 5   crown 26    NA     1.930 1.861 1.905 1.950 1.976
+## 6   crown 25    NA     1.929 1.847 1.914 1.949 1.975
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2562,10 +2531,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.sd  2.5%   25%   75% 97.5%
-## 1     120  5 2.823 0.380 1.398 2.037 2.563 2.767
-## 2      80 19 3.233 0.127 2.785 2.973 3.133 3.266
-## 3      40 15 3.359 0.189 2.764 2.996 3.285 3.443
-## 4       0 10 4.055 0.205 3.169 3.453 3.760 3.961
+## 1     120  5 2.823 0.387 1.263 2.119 2.579 2.767
+## 2      80 19 3.233 0.105 2.815 2.986 3.126 3.212
+## 3      40 15 3.359 0.174 2.660 3.045 3.250 3.433
+## 4       0 10 4.055 0.205 3.169 3.459 3.768 3.961
 \end{verbatim}
 
 \begin{Shaded}
@@ -2585,10 +2554,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  5 2.82292   2.29516 1.39758 2.03734 2.56317 2.76690
-## 2      80 19 3.23312   3.06472 2.78542 2.97332 3.13308 3.26617
-## 3      40 15 3.35947   3.14918 2.76395 2.99563 3.28541 3.44267
-## 4       0 10 4.05457   3.68545 3.16864 3.45263 3.76034 3.96114
+## 1     120  5 2.82292   2.29655 1.26271 2.11928 2.57865 2.76690
+## 2      80 19 3.23312   3.05983 2.81513 2.98594 3.12552 3.21213
+## 3      40 15 3.35947   3.13894 2.65991 3.04502 3.24950 3.43262
+## 4       0 10 4.05457   3.69167 3.16864 3.45865 3.76807 3.96114
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2867,15 +2836,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##              statistic: t
-## crown : stem     66.67693
+## crown : stem     63.36853
 ## 
 ## [[2]]
 ##              parameter: df
-## crown : stem      169.1446
+## crown : stem      160.0496
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 2.275095e-123
+## crown : stem 2.851362e-115
 \end{verbatim}
 
 \begin{Shaded}
@@ -2892,13 +2861,13 @@ Here we are using the variables generated in the
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 66.677, df = 169.14, p-value < 2.2e-16
+## t = 63.369, df = 160.05, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2894967 0.3071619
+##  0.2874841 0.3059796
 ## sample estimates:
 ## mean of x mean of y 
-##  1.928128  1.629799
+##  1.929990  1.633258
 \end{verbatim}
 
 \begin{Shaded}
@@ -2913,15 +2882,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##          statistic: W
-## 120 : 80           27
-## 80 : 40          3466
-## 40 : 0            455
+## 120 : 80           12
+## 80 : 40          3201
+## 40 : 0            362
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 1.720545e-33
-## 80 : 40  5.370214e-04
-## 40 : 0   3.599349e-28
+## 120 : 80 1.097407e-33
+## 80 : 40  3.331838e-05
+## 40 : 0   2.757591e-29
 \end{verbatim}
 
 \begin{Shaded}
@@ -2939,9 +2908,9 @@ Here we are using the variables generated in the
 
 \begin{verbatim}
 ##                    bhatt.coeff
-## 120 - 80 : 80 - 40    0.000000
-## 120 - 80 : 40 - 0     0.000000
-## 80 - 40 : 40 - 0      0.490448
+## 120 - 80 : 80 - 40   0.0000000
+## 120 - 80 : 40 - 0    0.0000000
+## 80 - 40 : 40 - 0     0.5043101
 \end{verbatim}
 
 Because of the modular design of the package, tests can always be made
@@ -2999,7 +2968,16 @@ multidimensional space was already defined as a distance matrix). The
 
 \NormalTok{## Generating a dispRity object}
 \NormalTok{random_disparity <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(distance_matrix, random_groups)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Warning: custom.subsets is applied on what seems to be a distance matrix.
+## The resulting matrices won't be distance matrices anymore!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Running a default NPMANOVA}
 \KeywordTok{adonis.dispRity}\NormalTok{(random_disparity)}
 \end{Highlighting}
@@ -3036,7 +3014,16 @@ correspond to the names of the groups explained data must be set as
 
 \NormalTok{## Creating the dispRity object}
 \NormalTok{multi_groups <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(distance_matrix, groups)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Warning: custom.subsets is applied on what seems to be a distance matrix.
+## The resulting matrices won't be distance matrices anymore!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Running the NPMANOVA}
 \KeywordTok{adonis.dispRity}\NormalTok{(multi_groups, matrix }\OperatorTok{~}\StringTok{ }\NormalTok{g1 }\OperatorTok{+}\StringTok{ }\NormalTok{g2)}
 \end{Highlighting}
@@ -3500,7 +3487,7 @@ Burst (exponentially decreasing rate through time)
 \end{verbatim}
 
 These models indicate support for a Trend model, and we can plot the
-relative support of all model AICc weights
+relative support of all model AICc weights.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3516,6 +3503,13 @@ relative support of all model AICc weights
 
 \caption{relative fit (AICc weight) of various modes of evolution}\label{fig:plot2}
 \end{figure}
+
+\begin{quote}
+Note that although AIC values are indicator of model best fit, it is
+also important to look at the parameters themselves. For example OU can
+be really well supported but with an alpha parameter really close to 0,
+making it effectively a BM model \citep{Cooper2016}.
+\end{quote}
 
 Is this a trend of increasing or decreasing disparity through time? One
 way to find out is to look at the summary function for the Trend model:
@@ -4130,10 +4124,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  5      1.539     1.287 0.536 1.092 1.553 1.864
-## 2      80 19      1.846     1.688 1.409 1.582 1.814 1.945
-## 3      40 15      1.892     1.685 1.327 1.563 1.839 2.062
-## 4       0 10      1.855     1.801 1.313 1.680 1.962 2.104
+## 1     120  5      1.508     1.287 0.533 1.108 1.554 1.865
+## 2      80 19      1.790     1.690 1.406 1.583 1.816 1.948
+## 3      40 15      1.689     1.676 1.318 1.556 1.835 2.077
+## 4       0 10      1.910     1.804 1.308 1.676 1.963 2.104
 \end{verbatim}
 
 \begin{Shaded}
@@ -4145,10 +4139,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 1.508     1.287 0.535 0.943 1.477 1.508
-## 2      80 19 1.790     1.682 1.534 1.645 1.716 1.791
-## 3      40 15 1.689     1.678 1.552 1.635 1.717 1.822
-## 4       0 10 1.910     1.804 1.577 1.761 1.855 1.909
+## 1     120  5 1.508     1.348 0.506 0.959 1.477 1.508
+## 2      80 19 1.790     1.687 1.572 1.649 1.721 1.774
+## 3      40 15 1.689     1.681 1.508 1.644 1.716 1.805
+## 4       0 10 1.910     1.808 1.577 1.763 1.860 1.909
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -4198,12 +4192,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.1905968
-## 120 : 40   0.1936492
-## 120 : 0    0.1381682
-## 80 : 40    0.9416139
-## 80 : 0     0.6076888
-## 40 : 0     0.7124871
+## 120 : 80  0.04472136
+## 120 : 40  0.22865118
+## 120 : 0   0.08972003
+## 80 : 40   0.93790685
+## 80 : 0    0.58236752
+## 40 : 0    0.63822722
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -4232,12 +4226,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.6286805
-## 120 : 40   0.6631398
-## 120 : 0    0.5819930
-## 80 : 40    0.9397416
-## 80 : 0     0.8578102
-## 40 : 0     0.9361860
+## 120 : 80   0.6438966
+## 120 : 40   0.6875980
+## 120 : 0    0.5877450
+## 80 : 40    0.9337141
+## 80 : 0     0.8537184
+## 40 : 0     0.9359091
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -4266,12 +4260,12 @@ A second solution is to compare the distributions to each other
 
 \begin{verbatim}
 ##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2507287 0.0000000 0.1450953 0.3829003 0.5431424
-## 120 : 40   0.3184407 0.0000000 0.2000000 0.4312174 0.7651213
-## 120 : 0    0.2368001 0.0000000 0.0000000 0.3464102 0.5791641
-## 80 : 40    0.5739203 0.2252672 0.4678055 0.6965587 0.8184853
-## 80 : 0     0.4649973 0.1382736 0.3688643 0.5757552 0.7292754
-## 40 : 0     0.5418625 0.1954287 0.4385665 0.6767986 0.8082483
+## 120 : 80   0.2940881 0.0000000 0.2051957 0.4290170 0.6083311
+## 120 : 40   0.2824927 0.0000000 0.1632993 0.3983128 0.7481392
+## 120 : 0    0.2281964 0.0000000 0.0000000 0.3464102 0.6309343
+## 80 : 40    0.6306073 0.2955680 0.4959277 0.7596775 0.8698180
+## 80 : 0     0.4795679 0.1348897 0.3715678 0.5988888 0.7732118
+## 40 : 0     0.5381616 0.2309401 0.3995782 0.7026658 0.8009602
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -4329,7 +4323,16 @@ to each other than Southern ones:
 \NormalTok{## Creating the subset dispRity object}
 \NormalTok{eurodist_subsets <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(eurodist, }\DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\StringTok{"Northern"}\NormalTok{ =}\StringTok{ }\NormalTok{Northern,}
                                                         \StringTok{"Southern"}\NormalTok{ =}\StringTok{ }\NormalTok{Southern))}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Warning: custom.subsets is applied on what seems to be a distance matrix.
+## The resulting matrices won't be distance matrices anymore!
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Bootstrapping and rarefying to 9 elements (the number of Northern cities)}
 \NormalTok{eurodist_bs <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(eurodist_subsets, }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{)}
 
@@ -5210,9 +5213,9 @@ matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 \end{Shaded}
 
 \begin{verbatim}
-##  num [1:15, 1:97] -0.7161 0.3496 -0.573 -0.0445 -0.1427 ...
+##  num [1:15, 1:97] -0.6937 -0.0445 -0.673 -0.7161 -0.2046 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:15] "n7" "n34" "Maelestes" "n20" ...
+##   ..$ : chr [1:15] "Kennalestes" "n20" "Batodon" "n7" ...
 ##   ..$ : NULL
 \end{verbatim}
 
@@ -6305,45 +6308,17 @@ properties (similarly to \citet{diaz2016global}):
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.
 
-\chapter{Future directions}\label{future-directions}
+\chapter{\texorpdfstring{Developing
+\texttt{dispRity}}{Developing dispRity}}\label{developing-disprity}
 
-\section{More tests!}\label{more-tests}
+Everyone is more than welcome to help developing this package, whether
+it is through developing functions (metrics, tests, plots, etc\ldots{}),
+the manual (more examples, typos, etc\ldots{}) or completely new
+functionalities!
 
-Some more tests are being developed such as a \texttt{sequential.test}
-to run sequential linear models for testing hypothesis in disparity
-through time or a \texttt{model.test} developed in collaboration with
-\href{https://puttickbiology.wordpress.com/}{Mark Puttick} to fit modes
-of evolution to disparity curves. Stay tuned!
+\section{More functions}\label{more-functions}
 
-\section{More rarefactions!}\label{more-rarefactions}
-
-I am working on including several ``clever'' bootstrap and rarefaction
-algorithms for palaeobiology studies based on geological sampling
-(following:and Butler et al. 2012 \emph{Evolution} and Kotric and Knoll
-2015 \emph{Palaeobiology}).
-
-\section{Faster disparity
-calculations}\label{faster-disparity-calculations}
-
-I am slowly implementing parallel disparity calculation as well as C
-implementations of some disparity metrics to increase significantly
-improve the speed of the \texttt{dispRity} function.
-
-\section{More modularity}\label{more-modularity}
-
-I am equally slowly developing functions to allow more of the options in
-the package to be modular (in the same way as the \texttt{metric}
-argument in \texttt{dispRity}). The next arguments to benefit this
-increased modularity will be \texttt{chrono.subsets}'s \texttt{model}
-argument and \texttt{boot.matrix}'s \texttt{type} argument.
-
-\section{More suggestions?}\label{more-suggestions}
-
-More generally, I welcome any suggestions or collaborations for
-developing some additional specific ideas. Feel free to contact me via
-email (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}) or if
-you are a GitHub user, directly create an issue on the
-\href{https://github.com/TGuillerme/dispRity}{GitHub page}.
+\section{~More manuals}\label{more-manuals}
 
 \bibliography{../References.bib,../packages.bib}
 

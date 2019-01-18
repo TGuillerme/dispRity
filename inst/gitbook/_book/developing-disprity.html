@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2018-09-27">
+<meta name="date" content="2019-01-18">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -205,12 +205,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="future-directions.html"><a href="future-directions.html"><i class="fa fa-check"></i><b>9</b> Future directions</a><ul>
-<li class="chapter" data-level="9.1" data-path="future-directions.html"><a href="future-directions.html#more-tests"><i class="fa fa-check"></i><b>9.1</b> More tests!</a></li>
-<li class="chapter" data-level="9.2" data-path="future-directions.html"><a href="future-directions.html#more-rarefactions"><i class="fa fa-check"></i><b>9.2</b> More rarefactions!</a></li>
-<li class="chapter" data-level="9.3" data-path="future-directions.html"><a href="future-directions.html#faster-disparity-calculations"><i class="fa fa-check"></i><b>9.3</b> Faster disparity calculations</a></li>
-<li class="chapter" data-level="9.4" data-path="future-directions.html"><a href="future-directions.html#more-modularity"><i class="fa fa-check"></i><b>9.4</b> More modularity</a></li>
-<li class="chapter" data-level="9.5" data-path="future-directions.html"><a href="future-directions.html#more-suggestions"><i class="fa fa-check"></i><b>9.5</b> More suggestions?</a></li>
+<li class="chapter" data-level="9" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>9</b> Developing <code>dispRity</code></a><ul>
+<li class="chapter" data-level="9.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>9.1</b> More functions</a></li>
+<li class="chapter" data-level="9.2" data-path="developing-disprity.html"><a href="developing-disprity.html#more-manuals"><i class="fa fa-check"></i><b>9.2</b>  More manuals</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -233,27 +230,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="future-directions" class="section level1">
-<h1><span class="header-section-number">9</span> Future directions</h1>
-<div id="more-tests" class="section level2">
-<h2><span class="header-section-number">9.1</span> More tests!</h2>
-<p>Some more tests are being developed such as a <code>sequential.test</code> to run sequential linear models for testing hypothesis in disparity through time or a <code>model.test</code> developed in collaboration with <a href="https://puttickbiology.wordpress.com/">Mark Puttick</a> to fit modes of evolution to disparity curves. Stay tuned!</p>
+<div id="developing-disprity" class="section level1">
+<h1><span class="header-section-number">9</span> Developing <code>dispRity</code></h1>
+<p>Everyone is more than welcome to help developing this package, whether it is through developing functions (metrics, tests, plots, etc…), the manual (more examples, typos, etc…) or completely new functionalities!</p>
+<div id="more-functions" class="section level2">
+<h2><span class="header-section-number">9.1</span> More functions</h2>
 </div>
-<div id="more-rarefactions" class="section level2">
-<h2><span class="header-section-number">9.2</span> More rarefactions!</h2>
-<p>I am working on including several “clever” bootstrap and rarefaction algorithms for palaeobiology studies based on geological sampling (following:and Butler et al. 2012 <em>Evolution</em> and Kotric and Knoll 2015 <em>Palaeobiology</em>).</p>
-</div>
-<div id="faster-disparity-calculations" class="section level2">
-<h2><span class="header-section-number">9.3</span> Faster disparity calculations</h2>
-<p>I am slowly implementing parallel disparity calculation as well as C implementations of some disparity metrics to increase significantly improve the speed of the <code>dispRity</code> function.</p>
-</div>
-<div id="more-modularity" class="section level2">
-<h2><span class="header-section-number">9.4</span> More modularity</h2>
-<p>I am equally slowly developing functions to allow more of the options in the package to be modular (in the same way as the <code>metric</code> argument in <code>dispRity</code>). The next arguments to benefit this increased modularity will be <code>chrono.subsets</code>’s <code>model</code> argument and <code>boot.matrix</code>’s <code>type</code> argument.</p>
-</div>
-<div id="more-suggestions" class="section level2">
-<h2><span class="header-section-number">9.5</span> More suggestions?</h2>
-<p>More generally, I welcome any suggestions or collaborations for developing some additional specific ideas. Feel free to contact me via email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dispRity">GitHub page</a>.</p>
+<div id="more-manuals" class="section level2">
+<h2><span class="header-section-number">9.2</span>  More manuals</h2>
 <!-- 
 * Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
 * Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.

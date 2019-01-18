@@ -58,7 +58,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
 
     ## Testing the metric
     test <- NULL
-    op <- options(warn = 2)
+    op <- options(warn = -1)
     test <- try(fun(matrix, ...), silent = TRUE)
     #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
     options(op)

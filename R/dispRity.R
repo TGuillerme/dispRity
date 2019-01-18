@@ -127,7 +127,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {

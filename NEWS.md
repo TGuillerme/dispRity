@@ -44,6 +44,7 @@ dispRity 0.2.0 (2016-04-01)
   * `summary.dispRity` handles non-bootstrapped distributions display properly.
   * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
   * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
+  * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
 
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================

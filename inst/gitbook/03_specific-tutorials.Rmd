@@ -587,6 +587,9 @@ all_anc_centroids <- nodes.coordinates(dummy_space2, tree, full = TRUE)
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
                            nodes.coords = all_anc_centroids)
 
+## The ancestral distances distributions
+summary(ancestral_dist)
+
 ## Calculating disparity as the sum of the distances from all the ancestral nodes
 summary(dispRity(ancestral_dist, metric = sum))
 ```
