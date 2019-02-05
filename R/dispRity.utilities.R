@@ -120,6 +120,12 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
 
     ## Sanitizing
     check.class(data, "dispRity")
+
+    ## Add the dimensions if missing
+    if(is.null(data$call$dimensions)) {
+        data$call$dimensions <- ncol(data$matrix)
+    }
+
     if(missing(subsets)) {
         return(data$matrix)
     } else {
