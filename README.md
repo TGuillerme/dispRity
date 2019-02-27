@@ -107,6 +107,9 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
+* <a href=" "><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+JT Flannery Sutherland, BC Moon, TL Stubbs, MJ Benton. (**2019**) Does exceptional preservation distort our view of disparity in the fossil record? *Proceedings of the Royal Society B* [DOI: 10.1098/rspb.2019.0091](https://royalsocietypublishing.org/doi/10.1098/rspb.2019.0091#d164727e1)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=Morphology+and+stable+isotope+analysis+demonstrate+different+structuring+of+bat+communities+in+rainforest+and+savannah+habitats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 A Monadjem, A Kane, P Taylor, LR Richards, G Hall, S Woodborne. (**2018**) Morphology and stable isotope analysis demonstrate different structuring of bat communities in rainforest and savannah habitats. *Royal Society Open Science* [DOI: 10.1098/rsos.180849](https://royalsocietypublishing.org/doi/full/10.1098/rsos.180849)
 
