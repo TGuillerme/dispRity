@@ -25,19 +25,15 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<<<<<<< HEAD:inst/gitbook/_book/developing-disprity.html
-<meta name="date" content="2019-01-18">
-=======
 <meta name="date" content="2019-03-06">
->>>>>>> master:inst/gitbook/_book/developing-disprity.html
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="ecology-demo.html">
-<link rel="next" href="references.html">
+<link rel="prev" href="index.html">
+<link rel="next" href="getting-started-with-disprity.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -234,20 +230,65 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="developing-disprity" class="section level1">
-<h1><span class="header-section-number">9</span> Developing <code>dispRity</code></h1>
-<p>Everyone is more than welcome to help developing this package, whether it is through developing functions (metrics, tests, plots, etc…), the manual (more examples, typos, etc…) or completely new functionalities!</p>
-<div id="more-functions" class="section level2">
-<h2><span class="header-section-number">9.1</span> More functions</h2>
-</div>
-<div id="more-manuals" class="section level2">
-<h2><span class="header-section-number">9.2</span>  More manuals</h2>
-<!-- 
-* Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
-* Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
-* Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
-* Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
-* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130. -->
+<div id="glossary" class="section level1">
+<h1><span class="header-section-number">2</span> Glossary</h1>
+<ul>
+<li><p><strong>Multidimensional space</strong> (or just space). The mathematical multidimensional object that will be analysed with this package. In morphometrics, this is often referred to as the morphospace. However it may also be referred to as the cladisto-space for cladistic data or the eco-space for ecological data etc. In practice, this term designates a matrix where the columns represent the dimensions of the space (often – but not necessarily - &gt; 3!) and the rows represent the elements within this space.</p></li>
+<li><p><strong>Elements</strong>. The rows of the multidimensional space matrix. Elements can be taxa, field sites, countries etc.</p></li>
+<li><p><strong>Dimensions</strong>. The columns of the multidimensional space matrix. The dimensions can be referred to as axes of variation, or principal components, for ordinated spaces obtained from a PCA for example.</p></li>
+<li><p><strong>Subsets</strong>. Subsets of the multidimensional space. A subset (or subsets) contains the same number of dimensions as the space but may contain a smaller subset of elements. For example, if our space is composed of birds and mammals (the elements) and 50 principal components of variation (the dimensions), we can create two subsets containing just mammals or birds, but with the same 50 dimensions, to compare disparity in the two clades.</p></li>
+<li><p><strong>Disparity</strong>. A metric expressing the similarities/dissimilarities of the elements within the space or a summarising the space dimensions. For example the pairwise distances between elements or the range of each dimensions.</p></li>
+</ul>
+<div id="glossary-equivalences-in-palaeobiology-and-ecology" class="section level2">
+<h2><span class="header-section-number">2.1</span> Glossary equivalences in palaeobiology and ecology</h2>
+<table style="width:90%;">
+<colgroup>
+<col width="22%" />
+<col width="22%" />
+<col width="26%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>In this manual</th>
+<th>In <code>dispRity</code></th>
+<th>E.g. in palaeobiology</th>
+<th>E.g. in ecology</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>the multidimensional space</td>
+<td>a <code>matrix</code> object (<span class="math inline">\(n\times k\)</span>)</td>
+<td>a morphospace</td>
+<td>a function-space</td>
+</tr>
+<tr class="even">
+<td>elements</td>
+<td>rows (<span class="math inline">\(n\)</span>)</td>
+<td>taxa</td>
+<td>field experiments</td>
+</tr>
+<tr class="odd">
+<td>dimensions</td>
+<td>columns (<span class="math inline">\(k\)</span>)</td>
+<td>morphological characters</td>
+<td>communities’ compositions</td>
+</tr>
+<tr class="even">
+<td>subsets</td>
+<td>a <code>matrix</code> (<span class="math inline">\(m \times k\)</span>, with <span class="math inline">\(m \leq n\)</span>)</td>
+<td>time series</td>
+<td>experimental treatments</td>
+</tr>
+<tr class="odd">
+<td>disparity</td>
+<td>a <code>function</code></td>
+<td>sum of variances</td>
+<td>ellipsoid volume</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -256,8 +297,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="getting-started-with-disprity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -287,7 +328,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/08_future_directions.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/01_glossary.Rmd",
 "text": "Edit"
 },
 "download": null,

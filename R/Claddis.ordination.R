@@ -4,8 +4,8 @@
 #'
 #' @param data Data from Claddis::ReadMorphNexus.
 #' @param distance Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}
+#' @param ... Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.
 #' @param k The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.
-#' @param ... Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.
 #' @param add whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).
 #' @param arg.cmdscale Any optional arguments to be passed to \code{\link[stats]{cmdscale}} (as a named list such as \code{list(x.ret = TRUE)}).
 #' 
@@ -21,7 +21,6 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-
 
 Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.cmdscale) {
     match_call <- match.call()
@@ -64,10 +63,7 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     ## Transforming the Claddis data
 
     ## Compute the distance
-    distance <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
-
-    ## Adding the distance to arg.cmdscale
-    arg.cmdscale$d <- distance$DistanceMatrix
+    distance_mat <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
 
     ## Check for NAs
     if(any(is.na(distance_mat$DistanceMatrix))) {

@@ -12,7 +12,7 @@ Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
 
 \item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}}
 
-\item{...}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.}
+\item{...}{Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.}
 
 \item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
 

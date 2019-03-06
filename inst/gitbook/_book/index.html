@@ -25,19 +25,15 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<<<<<<< HEAD:inst/gitbook/_book/developing-disprity.html
-<meta name="date" content="2019-01-18">
-=======
 <meta name="date" content="2019-03-06">
->>>>>>> master:inst/gitbook/_book/developing-disprity.html
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="ecology-demo.html">
-<link rel="next" href="references.html">
+
+<link rel="next" href="glossary.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -234,20 +230,76 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="developing-disprity" class="section level1">
-<h1><span class="header-section-number">9</span> Developing <code>dispRity</code></h1>
-<p>Everyone is more than welcome to help developing this package, whether it is through developing functions (metrics, tests, plots, etc…), the manual (more examples, typos, etc…) or completely new functionalities!</p>
-<div id="more-functions" class="section level2">
-<h2><span class="header-section-number">9.1</span> More functions</h2>
+<div id="header">
+<h1 class="title">dispRity manual</h1>
+<h4 class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>), Mark Puttick (<a href="mailto:marknputtick@gmail.com">marknputtick@gmail.com</a>) and Natalie Cooper (<a href="mailto:natalie.cooper@nhm.ac.uk">natalie.cooper@nhm.ac.uk</a>)</em></h4>
+<h4 class="date"><em>2019-03-06</em></h4>
 </div>
-<div id="more-manuals" class="section level2">
-<h2><span class="header-section-number">9.2</span>  More manuals</h2>
-<!-- 
-* Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
-* Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
-* Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
-* Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
-* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130. -->
+<div id="disprity" class="section level1">
+<h1><span class="header-section-number">1</span> <code>dispRity</code></h1>
+<p>This is a package for measuring disparity in <code>R</code>. It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity). Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is <em>not</em> restricted to any type of matrices! This manual is based on the version 1.2.</p>
+<div id="what-is-disprity" class="section level2">
+<h2><span class="header-section-number">1.1</span> What is <code>dispRity</code>?</h2>
+<p>This is a modular package for measuring disparity in <code>R</code>. It allows users to summarise ordinated matrices (e.g. MDS, PCA, PCO, PCoA) to perform some multidimensional analysis. Typically, these analysis are used in palaeobiology and evolutionary biology to study the changes in morphology through time. However, there are many more applications in ecology, evolution and beyond.</p>
+<div id="modular" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Modular?</h3>
+<p>Because their exist a multitude of ways to measure disparity, each adapted to every specific question, this package uses an easy to modify modular architecture. In coding, each module is simply a function or a modification of a function that can be passed to the main functions of the package to tweak it to your proper needs! In practice, you will notice throughout this manual that some function can take other functions as arguments: the modular architecture of this package allows you to use any function for these arguments (with some restrictions explained for each specific cases). This will allow you to finely tune your multidimensional analysis to the needs of your specific question!</p>
+</div>
+</div>
+<div id="installing-and-running-the-package" class="section level2">
+<h2><span class="header-section-number">1.2</span> Installing and running the package</h2>
+<p>You can install this package easily, directly from the CRAN:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;dispRity&quot;</span>)</code></pre></div>
+<p>Alternatively, for the most up to data version and some functionalities not compatible with the CRAN, you can use the package through GitHub using <code>devtool</code> (see <a href="index.html#noCRAN">to CRAN or not to CRAN?</a> for more details):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Checking if devtools is already installed
+<span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(devtools)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+
+## Installing the latest released version directly from GitHub
+<span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dispRity&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;release&quot;</span>)</code></pre></div>
+<p>Note this uses the <code>release</code> branch (1.2). For the piping-hot (but potentially unstable) version, you can change the argument <code>ref = release</code> to <code>ref = master</code>. <code>dispRity</code> depends mainly on the <code>ape</code> package and uses functions from several other packages (<code>ade4</code>, <code>geometry</code>, <code>grDevices</code>, <code>hypervolume</code>, <code>paleotree</code>, <code>snow</code>, <code>Claddis</code>, <code>geomorph</code> and <code>RCurl</code>).</p>
+</div>
+<div id="noCRAN" class="section level2">
+<h2><span class="header-section-number">1.3</span> To CRAN or not to CRAN?</h2>
+<p>This package can be installed via <a href="https://cran.r-project.org/package=dispRity">the CRAN</a> or via <a href="https://github.com/TGuillerme/dispRity">GitHub</a>.</p>
+<ul>
+<li>The CRAN version is a more “strict” version of the package that does not include some functionalities such as this gitbook vignette because of compatibility issues with the CRAN requirement.</li>
+<li>The GitHub version is a more “reactive” version (fed by user’s suggestions and comments) and can contain more functionalities (see list below). This version exists on a <code>&quot;release&quot;</code> branch which is tested as strictly as the CRAN version with Travis and codecov. The <code>&quot;master&quot;</code> branch contains always the latest “piping hot”, not yet release version. It might (though rarely) be bugged.</li>
+</ul>
+<p>Note however, that apart from the functions listed below, both versions of the package have the same tested and implemented functions.</p>
+<div id="version" class="section level3">
+<h3><span class="header-section-number">1.3.1</span> So which version do I choose?</h3>
+<p>There are always three version of the package available:</p>
+<ul>
+<li>The CRAN one</li>
+<li>The GitHub <code>release</code> one</li>
+<li>The GitHub <code>master</code> one</li>
+</ul>
+<p>The differences between the CRAN one and the GitHub <code>release</code> or <code>master</code> ones is explained just above. For the the GitHub version, the differences are that the <code>release</code> one is more stable (i.e. more rarely modified) and the <code>master</code> one is more live one (i.e. bug fixes and new functionalities are added as they come).</p>
+<p>If you want the latest-latest version of the package I suggest using the GitHub <code>master</code> one, especially if you recently emailed me reporting a minor bug or wanting a new functionality! Note however that <em>it can happen</em> that the <code>master</code> version can sometimes be bugged (especially when there are major <code>R</code> and <code>R</code> packages updates), however, the status of the package state on both the <code>release</code> and the <code>master</code> version is constantly displayed on the <a href="https://github.com/TGuillerme/dispRity/"><code>README</code> page</a> of the package with the nice badges displaying these different (and constantly tested) information.</p>
+<p>Note that when we (the <code>dispRity</code> package collaborators!) are developing some more major versions, including some more complex features for example, they will never be released on either the the versions described above. Therefore you can rest assure that you will never use a badly bugged version of <code>dispRity</code>! Enjoy!</p>
+</div>
+</div>
+<div id="help" class="section level2">
+<h2><span class="header-section-number">1.4</span> Help</h2>
+<p>If you need help with the package, hopefully the following manual will be useful. However, parts of this package are still in development and some other parts are probably not covered. Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dispRity">GitHub page</a>.</p>
+</div>
+<div id="citations" class="section level2">
+<h2><span class="header-section-number">1.5</span> Citations</h2>
+<p>To cite the package, this manual or some specific functionalities, you can use the following references:</p>
+<p>The package main paper:</p>
+<blockquote>
+<p>Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;9:1755–1763. <a href="https://doi.org/10.1111/2041-210X.13022">doi.org/10.1111/2041-210X.13022</a>.</p>
+</blockquote>
+<p>The package manual (regularly updated!):</p>
+<blockquote>
+<p>Guillerme, T. &amp; Cooper, N. (2018): dispRity manual. figshare. Preprint. <a href="https://doi.org/10.6084/m9.figshare.6187337.v1">10.6084/m9.figshare.6187337.v1</a>.</p>
+</blockquote>
+<p>The time-slicing method implemented in <code>chrono.subsets</code> (unfortunately not Open Access, but you can still get a <a href="https://tguillerme.github.io/papers/Guillerme&amp;Cooper-2018-Palaeontology.pdf">free copy from here</a>):</p>
+<blockquote>
+<p>Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364">doi:10.1111/pala.12364</a>.</p>
+</blockquote>
+<!-- ## Associated papers -->
+<!-- Here are some papers that have used the `dispRity` package: -->
 
 </div>
 </div>
@@ -256,8 +308,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+
+<a href="glossary.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -287,7 +339,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/08_future_directions.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/index.Rmd",
 "text": "Edit"
 },
 "download": null,

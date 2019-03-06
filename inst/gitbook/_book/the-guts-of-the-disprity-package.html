@@ -25,19 +25,15 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<<<<<<< HEAD:inst/gitbook/_book/developing-disprity.html
-<meta name="date" content="2019-01-18">
-=======
 <meta name="date" content="2019-03-06">
->>>>>>> master:inst/gitbook/_book/developing-disprity.html
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="ecology-demo.html">
-<link rel="next" href="references.html">
+<link rel="prev" href="making-stuff-up.html">
+<link rel="next" href="palaeobiology-demo-disparity-through-time-and-within-groups.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -234,21 +230,211 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="developing-disprity" class="section level1">
-<h1><span class="header-section-number">9</span> Developing <code>dispRity</code></h1>
-<p>Everyone is more than welcome to help developing this package, whether it is through developing functions (metrics, tests, plots, etc…), the manual (more examples, typos, etc…) or completely new functionalities!</p>
-<div id="more-functions" class="section level2">
-<h2><span class="header-section-number">9.1</span> More functions</h2>
-</div>
-<div id="more-manuals" class="section level2">
-<h2><span class="header-section-number">9.2</span>  More manuals</h2>
-<!-- 
-* Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society of London B: Biological Sciences, 281(1793), 20141278.
-* Cooper, N., & Guillerme, T. (in prep.). Coming soonish!.
-* Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E. (2016). The global spectrum of plant form and function. Nature, 529(7585), 167.
-* Donohue, I., Petchey, O.L., Montoya, J.M., Jackson, A.L., McNally, L., Viana, M., Healy, K., Lurgi, M., O'Connor, N.E. and Emmerson, M.C, (2013). On the dimensionality of ecological stability. Ecology letters, 16(4), 421-429.
-* Wills, M. A., Briggs, D. E., & Fortey, R. A. (1994). Disparity as an evolutionary index: a comparison of Cambrian and Recent arthropods. Paleobiology, 20(2), 93-130. -->
+<div id="the-guts-of-the-disprity-package" class="section level1">
+<h1><span class="header-section-number">6</span> The guts of the <code>dispRity</code> package</h1>
+<div id="manipulating-disprity-objects" class="section level2">
+<h2><span class="header-section-number">6.1</span> Manipulating <code>dispRity</code> objects</h2>
+<p>Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your <code>R</code> console. Even the simple Beck and Lee 2014 example above produces an object with &gt; 72 lines of lists of lists of matrices!</p>
+<p>Therefore <code>dispRity</code> uses a specific class of object called a <code>dispRity</code> object. These objects allow users to use S3 method functions such as <code>summary.dispRity</code>, <code>plot.dispRity</code> and <code>print.dispRity</code>. <code>dispRity</code> also contains various utility functions that manipulate the <code>dispRity</code> object (e.g. <code>sort.dispRity</code>, <code>extract.dispRity</code> see the full list in the next section). These functions modify the <code>dispRity</code> object without having to delve into its complex structure! The full structure of a <code>dispRity</code> object is detailed <a href="https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md">here</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the example data
+<span class="kw">data</span>(disparity)
 
+## What is the class of the median_centroids object?
+<span class="kw">class</span>(disparity)</code></pre></div>
+<pre><code>## [1] &quot;dispRity&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## What does the object contain?
+<span class="kw">names</span>(disparity)</code></pre></div>
+<pre><code>## [1] &quot;matrix&quot;    &quot;call&quot;      &quot;subsets&quot;   &quot;disparity&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summarising it using the S3 method print.dispRity
+disparity</code></pre></div>
+<pre><code>##  ---- dispRity object ---- 
+## 7 continuous (acctran) time subsets for 99 elements with 97 dimensions:
+##      90, 80, 70, 60, 50 ...
+## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 20, 15, 10, 5 elements.
+## Disparity was calculated as: c(median, centroids).</code></pre>
+<p>Note that it is always possible to recall the full object using the argument <code>all = TRUE</code> in <code>print.dispRity</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Display the full object
+<span class="kw">print</span>(disparity, <span class="dt">all =</span> <span class="ot">TRUE</span>)
+## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</code></pre></div>
+</div>
+<div id="disprity-utilities" class="section level2">
+<h2><span class="header-section-number">6.2</span> <code>dispRity</code> utilities</h2>
+<p>The package also provides some utility functions to facilitate multidimensional analysis.</p>
+<div id="disprity-object-utilities" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></h3>
+<p>The first set of utilities are functions for manipulating <code>dispRity</code> objects:</p>
+<div id="make.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.1</span> <code>make.dispRity</code></h4>
+<p>This function creates empty <code>dispRity</code> objects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating an empty dispRity object
+<span class="kw">make.dispRity</span>()</code></pre></div>
+<pre><code>## Empty dispRity object.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating an &quot;empty&quot; dispRity object with a matrix
+(disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</code></pre></div>
+<pre><code>##  ---- dispRity object ---- 
+## Contains only a matrix 5x4.</code></pre>
+</div>
+<div id="fill.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.2</span> <code>fill.dispRity</code></h4>
+<p>This function initialises a <code>dispRity</code> object and generates its call properties.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The dispRity object&#39;s call is indeed empty
+disparity_obj<span class="op">$</span>call</code></pre></div>
+<pre><code>## list()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Filling an empty disparity object (that needs to contain at least a matrix)
+(disparity_obj &lt;-<span class="st"> </span><span class="kw">fill.dispRity</span>(disparity_obj))</code></pre></div>
+<pre><code>##  ---- dispRity object ---- 
+## 5 elements with 4 dimensions.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The dipRity object has now the correct minimal attributes
+disparity_obj<span class="op">$</span>call</code></pre></div>
+<pre><code>## $dimensions
+## [1] 4</code></pre>
+</div>
+<div id="matrix.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.3</span> <code>matrix.dispRity</code></h4>
+<p>This function extracts a specific matrix from a disparity object. The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the matrix containing the coordinates of the elements at time 50
+<span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="st">&quot;50&quot;</span>))</code></pre></div>
+<pre><code>##  num [1:18, 1:97] -0.1038 0.2844 0.2848 0.0927 0.1619 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : chr [1:18] &quot;Leptictis&quot; &quot;Dasypodidae&quot; &quot;n24&quot; &quot;Potamogalinae&quot; ...
+##   ..$ : NULL</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
+## (15 elements) from the second group (80 Mya)
+<span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</code></pre></div>
+<pre><code>##  num [1:15, 1:97] -0.6937 -0.0445 -0.673 -0.7161 -0.2046 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : chr [1:15] &quot;Kennalestes&quot; &quot;n20&quot; &quot;Batodon&quot; &quot;n7&quot; ...
+##   ..$ : NULL</code></pre>
+</div>
+<div id="get.subsets" class="section level4">
+<h4><span class="header-section-number">6.2.1.4</span> <code>get.subsets</code></h4>
+<p>This function creates a dispRity object that contains only elements from one specific subsets.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting all the data for the crown mammals
+(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))
+
+## The object keeps the properties of the parent object but is composed of only one subsets
+<span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</code></pre></div>
+</div>
+<div id="combine.subsets" class="section level4">
+<h4><span class="header-section-number">6.2.1.5</span> <code>combine.subsets</code></h4>
+<p>This function allows to merge different subsets. If the</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Combine the two first subsets in the dispRity data example
+<span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</code></pre></div>
+<p>Note that the computed values (bootstrapped data + disparity metric) are not merge.</p>
+</div>
+<div id="extract.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.6</span> <code>extract.dispRity</code></h4>
+<p>This function extracts the calculated disparity values of a specific matrix.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Extracting the observed disparity (default)
+<span class="kw">extract.dispRity</span>(disparity)
+
+## Extracting the disparity from the bootstrapped values from the
+## 10th rarefaction level from the second subsets (80 Mya)
+<span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</code></pre></div>
+</div>
+<div id="rescale.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.7</span> <code>rescale.dispRity</code></h4>
+<p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the disparity values of the time subsets
+<span class="kw">head</span>(<span class="kw">summary</span>(disparity))
+
+## Scaling the same disparity values
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))
+
+## Scaling and centering:
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))
+
+## Rescaling the value by dividing by a maximum value
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</code></pre></div>
+</div>
+<div id="sort.disprity" class="section level4">
+<h4><span class="header-section-number">6.2.1.8</span> <code>sort.dispRity</code></h4>
+<p>This is the S3 method of <code>sort</code> for sorting the subsets alphabetically (default) or following a specific pattern.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Sorting the disparity subsets in inverse alphabetic order
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))
+
+## Customised sorting
+<span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</code></pre></div>
+</div>
+</div>
+</div>
+<div id="the-disprity-object-content" class="section level2">
+<h2><span class="header-section-number">6.3</span> The <code>dispRity</code> object content</h2>
+<p>The functions above are utilities to easily and safely access different elements in the <code>dispRity</code> object. Alternatively, of course, each elements can be accessed manually. Here is an explanation on how it works. The <code>dispRity</code> object is a <code>list</code> of two to four elements, each of which are detailed below:</p>
+<ul>
+<li><code>$matrix</code>: an object of class <code>matrix</code>, the full multidimensional space.</li>
+<li><code>$call</code>: an object of class <code>list</code> containing information on the <code>dispRity</code> object content.</li>
+<li><code>$subsets</code>: an object of class <code>list</code> containing the subsets of the multidimensional space.</li>
+<li><code>$disparity</code>: an object of class <code>list</code> containing the disparity values.</li>
+</ul>
+<p>The <code>dispRity</code> object is loosely based on <code>C</code> structure objects. In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via “pointers” to only a certain number of elements and/or dimensions of this matrix. This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix is present in the <code>R</code> environment rather than multiple copies of it for each subset.</p>
+<div id="matrix" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> <code>$matrix</code></h3>
+<p>This is the multidimensional space, stored in the <code>R</code> environment as a <code>matrix</code> object. It requires row names but not column names. By default, if the row names are missing, <code>dispRity</code> function will arbitrarily generate them in numeric order (i.e. <code>rownames(matrix) &lt;- 1:nrow(matrix)</code>). This element of the <code>dispRity</code> object is never modified.</p>
+</div>
+<div id="call" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> <code>$call</code></h3>
+<p>This element contains the information on the <code>dispRity</code> object content. It is a <code>list</code> that can contain the following:</p>
+<ul>
+<li><code>$call$subsets</code>: a vector of <code>character</code> with information on the subsets type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>) and their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;random&quot;</code>, <code>&quot;proximity&quot;</code>, <code>&quot;equal.split&quot;</code>, <code>&quot;gradual.split&quot;</code>). This element generated only once via <code>chrono.subsets()</code> and <code>custom.subsets()</code>.</li>
+<li><code>$call$dimensions</code>: either a single <code>numeric</code> value indicating how many dimensions to use or a vector of <code>numeric</code> values indicating which specific dimensions to use. This element is by default the number of columns in <code>$matrix</code> but can be modified through <code>boot.matrix()</code> or <code>dispRity()</code>.</li>
+<li><code>$call$bootstrap</code>: this is a <code>list</code> containing three elements:
+<ul>
+<li><code>[[1]]</code>: the number of bootstrap replicates (<code>numeric</code>)</li>
+<li><code>[[2]]</code>: the bootstrap method (<code>character</code>)</li>
+<li><code>[[3]]</code>: the rarefaction levels (<code>numeric</code> vector)</li>
+</ul></li>
+<li><code>$call$disparity</code>: this is a <code>list</code> containing one element, <code>$metric</code>, that is a <code>list</code> containing the different functions passed to the <code>metric</code> argument in <code>dispRity</code>. These are <code>call</code> elements and get modified each time the <code>dispRity</code> function is used (the first element is the first metric(s), the second, the second metric(s), etc.).</li>
+</ul>
+</div>
+<div id="subsets" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> <code>$subsets</code></h3>
+<p>This element contain the eventual subsets of the multidimensional space. It is a <code>list</code> of subset names. Each subset name is in turn a <code>list</code> of at least one element called <code>elements</code> which is in turn a <code>matrix</code>. This <code>elements</code> matrix is the raw (observed) elements in the subsets. The <code>elements</code> matrix is composed of <code>numeric</code> values in one column and <em>n</em> rows (the number of elements in the subset). Each of these values are a “pointer” (<code>C</code> inspired) to the element of the <code>$matrix</code>. For example, lets assume a <code>dispRity</code> object called <code>disparity</code>, composed of at least one subsets called <code>sub1</code>:</p>
+<pre><code> disparity$subsets$sub1$elements
+      [,1]
+ [1,]    5
+ [2,]    4
+ [3,]    6
+ [4,]    7</code></pre>
+<p>The values in the matrix “point” to the elements in <code>$matrix</code>: here, the multidimensional space with only the 4th, 5th, 6th and 7th elements. The following elements in <code>diparity$subsets$sub1</code> will correspond to the same “pointers” but drawn from the bootstrap replicates. The columns will correspond to different bootstrap replicates. For example:</p>
+<pre><code> disparity$subsets$sub1[[2]]
+      [,1] [,2] [,3] [,4]
+ [1,]   57   43   70    4
+ [2,]   43   44    4    4
+ [3,]   42   84   44    1
+ [4,]   84    7    2   10</code></pre>
+<p>This signifies that we have four bootstrap pseudo-replicates pointing each time to four elements in <code>$matrix</code>. The next element (<code>[[3]]</code>) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have <em>m</em> rows where <em>m</em> is the number of elements for this rarefaction level). The next element after that (<code>[[4]]</code>) will be the same for with an other rarefaction level and so forth…</p>
+</div>
+<div id="disparity" class="section level3">
+<h3><span class="header-section-number">6.3.4</span> <code>$disparity</code></h3>
+<p>The <code>$disparity</code> element is identical to the <code>$subsets</code> element structure (a list of list(s) containing matrices) but the matrices don’t contain “pointers” to <code>$matrix</code> but the disparity result of the disparity metric applied to the “pointers”. For example, in our first example (<code>$elements</code>) from above, if the disparity metric is of dimensions level 1, we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    1.82</code></pre>
+<p>This is the observed disparity (1.82) for the subset called <code>sub1</code>. If the disparity metric is of dimension level 2 (say the function <code>range</code> that outputs two values), we would have:</p>
+<pre><code> disparity$disparity$sub1$elements
+      [,1]
+ [1,]    0.82
+ [2,]    2.82</code></pre>
+<p>The following elements in the list follow the same logic as before: rows are disparity values (one row for a dimension level 1 metric, multiple for a dimensions level 2 metric) and columns are the bootstrap replicates (the bootstrap with all elements followed by the eventual rarefaction levels). For example for the bootstrap without rarefaction (second element of the list):</p>
+<pre><code> disparity$disparity$sub1[[2]]
+         [,1]     [,2]     [,3]     [,4]
+[1,] 1.744668 1.777418 1.781624 1.739679 </code></pre>
+<!-- ## Modularity
+
+### Making your own metrics
+
+### Making your own tests
+
+## Where is this going?
+ -->
+<!-- ## Running `dispRity` in parallel
+
+The computationally intensive function `dispRity` have a `parallel` option to speed up their calculations.
+
+This option requires the package `snow` and takes arguments that are to be passed to  -->
+
+</div>
 </div>
 </div>
             </section>
@@ -256,8 +442,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="making-stuff-up.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -287,7 +473,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/08_future_directions.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/05_guts.Rmd",
 "text": "Edit"
 },
 "download": null,

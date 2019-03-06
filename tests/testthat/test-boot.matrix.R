@@ -31,7 +31,7 @@ test_that("internal: bootstrap replicates", {
     data(disparity)
     subsets <- disparity$subsets[[1]]
 
-    ## Select rarefactions
+    ## Select rarefactions
     expect_equal(
         select.rarefaction(subsets, 8)
         ,list(18, 8))
@@ -332,8 +332,6 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
-<<<<<<< HEAD
-=======
 
 test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
@@ -419,9 +417,6 @@ test_that("boot.matrix works with the prob option (for probabilities sampling)",
 
 
 })
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 
 test_that("boot.matrix detects distance matrices", {
     non_dist <- matrix(1:9, 3, 3)
@@ -431,9 +426,6 @@ test_that("boot.matrix detects distance matrices", {
     msg <- capture_warnings(boot.matrix(is_dist))
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
-=======
->>>>>>> master
->>>>>>> parent of 299bc77... merge conflict resolved
-=======
->>>>>>> master
->>>>>>> parent of 299bc77... merge conflict resolved
+
+
+
