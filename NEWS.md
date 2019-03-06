@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.3 (2019-02-05)
+[Next release] dispRity v1.2.3 (2019-03-06)
 =========================
 
 ### NEW FEATURE
@@ -45,6 +45,7 @@ dispRity 0.2.0 (2016-04-01)
   * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
   * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
   * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
+  * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
 
 [GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
 =========================
