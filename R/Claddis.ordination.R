@@ -14,7 +14,7 @@
 #' require(Claddis)
 #' 
 #' ## Creating an ordination of the distance matrix of Claddis example data
-#' Claddis.ordination(Claddis::Michaux1989)
+#' Claddis.ordination(Michaux1989)
 #' }
 #'
 #' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
@@ -30,11 +30,12 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     error_msg <- paste0("data does not contain a matrix.\nUse Claddis::ReadMorphNexus to generate the proper data format.")
     check.class(data, "list", msg = error_msg)
     ## Must have at least one matrix
-    if(!any(names(data) %in% "matrix")) {
+    # if(!any(names(data) %in% "Matrix")) {
+    if(length(grep("Matrix", names(data))) == 0) {
         stop.call("", error_msg)
     }
     ## Matrix must be a matrix
-    check.class(data$matrix, "matrix", msg = error_msg)
+    check.class(data$Matrix_1$Matrix, "matrix", msg = error_msg)
 
     ## Distance
     distances_available <- c("GC", "GED", "RED", "MORD")
@@ -45,14 +46,14 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
         arg.cmdscale <- list()
     }
     ## k
-    max_k <- (nrow(data$matrix) -1)
+    max_k <- (nrow(data$Matrix_1$Matrix) -1)
     if(missing(k)) {
         arg.cmdscale$k <- max_k
     } else {
         check.class(k, "numeric")
         check.length(k, 1, " must be a single numeric value.")
         if(k > max_k) {
-            stop.call("", paste0("k cannot be greater than the number of rows in data - 1 (data has", max_k, "rows)."))
+            stop.call("", paste0("k cannot be greater than the number of rows in data - 1 (data has ", max_k, " rows)."))
         }
     }
     ## add
@@ -62,10 +63,15 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     ## Transforming the Claddis data
 
     ## Compute the distance
-    distance <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
+    distance_mat <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
+
+    ## Check for NAs
+    if(any(is.na(distance_mat$DistanceMatrix))) {
+        stop.call(match_call$data, msg.pre = paste0("The generate distance matrix using \"", distance, "\" distance from "), msg = " contains NA and cannot be ordinated.")
+    }
 
     ## Adding the distance to arg.cmdscale
-    arg.cmdscale$d <- distance$DistanceMatrix
+    arg.cmdscale$d <- distance_mat$DistanceMatrix
 
     ## Ordinate the matrix
     ordination <- do.call(stats::cmdscale, arg.cmdscale)

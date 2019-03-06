@@ -28,7 +28,7 @@ Takes Claddis data and computes both the distance and the ordination matrix
 require(Claddis)
 
 ## Creating an ordination of the distance matrix of Claddis example data
-Claddis.ordination(Claddis::Michaux1989)
+Claddis.ordination(Michaux1989)
 }
 
 }

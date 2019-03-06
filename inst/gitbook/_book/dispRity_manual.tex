@@ -129,7 +129,7 @@ and Natalie Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2019-01-18}
+  \date{2019-03-06}
 
 \usepackage{booktabs}
 
@@ -213,8 +213,6 @@ CRAN?} for more details):
 \end{Highlighting}
 \end{Shaded}
 
-Anyways to upload it, you can use
-
 Note this uses the \texttt{release} branch (1.2). For the piping-hot
 (but potentially unstable) version, you can change the argument
 \texttt{ref\ =\ release} to \texttt{ref\ =\ master}. \texttt{dispRity}
@@ -230,12 +228,11 @@ This package can be installed via
 \href{https://github.com/TGuillerme/dispRity}{GitHub}.
 
 \begin{itemize}
+\tightlist
 \item
   The CRAN version is a more ``strict'' version of the package that does
-  not include some functionalities (such as
-  \protect\hyperlink{Claddis-ordination}{\texttt{Claddis.ordination}} or
-  this gitbook vignette) because of compatibility issues with the CRAN
-  requirement.
+  not include some functionalities such as this gitbook vignette because
+  of compatibility issues with the CRAN requirement.
 \item
   The GitHub version is a more ``reactive'' version (fed by user's
   suggestions and comments) and can contain more functionalities (see
@@ -247,14 +244,6 @@ This package can be installed via
 
 Note however, that apart from the functions listed below, both versions
 of the package have the same tested and implemented functions.
-
-Functions not available on the CRAN version (1.2):
-
-\begin{itemize}
-\tightlist
-\item
-  \protect\hyperlink{Claddis-ordination}{\texttt{Claddis.ordination}}
-\end{itemize}
 
 \subsection{So which version do I choose?}\label{version}
 
@@ -519,9 +508,8 @@ object}!
 
 More about these \texttt{dispRity} objects below!
 
-\hypertarget{Claddis-ordination}{\subsection{\texorpdfstring{Ordination
-matrices from
-\texttt{Claddis}}{Ordination matrices from Claddis}}\label{Claddis-ordination}}
+\subsection{\texorpdfstring{Ordination matrices from
+\texttt{Claddis}}{Ordination matrices from Claddis}}\label{Claddis-ordination}
 
 \begin{quote}
 This functionality is not available on the CRAN version of the package
@@ -547,9 +535,9 @@ automatically calculate and ordinate the distances among taxa:
 \begin{verbatim}
 ##                      [,1]          [,2]       [,3]
 ## Ancilla      0.000000e+00  4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01  1.956921e-16 -0.2534942
-## Ancillista   5.106645e-01  6.523071e-17 -0.2534942
-## Amalda      -2.004476e-16 -4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
+## Ancillista   5.106645e-01 -1.630768e-17 -0.2534942
+## Amalda       1.603581e-16 -4.154578e-01  0.2534942
 \end{verbatim}
 
 Note that several options are available, namely which type of distance
