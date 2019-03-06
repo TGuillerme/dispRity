@@ -417,8 +417,7 @@ test_that("boot.matrix works with the prob option (for probabilities sampling)",
 
 
 })
-<<<<<<< HEAD
-=======
+
 
 test_that("boot.matrix detects distance matrices", {
     non_dist <- matrix(1:9, 3, 3)
@@ -428,7 +427,3 @@ test_that("boot.matrix detects distance matrices", {
     msg <- capture_warnings(boot.matrix(is_dist))
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
-
-
-
->>>>>>> master

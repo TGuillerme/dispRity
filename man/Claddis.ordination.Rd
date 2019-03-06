@@ -4,30 +4,21 @@
 \alias{Claddis.ordination}
 \title{Imports data from Claddis}
 \usage{
-<<<<<<< HEAD
-Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
-  ...)
-=======
 Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
   arg.cmdscale)
->>>>>>> master
 }
 \arguments{
 \item{data}{Data from Claddis::ReadMorphNexus.}
 
 \item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}}
 
-\item{...}{Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.}
+\item{...}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.}
 
 \item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
 
-<<<<<<< HEAD
-\item{...}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.}
-=======
 \item{add}{whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).}
 
 \item{arg.cmdscale}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}} (as a named list such as \code{list(x.ret = TRUE)}).}
->>>>>>> master
 }
 \description{
 Takes Claddis data and computes both the distance and the ordination matrix
@@ -37,7 +28,7 @@ Takes Claddis data and computes both the distance and the ordination matrix
 require(Claddis)
 
 ## Creating an ordination of the distance matrix of Claddis example data
-Claddis.ordination(Claddis::Michaux1989)
+Claddis.ordination(Michaux1989)
 }
 
 }
