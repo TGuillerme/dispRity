@@ -284,11 +284,14 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
 <<<<<<< HEAD
+<<<<<<< HEAD
         if(is.null(details_out)) {
             stop.call(match_call$test, ".", "Comparison type \"all\" is not applicable with ")
         }
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> parent of 299bc77... merge conflict resolved
         if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
 =======
         if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", as.expression(match_call$test)))

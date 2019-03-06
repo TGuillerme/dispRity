@@ -420,6 +420,7 @@ test_that("boot.matrix works with the prob option (for probabilities sampling)",
 
 })
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 test_that("boot.matrix detects distance matrices", {
@@ -430,6 +431,9 @@ test_that("boot.matrix detects distance matrices", {
     msg <- capture_warnings(boot.matrix(is_dist))
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
+=======
+>>>>>>> master
+>>>>>>> parent of 299bc77... merge conflict resolved
 =======
 >>>>>>> master
 >>>>>>> parent of 299bc77... merge conflict resolved
