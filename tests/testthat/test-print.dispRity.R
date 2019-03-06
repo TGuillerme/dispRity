@@ -110,16 +110,16 @@ test_that("normal printing", {
 
 test_that("randtest printing", {
     set.seed(1)
-    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = 5)
     test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 
     expect_equal(capture.output(test),
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
-        "", "Observation: 6.634e-07 ", 
+        "", "Observation: 0.01698412 ", 
         "", "Based on 100 replicates", 
-        "Simulated p-value: 0.03960396 ", "Alternative hypothesis: two-sided ", 
-        "", "      Std.Obs   Expectation      Variance ",
-        "-1.400160e-01  3.141577e+29  5.034313e+60 "))
+        "Simulated p-value: 0.05940594 ", "Alternative hypothesis: two-sided ", 
+        "", "    Std.Obs Expectation    Variance ",
+        "  -2.023035    5.094270    6.298782 "))
 
     expect_equal(capture.output(print.dispRity(test, all = TRUE)),
         c(
@@ -128,14 +128,14 @@ test_that("randtest printing", {
         "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
         "    digits = 10)[, 3], alter = alter)"                                  ,
         ""                                                                       ,
-        "Observation: 6.634e-07 "                                                ,
+        "Observation: 0.01698412 "                                                ,
         ""                                                                       ,
         "Based on 100 replicates"                                                ,
-        "Simulated p-value: 0.03960396 "                                         ,
+        "Simulated p-value: 0.05940594 "                                         ,
         "Alternative hypothesis: two-sided "                                     ,
         ""                                                                       ,
-        "      Std.Obs   Expectation      Variance "                             ,
-        "-1.400160e-01  3.141577e+29  5.034313e+60 "                             ,
+        "    Std.Obs Expectation    Variance "                             ,
+        "  -2.023035    5.094270    6.298782 "                             ,
         ""
         ))
 

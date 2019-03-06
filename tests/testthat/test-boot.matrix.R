@@ -333,7 +333,7 @@ test_that("boot.matrix deals with probabilities subsets", {
 })
 
 
-test_that("boot.matrsix works with the prob option (for probabilities sampling)", {
+test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
     
     ## Custom subsets
@@ -417,3 +417,18 @@ test_that("boot.matrsix works with the prob option (for probabilities sampling)"
 
 
 })
+<<<<<<< HEAD
+=======
+
+test_that("boot.matrix detects distance matrices", {
+    non_dist <- matrix(1:9, 3, 3)
+    is_dist <- as.matrix(dist(non_dist))
+
+    expect_warning(boot.matrix(is_dist))
+    msg <- capture_warnings(boot.matrix(is_dist))
+    expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+})
+
+
+
+>>>>>>> master

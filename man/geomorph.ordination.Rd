@@ -4,12 +4,14 @@
 \alias{geomorph.ordination}
 \title{Imports data from geomorph}
 \usage{
-geomorph.ordination(data, ...)
+geomorph.ordination(data, ordinate = TRUE, ...)
 }
 \arguments{
 \item{data}{An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.}
 
-\item{...}{Any optional arguments to be passed to \code{\link[stats]{prcomp}}.}
+\item{ordinate}{Logical, whether to ordinate the data using \code{\link[stats]{prcomp}} (\code{TRUE}; default) or not (\code{FALSE}; the code then returns the raw coordinates matrix).}
+
+\item{...}{Any optional arguments to be passed to \code{\link[stats]{prcomp}} (is ignored if \code{ordinate = FALSE}).}
 }
 \value{
 A \code{matrix} or a \code{dispRity} object.
@@ -31,7 +33,6 @@ procrustes <- geomorph::gpagen(plethodon$land, PrinAxes = FALSE)
 
 ## Obtaining the ordination matrix
 geomorph.ordination(procrustes)
-
 
 ## Using a geomorph.data.frame
 geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species)

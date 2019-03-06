@@ -31,7 +31,7 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     ## Tree
     # check.class(tree, "phylo")
     if(is.null(tree$root.time)) {
-        stop("The tree must have a root time element (tree$root.time).", call. = FALSE)
+        stop.call("", "The tree must have a root time element (tree$root.time).")
     }
 
     ## What
@@ -45,7 +45,7 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     check.length(ICS, 1, errorif = FALSE, msg = " must be a year from 2008 to the present.")
     ICS_available <- match(paste0("ICS", ICS), names(geoscale::timescales))
     if(is.na(ICS_available)) {
-        stop(paste0("No stratigraphic data found for ", paste0("ICS", ICS), ".\nAvailable years are: ", paste(names(geoscale::timescales), collapse = ", "), "."), call. = FALSE)
+        stop.call("", paste0("No stratigraphic data found for ", paste0("ICS", ICS), ".\nAvailable years are: ", paste(names(geoscale::timescales), collapse = ", "), "."))
     } else {
         ## Selecting the ICS
         stratigraphy <- geoscale::timescales[[paste0("ICS", ICS)]]

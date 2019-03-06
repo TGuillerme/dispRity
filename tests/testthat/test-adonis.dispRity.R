@@ -11,7 +11,7 @@ test_that("Works with one or more groups", {
     random_groups <- sample(nrow(distance_matrix), 20)
     random_groups <- list("group1" = random_groups[1:10],  "group2" = random_groups[11:20])
     ## Generating a dispRity object
-    random_disparity <- custom.subsets(distance_matrix, random_groups)
+    expect_warning(random_disparity <- custom.subsets(distance_matrix, random_groups))
     
     ## Some errors
     expect_error(adonis.dispRity(make.dispRity(distance_matrix)))
@@ -85,8 +85,7 @@ test_that("Give the same results as adonis", {
     groups <- data.frame(dune.env$Management, row.names = rownames(betad_dispRity))
     colnames(groups) <- NULL
 
-    betad_dispRity <- custom.subsets(betad_dispRity, group = groups)
-
+    expect_warning(betad_dispRity <- custom.subsets(betad_dispRity, group = groups))
 
     set.seed(1)
     test_vegan <- adonis(betad_vegan ~ Management, data = dune.env, permutations = 20)

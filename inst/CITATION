@@ -5,7 +5,9 @@ citEntry(entry = "Article",
          author = personList(as.person("Thomas Guillerme")),
          journal = "Methods in Ecology and Evolution",
          year = "2018",
-         volume = "in press",
+         volume = "9",
+         number = "7",
+         pages = "1755-1763",
          doi = "10.1111/2041-210X.13022",
          textVersion = "Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;00:1-9. https://doi.org/10.1111/2041-210X.13022"
          )
@@ -22,7 +24,6 @@ citEntry(entry = "Article",
          textVersion = "Guillerme, T. & Cooper, N. (2018): dispRity manual. figshare. Preprint. 10.6084/m9.figshare.6187337.v1"
          )
 
-
 citHeader("To cite the time-slicing method, please use:")
 
 citEntry(entry = "Article",
@@ -33,6 +34,6 @@ citEntry(entry = "Article",
          volume = "61",
          number = "4",
          pages = "481-493",
-         doi = "https://doi.org/10.1111/pala.12364",
+         doi = "10.1111/pala.12364",
          textVersion = "Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. doi:10.1111/pala.12364"
          )

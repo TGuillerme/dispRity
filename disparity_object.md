@@ -13,7 +13,13 @@ object
 	|	|
 	|	\---$dimensions = class:"numeric"
 	|	|
-	|	\---$metric = class:"character"
+	|	\---$metric
+	|       |
+	|		\---$name = class:"character"
+	|		|
+	|		\---$fun = class:"list" (elements of class "function")
+	|		|
+	|		\---$arg = class:"list"
 	|
 	\---$subsets* = class:"list" (subsets as a list)
 	|	|

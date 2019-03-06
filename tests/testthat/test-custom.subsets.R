@@ -218,3 +218,16 @@ test_that("clade subsets works", {
     expect_equal(nrow(without_nodes$subsets[[1]]$elements), nrow(BeckLee_mat50))
     expect_equal(nrow(with_nodes$subsets[[1]]$elements), nrow(BeckLee_mat99))
 })
+
+
+
+test_that("custom.subsets detects distance matrices", {
+    non_dist <- matrix(1:100, 10, 10)
+    rownames(non_dist) <- letters[1:10]
+    is_dist <- as.matrix(dist(non_dist))
+
+    expect_warning(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
+    msg <- capture_warnings(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
+    expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+})
+

@@ -21,7 +21,7 @@ test_that("set.default works", {
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
     expect_equal(
         round(test[[1]], 5)
-        , round(c(0.96824, 2.02266), 5))
+        , round(c(0.84084, 2.01246), 5))
     expect_equal(
         test[[2]]
         , "Subsets")
@@ -72,7 +72,7 @@ test_that("extract.from.summary works", {
         ,as.numeric(rep(NA, 7)))
     expect_equal(
         extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
-        ,c(1.776, 1.808, 1.881, 1.880, 1.902, 1.885, 1.823))
+        ,c(1.772, 1.796, 1.871, 1.878, 1.900, 1.884, 1.808))
 })
 
 test_that("transpose.box works", {
@@ -84,18 +84,29 @@ test_that("transpose.box works", {
         transpose.box(disparity, rarefaction = 99, is_bootstrapped = TRUE)
         )
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
-        ,c(100, 7))
+        length(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
+        ,7)
     expect_equal(
-        dim(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
-        ,c(100, 7))
+        length(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
+        ,7)
 
     test <- transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE)
     for(subsets in 1:length(disparity$subsets)) {
         expect_equal(
-            test[,subsets]
+            as.vector(test[[subsets]])
             ,as.vector(disparity$disparity[[subsets]][[2]]))
     }
+    ## Unequal boxes test
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = centroids)
+    subset_length <- unique(unlist(lapply(data$subsets, function(x) return(length(x[[1]])))))
+    names(subset_length) <- c("crown", "stem") 
+    test <- transpose.box(data, rarefaction = FALSE, is_bootstrapped = FALSE)
+    expect_is(test, "list")
+    expect_equal(names(test), c("crown", "stem"))
+    expect_equal(unlist(lapply(test, length)), subset_length)
+
 })
 
 test_that("split.summary.data works", {
@@ -144,15 +155,12 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
     expect_error(plot(disparity, rarefaction = 1))
     expect_null(plot(disparity, rarefaction = 5))
+    expect_null(plot(disparity, observed = TRUE))
+    expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
 
     ## Testing additional behaviours for plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
-
-
-
-
-    
+    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))    
 })
 
 
@@ -168,7 +176,6 @@ test_that("plot.dispRity continuous with NAs", {
     expect_null(plot(test_data))
   
 })
-
 
 test_that("plot.dispRity with model.test data", {
     load("model_test_data.Rda")
@@ -194,7 +201,6 @@ test_that("plot.dispRity with model.test data", {
     expect_null(plot(model_test_data))
     expect_null(plot(model_simulation_inherit, add = TRUE))
 })
-
 
 test_that("plot subclasses works", {
   

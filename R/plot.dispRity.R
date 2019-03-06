@@ -14,7 +14,7 @@
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the graph.
 #' @param chrono.subsets \code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
-#' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}).
+#' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
 #' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})
@@ -63,6 +63,12 @@
 #' 
 #' ## Rarefactions plots
 #' plot(disparity, rarefaction = TRUE)
+#' 
+#' ## Observed data
+#' plot(disparity, observed = TRUE)
+#'
+#' ## Observed data with graphical details
+#' plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 #' 
 #' \dontrun{
 #' ## Geoscale plots
@@ -116,7 +122,7 @@
 # token.args=NULL
 
 # data(disparity)
-# data <- dispRity
+# data <- disparity
 # type = "line"
 # elements = TRUE
 # ylim = c(0, 5)
@@ -205,7 +211,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 }
                 ## Are quantiles proper proportions
                 if(any(quantiles < 0) | any(quantiles > 100)) {
-                    stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
+                    stop.call("", "quantiles(s) must be any value between 0 and 100.")
                 }
                 quantiles_n <- length(quantiles)
 
@@ -213,7 +219,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.class(cent.tend, "function")
                 ## The function must work
                 if(make.metric(cent.tend, silent = TRUE) != "level1") {
-                    stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
+                    stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
                 }
 
 
@@ -306,7 +312,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             col <- default_arg[[4]]
 
             ## Plotting the model
-            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, add, density, ...)
+            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
         }
         
         ## Exit subclass plots
@@ -320,16 +326,18 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) stop(paste0(as.expression(match_call$x), " must be contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"), call. = FALSE)
+    if(is.na(match("disparity", names(data)))) {
+        stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+    }
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     ## Check the bootstraps
     is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
 
     ## quantiles
-    ## Only check if the data is_bootstrapped
-    if(is_bootstrapped) {
-        check.class(quantiles, "numeric", " must be any value between 1 and 100.")
+    ## Only check if the data is_bootstrapped or if it's a distribution
+    if(is_bootstrapped || is_distribution) {
+        check.class(quantiles, c("numeric", "integer"), " must be any value between 1 and 100.")
 
         ## Are quantiles probabilities or proportions ?
         if(any(quantiles < 1)) {
@@ -338,7 +346,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         ## Are quantiles proper proportions
         if(any(quantiles < 0) | any(quantiles > 100)) {
-            stop("quantiles(s) must be any value between 0 and 100.", call. = FALSE)
+            stop.call("", "quantiles(s) must be any value between 0 and 100.")
         }
     }
 
@@ -347,7 +355,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(cent.tend, "function")
     ## The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop("cent.tend argument must be a function that outputs a single numeric value.", call. = FALSE)
+        stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
     }
 
     ## type
@@ -416,12 +424,20 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## Check if subsets have no rarefaction
         if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
             wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
-            stop(paste("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), ".", sep = "" ))
+            stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
         }
     }
 
     ## observed
-    check.class(observed, "logical")
+    class_observed <- check.class(observed, c("logical", "list"))
+    if(class_observed == "list") {
+        ## Transforming into logical and handling the list below
+        obs_list_arg <- observed
+        observed <- TRUE
+    } else {
+        ## Creating and empty list to be handled below
+        obs_list_arg <- list()
+    }
 
     ## xlab
     if(missing(xlab)) { 
@@ -442,7 +458,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(elements == FALSE) {
             check.length(ylab, 1, " must be a character string.")
         } else {
-            if(length(ylab) > 2) stop("ylab can have maximum of two elements.", call. = FALSE)
+            if(length(ylab) > 2) {
+                stop.call("", "ylab can have maximum of two elements.")
+            }
         }
     }
 
@@ -489,6 +507,19 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ylab <- default_arg[[3]]
     col <- default_arg[[4]]
 
+    ## Adding the default parameters to observed
+    if(observed) {
+        if(is.null(obs_list_arg$col)) {
+            obs_list_arg$col <- col[[1]]
+        }
+        if(is.null(obs_list_arg$pch)) {
+            obs_list_arg$pch <- 4
+        }
+        if(is.null(obs_list_arg$cex)) {
+            obs_list_arg$cex <- 1
+        }
+    }
+
     ## PLOTTING THE RESULTS
 
     ## Rarefaction plot
@@ -525,8 +556,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
-        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, add, density,...)
-        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, add, density) ; warning("DEBUG: plot")
+        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density,...)
+        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
             plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
@@ -541,8 +572,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         ## Personalised discrete plots
-        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) 
-        # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, add, density) ; warning("DEBUG: plot")
+        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
+        # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
             plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
@@ -567,7 +598,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 for(point in 1:length(plot_data)) {
                     x_coord <- point
                     y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
-                    points(x_coord, y_coord, pch = 4, col = "black")
+                    points(x_coord, y_coord, pch = obs_list_arg$pch, col = obs_list_arg$col, cex = obs_list_arg$cex)
                 }
             }
         }

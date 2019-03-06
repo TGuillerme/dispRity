@@ -12,6 +12,25 @@ This matrix is based on the \code{\link{BeckLee}} dataset and split into seven c
 It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction levels.
 Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 }
+\examples{
+## Loading the data
+data(BeckLee_mat99)
+data(BeckLee_tree)
+data(BeckLee_ages)
+
+## Creating the 7 subsets
+subsets <- chrono.subsets(BeckLee_mat99, BeckLee_tree,
+                          time = seq(from = 30, to = 90, by = 10),
+                          method = "continuous", model = "ACCTRAN",
+                          FADLAD = BeckLee_ages)
+
+## Bootstrapping and rarefying
+bootstraps <- boot.matrix(subsets, bootstraps = 100,
+                          rarefaction = c(20, 15, 10, 5))
+
+## Calculating disparity
+disparity <- dispRity(bootstraps, metric = c(median, centroids))
+}
 \seealso{
 BeckLee_disparity BeckLee
 }

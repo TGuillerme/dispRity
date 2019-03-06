@@ -212,7 +212,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
             #metrics <- as.character(x$call$disparity$metrics)
             #strsplit(strsplit(metrics, split = "c(", fixed = TRUE)[[1]], split = ")", fixed = TRUE)[[2]][1]
 
-            cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics), collapse = ", ")))
+            cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics$name), collapse = ", ")))
             cat(".\n")
         }
     }

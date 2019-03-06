@@ -24,14 +24,37 @@ dispRity 0.2.0 (2016-04-01)
 
   * Blabla
  -->
-[GitHub release] dispRity v1.2.1 *model tests* (2018-08-21)
+
+<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
+<!--   * `dtt.dispRity` now works with time-slicing. -->
+
+dispRity v1.2.3 (2019-03-06)
 =========================
+
+### NEW FEATURE
+
+ * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. in `null.test`).
+
+### MINOR IMPROVEMENTS
+
+  * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`.
+  * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
+  * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
+  * better internal handling of error messages.
+  * `faster` eigen value estimations in `ellipse.volume` when the argument is left missing.
+  * removed internal handling of the `Claddis.ordination` function. This function now uses the brand new version of the `Claddis` package on CRAN (0.3).
   
-### NEW FEATURES
+### BUG FIXES
 
-  * CRAN release 2 (v.1.2) with the additional `Claddis.ordination` function.
+  * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is an observed distribution.
+  * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
+  * `summary.dispRity` handles non-bootstrapped distributions display properly.
+  * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
+  * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
+  * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
+  * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
 
-[CRAN release] dispRity v1.2 *model tests* (2018-08-21)
+dispRity v1.2 *model tests* (2018-09-19)
 =========================
 
 ### NEW FEATURES
@@ -52,8 +75,6 @@ dispRity 0.2.0 (2016-04-01)
 
   * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
 
-<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
-<!--   * `dtt.dispRity` now works with time-slicing. -->
 
 dispRity v1.1 *got CRAN* (2018-03-20)
 >>>>>>> master
@@ -68,7 +89,7 @@ dispRity v1.1 *got CRAN* (2018-03-20)
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
   * Improved test coverage.
 
-[CRAN release] dispRity v1.0.3 *got CRAN* (2018-03-20)
+dispRity v1.0.3 *got CRAN* (2018-03-20)
 =========================
   
 ### NEW FEATURES

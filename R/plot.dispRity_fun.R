@@ -22,7 +22,7 @@ set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, 
     
     ## ylab
     if(ylab[[1]] == "default") {
-        ylab <- as.character(data$call$disparity$metrics)
+        ylab <- as.character(data$call$disparity$metrics$name)
         if(elements == TRUE) {
             ylab[2] <- "Elements"
         }
@@ -90,7 +90,7 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
 }
 
 ## discrete plotting
-plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, add, density, ...) {
+plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) {
 
 
     ## How many points?
@@ -178,7 +178,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
 
     if(observed == TRUE) {
         ## Add the points observed (if existing)
-        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4)
+        points(1:points_n + shift, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = obs_list_arg$col, pch = obs_list_arg$pch, cex = obs_list_arg$cex)
     }
 
     ## Save parameters
@@ -186,7 +186,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
 }
 
 ## continuous plotting
-plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, add, density, ...) {
+plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density, ...) {
     
     ## How many points?
     points_n <- length(unique(summarised_data$subsets))
@@ -283,7 +283,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_di
         ## Add the observed values on top
         if(observed == TRUE) {
             ## Add the points observed (if existing)
-            points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = col[[1]], pch = 4)
+            points(1:points_n, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = obs_list_arg$col, pch = obs_list_arg$pch, cex = obs_list_arg$cex)
         }
     }
 
@@ -385,9 +385,16 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    output <- t(matrix(unlist(box_data), nrow = length(data$subsets), byrow = TRUE))
-
-    colnames(output) <- names(data$subsets)
+    ## Get the subset lengths
+    subset_length <- unique(unlist(lapply(data$subsets, function(x) return(length(x[[1]])))))
+    if(length(subset_length) == 1){
+        ## All data has the same length
+        output <- t(matrix(unlist(box_data), nrow = length(data$subsets), byrow = TRUE))
+        colnames(output) <- names(data$subsets)
+    } else {
+        ## Data has different lengths
+        output <- box_data
+    }
 
     return(output)
 }

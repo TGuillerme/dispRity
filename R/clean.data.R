@@ -42,7 +42,7 @@ clean.data <- function(data, tree) {
     silent <- check.class(data, c("matrix", "data.frame"), " must be a data.frame or matrix object.")
     ##  must have row names
     if(is.null(rownames(data))) {
-        stop("data must have row names.", call. = FALSE)
+        stop.call(match_call$data, " must have row names.")
     }
 
     ## tree

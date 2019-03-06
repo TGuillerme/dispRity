@@ -124,8 +124,8 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         check.method(model, c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model")
 
     } else {
-        if(class(model)[[2]] != "model.test") {
-            stop(paste0(as.expression(match_call$model), " must be a dispRity object output from model.test.\nTry running model.test(", as.expression(match_call$model), ") first."), call. = FALSE)
+        if(class(model)[[2]] != "model.test") { 
+            stop.call(match_call$model, paste0(" must be a dispRity object output from model.test.\nTry running model.test(", as.expression(match_call$model), ") first."))
         }
         ## Model is inherited from the dispRity object
         model_inherit <- TRUE
@@ -162,7 +162,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         ##TODO: allow multiple model ranks
         
         if(model.rank > nrow(model$aic.models)) {
-            stop("model.rank must be the value of ranked model to simulate.", call. = FALSE)
+            stop.call("", "model.rank must be the value of ranked model to simulate.")
         }
 
         ## Alternative

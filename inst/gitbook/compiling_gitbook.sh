@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm dispRity_manual.Rmd
+
 ## Remove files before hand
 rm -R _book/
 rm -R _bookdown_files/

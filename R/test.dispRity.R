@@ -102,9 +102,13 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## must be class dispRity...
     check.class(data, "dispRity")
     ## ...and have disparity data
-    if(is.null(data$call$disparity)) stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "", call. = FALSE)
+    if(is.null(data$call$disparity)) {
+        stop.call("", "Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n")
+    }
     ## ...and must have more than one subsets
-    if(length(data$subsets) == 1) stop(paste(as.expression(match_call$data), "must have more than one subset."), call. = FALSE)
+    if(length(data$subsets) == 1){
+        stop.call(match_call$data, " must have more than one subset.")
+    }
 
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
@@ -113,10 +117,14 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
 
     ## Stop if disparity is not a distribution, nor bootstrapped
-    if(!is_bootstrapped & !is_distribution) stop(paste(as.expression(match_call$data), "is neither a distribution nor bootstrapped: impossible to compare single values."), call. = FALSE)
+    if(!is_bootstrapped & !is_distribution){
+        stop.call(match_call$data, " is neither a distribution nor bootstrapped: impossible to compare single values.")
+    }
     
     ## Stop if disparity is not bootstrapped and rarefaction is required
-    if(!is_bootstrapped & !is.null(rarefaction)) stop("Impossible to use a rarefaction level for non-bootstrapped data.", call. = FALSE)
+    if(!is_bootstrapped & !is.null(rarefaction)) {
+        stop.call("", "Impossible to use a rarefaction level for non-bootstrapped data.")
+    }
 
     ## Test
     ## must be a single function
@@ -137,17 +145,21 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         
         ## must be pairs
         if(length(unlist(comparisons))%%2 != 0) {
-            stop(paste(as.expression(match_call$comparisons), paste(" must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsets.", sep = ""), sep = ""), call. = FALSE)
+            stop.call("", paste0("comparisons must be either \"", paste(all_comparisons, collapse = "\", \""), "\" or list of one or more pairs of subsets."))
         }
         
         ## If character, input must match the subsets
         if(class(unlist(comparisons)) == "character") {
-            if(any(is.na(match(unlist(comparisons), data$subsets)))) stop(paste(as.expression(match_call$comparisons), ": at least one subset was not found.", sep = ""), call. = FALSE)
+            if(any(is.na(match(unlist(comparisons), names(data$subsets))))){
+                stop.call("", "comparisons: at least one subset was not found.")
+            }
         }
 
         ## If numeric, input must match de subsets numbers
         if(class(unlist(comparisons)) == "numeric") {
-            if(any(is.na(match(unlist(comparisons), seq(1:length(data$subsets)))))) stop(paste(as.expression(match_call$comparisons), ": at least one subset was not found.", sep = ""), call. = FALSE)
+            if(any(is.na(match(unlist(comparisons), seq(1:length(data$subsets)))))){
+                stop.call("",  "comparisons : at least one subset was not found.")
+            }
         }
 
         ## Comparison is "custom"
@@ -175,7 +187,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         check.class(rarefaction, c("numeric", "integer"))
         check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
         if(is.na(match(rarefaction, data$call$bootstrap[[3]]))) {
-            stop("Rarefaction level not found.", call. = FALSE)
+            stop.call("", "Rarefaction level not found.")
         }
     } else {
         rarefaction <- FALSE
@@ -184,7 +196,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     ## concatenate
     check.class(concatenate, "logical")
     if(!is_distribution && !concatenate) {
-        stop("Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).", call. = FALSE)
+        stop.call("", "Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).")
     }
 
     ## concatenate (ignore if data is not bootstrapped)
@@ -193,7 +205,9 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## conc.quantiles must be a list
         check.class(conc.quantiles, "list", " must be a list of at least one function and one quantile value (in that order).")
         
-        if(length(conc.quantiles) < 2) stop("conc.quantiles must be a list of at least one function and one quantile value (in that order).", call. = FALSE)
+        if(length(conc.quantiles) < 2) {
+            stop.call("", "conc.quantiles must be a list of at least one function and one quantile value (in that order).")
+        }
         
         ## first element of conc.quantiles must be a function
         con.cen.tend <- conc.quantiles[[1]]
@@ -202,7 +216,9 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         
         ## second and more elements must be numeric
         quantiles <- unlist(conc.quantiles[-1])
-        if(class(quantiles) != "numeric") stop("Quantiles provided in conc.quantiles must be stated after the function and must be numeric.", call. = FALSE)
+        if(class(quantiles) != "numeric") {
+            stop.call("", "Quantiles provided in conc.quantiles must be stated after the function and must be numeric.")
+        }
         if(sum(quantiles) != length(quantiles)) {
             conc.quantiles <- CI.converter(quantiles)
         } else {
@@ -212,9 +228,6 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## correction
     check.method(correction, c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"), "Correction methods")
-    if(!is.null(data$call$bootstrap) && correction == "none" && length(data$subsets) > 2 && match_call$test != "adonis.dispRity") {
-        warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
-    }
 
     ## ----------------------
     ##  APPLYING THE TEST
@@ -230,12 +243,23 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
 
     ## Extracting the data (sends error if data is not bootstrapped)
-    extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+    if(is_distribution && !is_bootstrapped) {
+        extracted_data <- extract.dispRity(data, observed = TRUE, rarefaction = rarefaction, concatenate = concatenate)
+        ## Transform into the listed structure
+        extracted_data <- lapply(extracted_data, list)
+    } else {
+        extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+    }
 
     ## Custom, pairwise, sequential and referential
     if(comp == "custom" | comp == "pairwise" | comp == "sequential" | comp == "referential") {
         ## Get the list of comparisons
         comp_subsets <- set.comparisons.list(comp, extracted_data, comparisons)
+
+        ## Check the correction
+        if((is_bootstrapped || is_distribution) && correction == "none" && length(comp_subsets) > 1 && match_call$test != "adonis.dispRity") {
+            warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
+        }
 
         ## Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, test, ...)
@@ -259,8 +283,9 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## running the tests
         try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
-        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", as.expression(match_call$test)))
-
+        if(is.null(details_out)) {
+            stop.call(match_call$test, ".", "Comparison type \"all\" is not applicable with ")
+        }
         if(concatenate == FALSE) warning("Comparison type \"all\" is based on concatenated data.\nlm or aov type tests will have an inflated type I error!")
     }
 

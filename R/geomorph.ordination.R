@@ -3,7 +3,8 @@
 #' @description Takes geomorph Procrustes object or a geomorph.data.frame object and ordinates it.
 #'
 #' @param data An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.
-#' @param ... Any optional arguments to be passed to \code{\link[stats]{prcomp}}.
+#' @param ordinate Logical, whether to ordinate the data using \code{\link[stats]{prcomp}} (\code{TRUE}; default) or not (\code{FALSE}; the code then returns the raw coordinates matrix).
+#' @param ... Any optional arguments to be passed to \code{\link[stats]{prcomp}} (is ignored if \code{ordinate = FALSE}).
 #' 
 #' @details
 #' If \code{data} is a \code{geomorph.data.frame} object containing factors, directly performs a \code{\link{custom.subsets}} using these factors.
@@ -22,7 +23,6 @@
 #' 
 #' ## Obtaining the ordination matrix
 #' geomorph.ordination(procrustes)
-#'
 #' 
 #' ## Using a geomorph.data.frame
 #' geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species)
@@ -54,7 +54,7 @@
 # geomorph_df <- geomorph.data.frame(procrustes, species = plethodon$species, site = plethodon$site)
 # data <- geomorph_df
 
-geomorph.ordination <- function(data, ...) {
+geomorph.ordination <- function(data, ordinate = TRUE, ...) {
 
     match_call <- match.call()
 
@@ -64,27 +64,46 @@ geomorph.ordination <- function(data, ...) {
 
     ## coords
     if(is.null(data$coords)) {
-        stop(paste(as.expression(match_call$data), " must contain coordinates in $coords."), call. = FALSE)
+        stop.call(match_call$data, " must contain coordinates in $coords.")
     } else {
         coords <- data$coords
         check.class(coords, "array")
     }
 
+    ## Ordination
+    check.class(ordinate, "logical")
 
-    ## Ordinating the Procrustes data (code from Emma Sherratt)
+    ## Transforming the coords into a matrix (code from Emma Sheratt, equivalent to geomorph::two.d.array)
     columns <- dim(coords)[1] * dim(coords)[2]
     rows <- dim(coords)[3]
     matrix_out <- aperm(coords, c(3, 2, 1))
     dim(matrix_out) <- c(rows, columns)
     rownames(matrix_out) <- dimnames(coords)[[3]]
-    ordination <- stats::prcomp(matrix_out, ...)$x
-    # ordination <- stats::prcomp(matrix_out)$x ; warning("DEBUG: geomorph_df")
 
+    if(ordinate){
+        ## Ordinating the Procrustes data
+        ordination <- stats::prcomp(matrix_out, ...)$x
+        # ordination <- stats::prcomp(matrix_out)$x ; warning("DEBUG: geomorph_df")
+    } else {
+        ## Simply using the matrix
+        ordination <- matrix_out
+    }
 
     ## Class
     if(class(data) == "geomorph.data.frame") {
         ## Get the meta data
         factors <- which(unlist(lapply(data, class)) == "factor")
+
+        if(length(factors) == 0) {
+            ## Try coercing the into factors
+            no_factors <- which(names(data) == "Csize" | names(data) == "coords")
+            data_tmp <- data[-no_factors]
+            warning(paste0("Attempting to coerce variables in ", as.expression(match_call$data), " as factor."), call. = FALSE)
+            data[-no_factors] <- lapply(data_tmp, as.factor)
+
+            ## Get the meta data
+            factors <- which(unlist(lapply(data, class)) == "factor")
+        }
 
         ## Get the list of subsets
         group_list <- unlist(lapply(data[factors], make.groups.factors), recursive = FALSE)

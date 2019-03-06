@@ -186,7 +186,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
             } else {
 
                 ## Can't run multi.OU
-                stop("Fewer than 30 samples are available.\nThe \"multi.OU\" model cannot be run with time.split = NULL.\n", call. = FALSE)
+                stop.call("", "Fewer than 30 samples are available.\nThe \"multi.OU\" model cannot be run with time.split = NULL.")
             }
         
         } else {

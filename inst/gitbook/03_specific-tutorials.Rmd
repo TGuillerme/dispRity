@@ -587,6 +587,9 @@ all_anc_centroids <- nodes.coordinates(dummy_space2, tree, full = TRUE)
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
                            nodes.coords = all_anc_centroids)
 
+## The ancestral distances distributions
+summary(ancestral_dist)
+
 ## Calculating disparity as the sum of the distances from all the ancestral nodes
 summary(dispRity(ancestral_dist, metric = sum))
 ```
@@ -1048,11 +1051,14 @@ disp_time <- model.test(data = BeckLee_disparity, model = c("Stasis", "BM", "OU"
 summary(disp_time)
 ```
 
-These models indicate support for a Trend model, and we can plot the relative support of all model AICc weights
+These models indicate support for a Trend model, and we can plot the relative support of all model AICc weights.
 
 ```{r plot2, fig.align="center", fig.cap = "relative fit (AICc weight) of various modes of evolution", echo = TRUE, fig.height = 6, fig.width = 6}
 plot(disp_time)
 ```
+
+> Note that although AIC values are indicator of model best fit, it is also important to look at the parameters themselves.
+For example OU can be really well supported but with an alpha parameter really close to 0, making it effectively a BM model [@Cooper2016].
 
 Is this a trend of increasing or decreasing disparity through time? One way to find out is to look at the summary function for the Trend model:
 

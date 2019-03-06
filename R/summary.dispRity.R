@@ -67,7 +67,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     check.class(cent.tend, "function")
     #The function must work
     if(make.metric(cent.tend, silent = TRUE) != "level1") {
-        stop(paste(as.expression(match_call$cent.tend)), " cannot be used for measuring the central tendency.", call. = FALSE)
+        stop.call(match_call$cent.tend, " cannot be used for measuring the central tendency.")
     }
     ## Update match_call if argument is empty
     if(is.null(match_call$cent.tend)) match_call$cent.tend <- "median"
@@ -88,13 +88,13 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     check.class(data, "dispRity")
     #Check if it is a bootstrapped dispRity object
     if(is.null(data$disparity) && is.na(class(data)[2])) {
-        stop("Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n", sep = "", call. = FALSE)
+        stop.call("", "Disparity has not been calculated yet.\nUse the dispRity() function to do so.")
     }
     
     #Check quantiles
     check.class(quantiles, "numeric", " must be any value between 1 and 100.")
     if(any(quantiles < 1) | any(quantiles > 100)) {
-        stop("quantiles(s) must be any value between 1 and 100.", call. = FALSE)
+        stop.call("", "quantiles(s) must be any value between 1 and 100.")
     }
 
     #----------------------
@@ -157,7 +157,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         }
 
         ## No dual class summary available
-        stop("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\".", call. = FALSE)
+        stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 
 
     #----------------------

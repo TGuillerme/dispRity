@@ -21,12 +21,12 @@ test_that("get.summary", {
     expect_is(test, "list")
     expect_equal(names(test), c("cent_tend", "quantiles"))
     expect_equal(round(test[[1]], digit = 5), round(mean(unlist(disparity$disparity$`30`[[2]])), digit = 5))
-    expect_equal(round(test[[2]], digit = 5), c("25%" = 1.78386, "75%" = 1.87866))
+    expect_equal(round(test[[2]], digit = 5), c("25%" = 1.76947, "75%" = 1.87070))
 
     test_no_cent_tend <- get.summary(disparity$disparity$`30`[[2]], quantiles = c(50))
     expect_is(test_no_cent_tend, "list")
     expect_equal(names(test_no_cent_tend), "quantiles")
-    expect_equal(round(test_no_cent_tend[[1]], digit = 5), c("25%" = 1.78386, "75%" = 1.87866))
+    expect_equal(round(test_no_cent_tend[[1]], digit = 5), c("25%" = 1.76947, "75%" = 1.87070))
 
     test_no_quant <- get.summary(disparity$disparity$`30`[[2]], cent.tend = mean)
     expect_is(test_no_quant, "list")
