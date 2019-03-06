@@ -3,11 +3,11 @@
 #' @description Takes Claddis data and computes both the distance and the ordination matrix 
 #'
 #' @param data Data from Claddis::ReadMorphNexus.
-#' @param distance Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"Gower"}, \code{"GED"}, \code{"Max"}, \code{"Comp"}
-#' @param transform Whether to transform the proportional distances (for Gower and Max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).
+#' @param distance Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}
+#' @param ... Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.
 #' @param k The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.
 #' @param add whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).
-#' @param ... Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.
+#' @param arg.cmdscale Any optional arguments to be passed to \code{\link[stats]{cmdscale}} (as a named list such as \code{list(x.ret = TRUE)}).
 #' 
 #' @examples
 #' \dontrun{
@@ -22,7 +22,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sqrt", k, add = TRUE, ...) {
+Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.cmdscale) {
     match_call <- match.call()
     ## Sanitizing
 
@@ -37,17 +37,17 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
     check.class(data$matrix, "matrix", msg = error_msg)
 
     ## Distance
-    distances_available <- c("Gower", "GED", "Max", "Comp")
+    distances_available <- c("GC", "GED", "RED", "MORD")
     check.method(distance, distances_available, msg = "distance argument")
 
-    ## Transform
-    transforms_available <- c("none", "sqrt", "arcsine_sqrt")
-    check.method(transform, transforms_available, msg = "transform argument")    
-
+    ## Handling cmdscale arguments
+    if(missing(arg.cmdscale)) {
+        arg.cmdscale <- list()
+    }
     ## k
     max_k <- (nrow(data$matrix) -1)
     if(missing(k)) {
-        k <- max_k
+        arg.cmdscale$k <- max_k
     } else {
         check.class(k, "numeric")
         check.length(k, 1, " must be a single numeric value.")
@@ -55,14 +55,21 @@ Claddis.ordination <- function(data, distance = "Gower", transform = "arcsine_sq
             stop.call("", paste0("k cannot be greater than the number of rows in data - 1 (data has", max_k, "rows)."))
         }
     }
+    ## add
+    check.class(add, "logical")
+    arg.cmdscale$add <- add
 
     ## Transforming the Claddis data
 
     ## Compute the distance
-    distance <- MorphDistMatrix.support(data, distance = distance)
+    distance <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
+
+    ## Adding the distance to arg.cmdscale
+    arg.cmdscale$d <- distance$DistanceMatrix
 
     ## Ordinate the matrix
-    ordination <- stats::cmdscale(distance, k = k, add = add, ...)
+    ordination <- do.call(stats::cmdscale, arg.cmdscale)
+    # ordination <- stats::cmdscale(distance, k = k, add = add, ...)
 
     if(class(ordination) != "matrix") {
         ordination <- ordination$points

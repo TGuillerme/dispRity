@@ -4,21 +4,21 @@
 \alias{Claddis.ordination}
 \title{Imports data from Claddis}
 \usage{
-Claddis.ordination(data, distance = "Gower", transform = "arcsine_sqrt", k,
-  add = TRUE, ...)
+Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
+  arg.cmdscale)
 }
 \arguments{
 \item{data}{Data from Claddis::ReadMorphNexus.}
 
-\item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"Gower"}, \code{"GED"}, \code{"Max"}, \code{"Comp"}}
+\item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}}
 
-\item{transform}{Whether to transform the proportional distances (for Gower and Max). Options are \code{"none"}, \code{"sqrt"}, or \code{"arcsine_sqrt"} (the default).}
+\item{...}{Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.}
 
 \item{k}{The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.}
 
 \item{add}{whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).}
 
-\item{...}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}}.}
+\item{arg.cmdscale}{Any optional arguments to be passed to \code{\link[stats]{cmdscale}} (as a named list such as \code{list(x.ret = TRUE)}).}
 }
 \description{
 Takes Claddis data and computes both the distance and the ordination matrix

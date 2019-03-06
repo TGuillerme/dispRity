@@ -1,5 +1,5 @@
 Package: dispRity
-Title: Measuring Disparity in R
+Title: Measuring Disparity
 Author: Thomas Guillerme [aut, cre, cph],
 		Mark N Puttick [aut, cph]
 Maintainer: Thomas Guillerme <guillert@tcd.ie>

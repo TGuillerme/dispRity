@@ -553,13 +553,13 @@ combine.subsets <- function(data, subsets) {
             ## Must be present in the subsets names
             matches <- subsets %in% names(data$subsets)
             if(any(matches == FALSE)) {
-                stop.call(msg.pre = paste0(paste(subsets[!matches], collapse = " and "), " don't match with any of the subset names in "), call = match_dall$data, msg = ".")
+                stop.call(msg.pre = paste0(paste(subsets[!matches], collapse = " and "), " don't match with any of the subset names in "), call = match_call$data, msg = ".")
             } else {
                 subsets <- match(subsets, names(data$subsets))
             }
         } else {
             if(any(subsets > length(data$subsets))) {
-                stop.call(msg.pre = paste0("subsets", paste(subsets[which(subsets > length(data$subsets))], collapse = " and "), " don't match with any of the subsets in "), call = match_dall$data, msg = ".")
+                stop.call(msg.pre = paste0("subsets", paste(subsets[which(subsets > length(data$subsets))], collapse = " and "), " don't match with any of the subsets in "), call = match_call$data, msg = ".")
             }
         }
     }

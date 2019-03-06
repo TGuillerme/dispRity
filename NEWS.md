@@ -22,7 +22,10 @@ dispRity 0.2.0 (2016-04-01)
   * Blabla
  -->
 
-[Next release] dispRity v1.2.3 (2019-03-06)
+<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
+<!--   * `dtt.dispRity` now works with time-slicing. -->
+
+dispRity v1.2.3 (2019-03-06)
 =========================
 
 ### NEW FEATURE
@@ -36,6 +39,7 @@ dispRity 0.2.0 (2016-04-01)
   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
   * better internal handling of error messages.
   * `faster` eigen value estimations in `ellipse.volume` when the argument is left missing.
+  * removed internal handling of the `Claddis.ordination` function. This function now uses the brand new version of the `Claddis` package on CRAN (0.3).
   
 ### BUG FIXES
 
@@ -47,14 +51,7 @@ dispRity 0.2.0 (2016-04-01)
   * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
   * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
 
-[GitHub release] dispRity v1.2.1 *model tests* (2018-09-19)
-=========================
-  
-### NEW FEATURES
-
-  * CRAN release 2 (v.1.2) with the additional `Claddis.ordination` function.
-
-[CRAN release] dispRity v1.2 *model tests* (2018-09-19)
+dispRity v1.2 *model tests* (2018-09-19)
 =========================
 
 ### NEW FEATURES
@@ -75,8 +72,6 @@ dispRity 0.2.0 (2016-04-01)
 
   * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
 
-<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
-<!--   * `dtt.dispRity` now works with time-slicing. -->
 
 dispRity v1.1 *got CRAN* (2018-03-20)
 =========================
@@ -90,7 +85,7 @@ dispRity v1.1 *got CRAN* (2018-03-20)
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
   * Improved test coverage.
 
-[CRAN release] dispRity v1.0.3 *got CRAN* (2018-03-20)
+dispRity v1.0.3 *got CRAN* (2018-03-20)
 =========================
   
 ### NEW FEATURES
