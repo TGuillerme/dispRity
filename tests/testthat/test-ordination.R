@@ -9,6 +9,8 @@ context("ordinations")
 
 test_that("Claddis.ordination works", {
     
+    library(Claddis)
+
     data <- Claddis::Michaux1989
 
     ## Sanitizing
