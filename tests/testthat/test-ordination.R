@@ -4,7 +4,8 @@ context("ordinations")
 
 
 #Loading Claddis
-if(!require(Claddis)) #devtools::install_github("TGuillerme/Claddis")
+# if(!require(Claddis)) #devtools::install_github("TGuillerme/Claddis")
+# library(Claddis)
 
 test_that("Claddis.ordination works", {
     
