@@ -62,17 +62,22 @@ Additionally, you can learn more about the structure of `dispRity` objects [here
 
 
 ## Latest patch notes
-* 2018/09/19 -  v1.2.1 *model tests*
+* 2019/03/06 -  v1.2.3
 
-  * *New* functions: `model.test`, `model.test.sim` and `model.test.wrapper` for fitting models of disparity evolution through time (with associated manuals, vignettes and `S3` methods! Thanks to [Mark Puttick](https://github.com/PuttickMacroevolution)).
-  * **New argument** in `boot.matrix`: `prob` for passing probabilities of sampling for specific elements.
-  * S3 `print` method for objects of class `"dtt"` and `"dispRity"` (from `dtt.dispRity`).
-  * tydiversed most of the error messages.
-  * `dtt.dispRity` now allows to specify the alternative hypothesis (if `nsim > 0`).
-  * `ellipse.volume` can now take an explicit eigen value vector (the eigen values are still automatically estimated correctly for PCO and MDS).
-  * Improved metric checking messages from `make.metric` when dealing with optional arguments.
-  * Removed cascade of warnings triggered by `plot.dispRity.dtt`.
-  * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
+   * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. in `null.test`).
+   * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`.
+   * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
+   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
+   * better internal handling of error messages.
+   * `faster` eigen value estimations in `ellipse.volume` when the argument is left missing.
+   * removed internal handling of the `Claddis.ordination` function. This function now uses the brand new version of the `Claddis` package on CRAN (0.3).
+   * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is an observed distribution.
+   * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
+   * `summary.dispRity` handles non-bootstrapped distributions display properly.
+   * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
+   * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
+   * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
+   * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
