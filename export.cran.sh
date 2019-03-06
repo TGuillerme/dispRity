@@ -46,10 +46,12 @@ mkdir ${TMPPATH}/R/
 cp R/* ${TMPPATH}/R/
 mkdir ${TMPPATH}/src/
 cp src/* ${TMPPATH}/src/
-mkdir ${TMPPATH}/tests/
-cp tests/testthat.R ${TMPPATH}/tests/
-mkdir ${TMPPATH}/tests/testthat/
-cp tests/testthat/*.R* ${TMPPATH}/tests/testthat/
+
+## Don't export tests to CRAN
+# mkdir ${TMPPATH}/tests/
+# cp tests/testthat.R ${TMPPATH}/tests/
+# mkdir ${TMPPATH}/tests/testthat/
+# cp tests/testthat/*.R* ${TMPPATH}/tests/testthat/
 
 ## Copy the vignettes (but not the gitbook!)
 mkdir ${TMPPATH}/inst/
@@ -93,17 +95,17 @@ sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version 
 # fi
 
 ## Remove Claddis ordination (to be done automatically through -e)
-rm ${TMPPATH}/R/Claddis.ordination.R
-rm ${TMPPATH}/R/Claddis.support.R
-rm ${TMPPATH}/man/Claddis.ordination.Rd
+# rm ${TMPPATH}/R/Claddis.ordination.R
+# rm ${TMPPATH}/R/Claddis.support.R
+# rm ${TMPPATH}/man/Claddis.ordination.Rd
 
 ## Remove Claddis ordination from the tests
-sed '5,125d' ${TMPPATH}/tests/testthat/test-ordination.R > ${TMPPATH}/tests/testthat/test-ordination.R.tmp
-mv ${TMPPATH}/tests/testthat/test-ordination.R.tmp ${TMPPATH}/tests/testthat/test-ordination.R
+# sed '5,125d' ${TMPPATH}/tests/testthat/test-ordination.R > ${TMPPATH}/tests/testthat/test-ordination.R.tmp
+# mv ${TMPPATH}/tests/testthat/test-ordination.R.tmp ${TMPPATH}/tests/testthat/test-ordination.R
 
 ## Remove Claddis ordination from the NAMESPACE
-sed 's/export(Claddis.ordination)//g' ${TMPPATH}/NAMESPACE > ${TMPPATH}/NAMESPACE.tmp
-mv ${TMPPATH}/NAMESPACE.tmp ${TMPPATH}/NAMESPACE
+# sed 's/export(Claddis.ordination)//g' ${TMPPATH}/NAMESPACE > ${TMPPATH}/NAMESPACE.tmp
+# mv ${TMPPATH}/NAMESPACE.tmp ${TMPPATH}/NAMESPACE
 
 
 ## Compile the package
