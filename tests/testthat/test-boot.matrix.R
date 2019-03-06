@@ -332,6 +332,8 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
+<<<<<<< HEAD
+=======
 
 test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
@@ -417,6 +419,7 @@ test_that("boot.matrix works with the prob option (for probabilities sampling)",
 
 
 })
+<<<<<<< HEAD
 
 
 test_that("boot.matrix detects distance matrices", {
@@ -427,3 +430,6 @@ test_that("boot.matrix detects distance matrices", {
     msg <- capture_warnings(boot.matrix(is_dist))
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
+=======
+>>>>>>> master
+>>>>>>> parent of 299bc77... merge conflict resolved

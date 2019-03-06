@@ -283,10 +283,19 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## running the tests
         try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
+<<<<<<< HEAD
         if(is.null(details_out)) {
             stop.call(match_call$test, ".", "Comparison type \"all\" is not applicable with ")
         }
+=======
+<<<<<<< HEAD
+        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", match_call$test))
+=======
+        if(is.null(details_out)) stop(paste("Comparison type \"all\" is not applicable with", as.expression(match_call$test)))
+
+>>>>>>> parent of 299bc77... merge conflict resolved
         if(concatenate == FALSE) warning("Comparison type \"all\" is based on concatenated data.\nlm or aov type tests will have an inflated type I error!")
+>>>>>>> master
     }
 
     ## Sequential.test comparisons (one to each other)
