@@ -12,6 +12,7 @@ Depends:
     stats
 Imports:
 	ade4,
+	Claddis,
 	geiger,
 	geometry,
 	geoscale,
