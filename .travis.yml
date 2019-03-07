@@ -14,6 +14,8 @@ r_binary_packages:
   - phyclust
   - vegan
   - covr
+  - Claddis
+  - geomorph
 
 r:
 - release
