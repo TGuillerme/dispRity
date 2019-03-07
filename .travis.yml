@@ -14,11 +14,14 @@ r_binary_packages:
   - phyclust
   - vegan
   - covr
-  - Claddis
   - geomorph
+
+r_github_packages:
+  - graemetlloyd/Claddis
 
 r:
 - release
+
 
 branches:
   only:
