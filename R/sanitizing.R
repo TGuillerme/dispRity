@@ -99,7 +99,7 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE) {
     }
 
     if(just.check) {
-        ## Simply return the check
+        ## Simply return the check
         return(was_dist)
     } else {
         ## Return a matrix

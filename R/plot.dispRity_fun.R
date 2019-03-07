@@ -385,7 +385,7 @@ transpose.box <- function(data, rarefaction, is_bootstrapped) {
         box_data <- mapply(get.rare, data$disparity, rare_rows, SIMPLIFY = FALSE)
     }
 
-    ## Get the subset lengths
+    ## Get the subset lengths
     subset_length <- unique(unlist(lapply(data$subsets, function(x) return(length(x[[1]])))))
     if(length(subset_length) == 1){
         ## All data has the same length

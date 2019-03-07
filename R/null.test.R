@@ -98,7 +98,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     ## NULL TESTING
 
-    ## Handle the disparity metrics
+    ## Handle the disparity metrics
     metric <- get.metric.from.call(data, what = "fun")
     args <- get.metric.from.call(data, what = "args")
 
@@ -118,7 +118,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         ## Apply the randtest to one subsets
         test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[, 3], sim = null_models_results, alter = alter, ...)
         # test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[,3], sim = null_models_results, alter = alter)
-        ## Adding the simulated data
+        ## Adding the simulated data
         test_out$sim <- null_models_results
         ## Store it as a list of one element (to be consistent for S3 methods)
         test_out <- list(test_out)
