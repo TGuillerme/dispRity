@@ -6,7 +6,7 @@ warnings_are_errors: false
 r_binary_packages:
   - ade4
   - ape
-  - geomorph
+#  - geomorph
   - geometry
   - geoscale
   - mnormt
@@ -19,6 +19,7 @@ r_binary_packages:
 r_packages:
   - covr
   - devtools
+  - geomorph
 
 r_github_packages:
  - graemetlloyd/Claddis

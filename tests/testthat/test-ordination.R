@@ -7,23 +7,23 @@ context("ordinations")
 # if(!require(Claddis)) #devtools::install_github("TGuillerme/Claddis")
 # library(Claddis)
 
-test_that("Claddis.ordination works", {
+# test_that("Claddis.ordination works", {
     
-    library(Claddis)
+#     library(Claddis)
 
-    data <- Claddis::Michaux1989
+#     data <- Claddis::Michaux1989
 
-    ## Sanitizing
-    expect_error(Claddis.ordination(matrix(5), distance = "MORD", k = 2))
-    expect_error(Claddis.ordination(data, distance = "bob", k = 2))
-    expect_error(Claddis.ordination(data, distance = "MORD", k = 10))
-    expect_error(Claddis.ordination("blob", distance = "MORD", k = 2))
-    expect_error(Claddis.ordination(Claddis::Day2016)) #NA
+#     ## Sanitizing
+#     expect_error(Claddis.ordination(matrix(5), distance = "MORD", k = 2))
+#     expect_error(Claddis.ordination(data, distance = "bob", k = 2))
+#     expect_error(Claddis.ordination(data, distance = "MORD", k = 10))
+#     expect_error(Claddis.ordination("blob", distance = "MORD", k = 2))
+#     expect_error(Claddis.ordination(Claddis::Day2016)) #NA
 
-    test <- Claddis.ordination(data, add = FALSE, TransformDistances = "none")
-    expect_equal(dim(test), c(4,3))
-    expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
-})
+#     test <- Claddis.ordination(data, add = FALSE, TransformDistances = "none")
+#     expect_equal(dim(test), c(4,3))
+#     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
+# })
 
 
 
