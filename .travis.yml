@@ -15,7 +15,9 @@ warnings_are_errors: false
 #  - phyclust
 #  - vegan
 
-# r_packages:
+r_packages:
+   - crayon
+   - devtools
 #  - covr
 #  - devtools
 #  - geomorph
