@@ -1,3 +1,9 @@
+language: r
+
+cache: packages
+sudo: required
+warnings_are_errors: false
+
 r_binary_packages:
   - ade4
   - ape
@@ -8,11 +14,10 @@ r_binary_packages:
   - phangorn
   - phyclust
   - vegan
-  - cover
+  - covr
 
 r:
 - release
-
 
 branches:
   only:
