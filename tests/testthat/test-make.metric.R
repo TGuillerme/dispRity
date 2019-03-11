@@ -23,6 +23,18 @@ test_that("Output is correct", {
     	make.metric(function(x)as.character(x))
     	)
 
+    fun <- function(x, arg) {
+        if(arg == TRUE){
+            return(mean(x))
+        } else {
+            return(mean(x))
+        }
+    }
+
+    expect_error(
+        make.metric(fun, silent = FALSE)
+        )
+
     ## Verbose
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))

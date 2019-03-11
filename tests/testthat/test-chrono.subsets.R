@@ -47,9 +47,9 @@ time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, ver
 
 ## Test
 test_that("chrono.subsets.discrete works properly without nodes", {
-    ## Test get.interval
+    # Test get.interval
     # expect_equal(
-    #     as.vector(unlist(get.interval(1, time, adjust.FADLAD(FADLAD, tree, data), inc.nodes = FALSE)))
+    #     as.vector(unlist(get.interval(1, time, adjust.FADLAD(FADLAD, tree, data), inc.nodes = FALSE, verbose = FALSE)))
     #     , c(5,4,6,8,43,10,11,42))
 
     ## class is list
@@ -71,6 +71,9 @@ test_that("chrono.subsets.discrete works properly without nodes", {
     expect_equal(
         rownames(data[time_subsets[[2]]$elements,])
         , subsets_2)
+
+    expect_message(chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = TRUE))
+
 })
 
 ## With nodes
@@ -110,10 +113,14 @@ time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", F
 ## Test
 test_that("chrono.subsets.continuous works properly with deltran model", {
     
-    ## Get slice
+    # Get slice
     # expect_equal(
     #     as.vector(na.omit(unlist(get.slice(1, time[2], "ACCTRAN", adjust.FADLAD(FADLAD, tree, data), data, verbose = FALSE))))
     #     , c(7, 8, 9, 1, 2, 3, 12, 13, 14, 15, 44, 70, 73, 76, 79, 85, 48, 90, 47, 95, 46, 98))
+    # expect_equal(
+    #     unname(unlist(get.slice(slice = 1, time = time[2], model = "proximity", ages_tree = adjust.FADLAD(FADLAD, tree, data), data = data, verbose = FALSE, tree = tree)))
+    #     , c(7, 8, 9, 1, 2, NA, 12, 13, 14, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+    # )
 
     ## class is list
     expect_is(

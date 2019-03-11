@@ -177,6 +177,20 @@ test_that("plot.dispRity continuous with NAs", {
   
 })
 
+
+test_that("plot.dispRity.discrete with ADD", {
+
+    data(BeckLee_mat50) ; data(BeckLee_tree)
+    result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
+
+    expect_null(plot(result, type = "polygon"))
+    expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
+  
+})
+
+
+
+
 test_that("plot.dispRity with model.test data", {
     load("model_test_data.Rda")
 

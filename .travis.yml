@@ -6,6 +6,7 @@ warnings_are_errors: false
 r_binary_packages:
   - ade4
   - ape
+  - geomorph
   - geometry
   - geoscale
   - mnormt
@@ -13,15 +14,17 @@ r_binary_packages:
   - phangorn
   - phyclust
   - vegan
-  - covr
-#  - geomorph
 
-# r_github_packages:
-#  - graemetlloyd/Claddis
+# Code coverage
+r_packages:
+  - covr
+  - devtools
+
+r_github_packages:
+ - graemetlloyd/Claddis
 
 r:
 - release
-
 
 branches:
   only:
@@ -29,10 +32,6 @@ branches:
     - release
   except:
     - CRAN
-
-# Code coverage
-r_packages:
-  - covr
 
 after_success:
   - Rscript -e 'library(covr); codecov(token = "5f041826-63f1-47fa-b4a8-9a32633f47fa")'

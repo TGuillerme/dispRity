@@ -5,6 +5,35 @@ context("model.test")
 load("model_test_data.Rda")
 data <- model_test_data
 
+test_that("internal functions work", {
+
+    ## select.model.list
+    data(disparity)
+
+    ## Calculate the variance for metric !level1
+    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+    ## Get data from rarefaction
+    test <- select.model.list(disparity, observed = FALSE, cent.tend = median)    
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    test <- select.model.list(disparity, observed = FALSE, cent.tend = median, rarefaction = 15)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+    ## Get data from time bins
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    expect_warning(disparity <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 15))
+    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+})
+
+
 test_that("simple models work", {
 
     ## BM model

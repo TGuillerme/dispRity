@@ -139,6 +139,78 @@ test_that("randtest printing", {
         ""
         ))
 
+
+    ## Running the test on multiple subsets (may take some time!)
+    ## Generating the subsets
+    groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+         rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+    ## Bootstrapping the data
+    bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
+    ## Calculating variances of each dimension
+    sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+    ## Testing against normal distribution
+    results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
+
+    expect_equal(capture.output(print.dispRity(results)),
+        c(
+        "$V1.1"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.590785 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -30.713288   48.034800    2.286688 ",
+        ""                                    ,
+        "$V1.2"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.809122 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -34.016224   47.878900    1.834256 ",
+        ""                                    ,
+        "$V1.3"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.969031 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -35.502755   48.025800    1.682918 ",
+        ""                                    ,
+        "$V1.4"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 2.020162 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -31.882464   48.001100    2.079945 ",
+        ""                                    ,
+        "NULL"
+        )
+    )
+
+
 })
 
 
