@@ -13,6 +13,7 @@ It was bootstrapped 100 times (\code{\link{boot.matrix}}) with four rarefaction 
 Disparity was calculated as the \code{\link[stats]{median}} of the \code{\link{centroids}} (\code{\link{dispRity}}).
 }
 \examples{
+\dontrun{
 ## Loading the data
 data(BeckLee_mat99)
 data(BeckLee_tree)
@@ -30,6 +31,7 @@ bootstraps <- boot.matrix(subsets, bootstraps = 100,
 
 ## Calculating disparity
 disparity <- dispRity(bootstraps, metric = c(median, centroids))
+}
 }
 \seealso{
 BeckLee_disparity BeckLee

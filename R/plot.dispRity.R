@@ -442,7 +442,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## xlab
     if(missing(xlab)) { 
         xlab <- "default"
-        if(!is.null(data$call$subsets) && data$call$subsets != "customised" && chrono.subsets != FALSE && rarefaction != TRUE) {
+        if(!any("customised" %in% data$call$subsets) && chrono.subsets != FALSE && rarefaction != TRUE) {
             xlab <- "Time (Mya)"
         }
     } else {
@@ -488,7 +488,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(add, "logical")
 
     ## density
-    if(type == "continuous" || type == "polygon") {
+    if(any(c("continuous", "polygon") %in% type)) {
         if(!is.null(density)) {
             check.class(density, "numeric")
             check.length(density, 1, " must be a single numeric value.")
