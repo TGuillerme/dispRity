@@ -32,8 +32,7 @@ dispRity v1.2.3 (2019-03-12)
 ### MINOR IMPROVEMENTS
 
  * `centroids` and `ancestral.dist` functions can now take the `method` option for `"euclidean"` or `"manhattan"` distances.
- 
-<!-- * All functions methods selection have now been sped up using `switch`. -->
+ * All functions methods selection have now been sped up using `switch`.
 
 dispRity v1.2.3 (2019-03-12)
 =========================

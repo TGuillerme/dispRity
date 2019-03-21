@@ -127,26 +127,23 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
                 if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
 
                     #Chose the tip/node following the given model
-                    if(model == "random") {
-                        selected_model <- sample(c("deltran", "acctran"), 1)
-                    } else {
-                        selected_model <- model
-                    }
+                    selected_model <- ifelse(model == "random", sample(c("deltran", "acctran"), 1), model)
 
-                    if(selected_model == "deltran") {
-                        #Parent
-                        tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
-
-                    if(selected_model == "acctran") {
-                        #Offspring
-                        tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
-
-                    if(selected_model == "proximity") {
-                        #Closest
-                        tree_sliced$tip.label[tip] <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
+                    ## Run the slicing
+                    switch(selected_model,
+                        deltran = {
+                            #Parent
+                            tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                        },
+                        acctran = {
+                            #Offspring
+                            tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                        },
+                        proximity = {
+                            #Closest
+                            tree_sliced$tip.label[tip] <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice)
+                        }
+                    )
                 }
             } 
         }

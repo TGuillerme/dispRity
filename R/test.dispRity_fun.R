@@ -80,32 +80,33 @@ htest.to.vector <- function(htest, print) {
 ## Set the list of comparisons
 set.comparisons.list <- function(comp, extracted_data, comparisons) {
     options(warn = -1)
-    if(comp == "custom") {
-        ## get the list of subsets to compare
-        comp_subsets <- comparisons
-    }
 
-    if(comp == "pairwise") {
-        ## Get the pairs of subsets
-        comp_subsets <- combn(1:length(extracted_data), 2)
-        ## convert pair subsets table into a list of pairs
-        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
-    }
+    switch(comp,
+        custom = {
+            ## get the list of subsets to compare
+            comp_subsets <- comparisons            
+        },
+        pairwise = {
+            ## Get the pairs of subsets
+            comp_subsets <- combn(1:length(extracted_data), 2)
+            ## convert pair subsets table into a list of pairs
+            comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
+        },
+        sequential = {
+            ## Set the list of sequences
+            comp_subsets <- set.sequence(length(extracted_data))
+            ## convert seq subsets into a list of sequences
+            comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)            
+        },
+        referential = {
+            ## Set the list of comparisons as a matrix
+            matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
+            comp_subsets <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
+            ## convert pair subsets table into a list of pairs
+            comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
+        }
+    )
 
-    if(comp == "sequential") {
-        ## Set the list of sequences
-        comp_subsets <- set.sequence(length(extracted_data))
-        ## convert seq subsets into a list of sequences
-        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
-    }
-
-    if(comp == "referential") {
-        ## Set the list of comparisons as a matrix
-        matrix_data <- c(rep(1, length(extracted_data) - 1), seq(from = 2, to = length(extracted_data)))
-        comp_subsets <- matrix(matrix_data, ncol = (length(extracted_data) - 1), byrow = TRUE)
-        ## convert pair subsets table into a list of pairs
-        comp_subsets <- unlist(apply(comp_subsets, 2, list), recursive = FALSE)
-    }
     options(warn = 0)
 
     return(comp_subsets)

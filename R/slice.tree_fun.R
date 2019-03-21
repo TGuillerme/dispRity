@@ -262,14 +262,17 @@ slice.edge <- function(tree, age, model) {
         }
 
     } else {
-        if(model == "random") {
-            return(sample(c(upper_node_name, lower_node_name), 1))
-        }
-        if(model == "acctran") {
-            return(upper_node_name)
-        }
-        if(model == "deltran") {
-            return(lower_node_name)
-        }
+
+        switch(model,
+            random = {
+                return(sample(c(upper_node_name, lower_node_name), 1))
+            },
+            acctran = {
+                return(upper_node_name)
+            },
+            deltran = {
+                return(lower_node_name)
+            }
+        )
     }
 }

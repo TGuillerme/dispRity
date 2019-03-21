@@ -106,29 +106,30 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
 
     ## alternative
     check.method(alternative, c("two-sided", "greater", "lesser"), msg = "alternative")
-    
-    ## Choose the p method
-    if(alternative == "two-sided") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            ## Centring the randoms and observed
-            center_random <- abs(sim_MDI - mean(sim_MDI))
-            center_observed <- abs(MDI - mean(sim_MDI))
-            ## Getting the p
-            return((sum(center_random >= center_observed))/(length(sim_MDI)))
+
+    switch(alternative,
+        "two-sided" = {
+            get.p.value <- function(sim_MDI, MDI, replicates) {
+                ## Centring the randoms and observed
+                center_random <- abs(sim_MDI - mean(sim_MDI))
+                center_observed <- abs(MDI - mean(sim_MDI))
+                ## Getting the p
+                return((sum(center_random >= center_observed))/(length(sim_MDI)))
+            }
+        },
+        greater = {
+           get.p.value <- function(sim_MDI, MDI, replicates) {
+                # Getting the p
+                return((sum(sim_MDI >= MDI))/(length(sim_MDI)))
+            }
+        },
+        lesser = {
+            get.p.value <- function(sim_MDI, MDI, replicates) {
+                # Getting the p
+                return((sum(sim_MDI <= MDI))/(length(sim_MDI)))
+            }
         }
-    }
-    if(alternative == "greater") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            # Getting the p
-            return((sum(sim_MDI >= MDI))/(length(sim_MDI)))
-        }
-    }
-    if(alternative == "lesser") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            # Getting the p
-            return((sum(sim_MDI <= MDI))/(length(sim_MDI)))
-        }
-    }
+    )
 
     ## mdi.range
     if(is.null(dots$mdi.range)) {

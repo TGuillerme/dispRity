@@ -320,42 +320,42 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
         }
     }
     
-    if(class(nodes.coords) == "matrix") {
-        ## Converting both matrix and nodes.coords in lists
-        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
-        nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
-
-        ## Calculate nodes.coords distance with multiple nodes.coords
-        cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coords)
-        return(cent.dist)
-    }
-
-    if(class(nodes.coords) == "list") {
-        ## Wrapper function
-        mapply.fun.dist <- function(nodes.coords, matrix) {
-            ## Converting the matrix into a list
+    switch(class(nodes.coords),
+        matrix = {
+            ## Converting both matrix and nodes.coords in lists
+            matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
             nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
+
             ## Calculate nodes.coords distance with multiple nodes.coords
             cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coords)
             return(cent.dist)
+        },
+        list = {
+            ## Wrapper function
+            mapply.fun.dist <- function(nodes.coords, matrix) {
+                ## Converting the matrix into a list
+                nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
+                ## Calculate nodes.coords distance with multiple nodes.coords
+                cent.dist <- mapply(fun.dist, row = matrix, centroid = nodes.coords)
+                return(cent.dist)
+            }
+
+            ## Convert the matrix into a list
+            matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
+
+            ## Calculate nodes.coords distance with multiple centroids
+            cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix)
+            cent.dist <- do.call(rbind, cent.dist)
+            
+            ## Calculate the cumulative distances
+            cent.dist <- apply(cent.dist, 2, sum, na.rm = TRUE)
+            return(cent.dist)
+        },
+        numeric = {
+            ## Apply the normal centroid function
+            return(centroids(matrix, centroid = nodes.coords, ...))
         }
-
-        ## Convert the matrix into a list
-        matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
-
-        ## Calculate nodes.coords distance with multiple centroids
-        cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix)
-        cent.dist <- do.call(rbind, cent.dist)
-        
-        ## Calculate the cumulative distances
-        cent.dist <- apply(cent.dist, 2, sum, na.rm = TRUE)
-        return(cent.dist)
-    }
-
-    if(class(nodes.coords) == "numeric") {
-        ## Apply the normal centroid function
-        return(centroids(matrix, centroid = nodes.coords, ...))
-    }
+    )
 }
 
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
