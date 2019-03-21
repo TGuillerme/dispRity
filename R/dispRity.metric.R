@@ -209,12 +209,22 @@ ranges <- function(matrix, k.root) {
 }
 
 ## Euclidean distance from the centroid
-fun.dist <- function(row, centroid) {
+fun.dist.euclidean <- function(row, centroid) {
     return(sqrt(sum((row-centroid)^2)))
 }
 
+fun.dist.manhattan <- function(row, centroid) {
+    return(sum(abs(row-centroid)))
+}
+
 ## Calculating the distance from centroid
-centroids <- function(matrix, centroid) {
+centroids <- function(matrix, centroid, method = "euclidean") {
+
+    ## Select the fun distance
+    switch(method,
+        euclidean = {fun.dist <- fun.dist.euclidean},
+        manhattan = {fun.dist <- fun.dist.manhattan}
+    )
 
     ## Initialise values
     cent.dist <- numeric(nrow(matrix))
@@ -292,7 +302,13 @@ diagonal <- function(matrix) {
 }
 
 ## Calculating the distance from the ancestral nodes
-ancestral.dist <- function(matrix, nodes.coords, tree, full,...) {
+ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean", ...) {
+
+    ## Select the fun distance
+    switch(method,
+        euclidean = {fun.dist <- fun.dist.euclidean},
+        manhattan = {fun.dist <- fun.dist.manhattan}
+    )
 
     ## Checking if the nodes.coords is available
     if(missing(nodes.coords)) {
