@@ -4,28 +4,27 @@ context("dtt.dispRity")
 
 test_that("dispRity and dtt give the same results", {
 
-    library(geiger)
-    geo = get(data(geospiza))
+    load("geiger.data.Rda")
 
-    ## avg.sq equivalent
+    # ## avg.sq equivalent
     average.sq <- function(X) mean(pairwise.dist(X)^2)
 
-    ## Simple disparity calculation
-    expect_equal(
-        disparity(data = geo$dat, index = "avg.sq")
-        ,
-        summary(dispRity(geo$dat, metric = average.sq), digits = 10)$obs
-        )
+    # ## Simple disparity calculation
+    # expect_equal(
+    #     geiger::disparity(data = geo$dat, index = "avg.sq")
+    #     ,
+    #     summary(dispRity(geo$dat, metric = average.sq), digits = 10)$obs
+    #     )
 
-    ## Disparity per clades
-    expect_warning(
-        geiger_disp <- disparity(phy = geo$phy, data = geo$dat, index = "avg.sq")
-        )
+    # ## Disparity per clades
+    # expect_warning(
+    #     geiger_disp <- geiger::disparity(phy = geo$phy, data = geo$dat, index = "avg.sq")
+    #     )
 
     data_cleaned <- clean.data(geo$dat, geo$phy)
     dispRity_disp <- summary(dispRity(custom.subsets(data_cleaned$data, data_cleaned$tree), metric = average.sq), digits = 10)$obs
 
-    expect_equal(as.vector(geiger_disp), as.vector(dispRity_disp))
+    # expect_equal(as.vector(geiger_disp), as.vector(dispRity_disp))
 
     ## .dtt function from: https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R
     # expect_equal(
@@ -46,16 +45,16 @@ test_that("dispRity and dtt give the same results", {
     # expect_equal(geiger_dtt[[2]], dispRity_dtt[[2]])
 
 
-    geiger_data <- get(data(geospiza))
+    geiger_data <- geo
 
     ## Calculate the disparity of the dataset using dtt::geiger
-    set.seed(1)
-    warn <- capture_warning(dtt(phy = geiger_data$phy, data = geiger_data$dat, nsim = 100, plot = FALSE, calculateMDIp = TRUE))
-    expect_equal(as.character(warn), "simpleWarning in treedata(phy, data): The following tips were not found in 'data' and were dropped from 'phy':\n\tolivacea\n")
-    expect_warning(geiger_dtt <- dtt(phy = geiger_data$phy, data = geiger_data$dat, nsim = 100, plot = FALSE, calculateMDIp = TRUE))
+    # set.seed(1)
+    # warn <- capture_warning(geiger::dtt(phy = geiger_data$phy, data = geiger_data$dat, nsim = 100, plot = FALSE, calculateMDIp = TRUE))
+    # expect_equal(as.character(warn), "simpleWarning in treedata(phy, data): The following tips were not found in 'data' and were dropped from 'phy':\n\tolivacea\n")
+    # expect_warning(geiger_dtt <- geiger::dtt(phy = geiger_data$phy, data = geiger_data$dat, nsim = 100, plot = FALSE, calculateMDIp = TRUE))
 
-    ## The average squared pairwise distance metric (used in geiger::dtt)
-    average.sq <- function(X) mean(pairwise.dist(X)^2)
+    # ## The average squared pairwise distance metric (used in geiger::dtt)
+    # average.sq <- function(X) mean(pairwise.dist(X)^2)
 
     ## Calculate the disparity of the dataset using dtt.dispRity
     set.seed(1)
@@ -69,8 +68,8 @@ test_that("dispRity and dtt give the same results", {
 
      
     ## Same output
-    expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))
-    expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6,7)], length)))
+    # expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))
+    # expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6,7)], length)))
 
     ## dispRity object
     data(disparity)
