@@ -9,7 +9,6 @@ r_binary_packages:
   - ape
   - geometry
   - geoscale
-  - geiger
   - mnormt
   - paleotree
   - phangorn

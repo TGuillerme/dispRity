@@ -20,8 +20,8 @@ test_that("set.default works", {
         )
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
     expect_equal(
-        round(test[[1]], 3)
-        , round(c(0.968, 2.023), 3))
+        round(test[[1]], 5)
+        , round(c(0.84084, 2.01246), 5))
     expect_equal(
         test[[2]]
         , "Subsets")
@@ -71,8 +71,8 @@ test_that("extract.from.summary works", {
         extract.from.summary(sum_data, what = 3, rarefaction = 5)
         ,as.numeric(rep(NA, 7)))
     expect_equal(
-        round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
-        ,c(1.78, 1.81, 1.88, 1.88, 1.90, 1.88, 1.82))
+        extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
+        ,c(1.772, 1.796, 1.871, 1.878, 1.900, 1.884, 1.808))
 })
 
 test_that("transpose.box works", {

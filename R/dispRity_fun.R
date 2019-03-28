@@ -1,12 +1,13 @@
 #FUNCTIONS FOR DISPRITY
 get.dispRity.metric.handle <- function(metric, match_call, ...) {
-    level3.fun <- level2.fun <- level1.fun <- NULL
+    level3.fun <- NULL
+    level2.fun <- NULL
+    level1.fun <- NULL
 
     length_metric <- length(metric)
 
     ## Get the metric handle
     if(length_metric == 1) {
-
         if(class(metric) != "list") {
             ## Metric was fed as a single element
             check.class(metric, "function")
@@ -17,23 +18,22 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
         }
         ## Which level is the metric?
         level <- make.metric(metric, silent = TRUE, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE)
-
-        switch(level,
-            level3 = {
-                stop.call(match_call$metric, " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
-            },
-            level2 = {
+        if(level == "level3") {
+            stop(paste(as.expression(match_call$metric), " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.", sep = ""))
+        } else {
+            level3.fun <- NULL
+            if(level == "level2") {
                 level2.fun <- metric
-            },
-            level1 = {
+                level1.fun <- NULL
+            } else {
+                level2.fun <- NULL
                 level1.fun <- metric
             }
-        )
+        }
     } else {
         ## Check all the metrics
         for(i in 1:length_metric) {
-            if(class(metric[[i]]) != "function") stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
+            if(class(metric[[i]]) != "function") stop(paste("in metric argument: ",match_call$metric[[i+1]], " is not a function!", sep = ""))
         }
         ## Sorting the metrics by levels
         ## getting the metric levels

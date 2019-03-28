@@ -104,13 +104,9 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ##  SANITIZING
     ## ----------------------
     
-    #print("DEBUG: entering dispRity...")
-
     ## Saving the call
     match_call <- match.call()
     dots <- list(...)
-
-    #print("DEBUG: record call OK.")
 
     # warning("DEBUG") ; return(match_call)
 
@@ -130,39 +126,13 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         }
     }
 
-    #print("DEBUG: check data OK.")
-
-    #print("DEBUG: entering metrics handle...")
-
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric = metric, match_call = match_call, ...)
-
-    #print("DEBUG: metrics handle OK")
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
     }
-
-    #print("DEBUG: make metrics OK.")
-
-
-    ## Check if metrics are already present whether metrics can be applied
-    if(!is.null(data$call$disparity$metrics$fun)) {
-        ## Check which level of metrics have already been applied
-        if(length(data$call$disparity$metrics$fun) == 1) {
-            applied_levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)
-        } else {
-            applied_levels <- unlist(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE))
-        }   
-
-        ## Can maybe not take a level 2 or 3 metric
-        if(any(applied_levels == "level1") && (!is.null(metrics_list$level3.fun) || !is.null(metrics_list$level2.fun))) {
-            stop.call(msg.pre = "At least one metric dimension level 1 was already calculated for ", call = match_call$data, msg = ".\nImpossible to apply a metric higher than dimension level 1.")
-        }
-    }
-
-    #print("DEBUG: check metrics OK.")
 
     ## Dimensions
     if(!missing(dimensions)) {
@@ -202,16 +172,12 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     do_parallel <- FALSE
 
-
-    #print("DEBUG: sanitizing OK.")
-
-
     ## ----------------------
     ## CALCULTING DISPARITY
     ## ----------------------
 
     ## Set matrix decomposition
-    if(is.null(data$call$disparity$metrics)) {
+    if(length(data$call$disparity$metrics) == 0) {
         ## Data call had no metric calculated yet
         matrix_decomposition <- TRUE
 
@@ -243,7 +209,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         }
     }
     
-    #print("DEBUG: prep. disparity OK.")
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -278,8 +243,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     #     rm(cluster)
     # }
 
-    #print("DEBUG: disparity calculations OK.")
-
     ## Adding the removed elements as NAs
     if(removed_elements) {
         ## Creating empty disparity subsets
@@ -298,24 +261,23 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ## Update the disparity
     data$disparity <- disparity
 
-    ## Update the call name
+    ## Update the call
     data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)
-    ## Update the call metrics fun
     if(!is.null(data$call$disparity$metrics$fun)) {
         data$call$disparity$metrics$fun <- list(unlist(data$call$disparity$metrics$fun, recursive = FALSE), metric)
     } else {
         data$call$disparity$metrics$fun <- metric
     }
-    ## Update the call metrics args
-    if(length(dots) != 0) {
-        if(!is.null(data$call$disparity$metrics$args)) {
+
+    if(!is.null(data$call$disparity$metrics$args)) {
+        if(length(dots) != 0) {
             data$call$disparity$metrics$args <- list(unlist(data$call$disparity$metrics$args, recursive = FALSE), dots)
-        } else {
+        }
+    } else {
+        if(length(dots) != 0) {
             data$call$disparity$metrics$args <- dots
         }
     }
-
-    #print("DEBUG: clean results OK.")
 
     return(data)
 }
