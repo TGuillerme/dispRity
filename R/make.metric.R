@@ -64,7 +64,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
     options(op)
 
     if(any("try-error" %in% test) || any(is.na(test))) {
-        if(silent != TRUE) {
+        if(!silent) {
             stop.call(match_call$fun, paste0("(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
         }
     } else {

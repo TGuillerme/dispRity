@@ -205,6 +205,13 @@ test_that("Sanitizing works", {
     expect_equal(dim, 48)
     expect_equal(warn , "Dimension number too high: set to 48.")
 
+    # Cannot stack metric level 1 on level 2:
+    data(disparity)
+    error <- capture_error(dispRity(disparity, metric = variances))
+    expect_equal(as.character(error), "Error: At least one metric dimension level 1 was already calculated for disparity.\nImpossible to apply a metric higher than dimension level 1.\n")
+    error <- capture_error(dispRity(disparity, metric = c(sum, variances)))
+    expect_equal(as.character(error), "Error: At least one metric dimension level 1 was already calculated for disparity.\nImpossible to apply a metric higher than dimension level 1.\n")
+
 
 })
 #Reset

@@ -134,6 +134,21 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
     }
 
+    ## Check if metrics are already present whether metrics can be applied
+    if(!is.null(data$call$disparity$metrics$fun)) {
+        ## Check which level of metrics have already been applied
+        if(length(data$call$disparity$metrics$fun) == 1) {
+            applied_levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)
+        } else {
+            applied_levels <- unlist(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE))
+        }   
+
+        ## Can maybe not take a level 2 or 3 metric
+        if(any(applied_levels == "level1") && (!is.null(metrics_list$level3.fun) || !is.null(metrics_list$level2.fun))) {
+            stop.call(msg.pre = "At least one metric dimension level 1 was already calculated for ", call = match_call$data, msg = ".\nImpossible to apply a metric higher than dimension level 1.")
+        }
+    }
+
     ## Dimensions
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)

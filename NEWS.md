@@ -26,13 +26,14 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.3 (2019-03-12)
+dispRity v1.2.4 (2019-03-29)
 =========================
 
 ### MINOR IMPROVEMENTS
 
  * `centroids` and `ancestral.dist` functions can now take the `method` option for `"euclidean"` or `"manhattan"` distances.
  * All functions methods selection have now been sped up using `switch`.
+ * Error messages in `dispRity` are more verbose when input the wrong metric(s).
 
 dispRity v1.2.3 (2019-03-12)
 =========================
