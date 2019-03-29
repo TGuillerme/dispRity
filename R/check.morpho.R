@@ -121,13 +121,13 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         first_tree <- first.tree[[1]](matrix_phyDat)
         for(operations in 2:length(first.tree)) {
             #Transform the first_tree using the other operations (making sure it's binary)
-            first_tree <- multi2di(first.tree[[operations]](first_tree))
+            first_tree <- first.tree[[operations]](first_tree)
         }
     }
 
     #Get the quick and dirty most parsimonious tree
     # if(use.optim.parsimony == TRUE) {
-        verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat, method = method, ...))
+        verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = multi2di(first_tree), data = matrix_phyDat, method = method, ...))
         #verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat, method = method)) ; warning("DEBUG")
     # } else {
     #     verbose.pars <- utils::capture.output(MP_tree <- parsimony.algorithm(tree = first_tree, data = matrix_phyDat))
