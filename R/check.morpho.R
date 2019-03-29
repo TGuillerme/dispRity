@@ -120,8 +120,8 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
         #Calculate the operation on the phyDat
         first_tree <- first.tree[[1]](matrix_phyDat)
         for(operations in 2:length(first.tree)) {
-            #Transform the first_tree using the other operations
-            first_tree <- first.tree[[operations]](first_tree)
+            #Transform the first_tree using the other operations (making sure it's binary)
+            first_tree <- multi2di(first.tree[[operations]](first_tree))
         }
     }
 
