@@ -27,7 +27,7 @@ test_that("Claddis.ordination works", {
 
 test_that("geomorph.ordination works", {
 
-    library(geomorph)
+    # library(geomorph)
 
     ## Internal: make.groups.factors
     set.seed(1)
