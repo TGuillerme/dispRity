@@ -112,7 +112,10 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
-* <a href=" "><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diversity+and+Disparity+of+therocephalia%3A+Macroevolutionary+patterns+through+two+Mass+extinctions&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+HR Grunert, N Brocklehurst, J Fröbisch. (**2019**) Diversity and Disparity of therocephalia: Macroevolutionary patterns through two Mass extinctions. *Scientific Reports* [DOI: 10.1038/s41598-019-41628-w](https://www.nature.com/articles/s41598-019-41628-w#ref-CR55)
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Does+exceptional+preservation+distort+our+view+of+disparity+in+the+fossil+record%3F+&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 JT Flannery Sutherland, BC Moon, TL Stubbs, MJ Benton. (**2019**) Does exceptional preservation distort our view of disparity in the fossil record? *Proceedings of the Royal Society B* [DOI: 10.1098/rspb.2019.0091](https://royalsocietypublishing.org/doi/10.1098/rspb.2019.0091#d164727e1)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Speciation+Rate+Is+Independent+of+the+Rate+of+Evolution+of+Morphological+Size%2C+Shape%2C+and+Absolute+Morphological+Specialization+in+a+Large+Clade+of+Birds&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
