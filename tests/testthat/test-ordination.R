@@ -55,8 +55,8 @@ test_that("geomorph.ordination works", {
     expect_equal(colnames(test), paste0("PC", 1:10))
 
     ## Procrustes without ordination
-    test <- geomorph.ordination(dummy_procrustes, ordinate = FALSE)
-    expect_true(all(test == geomorph::two.d.array(dummy_procrustes$coords)))
+    # test <- geomorph.ordination(dummy_procrustes, ordinate = FALSE)
+    # expect_true(all(test == geomorph::two.d.array(dummy_procrustes$coords)))
 
     ## geomorph.data.frame to ordination
     test <- geomorph.ordination(dummy_geomorph_df)

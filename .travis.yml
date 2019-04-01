@@ -8,7 +8,6 @@ r_binary_packages:
   - ade4
   - ape
   - geometry
-  - geomorph
   - geoscale
   - geiger
   - mnormt
