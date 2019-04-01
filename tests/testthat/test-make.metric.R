@@ -47,6 +47,10 @@ test_that("Output is correct", {
         "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
         )
 
+    expect_error(
+        make.metric(lapply)
+        )
+
     expect_equal(
     	make.metric(mean, silent=TRUE), "level1"
     	)

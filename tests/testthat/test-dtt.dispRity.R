@@ -49,6 +49,14 @@ test_that("dispRity and dtt give the same results", {
     data(disparity)
     expect_error(dtt.dispRity(data = disparity, metric = var, tree = BeckLee_tree, nsim = 10))
 
+    ## Tree has no root time
+    data(BeckLee_tree)
+    data(BeckLee_mat50)
+    dummy <- BeckLee_tree 
+    dummy$root.time <- NULL
+    test <- dtt.dispRity(data = BeckLee_mat50, metric = c(sum, variances), tree = BeckLee_tree, nsim = 2)
+    expect_is(test, c("dispRity", "dtt"))
+
      
     ## Same output
     expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))

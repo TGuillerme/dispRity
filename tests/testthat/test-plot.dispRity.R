@@ -160,7 +160,14 @@ test_that("plot.dispRity examples work", {
 
     ## Testing additional behaviours for plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))    
+    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
+
+    ## Auto colouring of quantiles for discrete bins
+    data(BeckLee_tree) ; data(BeckLee_mat50)
+    test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
+    test <- dispRity(boot.matrix(test), metric = c(sum, variances))
+    expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
+
 })
 
 

@@ -229,14 +229,14 @@ test_that("output.htest.results internal fun", {
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, t.test)
 
     ## Get results
-    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("statistic: t", "25%", "75%"))
     expect_equal(rownames(test_out), unlist(lapply(comp_subsets, paste, collapse = ":")))
 
     ## Wrapping function
-    test_out <- output.htest.results(details_out, comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean, correction = "none")
+    test_out <- output.htest.results(details_out, comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean, correction = "none")
 
     expect_is(test_out, "list")
     expect_equal(length(test_out), 3)
@@ -249,6 +249,15 @@ test_that("output.htest.results internal fun", {
         expect_equal(rownames(test_out[[element]]), comp_names)
     }
 })
+
+# test_that("null test handling", {
+#     data(BeckLee_mat50)
+#     data(BeckLee_tree)
+#     disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))
+#     test <- test.dispRity(disp, test = null.test, null.distrib = rnorm)
+
+# })
+
 
 # test_that("output.lm.results internal fun", {
 #     ## Set up data for lm test

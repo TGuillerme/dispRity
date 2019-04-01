@@ -224,7 +224,7 @@ test_that("dtt printing", {
     ## The average squared pairwise distance metric (used in geiger::dtt)
     average.sq <- function(X) mean(pairwise.dist(X)^2)
     ## Calculate the disparity of the dataset using dtt.dispRity
-    dispRity_dtt <- dtt.dispRity(data = data[], metric = average.sq,
+    dispRity_dtt <- dtt.dispRity(data = data, metric = average.sq,
                                  tree = tree, nsim = 10)
 
     print_dtt <- capture.output(dispRity_dtt)
@@ -232,7 +232,7 @@ test_that("dtt printing", {
     expect_equal(print_dtt,
         c(
         "Disparity-through-time test (modified from geiger:dtt)" ,
-        "Call: dtt.dispRity(data = data[], metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
+        "Call: dtt.dispRity(data = data, metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
         "",
         "Observation: 0.683588221189817",
         "",
@@ -245,6 +245,27 @@ test_that("dtt printing", {
         "  1.09400273   0.66802605   0.02601094 ",
         "",
         "Use plot.dispRity() to visualise." 
+        ))
+
+    set.seed(1)
+    dispRity_dtt_raw <- dtt.dispRity(data = data, metric = average.sq,
+                                     tree = tree, nsim = 0)
+    print_dtt_raw <- capture.output(dispRity_dtt_raw)
+
+    expect_equal(print_dtt_raw[c(11,12)],
+        c(
+        # "$dtt"                                                                                      ,
+        # " [1] 1.0000000 0.7108704 0.8137332 1.1194885 1.1752659 1.3945462 2.2877953 1.8151213"      ,
+        # " [9] 0.6232065 0.0000000"                                                                  ,
+        # ""                                                                                          ,
+        # "$times"                                                                                    ,
+        # "                 11        12        19        17        13        18        14        16 ",
+        # "0.0000000 0.0000000 0.1450459 0.4944510 0.5212973 0.6062471 1.2191329 1.3625423 1.7906876 ",
+        # "       15 "                                                                                ,
+        # "2.3279070 "                                                                                ,
+        # ""                                                                                          ,
+        "- attr(*, \"class\") = \"dispRity\" \"dtt\""                                               ,
+        "Use plot.dispRity to visualise.Empty dispRity object." 
         ))
 })
 
