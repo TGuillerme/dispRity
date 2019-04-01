@@ -113,9 +113,9 @@ test_that("scree works", {
     scre <- c(0.8,0.15, 0.05)
     space_scre <- space.maker(1000, 3, rnorm, scree = scre)
 
-    expect_error(
-        space.maker(1000, 3, norm, scree = c(1,2,3))
-        )
+    # expect_error(
+    #     space.maker(1000, 3, norm, scree = c(1,2,3))
+    #     )
 
     expect_equal(
         round(apply(space_no_scre, 2, var), digit = 1)

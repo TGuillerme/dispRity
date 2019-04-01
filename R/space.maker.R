@@ -18,7 +18,7 @@
 #'
 #' The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 #' If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
-#' The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
+#' The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one.
 #' 
 #'
 #' @examples
@@ -176,9 +176,9 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     if(!is.null(scree)) {
         check.class(scree, "numeric")
         check.length(scree, dimensions, msg = " must be of the same length as the dimensions argument", errorif = FALSE)
-        if(sum(scree) != 1) {
-            stop.call("", "scree argument must be a numeric vector summing to 1.")
-        }
+        # if(sum(scree) != 1) {
+        #     stop.call("", "scree argument must be a numeric vector summing to 1.")
+        # }
     }
 
     ## CREATE THE SPACE
@@ -228,7 +228,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         ## Variance corrector
         effective_var <- apply(space, 2, var)
         var_modifier <- effective_var * scree
-        space <- t(t(space) * var_modifier)
+        space <- space %*% diag(var_modifier)
     }
 
     #output
