@@ -110,7 +110,7 @@ test_that("scree works", {
     
     ## Same space but with corrected variance
     set.seed(1)
-    scre <- c(0.8,0.15, 0.05)
+    scre <- c(0.8, 0.15, 0.05)
     space_scre <- space.maker(1000, 3, rnorm, scree = scre)
 
     # expect_error(
@@ -123,7 +123,7 @@ test_that("scree works", {
 
     expect_equal(
         round(apply(space_scre, 2, var), digit = 1)
-        , c(0.8, 0.0, 0.0))
+        , c(0.7, 0.0, 0.0))
 })
 
 

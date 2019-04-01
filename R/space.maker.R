@@ -227,8 +227,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     if(!is.null(scree)) {
         ## Variance corrector
         effective_var <- apply(space, 2, var)
-        var_modifier <- effective_var * scree
-        space <- space %*% diag(var_modifier)
+        space <- space %*% diag(scree)
     }
 
     #output
