@@ -112,6 +112,9 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Fossils+reveal+long-term+continuous+and+parallel+innovation+in+the+sacro-caudo-pelvic+complex+of+the+highly+aquatic+pipid+frogs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+RO Gómez, CM Pérez-Ben. (**2019**) Fossils Reveal Long-Term Continuous and Parallel Innovation in the Sacro-Caudo-Pelvic Complex of the Highly Aquatic Pipid Frogs. *Frontiers in Earth Science* [DOI: 10.3389/feart.2019.00056](https://www.frontiersin.org/articles/10.3389/feart.2019.00056/full)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diversity+and+Disparity+of+therocephalia%3A+Macroevolutionary+patterns+through+two+Mass+extinctions&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 HR Grunert, N Brocklehurst, J Fröbisch. (**2019**) Diversity and Disparity of therocephalia: Macroevolutionary patterns through two Mass extinctions. *Scientific Reports* [DOI: 10.1038/s41598-019-41628-w](https://www.nature.com/articles/s41598-019-41628-w#ref-CR55)
 
@@ -123,8 +126,6 @@ NMA Crouch, RE Ricklefs. (**2019**)Speciation Rate Is Independent of the Rate of
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=Morphology+and+stable+isotope+analysis+demonstrate+different+structuring+of+bat+communities+in+rainforest+and+savannah+habitats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 A Monadjem, A Kane, P Taylor, LR Richards, G Hall, S Woodborne. (**2018**) Morphology and stable isotope analysis demonstrate different structuring of bat communities in rainforest and savannah habitats. *Royal Society Open Science* [DOI: 10.1098/rsos.180849](https://royalsocietypublishing.org/doi/full/10.1098/rsos.180849)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=Fossils+reveal+long-term+continuous+and+parallel+innovation+in+the+sacro-caudo-pelvic+complex+of+the+highly+aquatic+pipid+frogs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> RO Gómez, and CM Pérez-Ben. (**2018**) Fossils reveal long-term continuous and parallel innovation in the sacro-caudo-pelvic complex of the highly aquatic pipid frogs.
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogeny%2C+macroevolutionary+trends+and+historical+biogeography+of+sloths%3A+insights+from+a+Bayesian+morphological+clock+analys&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 L Varela, PS Tambusso, HG McDonald, RA Fariña (**2018**) Phylogeny, macroevolutionary trends and historical biogeography of sloths: insights from a Bayesian morphological clock analysis. *Systematic Biology*. [DOI: 10.1093/sysbio/syy058](https://academic.oup.com/sysbio/advance-article/doi/10.1093/sysbio/syy058/5098296)
