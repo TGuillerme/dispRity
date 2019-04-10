@@ -129,7 +129,7 @@ and Natalie Cooper
   \postauthor{\par}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{2019-03-07}
+  \date{2019-04-10}
 
 \usepackage{booktabs}
 
@@ -513,9 +513,10 @@ More about these \texttt{dispRity} objects below!
 
 \begin{quote}
 This functionality is not available on the CRAN version of the package
-(1.2) due to CRAN compatibility issues see \protect\hyperlink{noCRAN}{to
-CRAN or not to CRAN?} for more information and on how to install the
-GitHub (more complete) version of the package (1.2.3).
+(1.2.3) due to CRAN compatibility issues see
+\protect\hyperlink{noCRAN}{to CRAN or not to CRAN?} for more information
+and on how to install the GitHub (more complete) version of the package
+(1.2.3).
 \end{quote}
 
 \texttt{dispRity} package can easily take data from \texttt{Claddis}
@@ -1829,6 +1830,16 @@ dimensions)\strut
 \texttt{dispRity}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{displacements}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The ratio between the distance from a reference and the distance from
+the centroid\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 1\strut
 \end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 \texttt{ellipse.volume}1\strut
@@ -1858,11 +1869,30 @@ The hyper-spherical (\emph{n}-ball) volume\strut
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 2\strut
 \end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{neighbours}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The distance to specific neighbours (e.g.~the nearest neighbours - by
+default)\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 \texttt{pairwise.dist}\strut
 \end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
 The pairwise distances between elements\strut
 \end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
 \href{https://cran.r-project.org/web/packages/vegan/index.html}{\texttt{vegan}}\texttt{::vegist}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
+\texttt{quantiles}\strut
+\end{minipage} & \begin{minipage}[t]{0.61\columnwidth}\raggedright\strut
+The \emph{n}th quantile range per axis\strut
+\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
+\texttt{dispRity}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
 2\strut
@@ -1934,6 +1964,10 @@ implementation here}).
 \end{equation}
 
 \begin{equation}
+    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Reference_{k})^2}}}{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}}
+\end{equation}
+
+\begin{equation}
     ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
 \end{equation}
 
@@ -1965,7 +1999,8 @@ the ancestor of element \(n\), \(f(\mathbf{v}k)\) is function to select
 one value from the vector \(\mathbf{v}\) of the dimension \(k\)
 (e.g.~it's maximum, minimum, mean, etc.), \emph{R} is the radius of the
 sphere or the product of the radii of each dimensions
-(\(\displaystyle\prod_{i=1}^{k}R_{i}\) - for a hyper-ellipsoid).
+(\(\displaystyle\prod_{i=1}^{k}R_{i}\) - for a hyper-ellipsoid), and
+\(Reference_{k}\) is an arbitrary point's coordinates (usually 0).
 
 \subsection{Using the different disparity
 metrics}\label{using-the-different-disparity-metrics}
@@ -2066,9 +2101,9 @@ really intuitive explanation} from
 \href{https://github.com/tophtucker}{Toph Tucker}.
 \end{quote}
 
-\subsubsection{Ranges, variances, radius, pairwise distance, modal value
-and
-diagonal}\label{ranges-variances-radius-pairwise-distance-modal-value-and-diagonal}
+\subsubsection{Ranges, variances, quantiles, radius, pairwise distance,
+neighbours, modal value and
+diagonal}\label{ranges-variances-quantiles-radius-pairwise-distance-neighbours-modal-value-and-diagonal}
 
 The functions \texttt{ranges}, \texttt{variances} \texttt{radius},
 \texttt{pairwise.dist}, \texttt{mode.val} and \texttt{diagonal} all
@@ -2076,8 +2111,9 @@ measure properties of the ordinated space based on its dimensional
 properties (they are also less affected by the ``curse of
 dimensionality''):
 
-\texttt{ranges}, \texttt{variances} and \texttt{radius} work on the same
-principle and measure the range/variance/radius of each dimension:
+\texttt{ranges}, \texttt{variances} \texttt{quantiles} and
+\texttt{radius} work on the same principle and measure the
+range/variance/radius of each dimension:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2173,6 +2209,42 @@ principle and measure the range/variance/radius of each dimension:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{## Calculating the quantiles of each dimension in the ordinated space}
+\KeywordTok{quantiles}\NormalTok{(dummy_space)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.234683 3.280911 2.760855 2.461077 1.559057
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Calculating disparity as the distribution of these variances}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ quantiles))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      2.461 1.627 2.235 2.761 3.229
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## By default, the quantile calculated is the 95% (i.e. 95% of the data on each axis)}
+\NormalTok{## this can be changed using the option quantile:}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ quantiles, }\DataTypeTok{quantile =} \DecValTok{50}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      0.967 0.899 0.951 0.991 1.089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## Calculating the radius of each dimension in the ordinated space}
 \KeywordTok{radius}\NormalTok{(dummy_space)}
 \end{Highlighting}
@@ -2216,8 +2288,9 @@ principle and measure the range/variance/radius of each dimension:
 ## 1       1 10 0.652
 \end{verbatim}
 
-The pairwise distances uses the function \texttt{vegan::vegdist} and can
-take the normal \texttt{vegdist} options:
+The pairwise distances and the neighbours distances uses the function
+\texttt{vegan::vegdist} and can take the normal \texttt{vegdist}
+options:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2241,6 +2314,30 @@ take the normal \texttt{vegdist} options:
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      4.427 2.566 3.335 5.672  9.63
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The average nearest neighbour distances}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ neighbours))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%   25%   75% 97.5%
+## 1       1 10      1.517 1.266 1.432 1.646 2.787
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The average furthest neighbour manhattan distances}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ neighbours, }\DataTypeTok{which =}\NormalTok{ max, }\DataTypeTok{method =} \StringTok{"manhattan"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median 2.5%   25%   75% 97.5%
+## 1       1 10      7.895 6.15 6.852 9.402 10.99
 \end{verbatim}
 
 Note that this function is a direct call to
@@ -2280,8 +2377,8 @@ This metric is only a Euclidean diagonal (mathematically valid) if the
 dimensions within the space are all orthogonal!
 \end{quote}
 
-\subsubsection{Centroids and ancestral distance
-metrics}\label{centroids-and-ancestral-distance-metrics}
+\subsubsection{Centroids, displacements, and ancestral distance
+metrics}\label{centroids-displacements-and-ancestral-distance-metrics}
 
 The \texttt{centroids} metric allows users to measure the position of
 the different elements compared to a fixed point in the ordinated space.
@@ -2319,7 +2416,7 @@ number of dimensions:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## The distance between each element and the origin of the ordinated space}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ centroids, }\DataTypeTok{centroid =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{)))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ centroids, }\DataTypeTok{centroid =} \DecValTok{0}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2338,6 +2435,39 @@ number of dimensions:
 \begin{verbatim}
 ##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10      5.489 4.293 5.032 6.155 6.957
+\end{verbatim}
+
+The \texttt{displacements} distance is the ratio between the
+\texttt{centroids} distance and the \texttt{centroids} distance with
+\texttt{centroid\ =\ 0}. Note that it is possible to measure a ratio
+from another point than \texttt{0} using the \texttt{reference}
+argument. It gives indication of the relative displacement of elements
+in the multidimensional space: a score \textgreater{}1 signifies a
+displacement \emph{away} from the reference. A score of \textgreater{}1
+signifies a displacement \emph{towards} the reference.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The relative displacement of the group in space to the centre}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ displacements))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%   25% 75% 97.5%
+## 1       1 10      1.014 0.841 0.925 1.1 1.205
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## The relative displacement of the group to an arbitrary point}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_space, }\DataTypeTok{metric =}\NormalTok{ displacements, }\DataTypeTok{reference =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets  n obs.median  2.5%  25%   75% 97.5%
+## 1       1 10      3.368 2.066 3.19 4.358 7.166
 \end{verbatim}
 
 The \texttt{ancestral.dist} metric works on a similar principle as the
@@ -2465,10 +2595,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 2.823     2.297 1.263 2.119 2.579 2.767
-## 2      80 19 3.233     3.060 2.815 2.986 3.126 3.212
-## 3      40 15 3.359     3.139 2.660 3.045 3.250 3.433
-## 4       0 10 4.055     3.692 3.169 3.459 3.768 3.961
+## 1     120  5 2.823     2.329 1.570 2.060 2.593 2.823
+## 2      80 19 3.233     3.038 2.779 2.967 3.122 3.235
+## 3      40 15 3.359     3.167 2.775 3.049 3.252 3.402
+## 4       0 10 4.055     3.672 3.207 3.541 3.771 3.927
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed
@@ -2483,12 +2613,12 @@ specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 1.995     1.931 1.878 1.914 1.947 1.968
-## 2   crown 29    NA     1.931 1.861 1.908 1.951 1.976
-## 3   crown 28    NA     1.931 1.862 1.907 1.951 1.973
-## 4   crown 27    NA     1.935 1.849 1.909 1.951 1.970
-## 5   crown 26    NA     1.930 1.861 1.905 1.950 1.976
-## 6   crown 25    NA     1.929 1.847 1.914 1.949 1.975
+## 1   crown 30 1.995     1.935 1.867 1.918 1.946 1.976
+## 2   crown 29    NA     1.933 1.864 1.910 1.951 1.976
+## 3   crown 28    NA     1.933 1.873 1.910 1.950 1.968
+## 4   crown 27    NA     1.927 1.854 1.912 1.946 1.977
+## 5   crown 26    NA     1.927 1.866 1.909 1.950 1.985
+## 6   crown 25    NA     1.929 1.863 1.908 1.954 1.976
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2496,7 +2626,7 @@ The summary functions can also take various options such as:
 \begin{itemize}
 \tightlist
 \item
-  \texttt{quantile} values for the confidence interval levels (by
+  \texttt{quantiles} values for the confidence interval levels (by
   default, the 50 and 95 quantiles are calculated)
 \item
   \texttt{cent.tend} for the central tendency to use for summarising the
@@ -2513,16 +2643,16 @@ These options can easily be changed from the defaults as follows:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## Same as above but using the 88th quantile and the standard deviation as the summary }
-\KeywordTok{summary}\NormalTok{(disparity_time_slices, }\DataTypeTok{quantile =} \DecValTok{88}\NormalTok{, }\DataTypeTok{cent.tend =}\NormalTok{ sd)}
+\KeywordTok{summary}\NormalTok{(disparity_time_slices, }\DataTypeTok{quantiles =} \DecValTok{88}\NormalTok{, }\DataTypeTok{cent.tend =}\NormalTok{ sd)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##   subsets  n   obs bs.sd  2.5%   25%   75% 97.5%
-## 1     120  5 2.823 0.387 1.263 2.119 2.579 2.767
-## 2      80 19 3.233 0.105 2.815 2.986 3.126 3.212
-## 3      40 15 3.359 0.174 2.660 3.045 3.250 3.433
-## 4       0 10 4.055 0.205 3.169 3.459 3.768 3.961
+##   subsets  n   obs bs.sd    6%   94%
+## 1     120  5 2.823 0.350 1.738 2.663
+## 2      80 19 3.233 0.118 2.832 3.200
+## 3      40 15 3.359 0.173 2.818 3.386
+## 4       0 10 4.055 0.193 3.345 3.909
 \end{verbatim}
 
 \begin{Shaded}
@@ -2542,10 +2672,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  5 2.82292   2.29655 1.26271 2.11928 2.57865 2.76690
-## 2      80 19 3.23312   3.05983 2.81513 2.98594 3.12552 3.21213
-## 3      40 15 3.35947   3.13894 2.65991 3.04502 3.24950 3.43262
-## 4       0 10 4.05457   3.69167 3.16864 3.45865 3.76807 3.96114
+## 1     120  5 2.82292   2.32886 1.56998 2.05989 2.59325 2.82292
+## 2      80 19 3.23312   3.03809 2.77859 2.96734 3.12209 3.23466
+## 3      40 15 3.35947   3.16684 2.77533 3.04936 3.25215 3.40197
+## 4       0 10 4.05457   3.67236 3.20652 3.54095 3.77150 3.92712
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as
@@ -2615,7 +2745,7 @@ number of elements) by using the \texttt{rarefaction} argument.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2646,7 +2776,7 @@ everything using the regular plot arguments:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2667,7 +2797,7 @@ central tendency.
 \NormalTok{op <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
 
 \NormalTok{## Plotting the results with some plot.dispRity arguments}
-\KeywordTok{plot}\NormalTok{(disparity_time_slices, }\DataTypeTok{quantile =} \KeywordTok{c}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{10}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{10}\NormalTok{)),}
+\KeywordTok{plot}\NormalTok{(disparity_time_slices, }\DataTypeTok{quantiles =} \KeywordTok{c}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{10}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{10}\NormalTok{)),}
     \DataTypeTok{cent.tend =}\NormalTok{ sd, }\DataTypeTok{type =} \StringTok{"c"}\NormalTok{, }\DataTypeTok{elements =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{, }\KeywordTok{rainbow}\NormalTok{(}\DecValTok{10}\NormalTok{)),}
     \DataTypeTok{ylab =} \KeywordTok{c}\NormalTok{(}\StringTok{"Disparity"}\NormalTok{, }\StringTok{"Diversity"}\NormalTok{), }\DataTypeTok{chrono.subsets =} \OtherTok{FALSE}\NormalTok{,}
     \DataTypeTok{xlab =} \StringTok{"Time (in in units from past to present)"}\NormalTok{, }\DataTypeTok{observed =} \OtherTok{TRUE}\NormalTok{,}
@@ -2675,31 +2805,7 @@ central tendency.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## Warning in plot.window(...): "quantile" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy, type, ...): "quantile" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "quantile" is
-## not a graphical parameter
-
-## Warning in axis(side = side, at = at, labels = labels, ...): "quantile" is
-## not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in box(...): "quantile" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in title(...): "quantile" is not a graphical parameter
-\end{verbatim}
-
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2730,7 +2836,7 @@ plot by using \texttt{add\ =\ TRUE}:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2753,7 +2859,7 @@ easily look at rarefaction curves by using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2824,15 +2930,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##              statistic: t
-## crown : stem     63.36853
+## crown : stem     60.55289
 ## 
 ## [[2]]
 ##              parameter: df
-## crown : stem      160.0496
+## crown : stem      163.3394
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 2.851362e-115
+## crown : stem 8.088192e-114
 \end{verbatim}
 
 \begin{Shaded}
@@ -2849,13 +2955,13 @@ Here we are using the variables generated in the
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 63.369, df = 160.05, p-value < 2.2e-16
+## t = 60.553, df = 163.34, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2874841 0.3059796
+##  0.2858626 0.3051346
 ## sample estimates:
 ## mean of x mean of y 
-##  1.929990  1.633258
+##  1.930326  1.634827
 \end{verbatim}
 
 \begin{Shaded}
@@ -2870,15 +2976,15 @@ Here we are using the variables generated in the
 \begin{verbatim}
 ## [[1]]
 ##          statistic: W
-## 120 : 80           12
-## 80 : 40          3201
-## 40 : 0            362
+## 120 : 80           25
+## 80 : 40          2969
+## 40 : 0            285
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 1.097407e-33
-## 80 : 40  3.331838e-05
-## 40 : 0   2.757591e-29
+## 120 : 80 1.618981e-33
+## 80 : 40  2.100676e-06
+## 40 : 0   3.161681e-30
 \end{verbatim}
 
 \begin{Shaded}
@@ -2898,7 +3004,7 @@ Here we are using the variables generated in the
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.5043101
+## 80 - 40 : 40 - 0     0.5059592
 \end{verbatim}
 
 Because of the modular design of the package, tests can always be made
@@ -3160,7 +3266,7 @@ function, is limited to ultrametric trees (only living taxa!)\ldots{}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 Note that, like in the original \texttt{dtt} function, it is possible to
 change the evolutionary model (see \texttt{?geiger::sim.char}
@@ -3218,7 +3324,7 @@ class and can be plotted as \texttt{randtest} objects using the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 For more details on generating spaces see the
 \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}}
@@ -4112,10 +4218,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  5      1.508     1.287 0.533 1.108 1.554 1.865
-## 2      80 19      1.790     1.690 1.406 1.583 1.816 1.948
-## 3      40 15      1.689     1.676 1.318 1.556 1.835 2.077
-## 4       0 10      1.910     1.804 1.308 1.676 1.963 2.104
+## 1     120  5      1.508     1.325 0.729 1.109 1.554 1.863
+## 2      80 19      1.790     1.685 1.368 1.575 1.815 1.950
+## 3      40 15      1.689     1.678 1.314 1.574 1.838 2.065
+## 4       0 10      1.910     1.808 1.366 1.680 1.963 2.093
 \end{verbatim}
 
 \begin{Shaded}
@@ -4127,10 +4233,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 1.508     1.348 0.506 0.959 1.477 1.508
-## 2      80 19 1.790     1.687 1.572 1.649 1.721 1.774
-## 3      40 15 1.689     1.681 1.508 1.644 1.716 1.805
-## 4       0 10 1.910     1.808 1.577 1.763 1.860 1.909
+## 1     120  5 1.508     1.348 0.724 0.970 1.479 1.518
+## 2      80 19 1.790     1.680 1.532 1.644 1.723 1.787
+## 3      40 15 1.689     1.678 1.573 1.629 1.728 1.824
+## 4       0 10 1.910     1.814 1.601 1.778 1.856 1.920
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly
@@ -4154,7 +4260,7 @@ measuring disparity is to plot the distributions:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-84-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4180,12 +4286,12 @@ above.
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80  0.04472136
-## 120 : 40  0.22865118
-## 120 : 0   0.08972003
-## 80 : 40   0.93790685
-## 80 : 0    0.58236752
-## 40 : 0    0.63822722
+## 120 : 80   0.1850920
+## 120 : 40   0.1248074
+## 120 : 0    0.1009735
+## 80 : 40    0.9012348
+## 80 : 0     0.5554992
+## 40 : 0     0.6445770
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the
@@ -4214,12 +4320,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.6438966
-## 120 : 40   0.6875980
-## 120 : 0    0.5877450
-## 80 : 40    0.9337141
-## 80 : 0     0.8537184
-## 40 : 0     0.9359091
+## 120 : 80   0.6510083
+## 120 : 40   0.6617294
+## 120 : 0    0.5825258
+## 80 : 40    0.9505425
+## 80 : 0     0.8749785
+## 40 : 0     0.9307175
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances
@@ -4248,12 +4354,12 @@ A second solution is to compare the distributions to each other
 
 \begin{verbatim}
 ##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2940881 0.0000000 0.2051957 0.4290170 0.6083311
-## 120 : 40   0.2824927 0.0000000 0.1632993 0.3983128 0.7481392
-## 120 : 0    0.2281964 0.0000000 0.0000000 0.3464102 0.6309343
-## 80 : 40    0.6306073 0.2955680 0.4959277 0.7596775 0.8698180
-## 80 : 0     0.4795679 0.1348897 0.3715678 0.5988888 0.7732118
-## 40 : 0     0.5381616 0.2309401 0.3995782 0.7026658 0.8009602
+## 120 : 80   0.2700151 0.0000000 0.1777047 0.3936932 0.6037339
+## 120 : 40   0.3116749 0.0000000 0.2000000 0.4618802 0.6234309
+## 120 : 0    0.2154339 0.0000000 0.0000000 0.3237734 0.5958956
+## 80 : 40    0.6280915 0.3422491 0.5186113 0.7407789 0.8598204
+## 80 : 0     0.4984705 0.1907629 0.3554093 0.6399491 0.7588005
+## 40 : 0     0.5100845 0.1632993 0.3983128 0.6481929 0.8108500
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in
@@ -4386,7 +4492,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in
 terms of scale. The median centroids distance is expressed in km in the
@@ -4636,16 +4742,16 @@ inapplicable data.
 
 \begin{verbatim}
 ##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
-## t15 "0"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
-## t12 "1"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
-## t14 "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
-## t6  "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "0"  
-## t3  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
-## t2  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
-## t11 "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
-## t7  "0"  "0"  "1"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"  
-## t1  "0"  "0"  "0"  "0"  "-"  "0"  "0"  "0"  "-"  "2"   "1"  
-## t5  "0"  "0"  "0"  "0"  "-"  "0"  "0"  "0"  "-"  "0"   "1"
+## t15 "0"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "-"  
+## t12 "1"  "1"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "-"  
+## t14 "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "-"  
+## t6  "0"  "0"  "0"  "1"  "0"  "0"  "0"  "1"  "0"  "1"   "-"  
+## t3  "0"  "0"  "1"  "0"  "1"  "0"  "-"  "0"  "1"  "0"   "1"  
+## t2  "0"  "0"  "1"  "0"  "1"  "0"  "-"  "0"  "1"  "0"   "1"  
+## t11 "0"  "0"  "1"  "0"  "1"  "0"  "-"  "0"  "1"  "0"   "1"  
+## t7  "0"  "0"  "1"  "0"  "1"  "0"  "-"  "0"  "1"  "0"   "1"  
+## t1  "0"  "0"  "0"  "0"  "0"  "0"  "-"  "0"  "1"  "2"   "1"  
+## t5  "0"  "0"  "0"  "0"  "0"  "0"  "-"  "0"  "1"  "0"   "1"
 \end{verbatim}
 
 \subsection{Parameters for a realistic(ish)
@@ -4679,7 +4785,7 @@ characters, a gamma distribution with a shape parameter (\(\alpha\)) of
 ## Maximum parsimony        133.0000000
 ## Consistency index          0.7819549
 ## Retention index            0.9597222
-## Robinson-Foulds distance   4.0000000
+## Robinson-Foulds distance  10.0000000
 \end{verbatim}
 
 \section{Simulating multidimensional
@@ -4730,13 +4836,13 @@ Here is a simple two dimensional example:
 \end{Shaded}
 
 \begin{verbatim}
-##           [,1]       [,2]
-## [1,] 0.3322704 0.73741888
-## [2,] 0.5157255 0.33160759
-## [3,] 0.3716847 0.62284731
-## [4,] 0.4367013 0.76535328
-## [5,] 0.7424290 0.07764732
-## [6,] 0.0111013 0.65066885
+##           [,1]      [,2]
+## [1,] 0.3866799 0.2217310
+## [2,] 0.1241530 0.1865108
+## [3,] 0.2675497 0.4847182
+## [4,] 0.5212740 0.3746780
+## [5,] 0.5901044 0.7091963
+## [6,] 0.8865427 0.5300197
 \end{verbatim}
 
 \begin{Shaded}
@@ -4746,7 +4852,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
 
 Of course, more complex spaces can be created by changing the
 distributions, their arguments or adding a correlation matrix or a
@@ -4762,13 +4868,13 @@ cumulative variance vector:
 \end{Shaded}
 
 \begin{verbatim}
-##      [,1]       [,2]       [,3]
-## [1,]    0 0.18294640 0.32682604
-## [2,]    0 0.67243526 0.77182827
-## [3,]    0 0.56028603 0.06603386
-## [4,]    0 0.80409259 0.19401581
-## [5,]    0 0.31732158 0.16460302
-## [6,]    0 0.09244429 0.99873117
+##      [,1]      [,2]       [,3]
+## [1,]    0 0.1968446 0.43029618
+## [2,]    0 0.3671160 0.45374782
+## [3,]    0 0.8627615 0.07536814
+## [4,]    0 0.2007153 0.60441868
+## [5,]    0 0.5948987 0.73940042
+## [6,]    0 0.1635772 0.30492831
 \end{verbatim}
 
 \begin{Shaded}
@@ -4794,13 +4900,13 @@ cumulative variance vector:
 \end{Shaded}
 
 \begin{verbatim}
-##            [,1]       [,2]       [,3]
-## [1,] -0.5080285 -0.7014059 -1.0286500
-## [2,]  0.7250674  0.9498248  0.7220638
-## [3,]  0.4476787  0.2102857 -0.3835125
-## [4,] -1.3252827 -0.5060518  0.2211104
-## [5,] -0.9193155 -1.3861888 -1.6151720
-## [6,] -0.7217653 -0.1967257  0.2672965
+##             [,1]        [,2]       [,3]
+## [1,]  0.19631985 -0.08590857 -0.5748964
+## [2,]  1.09469925  0.77908744  0.7818163
+## [3,]  0.08704587  0.48602744 -0.1242105
+## [4,]  0.61029377  1.25032323  1.2749303
+## [5,] -0.72841788 -0.12330580  1.0193165
+## [6,]  0.68552724 -0.03084933 -0.2870057
 \end{verbatim}
 
 \begin{Shaded}
@@ -4814,12 +4920,12 @@ cumulative variance vector:
 
 \begin{verbatim}
 ##             [,1]        [,2]         [,3]
-## [1,] -0.07935545  0.10932383 0.0017309562
-## [2,] -0.20619425 -0.14809591 0.0008416656
-## [3,] -0.20133258  0.05766707 0.0041888464
-## [4,]  0.69412491 -0.47106729 0.0036967387
-## [5,]  0.41300602  0.23924098 0.0077537936
-## [6,]  0.53369953  0.02882589 0.0073476805
+## [1,] -0.16936026 -0.26781809 0.0732100038
+## [2,] -0.13427785  0.04432547 0.0009969164
+## [3,]  0.20544716  0.43004915 0.0585601086
+## [4,] -0.01903637  0.01759538 0.0616021676
+## [5,] -0.41580830 -0.24555317 0.0887091502
+## [6,] -0.88075358 -0.44369045 0.0306385425
 \end{verbatim}
 
 See below for the visualisation of the spaces.
@@ -4854,7 +4960,7 @@ below this inner circle radius).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-96-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4866,13 +4972,13 @@ below this inner circle radius).
 \end{Shaded}
 
 \begin{verbatim}
-##            [,1]        [,2]       [,3]
-## [1,]  1.0692065 -0.34286592 -0.4077478
-## [2,]  0.3898210 -0.06393936  0.5212298
-## [3,] -0.9878641  0.36223496  0.4519167
-## [4,]  0.1031183  0.08781562  0.9176893
-## [5,]  1.1351951 -0.34076407  0.8712020
-## [6,]  0.1769964 -0.77904629  0.5770467
+##            [,1]        [,2]        [,3]
+## [1,]  0.2207202 -0.08874494 -0.95664157
+## [2,] -0.3550241  0.08891075  0.88458929
+## [3,] -0.2728855  0.73710880  0.04621046
+## [4,] -0.5628419  0.74879584 -0.50698252
+## [5,] -0.3766183  0.56723981  0.30762806
+## [6,] -0.1318688 -0.36013763  0.58233161
 \end{verbatim}
 
 See below for the visualisation of the ``doughnut'' space.
@@ -4916,7 +5022,7 @@ around and visualise the simulated spaces:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4968,7 +5074,7 @@ space. For example, we can extract the parameters of the
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to
 test several hypothesis:
@@ -5013,7 +5119,7 @@ test several hypothesis:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
 
 If we measure disparity as the median distance from the morphospace
 centroid, we can explain the distribution of the data as normal with the
@@ -5201,9 +5307,9 @@ matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 \end{Shaded}
 
 \begin{verbatim}
-##  num [1:15, 1:97] -0.6937 -0.0445 -0.673 -0.7161 -0.2046 ...
+##  num [1:15, 1:97] -0.7161 0.3496 -0.573 -0.0445 -0.1427 ...
 ##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:15] "Kennalestes" "n20" "Batodon" "n7" ...
+##   ..$ : chr [1:15] "n7" "n34" "Maelestes" "n20" ...
 ##   ..$ : NULL
 \end{verbatim}
 
@@ -5559,7 +5665,7 @@ dataset).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap}
@@ -5573,7 +5679,7 @@ package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \section{A disparity-through-time
 analysis}\label{a-disparity-through-time-analysis}
@@ -5868,7 +5974,7 @@ details).
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-117-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-118-1.pdf}
 
 \section{Testing differences}\label{testing-differences}
 
@@ -6031,7 +6137,7 @@ in the petal-space.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-122-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
 
 This shows the distribution of the different species in the petal-space
 along the two first axis of variation. This is a pretty standard way to
@@ -6050,7 +6156,7 @@ we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-124-1.pdf}
 
 Additionally, these two represented dimensions do not represent a
 biological reality \emph{per se}; i.e.~the values on the first dimension
@@ -6184,7 +6290,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-128-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-129-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we
 saw that the species have a different position in the two first
@@ -6280,7 +6386,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-130-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-131-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6291,7 +6397,7 @@ properties (similarly to \citet{diaz2016global}):
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-131-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-132-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or
 uniform. This is expected because of the simplicity of these parameters.

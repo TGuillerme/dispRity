@@ -25,7 +25,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
 
 
-<meta name="date" content="2019-03-07">
+<meta name="date" content="2019-04-10">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -310,16 +310,16 @@ my_matrix_NA &lt;-<span class="st"> </span><span class="kw">apply.NA</span>(my_m
 ## The first few lines of the resulting matrix
 my_matrix_NA[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">90</span><span class="op">:</span><span class="dv">100</span>]</code></pre></div>
 <pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
-## t15 &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
-## t12 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
-## t14 &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
-## t6  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
-## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
-## t2  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
-## t11 &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
-## t7  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;  
-## t1  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;2&quot;   &quot;1&quot;  
-## t5  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;   &quot;1&quot;</code></pre>
+## t15 &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;-&quot;  
+## t12 &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;-&quot;  
+## t14 &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;-&quot;  
+## t6  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;   &quot;-&quot;  
+## t3  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
+## t2  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
+## t11 &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
+## t7  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
+## t1  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;2&quot;   &quot;1&quot;  
+## t5  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;</code></pre>
 <!--TG: Add inapplicable paper here -->
 </div>
 </div>
@@ -338,7 +338,7 @@ morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<spa
 ## Maximum parsimony        133.0000000
 ## Consistency index          0.7819549
 ## Retention index            0.9597222
-## Robinson-Foulds distance   4.0000000</code></pre>
+## Robinson-Foulds distance  10.0000000</code></pre>
 <!-- ## Simulating continuous morphological data -->
 <!-- TG: Add tutorial for evolving "morpho" shapes -->
 </div>
@@ -357,28 +357,28 @@ square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<
 
 ## The resulting 2D matrix
 <span class="kw">head</span>(square_space)</code></pre></div>
-<pre><code>##           [,1]       [,2]
-## [1,] 0.3322704 0.73741888
-## [2,] 0.5157255 0.33160759
-## [3,] 0.3716847 0.62284731
-## [4,] 0.4367013 0.76535328
-## [5,] 0.7424290 0.07764732
-## [6,] 0.0111013 0.65066885</code></pre>
+<pre><code>##           [,1]      [,2]
+## [1,] 0.3866799 0.2217310
+## [2,] 0.1241530 0.1865108
+## [3,] 0.2675497 0.4847182
+## [4,] 0.5212740 0.3746780
+## [5,] 0.5901044 0.7091963
+## [6,] 0.8865427 0.5300197</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Visualising the space
 <span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-94-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-95-1.png" width="768" /></p>
 <p>Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A plane space: uniform with one dimensions equal to 0
 plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),
                            <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">0</span>), <span class="ot">NULL</span>, <span class="ot">NULL</span>))
 <span class="kw">head</span>(plane_space)</code></pre></div>
-<pre><code>##      [,1]       [,2]       [,3]
-## [1,]    0 0.18294640 0.32682604
-## [2,]    0 0.67243526 0.77182827
-## [3,]    0 0.56028603 0.06603386
-## [4,]    0 0.80409259 0.19401581
-## [5,]    0 0.31732158 0.16460302
-## [6,]    0 0.09244429 0.99873117</code></pre>
+<pre><code>##      [,1]      [,2]       [,3]
+## [1,]    0 0.1968446 0.43029618
+## [2,]    0 0.3671160 0.45374782
+## [3,]    0 0.8627615 0.07536814
+## [4,]    0 0.2007153 0.60441868
+## [5,]    0 0.5948987 0.73940042
+## [6,]    0 0.1635772 0.30492831</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Correlation matrix for a 3D space
 (cor_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>))</code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
@@ -388,24 +388,24 @@ plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## An ellipsoid space (normal space with correlation)
 ellipse_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, rnorm, <span class="dt">cor.matrix =</span> cor_matrix)
 <span class="kw">head</span>(ellipse_space)</code></pre></div>
-<pre><code>##            [,1]       [,2]       [,3]
-## [1,] -0.5080285 -0.7014059 -1.0286500
-## [2,]  0.7250674  0.9498248  0.7220638
-## [3,]  0.4476787  0.2102857 -0.3835125
-## [4,] -1.3252827 -0.5060518  0.2211104
-## [5,] -0.9193155 -1.3861888 -1.6151720
-## [6,] -0.7217653 -0.1967257  0.2672965</code></pre>
+<pre><code>##             [,1]        [,2]       [,3]
+## [1,]  0.19631985 -0.08590857 -0.5748964
+## [2,]  1.09469925  0.77908744  0.7818163
+## [3,]  0.08704587  0.48602744 -0.1242105
+## [4,]  0.61029377  1.25032323  1.2749303
+## [5,] -0.72841788 -0.12330580  1.0193165
+## [6,]  0.68552724 -0.03084933 -0.2870057</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## A cylindrical space with decreasing axes variance
 cylindrical_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, rnorm, runif),
                                  <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))
 <span class="kw">head</span>(cylindrical_space)</code></pre></div>
 <pre><code>##             [,1]        [,2]         [,3]
-## [1,] -0.07935545  0.10932383 0.0017309562
-## [2,] -0.20619425 -0.14809591 0.0008416656
-## [3,] -0.20133258  0.05766707 0.0041888464
-## [4,]  0.69412491 -0.47106729 0.0036967387
-## [5,]  0.41300602  0.23924098 0.0077537936
-## [6,]  0.53369953  0.02882589 0.0073476805</code></pre>
+## [1,] -0.16936026 -0.26781809 0.0732100038
+## [2,] -0.13427785  0.04432547 0.0009969164
+## [3,]  0.20544716  0.43004915 0.0585601086
+## [4,] -0.01903637  0.01759538 0.0616021676
+## [5,] -0.41580830 -0.24555317 0.0887091502
+## [6,] -0.88075358 -0.44369045 0.0306385425</code></pre>
 <p>See below for the visualisation of the spaces.</p>
 <div id="personalised-dimensions-distributions" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Personalised dimensions distributions</h3>
@@ -418,18 +418,18 @@ circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span
 
 ## Plotting the circle
 <span class="kw">plot</span>(circle, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;A normal circle&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-96-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-97-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating doughnut space (a spherical space with a hole)
 doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),
      <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>), <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))
 <span class="kw">head</span>(doughnut_space)</code></pre></div>
-<pre><code>##            [,1]        [,2]       [,3]
-## [1,]  1.0692065 -0.34286592 -0.4077478
-## [2,]  0.3898210 -0.06393936  0.5212298
-## [3,] -0.9878641  0.36223496  0.4519167
-## [4,]  0.1031183  0.08781562  0.9176893
-## [5,]  1.1351951 -0.34076407  0.8712020
-## [6,]  0.1769964 -0.77904629  0.5770467</code></pre>
+<pre><code>##            [,1]        [,2]        [,3]
+## [1,]  0.2207202 -0.08874494 -0.95664157
+## [2,] -0.3550241  0.08891075  0.88458929
+## [3,] -0.2728855  0.73710880  0.04621046
+## [4,] -0.5628419  0.74879584 -0.50698252
+## [5,] -0.3766183  0.56723981  0.30762806
+## [6,] -0.1318688 -0.36013763  0.58233161</code></pre>
 <p>See below for the visualisation of the “doughnut” space.</p>
 </div>
 <div id="visualising-the-space" class="section level3">
@@ -456,7 +456,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 ## Plotting the doughnut space
 <span class="kw">scatterplot3d</span>(doughnut_space[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,
               <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Doughnut space&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-97-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-98-1.png" width="768" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(op)</code></pre></div>
 </div>
 <div id="generating-realistic-spaces" class="section level3">
@@ -493,7 +493,7 @@ simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span
 <span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)
 <span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),
         <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>), <span class="dt">bg =</span> <span class="st">&quot;white&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-98-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-99-1.png" width="768" /></p>
 <p>It is now possible to simulate a space using these observed arguments to test several hypothesis:</p>
 <ul>
 <li>Is the space uniform or normal?</li>
@@ -525,7 +525,7 @@ op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mf
 <span class="kw">plot</span>(test_norm1, <span class="dt">main =</span> <span class="st">&quot;Normal (0,1)&quot;</span>)
 <span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="st">&quot;Normal (global observed</span><span class="ch">\n</span><span class="st">mean and sd)&quot;</span>)
 <span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable mean</span><span class="ch">\n</span><span class="st">and sd with correlation)&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-99-1.png" width="768" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-100-1.png" width="768" /></p>
 <p>If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.</p>
 
 </div>

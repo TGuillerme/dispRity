@@ -379,10 +379,13 @@ Level | Name | Description | Source |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
+2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `mode.val` | The modal value | `dispRity` |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
+2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
+2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
 1 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
@@ -406,6 +409,10 @@ Some of the functions described below are implemented in the `dispRity` package 
 
 \begin{equation}
     diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+
+\begin{equation}
+    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Reference_{k})^2}}}{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}}
 \end{equation}
 
 \begin{equation}
@@ -441,7 +448,8 @@ $\sigma^{2}$ is their variance and
 $Centroid_{k}$ is their mean,
 $Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
 $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
-*R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid).
+*R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid),
+and $Reference_{k}$ is an arbitrary point's coordinates (usually 0).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -482,11 +490,11 @@ Also note that they are really sensitive to the size of the dataset.
 
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values. I strongly recommend reading [this really intuitive explanation](https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) from [Toph Tucker](https://github.com/tophtucker).
 
-#### Ranges, variances, radius, pairwise distance, modal value and diagonal
+#### Ranges, variances, quantiles, radius, pairwise distance, neighbours, modal value and diagonal
 
 The functions `ranges`, `variances` `radius`, `pairwise.dist`, `mode.val` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
 
-`ranges`, `variances` and `radius` work on the same principle and measure the range/variance/radius of each dimension:
+`ranges`, `variances` `quantiles` and `radius` work on the same principle and measure the range/variance/radius of each dimension:
 
 ```{r}
 ## Calculating the ranges of each dimension in the ordinated space
@@ -509,6 +517,16 @@ summary(dispRity(dummy_space, metric = variances))
 summary(dispRity(dummy_space, metric = c(sum, variances)))
 summary(dispRity(dummy_space, metric = c(prod, variances)))
 
+## Calculating the quantiles of each dimension in the ordinated space
+quantiles(dummy_space)
+
+## Calculating disparity as the distribution of these variances
+summary(dispRity(dummy_space, metric = quantiles))
+
+## By default, the quantile calculated is the 95% (i.e. 95% of the data on each axis)
+## this can be changed using the option quantile:
+summary(dispRity(dummy_space, metric = quantiles, quantile = 50))
+
 ## Calculating the radius of each dimension in the ordinated space
 radius(dummy_space)
 
@@ -521,7 +539,7 @@ radius(dummy_space, type = mean)
 summary(dispRity(dummy_space, metric = c(mean, radius), type = mean))
 ```
 
-The pairwise distances uses the function `vegan::vegdist` and can take the normal `vegdist` options:
+The pairwise distances and the neighbours distances uses the function `vegan::vegdist` and can take the normal `vegdist` options:
 
 ```{r}
 ## The average pairwise euclidean distance
@@ -529,6 +547,12 @@ summary(dispRity(dummy_space, metric = c(mean, pairwise.dist)))
 
 ## The distribution of the Manhattan distances
 summary(dispRity(dummy_space, metric = pairwise.dist, method = "manhattan"))
+
+## The average nearest neighbour distances
+summary(dispRity(dummy_space, metric = neighbours))
+
+## The average furthest neighbour manhattan distances
+summary(dispRity(dummy_space, metric = neighbours, which = max, method = "manhattan"))
 ```
 
 Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
@@ -547,7 +571,7 @@ summary(dispRity(dummy_space, metric = mode.val))
 
 > This metric is only a Euclidean diagonal (mathematically valid) if the dimensions within the space are all orthogonal!
 
-#### Centroids and ancestral distance metrics
+#### Centroids, displacements, and ancestral distance metrics
 
 The `centroids` metric allows users to measure the position of the different elements compared to a fixed point in the ordinated space.
 By default, this function measures the distance between each element and their centroid (centre point):
@@ -564,10 +588,22 @@ It is however possible to fix the coordinates of the centroid to a specific poin
 
 ```{r}
 ## The distance between each element and the origin of the ordinated space
-summary(dispRity(dummy_space, metric = centroids, centroid = c(0,0,0,0,0)))
+summary(dispRity(dummy_space, metric = centroids, centroid = 0))
 
 ## Disparity as the distance between each element and a specific point in space
 summary(dispRity(dummy_space, metric = centroids, centroid = c(0,1,2,3,4)))
+```
+
+The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
+Note that it is possible to measure a ratio from another point than `0` using the `reference` argument.
+It gives indication of the relative displacement of elements in the multidimensional space: a score  >1 signifies a displacement *away* from the reference. A score of >1 signifies a displacement *towards* the reference.
+
+```{r}
+## The relative displacement of the group in space to the centre
+summary(dispRity(dummy_space, metric = displacements))
+
+## The relative displacement of the group to an arbitrary point
+summary(dispRity(dummy_space, metric = displacements, reference = c(0,1,2,3,4)))
 ```
 
 The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor.
@@ -658,7 +694,7 @@ head(summary(disparity_crown_stem))
 
 The summary functions can also take various options such as:
 
- * `quantile` values for the confidence interval levels (by default, the 50 and 95 quantiles are calculated)
+ * `quantiles` values for the confidence interval levels (by default, the 50 and 95 quantiles are calculated)
  * `cent.tend` for the central tendency to use for summarising the results (default is `median`)
  * digits` option corresponding to the number of decimal places to print (default is `2`)
  * `recall` option for printing the call of the `dispRity` object as well (default is `FALSE`)
@@ -667,7 +703,7 @@ These options can easily be changed from the defaults as follows:
 
 ```{r}
 ## Same as above but using the 88th quantile and the standard deviation as the summary 
-summary(disparity_time_slices, quantile = 88, cent.tend = sd)
+summary(disparity_time_slices, quantiles = 88, cent.tend = sd)
 
 ## Printing the details of the object and digits the values to the 5th decimal place
 summary(disparity_time_slices, recall = TRUE, digits = 5)
@@ -745,7 +781,7 @@ In addition to the classic `plot` arguments, the function can also take argument
 op <- par(bty = "n")
 
 ## Plotting the results with some plot.dispRity arguments
-plot(disparity_time_slices, quantile = c(seq(from = 10, to = 100, by = 10)),
+plot(disparity_time_slices, quantiles = c(seq(from = 10, to = 100, by = 10)),
     cent.tend = sd, type = "c", elements = TRUE, col = c("black", rainbow(10)),
     ylab = c("Disparity", "Diversity"), chrono.subsets = FALSE,
     xlab = "Time (in in units from past to present)", observed = TRUE,
