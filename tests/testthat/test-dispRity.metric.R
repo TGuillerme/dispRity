@@ -453,3 +453,53 @@ test_that("n.ball.volume", {
     expect_equal(round(volume_sphere, digit = 5), round(1.286559, digit = 5))
     expect_equal(round(volume_spheroid, digit = 5), round(8.202472, digit = 5))
 })
+
+
+test_that("quantiles", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    ## Gives the same results as range if quantile = 100
+    expect_equal(quantiles(matrix, quantile = 100), ranges(matrix))
+    expect_equal(quantiles(matrix, quantile = 100, k.root = TRUE), ranges(matrix, k.root = TRUE))
+    ## Default 95%
+    expect_equal(round(quantiles(matrix), digit = 5),
+                 round(c(2.28341, 1.49103, 3.52845, 0.97363, 2.68825, 1.74203, 2.51121, 1.47926, 1.32815, 1.51783), digit = 5))
+})
+
+test_that("displacements", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    
+    ## Default behaviour
+    expect_equal(
+        round(displacements(matrix), digits = 5),
+        round(c(0.9336158, 0.9823367, 1.1963676, 1.0412577, 1.0469445), digits = 5)
+        )
+    expect_equal(
+        round(displacements(matrix, method = "manhattan"), digits = 5),
+        round(c(0.8395959, 0.9557916, 1.1694120, 1.1046963, 1.0906642), digits = 5)
+        )
+    expect_equal(
+        round(displacements(matrix, reference = 100), digits = 5),
+        round(c(113.55976, 260.10424, 155.41071, 87.47385, 133.64356), digits = 5)
+        )
+})
+
+test_that("neighbours", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    
+    ## Default behaviour
+    expect_equal(
+        round(neighbours(matrix), digits = 5),
+        round(c(2.63603, 2.31036, 2.58740, 4.00868, 2.31036), digits = 5)
+        )
+    expect_equal(
+        round(neighbours(matrix, method = "manhattan"), digits = 5),
+        round(c(6.14827, 6.14827, 7.44352, 9.98804, 6.40357), digits = 5)
+        )
+    expect_equal(
+        round(neighbours(matrix, which = max), digits = 5),
+        round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
+        )
+})
