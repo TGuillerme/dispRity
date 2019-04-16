@@ -100,6 +100,18 @@ test_that("correlation works", {
     expect_equal(
         round(cor_post, digit = 1)
         ,cor_pre)
+
+    # Non-Choleski correlation works
+    set.seed(1)
+    dimensions <- 20
+    correlations_values <- round(runif((dimensions*dimensions)/2-(dimensions/2), min = 0.1, max = 0.9), 1)
+    cor.matrix <- matrix(1, dimensions, dimensions)
+    cor.matrix[upper.tri(cor.matrix)] <- correlations_values
+    cor.matrix[lower.tri(cor.matrix)] <- correlations_values
+    ## Choleski does not work!
+    expect_error(chol(cor.matrix))
+    ## But space.maker does
+    expect_warning(space_cor <- space.maker(1000, 20, rnorm, cor.matrix = cor.matrix))
 })
 
 

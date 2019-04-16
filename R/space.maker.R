@@ -183,7 +183,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
 
     ## CREATE THE SPACE
     ## with only one distribution
-    if(uni_distribution == TRUE) {
+    if(uni_distribution) {
 
         if(!is.null(arguments)) {
             ## Setting the n argument
@@ -209,18 +209,23 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         } else {
             ## Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))
-            space <- matrix(unlist(space), nrow=elements, byrow=FALSE)
+            space <- matrix(unlist(space), nrow = elements, byrow = FALSE)
         }
     }
 
     ## Apply the correlation matrix to the space (if !NULL)
     if(!is.null(cor.matrix)) {
-        ## Choleski decomposition
-        choleski_decomposition <- t(chol(cor.matrix))
-        ## Multiply the matrices (transpose space)
-        space <- choleski_decomposition %*% t(space)
-        ## Transpose space again
-        space <- t(space)
+        choleski_decomposition <- try(t(chol(cor.matrix)), silent = TRUE)
+        if(class(choleski_decomposition) == "matrix") {
+            ## Use the Choleski decomposition
+            space <- choleski_decomposition %*% t(space)
+            ## Transpose space again
+            space <- t(space)            
+        } else {
+            ## Approximate correlation
+            space <- space %*% (cor.matrix %*% cor(space))
+            warning(paste0(choleski_decomposition[1], "The resulting correlation is not exact."), call. = TRUE)
+        }
     }
 
     ## Modify the variance for each dimensions

@@ -26,7 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.4 *space blob* (2019-04-10) 
+dispRity v1.2.4 *space blob* (2019-04-16) 
 =========================
 
 ### NEW FEATURE
@@ -41,6 +41,7 @@ dispRity v1.2.4 *space blob* (2019-04-10)
  * All functions methods selection have now been sped up using `switch`.
  * Error messages in `dispRity` are more verbose when input the wrong metric(s).
  * `scree` option in `space.maker` does not require to sum up to one anymore.
+ * `cor.matrix` option in `space.maker` does not require to have a valid Choleski decomposition (an approximation is used instead).
 
 dispRity v1.2.3 (2019-03-12)
 =========================
