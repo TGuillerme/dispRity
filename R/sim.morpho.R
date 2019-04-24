@@ -54,7 +54,7 @@
 #'      rates = my_rates, substitution = my_substitutions,  invariant = FALSE,
 #'      verbose = TRUE)
 #' 
-#' @seealso \code{\link{check.morpho}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
+#' @seealso \code{\link{check.morpho}}, \code{\link{apply.NA}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
 #' 
 #' @author Thomas Guillerme
 

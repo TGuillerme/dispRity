@@ -72,7 +72,7 @@ matrixMixed <- sim.morpho(tree, characters = 50, model = "MIXED",
 
 }
 \seealso{
-\code{\link{check.morpho}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
+\code{\link{check.morpho}}, \code{\link{apply.NA}}, \code{\link[ape]{rTraitDisc}}, \code{\link[phyclust]{gen.seq.HKY}}
 }
 \author{
 Thomas Guillerme
