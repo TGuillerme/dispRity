@@ -1,0 +1,163 @@
+---
+title: "Generating inapplicable characters"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+
+```{r}
+library(dispRity)
+```
+
+This quick tutorial illustrates the two processes used in `dispRity` to generate inapplicable phylogenetic data.
+
+# Generating discrete data
+
+First let's generate a coalescent tree using `ape::rcoal` function:
+
+```{r}
+set.seed(3)
+## Simulating a starting tree with 15 taxa as a random coalescent tree
+my_tree <- ape::rcoal(15)
+```
+
+Here's what the tree looks like:
+
+```{r, fig.height = 5, fig.width = 5, echo = FALSE}
+plot(my_tree)
+```
+
+Then let's generate a discrete data matrix using the `sim.morpho` function (see more details about the)
+We'll create a matrix with 15 taxa and 100 characters.
+The characters are generated using a Mk model with rates drawn from a gamma distribution with $\alpha = 0.5$ and 85% of binary characters and 15% of three state characters.
+
+
+```{r}
+## Generating a matrix with 100 characters
+my_matrix <- sim.morpho(tree = my_tree, characters = 100, states = c(0.85,
+    0.15), rates = c(rgamma, shape = 0.5, rate = 1), invariant = FALSE)
+```
+
+This is what it looks like as an image:
+
+```{r, fig.height = 3, fig.width = 12, echo = FALSE}
+## palette
+col_pal <- c("blue", "orange", "green")
+## Image of the matrix
+image(apply(my_matrix, 1, as.numeric), col = col_pal, xaxt = "n", yaxt = "n", xlab = "characters", ylab = "taxa")
+## Legend
+legend("topleft", c("0", "1", "2"), col = col_pal, bg = "white", pch = 15)
+```
+
+We can check the "soundness" of this matrix using the `check.morpho` function to see how much would a quick parsimony tree generated from this matrix differ from our input tree.
+
+```{r}
+check.morpho(my_matrix, my_tree)
+```
+
+The value of interest here would be the consistency index that is in the range of empirical matrices and the Robinson-Foulds distance showing that there are no topological differences between the input tree used to generate the matrix and the potential output tree from the matrix.
+
+# Generating inapplicable characters
+
+We can then generate inapplicable characters using the `apply.NA` function following two biological processes: either considering some parent's character hierarchy or considering some shared evolutionary history.
+
+## Based on characters' hierarchy
+
+This option can be specified using the `NAs = character` argument in `apply.NA`.
+This method basically selects a random parent character and randomly picks up a state to be informing the random character n+1 inapplicability.
+In other words, it randomly attributes an "absence" significance to a parent character state.
+The child character will then have inapplicable data for any taxa with the parent character coded as "absent".
+If the parent character is a binary character (0,1), the algorithm will randomly assign the "feature is absent" definition to one of the states (say 0).
+For the next character, taxa with the state 0 will get an inapplicable token.
+
+For example, consider the two following characters:
+
+| taxa | character _n_ | character _n+1_ |
+|------|---------------|-----------------|
+| t1 | 1 | 0 |
+| t2 | 0 | 1 |
+| t3 | 1 | 2 |
+| t4 | 0 | 3 |
+
+This method will transform it in something like:
+
+| taxa | parent character | child character |
+|------|---------------|-----------------|
+| t1 | absent | - |
+| t2 | present | 1 |
+| t3 | absent | - |
+| t4 | present | 3 |
+
+This algorithm simulates the character's hierarchy that can generate inapplicable data.
+It is thus based on the two evolutionary parameters based to generate the character in the first place: 1) tree model and 2) character model, rate and shape).
+
+## Based on topology
+
+This option can be specified using the `NAs = clade` argument in `apply.NA`.
+This randomly chooses a clade of any size and attributes the inapplicable token for all the taxa in this clade.
+For example, in a tree `(t1,(t2,(t3,t4)));`, the algorithm could select the clade `(t3,t4);` and attribute the inapplicable token to all its taxa.
+
+For example, consider the following characters:
+
+| taxa | character _n_ |
+|------|---------------|
+| t1 | 0 |
+| t2 | 1 |
+| t3 | 2 |
+| t4 | 3 |
+
+This method will transform it in something like:
+
+| taxa | character _n_ |
+|------|---------------|
+| t1 | 0 |
+| t2 | 1 |
+| t3 | - |
+| t4 | - |
+
+This algorithm simulates the loss of a non-recorded parent character (as described as above).
+For example, if the four taxa are birds and the character is "tail colour", this algorithm simulates the loss of tail for the taxa t3 and t4 and thus making the "tail colour" states inapplicable for these two taxa.
+All this without having recorded the parent character (e.g. "presence of tail").
+Compared to the `character` algorithm described above, this one only depends on one evolutionary parameter: the tree model.
+
+## Generating a mix of both
+
+To generate inapplicable characters using the `apply.NA` function we can specify how many characters we want from each algorithm as follows (note that only up to half characters can have inapplicable tokens in the matrix):
+
+```{r}
+## Generating 20 "character" inapplicables and 20 "clade" ones
+my_matrix_NA <- apply.NA(my_matrix, tree = my_tree,
+                        NAs = c(rep("character", 20), rep("clade", 20)))
+```
+
+# Generating missing data
+
+For now there are no fancy ways to generate missing data implemented in `dispRity`.
+One simple way would be to simply randomly add missing data throughout the matrix.
+For example if one wants to add 20% missing data to the matrix:
+
+```{r}
+## The matrix size
+matrix_size <- prod(dim(my_matrix_NA))
+## Adding 20% of missing data
+my_matrix_NA[sample(1:matrix_size, round(matrix_size*0.2))] <- "?"
+```
+
+And here's what the modified matrix looks like:
+
+
+```{r, fig.height = 3, fig.width = 12, echo = FALSE}
+## Transforming the NAs and the ? for plotting
+plot_matrix <- gsub("-", "3", my_matrix_NA)
+plot_matrix <- gsub("\\?", "4", plot_matrix)
+## palette
+col_pal <- c("blue", "orange", "green", "black", "grey")
+## Image of the matrix
+image(apply(plot_matrix, 1, as.numeric), col = col_pal, xaxt = "n", yaxt = "n", xlab = "characters", ylab = "taxa")
+## Legend
+legend("topleft", c("0", "1", "2", "-", "?"), col = col_pal, bg = "white", pch = 15)
+```
