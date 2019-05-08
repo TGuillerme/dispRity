@@ -5,7 +5,8 @@
 \title{Simulates morphological data.}
 \usage{
 sim.morpho(tree, characters, states = 1, model = "ER", rates,
-  substitution = c(stats::runif, 2, 2), invariant = TRUE, verbose = FALSE)
+  substitution = c(stats::runif, 2, 2), invariant = TRUE,
+  verbose = FALSE)
 }
 \arguments{
 \item{tree}{A phylogenetic tree to use for generating the characters.}

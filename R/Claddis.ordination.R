@@ -20,7 +20,7 @@
 #' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.cmdscale) {
     match_call <- match.call()

@@ -85,9 +85,9 @@
 #}
 #' 
 #' 
-#' @importFrom mnormt rmnorm
+# @importFrom mnormt rmnorm
 #' @author Mark N Puttick and Thomas Guillerme
-#' @export
+# @export
 
 # source("sanitizing.R")
 # source("model.test_fun.R")

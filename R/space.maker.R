@@ -222,7 +222,6 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
             ## Transpose space again
             space <- t(space)            
         } else {
-            ## Approximate correlation
             space <- space %*% (cor.matrix %*% cor(space))
             warning(paste0(choleski_decomposition[1], "The resulting correlation is not exact."), call. = TRUE)
         }
@@ -260,7 +259,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
 #' \code{\link{space.maker}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## Function for creating a rand
 random.circle <- function(n, distribution, inner = 0, outer = Inf, ...) {

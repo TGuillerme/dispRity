@@ -43,7 +43,7 @@
 #' Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 #For testing:
 # source("sanitizing.R")

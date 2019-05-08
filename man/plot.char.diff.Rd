@@ -5,8 +5,8 @@
 \title{Plots character differences}
 \usage{
 \method{plot}{char.diff}(x, ..., type = "matrix", legend = TRUE,
-  legend.title = "Difference", legend.pos = "topleft", legend.round = 0,
-  axis = TRUE, xlim, ylim, xlab, ylab, col, main)
+  legend.title = "Difference", legend.pos = "topleft",
+  legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main)
 }
 \arguments{
 \item{x}{A discrete matrix or an already computed character difference matrix of class \code{char.diff}.}

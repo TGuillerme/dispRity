@@ -72,7 +72,7 @@
 #' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 # source("sanitizing.R")
 # source("adonis.dispRity_fun.R")

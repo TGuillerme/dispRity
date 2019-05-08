@@ -30,7 +30,7 @@
 #' @seealso \code{\link{tree.age}}.
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 clean.data <- function(data, tree) {
 

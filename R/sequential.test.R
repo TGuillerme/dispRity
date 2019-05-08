@@ -55,7 +55,7 @@
 #' @seealso \code{\link{test.dispRity}}, \code{\link{bhatt.coeff}}, \code{\link{null.test}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 #Testing
 # source("sanitizing.R")

@@ -44,7 +44,7 @@
 #' \code{\link[geiger]{dtt}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{plot.dispRity}}.
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 # source("sanitizing.R")
 # source("dispRity_fun.R")

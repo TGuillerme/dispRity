@@ -4,7 +4,8 @@
 \alias{dispRity.through.time}
 \title{Disparity through time.}
 \usage{
-dispRity.through.time(data, tree, time, metric = c(median, centroids), ...)
+dispRity.through.time(data, tree, time, metric = c(median, centroids),
+  ...)
 }
 \arguments{
 \item{data}{An ordinated \code{matrix}.}

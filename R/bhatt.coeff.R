@@ -23,7 +23,7 @@
 #' Bhattacharyya A. \bold{1943}. On a measure of divergence between two statistical populations defined by their probability distributions. Bull. Calcutta Math. Soc., 35, pp. 99-109
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 bhatt.coeff <- function(x, y, bw = bw.nrd0, ...) {
     ## Check data

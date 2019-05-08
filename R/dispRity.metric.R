@@ -492,7 +492,7 @@ n.ball.volume <- function(matrix, sphere = TRUE) {
 #' @seealso \code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 #' 
 ## Getting the centroid matrix for ancestor.centroids
 nodes.coordinates <- function(matrix, tree, full = TRUE) {

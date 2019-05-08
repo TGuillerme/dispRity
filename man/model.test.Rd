@@ -5,7 +5,8 @@
 \title{Model Test}
 \usage{
 model.test(data, model, pool.variance = NULL, time.split = NULL,
-  fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE)
+  fixed.optima = FALSE, control.list = list(fnscale = -1),
+  verbose = TRUE)
 }
 \arguments{
 \item{data}{A \code{dispRity} object used to test models of evolution through time.}

@@ -303,7 +303,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## DEBUG
 # source("sanitizing.R")
@@ -384,7 +384,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## DEBUG
 # source("sanitizing.R")
@@ -654,7 +654,7 @@ size.subsets <- function(data) {
 #' @seealso \code{\link{chrono.subsets}}, \code{\link{test.dispRity}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list = FALSE) {
 

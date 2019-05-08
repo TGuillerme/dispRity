@@ -122,7 +122,7 @@ char.diff <- function (matrix)  {
 #' @seealso \code{\link{char.diff}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 #' 
 
 plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title = "Difference", legend.pos = "topleft", legend.round = 0, axis = TRUE, xlim, ylim, xlab, ylab, col, main) {

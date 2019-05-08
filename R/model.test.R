@@ -69,7 +69,7 @@
 #' @references Murrell DJ. 2018. A global envelope test to detect non-random bursts of trait evolution. Methods in Ecology and Evolution. DOI: 10.1111/2041-210X.13006
 #' 
 #' @author Mark N Puttick and Thomas Guillerme
-#' @export
+# @export
 #' 
 
 # warning("DEBUG model.test")

@@ -26,7 +26,7 @@
 #' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 #' 
 #' @references
 #' Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
