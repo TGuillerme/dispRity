@@ -44,7 +44,7 @@ test_that("Works with one or more groups", {
     expect_is(test2, "adonis")
     expect_equal(as.character(test2$call), c("vegan::adonis", "dist(matrix) ~ g1 + g2", "multi_groups", "10", "manhattan"))
     expect_equal(test2$aov.tab$Df, c(1, 1, 7, 9))
-    expect_equal(round(test2$aov.tab[[6]], digit =5), round(c(0.18182, 0.18182, NA, NA), digit = 5))
+    expect_equal(round(test2$aov.tab[[6]], digit = 5), round(c(0.36364, 0.72727, NA, NA), digit = 5))
 
     ## Works well on non distance matrices
 
