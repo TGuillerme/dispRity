@@ -32,7 +32,7 @@ test_that("geomorph.ordination works", {
     ## Internal: make.groups.factors
     set.seed(1)
     one_factor_list <- as.factor(sample(LETTERS[1:2], 10, replace = TRUE))
-    expect_equal(make.groups.factors(one_factor_list), list(A = c(1,2,5,10), B = c(3,4,6,7,8,9)))
+    expect_equal(make.groups.factors(one_factor_list), list(A = c(1,3,4,6,7,8), B = c(2,5,9,10)))
 
     set.seed(1)
     array <- array(rnorm(100), c(5,2,10))
@@ -68,7 +68,7 @@ test_that("geomorph.ordination works", {
         )
     expect_equal(
         as.vector(unlist(lapply(test$subsets, lapply, length)))
-        , c(6,4,5,5)
+        , c(4,6,5,5)
         )
     
     dummy_geomorph_df2 <- dummy_geomorph_df

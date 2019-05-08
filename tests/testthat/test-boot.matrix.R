@@ -303,11 +303,11 @@ test_that("boot.single.proba works well", {
     expect_error(boot.single.proba(elements, rarefaction = 1))
     
     set.seed(1)
-    expect_equal(boot.single.proba(elements, rarefaction = 3), c(5,1,1))
+    expect_equal(boot.single.proba(elements, rarefaction = 3), c(1,4,1))
 
     elements[1,2] <- NA
     set.seed(1)
-    expect_equal(boot.single.proba(elements, rarefaction = 3), c(3,5,3))    
+    expect_equal(boot.single.proba(elements, rarefaction = 3), c(5,3,5))    
 })
 
 test_that("boot.matrix deals with probabilities subsets", {

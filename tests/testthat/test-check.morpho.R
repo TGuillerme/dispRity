@@ -43,22 +43,22 @@ test_that("check.morpho works", {
         dim(test), c(4,1)
         )
     expect_equal(
-       test[1,], 48
+       test[1,], 44
         )
     expect_equal(
-       test[2,], 0.6875
+       round(test[2,], 4), round(0.704545, 4)
         )
     expect_equal(
-       round(test[3,], digit = 4), round(0.7580645, digit = 4)
+       round(test[3,], digit = 4), round(0.6976744, digit = 4)
         )
     expect_equal(
-       test[4,], 0
+       test[4,], 6
         )
 
     #Verbose version
     set.seed(1)
     verbose <- capture_output(check.morpho(random.matrix, parsimony = "fitch", verbose = TRUE))
-    expect_equal(verbose, "Most parsimonious tree search:\nFinal p-score 48 after  0 nni operations ")
+    expect_equal(verbose, "Most parsimonious tree search:\nFinal p-score 44 after  0 nni operations ")
 
 
     #Test example (seed 10)
@@ -70,13 +70,13 @@ test_that("check.morpho works", {
         dim(test), c(4,1)
         )
     expect_equal(
-       test[1,], 57
+       test[1,], 48
         )
     expect_equal(
        round(test[2,], digit = 4), round(0.6666667, digit = 4)
         )
     expect_equal(
-       round(test[3,], digit = 4), round(0.7031250, digit = 4)
+       round(test[3,], digit = 4), round(0.6923077, digit = 4)
         )
     expect_equal(
        test[4,], 2

@@ -167,7 +167,7 @@ test_that("matrix.dispRity", {
         , c(15, 48))
     expect_equal(
         rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
-        , c("Patriomanis","Patriomanis","Procavia","Oxyclaenus","Pezosiren","Solenodon","Potamogalinae","Procavia","Gomphos","Cynocephalus","Solenodon","Todralestes","Gomphos","Widanelfarasia","Pezosiren"))
+        , c("Eoryctes", "Rhynchocyon", "Pezosiren", "Potamogalinae", "Soricidae", "Myrmecophagidae", "Protictis", "Protictis", "unnamed_cimolestid", "Bradypus", "Mimotona", "Todralestes", "Moeritherium", "Dasypodidae", "Bradypus"))
 })
 
 

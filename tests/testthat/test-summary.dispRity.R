@@ -222,7 +222,7 @@ test_that("Works with subsets and bootstraps", {
         )
     expect_equal(
         test$bs.median
-        ,c(32.65, 34.09))
+        ,c(32.89, 33.78))
 })
 
 #Case 5, time subsets + bootstraps + rarefaction
@@ -251,7 +251,7 @@ test_that("Works with subsets, bootstraps and rarefaction", {
         , c(37.00, NA, NA, 37.97, NA, NA))
     expect_equal(
         test$bs.median
-        , c(32.65, 20.39, 21.86, 33.75, 21.44, 23.33))
+        , c(32.89, 20.21, 21.45, 34.34, 21.45, 23.91))
 })
 
 #Example

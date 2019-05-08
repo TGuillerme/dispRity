@@ -340,10 +340,10 @@ test_that("ancestral.dist", {
         7)
     expect_equal(
         get.ancestors(4, tree),
-        c(10,9,7))
+        c(11,10,9,8,7))
     expect_equal(
         get.ancestors(4, tree, full = FALSE),
-        c(10))
+        c(11))
 
     set.seed(1)
     matrix <- matrix(rnorm(90), 9, 10)
