@@ -130,7 +130,7 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
 
             if(model == "equal.split" || model == "gradual.split") {
             ## Return a probability table
-                if(length(taxa) > 0) {
+                if(any(length(taxa) > 0)) {
                     ## Combine the taxa, their ancestor and their probability to the sub_tree table
                     ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
                     sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
@@ -148,7 +148,7 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
             } else {
             ## Return a matrix
 
-                if(length(taxa) > 0) {
+                if(any(length(taxa) > 0)) {
                     sub_tree <- c(sub_tree, taxa)
                 }
 
