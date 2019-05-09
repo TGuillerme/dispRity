@@ -108,7 +108,7 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
         }
 
         ## Empty subset
-        if(all(class(sub_tree) != "phylo" && is.na(sub_tree))) {
+        if(all(class(sub_tree) != "phylo" & is.na(sub_tree))) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
         }
