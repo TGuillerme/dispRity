@@ -95,8 +95,8 @@ clean.data <- function(data, tree) {
         }
 
         ## Replacing empty vectors by NAs
-        tips_to_drop <- ifelse(length(tips_to_drop) == 0, NA, tips_to_drop)
-        rows_to_drop <- ifelse(length(rows_to_drop) == 0, NA, rows_to_drop)
+        if(length(tips_to_drop) == 0) tips_to_drop <- NA
+        if(length(rows_to_drop) == 0) rows_to_drop <- NA
 
         ## output list
         cleaned_data <- list("tree" = tree_new, "data" = data_new, "dropped_tips" = tips_to_drop,  "dropped_rows" = rows_to_drop)
