@@ -26,7 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.4 *space blob* (2019-05-08) 
+dispRity v1.2.4 *space blob* (2019-05-15) 
 =========================
 
 ### NEW FEATURE
@@ -43,6 +43,7 @@ dispRity v1.2.4 *space blob* (2019-05-08)
  * `scree` option in `space.maker` does not require to sum up to one anymore.
  * `cor.matrix` option in `space.maker` does not require to have a valid Choleski decomposition (an approximation is used instead).
  * Updated all tests and functions to be compatible with R 3.6.
+ * Fixed bug in `clean.data` that did not output dropped tips correctly when applied on `multiPhylo` objects.
 
 dispRity v1.2.3 (2019-03-12)
 =========================
