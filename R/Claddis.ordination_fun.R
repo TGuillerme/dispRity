@@ -43,8 +43,8 @@ convert.to.Claddis <- function(data) {
     output$Matrix_1$BlockName <- NA
     output$Matrix_1$Datatype <- "STANDARD"
     output$Matrix_1$Matrix <- do.call(rbind, data)
-    output$Matrix_1$Ordering <- rep("unord", length(data))
-    output$Matrix_1$Weights <- rep(1, length(data))
+    output$Matrix_1$Ordering <- rep("unord", length(data[[1]]))
+    output$Matrix_1$Weights <- rep(1, length(data[[1]]))
     op <- options(warn = -1)
     output$Matrix_1$MinVals <- unlist(apply(output$Matrix_1$Matrix, 2, function(x) min(as.numeric(x), na.rm = TRUE)))
     is_nas <- is.na(output$Matrix_1$MinVals)
@@ -53,6 +53,11 @@ convert.to.Claddis <- function(data) {
     op <- options(warn = 0)
     output$Matrix_1$Characters$Missing <- "?"
     output$Matrix_1$Characters$Gap <- "-"
+
+    ## Transform the missing data into "?"
+    output$Matrix_1$Matrix <- ifelse(output$Matrix_1$Matrix == "?", NA, output$Matrix_1$Matrix)
+    ## Transform the inapplicables in ""
+    output$Matrix_1$Matrix <- ifelse(output$Matrix_1$Matrix == "-", "", output$Matrix_1$Matrix)
 
     return(output)
 }

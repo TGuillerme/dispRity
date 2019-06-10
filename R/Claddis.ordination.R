@@ -103,8 +103,6 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     check.class(add, "logical")
     arg.cmdscale$add <- add
 
-    ## Transforming the Claddis data
-
     ## Compute the distance
     distance_mat <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
 
