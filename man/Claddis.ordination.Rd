@@ -8,9 +8,9 @@ Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
   arg.cmdscale)
 }
 \arguments{
-\item{data}{Data from Claddis::ReadMorphNexus.}
+\item{data}{Data from \code{\link[Claddis]{ReadMorphNexus}} or the path to a file to be read by \code{\link[ape]{read.nexus.data}} (see details).}
 
-\item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}}
+\item{distance}{Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}. \code{distance} can also be set to \code{NULL} to convert a matrix in \code{\link[Claddis]{ReadMorphNexus}} list type (see details).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.}
 
@@ -27,8 +27,31 @@ Takes Claddis data and computes both the distance and the ordination matrix
 \dontrun{
 require(Claddis)
 
-## Creating an ordination of the distance matrix of Claddis example data
-Claddis.ordination(Michaux1989)
+## Ordinating the distance matrix of Claddis example data
+Claddis.ordination(Claddis::Michaux1989)
+
+## Creating simple discrete morphological matrix (with polymorphisms)
+cat(
+"#NEXUS
+BEGIN DATA;
+DIMENSIONS  NTAX=5 NCHAR=5;
+FORMAT SYMBOLS= \\" 0 1 2\\" MISSING=? GAP=- ;
+MATRIX
+     t1  {01}1010
+     t2  02120
+     t3  1210(01)
+     t4  01111
+     t5  00101
+;
+END;", file = "morpho_matrix.nex")
+
+## Ordinating the matrix (using a distance matrix)
+Claddis.ordination("morpho_matrix.nex")
+
+## Only converting the nexus matrix into a Claddis format
+Claddis_data <- Claddis.ordination("morpho_matrix.nex", distance = NULL)
+
+file.remove("morpho_matrix.nex")
 }
 
 }
