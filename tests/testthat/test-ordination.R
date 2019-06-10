@@ -156,13 +156,13 @@ test_that("Claddis.ordination works with new reader", {
     END;", file = "morpho_matrix.nex")
 
     ## Ordinating the matrix (using a distance matrix)
-    expect_warnings(test <- Claddis.ordination("morpho_matrix.nex"))
+    expect_warning(test <- Claddis.ordination("morpho_matrix.nex"))
     expect_is(test, "matrix")
     expect_equal(dim(test), c(5, 4))
     expect_equal(sum(test), -5.278371e-16)
 
     ## Only converting the nexus matrix into a Claddis format
-    expect_warnings(Claddis_data <- Claddis.ordination("morpho_matrix.nex", distance = NULL))
+    expect_warning(Claddis_data <- Claddis.ordination("morpho_matrix.nex", distance = NULL))
     expect_is(Claddis_data, "list")
     expect_equal(names(Claddis_data), c("Topper", "Matrix_1"))
     expect_is(Claddis_data$Matrix_1$Matrix, "matrix")

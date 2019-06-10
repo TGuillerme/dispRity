@@ -23,6 +23,10 @@ Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
 \description{
 Takes Claddis data and computes both the distance and the ordination matrix
 }
+\details{
+If \code{data} is a file path, the function will use a modified version of \code{\link[ape]{read.nexus.data}} (that handles polymorphic and ambiguous characters). The file content will then be converted into a \code{\link[Claddis]{ReadMorphNexus}} type list treating all characters as unordered.
+If the \code{distance} is set to \code{NULL}, \code{data} will be only converted into a \code{\link[Claddis]{ReadMorphNexus}} type list.
+}
 \examples{
 \dontrun{
 require(Claddis)
