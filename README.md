@@ -114,6 +114,9 @@ Some ideas/functionalities/implementations in this package where implemented fol
 Used in
 -------
 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=A+Kuramoto+model+of+self-other+integration+across+interpersonal+synchronization+strategies&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+OA Heggli, J Cabral, I Konvalinka, P Vuust, ML Kringelbach (**2019**). A Kuramoto model of self-other integration across interpersonal synchronization strategies. *bioRxiv*. 1:640383. [DOI:10.1101/640383](https://www.biorxiv.org/content/10.1101/640383v1.full)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Morphological+discontinuous+variation+and+disparity+in+Lutzomyia+%28Tricholateralis%29+cruciata+Coquillett%2C+1907+are+not+related+to+contrasting+environmental+%E2%80%A6&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 AC de Oca-Aguilar, E De Luna, EA Rebollar-Téllez, PM Piermarini, S Ibáñez-Bernal. (**2019**) Morphological discontinuous variation and disparity in Lutzomyia (Tricholateralis) cruciata Coquillett, 1907 are not related to contrasting environmental factors in two biogeographical provinces. *Zoomorphology*. 2019:1-4. [DOI:10.1007/s00435-019-00450-8](https://link.springer.com/article/10.1007/s00435-019-00450-8)
 
