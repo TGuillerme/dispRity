@@ -4,7 +4,7 @@
 \alias{rescale.dispRity}
 \title{Rescaling and centering disparity results.}
 \usage{
-\method{rescale}{dispRity}(data, center = FALSE, scale = FALSE,
+\method{rescale}{dispRity}(data, center = FALSE, scale = TRUE,
   use.all = TRUE, ...)
 }
 \arguments{
@@ -12,7 +12,7 @@
 
 \item{center}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
 
-\item{scale}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).}
+\item{scale}{either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).}
 
 \item{use.all}{\code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).}
 
@@ -26,10 +26,9 @@ Scales or/and centers the disparity measurements.
 data(disparity)
 
 ## Scaling the data
-summary(disparity) # No scaling
-summary(rescale.dispRity(disparity)) # Dividing by the maximum
+summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
 ## Multiplying by 10 (dividing by 0.1)
-summary(rescale.dispRity(disparity, max = 0.1))
+summary(rescale.dispRity(disparity, scale = 0.1))
 
 }
 \seealso{
