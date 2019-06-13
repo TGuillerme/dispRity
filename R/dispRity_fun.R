@@ -120,44 +120,9 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
 
 
 ## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps.silent <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
-    if(matrix_decomposition) {
-        ## Find out whether to output an array
-        use_array <- !is.null(metrics_list$level3.fun)
-        ## Getting the first metric
-        first_metric <- get.first.metric(metrics_list)
-        level <- first_metric[[3]]
-        metrics_list <- first_metric[[2]]
-        first_metric <- first_metric[[1]]
-        ## Decompose the metric using the first metric
-        disparity_out <- apply.decompose.matrix(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
-    } else {
-        disparity_out <- one_subsets_bootstrap
-    }
-
-    ## 2 - Applying the metrics to the decomposed matrix
-    if(!is.null(metrics_list$level3.fun)) {
-        disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
-    }
-
-    if(!is.null(metrics_list$level2.fun)) {
-        disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
-    }
-
-    if(!is.null(metrics_list$level1.fun)) {
-        margin <- ifelse(class(disparity_out) != "array", 2, 3)
-        disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
-        disparity_out <- t(as.matrix(disparity_out))
-    }
-
-    return(disparity_out)
-}
-
-
-disparity.bootstraps.verbose <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
-    message(".", appendLF = FALSE)
-    ## 1 - Decomposing the matrix (if necessary)
+    verbose_place_holder <- FALSE
     if(matrix_decomposition) {
         ## Find out whether to output an array
         use_array <- !is.null(metrics_list$level3.fun)
@@ -194,11 +159,9 @@ disparity.bootstraps.verbose <- function(one_subsets_bootstrap, metrics_list, da
 # ## Lapply wrapper for disparity.bootstraps function
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) {
-        disparity.bootstraps <- disparity.bootstraps.verbose
-    } else {
-        disparity.bootstraps <- disparity.bootstraps.silent
+        ## Making the verbose version of disparity.bootstraps
+        body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-
     return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
 
