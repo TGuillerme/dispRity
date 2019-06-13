@@ -95,9 +95,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test0v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
-
+    test0 <- disparity.bootstraps(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
     ## Should be a array
     expect_is(
         test0
@@ -110,14 +108,11 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test0)
         ,as.numeric(c(data$call$dimensions, data$call$dimensions, data$call$bootstrap[[1]])))
-    ## test0 and test0v are the same
-    expect_true(all(test0 == test0v))
 
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test1v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
+    test1 <- disparity.bootstraps(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -131,14 +126,11 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test1)
         ,as.numeric(c(data$call$dimensions, data$call$bootstrap[[1]])))
-    ## test1 and test1v are the same
-    expect_true(all(test1 == test1v))
 
     ## Without matrix decomposition
     matrix_decomposition = FALSE
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = NULL, "level1.fun" = mean)
-    test2 <- disparity.bootstraps.silent(test1, metrics_list, data, matrix_decomposition)
-    expect_message(test2v <- disparity.bootstraps.verbose(test1, metrics_list, data, matrix_decomposition))
+    test2 <- disparity.bootstraps(test1, metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -148,8 +140,6 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test2)
         , c(1, 11))
-    ## test2 and test2v are the same
-    expect_true(all(test2 == test2v))
 })
 
 
