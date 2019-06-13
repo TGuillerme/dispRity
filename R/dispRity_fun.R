@@ -114,7 +114,7 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     if(use_array) {
         return(array(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_bs_matrix))))
     } else {
-        return(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...))
+        return(matrix(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), ncol = ncol(one_bs_matrix)))
     }
 }
 
