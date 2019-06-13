@@ -273,7 +273,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
                 stop.call("", "The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
             }
             ## Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(c(rownames(data), c(tree$tip.label, tree$node.label))))) {
+            if(any(is.na(match(rownames(data), c(tree$tip.label, tree$node.label))))) {
                 stop.call("", "The labels in the matrix and in the tree do not match!\nCheck especially the node labels in the tree and the matrix.")
             }
         } else {

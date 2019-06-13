@@ -83,29 +83,37 @@ chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose
 chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
 
     ## lapply function for getting the slices
-    get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {
+    get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
 
         ## Verbose
         if(verbose) message(".", appendLF = FALSE)
 
-        ## Getting the tree ages
-        tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+        ## Get the age case
+        if(time[slice] > min(tree_ages[,1])) {
+            case <- "older"
+        } else {
+            case <- ifelse(time[slice] == min(tree_ages[,1]), "equal", "younger")
+        }
 
         ## Slicing the tree
-        if(time[slice] != min(tree_ages[,1])) {
-            sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
-        } else {
-            ## Extract only living taxa
-            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
-
-            if(model == "equal.split" || model == "gradual.split") {
-                ## Transforming the subtree into a probability table
-                tips_list <- sub_tree$tip.label
-                nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
-                sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
-                rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+        switch(case,
+            older   = {
+                sub_tree <- slice.tree(tree, time[slice], model, FAD = FADLADs$FAD, LAD = FADLADs$LAD)
+            },
+            equal   = {
+                sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
+                if(model == "equal.split" || model == "gradual.split") {
+                    ## Transforming the subtree into a probability table
+                    tips_list <- sub_tree$tip.label
+                    nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
+                    sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
+                    rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+                }
+            },
+            younger = {
+                sub_tree <- NA
             }
-        }
+        )
 
         ## Empty subset
         if(all(class(sub_tree) != "phylo" & is.na(sub_tree))) {
@@ -119,14 +127,14 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
             tips <- sub_tree$tip.label
 
             ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
             ## Getting the list of elements
             return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
         
         } else {
             ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
             if(model == "equal.split" || model == "gradual.split") {
             ## Return a probability table
@@ -159,17 +167,20 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
     }
 
     ## ages of tips/nodes + FAD/LAD
-    ages_tree <- adjust.FADLAD(FADLAD, tree, data)
-    
+    FADLADs <- adjust.FADLAD(FADLAD, tree, data)
+
+    ## Getting the tree ages
+    tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+
     ## verbose
     if(verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
-    #get.slice(slice = 20, time, model, ages_tree, data, verbose, tree)
+    #get.slice(slice = 20, time, model, FADLADs, data, verbose, tree)
 
     ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, tree_ages, FADLADs, data, verbose, tree)
 
     ## verbose
     if(verbose) {
