@@ -8,6 +8,16 @@ tree <- test_data$tree_data
 data <- test_data$ord_data_tips
 FADLAD <- test_data$FADLAD_data
 
+test_that("get.percent.age works", {
+    set.seed(42)
+    tree <- rtree(10)
+    tree$root.time <- 10
+    test <- get.percent.age(tree)
+    expect_is(test, "numeric")
+    expect_equal(test, 0.11)
+})
+
+
 test_that("adjust.FADLAD works", {
 
     ## Test FADLAD
@@ -460,9 +470,6 @@ test_that("probability models work", {
     expect_true(all(test2$subsets[[1]][[1]][,3] < 1))
 })
 
-
-
-
 test_that("chrono.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)
     rownames(non_dist) <- letters[1:10]
@@ -475,4 +482,23 @@ test_that("chrono.subsets detects distance matrices", {
     expect_warning(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
     msg <- capture_warnings(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+})
+
+test_that("chrono.subsets works with multiPhylo", {
+    ## Root time error
+    trees_no_root_time <- trees
+    trees_no_root_time[[1]]$root.time <- NULL
+    trees_no_root_time[[2]]$root.time <- NULL
+    trees_no_root_time[[5]]$root.time <- NULL
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_no_root_time))
+    expect_equal(error$message, "The following tree(s) in trees_no_root_time 1, 2, 5 needs a $root.time element.")
+    ## Tip number error
+    trees_wrong_tip <- trees
+    trees_wrong_tip[[2]] <- drop.tip(trees_wrong_tip[[2]], "t1")
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip))
+    expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
+
+    chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees)
+
+
 })

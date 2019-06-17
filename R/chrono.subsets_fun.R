@@ -1,3 +1,16 @@
+## Set the percentage for reaching the first sample containing three elements
+get.percent.age <- function(tree, percent = 0.01) {
+    ## Increment the percentage until at least three nodes/edges are crossed
+    while(length(which(dist.nodes(tree)[Ntip(tree) + 1, ] - (percent * tree$root.time) < 0)) < 3 ) {
+        percent <- percent + 0.01
+    }
+    ## Increment the slicing to contain 3 elements
+    while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - (percent * tree$root.time), drop.extinct = TRUE, plot = FALSE)) < 3) {
+        percent <- percent + 0.01
+    }
+    return(percent)
+}
+
 
 ## Internal function for adjust.FADLAD
 adjust.age <- function(FADLAD, ages_tree) {
@@ -31,8 +44,11 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 
 ## Discrete time subsets
-chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose) {
     
+    ## Model option is useless
+    model <- NULL
+
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
         if(verbose) message(".", appendLF = FALSE)
@@ -80,7 +96,10 @@ chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose
 }
 
 ## Continuous time subsets
-chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+
+    ## inc.nodes option is useless
+    inc.nodes <- NULL
 
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
