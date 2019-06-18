@@ -128,6 +128,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## Make the tree into a single multiPhylo object
         if(!is_multiPhylo) {
             tree <- list(tree)
+            class(tree) <- "multiPhylo"
         } else {
             ## Check if all the trees are the same
             tips <- lapply(tree, function(x) x$tip.label)
@@ -144,7 +145,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## tree must be dated
         if(any(no_root_time <- check.list(tree, function(x) is.null(x$root.time)))) {
             if(!is_multiPhylo) {
-                stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Use:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
+                stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Try using:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
             } else {
                 stop.call(match_call$tree, msg.pre = paste0("The following tree(s) in "), paste0(" ", paste0(seq(1:length(no_root_time))[no_root_time], collapse = ", "), msg = " needs a $root.time element."))
             }
@@ -152,7 +153,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
     }
-
 
     ## METHOD
     all_methods <- c("discrete", "d", "continuous", "c")
@@ -189,6 +189,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         tree$root.time <- max(FADLAD)
         tree$edge.length <- FADLAD$FAD
         tree <- list(tree)
+        class(tree) <- "multiPhylo"
     } else {
         tree_was_missing <- FALSE
     }
@@ -283,7 +284,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         if(time[1] < time[2]) {
             return(time <- rev(time))
         } else {
-            return(tim)
+            return(time)
         }
     }
     time <- lapply(time, reverse.time)
@@ -295,16 +296,21 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## Check if at least all the data in the table are present in the tree
         no_match_rows <- check.list(tree, function(tree, data) is.na(match(tree$tip.label, rownames(data))), data = data, condition = any)
         if(any(no_match_rows)) {
-            stop.call("", "The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+            stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
         }
     } else {
         ## Check if the tree has node labels
         if(any(node_labels <- check.list(tree, function(x) length(x$node.label)) == 0)) {
-            stop.call(match_call$tree, paste0(" contains trees with no node labels (", paste0(c(1:length(node_labels))[node_labels], collapse = ", "), ")."))
+            if(is_multiPhylo) {
+                stop.call(match_call$tree, paste0(" contains trees with no node labels (", paste0(c(1:length(node_labels))[node_labels], collapse = ", "), ")."))
+            } else {
+                stop.call(match_call$tree, paste0(" has no node labels."))
+            }
+
         } else {
             no_match_rows <- check.list(tree, function(tree, data) is.na(match(c(tree$tip.label, tree$node.label), rownames(data))), data = data, condition = any)
             if(any(no_match_rows)) {
-                stop.call("", "The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+                stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
             }
         }
     }
@@ -360,7 +366,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
 
     ## Toggle the multiPhylo option
-    if(!is.multiPhylo) {
+    if(!is_multiPhylo) {
         time_subsets <- chrono.subsets.fun(data, tree[[1]], time[[1]], model, FADLAD[[1]], inc.nodes, verbose)
     } else {
         ## Multiple time subsets

@@ -53,7 +53,7 @@ model = NULL
 inc.nodes = FALSE
 verbose = FALSE
 
-time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose)
 
 ## Test
 test_that("chrono.subsets.discrete works properly without nodes", {
@@ -82,7 +82,7 @@ test_that("chrono.subsets.discrete works properly without nodes", {
         rownames(data[time_subsets[[2]]$elements,])
         , subsets_2)
 
-    expect_message(chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = TRUE))
+    expect_message(chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = TRUE))
 
 })
 
@@ -90,7 +90,7 @@ test_that("chrono.subsets.discrete works properly without nodes", {
 inc.nodes = TRUE
 data <- test_data$ord_data_tips_nodes
 
-time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
 test_that("chrono.subsets.discrete works properly with nodes", {
@@ -118,7 +118,7 @@ time = c(120, 80, 40)
 verbose = FALSE
 
 ## DELTRAN
-time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", FADLAD, inc.nodes = NULL, verbose)
 
 ## Test
 test_that("chrono.subsets.continuous works properly with deltran model", {
@@ -156,7 +156,7 @@ test_that("chrono.subsets.continuous works properly with deltran model", {
 })
 
 ## ACCTRAN
-time_subsets <- chrono.subsets.continuous(data, tree, time, model = "acctran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "acctran", FADLAD, inc.nodes = NULL, verbose)
 
 ## Test
 test_that("chrono.subsets.continuous works properly with acctran model", {
@@ -187,7 +187,7 @@ verbose = FALSE
 test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Data
     expect_error(
-        chrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        capture_errorchrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
         chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
@@ -484,21 +484,21 @@ test_that("chrono.subsets detects distance matrices", {
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
-test_that("chrono.subsets works with multiPhylo", {
-    ## Root time error
-    trees_no_root_time <- trees
-    trees_no_root_time[[1]]$root.time <- NULL
-    trees_no_root_time[[2]]$root.time <- NULL
-    trees_no_root_time[[5]]$root.time <- NULL
-    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_no_root_time))
-    expect_equal(error$message, "The following tree(s) in trees_no_root_time 1, 2, 5 needs a $root.time element.")
-    ## Tip number error
-    trees_wrong_tip <- trees
-    trees_wrong_tip[[2]] <- drop.tip(trees_wrong_tip[[2]], "t1")
-    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip))
-    expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
+# test_that("chrono.subsets works with multiPhylo", {
+#     ## Root time error
+#     trees_no_root_time <- trees
+#     trees_no_root_time[[1]]$root.time <- NULL
+#     trees_no_root_time[[2]]$root.time <- NULL
+#     trees_no_root_time[[5]]$root.time <- NULL
+#     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_no_root_time))
+#     expect_equal(error$message, "The following tree(s) in trees_no_root_time 1, 2, 5 needs a $root.time element.")
+#     ## Tip number error
+#     trees_wrong_tip <- trees
+#     trees_wrong_tip[[2]] <- drop.tip(trees_wrong_tip[[2]], "t1")
+#     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip))
+#     expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
 
-    chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees)
+#     chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees)
 
 
-})
+# })
