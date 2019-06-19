@@ -2,7 +2,7 @@
 #'
 #' @usage slice.tree(tree, age, model, FAD, LAD)
 #' 
-#' @description Time slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
+#' @description Time slicing through a phylogenetic tree.
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
@@ -70,16 +70,20 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         ## Don't slice the tree if age is too old
         return(NA)
     } else {
-        suppressMessages(
-            try(
-                tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
-            , silent = TRUE)
-        )
-
-        if(!exists("tree_slice")) {
-            ## Slicing through a single edge!
-            return(slice.edge(tree, age, model))
+        tree_slice <- slice.tree.shape(tree, age)
+        if(is.null(tree_slice)) {
+            slice.edge(tree, age, model)
         }
+        # suppressMessages(
+        #     try(
+        #         tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
+        #     , silent = TRUE)
+        # )
+
+        # if(!exists("tree_slice")) {
+        #     ## Slicing through a single edge!
+        #     return(slice.edge(tree, age, model))
+        # }
     }
 
     

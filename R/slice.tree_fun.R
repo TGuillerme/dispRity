@@ -1,4 +1,72 @@
 #FUNCTIONS FOR slice.tree
+
+## This function is modified from Dave Bapst paleotree::timeSliceTree (2019/06/19)
+## (returns null when failure)
+slice.tree.sharp <- function(tree, slice)  {
+
+    ## Get slice time
+    slice_time <- tree$root.time - slice
+    ## Get node ages
+    node_age <- node.depth.edgelength(tree)
+
+    ## Which ancestor nodes/edges cross the slice
+    cross_edge <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
+
+    ## If no edge is crossed, return null
+    if(length(cross_edge) == 0) {
+        return(NULL)
+    }
+
+    ## Crossing edges function
+    get.crossings <- function(one_edge, bipartitions, tree) {
+        ## Declaring variables
+        n_tips <- Ntip(tree)
+        ## Getting descendent
+        descendent <- tree$edge[one_edge,2]
+        if(descendent > n_tips){
+            ## if an internal edge that goes past the tslice
+            descendent_tip <- bipartitions[[descendent-n_tips]]
+            ## Drop all but one tip
+            return(descendent_tip[-1])
+        } else {
+            return(NA)
+        }
+    }
+    ## Get the bipartitions
+    bipartitions <- prop.part(tree)
+
+    ## Get the crossings on each edges
+    tips_to_drop <- unlist(sapply(cross_edge, get.crossings, bipartitions, tree, simplify = FALSE))
+    tips_to_drop <- na.omit(tips_to_drop)
+
+    ## Drop tips from tree
+    tree_sliced <- drop.tip(tree, tips_to_drop)
+
+    ## Recalculate the tree depth
+    node_age_sliced <- node.depth.edgelength(tree_sliced)
+
+    ## Find edges crossing the slice
+    edges_crossing <- (node_age_sliced[tree_sliced$edge[, 2]] >= slice_time)
+    node_sliced_depth <- node_age_sliced[tree_sliced$edge[edges_crossing, 1]]
+    tree_sliced$edge.length[edges_crossing] <- slice_time - node_sliced_depth
+    tree_sliced$root.time <- tree$root.time
+    
+    ## Get the node tips depth
+    n_tips_sliced <- Ntip(tree_sliced)
+    tips_depth <- dist.nodes(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
+    ## Find tips that do not have the slice age
+    slice_age <- max(tips_depth)
+    contemp_tips <- (tips_depth == slice_age)
+
+    if(length(which(contemp_tips)) < 2) {
+        ## Return NULL if less than two tips are present
+        return(NULL)
+    } else {
+        ## Return the ultrametric tree at the slice
+        return(drop.tip(tree_sliced, tip = which(!contemp_tips)))
+    }
+}
+
 ## Get the node IDs
 get.node.ID <- function(node, tree) {
     ## Check if it's a node
