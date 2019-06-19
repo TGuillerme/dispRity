@@ -152,6 +152,9 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
+    } else {
+        ## Default tree list
+        is_multiPhylo <- FALSE
     }
 
     ## METHOD
@@ -289,8 +292,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
     time <- lapply(time, reverse.time)
 
-
-    ## TREE (2)
+    ## TREE (3)
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree

@@ -1,10 +1,22 @@
 ## Set the percentage for reaching the first sample containing three elements
 get.percent.age <- function(tree, percent = 0.01) {
-    while(is.null(slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time)))) {
+    ## Increment the percentage until at least three nodes/edges are crossed
+    # while(length(which(dist.nodes(tree)[Ntip(tree) + 1, ] - (percent * tree$root.time) < 0)) < 3 ) {
+    #     percent <- percent + 0.01
+    # }
+    ## Increment the slicing to contain 3 elements
+
+    #TODO: change value to 2
+
+    while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - (percent * tree$root.time), drop.extinct = TRUE, plot = FALSE)) < 3) {
         percent <- percent + 0.01
     }
+    # while(is.null(slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time)))) {
+    #     percent <- percent + 0.01
+    # }
     return(percent)
 }
+
 
 ## Internal function for adjust.FADLAD
 adjust.age <- function(FADLAD, ages_tree) {

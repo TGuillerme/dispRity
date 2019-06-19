@@ -8,14 +8,14 @@ tree <- test_data$tree_data
 data <- test_data$ord_data_tips
 FADLAD <- test_data$FADLAD_data
 
-test_that("get.percent.age works", {
-    set.seed(42)
-    tree <- rtree(10)
-    tree$root.time <- 10
-    test <- get.percent.age(tree)
-    expect_is(test, "numeric")
-    expect_equal(test, 0.11)
-})
+# test_that("get.percent.age works", {
+#     set.seed(42)
+#     tree <- rtree(10)
+#     tree$root.time <- 10
+#     test <- get.percent.age(tree)
+#     expect_is(test, "numeric")
+#     expect_equal(test, 0.11)
+# })
 
 
 test_that("adjust.FADLAD works", {
@@ -187,7 +187,7 @@ verbose = FALSE
 test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Data
     expect_error(
-        capture_errorchrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
+        chrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
     expect_error(
         chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)

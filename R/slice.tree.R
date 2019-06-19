@@ -70,20 +70,20 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         ## Don't slice the tree if age is too old
         return(NA)
     } else {
-        tree_slice <- slice.tree.shape(tree, age)
-        if(is.null(tree_slice)) {
-            slice.edge(tree, age, model)
-        }
-        # suppressMessages(
-        #     try(
-        #         tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
-        #     , silent = TRUE)
-        # )
-
-        # if(!exists("tree_slice")) {
-        #     ## Slicing through a single edge!
-        #     return(slice.edge(tree, age, model))
+        # tree_slice <- slice.tree.shape(tree, age)
+        # if(is.null(tree_slice)) {
+        #     slice.edge(tree, age, model)
         # }
+        suppressMessages(
+            try(
+                tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
+            , silent = TRUE)
+        )
+
+        if(!exists("tree_slice")) {
+            ## Slicing through a single edge!
+            return(slice.edge(tree, age, model))
+        }
     }
 
     

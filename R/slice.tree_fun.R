@@ -6,12 +6,10 @@ slice.tree.sharp <- function(tree, slice)  {
 
     ## Get slice time
     slice_time <- tree$root.time - slice
-    ## Get node ages
+    ## Get node ages
     node_age <- node.depth.edgelength(tree)
-
     ## Which ancestor nodes/edges cross the slice
     cross_edge <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
-
     ## If no edge is crossed, return null
     if(length(cross_edge) == 0) {
         return(NULL)
@@ -21,7 +19,7 @@ slice.tree.sharp <- function(tree, slice)  {
     get.crossings <- function(one_edge, bipartitions, tree) {
         ## Declaring variables
         n_tips <- Ntip(tree)
-        ## Getting descendent
+        ## Getting descendent
         descendent <- tree$edge[one_edge,2]
         if(descendent > n_tips){
             ## if an internal edge that goes past the tslice
@@ -34,7 +32,6 @@ slice.tree.sharp <- function(tree, slice)  {
     }
     ## Get the bipartitions
     bipartitions <- prop.part(tree)
-
     ## Get the crossings on each edges
     tips_to_drop <- unlist(sapply(cross_edge, get.crossings, bipartitions, tree, simplify = FALSE))
     tips_to_drop <- na.omit(tips_to_drop)
@@ -44,13 +41,11 @@ slice.tree.sharp <- function(tree, slice)  {
 
     ## Recalculate the tree depth
     node_age_sliced <- node.depth.edgelength(tree_sliced)
-
     ## Find edges crossing the slice
     edges_crossing <- (node_age_sliced[tree_sliced$edge[, 2]] >= slice_time)
     node_sliced_depth <- node_age_sliced[tree_sliced$edge[edges_crossing, 1]]
     tree_sliced$edge.length[edges_crossing] <- slice_time - node_sliced_depth
     tree_sliced$root.time <- tree$root.time
-    
     ## Get the node tips depth
     n_tips_sliced <- Ntip(tree_sliced)
     tips_depth <- dist.nodes(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]

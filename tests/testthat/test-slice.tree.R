@@ -3,7 +3,7 @@
 context("slice.tree")
 
 
-test_that("slice.tree.fun works", {
+test_that("slice.tree.sharp works", {
 
     set.seed(42)
     tree <- rtree(10)
