@@ -50,15 +50,14 @@ slice.tree.sharp <- function(tree, slice)  {
     n_tips_sliced <- Ntip(tree_sliced)
     tips_depth <- dist.nodes(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
     ## Find tips that do not have the slice age
-    slice_age <- max(tips_depth)
-    contemp_tips <- (tips_depth == slice_age)
-
-    if(length(which(contemp_tips)) < 2) {
+    #slice_age <- max(tips_depth)
+    tips_at_slice <- (tips_depth == slice_time)
+    if(length(which(tips_at_slice)) < 2) {
         ## Return NULL if less than two tips are present
         return(NULL)
     } else {
         ## Return the ultrametric tree at the slice
-        return(drop.tip(tree_sliced, tip = which(!contemp_tips)))
+        return(drop.tip(tree_sliced, tip = which(!tips_at_slice)))
     }
 }
 

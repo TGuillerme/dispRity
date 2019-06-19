@@ -370,6 +370,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## Toggle the multiPhylo option
     if(!is_multiPhylo) {
         time_subsets <- chrono.subsets.fun(data, tree[[1]], time[[1]], model, FADLAD[[1]], inc.nodes, verbose)
+        # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
     } else {
         ## Multiple time subsets
         multi.subsets <- function(one_list, data, model, inc.nodes, verbose, fun) {
