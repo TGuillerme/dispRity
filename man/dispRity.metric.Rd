@@ -202,8 +202,6 @@ variances(dummy_matrix, k.root = TRUE)
 
 }
 \seealso{
-\code{\link{dispRity}}
-
 \code{\link{dispRity}} and \code{\link{make.metric}}.
 }
 \author{

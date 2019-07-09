@@ -26,7 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.4 *space blob* (2019-06-10) 
+dispRity v1.2.4 *space blob* (2019-07-09) 
 =========================
 
 ### NEW FEATURE

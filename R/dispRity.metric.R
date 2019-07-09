@@ -69,7 +69,7 @@
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
 #'     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}
 #' 
-#' @seealso \code{\link{dispRity}}
+#' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @examples
 #' ## A random matrix
@@ -177,9 +177,6 @@
 #' ## variances of a each column in the matrix corrected using the kth root
 #' variances(dummy_matrix, k.root = TRUE)
 #' 
-
-#' 
-#' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @author Thomas Guillerme
 
@@ -192,23 +189,25 @@ dimension.level3.fun <- function(matrix, ...) {
 dimension.level2.fun <- function(matrix, ...) {
 
     cat("Dimension level 2 functions implemented in dispRity:\n")
-    cat("?ranges\n")
-    cat("?variances\n")
-    cat("?centroids\n")
     cat("?ancestral.dist\n")
+    cat("?centroids\n")
+    cat("?displacements\n")
+    cat("?neighbours\n")
     cat("?pairwise.dist\n")
+    cat("?ranges\n")
     cat("?radius\n")
+    cat("?variances\n")
 }
 
 dimension.level1.fun <- function(matrix, ...) {
     cat("Dimension level 1 functions implemented in dispRity:\n")
-    cat("?ellipse.volume\n")
     cat("?convhull.surface\n")
     cat("?convhull.volume\n")
     cat("?diagonal\n")
+    cat("?ellipse.volume\n")
     cat("?mode.val\n")
-    cat("?span.tree.length\n")
     cat("?n.ball.volume\n")
+    cat("?span.tree.length\n")
 }
 
 ## kth root scaling
