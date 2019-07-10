@@ -1,0 +1,187 @@
+---
+title: "other functionalities"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: [../References.bib, ../packages.bib]
+bst: sysbio.bst
+vignette: >
+  %\VignetteIndexEntry{other functionalities}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+# Other functionalities
+
+The `dispRity` package also contains several other functions that are not specific to multidimensional analysis but that are often used by `dispRity` internal functions.
+However, we decided to make these functions also available at a user level since they can be handy for certain specific operations!
+You'll find a brief description of each of them (alphabetically) here:
+
+## `clean.data`
+
+This is a rather useful function that allows matching a `matrix` or a `data.frame` to a tree (`phylo`) or a distribution of trees (`multiPhylo`).
+This function outputs the cleaned data and trees (if cleaning was needed) and a list of dropped rows and tips.
+
+```{r}
+## Generating a trees with labels from a to e
+dummy_tree <- rtree(5, tip.label = LETTERS[1:5])
+
+## Generating a matrix with rows from b to f
+dummy_data <- matrix(1, 5, 2, dimnames = list(LETTERS[2:6], c("var1", "var2")))
+
+##Cleaning the trees and the data
+(cleaned <- clean.data(data = dummy_data, tree = dummy_tree))
+```
+
+## `crown.stem`
+
+This function quiet handily separates tips from a phylogeny between crown members (the living taxa and their descendants) and their stem members (the fossil taxa without any living relatives).
+
+```{r}
+data(BeckLee_tree)
+## Diving both crow and stem species
+(crown.stem(BeckLee_tree, inc.nodes = FALSE))
+```
+
+Note that it is possible to include or exclude nodes from the output.
+To see a more applied example: this function is used in [chapter 03: specific tutorials](#custom-subsets).
+
+## `get.bin.ages`
+
+This function is similar than the `crown.stem` one as it is based on a tree but this one outputs the stratigraphic bins ages that the tree is covering.
+This can be useful to generate precise bin ages for the `chrono.subsets` function:
+
+```{r}
+get.bin.ages(BeckLee_tree)
+```
+
+Note that this function outputs the stratigraphic age limits by default but this can be customisable by specifying the `type` of data (e.g. `type = "Eon"` for eons).
+The function also intakes several optional arguments such as whether to output the startm end, range or midpoint of the stratigraphy or the year of reference of the International Commission of Stratigraphy.
+To see a more applied example: this function is used in [chapter 03: specific tutorials](#chrono-subsets).
+
+## `pair.plot`
+
+This utility function allows to plot a matrix image of pairwise comparisons.
+This can be useful when getting pairwise comparisons and if you'd like to see at a glance which pairs of comparisons have high or low values.
+
+```{r}
+## Random data
+data <- matrix(data = runif(42), ncol = 2)
+
+## Plotting the first column as a pairwise comparisons
+pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
+```
+
+Here blue squares are ones that have a high value and orange ones the ones that have low values.
+Note that the values plotted correspond the first column of the data as designated by `what = 1`.
+
+It is also possible to add some tokens or symbols to quickly highlight to specific cells, for example which elements in the data are below a certain value:
+
+```{r}
+## The same plot as before without the diagonal being the maximal observed value
+pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "max")
+## Highlighting with an asterisk which squares have a value below 0.2
+pair.plot(data, what = 1, binary = 0.2, add = "*", cex = 2)
+```
+
+This function can also be used as a binary display when running a series of pairwise t-tests.
+For example, the following script runs a wilcoxon test between the time-slices from the `disparity` example dataset and displays in black which pairs of slices have a p-value below 0.05:
+
+```{r}
+## Loading disparity data
+data(disparity)
+
+## Testing the pairwise difference between slices
+tests <- test.dispRity(disparity, test = wilcox.test, correction = "bonferroni")
+
+## Plotting the significance
+pair.plot(as.data.frame(tests), what = "p.value", binary = 0.05)
+```
+
+## `reduce.matrix`
+
+This function allows to reduce columns or rows of a matrix to make sure that there is enough overlap for further analysis.
+This is particularly useful if you are going to use distance matrices since it uses the `vegan::vegdist` function to test whether distances can be calculated or not.
+
+For example, if we have a patchy matrix like so (where the black squares represent available data):
+
+```{r}
+set.seed(1)
+## A 10*5 matrix
+na_matrix <- matrix(rnorm(50), 10, 5)
+## Making sure some rows don't overlap
+na_matrix[1, 1:2] <- NA
+na_matrix[2, 3:5] <- NA
+## Adding 50% NAs
+na_matrix[sample(1:50, 25)] <- NA
+## Illustrating the gappy matrix
+image(t(na_matrix), col = "black")
+```
+
+We can use the `reduce.matrix` to double check whether any rows cannot be compared.
+The functions needs as an input the type of distance that will be used, say a `"gower"` distance:
+
+```{r}
+## Reducing the matrix by row
+(reduction <- reduce.matrix(na_matrix, distance = "gower"))
+```
+
+We can not remove the rows 1 and 9 and see if that improved the overlap:
+
+```{r}
+image(t(na_matrix[-as.numeric(reduction$rows.to.remove), ]), col = "black")
+```
+
+## `slice.tree`
+
+This function is a modification of the `paleotree::timeSliceTree` function that allows to make slices through a phylogenetic tree.
+Compared to the `paleotree::timeSliceTree`, this function allows a model to decide which tip or node to use when slicing through a branch (whereas `paleotree::timeSliceTree` always choose the first available tip alphabetically).
+The models for choosing which tip or node are the same as the ones used in the `chrono.subsets` and are described in [chapter 03: specific tutorials](#chrono-subsets).
+
+The function works by using at least a tree, a slice age and a model:
+
+```{r}
+set.seed(1)
+## Generate a random ultrametric tree
+tree <- rcoal(20)
+## Add some node labels
+tree$node.label <- letters[1:19]
+## Add its root time
+tree$root.time <- max(tree.age(tree)$ages)
+
+## Slicing the tree at age 0.75
+tree_75 <- slice.tree(tree, age = 0.75, "acctran")
+
+## Showing both trees
+par(mfrow = c(1,2))
+plot(tree, main = "original tree")
+axisPhylo() ; nodelabels(tree$node.label, cex = 0.8)
+abline(v = (max(tree.age(tree)$ages) - 0.75), col = "red")
+plot(tree_75, main = "sliced tree")
+```
+
+## `tree.age`
+
+This function allows to quickly calculate the ages of each tips and nodes present in a tree.
+
+```{r}
+set.seed(1)
+tree <- rtree(10)
+## The tree age from a 10 tip tree
+tree.age(tree)
+```
+
+It also allows to set the age of the root of the tree:
+
+```{r}
+## The ages starting from -100 units
+tree.age(tree, age = 100)
+```
+
+Usually tree age is calculated from the present to the past (e.g. in million years ago) but it is possible to reverse it using the `order = present` option:
+
+```{r}
+## The ages in terms of tip/node height
+tree.age(tree, order = "present")
+```
