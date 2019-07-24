@@ -436,7 +436,7 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
-    span.tree.length = \sum(\mathrm{branch\ length})
+    span.tree.length = \mathrm{branch\ length}
 \end{equation}
 
 
@@ -636,7 +636,7 @@ The `span.tree.length` uses the `vegan::spantree` function to heuristically calc
 
 ```{r}
 ## The length of the minimal spanning tree
-summary(dispRity(dummy_space, metric = span.tree.length))
+summary(dispRity(dummy_space, metric = c(sum, span.tree.length)))
 ```
 
 Note that because the solution is heuristic, this metric can take a long time to compute for big matrices.

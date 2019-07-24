@@ -31,7 +31,7 @@
 #'
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
-#'          \item WARNING: this function calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+#'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
 #'      }
 #'
 #'   \item \code{mode.val}: calculates the modal value of a vector.
@@ -197,6 +197,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?ranges\n")
     cat("?radius\n")
     cat("?variances\n")
+    cat("?span.tree.length\n")
 }
 
 dimension.level1.fun <- function(matrix, ...) {
@@ -207,7 +208,6 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("?ellipse.volume\n")
     cat("?mode.val\n")
     cat("?n.ball.volume\n")
-    cat("?span.tree.length\n")
 }
 
 ## kth root scaling
@@ -303,7 +303,7 @@ ellipse.volume <- function(matrix, eigen.value) {
 
     ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
     if(missing(eigen.value)) {
-        eigen.value <- abs(apply(var(matrix),2, sum)) # * (nrow(matrix) - 1)
+        eigen.value <- abs(apply(var(matrix), 2, sum)) # * (nrow(matrix) - 1)
     } else {
         eigen.value <- eigen.value[1:ncol_matrix]
     }
@@ -424,7 +424,7 @@ span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     }
 
     ## Output the span tree length
-    return(sum(span_tree$dist))
+    return(span_tree$dist)
 }
 
 ## Calculates the pairwise distance between elements
@@ -457,6 +457,33 @@ n.ball.volume <- function(matrix, sphere = TRUE) {
     return(pi^(n/2)/gamma((n/2)+1)*radius)
 }
 
+# ## Minimal spanning tree distances evenness
+# func.eve <- function(matrix, method = "euclidean") {
+#     ## Distance matrix
+#     distances <- vegan::vegdist(matrix, method = method)
+#     ## weighted evenness (EW) for equal weighted species
+#     branch_lengths <- (distances/2)[which(as.dist(ape::mst(distances)) != 0)]
+#     ## partial weighted evenness (PEW)
+#     rel_br_lentghs <- branch_lengths/sum(branch_lengths)
+#     ## Regular abundance value (1/(S-1))
+#     regular <- 1/(nrow(matrix) - 1)
+#     ## Get the minimal distances
+#     min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
+#     ## Return the Functional eveness
+#     return((sum(min_distances) - regular) / (1 - regular))
+# }
+
+# ## Distance from centroid deviation ratio
+# func.div <- function(matrix) {
+#     ## The distance from centroid (dGi)
+#     dist_centroid <- centroids(matrix)
+#     ## The mean distance from centroid (dG)
+#     mean_dis_cent <- mean(dist_centroid)
+#     ## The number of observations
+#     obs <- length(dist_centroid)
+#     ## The FDiv metric
+#     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
+# }
 
 
 #' @title Nodes coordinates

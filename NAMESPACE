@@ -94,6 +94,7 @@ export(reduce.matrix)
 export(slice.tree)
 export(space.maker)
 export(tree.age)
+export(get.ancestors)
 
 ##Morphological data analysis
 export(apply.NA)
