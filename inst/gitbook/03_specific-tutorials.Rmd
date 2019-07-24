@@ -388,7 +388,7 @@ Level | Name | Description | Source |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
-1 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
+2 | `span.tree.length` | The minimal spanning tree length | [`ape`](https://cran.r-project.org/web/packages/vegan/index.html) (but see also [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree`) |
 2 | `variances` | The variance of each dimension | `dispRity` |
 
 1: Note that by default, the centroid is the centroid of the elements.

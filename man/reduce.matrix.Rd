@@ -40,9 +40,6 @@ image(t(na_matrix[-as.numeric(reduction$rows.to.remove), ]), col = "black")
 reduce.matrix(na_matrix, by.row = FALSE, verbose = TRUE)
 
 }
-\seealso{
-
-}
 \author{
 Thomas Guillerme
 }

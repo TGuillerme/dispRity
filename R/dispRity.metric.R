@@ -205,6 +205,8 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("?convhull.volume\n")
     cat("?diagonal\n")
     cat("?ellipse.volume\n")
+    cat("?func.div\n")
+    cat("?func.eve\n")
     cat("?mode.val\n")
     cat("?n.ball.volume\n")
 }

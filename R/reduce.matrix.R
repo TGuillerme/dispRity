@@ -27,8 +27,6 @@
 #' ## Reducing the matrix by columns (and being verbose)
 #' reduce.matrix(na_matrix, by.row = FALSE, verbose = TRUE)
 #' 
-#' @seealso
-#' 
 #' @author Thomas Guillerme
 #' @export
 
