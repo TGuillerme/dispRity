@@ -21,6 +21,9 @@
 \alias{neighbours}
 \alias{displacements}
 \alias{quantiles}
+\alias{func.eve}
+\alias{func.div}
+\alias{get.ancestors}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -58,11 +61,14 @@ The currently implemented dimension-level 1 metrics are:
          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
      }
 
+  \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{\link[FD]{dbFD}$FDiv}).
+
+  \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{\link[FD]{dbFD}$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+
   \item \code{mode.val}: calculates the modal value of a vector.
 
   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
 
-  \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 
 }
 
@@ -87,6 +93,8 @@ The currently implemented dimension-level 2 metrics are:
   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 
   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
+
+  \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 
 }
 
@@ -149,6 +157,16 @@ ordination <- prcomp(dummy_matrix)
 ## Calculating the ellipsoid volume
 ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
 
+## func.div
+## Functional divergence
+func.div(dummy_matrix)
+
+## func.eve
+## Functional evenness
+func.eve(dummy_matrix) 
+## Functional evenness (based on manhattan distances)
+func.eve(dummy_matrix, method = "manhattan")
+
 ## neighbours
 ## The nearest neighbour euclidean distances
 neighbours(dummy_matrix)
@@ -200,6 +218,11 @@ variances(dummy_matrix)
 variances(dummy_matrix, k.root = TRUE)
 
 
+}
+\references{
+Donohue I, Petchey OL, Montoya JM, Jackson AL, McNally L, Viana M, Healy K, Lurgi M, O'Connor NE, Emmerson MC. On the dimensionality of ecological stability. Ecology letters. 2013 Apr;16(4):421-9.
+
+Vill'{e}ger S, Mason NW, Mouillot D. New multidimensional functional diversity indices for a multifaceted framework in functional ecology. Ecology. 2008 Aug;89(8):2290-301.
 }
 \seealso{
 \code{\link{dispRity}} and \code{\link{make.metric}}.
