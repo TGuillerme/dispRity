@@ -51,6 +51,7 @@ dispRity v1.2.4 *space blob* (2019-07-10)
  * Updated all tests and functions to be compatible with R 3.6.
  * Fixed bug in `clean.data` that did not output dropped tips correctly when applied on `multiPhylo` objects.
  * Improved error messages in `chrono.subsets` for funky time slices/bins (e.g. with negative values).
+ * Better internal handling of distance matrices for the disparity metrics.
 
 dispRity v1.2.3 (2019-03-12)
 =========================

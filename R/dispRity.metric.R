@@ -187,7 +187,6 @@ dimension.level3.fun <- function(matrix, ...) {
 }
 
 dimension.level2.fun <- function(matrix, ...) {
-
     cat("Dimension level 2 functions implemented in dispRity:\n")
     cat("?ancestral.dist\n")
     cat("?centroids\n")
@@ -281,8 +280,8 @@ displacements <- function(matrix, method = "euclidean", reference = 0) {
 
 ## Calculate the neighbours distances
 neighbours <- function(matrix, which = min, method = "euclidean") {
-    ## Get the distance matrix
-    distances <- as.matrix(vegan::vegdist(matrix, method))
+    ## Check if the matrix is a distance matrix first
+    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
     ## Remove the diagonals
     diag(distances) <- NA
     ## Get the selected distances for each rows
@@ -412,24 +411,18 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
 span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
-    if(ncol(matrix) == nrow(matrix)) {
-        ## Something like that for testing the triangularity
-        if(all(sort(matrix[upper.tri(matrix)]) == sort(matrix[lower.tri(matrix)]))) {
-            span_tree <- vegan::spantree(matrix, toolong = toolong)
-        } else {
-            span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
-        }
-    } else {
-        span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
-    }
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
 
-    ## Output the span tree length
-    return(span_tree$dist)
+    ## Get the span tree length
+    return(distances[which(as.dist(mst(distances)) != 0)])
 }
 
 ## Calculates the pairwise distance between elements
-pairwise.dist <- function(matrix, method = "euclidean", ...) {
-    return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
+pairwise.dist <- function(matrix, method = "euclidean") {
+    ## Check for distance
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## Return distances
+    return(as.vector(distances))
 }
 
 ## Calculate the radius for each dimensions
@@ -457,33 +450,33 @@ n.ball.volume <- function(matrix, sphere = TRUE) {
     return(pi^(n/2)/gamma((n/2)+1)*radius)
 }
 
-# ## Minimal spanning tree distances evenness
-# func.eve <- function(matrix, method = "euclidean") {
-#     ## Distance matrix
-#     distances <- vegan::vegdist(matrix, method = method)
-#     ## weighted evenness (EW) for equal weighted species
-#     branch_lengths <- (distances/2)[which(as.dist(ape::mst(distances)) != 0)]
-#     ## partial weighted evenness (PEW)
-#     rel_br_lentghs <- branch_lengths/sum(branch_lengths)
-#     ## Regular abundance value (1/(S-1))
-#     regular <- 1/(nrow(matrix) - 1)
-#     ## Get the minimal distances
-#     min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
-#     ## Return the Functional eveness
-#     return((sum(min_distances) - regular) / (1 - regular))
-# }
+## Minimal spanning tree distances evenness
+func.eve <- function(matrix, method = "euclidean") {
+    ## Distance matrix
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## weighted evenness (EW) for equal weighted species
+    branch_lengths <- (distances/2)[which(as.dist(mst(distances)) != 0)]
+    ## partial weighted evenness (PEW)
+    rel_br_lentghs <- branch_lengths/sum(branch_lengths)
+    ## Regular abundance value (1/(S-1))
+    regular <- 1/(nrow(matrix) - 1)
+    ## Get the minimal distances
+    min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
+    ## Return the Functional eveness
+    return((sum(min_distances) - regular) / (1 - regular))
+}
 
-# ## Distance from centroid deviation ratio
-# func.div <- function(matrix) {
-#     ## The distance from centroid (dGi)
-#     dist_centroid <- centroids(matrix)
-#     ## The mean distance from centroid (dG)
-#     mean_dis_cent <- mean(dist_centroid)
-#     ## The number of observations
-#     obs <- length(dist_centroid)
-#     ## The FDiv metric
-#     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
-# }
+## Distance from centroid deviation ratio
+func.div <- function(matrix) {
+    ## The distance from centroid (dGi)
+    dist_centroid <- centroids(matrix)
+    ## The mean distance from centroid (dG)
+    mean_dis_cent <- mean(dist_centroid)
+    ## The number of observations
+    obs <- length(dist_centroid)
+    ## The FDiv metric
+    return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
+}
 
 
 #' @title Nodes coordinates
