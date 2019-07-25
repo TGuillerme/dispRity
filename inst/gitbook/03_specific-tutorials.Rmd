@@ -381,6 +381,8 @@ Level | Name | Description | Source |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
+1 | `func.div` | The functional divergence | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
+1 | `func.eve` | The functional evenness | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
 1 | `mode.val` | The modal value | `dispRity` |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
