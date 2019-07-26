@@ -381,8 +381,8 @@ Level | Name | Description | Source |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
-1 | `func.div` | The functional divergence | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
-1 | `func.eve` | The functional evenness | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
+1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
+1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
 1 | `mode.val` | The modal value | `dispRity` |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
@@ -642,6 +642,25 @@ summary(dispRity(dummy_space, metric = c(sum, span.tree.length)))
 ```
 
 Note that because the solution is heuristic, this metric can take a long time to compute for big matrices.
+
+
+#### Functional divergence and evenness
+
+The `func.div` and `func.eve` functions are based on the `FD::dpFD` package.
+They are the equivalent to `FD::dpFD(matrix)$FDiv` and `FD::dpFD(matrix)$FEve` but a bit faster (since they don't deal with abundance data).
+They are pretty straightforward to use:
+
+```{r}
+## The ratio of deviation from the centroid 
+summary(dispRity(dummy_space, metric = func.div))
+
+## The minimal spanning tree distances evenness
+summary(dispRity(dummy_space, metric = func.eve))
+
+## The minimal spanning tree manhanttan distances evenness
+summary(dispRity(dummy_space, metric = func.eve, method = "manhattan"))
+```
+
 
 ## Summarising dispRity data (plots)
 

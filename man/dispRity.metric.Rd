@@ -23,7 +23,7 @@
 \alias{quantiles}
 \alias{func.eve}
 \alias{func.div}
-\alias{get.ancestor}
+\alias{get.ancestors}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
