@@ -433,9 +433,8 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
 span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
     distances <- check.dist.matrix(matrix, method = method)[[1]]
-
     ## Get the span tree length
-    return(distances[which(as.dist(mst(distances)) != 0)])
+    return(vegan::spantree(distances, toolong)$dist)
 }
 
 ## Calculates the pairwise distance between elements

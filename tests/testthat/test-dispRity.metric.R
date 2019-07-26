@@ -399,7 +399,7 @@ test_that("span.tree.length", {
     matrix <- matrix(rnorm(50), 10, 5)
 
     test <- round(span.tree.length(matrix), digit = 1)
-    expect_equal(test, c(1.6, 1.5, 1.5, 1.3, 1.6, 1.4, 3.1, 1.7, 1.7))
+    expect_equal(test, c(1.6, 1.4, 3.1, 1.5, 1.5, 1.3, 1.7, 1.7, 1.6))
 
     test2 <- round(sum(span.tree.length(matrix)), digit = 5)
     expect_equal(test2, 15.40008)
