@@ -20,15 +20,6 @@ r_binary_packages:
 r:
 - release
 
-# Fix magick bug
-addons:
- apt:
-   update: true
-   sources:
-     - sourceline: 'ppa:opencpu/imagemagick'
-   packages:
-     - libmagick++-dev
-
 branches:
   only:
     - master
