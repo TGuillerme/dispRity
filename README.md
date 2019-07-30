@@ -35,7 +35,6 @@ Check out the [presentation](https://figshare.com/articles/New_approaches_to_dis
 https://programme.europa-organisation.com/slides/programme_jointCongressEvolBiology-2018/webconf/683_19082018_1140_antigone1_Thomas_Guillerme_480/index.html
  -->
 
-
 ## Installing dispRity
 ```r
 if(!require(devtools)) install.packages("devtools")
@@ -60,7 +59,6 @@ A detailed vignette is available [online](https://tguillerme.github.io/dispRity.
 Otherwise, each functions has a detailed associated manual with examples in `R` (`?which.function`).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
-
 
 ## Latest patch notes
 * 2019/03/06 -  v1.2.3
@@ -109,6 +107,7 @@ To cite the [time slicing method](https://onlinelibrary.wiley.com/doi/abs/10.111
 Acknowledgments
 -------
 Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
+
 
 Used in
 -------
