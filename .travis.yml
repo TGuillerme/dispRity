@@ -3,13 +3,13 @@ language: r
 cache: packages
 warnings_are_errors: false
 
- addons:
-   apt:
-     update: true
-     sources:
-       - sourceline: 'ppa:opencpu/imagemagick'
-     packages:
-       - libmagick++-dev
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/imagemagick'
+    packages:
+      - libmagick++-dev
 
 branches:
   only:
