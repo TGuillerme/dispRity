@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div get.ancestors
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -31,14 +31,17 @@
 #'
 #'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
 #'      \itemize{
-#'          \item WARNING: this function calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+#'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
 #'      }
-#'
+#' 
+#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{\link[FD]{dbFD}$FDiv}).
+#' 
+#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{\link[FD]{dbFD}$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+#' 
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
 #'
-#'   \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 #'
 #' }
 #' 
@@ -63,13 +66,19 @@
 #'   \item \code{ranges}: calculates the range of each axis of the matrix. An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
 #'   \item \code{variances}: calculates the variance of each axis of the matrix. This function can also take the \code{k.root} optional argument described above.
+#' 
+#'   \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 #'
 #' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
 #'     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}
 #' 
-#' @seealso \code{\link{dispRity}}
+#'
+#' @references Donohue I, Petchey OL, Montoya JM, Jackson AL, McNally L, Viana M, Healy K, Lurgi M, O'Connor NE, Emmerson MC. On the dimensionality of ecological stability. Ecology letters. 2013 Apr;16(4):421-9.
+#' @references Vill'{e}ger S, Mason NW, Mouillot D. New multidimensional functional diversity indices for a multifaceted framework in functional ecology. Ecology. 2008 Aug;89(8):2290-301.
+#' 
+#' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @examples
 #' ## A random matrix
@@ -126,6 +135,16 @@
 #' ordination <- prcomp(dummy_matrix)
 #' ## Calculating the ellipsoid volume
 #' ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
+#' 
+#' ## func.div
+#' ## Functional divergence
+#' func.div(dummy_matrix)
+#'
+#' ## func.eve
+#' ## Functional evenness
+#' func.eve(dummy_matrix) 
+#' ## Functional evenness (based on manhattan distances)
+#' func.eve(dummy_matrix, method = "manhattan")
 #'
 #' ## neighbours
 #' ## The nearest neighbour euclidean distances
@@ -177,9 +196,6 @@
 #' ## variances of a each column in the matrix corrected using the kth root
 #' variances(dummy_matrix, k.root = TRUE)
 #' 
-
-#' 
-#' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
 #' @author Thomas Guillerme
 
@@ -190,24 +206,27 @@ dimension.level3.fun <- function(matrix, ...) {
 }
 
 dimension.level2.fun <- function(matrix, ...) {
-
     cat("Dimension level 2 functions implemented in dispRity:\n")
-    cat("?ranges\n")
-    cat("?variances\n")
-    cat("?centroids\n")
     cat("?ancestral.dist\n")
+    cat("?centroids\n")
+    cat("?displacements\n")
+    cat("?neighbours\n")
     cat("?pairwise.dist\n")
+    cat("?ranges\n")
     cat("?radius\n")
+    cat("?variances\n")
+    cat("?span.tree.length\n")
 }
 
 dimension.level1.fun <- function(matrix, ...) {
     cat("Dimension level 1 functions implemented in dispRity:\n")
-    cat("?ellipse.volume\n")
     cat("?convhull.surface\n")
     cat("?convhull.volume\n")
     cat("?diagonal\n")
+    cat("?ellipse.volume\n")
+    cat("?func.div\n")
+    cat("?func.eve\n")
     cat("?mode.val\n")
-    cat("?span.tree.length\n")
     cat("?n.ball.volume\n")
 }
 
@@ -282,8 +301,8 @@ displacements <- function(matrix, method = "euclidean", reference = 0) {
 
 ## Calculate the neighbours distances
 neighbours <- function(matrix, which = min, method = "euclidean") {
-    ## Get the distance matrix
-    distances <- as.matrix(vegan::vegdist(matrix, method))
+    ## Check if the matrix is a distance matrix first
+    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
     ## Remove the diagonals
     diag(distances) <- NA
     ## Get the selected distances for each rows
@@ -304,7 +323,7 @@ ellipse.volume <- function(matrix, eigen.value) {
 
     ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
     if(missing(eigen.value)) {
-        eigen.value <- abs(apply(var(matrix),2, sum)) # * (nrow(matrix) - 1)
+        eigen.value <- abs(apply(var(matrix), 2, sum)) # * (nrow(matrix) - 1)
     } else {
         eigen.value <- eigen.value[1:ncol_matrix]
     }
@@ -413,24 +432,17 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
 span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
-    if(ncol(matrix) == nrow(matrix)) {
-        ## Something like that for testing the triangularity
-        if(all(sort(matrix[upper.tri(matrix)]) == sort(matrix[lower.tri(matrix)]))) {
-            span_tree <- vegan::spantree(matrix, toolong = toolong)
-        } else {
-            span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
-        }
-    } else {
-        span_tree <- vegan::spantree(vegan::vegdist(matrix, method = method), toolong = toolong)
-    }
-
-    ## Output the span tree length
-    return(sum(span_tree$dist))
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## Get the span tree length
+    return(vegan::spantree(distances, toolong)$dist)
 }
 
 ## Calculates the pairwise distance between elements
-pairwise.dist <- function(matrix, method = "euclidean", ...) {
-    return(as.vector(vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)))
+pairwise.dist <- function(matrix, method = "euclidean") {
+    ## Check for distance
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## Return distances
+    return(as.vector(distances))
 }
 
 ## Calculate the radius for each dimensions
@@ -458,6 +470,33 @@ n.ball.volume <- function(matrix, sphere = TRUE) {
     return(pi^(n/2)/gamma((n/2)+1)*radius)
 }
 
+## Minimal spanning tree distances evenness
+func.eve <- function(matrix, method = "euclidean") {
+    ## Distance matrix
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## weighted evenness (EW) for equal weighted species
+    branch_lengths <- (distances/2)[which(as.dist(mst(distances)) != 0)]
+    ## partial weighted evenness (PEW)
+    rel_br_lentghs <- branch_lengths/sum(branch_lengths)
+    ## Regular abundance value (1/(S-1))
+    regular <- 1/(nrow(matrix) - 1)
+    ## Get the minimal distances
+    min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
+    ## Return the Functional eveness
+    return((sum(min_distances) - regular) / (1 - regular))
+}
+
+## Distance from centroid deviation ratio
+func.div <- function(matrix) {
+    ## The distance from centroid (dGi)
+    dist_centroid <- centroids(matrix)
+    ## The mean distance from centroid (dG)
+    mean_dis_cent <- mean(dist_centroid)
+    ## The number of observations
+    obs <- length(dist_centroid)
+    ## The FDiv metric
+    return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
+}
 
 
 #' @title Nodes coordinates

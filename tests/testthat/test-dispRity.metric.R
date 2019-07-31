@@ -4,10 +4,8 @@ context("dispRity.metric")
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ranges\n?variances\n?centroids\n?ancestral.dist\n?pairwise.dist\n?radius")
-    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?ellipse.volume\n?convhull.surface\n?convhull.volume\n?diagonal\n?mode.val\n?span.tree.length\n?n.ball.volume")
-
-
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?centroids\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?mode.val\n?n.ball.volume")
 })
 
 
@@ -400,13 +398,14 @@ test_that("span.tree.length", {
     set.seed(1)
     matrix <- matrix(rnorm(50), 10, 5)
 
-    test <- round(span.tree.length(matrix), digit = 5)
+    test <- round(span.tree.length(matrix), digit = 1)
+    expect_equal(test, c(1.6, 1.4, 3.1, 1.5, 1.5, 1.3, 1.7, 1.7, 1.6))
 
-    expect_equal(test, 15.40008)
+    test2 <- round(sum(span.tree.length(matrix)), digit = 5)
+    expect_equal(test2, 15.40008)
 
     dist <- as.matrix(dist(matrix))
-
-    expect_equal(test, round(span.tree.length(dist), digit = 5))
+    expect_equal(test, round(span.tree.length(dist), digit = 1))
 
     ## Working for a non-distance matrix
     set.seed(1)
@@ -503,3 +502,56 @@ test_that("neighbours", {
         round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
         )
 })
+
+test_that("neighbours", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    
+    ## Default behaviour
+    expect_equal(
+        round(neighbours(matrix), digits = 5),
+        round(c(2.63603, 2.31036, 2.58740, 4.00868, 2.31036), digits = 5)
+        )
+    expect_equal(
+        round(neighbours(matrix, method = "manhattan"), digits = 5),
+        round(c(6.14827, 6.14827, 7.44352, 9.98804, 6.40357), digits = 5)
+        )
+    expect_equal(
+        round(neighbours(matrix, which = max), digits = 5),
+        round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
+        )
+})
+
+test_that("func.eve", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    
+    ## Default behaviour
+    expect_equal(
+        test1 <- round(func.eve(matrix), digits = 5),
+        round(c(0.87027), digits = 5)
+        )
+
+    expect_equal(
+        round(func.eve(matrix, method = "manhattan"), digits = 5),
+        round(c(0.88917), digits = 5)
+        )
+
+    distance <- as.matrix(dist(matrix))
+    expect_equal(
+        round(func.eve(distance), digits = 5),
+        test1
+    ) 
+})
+
+test_that("func.div", {
+    set.seed(1)
+    matrix <- matrix(rnorm(50), 5, 10)
+    
+    ## Default behaviour
+    expect_equal(
+        test1 <- round(func.div(matrix), digits = 5),
+        round(c(0.79003), digits = 5)
+        )
+})
+
