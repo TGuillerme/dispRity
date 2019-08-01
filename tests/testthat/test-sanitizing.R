@@ -160,3 +160,10 @@ test_that("check.class works", {
     test <- check.list(list, function(x) (x == "a"), condition = any)
     expect_equal(test, c("a" = TRUE, "1" = FALSE, "tree" = FALSE))    
 })
+
+## Test round
+test_that("test_equal_round works", {
+    x <- 1.111111
+    y <- 1.11
+    expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
+})
