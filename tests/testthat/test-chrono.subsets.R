@@ -567,4 +567,14 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 5, 2, 11, 2))
     expect_equal(unique(c(test$subsets[[2]]$elements)), c(18, 25, 23, 9, 26, NA))
+
+    ## Works with discrete
+    test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
+    expect_is(test, "dispRity")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 4, 2, 19, 2))
+
+    ## Works with probabilities
+    test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+    expect_is(test, "dispRity")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 5, 6, 11, 6))
 })
