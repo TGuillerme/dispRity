@@ -152,8 +152,8 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
 
     #Stop if parent node is the same as tip
     if(parent_node == tip) {
-        stop('Parent node is a tip!')
-        # return(NULL)
+        # stop('Parent node is a tip!')
+        return(NULL)
     }
     #Extracting the subtrees connected to the parent node
     offsprings <- tree$edge[which(tree$edge[,1] == (which(parent_node == tree$node.label)+Ntip_tree)), 2]
@@ -163,29 +163,26 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
         if(offsprings[node] > Ntip_tree) {
             subtree <- extract.clade(tree, offsprings[node])
             if(tip %in% subtree$tip.label) {
-            # if(length(grep(tip, subtree$tip.label)) == 1) {
-                offspring.edge <- offsprings[node]
+                offspring_edge <- offsprings[node]
             }
         } else {
             subtree <- tree$tip.label[offsprings[node]]
             if(tip %in% subtree) {
-            # if(length(grep(tip, subtree)) == 1) {
-                offspring.edge <- offsprings[node]
+                offspring_edge <- offsprings[node]
             }
         }
     }
 
     #Return null if fails
-    # if(is.na(offspring.edge)) {
-    #     return(NULL)
-    # }
-
+    if(!exists("offspring_edge")) {
+        return(NULL)
+    }
 
     #Returning the name of the offspring node
-    if(offspring.edge > Ntip_tree) {
-        offspring_node <- tree$node.label[offspring.edge-Ntip_tree]
+    if(offspring_edge > Ntip_tree) {
+        offspring_node <- tree$node.label[offspring_edge-Ntip_tree]
     } else {
-        offspring_node <- tree$tip.label[offspring.edge]
+        offspring_node <- tree$tip.label[offspring_edge]
     }
     return(offspring_node)
 }
@@ -207,8 +204,11 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     }
 
     #Test if there is another node between the MRCA (parent_node) and tip
-    try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-    while(exists("offspring_node")) {
+    #try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+    offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
+    
+    #while(exists("offspring_node")) {
+    while(!is.null(offspring_node)) {
 
         if(offspring_node == tip) {
             ## The offspring is just the tip
@@ -236,10 +236,13 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         
         if(off_nod_age > age) {
             parent_node <- offspring_node
-            remove(offspring_node)
-            try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+            # remove(offspring_node)
+            # try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+            # offspring_node <- NULL
+            offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
         } else {
-            remove(offspring_node)
+            #remove(offspring_node)
+            offspring_node <- NULL
         }
     }
     return(parent_node)

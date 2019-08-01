@@ -73,15 +73,18 @@ test_that("slice.tree_offspring.node picks up the offspring tip.node", {
     expect_error(
         slice.tree_offspring.node(tree, '1')
         )
-    expect_error(
+    ## Nulls
+    expect_null(
         slice.tree_offspring.node(tree, 'E', 'E')
         )
-    expect_error(
+    expect_null(
         slice.tree_offspring.node(tree, '5', 'E')
         )
-    expect_error(
+    expect_null(
         slice.tree_offspring.node(tree, '1', '2')
         )
+
+
     #class
     expect_is(
         slice.tree_offspring.node(tree, '1', 'A'), 'character'
