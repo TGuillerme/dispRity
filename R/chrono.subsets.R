@@ -274,7 +274,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             t0 <- max(FADLAD$FAD)
         } else {
             ## Set tmax
-            tmax <- unlist(lapply(tree.age_tree, function(x) min(x$ages)))
+            tmax <- min(unlist(lapply(tree.age_tree, function(x) min(x$ages))))
             ## Set up t0
             if(class(t0) == "logical") {
                 if(t0 == FALSE) {
@@ -282,10 +282,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
                     percents <- lapply(tree, get.percent.age)
 
                     ## Set t0 to root time +/- some age
-                    t0 <- mapply(function(x, y) x$root.time - y * x$root.time, tree, percents)
+                    t0 <- tree[[1]]$root.time - max(unlist(lapply(tree, get.percent.age))) * tree[[1]]$root.time
                 } else {
                     ## Set t0 to root time
-                    t0 <- unlist(lapply(tree, function(x) x$root.time))
+                    t0 <- tree[[1]]$root.time
                 }
             } else {
                 combine_ages <- unlist(lapply(tree.age_tree, function(x) x$ages))
@@ -296,11 +296,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Set up time
-        if(method == "discrete") time <- mapply(function(x,y)seq(from = x, to = y, length.out = time + 1), tmax, t0, SIMPLIFY = FALSE)
-        if(method == "continuous") time <- mapply(function(x,y)seq(from = x, to = y, length.out = time), tmax, t0, SIMPLIFY = FALSE)
-    } else {
-        ## Make time as a list
-        time <- list(time)
+        time <- seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0))
     }
 
     ## time vector must go from past to present
@@ -311,7 +307,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             return(time)
         }
     }
-    time <- lapply(time, reverse.time)
+    time <- reverse.time(time)
 
     ## TREE (3)
     ## If inc.nodes is not TRUE
@@ -390,33 +386,24 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## Toggle the multiPhylo option
     if(!is_multiPhylo) {
-        time_subsets <- chrono.subsets.fun(data, tree[[1]], time[[1]], model, FADLAD[[1]], inc.nodes, verbose)
+        time_subsets <- chrono.subsets.fun(data, tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose)
         # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
     } else {
 
         ## Combining arguments into lists
-        combine.args <- function(tree, time, FADLAD, ...) {
+        combine.args <- function(tree, FADLAD, ...) {
             fixed_args <- list(...)
-            return(c(list(tree = tree, time = time, FADLAD = FADLAD), fixed_args))
+            return(c(list(tree = tree, FADLAD = FADLAD), fixed_args))
         }
 
         ## Bundle the arguments into a list
-        args_list <- mapply(combine.args, tree, time, FADLAD, MoreArgs = list(data = data, model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
+        args_list <- mapply(combine.args, tree, FADLAD, MoreArgs = list(data = data, time = time,  model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
 
         ## Run all time subsets
         time_subsets <- lapply(args_list, function(arg, fun) do.call(fun, arg), fun = chrono.subsets.fun)
 
-        args_list[[2]]
-
-        do.call(chrono.subsets.fun, args_list[[2]])
-
-
-
-        ## Make into a matrix
-        time_subsets <- do.call(cbind, time_subsets)
-        if(!is.null(names(tree))) {
-            colnames(time_subsets) <- names(tree)
-        }
+        ## Combine all the data recursively
+        time_subsets <- recursive.combine.list(time_subsets)
     }
 
     ## Adding the original subsets

@@ -408,11 +408,11 @@ test_that("chrono.subsets works without tree", {
 
     ## Right object
     expect_is(no_tree, "dispRity")
-    ## Right subsets
+    ## Right subsets
     expect_equal(
         names(no_tree$subsets)
         ,names(with_tree$subsets))
-    ## Right subsets values
+    ## Right subsets values
     for(sub in 1:3) {
         expect_true(
             all(sort(unlist(no_tree$subsets[[sub]])) == sort(unlist(with_tree$subsets[[sub]])))
@@ -484,6 +484,41 @@ test_that("chrono.subsets detects distance matrices", {
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
+
+
+test_that("cbind.fill and recursive.combine list works", {
+        x  <- matrix(1, nrow = 2, ncol = 1)
+        x2 <- matrix(1, nrow = 2, ncol = 2)
+        y  <- matrix(2, nrow = 4, ncol = 1)
+        expect_equal(dim(cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
+        expect_equal(dim(cbind.fill(x, y)[[1]]) , c(4,2))
+        expect_equal(dim(cbind.fill(x2, y)[[1]]), c(4,3))
+        expect_equal(cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
+        expect_equal(cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
+
+        ## Dummy test lists
+        test1 <- list("A" = list("elements" = matrix(1, nrow = 1, ncol = 1)),
+                      "B" = list("elements" = matrix(2, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(3, nrow = 3, ncol = 1)))
+
+        test2 <- list("A" = list("elements" = matrix(4, nrow = 1, ncol = 1)),
+                      "B" = list("elements" = matrix(5, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(6, nrow = 3, ncol = 1)))
+
+        test3 <- list("A" = list("elements" = matrix(7, nrow = 2, ncol = 1)),
+                      "B" = list("elements" = matrix(8, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(9, nrow = 4, ncol = 1)))
+
+
+        ## Combine them
+        testA <- recursive.combine.list(list(test1, test2))
+        testB <- recursive.combine.list(list(test1, test2, test3))
+        testC <- recursive.combine.list(list(testA, test1, test2, test3))
+        expect_equal(unlist(lapply(testA, lapply, dim), use.names = FALSE), c(1,2, 2,2, 3,2))
+        expect_equal(unlist(lapply(testB, lapply, dim), use.names = FALSE), c(2,3, 2,3, 4,3))
+        expect_equal(unlist(lapply(testC, lapply, dim), use.names = FALSE), c(2,5, 2,5, 4,5))
+})
+
 test_that("chrono.subsets works with multiPhylo", {
     #Simulate some fossil ranges with simFossilRecord
     set.seed(444)
@@ -497,9 +532,9 @@ test_that("chrono.subsets works with multiPhylo", {
     divRate <- srRes[[1]][1]
     tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
     tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
-    ## Scale the trees to have the same most recent root age
+    ## Scale the trees to have the same most recent root age
     tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
-    ## Make the dummy data
+    ## Make the dummy data
     set.seed(1)
     data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
 
@@ -523,14 +558,13 @@ test_that("chrono.subsets works with multiPhylo", {
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime))
     expect_equal(error$message, "Some tree(s) in tree_wrong_roottime don't have a $root.time element.")
 
-
-
-
-
     ## Works with a multiPhylo object
-    #test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+    test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
 
-
-
-
+    expect_is(test, "dispRity")
+    expect_equal(names(test), c("matrix", "call", "subsets"))
+    expect_equal(names(test$subsets), c("16.2765357153421", "8.13826785767107", "0"))
+    expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 5, 2, 11, 2))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(18, 25, 23, 9, 26, NA))
 })
