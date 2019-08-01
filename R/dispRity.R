@@ -222,15 +222,15 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ## Select the elements if probabilities are used
     if(has_probabilities && ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
         ## Sample the elements
-
-
-
-        ## TODO: CHANGE elements.sampler to handle multiple trees (output a matrix with > 1 column)
-
-
-
+        # lapply_loop <- lapply(lapply_loop, function(X) return(list("elements" = elements.sampler(X$elements))))
         selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
 
+        ## Transpose the matrices if multiple trees
+        if(ncol(data$subsets[[1]]$elements) > 3) {
+            selected_elements <- lapply(selected_elements, t)
+        }
+
+        ## Reorder them in the right format
         for(subset in 1:length(selected_elements)) {
             lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = ncol(data$subsets[[1]]$elements)/3)
         }

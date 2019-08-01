@@ -518,6 +518,14 @@ test_that("dispRity works with multiple trees from time-slicing", {
     ## Works with multiPhylo object and probabilities
     time_slices_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
 
+    ## Test disparity
+    test <- dispRity(time_slices_proba, metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test <- summary(test)
+    expect_equal(sum_test$n, unlist(lapply(test$subsets, lapply, function(x) length(x)/2), use.names = FALSE))
+    expect_equal_round(sum_test$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+
     ## Works with bootstraps
 
     ## Works with level 2 metrics only

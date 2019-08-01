@@ -1,7 +1,19 @@
 ## Function for selecting the elements for each bootstrap replicate
 elements.sampler  <- function(elements) {
     sample.element <- function(one_element) {
-        return(sample(one_element[1:2], 1, prob = c(one_element[3], 1 - one_element[3])))
+        ## Results place holder
+        results <- numeric()
+        while(length(one_element) != 0) {
+            ## Get a sample
+            results <- if(is.na(one_element[1])) {
+                            c(results, NA)
+                        } else {
+                            c(results, sample(one_element[1:2], 1, prob = c(one_element[3], 1 - one_element[3])))
+                        }
+            ## Deplete the elements
+            one_element <- one_element[-c(1:3)]
+        }
+        return(results)
     }
     return(apply(elements, 1, sample.element))
 }
