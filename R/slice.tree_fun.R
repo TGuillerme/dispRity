@@ -153,6 +153,7 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
     #Stop if parent node is the same as tip
     if(parent_node == tip) {
         stop('Parent node is a tip!')
+        # return(NULL)
     }
     #Extracting the subtrees connected to the parent node
     offsprings <- tree$edge[which(tree$edge[,1] == (which(parent_node == tree$node.label)+Ntip_tree)), 2]
@@ -173,6 +174,13 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
             }
         }
     }
+
+    #Return null if fails
+    # if(is.na(offspring.edge)) {
+    #     return(NULL)
+    # }
+
+
     #Returning the name of the offspring node
     if(offspring.edge > Ntip_tree) {
         offspring_node <- tree$node.label[offspring.edge-Ntip_tree]
@@ -211,7 +219,7 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         age_tree <- tree.age(tree)
         age_slic <- tree.age(tree_slice, fossil = FALSE)
         #select the oldest node in tree_slice
-        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
+        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))][1]
         #calculate the slice age using the oldest node in tree_slice
         age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
         #extract the age of the offspring node
