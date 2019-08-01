@@ -107,7 +107,7 @@ get.first.metric <- function(metrics_list_tmp) {
 apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     ## Calculates disparity from a bootstrap table
     decompose.matrix <- function(one_bootstrap, fun, data, ...) {
-        return(fun( data$matrix[one_bootstrap, 1:data$call$dimensions], ...))
+        return(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...))
     }
 
     ## Decomposing the matrix

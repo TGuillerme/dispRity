@@ -128,6 +128,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
@@ -148,6 +149,9 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
             stop.call(msg.pre = "At least one metric dimension level 1 was already calculated for ", call = match_call$data, msg = ".\nImpossible to apply a metric higher than dimension level 1.")
         }
     }
+
+    ## Check if the subsets contains probabilities or not
+    has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
 
     ## Dimensions
     if(!missing(dimensions)) {
@@ -216,11 +220,19 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
 
     ## Select the elements if probabilities are used
-    if(ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
+    if(has_probabilities && ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
         ## Sample the elements
+
+
+
+        ## TODO: CHANGE elements.sampler to handle multiple trees (output a matrix with > 1 column)
+
+
+
         selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
+
         for(subset in 1:length(selected_elements)) {
-            lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = 1)
+            lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = ncol(data$subsets[[1]]$elements)/3)
         }
     }
     
