@@ -23,12 +23,15 @@
 \value{
 A \code{data.frame} with:
 \item{subsets}{the subset names.}
-\item{n}{the number of elements in each subset.}
+\item{n}{the maximum number of elements in each subset (see details).}
 \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
 \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparities (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity are displayed).}
 }
 \description{
 Creates a summary of a \code{dispRity} object.
+}
+\details{
+If the \code{dispRity} object to summarise comes from a \code{\link{chrono.subset}} using a \code{"multiPhylo"} object, the displayed number of observations (\code{n}) corresponds to the maximum number of observation at the specific time slice (some slices through some trees might have less observations).
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
