@@ -204,10 +204,8 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     }
 
     #Test if there is another node between the MRCA (parent_node) and tip
-    #try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
     offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
     
-    #while(exists("offspring_node")) {
     while(!is.null(offspring_node)) {
 
         if(offspring_node == tip) {
@@ -225,23 +223,16 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         #extract the age of the offspring node
         off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
         
-        precision <- num.decimals(c(off_nod_age, age))
         ## If precision are different and not equal to at least 1
-        #if(length(precision) > 1 && sort(precision)[1] != 1) {
-        ## Round the node ages
+        precision <- num.decimals(c(off_nod_age, age))
         num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
         off_nod_age <- round(off_nod_age, digits = num_digits)
         age <- round(age, digits = num_digits)
-        #}
         
         if(off_nod_age > age) {
             parent_node <- offspring_node
-            # remove(offspring_node)
-            # try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-            # offspring_node <- NULL
             offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
         } else {
-            #remove(offspring_node)
             offspring_node <- NULL
         }
     }
