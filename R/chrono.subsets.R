@@ -100,6 +100,14 @@
 # axisPhylo()
 # abline(v = 40)
 
+# # DEBUG LOAD FROM TEST
+# method = "continuous"
+# time = 3
+# model = "proximity"
+# inc.nodes = FALSE
+# verbose = FALSE
+# t0 = FALSE
+
 
 chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
@@ -133,23 +141,36 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             ## Check if all the trees are the same
             tips <- lapply(tree, function(x) x$tip.label)
             if(!all(unique(unlist(tips)) %in% tips[[1]])) {
-                stop.call(match_call$tree, "The trees in ", " must have the same tip labels.")
+                stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same tip labels.")
             }
             nodes <- lapply(tree, function(x) x$node.label)
             unique_nodes <- unique(unlist(nodes))
-            if(!is.null(unique_nodes) || all(unique_nodes %in% tips[[1]])) {
-                stop.call(match_call$tree, "The trees in ", " must have the same node labels.")
+            if(is.null(unique_nodes) || !all(unique_nodes %in% nodes[[1]])) {
+                stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same node labels.")
             }
         }
 
         ## tree must be dated
-        if(any(no_root_time <- check.list(tree, function(x) is.null(x$root.time)))) {
-            if(!is_multiPhylo) {
-                stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Try using:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
+        if(is_multiPhylo) {
+            ## Check the root times
+            root_time <- check.list(tree, function(x) return(ifelse(is.null(x$root.time), NA, x$root.time)))
+            
+            ## Check for missing root times
+            if(any(is.na(root_time))) {
+                stop.call(match_call$tree, msg.pre = paste0("The following tree(s) in "), paste0(" ", paste0(seq(1:length(root_time))[is.na(root_time)], collapse = ", "), msg = " needs a $root.time element."))
             } else {
-                stop.call(match_call$tree, msg.pre = paste0("The following tree(s) in "), paste0(" ", paste0(seq(1:length(no_root_time))[no_root_time], collapse = ", "), msg = " needs a $root.time element."))
+                ## Check for different root time
+                if(length(unique(root_time)) != 1) {
+                    stop.call(match_call$tree, msg.pre = "Some tree(s) in ", msg = " don't have a $root.time element.")
+                }
+            }
+        } else {
+            ## Check the single root time
+            if(is.null(tree[[1]]$root.time)) {
+                stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Try using:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
             }
         }
+
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
     } else {
@@ -372,18 +393,24 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         time_subsets <- chrono.subsets.fun(data, tree[[1]], time[[1]], model, FADLAD[[1]], inc.nodes, verbose)
         # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
     } else {
-        ## Multiple time subsets
-        multi.subsets <- function(one_list, data, model, inc.nodes, verbose, fun) {
-            return(fun(data, one_list$tree, one_list$time, model, one_list$FADLAD, inc.nodes, verbose))
-        }
-        ## Bundle the arguments into a list
-        combine.list <- function(trees, time, FADLAD) {
-            return(list(trees = trees, time = time, FADLAD = FADLAD))
-        }
-        args_list <- mapply(combine.list, trees, time, FADLAD, SIMPLIFY = FALSE)
 
-        ## Running the multiple subsets
-        time_subsets <- lapply(args_list, multi.subsets, data, model, inc.nodes, verbose, chrono.subsets.fun)
+        ## Combining arguments into lists
+        combine.args <- function(tree, time, FADLAD, ...) {
+            fixed_args <- list(...)
+            return(c(list(tree = tree, time = time, FADLAD = FADLAD), fixed_args))
+        }
+
+        ## Bundle the arguments into a list
+        args_list <- mapply(combine.args, tree, time, FADLAD, MoreArgs = list(data = data, model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
+
+        ## Run all time subsets
+        time_subsets <- lapply(args_list, function(arg, fun) do.call(fun, arg), fun = chrono.subsets.fun)
+
+        args_list[[2]]
+
+        do.call(chrono.subsets.fun, args_list[[2]])
+
+
 
         ## Make into a matrix
         time_subsets <- do.call(cbind, time_subsets)
