@@ -31,7 +31,7 @@ A \code{data.frame} with:
 Creates a summary of a \code{dispRity} object.
 }
 \details{
-If the \code{dispRity} object to summarise comes from a \code{\link{chrono.subset}} using a \code{"multiPhylo"} object, the displayed number of observations (\code{n}) corresponds to the maximum number of observation at the specific time slice (some slices through some trees might have less observations).
+If the \code{dispRity} object to summarise comes from a \code{\link[dispRity]{chrono.subsets}} using a \code{"multiPhylo"} object, the displayed number of observations (\code{n}) corresponds to the maximum number of observation at the specific time slice (some slices through some trees might have less observations).
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
