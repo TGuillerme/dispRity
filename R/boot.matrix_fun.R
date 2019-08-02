@@ -66,9 +66,9 @@ boot.single.proba <- function(elements, rarefaction) {
     return(rarefied_sample)
 }
 
-
 ## Performs bootstrap on one subsets and all rarefaction levels
-replicate.bootstraps.silent <- function(rarefaction, bootstraps, subsets, boot.type.fun) {
+replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun) {
+    verbose_place_holder <- FALSE
     if(nrow(subsets$elements) == 1) {
         if(length(subsets$elements) > 1) {
             return(matrix(replicate(bootstraps, elements.sampler(matrix(subsets$elements[1,], nrow = 1))), nrow = 1))
@@ -79,31 +79,13 @@ replicate.bootstraps.silent <- function(rarefaction, bootstraps, subsets, boot.t
         return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction)))
     }
 }
-
-replicate.bootstraps.verbose <- function(rarefaction, bootstraps, subsets, boot.type.fun) {
-    message(".", appendLF = FALSE)
-    if(nrow(subsets$elements) == 1) {
-        if(length(subsets$elements) > 1) {
-            return(matrix(replicate(bootstraps, elements.sampler(matrix(subsets$elements[1,], nrow = 1))), nrow = 1))
-        } else {
-            return(matrix(rep(subsets$elements[[1]], bootstraps), nrow = 1))
-        }
-    } else {
-        return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction)))
-    }
-}
-
 
 ## Performs bootstrap on multiple subsets and all rarefaction levels
 bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, verbose) {
-
-    ## Verbose?
-    if(verbose == TRUE){
-        replicate.bootstraps <- replicate.bootstraps.verbose
-    } else {
-        replicate.bootstraps <- replicate.bootstraps.silent
+    if(verbose) {
+        ## Making the verbose version of disparity.bootstraps
+        body(replicate.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-
     return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun))
 }
 

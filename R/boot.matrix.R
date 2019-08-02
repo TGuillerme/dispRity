@@ -131,9 +131,23 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     if(length(data$subsets) == 0) {
         data <- fill.dispRity(data)
         probabilistic_subsets <- FALSE
+        has_multiple_trees <- FALSE
     } else {
-        ## Check if the subsets have probabilistic data
-        probabilistic_subsets <- ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)
+        if(ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)) {
+            ## Check if the subsets have multiple trees (all are integers)
+            has_multiple_trees <- ifelse(class(unlist(data$subsets)) == "integer", TRUE, FALSE)
+            probabilistic_subsets <- FALSE
+
+            ## Check if it has multiple trees AND has probabilities
+            if(!has_multiple_trees) {
+                has_multiple_trees <- ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) == 3), FALSE, TRUE)
+                probabilistic_subsets <- TRUE
+            }
+        } else {
+            ## Data has no probabilities nor multiple trees
+            has_multiple_trees <- FALSE
+            probabilistic_subsets <- FALSE
+        }
     }
 
     if(!missing(prob)) {
@@ -256,23 +270,23 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     #     }
     # }
 
-    ## Check whether the subsets (if any)
-
     ## Set up the bootstrap type function
-    if(boot.type == "full") {
-        if(probabilistic_subsets) {
-            boot.type.fun <- boot.full.proba
-        } else {
-            boot.type.fun <- boot.full
-        }
-    }
-    if(boot.type == "single") {
-        if(probabilistic_subsets) {
-            boot.type.fun <- boot.single.proba
-        } else {
-            boot.type.fun <- boot.single
-        }
-    }
+    switch(boot.type,
+        "full" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.full.proba
+            } else {
+                boot.type.fun <- boot.full
+            }
+        },
+        "single" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.single.proba
+            } else {
+                boot.type.fun <- boot.single
+            }
+        })
+
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~

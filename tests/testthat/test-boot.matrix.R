@@ -427,5 +427,34 @@ test_that("boot.matrix detects distance matrices", {
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
+# test_that("boot.matrix works with multiple trees AND probabilities", {
 
+#     set.seed(444)
+#     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
+#     taxa <- paleotree::fossilRecord2fossilTaxa(record)
+#     rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
+#     cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
+#     likFun <- paleotree::make_durationFreqCont(rangesCont)
+#     srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
+#     sRate <- srRes[[1]][2]
+#     divRate <- srRes[[1]][1]
+#     tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
+#     tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
+#     ## Scale the trees to have the same most recent root age
+#     tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+#     ## Make the dummy data
+#     set.seed(1)
+#     data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+
+#     ## Works with a multiPhylo object
+#     time_slices_multree_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+#     ## Works with multiPhylo object and probabilities
+#     time_slices_multree_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+#     ## Works with multiPhylo object and probabilities
+#     time_slices_proba <- chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "gradual.split")
+
+
+
+
+# })
 
