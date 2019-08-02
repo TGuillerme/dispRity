@@ -545,8 +545,8 @@ test_that("dispRity works with multiple trees from time-slicing", {
     test <- dispRity(boot.matrix(time_slices_normal), metric = variances)
     expect_is(test, "dispRity")
     sum_test4 <- summary(test)
-    expect_equal(sum_test4$n, c(3, 5, 11))
-    expect_equal_round(sum_test4$obs.median, sum_test2$obs.median)
+    expect_equal(sum_test4$n, c(2, 5, 11))
+    expect_equal(sum_test4$obs.median, sum_test2$obs.median)
 
 })
 
