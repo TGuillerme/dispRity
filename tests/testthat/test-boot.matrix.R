@@ -471,15 +471,5 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     # boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE, boot.type = "single")
     # boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0), boot.type = "single")
 
-    # boot.matrix(time_slices_proba, bootstraps = 7)
-    # boot.matrix(time_slices_proba, bootstraps = 7, rarefaction = TRUE)
-    # boot.matrix(time_slices_proba, bootstraps = 7, prob = ("t1" = 0))
-    # boot.matrix(time_slices_proba, bootstraps = 7, boot.type = "single")
-    # boot.matrix(time_slices_proba, bootstraps = 7, rarefaction = TRUE, boot.type = "single")
-    # boot.matrix(time_slices_proba, bootstraps = 7, prob = ("t1" = 0), boot.type = "single")
-
-
-
-
 })
 

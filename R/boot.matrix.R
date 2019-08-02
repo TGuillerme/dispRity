@@ -107,7 +107,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         dispRity_object <- make.dispRity(data = data)
         #dispRity_object$subsets$origin$elements <- seq(1:nrow(data))
         data <- dispRity_object
-
     } else {
         ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")

@@ -1,23 +1,19 @@
-## Function for selecting the elements for each bootstrap replicate
-elements.sampler  <- function(elements) {
-    sample.element <- function(one_element) {
-        ## Results place holder
-        results <- numeric()
-        while(length(one_element) != 0) {
-            ## Get a sample
-            results <- if(is.na(one_element[1])) {
-                            c(results, NA)
-                        } else {
-                            c(results, sample(one_element[1:2], 1, prob = c(one_element[3], 1 - one_element[3])))
-                        }
-            ## Deplete the elements
-            one_element <- one_element[-c(1:3)]
-        }
-        return(results)
-    }
-    return(apply(elements, 1, sample.element))
-}
+## Function for selecting the elements for each bootstrap replicate (returns a collapsed matrix)
+element.sampler <- function(elements) {
+    ## Number of columns
+    ncols <- ncol(elements)/3
 
+    ## Sampling function
+    sampler <- function(row, value) {
+        ifelse(all(is.na(row)), NA, sample(row[1:2], 1, prob = c(row[3], 1-row[3]))) 
+    } 
+
+    ## Set of samples to go through
+    set_samples <- unname(split(1:ncol(elements), rep(1:ncols, each = 3)))
+
+    ## Returning the sampled matrix
+    return(do.call(cbind, lapply(set_samples, function(x) apply(elements[,x] , 1, sampler))))
+}
 
 ## Full bootstrap replacement 
 boot.full <- function(elements, rarefaction) {
@@ -31,10 +27,9 @@ boot.full.proba <- function(elements, rarefaction) {
         return(sample(elements[,1], rarefaction, prob = elements[,3], replace = TRUE))
     } else {
         ## Dual sampling
-        return(sample(elements.sampler(elements), rarefaction, replace = TRUE))
+        return(sample(na.omit(elements.sampler(elements)), rarefaction, replace = TRUE))
     }
 }
-
 
 ## Single bootstrap: for each bootstrap, select one row and replace it by a 
 ## randomly chosen remaining row (for n rows, only one row can be present twice).
@@ -58,7 +53,7 @@ boot.single.proba <- function(elements, rarefaction) {
         row_in_out <- sample(1:length(rarefied_sample), 2, prob = elements[,3])
     } else {
         ## Dual sampling (rarefy)
-        rarefied_sample <- sample(elements.sampler(elements), rarefaction, replace = FALSE)
+        rarefied_sample <- sample(na.omit(elements.sampler(elements)), rarefaction, replace = FALSE)
         ## Select the row to remove
         row_in_out <- sample(1:length(rarefied_sample), 2)
     }
@@ -72,11 +67,14 @@ replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun
     verbose_place_holder <- FALSE
     if(nrow(subsets$elements) == 1) {
         if(length(subsets$elements) > 1) {
+            ## Bootstrap with element sampler
             return(matrix(replicate(bootstraps, elements.sampler(matrix(subsets$elements[1,], nrow = 1))), nrow = 1))
         } else {
+            ## Empty subset (or containing a single element)
             return(matrix(rep(subsets$elements[[1]], bootstraps), nrow = 1))
         }
     } else {
+        ## Normal bootstrap (sample through the elements matrix)
         return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction)))
     }
 }
