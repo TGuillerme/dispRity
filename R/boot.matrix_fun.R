@@ -1,5 +1,5 @@
 ## Function for selecting the elements for each bootstrap replicate (returns a collapsed matrix)
-element.sampler <- function(elements) {
+elements.sampler <- function(elements) {
     ## Number of columns
     ncols <- ncol(elements)/3
 
@@ -12,7 +12,7 @@ element.sampler <- function(elements) {
     set_samples <- unname(split(1:ncol(elements), rep(1:ncols, each = 3)))
 
     ## Returning the sampled matrix
-    return(do.call(cbind, lapply(set_samples, function(x) apply(elements[,x] , 1, sampler))))
+    return(do.call(cbind, lapply(set_samples, function(x) apply(elements[,x, drop = FALSE] , 1, sampler))))
 }
 
 ## Full bootstrap replacement 

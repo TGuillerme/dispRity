@@ -446,7 +446,6 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     time_slices_multree_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     ## Works with multiPhylo object and probabilities
     time_slices_proba <- chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "gradual.split")
-
    
     set.seed(1)
     test <- boot.matrix(time_slices_multree_normal, bootstraps = 7)
@@ -464,12 +463,19 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     expect_equal(error[[1]], "time_slices_multree_normal was generated using a gradual time-slicing or using multiple trees (proximity).\nThe prob option is not yet implemented for this case.")
 
 
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7)
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE)
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0))
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7, boot.type = "single")
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE, boot.type = "single")
-    # boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0), boot.type = "single")
+    test <- boot.matrix(time_slices_multree_proba, bootstraps = 7)
+    expect_is(test, "dispRity")
+    expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
+                 c(18, 21, 30, 35, 66, 77))
+    test <- boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE)
+    expect_is(test, "dispRity")
+    expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
+                 c(18, 21, 21, 21, 28, 28, 30, 35, 35, 42, 49, 56, 63, 66, 70, 77))
 
+    warn <- capture_warning(boot.matrix(time_slices_multree_proba, bootstraps = 7, boot.type = "single"))
+    expect_equal(warn[[1]], "Multiple trees where used in time_slices_multree_proba. The 'boot.type' option is set to \"full\".")
+
+    error <- capture_error(boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0)))
+    expect_equal(error[[1]], "time_slices_multree_proba was generated using a gradual time-slicing or using multiple trees (gradual.split).\nThe prob option is not yet implemented for this case.")
 })
 
