@@ -21,7 +21,7 @@ elements.sampler  <- function(elements) {
 
 ## Full bootstrap replacement 
 boot.full <- function(elements, rarefaction) {
-    return(sample(elements, rarefaction, replace = TRUE))
+    return(sample(na.omit(elements), rarefaction, replace = TRUE))
 }
 
 ## Proba version
@@ -45,6 +45,7 @@ boot.single <- function(elements, rarefaction, ...) {
     row_in_out <- sample(1:length(rarefied_sample), 2)
     ## Replace the row
     rarefied_sample[row_in_out[1]] <- rarefied_sample[row_in_out[2]]
+
     return(rarefied_sample)
 }
 

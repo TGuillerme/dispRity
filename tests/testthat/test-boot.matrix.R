@@ -41,16 +41,10 @@ test_that("internal: bootstrap replicates", {
 
     ## One bootstrap replicate
     set.seed(1)
-    test_silent <- replicate.bootstraps.silent(6, 5, subsets, boot.full)
-    set.seed(1)
-    expect_message(test_verbose <- replicate.bootstraps.verbose(6, 5, subsets, boot.full))
-
+    test_silent <- replicate.bootstraps(6, 5, subsets, boot.full)
     ## Both are the same!
     expect_is(test_silent, "matrix")
-    expect_is(test_verbose, "matrix")
     expect_equal(dim(test_silent), c(6,5))
-    expect_equal(dim(test_verbose), c(6,5))
-    expect_true(all(as.vector(test_silent) == as.vector(test_verbose)))
 
     ## Bootstrap replicates wrapper
     test_boot <- bootstrap.wrapper(subsets, bootstraps = 6, rarefaction = c(3,5), boot.type.fun = boot.full, verbose = FALSE)
@@ -427,34 +421,65 @@ test_that("boot.matrix detects distance matrices", {
     expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
-# test_that("boot.matrix works with multiple trees AND probabilities", {
+test_that("boot.matrix works with multiple trees AND probabilities", {
 
-#     set.seed(444)
-#     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
-#     taxa <- paleotree::fossilRecord2fossilTaxa(record)
-#     rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
-#     cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
-#     likFun <- paleotree::make_durationFreqCont(rangesCont)
-#     srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
-#     sRate <- srRes[[1]][2]
-#     divRate <- srRes[[1]][1]
-#     tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
-#     tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
-#     ## Scale the trees to have the same most recent root age
-#     tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
-#     ## Make the dummy data
-#     set.seed(1)
-#     data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+    set.seed(444)
+    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
+    taxa <- paleotree::fossilRecord2fossilTaxa(record)
+    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
+    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
+    likFun <- paleotree::make_durationFreqCont(rangesCont)
+    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
+    sRate <- srRes[[1]][2]
+    divRate <- srRes[[1]][1]
+    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
+    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
+    ## Scale the trees to have the same most recent root age
+    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+    ## Make the dummy data
+    set.seed(1)
+    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
 
-#     ## Works with a multiPhylo object
-#     time_slices_multree_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
-#     ## Works with multiPhylo object and probabilities
-#     time_slices_multree_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
-#     ## Works with multiPhylo object and probabilities
-#     time_slices_proba <- chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "gradual.split")
+    ## Works with a multiPhylo object
+    time_slices_multree_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+    ## Works with multiPhylo object and probabilities
+    time_slices_multree_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+    ## Works with multiPhylo object and probabilities
+    time_slices_proba <- chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "gradual.split")
+
+   
+    set.seed(1)
+    test <- boot.matrix(time_slices_multree_normal, bootstraps = 7)
+    expect_is(test, "dispRity")
+    expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
+                 sort(c(unlist(lapply(time_slices_multree_normal$subsets, lapply, length), use.name = FALSE),
+                        unlist(lapply(time_slices_multree_normal$subsets, lapply, length), use.name = FALSE)*3.5)))
+    test <- boot.matrix(time_slices_multree_normal, bootstraps = 7, rarefaction = TRUE)
+    expect_is(test, "dispRity")
+    expect_equal(unlist(lapply(test$subsets, lapply, length), use.name = FALSE),
+                 c(4, 14, 10, 35, 28, 21, 22, 77, 70, 63, 56, 49, 42, 35, 28, 21))
+    warn <- capture_warning(test2 <- boot.matrix(time_slices_multree_normal, bootstraps = 7, boot.type = "single"))
+    expect_equal(warn[[1]], "Multiple trees where used in time_slices_multree_normal. The 'boot.type' option is set to \"full\".")
+    error <- capture_error(boot.matrix(time_slices_multree_normal, bootstraps = 7, prob = c("t1" = 0, "t12" = 0, "t11" = 0, "t8" = 0, "t7" = 0)))
+    expect_equal(error[[1]], "time_slices_multree_normal was generated using a gradual time-slicing or using multiple trees (proximity).\nThe prob option is not yet implemented for this case.")
+
+
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7)
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE)
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0))
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7, boot.type = "single")
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE, boot.type = "single")
+    # boot.matrix(time_slices_multree_proba, bootstraps = 7, prob = ("t1" = 0), boot.type = "single")
+
+    # boot.matrix(time_slices_proba, bootstraps = 7)
+    # boot.matrix(time_slices_proba, bootstraps = 7, rarefaction = TRUE)
+    # boot.matrix(time_slices_proba, bootstraps = 7, prob = ("t1" = 0))
+    # boot.matrix(time_slices_proba, bootstraps = 7, boot.type = "single")
+    # boot.matrix(time_slices_proba, bootstraps = 7, rarefaction = TRUE, boot.type = "single")
+    # boot.matrix(time_slices_proba, bootstraps = 7, prob = ("t1" = 0), boot.type = "single")
 
 
 
 
-# })
+})
 
