@@ -132,7 +132,9 @@ check.list <- function(list, check.fun, condition, ...) {
     }
 }
 
-## Function for test results with rouding
+## Function for test results with rounding
 expect_equal_round <- function(x, y, digits) {
     testthat::expect_equal(round(x, digits), round(y, digits))
 }
+
+

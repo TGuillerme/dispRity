@@ -64,11 +64,6 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
     return(list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun))
 }
 
-## Combining the disparity results with the elements
-# combine.disparity <- function(one_disparity_subsets, one_bootstrap_subsets) {
-#     return(c(one_bootstrap_subsets[1], one_disparity_subsets))
-# }
-
 ## Getting the first metric
 get.first.metric <- function(metrics_list_tmp) {
     ## Initialise
@@ -87,27 +82,18 @@ get.first.metric <- function(metrics_list_tmp) {
     return(list(metric_out, metrics_list_tmp, metric))
 }
 
-# ## Generates the output vector for the decomposition function
-# generate.empty.output <- function(one_subsets_bootstrap, data, level) {
-#     if(level == 3) {
-#         ## Return an array
-#         return(array(data = numeric(1), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
-#     }
-#     if(level == 2) {
-#         ## Return a matrix
-#         return(matrix(numeric(1), nrow = data$call$dimensions, ncol = ncol(one_subsets_bootstrap)))
-#     }
-#     if(level == 1) {
-#         ## Return a vector
-#         return(numeric(ncol(one_subsets_bootstrap)))
-#     }
-# }
+
+## Prefix version of the `[` function with automatic column selector
+get.row.col <- function(x, row, col = NULL) {
+    `[`(x, row, 1:`if`(is.null(col), ncol(x), col))
+}
 
 ## Apply decompose matrix
 apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     ## Calculates disparity from a bootstrap table
     decompose.matrix <- function(one_bootstrap, fun, data, ...) {
         return(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...))
+        # return(fun( get.row.col(data$matrix, na.omit(one_bootstrap)), ...))
     }
 
     ## Decomposing the matrix

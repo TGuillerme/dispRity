@@ -550,7 +550,11 @@ test_that("dispRity works with multiple trees from time-slicing", {
 
 })
 
-
+test_that("get.row.col works", {
+    test <- matrix(1, 5, 5)
+    expect_equal(dim(get.row.col(test, 1:5)), c(5, 5))
+    expect_equal(dim(get.row.col(test, 3:1, 4)), c(3, 4))
+})
 
 
 
