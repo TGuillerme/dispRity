@@ -47,8 +47,11 @@ Bootstraps and rarefies either a matrix or a list of matrices.
 \code{prob}: This option allows to attribute specific probability to each element to be drawn.
 A probability of 0 will never sample the element, a probability of 1 will sample.
 This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
-If the argument is a \code{matrix}, it must have rownames attrbiutes corresponding to the element names.
+If the argument is a \code{matrix}, it must have rownames attributes corresponding to the element names.
 If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
+
+Multiple trees: If the give \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
+For example, for a slice through two trees resulting in the selection of elements \code{A} and \code{B} in the first tree and \code{A}, \code{B} and \code{C} in the second tree, the \code{"full"} bootstrap algorithm will select three elements (with replacement) between \code{A}, \code{B} and \code{C} with a probability of respectively \eqn{p(A) = 1/3} (\eqn{p(A) = (1/3 + 1/3) / 2}), \eqn{p(B) = 1/3} and \eqn{p(C) = 1/6} (\eqn{p(C) = (0 + 1/3) / 2}).
 }
 \examples{
 ## Load the Beck & Lee 2014 matrix

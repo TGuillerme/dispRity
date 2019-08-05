@@ -26,7 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.4 *space blob* (2019-07-10) 
+dispRity v1.2.4 *space blob* (2019-08-01)
 =========================
 
 ### NEW FEATURE
@@ -37,6 +37,7 @@ dispRity v1.2.4 *space blob* (2019-07-10)
  * *New* metric: `func.eve`, a dimension level 1 metric that measures the functional evenness (i.e. the spread along the minimum spanning tree; from Villéger et al. 2008).
  * *New* metric: `func.div`, a dimension level 1 metric that measures the functional divergence (i.e. the ratio of deviation from the centroid; from Villéger et al. 2008).
  * *Updated* metric: `span.tree.length` now outputs the length of each edges (c.f. the sum of the length) and becomes a level 2 metric.
+ * The `chrono.subsets` can now take `multiPhylo` objects for slicing through multiple trees at once!
  * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
  * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
  * Added a "Other functionalities" section to the manual describing miscellaneous functions.
@@ -51,6 +52,7 @@ dispRity v1.2.4 *space blob* (2019-07-10)
  * Updated all tests and functions to be compatible with R 3.6.
  * Fixed bug in `clean.data` that did not output dropped tips correctly when applied on `multiPhylo` objects.
  * Improved error messages in `chrono.subsets` for funky time slices/bins (e.g. with negative values).
+ * Speed improvements for the `time.slice` function.
  * Better internal handling of distance matrices for the disparity metrics.
 
 dispRity v1.2.3 (2019-03-12)

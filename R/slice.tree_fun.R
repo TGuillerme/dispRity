@@ -1,4 +1,66 @@
 #FUNCTIONS FOR slice.tree
+
+## This function is modified from Dave Bapst paleotree::timeSliceTree (2019/06/19)
+## (returns null when failure)
+slice.tree.sharp <- function(tree, slice)  {
+
+    ## Get slice time
+    slice_time <- tree$root.time - slice
+    ## Get node ages
+    node_age <- node.depth.edgelength(tree)
+    ## Which ancestor nodes/edges cross the slice
+    cross_edge <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
+    ## If no edge is crossed, return null
+    if(length(cross_edge) == 0) {
+        return(NULL)
+    }
+
+    ## Crossing edges function
+    get.crossings <- function(one_edge, bipartitions, tree) {
+        ## Declaring variables
+        n_tips <- Ntip(tree)
+        ## Getting descendent
+        descendent <- tree$edge[one_edge,2]
+        if(descendent > n_tips){
+            ## if an internal edge that goes past the tslice
+            descendent_tip <- bipartitions[[descendent-n_tips]]
+            ## Drop all but one tip
+            return(descendent_tip[-1])
+        } else {
+            return(NA)
+        }
+    }
+    ## Get the bipartitions
+    bipartitions <- prop.part(tree)
+    ## Get the crossings on each edges
+    tips_to_drop <- unlist(sapply(cross_edge, get.crossings, bipartitions, tree, simplify = FALSE))
+    tips_to_drop <- na.omit(tips_to_drop)
+
+    ## Drop tips from tree
+    tree_sliced <- drop.tip(tree, tips_to_drop)
+
+    ## Recalculate the tree depth
+    node_age_sliced <- node.depth.edgelength(tree_sliced)
+    ## Find edges crossing the slice
+    edges_crossing <- (node_age_sliced[tree_sliced$edge[, 2]] >= slice_time)
+    node_sliced_depth <- node_age_sliced[tree_sliced$edge[edges_crossing, 1]]
+    tree_sliced$edge.length[edges_crossing] <- slice_time - node_sliced_depth
+    tree_sliced$root.time <- tree$root.time
+    ## Get the node tips depth
+    n_tips_sliced <- Ntip(tree_sliced)
+    tips_depth <- dist.nodes(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
+    ## Find tips that do not have the slice age
+    #slice_age <- max(tips_depth)
+    tips_at_slice <- (tips_depth == slice_time)
+    if(length(which(tips_at_slice)) < 2) {
+        ## Return NULL if less than two tips are present
+        return(NULL)
+    } else {
+        ## Return the ultrametric tree at the slice
+        return(drop.tip(tree_sliced, tip = which(!tips_at_slice)))
+    }
+}
+
 ## Get the node IDs
 get.node.ID <- function(node, tree) {
     ## Check if it's a node
@@ -90,7 +152,8 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
 
     #Stop if parent node is the same as tip
     if(parent_node == tip) {
-        stop('Parent node is a tip!')
+        # stop('Parent node is a tip!')
+        return(NULL)
     }
     #Extracting the subtrees connected to the parent node
     offsprings <- tree$edge[which(tree$edge[,1] == (which(parent_node == tree$node.label)+Ntip_tree)), 2]
@@ -100,22 +163,26 @@ slice.tree_offspring.node <- function(tree, parent_node, tip) {
         if(offsprings[node] > Ntip_tree) {
             subtree <- extract.clade(tree, offsprings[node])
             if(tip %in% subtree$tip.label) {
-            # if(length(grep(tip, subtree$tip.label)) == 1) {
-                offspring.edge <- offsprings[node]
+                offspring_edge <- offsprings[node]
             }
         } else {
             subtree <- tree$tip.label[offsprings[node]]
             if(tip %in% subtree) {
-            # if(length(grep(tip, subtree)) == 1) {
-                offspring.edge <- offsprings[node]
+                offspring_edge <- offsprings[node]
             }
         }
     }
+
+    #Return null if fails
+    if(!exists("offspring_edge")) {
+        return(NULL)
+    }
+
     #Returning the name of the offspring node
-    if(offspring.edge > Ntip_tree) {
-        offspring_node <- tree$node.label[offspring.edge-Ntip_tree]
+    if(offspring_edge > Ntip_tree) {
+        offspring_node <- tree$node.label[offspring_edge-Ntip_tree]
     } else {
-        offspring_node <- tree$tip.label[offspring.edge]
+        offspring_node <- tree$tip.label[offspring_edge]
     }
     return(offspring_node)
 }
@@ -137,8 +204,9 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
     }
 
     #Test if there is another node between the MRCA (parent_node) and tip
-    try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
-    while(exists("offspring_node")) {
+    offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
+    
+    while(!is.null(offspring_node)) {
 
         if(offspring_node == tip) {
             ## The offspring is just the tip
@@ -149,27 +217,23 @@ slice.tree_DELTRAN <- function(tree, tip, tree_slice) {
         age_tree <- tree.age(tree)
         age_slic <- tree.age(tree_slice, fossil = FALSE)
         #select the oldest node in tree_slice
-        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))]
+        root <- age_slic$elements[which(age_slic$age == max(age_slic$age))][1]
         #calculate the slice age using the oldest node in tree_slice
         age <- age_tree[which(as.character(age_tree$elements) == as.character(root)),1] - age_slic[which(as.character(age_slic$elements) == as.character(root)),1]
         #extract the age of the offspring node
         off_nod_age <- age_tree[which(as.character(age_tree$elements) == as.character(offspring_node)),1]
         
-        precision <- num.decimals(c(off_nod_age, age))
         ## If precision are different and not equal to at least 1
-        #if(length(precision) > 1 && sort(precision)[1] != 1) {
-        ## Round the node ages
+        precision <- num.decimals(c(off_nod_age, age))
         num_digits <- ifelse(precision[1] < precision[2], precision[1], precision[2])
         off_nod_age <- round(off_nod_age, digits = num_digits)
         age <- round(age, digits = num_digits)
-        #}
         
         if(off_nod_age > age) {
             parent_node <- offspring_node
-            remove(offspring_node)
-            try(offspring_node <- slice.tree_offspring.node(tree, parent_node, tip), silent = TRUE)
+            offspring_node <- slice.tree_offspring.node(tree, parent_node, tip)
         } else {
-            remove(offspring_node)
+            offspring_node <- NULL
         }
     }
     return(parent_node)

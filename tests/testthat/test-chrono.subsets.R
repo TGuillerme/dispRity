@@ -8,6 +8,16 @@ tree <- test_data$tree_data
 data <- test_data$ord_data_tips
 FADLAD <- test_data$FADLAD_data
 
+# test_that("get.percent.age works", {
+#     set.seed(42)
+#     tree <- rtree(10)
+#     tree$root.time <- 10
+#     test <- get.percent.age(tree)
+#     expect_is(test, "numeric")
+#     expect_equal(test, 0.11)
+# })
+
+
 test_that("adjust.FADLAD works", {
 
     ## Test FADLAD
@@ -43,7 +53,7 @@ model = NULL
 inc.nodes = FALSE
 verbose = FALSE
 
-time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose)
 
 ## Test
 test_that("chrono.subsets.discrete works properly without nodes", {
@@ -72,7 +82,7 @@ test_that("chrono.subsets.discrete works properly without nodes", {
         rownames(data[time_subsets[[2]]$elements,])
         , subsets_2)
 
-    expect_message(chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = TRUE))
+    expect_message(chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = TRUE))
 
 })
 
@@ -80,7 +90,7 @@ test_that("chrono.subsets.discrete works properly without nodes", {
 inc.nodes = TRUE
 data <- test_data$ord_data_tips_nodes
 
-time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose = FALSE)
+time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = FALSE)
 
 ## Test
 test_that("chrono.subsets.discrete works properly with nodes", {
@@ -108,7 +118,7 @@ time = c(120, 80, 40)
 verbose = FALSE
 
 ## DELTRAN
-time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", FADLAD, inc.nodes = NULL, verbose)
 
 ## Test
 test_that("chrono.subsets.continuous works properly with deltran model", {
@@ -146,7 +156,7 @@ test_that("chrono.subsets.continuous works properly with deltran model", {
 })
 
 ## ACCTRAN
-time_subsets <- chrono.subsets.continuous(data, tree, time, model = "acctran", FADLAD, verbose)
+time_subsets <- chrono.subsets.continuous(data, tree, time, model = "acctran", FADLAD, inc.nodes = NULL, verbose)
 
 ## Test
 test_that("chrono.subsets.continuous works properly with acctran model", {
@@ -398,11 +408,11 @@ test_that("chrono.subsets works without tree", {
 
     ## Right object
     expect_is(no_tree, "dispRity")
-    ## Right subsets
+    ## Right subsets
     expect_equal(
         names(no_tree$subsets)
         ,names(with_tree$subsets))
-    ## Right subsets values
+    ## Right subsets values
     for(sub in 1:3) {
         expect_true(
             all(sort(unlist(no_tree$subsets[[sub]])) == sort(unlist(with_tree$subsets[[sub]])))
@@ -460,9 +470,6 @@ test_that("probability models work", {
     expect_true(all(test2$subsets[[1]][[1]][,3] < 1))
 })
 
-
-
-
 test_that("chrono.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)
     rownames(non_dist) <- letters[1:10]
@@ -475,4 +482,99 @@ test_that("chrono.subsets detects distance matrices", {
     expect_warning(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
     msg <- capture_warnings(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+})
+
+
+
+test_that("cbind.fill and recursive.combine list works", {
+        x  <- matrix(1, nrow = 2, ncol = 1)
+        x2 <- matrix(1, nrow = 2, ncol = 2)
+        y  <- matrix(2, nrow = 4, ncol = 1)
+        expect_equal(dim(cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
+        expect_equal(dim(cbind.fill(x, y)[[1]]) , c(4,2))
+        expect_equal(dim(cbind.fill(x2, y)[[1]]), c(4,3))
+        expect_equal(cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
+        expect_equal(cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
+
+        ## Dummy test lists
+        test1 <- list("A" = list("elements" = matrix(1, nrow = 1, ncol = 1)),
+                      "B" = list("elements" = matrix(2, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(3, nrow = 3, ncol = 1)))
+
+        test2 <- list("A" = list("elements" = matrix(4, nrow = 1, ncol = 1)),
+                      "B" = list("elements" = matrix(5, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(6, nrow = 3, ncol = 1)))
+
+        test3 <- list("A" = list("elements" = matrix(7, nrow = 2, ncol = 1)),
+                      "B" = list("elements" = matrix(8, nrow = 2, ncol = 1)),
+                      "C" = list("elements" = matrix(9, nrow = 4, ncol = 1)))
+
+
+        ## Combine them
+        testA <- recursive.combine.list(list(test1, test2))
+        testB <- recursive.combine.list(list(test1, test2, test3))
+        testC <- recursive.combine.list(list(testA, test1, test2, test3))
+        expect_equal(unlist(lapply(testA, lapply, dim), use.names = FALSE), c(1,2, 2,2, 3,2))
+        expect_equal(unlist(lapply(testB, lapply, dim), use.names = FALSE), c(2,3, 2,3, 4,3))
+        expect_equal(unlist(lapply(testC, lapply, dim), use.names = FALSE), c(2,5, 2,5, 4,5))
+})
+
+test_that("chrono.subsets works with multiPhylo", {
+    #Simulate some fossil ranges with simFossilRecord
+    set.seed(444)
+    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
+    taxa <- paleotree::fossilRecord2fossilTaxa(record)
+    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
+    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
+    likFun <- paleotree::make_durationFreqCont(rangesCont)
+    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
+    sRate <- srRes[[1]][2]
+    divRate <- srRes[[1]][1]
+    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
+    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
+    ## Scale the trees to have the same most recent root age
+    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+    ## Make the dummy data
+    set.seed(1)
+    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+
+    ## Test if it works normally
+    expect_is(chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "proximity"), "dispRity")
+    expect_is(chrono.subsets(data, tree[[2]], method = "continuous", time = 3, model = "proximity"), "dispRity")
+
+    ## Creating a couple of error message testing trees
+    tree_wrong_label <- tree_wrong_roottime <- trees_no_root_time <- trees_wrong_tip <- tree_bkp <- tree
+    tree_wrong_label[[1]]$node.label[1] <- "WRONG"
+    tree_wrong_roottime[[1]]$root.time <- 81
+    trees_no_root_time[[1]]$root.time <- NULL
+    trees_wrong_tip[[2]] <- drop.tip(trees_wrong_tip[[2]], "t1")
+
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_no_root_time))
+    expect_equal(error$message, "The following tree(s) in trees_no_root_time 1 needs a $root.time element.")
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip))
+    expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_label))
+    expect_equal(error$message, "The trees in tree_wrong_label must have the same node labels.")
+    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime))
+    expect_equal(error$message, "Some tree(s) in tree_wrong_roottime don't have a $root.time element.")
+
+    ## Works with a multiPhylo object
+    test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+
+    expect_is(test, "dispRity")
+    expect_equal(names(test), c("matrix", "call", "subsets"))
+    expect_equal(names(test$subsets), c("16.2765357153421", "8.13826785767107", "0"))
+    expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 5, 2, 11, 2))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(18, 25, 23, 9, 26, NA))
+
+    ## Works with discrete
+    test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
+    expect_is(test, "dispRity")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 4, 2, 19, 2))
+
+    ## Works with probabilities
+    test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+    expect_is(test, "dispRity")
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 5, 6, 11, 6))
 })

@@ -119,3 +119,20 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
 stop.call <- function(call, msg, msg.pre = "") {
     stop(paste0(msg.pre, as.expression(call), msg), call. = FALSE)
 }
+
+## Check through a list
+check.list <- function(list, check.fun, condition, ...) {
+    ## Run the checks
+    check_results <- lapply(list, check.fun, ...)
+    ## Apply the condition
+    if(!missing(condition)) {
+        return(unlist(lapply(check_results, condition)))
+    } else {
+        return(unlist(check_results))
+    }
+}
+
+## Function for test results with rouding
+expect_equal_round <- function(x, y, digits) {
+    testthat::expect_equal(round(x, digits), round(y, digits))
+}

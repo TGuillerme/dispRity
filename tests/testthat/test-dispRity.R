@@ -487,6 +487,74 @@ test_that("dispRity works with function recycling", {
 })
 
 
+test_that("dispRity works with multiple trees from time-slicing", {
+    set.seed(444)
+    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
+    taxa <- paleotree::fossilRecord2fossilTaxa(record)
+    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
+    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
+    likFun <- paleotree::make_durationFreqCont(rangesCont)
+    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
+    sRate <- srRes[[1]][2]
+    divRate <- srRes[[1]][1]
+    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
+    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
+    ## Scale the trees to have the same most recent root age
+    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+    ## Make the dummy data
+    set.seed(1)
+    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+
+    ## Works with a multiPhylo object
+    time_slices_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+
+    ## Test disparity
+    test <- dispRity(time_slices_normal, metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test <- summary(test)
+    expect_equal(sum_test$n, unlist(lapply(test$subsets, lapply, function(x) length(x)/2), use.names = FALSE))
+    expect_equal_round(sum_test$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    ## Works with multiPhylo object and probabilities
+    time_slices_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+
+    ## Test disparity
+    set.seed(1)
+    test <- dispRity(time_slices_proba, metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test1 <- summary(test)
+    expect_equal(sum_test1$n, unlist(lapply(test$subsets, lapply, length), use.names = FALSE) / 6)
+    expect_equal_round(sum_test1$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    ## Works with level 2 metrics only
+    set.seed(1)
+    test <- dispRity(time_slices_normal, metric = variances)
+    expect_is(test, "dispRity")
+    sum_test2 <- summary(test)
+    expect_equal(sum_test2$n, unlist(lapply(test$subsets, lapply, length), use.names = FALSE) / 2)
+    expect_equal_round(sum_test2$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    set.seed(1)
+    test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test3 <- summary(test)
+    expect_equal(sum_test3$n, c(3, 5, 11))
+    expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
+
+    set.seed(1)
+    test <- dispRity(boot.matrix(time_slices_normal), metric = variances)
+    expect_is(test, "dispRity")
+    sum_test4 <- summary(test)
+    expect_equal(sum_test4$n, c(2, 5, 11))
+    expect_equal(sum_test4$obs.median, sum_test2$obs.median)
+
+})
+
+
+
+
+
+
 # test_that("dispRity works in parallel", {
 #     library(parallel)
 #     data(BeckLee_mat99)

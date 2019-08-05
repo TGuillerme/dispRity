@@ -1,3 +1,12 @@
+## Set the percentage for reaching the first sample containing three elements
+get.percent.age <- function(tree, percent = 0.01) {
+    ## Increment the percentage until at least three nodes/edges are crossed
+    while(Ntip(slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))) < 3) {
+        percent <- percent + 0.01
+    }
+    return(percent)
+}
+
 
 ## Internal function for adjust.FADLAD
 adjust.age <- function(FADLAD, ages_tree) {
@@ -31,8 +40,11 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 
 ## Discrete time subsets
-chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose) {
     
+    ## Model option is useless
+    model <- NULL
+
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
         if(verbose) message(".", appendLF = FALSE)
@@ -80,7 +92,10 @@ chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose
 }
 
 ## Continuous time subsets
-chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+
+    ## inc.nodes option is useless
+    inc.nodes <- NULL
 
     ## lapply function for getting the slices
     get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
@@ -199,3 +214,47 @@ make.origin.subsets <- function(data) {
     origin_subsets <- list("origin" = origin)
     return(origin_subsets)
 }
+
+## cbind with missing data
+cbind.fill <- function(x, y) {
+    ## Check the number of rows
+    if(dim(x)[1] == dim(y)[1]) {
+        ## Simple cbind
+        return(list("elements" = cbind(x, y)))
+    } else {
+        ## Minimum number of rows
+        min_rows <- min(dim(x)[1], dim(y)[1])
+        ## Minimal cbind
+        output <- cbind(x[1:min_rows, , drop = FALSE], y[1:min_rows, , drop = FALSE])
+        ## Add the missing rows
+        if(dim(x)[1] == min_rows) {
+            ## Add the y last rows 
+            NAs <- cbind(matrix(NA, ncol = dim(x)[2], nrow = dim(y)[1]-min_rows),
+                            y[-c(1:min_rows), , drop = FALSE])
+        } else {
+            ## Add the x last rows
+            NAs <- cbind(x[-c(1:min_rows), , drop = FALSE],
+                        matrix(NA, ncol = dim(y)[2], nrow = dim(x)[1]-min_rows))
+        }
+        ## Combine both
+        return(list("elements" = rbind(output, NAs)))
+    }
+}
+
+## Recursive combinations of the lists
+recursive.combine.list <- function(list) {
+    if(length(list) == 2) {
+        ## Do cbind on the two elements of the list
+        return(mapply(function(x,y) cbind.fill(x$elements, y$elements),
+                      list[[1]], list[[length(list)]], SIMPLIFY = FALSE))
+    } else {                
+        ## Do cbind on the first and last elements of the list
+        list[[1]] <- mapply(function(x,y) cbind.fill(x$elements, y$elements),
+                            list[[1]], list[[length(list)]], SIMPLIFY = FALSE)
+        ## Remove the last element of the list
+        list[[length(list)]] <- NULL
+        ## Repeat!
+        return(recursive.combine.list(list))
+    }
+}
+

@@ -7,7 +7,7 @@
 #'                     FADLAD, verbose = FALSE, t0 = FALSE)
 #'
 #' @param data A \code{matrix} (see details).
-#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
+#' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
@@ -100,6 +100,14 @@
 # axisPhylo()
 # abline(v = 40)
 
+# # DEBUG LOAD FROM TEST
+# method = "continuous"
+# time = 3
+# model = "proximity"
+# inc.nodes = FALSE
+# verbose = FALSE
+# t0 = FALSE
+
 
 chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
@@ -118,20 +126,57 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
 
     ## nrow_data variable declaration
-    nrow_data <- nrow(data)
+    nrow_data <- nrow(data) #TG: $matrix
 
     ## TREE (1)
     ## tree must be a phylo object
     if(!missing(tree)) {
-        check.class(tree, "phylo")
-        ## tree must be dated
-        if(length(tree$root.time) != 1) {
-            stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Use:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
+        tree_class <- check.class(tree, c("phylo", "multiPhylo"))
+        is_multiPhylo <- ifelse(tree_class == "multiPhylo", TRUE, FALSE)
+        ## Make the tree into a single multiPhylo object
+        if(!is_multiPhylo) {
+            tree <- list(tree)
+            class(tree) <- "multiPhylo"
+        } else {
+            ## Check if all the trees are the same
+            tips <- lapply(tree, function(x) x$tip.label)
+            if(!all(unique(unlist(tips)) %in% tips[[1]])) {
+                stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same tip labels.")
+            }
+            nodes <- lapply(tree, function(x) x$node.label)
+            unique_nodes <- unique(unlist(nodes))
+            if(is.null(unique_nodes) || !all(unique_nodes %in% nodes[[1]])) {
+                stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same node labels.")
+            }
         }
-        ## tree.age_tree variable declaration
-        tree.age_tree <- tree.age(tree)
-    }
 
+        ## tree must be dated
+        if(is_multiPhylo) {
+            ## Check the root times
+            root_time <- check.list(tree, function(x) return(ifelse(is.null(x$root.time), NA, x$root.time)))
+            
+            ## Check for missing root times
+            if(any(is.na(root_time))) {
+                stop.call(match_call$tree, msg.pre = paste0("The following tree(s) in "), paste0(" ", paste0(seq(1:length(root_time))[is.na(root_time)], collapse = ", "), msg = " needs a $root.time element."))
+            } else {
+                ## Check for different root time
+                if(length(unique(root_time)) != 1) {
+                    stop.call(match_call$tree, msg.pre = "Some tree(s) in ", msg = " don't have a $root.time element.")
+                }
+            }
+        } else {
+            ## Check the single root time
+            if(is.null(tree[[1]]$root.time)) {
+                stop.call(match_call$tree, paste0(" must be a dated tree with a $root.time element. Try using:\n    ", as.expression(match_call$tree), "$root.time <- the_age_of_the_root"))
+            }
+        }
+
+        ## tree.age_tree variable declaration
+        tree.age_tree <- lapply(tree, tree.age)
+    } else {
+        ## Default tree list
+        is_multiPhylo <- FALSE
+    }
 
     ## METHOD
     all_methods <- c("discrete", "d", "continuous", "c")
@@ -167,14 +212,46 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         tree <- stree(nrow_data, tip.label = names_data)
         tree$root.time <- max(FADLAD)
         tree$edge.length <- FADLAD$FAD
+        tree <- list(tree)
+        class(tree) <- "multiPhylo"
     } else {
         tree_was_missing <- FALSE
     }
 
-    ## Ntip_tree variable declaration
+    ## Ntip_tree variable declaration and check
     Ntip_tree <- Ntip(tree)
+    if(any(wrong_ntip <- !(Ntip_tree %in% Ntip_tree[[1]]))) {
+        stop.call(match_call$tree, paste0(": wrong number of tips in the following tree(s): ", paste0(c(1:length(wrong_ntip))[wrong_ntip], collapse = ", "), "."))
+    } else {
+        Ntip_tree <- Ntip_tree[1]
+    }
 
-    ##t0
+    ## MODEL
+    ## if method is discrete ignore model
+    if(method == "discrete") {
+        model <- NULL
+    } else {
+        ## else model must be one of the following
+        model <- tolower(model)
+        all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
+        check.class(model, "character")
+        check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
+        check.method(model, all_models, "model argument")
+    }
+
+    ## INC.NODES
+    if(method != "continuous") {
+        ## else inc.nodes must be logical
+        check.class(inc.nodes, "logical")
+        if(tree_was_missing && inc.nodes) {
+            stop.call("", "If no phylogeny is provided, inc.nodes must be FALSE.")
+        }
+    } else {
+        ## Include nodes is mandatory
+        inc.nodes <- TRUE
+    }
+
+    ## t0
     if(class(t0) != "logical") {
         silent <- check.class(t0, c("numeric", "integer"), msg = " must be logical or a single numeric value.")
         check.length(t0, 1, errorif = FALSE, msg = " must be logical or a single numeric value.")
@@ -197,95 +274,73 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             t0 <- max(FADLAD$FAD)
         } else {
             ## Set tmax
-            tmax <- min(tree.age_tree[,1])
-        
+            tmax <- min(unlist(lapply(tree.age_tree, function(x) min(x$ages))))
             ## Set up t0
             if(class(t0) == "logical") {
-                if(t0 == FALSE ) {
-                    ## Set the percentage for reaching the first sample containing three elements
-                    percent <- 0.01
-                    while(Ntip(paleotree::timeSliceTree(tree, tree$root.time - percent * tree$root.time, drop.extinct = TRUE, plot = FALSE)) < 3) {
-                        ## Increase percentage until slice has three elements
-                        percent <- percent + 0.01
-                    }
+                if(t0 == FALSE) {
+                    ## Get the percentages
+                    percents <- lapply(tree, get.percent.age)
+
                     ## Set t0 to root time +/- some age
-                    t0 <- tree$root.time - percent * tree$root.time
+                    t0 <- tree[[1]]$root.time - max(unlist(lapply(tree, get.percent.age))) * tree[[1]]$root.time
                 } else {
                     ## Set t0 to root time
-                    t0 <- tree$root.time
+                    t0 <- tree[[1]]$root.time
                 }
             } else {
-                if(t0 > max(tree.age_tree[,1]) || t0 < min(tree.age_tree[,1])) {
-                    stop.call("", "t0 is out of the tree age range.")
+                combine_ages <- unlist(lapply(tree.age_tree, function(x) x$ages))
+                if(t0 > max(combine_ages) || t0 < min(combine_ages)) {
+                    stop.call(match_call$t0, paste0(") is out of the tree", ifelse(is_multiPhylo, "s", ""), " age range (", paste0(range(combine_ages), collapse = " - "), ")."), msg.pre = "t0 argument (")
                 }
             }
         }
 
         ## Set up time
-        if(method == "discrete") time <- seq(from = tmax, to = t0, length.out = time + 1)
-        if(method == "continuous") time <- seq(from = tmax, to = t0, length.out = time)
+        time <- seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0))
     }
 
     ## time vector must go from past to present
-    if(time[1] < time[2]) time <- rev(time)
-
-    ## MODEL
-    ## if method is discrete ignore model
-    if(method == "discrete") {
-        model <- NULL
-    } else {
-        ## else model must be one of the following
-        model <- tolower(model)
-        all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
-        check.class(model, "character")
-        check.length(model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
-        check.method(model, all_models, "model argument")
-            ## ~~~~~~~~~~~
-            ##  Include the make.model option here?
-            ##  make.model should be tested on slice.tree function
-            ## ~~~~~~~~~~~
-    }
-
-    ## INC.NODES
-    if(method != "continuous") {
-        ## else inc.nodes must be logical
-        check.class(inc.nodes, "logical")
-        if(tree_was_missing && inc.nodes) {
-            stop.call("", "If no phylogeny is provided, inc.nodes must be FALSE.")
+    reverse.time <- function(time) {
+        if(time[1] < time[2]) {
+            return(time <- rev(time))
+        } else {
+            return(time)
         }
-    } else {
-        ## Include nodes is mandatory
-        inc.nodes <- TRUE
     }
+    time <- reverse.time(time)
 
-    ## TREE (2)
+    ## TREE (3)
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree
-        if(any(is.na(match(rownames(data), tree$tip.label)))) {
-            stop.call("", "The labels in the matrix and in the tree do not match!\nUse clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+        no_match_rows <- check.list(tree, function(tree, data) is.na(match(tree$tip.label, rownames(data))), data = data, condition = any)
+        if(any(no_match_rows)) {
+            stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
         }
     } else {
         ## Check if the tree has node labels
-        if(length(tree$node.label) != 0) {
-            ## Check if the tree and the table are the same length
-            if(nrow_data != (Ntip_tree + Nnode(tree))) {
-                stop.call("", "The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
+        if(any(node_labels <- check.list(tree, function(x) length(x$node.label)) == 0)) {
+            if(is_multiPhylo) {
+                stop.call(match_call$tree, paste0(" contains trees with no node labels (", paste0(c(1:length(node_labels))[node_labels], collapse = ", "), ")."))
+            } else {
+                stop.call(match_call$tree, paste0(" has no node labels."))
             }
-            ## Check if both nodes and tip labels match with the data rownames
-            if(any(is.na(match(rownames(data), c(tree$tip.label, tree$node.label))))) {
-                stop.call("", "The labels in the matrix and in the tree do not match!\nCheck especially the node labels in the tree and the matrix.")
-            }
+
         } else {
-            stop.call("", "The labels in the matrix and in the tree do not match!\nRemember to check the node labels in the tree and the matrix.")
+            no_match_rows <- check.list(tree, function(tree, data) is.na(match(c(tree$tip.label, tree$node.label), rownames(data))), data = data, condition = any)
+            if(any(no_match_rows)) {
+                stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+            }
         }
     }
 
     ## FADLAD
     if(missing(FADLAD)) {
         ## If missing, create the FADLAD table
-        FADLAD <- data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2])
-        ## message("No FAD/LAD table has been provided. \nAll tips are assumed to be single points in time.")
+        make.fadlad <- function(tree.age_tree, Ntip_tree) {
+            return(data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2]))
+        }
+        FADLAD <- lapply(tree.age_tree, make.fadlad, Ntip_tree)
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
@@ -300,18 +355,19 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Check if the FADLAD contains all taxa
-        if(any(tree$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
+        if(any(tree[[1]]$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             ## If not generate the FADLAD for the missing taxa
-            missing_FADLAD <- which(is.na(match(tree$tip.label, as.character(rownames(FADLAD)))))
-            add_FADLAD <- data.frame(tree.age_tree[missing_FADLAD, 1], tree.age_tree[missing_FADLAD, 1], row.names = tree.age_tree[missing_FADLAD, 2])
+            missing_FADLAD <- which(is.na(match(tree[[1]]$tip.label, as.character(rownames(FADLAD)))))
+            add_FADLAD <- data.frame(tree.age_tree[[1]][missing_FADLAD, 1], tree.age_tree[[1]][missing_FADLAD, 1], row.names = tree.age_tree[[1]][missing_FADLAD, 2])
             colnames(add_FADLAD) <- colnames(FADLAD)
             FADLAD <- rbind(FADLAD, add_FADLAD)
         }
         ## Remove FADLAD taxa not present in the tree
         if(nrow(FADLAD) != Ntip_tree) {
-            FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree$tip.label)))),]
+            FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree[[1]]$tip.label)))),]
         }
+        FADLAD <- list(FADLAD)
     }
 
     ## VERBOSE
@@ -321,12 +377,33 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ##  GENRATING THE TIME subsets
     ## -------------------------------
 
+    ## Toggle the functions
     if(method == "discrete") {
-        time_subsets <- chrono.subsets.discrete(data, tree, time, FADLAD, inc.nodes, verbose)
+        chrono.subsets.fun <- chrono.subsets.discrete
+    } else {
+        chrono.subsets.fun <- chrono.subsets.continuous
     }
 
-    if(method == "continuous") {
-        time_subsets <- chrono.subsets.continuous(data, tree, time, model, FADLAD, verbose)
+    ## Toggle the multiPhylo option
+    if(!is_multiPhylo) {
+        time_subsets <- chrono.subsets.fun(data, tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose)
+        # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
+    } else {
+
+        ## Combining arguments into lists
+        combine.args <- function(tree, FADLAD, ...) {
+            fixed_args <- list(...)
+            return(c(list(tree = tree, FADLAD = FADLAD), fixed_args))
+        }
+
+        ## Bundle the arguments into a list
+        args_list <- mapply(combine.args, tree, FADLAD, MoreArgs = list(data = data, time = time,  model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
+
+        ## Run all time subsets
+        time_subsets <- lapply(args_list, function(arg, fun) do.call(fun, arg), fun = chrono.subsets.fun)
+
+        ## Combine all the data recursively
+        time_subsets <- recursive.combine.list(time_subsets)
     }
 
     ## Adding the original subsets

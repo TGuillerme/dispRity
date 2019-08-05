@@ -146,3 +146,24 @@ test_that("stop.call works", {
     test <- capture_error(stop.call(call$character, " works.", "look: "))
     expect_equal(test[[1]], "look: a works.")
 })
+
+
+## Check class
+test_that("check.class works", {
+    list <- list("a" = "a", "1" = 1, "tree" = rtree(5))
+    test <- check.list(list, function(x) !is.null(x))
+    expect_equal(test, c("a" = TRUE, "1" = TRUE, "tree" = TRUE))
+
+    test <- check.list(list, is.null, condition = any)
+    expect_equal(test, c("a" = FALSE, "1" = FALSE, "tree" = FALSE))
+
+    test <- check.list(list, function(x) (x == "a"), condition = any)
+    expect_equal(test, c("a" = TRUE, "1" = FALSE, "tree" = FALSE))    
+})
+
+## Test round
+test_that("test_equal_round works", {
+    x <- 1.111111
+    y <- 1.11
+    expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
+})
