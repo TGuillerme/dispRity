@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div get.ancestors
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -528,7 +528,7 @@ func.div <- function(matrix) {
 #' ## Calculating the distances from all the ancestral nodes
 #' ancestral.dist(matrix, nodes.coords = all_anc_centroids)
 #'
-#' @seealso \code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}
+#' @seealso \code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}, \code{\link{get.ancestors}}
 #' 
 #' @author Thomas Guillerme
 # @export
@@ -572,7 +572,28 @@ get.ancestors.list <- function(tree) {
     return(unlist(apply(ancestors, 2, list), recursive = FALSE))
 }
 
-
+#' @title Get ancestors
+#'
+#' @description Gets the list of ancestors (parents) from a tip or a node (modified from \code{\link[phytools]{getParent}})
+#'
+#' @param tip A tip (or node) index.
+#' @param tree A tree topology of class \code{"phylo"}.
+#' @param full Whether to output the direct ancestor only (\code{FALSE}) or the full list of ancestors to the root (\code{TRUE} - default)
+#' 
+#' @return
+#' A \code{integer} vector of ancestor(s).
+#' 
+#' @examples
+#' ## A random tree
+#' tree <- rtree(10)
+#' ## Get the ancestors of the first tip
+#' get.ancestors(1, tree)
+#'
+#' @seealso \code{\link{ancestral.dist}}, \code{\link{nodes.coordinates}}, \code{\link[phytools]{getParent}}
+#' 
+#' @author Thomas Guillerme
+# @export
+#' 
 ## get the list of ancestors (modified from phytools::getParent)
 get.ancestors <- function(tip, tree, full = TRUE) {
 
