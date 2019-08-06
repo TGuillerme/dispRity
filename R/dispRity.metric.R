@@ -74,12 +74,16 @@
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
 #'     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}
 #' 
+#' 
+#TG: For the references, be extra careful with the fecking non-ASCII dashes ("-")
 #'
 #' @references Donohue I, Petchey OL, Montoya JM, Jackson AL, McNally L, Viana M, Healy K, Lurgi M, O'Connor NE, Emmerson MC. 2013. On the dimensionality of ecological stability. Ecology letters. 16(4):421-9.
-#' @references Lalibert'{e} E, Legendre P. 2010. A distance‐based framework for measuring functional diversity from multiple traits. Ecology, 91(1), pp.299-305.
+#' @references Lalibert'{e} E, Legendre P. 2010. A distance-based framework for measuring functional diversity from multiple traits. Ecology, 91(1), pp.299-305.
 #' @references Vill'{e}ger S, Mason NW, Mouillot D. 2008. New multidimensional functional diversity indices for a multifaceted framework in functional ecology. Ecology. 89(8):2290-301.
 #' @references Wills MA. 2001. Morphological disparity: a primer. In Fossils, phylogeny, and form (pp. 55-144). Springer, Boston, MA.
 #' @references Foote, M. 1990. Nearest-neighbor analysis of trilobite morphospace. Systematic Zoology, 39(4), pp.371-382.
+#' 
+#' 
 #' 
 #' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
 #'
@@ -88,7 +92,7 @@
 #' dummy_matrix <- matrix(rnorm(90), 9, 10)
 #'
 #' ## ancestral.dist
-#' ## A random treee with node labels
+#' ## A random tree with node labels
 #' rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
 #' ## Adding the tip and node names to the matris
 #' rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
