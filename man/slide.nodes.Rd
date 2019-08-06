@@ -42,7 +42,7 @@ plot(tree_slide_down) ; axisPhylo() ; nodelabels()
 set.seed(42)
 tree <- rtree(50)
 move_nodes <- c(99, 93, 53, 86, 58, 63, 60, 84)
-tree_slided <- slide.nodes(move_nodes, tree, slide = 0.125)
+tree_slided <- slide.nodes(move_nodes, tree, slide = 0.07)
 
 ## Display the results
 par(mfrow = c(2, 1))
