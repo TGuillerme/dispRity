@@ -161,6 +161,32 @@ abline(v = (max(tree.age(tree)$ages) - 0.75), col = "red")
 plot(tree_75, main = "sliced tree")
 ```
 
+## `slide.nodes`
+
+This function allows to slide nodes along a tree!
+In other words it allows to change the branch length leading to a node without modifying the overall tree shape.
+This can be useful to add some value to 0 branch lengths for example.
+
+The function works by taking a node (or a list of nodes), a tree and a sliding value.
+The node will be moved "up" (towards the tips) for the given sliding value.
+You can move the node "down" (towards the roots) using a negative value.
+
+```{r}
+set.seed(42)
+## Generating simple coalescent tree
+tree <- rcoal(5)
+
+## Sliding node 8 up and down
+tree_slide_up <- slide.nodes(8, tree, slide = 0.075)
+tree_slide_down <- slide.nodes(8, tree, slide = -0.075)
+
+## Display the results
+par(mfrow = c(3,1))
+plot(tree, main = "original tree") ; axisPhylo() ; nodelabels()
+plot(tree_slide_up, main = "slide up!") ; axisPhylo() ; nodelabels()
+plot(tree_slide_down, main = "slide down!") ; axisPhylo() ; nodelabels()
+```
+
 ## `tree.age`
 
 This function allows to quickly calculate the ages of each tips and nodes present in a tree.

@@ -26,7 +26,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.2.4 *space blob* (2019-08-01)
+dispRity v1.2.4 *space blob* (2019-08-06)
 =========================
 
 ### NEW FEATURE
@@ -39,6 +39,7 @@ dispRity v1.2.4 *space blob* (2019-08-01)
  * *Updated* metric: `span.tree.length` now outputs the length of each edges (c.f. the sum of the length) and becomes a level 2 metric.
  * The `chrono.subsets` can now take `multiPhylo` objects for slicing through multiple trees at once!
  * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
+ * *New* utility function: `slide.nodes` for sliding specific nodes on a tree.
  * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
  * Added a "Other functionalities" section to the manual describing miscellaneous functions.
 
