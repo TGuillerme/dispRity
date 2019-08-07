@@ -161,7 +161,7 @@ abline(v = (max(tree.age(tree)$ages) - 0.75), col = "red")
 plot(tree_75, main = "sliced tree")
 ```
 
-## `slide.nodes`
+## `slide.nodes` and `remove.zero.brlen`
 
 This function allows to slide nodes along a tree!
 In other words it allows to change the branch length leading to a node without modifying the overall tree shape.
@@ -186,6 +186,37 @@ plot(tree, main = "original tree") ; axisPhylo() ; nodelabels()
 plot(tree_slide_up, main = "slide up!") ; axisPhylo() ; nodelabels()
 plot(tree_slide_down, main = "slide down!") ; axisPhylo() ; nodelabels()
 ```
+
+The `remove.zero.brlen` is a "clever" wrapping function that uses the `slide.nodes` function to stochastically remove zero branch lengths across a whole tree.
+This function will slide nodes up or down in successive postorder traversals (i.e. going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
+By default it is trying to slide the nodes using 1% of the minimum branch length to avoid changing the topology too much.
+
+```{r}
+set.seed(42)
+## Generating a tree
+tree <- rtree(20)
+
+## Adding some zero branch lengths (5)
+tree$edge.length[sample(1:Nedge(tree), 5)] <- 0
+
+## And now removing these zero branch lengths!
+tree_no_zero <- remove.zero.brlen(tree)
+
+## Exaggerating the removal (to make it visible)
+tree_exaggerated <- remove.zero.brlen(tree, slide = 1)
+
+## Check the differences
+any(tree$edge.length == 0)
+any(tree_no_zero$edge.length == 0)
+any(tree_exaggerated$edge.length == 0)
+
+## Display the results
+par(mfrow = c(3,1))
+plot(tree, main = "with zero edges")
+plot(tree_no_zero, main = "without zero edges!")
+plot(tree_exaggerated, main = "with longer edges")
+```
+
 
 ## `tree.age`
 
