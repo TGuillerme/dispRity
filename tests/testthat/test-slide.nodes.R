@@ -1,6 +1,36 @@
 context("slide.nodes")
 
 ## Test
+
+test_that("slide.nodes.internal works", {
+    set.seed(1)
+    tree <- rtree(5)
+
+    ## Error output (null)
+    expect_null(slide.nodes.internal(nodes = c(7,8), tree = tree, slide = 4))
+
+    ## Works with a single node
+    set.seed(42)
+    ## Generating a coalescent tree
+    tree <- rcoal(5)
+    tree_stret_down <- slide.nodes(8, tree, slide = -0.075)
+    tree_stret_up <- slide.nodes(8, tree, slide = 0.075)
+
+    expect_is(tree_stret_down, "phylo")
+    expect_is(tree_stret_up, "phylo")
+    expect_equal_round(tree$edge.length[3], tree_stret_down$edge.length[3]+0.075, digits = 7)
+    expect_equal_round(tree$edge.length[3], tree_stret_up$    edge.length[3]-0.075, digits = 7)
+    expect_equal_round(tree$edge.length[c(4,5)], tree_stret_down$edge.length[c(4,5)]-0.075, digits = 7)
+    expect_equal_round(tree$edge.length[c(4,5)], tree_stret_up$edge.length[c(4,5)]+0.0751, digits = 3)
+
+    ## All other branch lengths remain the same
+    expect_equal(tree$edge.length[-c(3,4,5)], tree_stret_down$edge.length[-c(3,4,5)])
+    
+    ## All other branch lengths remain the same
+    expect_equal(tree$edge.length[-c(3,4,5)], tree_stret_up$edge.length[-c(3,4,5)])
+})
+
+
 test_that("slide.nodes works", {
 
     set.seed(1)

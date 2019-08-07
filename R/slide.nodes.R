@@ -13,6 +13,9 @@
 #' @return
 #' A \code{"phylo"} object.
 #' 
+#' @seealso
+#' \code{\link{remove.zero.brlen}}
+#' 
 #' @examples
 #' set.seed(42)
 #' ## Generating a coalescent tree
@@ -62,21 +65,11 @@ slide.nodes <- function(nodes, tree, slide) {
     ## Slide
     check.class(slide, c("numeric", "integer"))
 
-    ## Find the parent and descendants
-    parent_edge <- which(tree$edge[,2] %in% nodes)
-    descendant_edge <- which(tree$edge[,1] %in% nodes)
+    ## Slide the nodes
+    tree <- slide.nodes.internal(tree, nodes, slide)
 
-    ## Stretch the nodes
-    if(length(parent_edge) != 0) {
-        tree$edge.length[parent_edge] <- tree$edge.length[parent_edge] + slide
-        ## Check for negatives
-        if(any(tree$edge.length[parent_edge] < 0)) {
-            stop(paste0("The slide value (", slide, ") produced negative branch length(s)."))
-        }
-    }
-    tree$edge.length[descendant_edge] <- tree$edge.length[descendant_edge] - slide
-    ## Check for negatives
-    if(any(tree$edge.length[descendant_edge] < 0)) {
+    ## Catch eventual errors
+    if(is.null(tree)) {
         stop(paste0("The slide value (", slide, ") produced negative branch length(s)."))
     }
     return(tree)
