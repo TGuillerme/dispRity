@@ -40,6 +40,7 @@ dispRity v1.2.4 *space blob* (2019-08-06)
  * The `chrono.subsets` can now take `multiPhylo` objects for slicing through multiple trees at once!
  * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
  * *New* utility function: `slide.nodes` for sliding specific nodes on a tree.
+ * *New* utility function: `remove.zero.brlen` for stochastically removing zero branch lengths on a tree (using the `slide.nodes` function).
  * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
  * Added a "Other functionalities" section to the manual describing miscellaneous functions.
 

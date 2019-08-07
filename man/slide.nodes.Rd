@@ -53,6 +53,9 @@ plot(tree_slided, show.tip.label = FALSE) ; axisPhylo()
 nodelabels(bg = node_colors, cex = 0.5)
 
 }
+\seealso{
+\code{\link{remove.zero.brlen}}
+}
 \author{
 Thomas Guillerme
 }
