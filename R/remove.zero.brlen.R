@@ -28,6 +28,7 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     check.class(tree, "phylo")
 
     ## Reorder in postorder
+    tree_bkp <- tree
     tree <- reorder(tree, "postorder")
 
     ## Return the tree if no zero branch lengths
@@ -48,11 +49,11 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     }
 
     ## Get the root edges to see if it has a 0 length connection with a tip
-    root_edges <- tree$edge[which(tree$edge[,1] == Ntip(tree) + 1),]
+    root_edges <- tree_bkp$edge[which(tree_bkp$edge[,1] == Ntip(tree) + 1),]
     ## Check if they connect to a tip
     if(any(connect_to_tip <- root_edges[,2] <= Ntip(tree))) {
         ## Check if that branch length is zero
-        if(tree$edge.length[bad_edge <- which(root_edges[connect_to_tip,1] == tree$edge[,1])[connect_to_tip]] == 0) {
+        if(tree_bkp$edge.length[bad_edge <- which(root_edges[connect_to_tip,1] == tree_bkp$edge[,1])[connect_to_tip]] == 0) {
                 stop(paste0("The root of the tree is connecting to a tip with a zero branch length: neither can be slid. You can try moving the tip manually by assigning a value to the following edge:\n    ", as.expression(match_call$tree), "$edge.length[",bad_edge ,"] <- your_value"))
         }
     }
