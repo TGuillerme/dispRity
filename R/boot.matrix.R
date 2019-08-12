@@ -4,7 +4,7 @@
 #' 
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
-#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
@@ -22,6 +22,7 @@
 #' \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 #' 
 #' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
+#' When the input is \code{"min"}, the smallest number of elements is used (or 3 if some subsets have less than 3 elements).
 #' 
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
@@ -238,8 +239,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## Is it logical?
     if(class(rarefaction) != "logical") {
         ## Is it numeric?
-        check.class(rarefaction, c("numeric", "integer"), " must be either numeric or logical.")
-        rare_out <- rarefaction
+        rare_class <- check.class(rarefaction, c("numeric", "integer", "character"), " must be either numeric, logical or \"min\".")
+        if(rare_class == "character") {
+            if(rarefaction != "min") {stop("rarefaction argument must be either numeric, logical or \"min\".", call. = FALSE)}
+            rare_out <- min(size.subsets(data))
+            rarefaction <- rare_out <- ifelse(rare_out < 3, 3, rare_out)
+        } else {
+            rare_out <- rarefaction
+        }
     } else {
         if(rarefaction) {
             rarefaction <- seq(from = nrow(data$matrix), to = 3)

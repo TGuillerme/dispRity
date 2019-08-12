@@ -161,7 +161,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             } else {
                 ## Check for different root time
                 if(length(unique(root_time)) != 1) {
-                    stop.call(match_call$tree, msg.pre = "Some tree(s) in ", msg = " don't have a $root.time element.")
+                    ## Make all the root times identical
+                    tree <- lapply(tree, function(tree, root) {tree$root.time <- root; return(tree)}, root = max(root_time))
+                    class(tree) <- "multiPhylo"
+                    warning(paste0("Differing root times in ", as.expression(match_call$tree), ". The $root.time for all tree has been set to the maximum (oldest) root time: ", max(root_time), "."))
                 }
             }
         } else {

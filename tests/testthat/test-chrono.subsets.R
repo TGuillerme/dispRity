@@ -555,8 +555,8 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_label))
     expect_equal(error$message, "The trees in tree_wrong_label must have the same node labels.")
-    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime))
-    expect_equal(error$message, "Some tree(s) in tree_wrong_roottime don't have a $root.time element.")
+    warning <- capture_warning(test <- chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime, model = "acctran"))
+    expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81.")
 
     ## Works with a multiPhylo object
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")

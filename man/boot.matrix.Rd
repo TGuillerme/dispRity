@@ -12,7 +12,7 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
-\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).}
+\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
@@ -37,6 +37,7 @@ Bootstraps and rarefies either a matrix or a list of matrices.
 \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 
 \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
+When the input is \code{"min"}, the smallest number of elements is used (or 3 if some subsets have less than 3 elements).
 
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{

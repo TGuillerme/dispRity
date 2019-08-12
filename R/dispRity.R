@@ -260,7 +260,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        if(verbose) message("Done.", appendLF = FALSE)
+        if(verbose) message("Done.\n", appendLF = FALSE)
     # } else {
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)

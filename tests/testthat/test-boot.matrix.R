@@ -195,6 +195,19 @@ test_that("5 bootstraps, rarefaction = TRUE", {
     }
 })
 
+## Bootstraps = 5 + Rarefaction = "min"
+test_that("5 bootstraps, rarefaction = min", {
+    test <- boot.matrix(data, bootstraps = 5, rarefaction = "min")
+    expect_equal(
+        length(test$subsets[[1]])
+        , 2)
+    expect_equal(
+        dim(test$subsets[[1]][[2]])
+        , c(nrow(data),5))
+})
+
+
+
 ## Bootstraps = 5 + Rarefaction = c(5,6) + boot.type
 test_that("5 bootstraps, rarefaction = 5,6, boot type", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = c(5,6), boot.type = "single")
