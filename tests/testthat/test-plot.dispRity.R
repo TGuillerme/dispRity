@@ -132,7 +132,6 @@ test_that("plot.dispRity examples work", {
     ## No data
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
     expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
-    expect_error(plot(data))
 
     ## Rarefaction is ignored if no BS
     expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
@@ -226,7 +225,6 @@ test_that("plot.dispRity with model.test data", {
 test_that("plot subclasses works", {
   
     ## Randtest
-
     data(BeckLee_mat50)
     ## Calculating the disparity as the ellipsoid volume
     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
@@ -247,5 +245,17 @@ test_that("plot subclasses works", {
     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
     expect_error(plot(dispRity_dtt, cent.tend = var))
 
+})
 
+test_that("plot preview works", {
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+    data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+
+    expect_null(plot.preview(data_cust, dimensions = c(1,2)))
+    expect_null(plot.preview(data_slice, dimensions = c(1,2)))
+    expect_null(plot(data_cust))
+    expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
+    expect_error(plot(data_slice, type = "p"))
 })

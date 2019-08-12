@@ -29,7 +29,7 @@ dispRity 0.2.0 (2016-04-01)
 dispRity v1.2.4 *space blob* (2019-08-06)
 =========================
 
-### NEW FEATURE
+### NEW FEATURES
 
  * *New* metric: `displacements`, a dimension level 2 metric that measures the position of elements in space (i.e. their distance from the centre relative to their distance to their centroid).
  * *New* metric: `neighbours`, a dimension level 2 metric that measures the distance from an element to its neighbour (e.g. the nearest neighbour, the furthest, the median, etc.).
@@ -41,6 +41,7 @@ dispRity v1.2.4 *space blob* (2019-08-06)
  * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
  * *New* utility function: `slide.nodes` for sliding specific nodes on a tree.
  * *New* utility function: `remove.zero.brlen` for stochastically removing zero branch lengths on a tree (using the `slide.nodes` function).
+ * **New argument** in `plot.dispRity`: the `type` argument can now be `"preview"` to have a glimpse at two of the dimensions of the trait-space.
  * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
  * Added a "Other functionalities" section to the manual describing miscellaneous functions.
 
@@ -60,7 +61,7 @@ dispRity v1.2.4 *space blob* (2019-08-06)
 dispRity v1.2.3 (2019-03-12)
 =========================
 
-### NEW FEATURE
+### NEW FEATURES
 
  * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. in `null.test`).
 

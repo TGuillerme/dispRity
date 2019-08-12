@@ -4,7 +4,7 @@
 #'
 #' @param x A \code{dispRity} object.
 #' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
-#' @param type Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{chrono.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.
+#' @param type Either \code{"continuous"}, \code{"box"}, \code{"line"}, \code{"polygon"} or \code{"space"}. When unspecified, if no disparity was calculated, \code{"preview"} is used. If disparity was calculated, \code{"continuous"} is used for \code{\link{chrono.subsets}} and \code{"box"} for \code{\link{custom.subsets}}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
@@ -12,12 +12,13 @@
 #' @param ylim Optional, two \code{numeric} values for the range of the y axis.
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
-#' @param col Optional, some \code{character} string(s) for the colour of the graph.
+#' @param col Optional, some \code{character} string(s) for the colour of the plot.
 #' @param chrono.subsets \code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})
+#' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).
+#' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -31,6 +32,7 @@
 #'   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
 #'   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
 #'   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
+#'   \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
 #' }
 #' 
 #TG: The following is from sequential.test (not implemented yet)
@@ -96,17 +98,15 @@
 #'
 #' @author Thomas Guillerme
 
-#Testing
+# #Testing
 # source("sanitizing.R")
 # source("plot.dispRity_fun.R")
 # data(BeckLee_mat50)
-# groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
-# customised_subsets <- custom.subsets(BeckLee_mat50, groups)
-# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 3)
-# sum_of_variances <- dispRity(bootstrapped_data, metric =  variances)
-# subsets <- extract.dispRity(sum_of_variances, observed = FALSE, keep.structure = TRUE, concatenate = FALSE)
-# data <- sequential.test(subsets, family = gaussian, correction = "hommel")
-# data <- sum_of_variances
+# data(BeckLee_tree)
+# data <- custom.subsets(BeckLee_mat50, crown.stem(BeckLee_tree, inc.nodes = FALSE))
+# type = "preview"
+
+# data <- customised_subsets
 # quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
@@ -117,19 +117,17 @@
 # density = NULL
 # nclass = 10
 # coeff = 1
-# significance="cent.tend"
-# lines.args=NULL
-# token.args=NULL
+
 
 # data(disparity)
 # data <- disparity
 # type = "line"
-# elements = TRUE
+# ewments = TRUE
 # ylim = c(0, 5)
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -246,6 +244,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             options(warn = 0)
         } 
 
+        ## model.test plots
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
 
             ## Colours
@@ -266,6 +265,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
         }
         
+        ## model.sim plots
         if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
             
             ## xlab
@@ -327,8 +327,20 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(data, "dispRity")
     ## must have one element called dispRity
     if(is.na(match("disparity", names(data)))) {
-        stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+        if(!missing(type) && type != "preview") {
+            stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+        } else {
+            if(missing(type)) {
+                type <- "preview"
+            }
+        }
     }
+    if(!missing(type) && type == "preview") {
+        ## Preview plot
+        plot.preview(data, dimensions = dimensions, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+        return(invisible())
+    }
+
     ## Check if disparity is a value or a distribution
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
     ## Check the bootstraps

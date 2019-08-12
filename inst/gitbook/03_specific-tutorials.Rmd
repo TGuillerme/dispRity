@@ -25,7 +25,6 @@ data(BeckLee_tree)
 data(BeckLee_ages)
 ```
 
-
 ## Time slicing {#chrono-subsets}
 
 The function `chrono.subsets` allows users to divide the matrix into different time subsets or slices given a dated phylogeny that contains all the elements (i.e. taxa) from the matrix.
@@ -842,6 +841,33 @@ plot(disparity_crown_stem, rarefaction = TRUE)
 ## Resetting graphical parameters
 par(op)
 ```
+
+Note that all the options above are plotting disparity objects for which a disparity metric *has been calculated*.
+This makes totally sense for `dispRity` objects but sometimes it might be interesting to look at what the trait-space looks like before measuring the disparity.
+This can be done by plotting `dispRity` objects with no calculated disparity!
+
+For example, we might be interested in looking at how the distribution of elements change as a function of the distributions of different sub-settings.
+For example custom subsets *vs.* time subsets:
+
+```{r, fig.width=8, fig.height=4}
+## Making the different subsets
+cust_subsets <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+time_subsets <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+
+## Note that no disarity has been calculated here:
+is.null(cust_subsets$disparity)
+is.null(time_subsets$disparity)
+
+## But we can still plot both spaces by using the default plot functions
+par(mfrow = c(1,2))
+## Default plotting
+plot(cust_subsets)
+## Plotting with more arguments
+plot(time_subsets, dimensions = c(4,5), main = "Some \"low\" dimensions")
+```
+
+> DISCLAIMER: This functionality can be handy for exploring the data (e.g. to visually check whether the subset attribution worked) but it might be misleading on how the data is *actually* distributed in the multidimensional space!
+Groups that don't overlap on two set dimensions can totally overlap in all other dimensions!
 
 ## Testing disparity hypotheses
 
