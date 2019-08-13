@@ -92,6 +92,7 @@ get.row.col <- function(x, row, col = NULL) {
 apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     ## Calculates disparity from a bootstrap table
     decompose.matrix <- function(one_bootstrap, fun, data, ...) {
+        # return(c(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...), rep(NA, length(which(is.na(one_bootstrap))))))
         return(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...))
         # return(fun( get.row.col(data$matrix, na.omit(one_bootstrap)), ...))
     }
@@ -102,8 +103,17 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     } else {
 
         ## one_bs_matrix is a list (in example)
+        results_out <- apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...)
 
-        return(matrix(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), ncol = ncol(one_bs_matrix)))
+        ## Return the results
+        if(class(results_out) == "matrix") {
+            return(results_out)
+        } else {
+            ## Make the results into a matrix with the same size
+            return(do.call(cbind, lapply(results_out, function(x, max) {length(x) <- max ; return(x)}, max = max(unlist(lapply(results_out, length))))))
+        }
+
+        # return(matrix(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), ncol = ncol(one_bs_matrix)))
     }
 }
 
