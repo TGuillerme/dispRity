@@ -14,6 +14,25 @@
 #' @return A \code{"phylo"} object with a postorder edge table and no zero branch lengths.
 #' 
 #' @examples
+#' set.seed(42)
+#' ## Generating a tree
+#' tree <- rtree(20)
+#' ## Adding some zero branch lengths (5)
+#' tree$edge.length[sample(1:Nedge(tree), 5)] <- 0
+#' any(tree$edge.length == 0) # TRUE
+#' 
+#' ## And now removing these zero branch lengths!
+#' tree_no_zero <- remove.zero.brlen(tree)
+#' any(tree_no_zero$edge.length == 0) # FALSE
+#' 
+#' ## Exaggerating the removal (to make it visible)
+#' tree_exaggerated <- remove.zero.brlen(tree, slide = 1)
+#' 
+#' ## Plot the differences
+#' par(mfrow = c(3,1))
+#' plot(tree, main = "zero branch length")
+#' plot(tree_no_zero, main = "no zero branch length")
+#' plot(tree_exaggerated, main = "exaggerated slidding")
 #' 
 #' @seealso
 #' \code{\link{slide.nodes}}

@@ -25,6 +25,25 @@ The algorithm slides the nodes up and down (when possible) on each node in a rec
 If two recursions produce the same series of zero branches (e.g. by sliding node A towards node B equally so that the distance A:B becomes 0), the sliding value is divided by two until the next slide.
 }
 \examples{
+set.seed(42)
+## Generating a tree
+tree <- rtree(20)
+## Adding some zero branch lengths (5)
+tree$edge.length[sample(1:Nedge(tree), 5)] <- 0
+any(tree$edge.length == 0) # TRUE
+
+## And now removing these zero branch lengths!
+tree_no_zero <- remove.zero.brlen(tree)
+any(tree_no_zero$edge.length == 0) # FALSE
+
+## Exaggerating the removal (to make it visible)
+tree_exaggerated <- remove.zero.brlen(tree, slide = 1)
+
+## Plot the differences
+par(mfrow = c(3,1))
+plot(tree, main = "zero branch length")
+plot(tree_no_zero, main = "no zero branch length")
+plot(tree_exaggerated, main = "exaggerated slidding")
 
 }
 \seealso{

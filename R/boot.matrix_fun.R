@@ -1,19 +1,21 @@
 ## Function for selecting the elements for each bootstrap replicate (returns a collapsed matrix)
 elements.sampler <- function(elements) {
-    ## Number of columns
-    ncols <- ncol(elements)/3
-
     ## Sampling function
-    sampler <- function(row, value) {
-        ifelse(all(is.na(row)), NA, sample(row[1:2], 1, prob = c(row[3], 1-row[3]))) 
-    } 
+    sampler <- function(row) {
+        if(all(is.na(row))) {
+            return(NA)
+        } else {
+            return(sample(row[1:2], 1, prob = c(row[3], 1-row[3])))
+        }
+    }
 
     ## Set of samples to go through
-    set_samples <- unname(split(1:ncol(elements), rep(1:ncols, each = 3)))
+    set_samples <- unname(split(1:ncol(elements), rep(1:(ncol(elements)/3), each = 3)))
 
     ## Returning the sampled matrix
     return(do.call(cbind, lapply(set_samples, function(x) apply(elements[,x, drop = FALSE] , 1, sampler))))
 }
+
 
 ## Full bootstrap replacement 
 boot.full <- function(elements, rarefaction) {
