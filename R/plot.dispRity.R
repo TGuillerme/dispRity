@@ -297,9 +297,17 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.length(density, 1, " must be a single numeric value.")
             }
 
+            ## Get inherited subsets (if exist)
+            if(!is.null(data$subsets)) {
+                subset_names <- rev(data$subsets)
+            } else {
+                subset_names <- rev(data$simulation.data$fix$subsets)
+            }
+
             ## Preparing the data and the arguments
             summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
             colnames(summarised_data)[3] <- "obs"
+            summarised_data[,1] <- subset_names
 
             ## Setting the default arguments
             default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)

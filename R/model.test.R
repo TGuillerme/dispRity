@@ -106,11 +106,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
     check.class(data, "dispRity")
     model_test_input <- select.model.list(data)
 
-    ## models
-    
-    # MP: allow a single 'multi-mode' model to be used as an input without an error - could this be incorporated into an existing function, or is it ok here as it'll only be used once?
-    # TG: Good call, I've modified check.method so that the condition is now explicit (all or any)
-        
+    ## models        
     check.method(unlist(model), c("BM", "OU", "Trend", "Stasis", "EB", "multi.OU"), msg = "model", condition = any)
     n_models <- length(model)
 
@@ -119,9 +115,21 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
         check.class(pool.variance, "logical")
     }
 
-    ## time.split
+    ## Get the subsets names
+    if(data$call$subsets[1] == "continuous") {
+        subsets_names <- sort(as.numeric(names(data$subsets)))
+    } else {
+        subsets_names <- seq(1:length(data$subsets))
+    }
+
+    ## Time.split
     if(!missing(time.split) && !is.null(time.split)) {
         silent <- check.class(time.split, c("numeric", "integer"))
+        ## Check if the time set is zero based
+        if(!any(subsets_names == 0)) {
+            ## Correct the time.split
+            time.split <- abs(time.split - max(subsets_names))
+        }
     } else {
         time.split <- NULL
     }
@@ -225,7 +233,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
     names(weight_aicc) <- names(delta_aicc) <- names(aicc) <- names(aic) <- names(models_out) <- model_names
     
     ## Generate the output format
-    output <- list("aic.models" = cbind(aicc, delta_aicc, weight_aicc), "full.details" = models_out, "call" = match_call, "model.data" = model_test_input, "fixed.optima" = fixed.optima)
+    output <- list("aic.models" = cbind(aicc, delta_aicc, weight_aicc), "full.details" = models_out, "call" = match_call, "model.data" = model_test_input, "fixed.optima" = fixed.optima, "subsets" = subsets_names)
     class(output) <- c("dispRity", "model.test")
     return(output)
 }    

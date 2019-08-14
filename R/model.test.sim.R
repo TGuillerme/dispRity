@@ -129,6 +129,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         }
         ## Model is inherited from the dispRity object
         model_inherit <- TRUE
+        model_input <- model
     }
 
     ## Setting up the parameters names (used latter in sanitzing)
@@ -440,6 +441,9 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     ## Add the model call
     output$call <- match_call
     output$nsim <- sim
+    if(model_inherit) {
+        output$subsets <- model_input$subsets
+    }
 
     ## Add the inheritence from the previous object
     if(model_inherit) {

@@ -140,7 +140,6 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             # if(recall){
             #     print.dispRity(data)
             # }
-
             ## Extract the central tendencies
             simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)
 
@@ -150,8 +149,15 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
                                         do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))
             colnames(simulation_results)[1] <- as.character(match_call$cent.tend)
 
+            ## Get inherited subsets (if exist)
+            if(!is.null(data$subsets)) {
+                subset_names <- rev(data$subsets)
+            } else {
+                subset_names <- rev(data$simulation.data$fix$subsets)
+            }
+
             ## Output table
-            output_table <- cbind("subsets" = rev(data$simulation.data$fix$subsets),
+            output_table <- cbind("subsets" = subset_names,
                                   "n" = data$simulation.data$fix$sample_size,
                                   "var" = unname(data$simulation.data$fix$variance),
                                   simulation_results)
