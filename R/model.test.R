@@ -165,12 +165,12 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
                 ten.times <- all.times[(9: (length(all.times) - 11))]
                 run.time.split <- TRUE
 
-                if(verbose) cat(paste0("Running ",  paste0(model.type, collapse=":") ," on ", length(ten.times), " shift times...\n"))
+                if(verbose) cat(paste0("Running ",  paste0(model.type, collapse = ":") ," on ", length(ten.times), " shift times...\n"))
 
                 model.test.all.times <- lapply(ten.times, function(x) {
                         
                     if(verbose) cat(paste0("    model ", match(x, ten.times), " of ", length(ten.times), " at ", signif(x, 3), "\n"))
-                    model.test.lik(model_test_input, model.type, time.split=x, control.list, fixed.optima=fixed.optima)
+                    model.test.lik(model_test_input, model.type, time.split = x, control.list, fixed.optima = fixed.optima)
                 })
                 
                 best.model <- which.max(sapply(model.test.all.times, function(x) x[[2]]))
@@ -192,7 +192,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
         } else {
         
             if(verbose) cat(paste0("Running ", paste(model.type, collapse = ":"), " model..."))
-            model.return <- model.test.lik(model.test_input = model_test_input, model.type.in = model.type, time.split, control.list, fixed.optima=fixed.optima)
+            model.return <- model.test.lik(model.test_input = model_test_input, model.type.in = model.type, time.split, control.list, fixed.optima = fixed.optima)
             if(length(model.type) || model.type == "multi.OU") {
                     model.return$split.time <- time.split
                 }

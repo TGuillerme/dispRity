@@ -57,6 +57,7 @@ dispRity v1.2.4 *space blob* (2019-08-06)
  * Improved error messages in `chrono.subsets` for funky time slices/bins (e.g. with negative values).
  * Speed improvements for the `time.slice` function.
  * Better internal handling of distance matrices for the disparity metrics.
+ * Most functions handles `NA` as `na.rm` or `na.omit`.
 
 dispRity v1.2.3 (2019-03-12)
 =========================

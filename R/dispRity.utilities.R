@@ -270,7 +270,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     if(observed) {
         ## Lapply wrapper for getting the disparity observed values
         lapply.observed <- function(disparity) {
-            return(c(disparity$elements))
+            return(c(apply(disparity$elements, 1, median, na.rm = TRUE)))
         }
         return(lapply(data$disparity[subsets], lapply.observed))
     } else {

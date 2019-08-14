@@ -10,10 +10,10 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
         ## If disparity is a single value
         if(unique(unlist(lapply(data$disparity, lapply, lapply, length))) != 1) {
             ## Calculate the variance from the disparity data
-            variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var))
+            variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var, na.rm = TRUE))
         } else {
             ## Extract directly the variance from the data
-            variance <- sapply(data[[3]], function(x) var(data[[1]][x[[1]]]))
+            variance <- sapply(data[[3]], function(x) var(data[[1]][x[[1]]], na.rm = TRUE))
         }
 
     } else {
@@ -27,7 +27,7 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
         ## Calculating the central tendency
         central_tendency <- unlist(lapply(disparity_tmp, lapply, cent.tend))
         ## Calculating the variance
-        variance <- unlist(lapply(disparity_tmp, lapply, var))
+        variance <- unlist(lapply(disparity_tmp, lapply, var, na.rm = TRUE))
     }
 
     ## Getting the length of the samples
@@ -45,13 +45,13 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
         subsets <- seq(1:length(data$subsets))
     }
     
-    subsets <- max(subsets) - subsets
+    subsets_out <- max(subsets) - subsets
 
     ## Returns the data
     return(list("central_tendency" = central_tendency,
                 "variance" = variance,
                 "sample_size" = sample_length,
-                "subsets" = rev(subsets)))
+                "subsets" = rev(subsets_out)))
 }
 
 
@@ -320,7 +320,7 @@ est.VCV <- function(p, data.model.test, model.type, est.anc=TRUE, model.anc) {
 ###################
 model.test.lik <- function(model.test_input, model.type.in, time.split, control.list, fixed.optima) {
 
-    half.life <- (model.test_input$subsets[length(model.test_input$subsets)] - model.test_input$subsets[1]) / 4    
+    half.life <- (model.test_input$subsets[length(model.test_input$subsets)] - model.test_input$subsets[1]) / 4
     sts.params <- stasis.parameters(model.test_input)
     p <- c()
     p[1] <- model.test_input$central_tendency[1]
@@ -340,20 +340,20 @@ model.test.lik <- function(model.test_input, model.type.in, time.split, control.
     lower.bounds <- c(NA, 1e-8, 1e-8, NA, NA, 1e-8, -100, -100, NA, NA, NA, NA)
     upper.bounds <- c(NA, 100, 100, NA, NA, 20, 100, -1e-8, NA, NA, NA, NA)
     
-    model.output <- stats::optim(par = p, fn = opt.mode,  method = "L", control = control.list, model.type.in = model.type.in, time.split=time.split, data.model.test = model.test_input, lower = lower.bounds, upper = upper.bounds, fixed.optima = fixed.optima)
+    model.output <- stats::optim(par = p, fn = opt.mode,  method = "L", control = control.list, model.type.in = model.type.in, time.split = time.split, data.model.test = model.test_input, lower = lower.bounds, upper = upper.bounds, fixed.optima = fixed.optima)
     
     model.type.in
     
     model.output.pars <- model.output[[1]]
     names(model.output.pars) <- c("ancestral state", "sigma squared", "alpha", "optima.1", "theta.1", "omega", "trend", "eb", "optima.2", "optima.3", "theta.2", "theta.3")
-    model.output$par <- get.parameters(model.output.pars, model.type.in, time.split=time.split, fixed.optima=fixed.optima)
+    model.output$par <- get.parameters(model.output.pars, model.type.in, time.split = time.split, fixed.optima = fixed.optima)
     return(model.output)
 }
 
 opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima)  {
      
      
-    if(!is.null(time.split)) time.split <-  sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[4]])))))
+    if(!is.null(time.split)) time.split <- sort(sapply(time.split, function(u) which.min(abs(u - rev(data.model.test[[4]])))))
      
     total.n <- length(data.model.test$subsets)
     sample.time <- 1:total.n
