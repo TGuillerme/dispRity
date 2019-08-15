@@ -1,33 +1,3 @@
-[GitHub release] dispRity v1.1 *got CRAN* (2019-03-20)
-=======
-----
-<!-- * 2017/10/18 - v1.0 *got you covered*  -->
-
-<!-- 
-dispRity 0.2.0 (2016-04-01)
-=========================
-
-### NEW FEATURES
-
-  * Blabla
-
-### MINOR IMPROVEMENTS
-
-  * Blabla
-
-### BUG FIXES
-
-  * Blabla
-
-### DEPRECATED AND DEFUNCT
-
-  * Blabla
- -->
-
-<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
-<!--   * `dtt.dispRity` now works with time-slicing. -->
-
-
 dispRity v1.3 *many metrics* (2019-08-15)
 =========================
 
@@ -110,7 +80,6 @@ dispRity v1.2 *model tests* (2018-09-19)
 
 
 dispRity v1.1 *got CRAN* (2018-03-20)
->>>>>>> master
 =========================
   
 ### NEW FEATURES
