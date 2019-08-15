@@ -450,7 +450,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
     plot_args$y <- data$matrix[, dimensions[2]]
 
     ## Getting the loadings
-    loading <- apply(data$matrix, 2, var)
+    loading <- apply(data$matrix, 2, var, na.rm = TRUE)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels

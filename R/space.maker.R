@@ -230,7 +230,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     ## Modify the variance for each dimensions
     if(!is.null(scree)) {
         ## Variance corrector
-        effective_var <- apply(space, 2, var)
+        effective_var <- apply(space, 2, var, na.rm = TRUE)
         space <- space %*% diag(scree)
     }
 

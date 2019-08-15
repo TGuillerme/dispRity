@@ -138,7 +138,7 @@ get.parameters <- function(model.output.pars, models, time.split, fixed.optima=N
 bm.parameters <- function (data.model.test) {
     
     sample.size <- length(data.model.test$central_tendency) - 1
-    round.median.sample.size <- round(median(sample.size))
+    round.median.sample.size <- round(median(sample.size, na.rm = TRUE))
     t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
     epsilon <- 2 * pooled.variance(data.model.test) / round.median.sample.size
        data.model.test.difference <- diff(data.model.test$central_tendency)
@@ -149,8 +149,8 @@ stasis.parameters <- function (data.model.test) {
     
     sample.size <- length(data.model.test$central_tendency)
     var.pooled <- pooled.variance(data.model.test)
-    theta <- mean(data.model.test$central_tendency[2:sample.size])
-    omega <- var(data.model.test$central_tendency[2:sample.size]) - var.pooled / median(data.model.test$sample_size)
+    theta <- mean(data.model.test$central_tendency[2:sample.size], na.rm = TRUE)
+    omega <- var(data.model.test$central_tendency[2:sample.size], na.rm = TRUE) - var.pooled / median(data.model.test$sample_size, na.rm = TRUE)
     return(c(omega, theta))
 }
 
@@ -158,9 +158,9 @@ eb.parameters <- function (data.model.test) {
     
     sample.size <- length(data.model.test$central_tendency) - 1
     t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
-    epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size))
+    epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size, na.rm = TRUE))
     data.model.test.difference <- diff(data.model.test$central_tendency)
-    mean.difference <- mean(data.model.test.difference)
+    mean.difference <- mean(data.model.test.difference, na.rm = TRUE)
     sigma.squared.step <- (1 / t.step) * ((1 / sample.size) * sum(mean.difference ^ 2) - epsilon)
     a <- log(1e-5) / max(data.model.test$subsets) * (1/2)
     return(c(sigma.squared.step, a))
@@ -170,9 +170,9 @@ trend.parameters <- function (data.model.test)  {
     
     sample.size <- length(data.model.test$central_tendency) - 1
     t.step <- (data.model.test$subsets[sample.size + 1] - data.model.test$subsets[1]) / sample.size
-    epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size))
+    epsilon <- 2 * pooled.variance(data.model.test) / round(median(data.model.test$sample_size, na.rm = TRUE))
     data.model.test.difference <- diff(data.model.test$central_tendency)
-    mean.difference <- mean(data.model.test.difference)
+    mean.difference <- mean(data.model.test.difference, na.rm = TRUE)
     trend.param <- mean.difference / t.step 
     sigma.squared.step <- (1 / t.step) * ((1 / sample.size) * sum(data.model.test.difference ^ 2) - mean.difference^2 - epsilon)
     return(c(sigma.squared.step, trend.param))
@@ -462,7 +462,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
     total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
     total_mean <-  c(total_mean, output.mean)
     }
-    mnormt::dmnorm(t(data.model.test$central_tendency), mean =  total_mean, varcov = total_VCV, log = TRUE)
+    mnormt::dmnorm(t(data.model.test$central_tendency), mean = total_mean, varcov = total_VCV, log = TRUE)
 }
 
 

@@ -245,9 +245,9 @@ k.root <- function(data, dimensions){
 ## Calculating the variance of each axis
 variances <- function(matrix, k.root = FALSE) {
     if(!k.root) {
-        return(apply(matrix, 2, var))
+        return(apply(matrix, 2, var, na.rm = TRUE))
     } else {
-        return(k.root(apply(matrix, 2, var), ncol(matrix)))
+        return(k.root(apply(matrix, 2, var, na.rm = TRUE), ncol(matrix)))
     }
 }
 
@@ -263,9 +263,9 @@ ranges <- function(matrix, k.root = FALSE) {
 ## Calculate the quantiles range in a matrix
 quantiles <- function(matrix, quantile = 95, k.root = FALSE) {
     if(!k.root) {
-        return(as.vector(abs(diff(apply(matrix, 2, quantile, prob = CI.converter(quantile))))))
+        return(as.vector(abs(diff(apply(matrix, 2, quantile, prob = CI.converter(quantile), na.rm = TRUE)))))
     } else {
-        return(k.root(as.vector(abs(diff(apply(matrix, 2, quantile, prob = CI.converter(quantile))))), dimensions = ncol(matrix)))
+        return(k.root(as.vector(abs(diff(apply(matrix, 2, quantile, prob = CI.converter(quantile), na.rm = TRUE)))), dimensions = ncol(matrix)))
     }
 }
 
@@ -330,7 +330,7 @@ ellipse.volume <- function(matrix, eigen.value) {
 
     ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
     if(missing(eigen.value)) {
-        eigen.value <- abs(apply(var(matrix), 2, sum)) # * (nrow(matrix) - 1)
+        eigen.value <- abs(apply(var(matrix, na.rm = TRUE), 2, sum)) # * (nrow(matrix) - 1)
     } else {
         eigen.value <- eigen.value[1:ncol_matrix]
     }
@@ -498,7 +498,7 @@ func.div <- function(matrix) {
     ## The distance from centroid (dGi)
     dist_centroid <- centroids(matrix)
     ## The mean distance from centroid (dG)
-    mean_dis_cent <- mean(dist_centroid)
+    mean_dis_cent <- mean(dist_centroid, na.rm = TRUE)
     ## The number of observations
     obs <- length(dist_centroid)
     ## The FDiv metric

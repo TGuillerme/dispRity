@@ -222,7 +222,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
 
                 ## Summarised data
-                quantiles_values <- apply(data$sim, 1, quantile, probs = CI.converter(quantiles))
+                quantiles_values <- apply(data$sim, 1, quantile, probs = CI.converter(quantiles), na.rm = TRUE)
                 cent_tend_values <- apply(data$sim, 1, cent.tend)
 
                 ## Plotting the polygons for each quantile

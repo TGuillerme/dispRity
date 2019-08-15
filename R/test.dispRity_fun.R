@@ -128,7 +128,7 @@ lapply.lm.type <- function(data, test, ...) {
 
 ## Calculate the central tendency and the quantiles from a table of results
 get.quantiles.from.table <- function(table, con.cen.tend, conc.quantiles, ...) {
-    return(t(rbind(apply(table, 1, con.cen.tend, ...), apply(table, 1, quantile, probs = conc.quantiles, ...))))
+    return(t(rbind(apply(table, 1, con.cen.tend, ...), apply(table, 1, quantile, probs = conc.quantiles, na.rm = TRUE, ...))))
 }
 
 ## Returning a table of numeric values

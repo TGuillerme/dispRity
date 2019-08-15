@@ -336,7 +336,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
     ## Getting the center value
     if(class(center) == "logical") {
         if(center & use.all) {
-            center <- mean(all_data)
+            center <- mean(all_data, na.rm = TRUE)
         }
     } else {
         check.class(center, c("numeric", "integer", "logical"))
