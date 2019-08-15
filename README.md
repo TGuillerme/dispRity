@@ -61,22 +61,32 @@ Otherwise, each functions has a detailed associated manual with examples in `R` 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
 ## Latest patch notes
-* 2019/03/06 -  v1.2.3
+* 2018/08/15 v1.3 *many metrics*
 
-   * `dispRity` objects now contain a metric argument (if a metric was applied). This argument can now be recycled by the appropriate functions (e.g. in `null.test`).
-   * `plot.dispRity` argument `observed` can now take a list of arguments to be passed `points()`.
-   * `boot.matrix` now makes a error warning message when bootstrapping distance matrices (as suggested by [Dave Bapst](https://github.com/dwbapst/)!).
-   * `geomorph.ordination` can now be used to simply create coordinates matrices (no ordination!) with `ordinate = FALSE` argument.
-   * better internal handling of error messages.
-   * `faster` eigen value estimations in `ellipse.volume` when the argument is left missing.
-   * removed internal handling of the `Claddis.ordination` function. This function now uses the brand new version of the `Claddis` package on CRAN (0.3).
-   * `plot.dispRity` with option `"box"` now correctly display plot ranges when disparity is an observed distribution.
-   * `test.dispRity` handles errors messages more efficiently when disparity is an observed distribution.
-   * `summary.dispRity` handles non-bootstrapped distributions display properly.
-   * `geomorph.ordination` now converts `"character"` vectors into `"factors"`.
-   * `adonis.dispRity` now properly handles complex formulas (with arithmetic signs).
-   * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
-   * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
+ * *New* metric: `displacements`, a dimension level 2 metric that measures the position of elements in space (i.e. their distance from the centre relative to their distance to their centroid).
+ * *New* metric: `neighbours`, a dimension level 2 metric that measures the distance from an element to its neighbour (e.g. the nearest neighbour, the furthest, the median, etc.).
+ * *New* metric: `quantiles`, a dimension level 2 metric that measures the *n*th quantile range per axis (a good alternative to the `ranges` function!).
+ * *New* metric: `func.eve`, a dimension level 1 metric that measures the functional evenness (i.e. the spread along the minimum spanning tree; from Villéger et al. 2008).
+ * *New* metric: `func.div`, a dimension level 1 metric that measures the functional divergence (i.e. the ratio of deviation from the centroid; from Villéger et al. 2008).
+ * *Updated* metric: `span.tree.length` now outputs the length of each edges (c.f. the sum of the length) and becomes a level 2 metric.
+ * The `chrono.subsets` can now take `multiPhylo` objects for slicing through multiple trees at once!
+ * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
+ * *New* utility function: `slide.nodes` for sliding specific nodes on a tree.
+ * *New* utility function: `remove.zero.brlen` for stochastically removing zero branch lengths on a tree (using the `slide.nodes` function).
+ * **New argument** in `plot.dispRity`: the `type` argument can now be `"preview"` to have a glimpse at two of the dimensions of the trait-space.
+ * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
+ * Added a "Other functionalities" section to the manual describing miscellaneous functions.
+ * `centroids` and `ancestral.dist` functions can now take the `method` option for `"euclidean"` or `"manhattan"` distances.
+ * All functions methods selection have now been sped up using `switch`.
+ * Error messages in `dispRity` are more verbose when input the wrong metric(s).
+ * `scree` option in `space.maker` does not require to sum up to one anymore.
+ * `cor.matrix` option in `space.maker` does not require to have a valid Choleski decomposition (an approximation is used instead).
+ * Updated all tests and functions to be compatible with R 3.6.
+ * Fixed bug in `clean.data` that did not output dropped tips correctly when applied on `multiPhylo` objects.
+ * Improved error messages in `chrono.subsets` for funky time slices/bins (e.g. with negative values).
+ * Speed improvements for the `time.slice` function.
+ * Better internal handling of distance matrices for the disparity metrics.
+ * Most functions handles `NA` as `na.rm` or `na.omit`.
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
