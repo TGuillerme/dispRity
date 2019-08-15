@@ -55,16 +55,16 @@ A classical way to represent this ordinated data would be to use two dimensional
 
 ```{r, fig.width=6, fig.height=6}
 ## Measuring the variance on each axis
-variances <- apply(petal_space, 2, var)
-variances <- variances/sum(variances)
+axis_variances <- apply(petal_space, 2, var)
+axis_variances <- axis_variances/sum(axis_variances)
 
 ## Graphical option
 par(bty = "n")
 
 ## A classic 2D ordination plot
 plot(petal_space[, 1], petal_space[, 2], col = species,
-    xlab = paste0("PC 1 (", round(variances[1], 2), ")"),
-    ylab = paste0("PC 2 (", round(variances[2], 2), ")"))
+    xlab = paste0("PC 1 (", round(axis_variances[1], 2), ")"),
+    ylab = paste0("PC 2 (", round(axis_variances[2], 2), ")"))
 ```
 
 This shows the distribution of the different species in the petal-space along the two first axis of variation.
@@ -75,8 +75,8 @@ If we look at the two other axis we see a totally different result:
 ```{r, fig.width=6, fig.height=6}
 ## Plotting the two second axis of the petal-space
 plot(petal_space[, 3], petal_space[, 4], col = species,
-    xlab = paste0("PC 3 (", round(variances[3], 2), ")"),
-    ylab = paste0("PC 4 (", round(variances[4], 2), ")"))
+    xlab = paste0("PC 3 (", round(axis_variances[3], 2), ")"),
+    ylab = paste0("PC 4 (", round(axis_variances[4], 2), ")"))
 ```
 
 Additionally, these two represented dimensions do not represent a biological reality *per se*; i.e. the values on the first dimension do not represent a continuous trait (e.g. petal length), instead they just represent the ordinations of correlations between the data and some factors.

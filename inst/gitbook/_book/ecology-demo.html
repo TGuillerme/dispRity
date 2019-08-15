@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>dispRity manual</title>
-  <meta name="description" content="dispRity R package vignette">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>8 Ecology demo | dispRity manual</title>
+  <meta name="description" content="dispRity R package vignette" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="dispRity manual" />
+  <meta property="og:title" content="8 Ecology demo | dispRity manual" />
   <meta property="og:type" content="book" />
   
   
@@ -17,25 +16,26 @@
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="dispRity manual" />
+  <meta name="twitter:title" content="8 Ecology demo | dispRity manual" />
   
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2019-04-10">
+<meta name="date" content="2019-08-15" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="palaeobiology-demo-disparity-through-time-and-within-groups.html">
-<link rel="next" href="developing-disprity.html">
+<link rel="prev" href="the-guts-of-the-disprity-package.html">
+<link rel="next" href="palaeobiology-demo-disparity-through-time-and-within-groups.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
@@ -50,41 +50,66 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -131,8 +156,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
-<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
-<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
+<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
+<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -171,43 +196,52 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.2.3" data-path="making-stuff-up.html"><a href="making-stuff-up.html#generating-realistic-spaces"><i class="fa fa-check"></i><b>5.2.3</b> Generating realistic spaces</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>6</b> The guts of the <code>dispRity</code> package</a><ul>
-<li class="chapter" data-level="6.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>6.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="6.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>6.2</b> <code>dispRity</code> utilities</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>6.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
+<li class="chapter" data-level="6" data-path="other-functionalities.html"><a href="other-functionalities.html"><i class="fa fa-check"></i><b>6</b> Other functionalities</a><ul>
+<li class="chapter" data-level="6.1" data-path="other-functionalities.html"><a href="other-functionalities.html#clean.data"><i class="fa fa-check"></i><b>6.1</b> <code>clean.data</code></a></li>
+<li class="chapter" data-level="6.2" data-path="other-functionalities.html"><a href="other-functionalities.html#crown.stem"><i class="fa fa-check"></i><b>6.2</b> <code>crown.stem</code></a></li>
+<li class="chapter" data-level="6.3" data-path="other-functionalities.html"><a href="other-functionalities.html#get.bin.ages"><i class="fa fa-check"></i><b>6.3</b> <code>get.bin.ages</code></a></li>
+<li class="chapter" data-level="6.4" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.4</b> <code>pair.plot</code></a></li>
+<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.5</b> <code>reduce.matrix</code></a></li>
+<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.6</b> <code>slice.tree</code></a></li>
+<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.7</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
+<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.8</b> <code>tree.age</code></a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
-<li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
-<li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsets</code></a></li>
-<li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
+<li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a><ul>
+<li class="chapter" data-level="7.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>7.1</b> Manipulating <code>dispRity</code> objects</a></li>
+<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
+<li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
+<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
+<li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>7</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
-<li class="chapter" data-level="7.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>7.1</b> Before starting</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>7.1.1</b> The morphospace</a></li>
-</ul></li>
-<li class="chapter" data-level="7.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>7.2</b> A disparity-through-time analysis</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>7.2.1</b> Splitting the morphospace through time</a></li>
-<li class="chapter" data-level="7.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>7.2.2</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="7.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity"><i class="fa fa-check"></i><b>7.2.3</b> Calculating disparity</a></li>
-<li class="chapter" data-level="7.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>7.2.4</b> Plotting the results</a></li>
-</ul></li>
-<li class="chapter" data-level="7.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>7.3</b> Testing differences</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a><ul>
 <li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
 <li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
 <li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
-<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity-1"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>9</b> Developing <code>dispRity</code></a><ul>
-<li class="chapter" data-level="9.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>9.1</b> More functions</a></li>
-<li class="chapter" data-level="9.2" data-path="developing-disprity.html"><a href="developing-disprity.html#more-manuals"><i class="fa fa-check"></i><b>9.2</b>  More manuals</a></li>
+<li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
+<li class="chapter" data-level="9.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>9.1</b> Before starting</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>9.1.1</b> The morphospace</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>9.2</b> A disparity-through-time analysis</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>9.2.1</b> Splitting the morphospace through time</a></li>
+<li class="chapter" data-level="9.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>9.2.2</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="9.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity-1"><i class="fa fa-check"></i><b>9.2.3</b> Calculating disparity</a></li>
+<li class="chapter" data-level="9.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>9.2.4</b> Plotting the results</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>9.3</b> Testing differences</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>10</b> Developing <code>dispRity</code></a><ul>
+<li class="chapter" data-level="10.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>10.1</b> More functions</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -236,17 +270,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="data" class="section level2">
 <h2><span class="header-section-number">8.1</span> Data</h2>
 <p>For this example, we will use the famous <code>iris</code> inbuilt data set</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(iris)</code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="kw">data</span>(iris)</a></code></pre></div>
 <p>This data contains petal and sepal length for 150 individual plants sorted into three species.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Separating the species
-species &lt;-<span class="st"> </span>iris[,<span class="dv">5</span>]
-## Which species?
-<span class="kw">unique</span>(species)</code></pre></div>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" data-line-number="1"><span class="co">## Separating the species</span></a>
+<a class="sourceLine" id="cb406-2" data-line-number="2">species &lt;-<span class="st"> </span>iris[,<span class="dv">5</span>]</a>
+<a class="sourceLine" id="cb406-3" data-line-number="3"><span class="co">## Which species?</span></a>
+<a class="sourceLine" id="cb406-4" data-line-number="4"><span class="kw">unique</span>(species)</a></code></pre></div>
 <pre><code>## [1] setosa     versicolor virginica 
 ## Levels: setosa versicolor virginica</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Separating the petal/sepal length
-measurements &lt;-<span class="st"> </span>iris[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]
-<span class="kw">head</span>(measurements)</code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="co">## Separating the petal/sepal length</span></a>
+<a class="sourceLine" id="cb408-2" data-line-number="2">measurements &lt;-<span class="st"> </span>iris[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</a>
+<a class="sourceLine" id="cb408-3" data-line-number="3"><span class="kw">head</span>(measurements)</a></code></pre></div>
 <pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width
 ## 1          5.1         3.5          1.4         0.2
 ## 2          4.9         3.0          1.4         0.2
@@ -255,71 +289,80 @@ measurements &lt;-<span class="st"> </span>iris[,<span class="dv">1</span><span 
 ## 5          5.0         3.6          1.4         0.2
 ## 6          5.4         3.9          1.7         0.4</code></pre>
 <p>We can then ordinate the data using a PCA (<code>prcomp</code> function) thus defining our four dimensional space as the poetically named petal-space.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Ordinating the data
-ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(measurements)
-
-## The petal-space
-petal_space &lt;-<span class="st"> </span>ordination<span class="op">$</span>x
-
-## Adding the elements names to the petal-space (the individuals IDs)
-<span class="kw">rownames</span>(petal_space) &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(petal_space)</code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="co">## Ordinating the data</span></a>
+<a class="sourceLine" id="cb410-2" data-line-number="2">ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(measurements)</a>
+<a class="sourceLine" id="cb410-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb410-4" data-line-number="4"><span class="co">## The petal-space</span></a>
+<a class="sourceLine" id="cb410-5" data-line-number="5">petal_space &lt;-<span class="st"> </span>ordination<span class="op">$</span>x</a>
+<a class="sourceLine" id="cb410-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb410-7" data-line-number="7"><span class="co">## Adding the elements names to the petal-space (the individuals IDs)</span></a>
+<a class="sourceLine" id="cb410-8" data-line-number="8"><span class="kw">rownames</span>(petal_space) &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(petal_space)</a></code></pre></div>
 </div>
 <div id="classic-analysis" class="section level2">
 <h2><span class="header-section-number">8.2</span> Classic analysis</h2>
 <p>A classical way to represent this ordinated data would be to use two dimensional plots to look at how the different species are distributed in the petal-space.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Measuring the variance on each axis
-variances &lt;-<span class="st"> </span><span class="kw">apply</span>(petal_space, <span class="dv">2</span>, var)
-variances &lt;-<span class="st"> </span>variances<span class="op">/</span><span class="kw">sum</span>(variances)
-
-## Graphical option
-<span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
-
-## A classic 2D ordination plot
-<span class="kw">plot</span>(petal_space[, <span class="dv">1</span>], petal_space[, <span class="dv">2</span>], <span class="dt">col =</span> species,
-    <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 1 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
-    <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 2 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-123-1.png" width="576" /></p>
-<p>This shows the distribution of the different species in the petal-space along the two first axis of variation. This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA). However, in this case we are ignoring the two other dimensions of the ordination! If we look at the two other axis we see a totally different result:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting the two second axis of the petal-space
-<span class="kw">plot</span>(petal_space[, <span class="dv">3</span>], petal_space[, <span class="dv">4</span>], <span class="dt">col =</span> species,
-    <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 3 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">3</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),
-    <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 4 (&quot;</span>, <span class="kw">round</span>(variances[<span class="dv">4</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-124-1.png" width="576" /></p>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" data-line-number="1"><span class="co">## Measuring the variance on each axis</span></a>
+<a class="sourceLine" id="cb411-2" data-line-number="2">axis_variances &lt;-<span class="st"> </span><span class="kw">apply</span>(petal_space, <span class="dv">2</span>, var)</a>
+<a class="sourceLine" id="cb411-3" data-line-number="3">axis_variances &lt;-<span class="st"> </span>axis_variances<span class="op">/</span><span class="kw">sum</span>(axis_variances)</a>
+<a class="sourceLine" id="cb411-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb411-5" data-line-number="5"><span class="co">## Graphical option</span></a>
+<a class="sourceLine" id="cb411-6" data-line-number="6"><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb411-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb411-8" data-line-number="8"><span class="co">## A classic 2D ordination plot</span></a>
+<a class="sourceLine" id="cb411-9" data-line-number="9"><span class="kw">plot</span>(petal_space[, <span class="dv">1</span>], petal_space[, <span class="dv">2</span>], <span class="dt">col =</span> species,</a>
+<a class="sourceLine" id="cb411-10" data-line-number="10">    <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 1 (&quot;</span>, <span class="kw">round</span>(axis_variances[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),</a>
+<a class="sourceLine" id="cb411-11" data-line-number="11">    <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 2 (&quot;</span>, <span class="kw">round</span>(axis_variances[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-131-1.png" width="576" /></p>
+<p>This shows the distribution of the different species in the petal-space along the two first axis of variation.
+This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA).
+However, in this case we are ignoring the two other dimensions of the ordination!
+If we look at the two other axis we see a totally different result:</p>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="co">## Plotting the two second axis of the petal-space</span></a>
+<a class="sourceLine" id="cb412-2" data-line-number="2"><span class="kw">plot</span>(petal_space[, <span class="dv">3</span>], petal_space[, <span class="dv">4</span>], <span class="dt">col =</span> species,</a>
+<a class="sourceLine" id="cb412-3" data-line-number="3">    <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 3 (&quot;</span>, <span class="kw">round</span>(axis_variances[<span class="dv">3</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>),</a>
+<a class="sourceLine" id="cb412-4" data-line-number="4">    <span class="dt">ylab =</span> <span class="kw">paste0</span>(<span class="st">&quot;PC 4 (&quot;</span>, <span class="kw">round</span>(axis_variances[<span class="dv">4</span>], <span class="dv">2</span>), <span class="st">&quot;)&quot;</span>))</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-132-1.png" width="576" /></p>
 <p>Additionally, these two represented dimensions do not represent a biological reality <em>per se</em>; i.e. the values on the first dimension do not represent a continuous trait (e.g. petal length), instead they just represent the ordinations of correlations between the data and some factors.</p>
 <p>Therefore, we might want to approach this problem without getting stuck in only two dimensions and consider the whole dataset as a <em>n</em>-dimensional object.</p>
 </div>
 <div id="a-multidimensional-approach-with-disprity" class="section level2">
 <h2><span class="header-section-number">8.3</span> A multidimensional approach with <code>dispRity</code></h2>
-<p>The first step is to create different subsets that represent subsets of the ordinated space (i.e. sub-regions within the <em>n</em>-dimensional object). Each of these subsets will contain only the individuals of a specific species.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating the table that contain the elements and their attributes
-petal_subsets &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(petal_space, <span class="dt">group =</span> <span class="kw">list</span>(
-                                <span class="st">&quot;setosa&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;setosa&quot;</span>),
-                                <span class="st">&quot;versicolor&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;versicolor&quot;</span>),
-                                <span class="st">&quot;virginica&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;virginica&quot;</span>)))
-
-## Visualising the dispRity object content
-petal_subsets</code></pre></div>
+<p>The first step is to create different subsets that represent subsets of the ordinated space (i.e. sub-regions within the <em>n</em>-dimensional object).
+Each of these subsets will contain only the individuals of a specific species.</p>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="co">## Creating the table that contain the elements and their attributes</span></a>
+<a class="sourceLine" id="cb413-2" data-line-number="2">petal_subsets &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(petal_space, <span class="dt">group =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb413-3" data-line-number="3">                                <span class="st">&quot;setosa&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;setosa&quot;</span>),</a>
+<a class="sourceLine" id="cb413-4" data-line-number="4">                                <span class="st">&quot;versicolor&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;versicolor&quot;</span>),</a>
+<a class="sourceLine" id="cb413-5" data-line-number="5">                                <span class="st">&quot;virginica&quot;</span> =<span class="st"> </span><span class="kw">which</span>(species <span class="op">==</span><span class="st"> &quot;virginica&quot;</span>)))</a>
+<a class="sourceLine" id="cb413-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb413-7" data-line-number="7"><span class="co">## Visualising the dispRity object content</span></a>
+<a class="sourceLine" id="cb413-8" data-line-number="8">petal_subsets</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 customised subsets for 150 elements:
 ##     setosa, versicolor, virginica.</code></pre>
 <p>This created a <code>dispRity</code> object (more about that <a href="#guts">here</a>) with three subsets corresponding to each subspecies.</p>
-<div id="bootstrapping-the-data-1" class="section level3">
+<div id="bootstrapping-the-data" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Bootstrapping the data</h3>
-<p>We can the bootstrap the subsets to be able test the robustness of the measured disparity to outliers. We can do that using the default options of <code>boot.matrix</code> (more about that <a href="details-of-specific-functions.html#bootstraps-and-rarefactions">here</a>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping the data
-(petal_bootstrapped &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(petal_subsets))</code></pre></div>
+<p>We can the bootstrap the subsets to be able test the robustness of the measured disparity to outliers.
+We can do that using the default options of <code>boot.matrix</code> (more about that <a href="details-of-specific-functions.html#bootstraps-and-rarefactions">here</a>):</p>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" data-line-number="1"><span class="co">## Bootstrapping the data</span></a>
+<a class="sourceLine" id="cb415-2" data-line-number="2">(petal_bootstrapped &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(petal_subsets))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
 </div>
-<div id="calculating-disparity-1" class="section level3">
+<div id="calculating-disparity" class="section level3">
 <h3><span class="header-section-number">8.3.2</span> Calculating disparity</h3>
-<p>Disparity can be calculated in many ways, therefore the <code>dispRity</code> function allows users to define their own measure of disparity. For more details on measuring disparity, see the <a href="details-of-specific-functions.html#disparity-metrics">dispRity metrics section</a>.</p>
-<p>In this example, we are going to define disparity as the median distance between the different individuals and the centroid of the ordinated space. High values of disparity will indicate a generally high spread of points from this centroid (i.e. on average, the individuals are far apart in the ordinated space). We can define the metrics easily in the <code>dispRity</code> function by feeding them to the <code>metric</code> argument. Here we are going to feed the functions <code>stats::median</code> and <code>dispRity::centroids</code> which calculates distances between elements and their centroid.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity as the median distance between each elements and
-## the centroid of the petal-space
-(petal_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(petal_bootstrapped, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids)))</code></pre></div>
+<p>Disparity can be calculated in many ways, therefore the <code>dispRity</code> function allows users to define their own measure of disparity.
+For more details on measuring disparity, see the <a href="details-of-specific-functions.html#disparity-metrics">dispRity metrics section</a>.</p>
+<p>In this example, we are going to define disparity as the median distance between the different individuals and the centroid of the ordinated space.
+High values of disparity will indicate a generally high spread of points from this centroid (i.e. on average, the individuals are far apart in the ordinated space).
+We can define the metrics easily in the <code>dispRity</code> function by feeding them to the <code>metric</code> argument.
+Here we are going to feed the functions <code>stats::median</code> and <code>dispRity::centroids</code> which calculates distances between elements and their centroid.</p>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" data-line-number="1"><span class="co">## Calculating disparity as the median distance between each elements and</span></a>
+<a class="sourceLine" id="cb417-2" data-line-number="2"><span class="co">## the centroid of the petal-space</span></a>
+<a class="sourceLine" id="cb417-3" data-line-number="3">(petal_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(petal_bootstrapped, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 customised subsets for 150 elements with 4 dimensions:
 ##     setosa, versicolor, virginica.
@@ -328,28 +371,29 @@ petal_subsets</code></pre></div>
 </div>
 <div id="summarising-the-results-plot" class="section level3">
 <h3><span class="header-section-number">8.3.3</span> Summarising the results (plot)</h3>
-<p>Similarly to the <code>custom.subsets</code> and <code>boot.matrix</code> function, <code>dispRity</code> displays a <code>dispRity</code> object. But we are definitely more interested in actually look at the calculated values.</p>
+<p>Similarly to the <code>custom.subsets</code> and <code>boot.matrix</code> function, <code>dispRity</code> displays a <code>dispRity</code> object.
+But we are definitely more interested in actually look at the calculated values.</p>
 <p>First we can summarise the data in a table by simply using <code>summary</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Displaying the summary of the calculated disparity
-<span class="kw">summary</span>(petal_disparity)</code></pre></div>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" data-line-number="1"><span class="co">## Displaying the summary of the calculated disparity</span></a>
+<a class="sourceLine" id="cb419-2" data-line-number="2"><span class="kw">summary</span>(petal_disparity)</a></code></pre></div>
 <pre><code>##      subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     setosa 50 0.421     0.419 0.342 0.401 0.445 0.503
-## 2 versicolor 50 0.693     0.657 0.530 0.622 0.692 0.733
-## 3  virginica 50 0.785     0.745 0.577 0.690 0.797 0.880</code></pre>
+## 1     setosa 50 0.421     0.430 0.355 0.409 0.452 0.509
+## 2 versicolor 50 0.693     0.662 0.537 0.635 0.699 0.751
+## 3  virginica 50 0.785     0.723 0.544 0.650 0.780 0.883</code></pre>
 <p>We can also plot the results in a similar way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
-<span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
-
-## Plotting the disparity in the petal_space
-<span class="kw">plot</span>(petal_disparity)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-129-1.png" width="576" /></p>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" data-line-number="1"><span class="co">## Graphical options</span></a>
+<a class="sourceLine" id="cb421-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb421-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb421-4" data-line-number="4"><span class="co">## Plotting the disparity in the petal_space</span></a>
+<a class="sourceLine" id="cb421-5" data-line-number="5"><span class="kw">plot</span>(petal_disparity)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-137-1.png" width="576" /></p>
 <p>Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!</p>
 </div>
 <div id="testing-hypothesis" class="section level3">
 <h3><span class="header-section-number">8.3.4</span> Testing hypothesis</h3>
 <p>Finally we can test our hypothesis that we guessed from the disparity plot (that some groups occupy different volume of the petal-space) by using the <code>test.dispRity</code> option.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Running a PERMANOVA
-<span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> adonis.dispRity)</code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="co">## Running a PERMANOVA</span></a>
+<a class="sourceLine" id="cb422-2" data-line-number="2"><span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> adonis.dispRity)</a></code></pre></div>
 <pre><code>## Warning in test.dispRity(petal_disparity, test = adonis.dispRity): adonis.dispRity test will be applied to the data matrix, not to the calculated disparity.
 ## See ?adonis.dispRity for more details.</code></pre>
 <pre><code>## Warning in adonis.dispRity(data, ...): The input data for adonis.dispRity was not a distance matrix.
@@ -370,40 +414,48 @@ petal_subsets</code></pre></div>
 ## Total     149    681.37                 1.00000           
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Post-hoc testing of the differences between species (corrected for multiple tests)
-<span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> t.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="co">## Post-hoc testing of the differences between species (corrected for multiple tests)</span></a>
+<a class="sourceLine" id="cb426-2" data-line-number="2"><span class="kw">test.dispRity</span>(petal_disparity, <span class="dt">test =</span> t.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                        statistic: t
-## setosa : versicolor      -33.714480
-## setosa : virginica       -34.257797
-## versicolor : virginica    -8.595829
+## setosa : versicolor      -34.301682
+## setosa : virginica       -29.604472
+## versicolor : virginica    -5.773033
 ## 
 ## [[2]]
 ##                        parameter: df
-## setosa : versicolor         189.0217
-## setosa : virginica          150.1371
-## versicolor : virginica      171.2387
+## setosa : versicolor         183.5486
+## setosa : virginica          137.4942
+## versicolor : virginica      162.1354
 ## 
 ## [[3]]
 ##                             p.value
-## setosa : versicolor    2.107278e-81
-## setosa : virginica     2.252270e-72
-## versicolor : virginica 1.506037e-14</code></pre>
+## setosa : versicolor    2.812033e-81
+## setosa : virginica     4.865500e-61
+## versicolor : virginica 1.158407e-07
+## 
+## [[4]]
+##                             stderr
+## setosa : versicolor    0.006679214
+## setosa : virginica     0.009764192
+## versicolor : virginica 0.010385437</code></pre>
 <p>We can now see that there is a significant difference in petal-space occupancy between all species of iris.</p>
 <div id="setting-up-a-multidimensional-null-hypothesis" class="section level4">
 <h4><span class="header-section-number">8.3.4.1</span> Setting up a multidimensional null-hypothesis</h4>
-<p>One other series of test can be done on the shape of the petal-space. Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to <span class="citation">Díaz et al. (<a href="#ref-diaz2016global">2016</a>)</span>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing against a uniform distribution
-disparity_uniform &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
-    <span class="dt">null.distrib =</span> runif, <span class="dt">scale =</span> <span class="ot">FALSE</span>)
-<span class="kw">plot</span>(disparity_uniform)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-131-1.png" width="576" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing against a normal distribution
-disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,
-    <span class="dt">null.distrib =</span> rnorm, <span class="dt">scale =</span> <span class="ot">TRUE</span>)
-<span class="kw">plot</span>(disparity_normal)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-132-1.png" width="576" /></p>
-<p>In both cases we can see that our petal-space is not entirely normal or uniform. This is expected because of the simplicity of these parameters.</p>
+<p>One other series of test can be done on the shape of the petal-space.
+Using a MCMC permutation test we can simulate a petal-space with specific properties and see if our observed petal-space matches these properties (similarly to <span class="citation">Díaz et al. (<a href="#ref-diaz2016global">2016</a>)</span>):</p>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1"><span class="co">## Testing against a uniform distribution</span></a>
+<a class="sourceLine" id="cb428-2" data-line-number="2">disparity_uniform &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,</a>
+<a class="sourceLine" id="cb428-3" data-line-number="3">    <span class="dt">null.distrib =</span> runif, <span class="dt">scale =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb428-4" data-line-number="4"><span class="kw">plot</span>(disparity_uniform)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-139-1.png" width="576" /></p>
+<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb429-1" data-line-number="1"><span class="co">## Testing against a normal distribution</span></a>
+<a class="sourceLine" id="cb429-2" data-line-number="2">disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>(petal_disparity, <span class="dt">replicates =</span> <span class="dv">200</span>,</a>
+<a class="sourceLine" id="cb429-3" data-line-number="3">    <span class="dt">null.distrib =</span> rnorm, <span class="dt">scale =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb429-4" data-line-number="4"><span class="kw">plot</span>(disparity_normal)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-140-1.png" width="576" /></p>
+<p>In both cases we can see that our petal-space is not entirely normal or uniform.
+This is expected because of the simplicity of these parameters.</p>
 
 </div>
 </div>
@@ -420,8 +472,8 @@ disparity_normal &lt;-<span class="st"> </span><span class="kw">null.test</span>
           </div>
         </div>
       </div>
-<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="developing-disprity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="the-guts-of-the-disprity-package.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -441,7 +493,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -453,6 +505,10 @@ gitbook.start({
 "edit": {
 "link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/07_ecology-demo.Rmd",
 "text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
 },
 "download": null,
 "toc": {
@@ -467,8 +523,8 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');
     script.src = src;
