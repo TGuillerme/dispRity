@@ -28,8 +28,8 @@ test_that("Claddis.ordination works", {
 test_that("read.nexus.data works with polymorphisms", {
 
     ## Update read.nexus.data (temporary)
-    read.nexus.poly <- ape::read.nexus.data
-    body(read.nexus.poly)[[18]][[4]][[11]][[3]][[2]] <- body(read.nexus.poly)[[18]][[4]][[11]][[4]][[3]] <- substitute(tsp <- get.polymorphism(strsplit(Seq, NULL)[[1]]))
+    # read.nexus.poly <- ape::read.nexus.data
+    # body(read.nexus.poly)[[18]][[4]][[11]][[3]][[2]] <- body(read.nexus.poly)[[18]][[4]][[11]][[4]][[3]] <- substitute(tsp <- get.polymorphism(strsplit(Seq, NULL)[[1]]))
 
     ## Normal morphological matrix
     cat(
