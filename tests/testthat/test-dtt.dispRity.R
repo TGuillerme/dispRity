@@ -49,6 +49,11 @@ test_that("dispRity and dtt give the same results", {
     data(disparity)
     expect_error(dtt.dispRity(data = disparity, metric = var, tree = BeckLee_tree, nsim = 10))
 
+    ## Error when providing wrong dimensions metric
+    error <- capture_error(dtt.dispRity(data = geiger_data$dat, metric = var, tree = geiger_data$phy, nsim = 100))
+    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+
+
     ## Tree has no root time
     data(BeckLee_tree)
     data(BeckLee_mat50)

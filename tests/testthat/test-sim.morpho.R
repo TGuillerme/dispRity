@@ -160,6 +160,11 @@ test_that("rTraitDisc.mk works", {
     expect_error(
         rTraitDisc.mk(rtree(5), c(runif,1,1), rates = "a", c(0.5, 0.5), verbose)
         )
+
+    set.seed(1)
+    output <- capture_output(test <- rTraitDisc.mk(rtree(5), c(runif,1,1), c(runif,2,2), c(0.5, 0.5), verbose = TRUE))
+    expect_equal(output, ".")
+    expect_equal(test, c("0", "0", "0", "0", "1"))
 })
 
 #Testing is.invariant

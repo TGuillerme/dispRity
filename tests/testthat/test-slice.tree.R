@@ -248,6 +248,12 @@ test_that("slice.tree proba works", {
     test0p_2 <- slice.tree(tree, 2.8, "equal.split", FAD, LAD)
     expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(1.000, 1.000, 0.560))
     expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
+
+    ## Different results (with FAD or LAD)
+    test0g_2 <- slice.tree(tree, 2.8, "gradual.split", FAD = FAD)
+    test0p_2 <- slice.tree(tree, 2.8, "equal.split", LAD = LAD)
+    expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(0.9, 0.933, 0.560))
+    expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
 })
 
 

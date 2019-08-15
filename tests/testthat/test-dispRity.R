@@ -202,6 +202,11 @@ test_that("Sanitizing works", {
     error <- capture_error(dispRity(disparity, metric = c(sum, variances)))
     expect_equal(as.character(error), "Error: At least one metric dimension level 1 was already calculated for disparity.\nImpossible to apply a metric higher than dimension level 1.\n")
 
+    ## Only dimensions 3!
+    error <- capture_error(dispRity(data, metric = var))
+    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+
+
 
 })
 #Reset

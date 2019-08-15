@@ -16,128 +16,131 @@ test_that("Claddis.ordination works", {
     expect_error(Claddis.ordination(data, distance = "bob", k = 2))
     expect_error(Claddis.ordination(data, distance = "MORD", k = 10))
     expect_error(Claddis.ordination(Claddis::Day2016)) #NA
+    data_bug <- data
+    data_bug$Matrix_1$Matrix <- NULL
+    expect_error(Claddis.ordination(data_bug, distance = "MORD")) #NA
 
     test <- Claddis.ordination(data, add = FALSE, TransformDistances = "none")
     expect_equal(dim(test), c(4,3))
     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
 })
     
-# test_that("read.nexus.data works with polymorphisms", {
+test_that("read.nexus.data works with polymorphisms", {
 
-#     ## Update read.nexus.data (temporary)
-#     read.nexus.poly <- ape::read.nexus.data
-#     body(read.nexus.poly)[[18]][[4]][[11]][[3]][[2]] <- body(read.nexus.poly)[[18]][[4]][[11]][[4]][[3]] <- substitute(tsp <- get.polymorphism(strsplit(Seq, NULL)[[1]]))
+    ## Update read.nexus.data (temporary)
+    read.nexus.poly <- ape::read.nexus.data
+    body(read.nexus.poly)[[18]][[4]][[11]][[3]][[2]] <- body(read.nexus.poly)[[18]][[4]][[11]][[4]][[3]] <- substitute(tsp <- get.polymorphism(strsplit(Seq, NULL)[[1]]))
 
-#     ## Normal morphological matrix
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  012
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     ## Normal behaviour (no polymorphisms)
-#     test <- read.nexus.poly("read.nexus.data_test.nex")
-#     expect_is(test, "list")
-#     expect_equal(length(test), 2)
-#     expect_equal(test[1], list("t1" = c("0", "1", "2")))
-#     expect_equal(test[2], list("t2" = c("?", "0", "1")))
+    ## Normal morphological matrix
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  012
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    ## Normal behaviour (no polymorphisms)
+    test <- read.nexus.poly("read.nexus.data_test.nex")
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(test[1], list("t1" = c("0", "1", "2")))
+    expect_equal(test[2], list("t2" = c("?", "0", "1")))
 
-#     ## Correct matrix with polymorphisms
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  {01}(012){2}
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     ## Correct behaviour with polymorphisms
-#     test <- read.nexus.poly("read.nexus.data_test.nex")
-#     expect_is(test, "list")
-#     expect_equal(length(test), 2)
-#     expect_equal(test[1], list("t1" = c("0/1", "0/1/2", "2")))
-#     expect_equal(test[2], list("t2" = c("?", "0", "1")))
+    ## Correct matrix with polymorphisms
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  {01}(012){2}
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    ## Correct behaviour with polymorphisms
+    test <- read.nexus.poly("read.nexus.data_test.nex")
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(test[1], list("t1" = c("0/1", "0/1/2", "2")))
+    expect_equal(test[2], list("t2" = c("?", "0", "1")))
 
-#     ## Correct matrix with polymorphisms (non numeric)
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT=DNA MISSING=? GAP=- ;
-#     MATRIX
-#         t1  {AC}(ACG){T}
-#         t2  AAA
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     ## Correct behaviour with polymorphisms
-#     test <- read.nexus.poly("read.nexus.data_test.nex")
-#     expect_is(test, "list")
-#     expect_equal(length(test), 2)
-#     expect_equal(test[1], list("t1" = c("a/c", "a/c/g", "t")))
-#     expect_equal(test[2], list("t2" = c("a", "a", "a")))
+    ## Correct matrix with polymorphisms (non numeric)
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT=DNA MISSING=? GAP=- ;
+    MATRIX
+        t1  {AC}(ACG){T}
+        t2  AAA
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    ## Correct behaviour with polymorphisms
+    test <- read.nexus.poly("read.nexus.data_test.nex")
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(test[1], list("t1" = c("a/c", "a/c/g", "t")))
+    expect_equal(test[2], list("t2" = c("a", "a", "a")))
 
-#     ## Errors due to missing brackets polymorphisms
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  {01(012){2}
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
-#     expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 1")
+    ## Errors due to missing brackets polymorphisms
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  {01(012){2}
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
+    expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 1")
 
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  0(012{2}
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
-#     expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 2")
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  0(012{2}
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
+    expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 2")
 
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  01{2
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
-#     expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 3")
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  01{2
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    error_msg <- capture_error(read.nexus.poly("read.nexus.data_test.nex"))
+    expect_equal(error_msg[[1]], "missing closing bracket for a polymorphism at position 3")
 
-#     ## Normal error (extra weird character)
-#     cat(
-#     "#NEXUS
-#     BEGIN DATA;
-#     DIMENSIONS  NTAX=2 NCHAR=3;
-#     FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
-#     MATRIX
-#         t1  012}
-#         t2  ?01
-#     ;
-#     END;", file = "read.nexus.data_test.nex")
-#     error_msg <- capture_output(capture_error(read.nexus.poly("read.nexus.data_test.nex")))
-#     expect_equal(error_msg[[1]], "t1 has 4 characters")
+    ## Normal error (extra weird character)
+    cat(
+    "#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=2 NCHAR=3;
+    FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
+    MATRIX
+        t1  012}
+        t2  ?01
+    ;
+    END;", file = "read.nexus.data_test.nex")
+    error_msg <- capture_output(capture_error(read.nexus.poly("read.nexus.data_test.nex")))
+    expect_equal(error_msg[[1]], "t1 has 4 characters")
 
-#     expect_true(file.remove("read.nexus.data_test.nex"))
-# })
+    expect_true(file.remove("read.nexus.data_test.nex"))
+})
 
 
 test_that("Claddis.ordination works with new reader", {
@@ -203,9 +206,9 @@ test_that("geomorph.ordination works", {
     expect_equal(colnames(test), paste0("PC", 1:10))
 
     ## Procrustes without ordination
-    # test <- geomorph.ordination(dummy_procrustes, ordinate = FALSE)
-    # expect_true(all(test == geomorph::two.d.array(dummy_procrustes$coords)))
-
+    test <- geomorph.ordination(dummy_procrustes, ordinate = FALSE)
+    expect_equal(dim(test), c(10,10))
+    
     ## geomorph.data.frame to ordination
     test <- geomorph.ordination(dummy_geomorph_df)
     expect_is(test, "dispRity")

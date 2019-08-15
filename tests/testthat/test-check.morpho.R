@@ -9,7 +9,7 @@ test_that("check.morpho works", {
     random.tree <- rcoal(10)
     #Get a random matrix
     random.matrix <- sim.morpho(random.tree, characters = 50, model = "HKY", rates = c(rgamma, 1, 1), substitution = c(runif, 2, 2))
-    #Erros
+    #Errors
     expect_error(
         check.morpho("a", parsimony = "fitch", first.tree = c(phangorn::dist.hamming, phangorn::NJ), distance = phangorn::RF.dist)
         )
@@ -83,18 +83,18 @@ test_that("check.morpho works", {
         )    
 
     ## Works with input contrast matrix
-    # set.seed(1)
-    # random_tree <- rcoal(10)
-    # random_matrix <- sim.morpho(random_tree, characters = 10, model = "ER", rates = c(rgamma, 1, 1))
-    # # contrast_matrix <- get.contrast.matrix(random_matrix)
-    # # test_out <- check.morpho(random_matrix, contrast.matrix = contrast_matrix)
-    # # expect_is(test_out, "matrix")
-    # # expect_equal(dim(test_out), c(3,1))
+    set.seed(1)
+    random_tree <- rcoal(10)
+    random_matrix <- sim.morpho(random_tree, characters = 10, model = "ER", rates = c(rgamma, 1, 1))
+    contrast_matrix <- get.contrast.matrix(random_matrix)
+    test_out <- check.morpho(random_matrix, contrast.matrix = contrast_matrix)
+    expect_is(test_out, "matrix")
+    expect_equal(dim(test_out), c(3,1))
 
-    # ## First tree is a function
-    # first.tree.fun <- function(X) {phangorn::NJ(phangorn::dist.hamming(X))}
-    # test_out <- check.morpho(random_matrix, first.tree = first.tree.fun)
-    # expect_is(test_out, "matrix")
-    # expect_equal(dim(test_out), c(3,1))
+    ## First tree is a function
+    first.tree.fun <- function(X) {phangorn::NJ(phangorn::dist.hamming(X))}
+    test_out <- check.morpho(random_matrix, first.tree = first.tree.fun)
+    expect_is(test_out, "matrix")
+    expect_equal(dim(test_out), c(3,1))
 
 })

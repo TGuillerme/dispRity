@@ -133,6 +133,15 @@ test_that("fill.dispRity", {
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix))
+
+    test <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
+    test$subsets <- c(list(), list())
+
+    test <- fill.dispRity(test)
+    expect_equal(
+        as.vector(test$subsets[[1]]$elements)
+        , 1:nrow(test$matrix))
+
 })
 
 
@@ -490,6 +499,9 @@ test_that("combine.subsets", {
             as.vector(unlist(lapply(tests[[test]]$subsets, lapply, length)))
             ,expected_elements[[test]])
     }
+
+    error <- capture_error(expect_warning(combine.subsets(data_test1, c(1,1))))
+    expect_equal(error[[1]], "subsets argument must not contain duplicates.")
 })
 
 

@@ -87,7 +87,7 @@ reduce.matrix <- function(matrix, distance = "gower", by.row = TRUE, verbose = F
     ## Function for selecting which row to remove
     remove.one.by.one <- function(removed, no_na_input, distance) {
         ## Get the distance matrix
-        dist_matrix <- as.matrix(vegan::vegdist(no_na_input[!c(names %in% removed),], dist = distance))
+        dist_matrix <- as.matrix(vegan::vegdist(no_na_input[!c(names %in% removed),], method = distance))
         
         ## Check if there are NAs
         has_NA <<- any(is.na(dist_matrix))

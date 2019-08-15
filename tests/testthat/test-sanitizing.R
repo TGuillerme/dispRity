@@ -105,6 +105,10 @@ test_that("check.dist.matrix works", {
     non_dist <- matrix(1:9, 3, 3)
     is_dist <- as.matrix(dist(non_dist))
 
+    test <- check.dist.matrix(dist(non_dist))
+    expect_equal(test[[1]], dist(non_dist))
+    expect_true(test$was_dist)
+
     expect_error(check.dist.matrix(non_dist, just.check = "blabla"))
     expect_error(check.dist.matrix(non_dist, just.check = FALSE))
     expect_false(check.dist.matrix(non_dist, just.check = TRUE))

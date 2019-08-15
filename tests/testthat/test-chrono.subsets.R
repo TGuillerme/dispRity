@@ -291,6 +291,23 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Verbose works
     expect_message(chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "c", time = 3, model = "acctran", verbose = TRUE))
 
+    ## Multiple trees with wrong tip labels
+    multitrees <- list(BeckLee_tree, BeckLee_tree)
+    multitrees[[1]]$tip.label[1] <- "bob"
+    class(multitrees) <- "multiPhylo"
+    error <- capture_error(chrono.subsets(BeckLee_mat99, multitrees, method = "c", time = 3, model = "deltran"))
+    expect_equal(error[[1]], "The trees in multitrees must have the same tip labels.")
+
+    ## No phylogeny provided!
+    error <- capture_error(chrono.subsets(data = BeckLee_mat99, method = "c", time = 3, model = "acctran", FADLAD = BeckLee_ages))
+    expect_equal(error[[1]], "If no phylogeny is provided, method must be \"discrete\".")
+
+    ## Wrong label match between tree and data
+    data_wrong <- BeckLee_mat99
+    rownames(data_wrong)[1] <- "wrong!"
+    error <- capture_error(chrono.subsets(data = data_wrong, tree = BeckLee_tree, method = "c", time = 3, model = "acctran"))
+    expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+
 })
 
 ## Output

@@ -62,10 +62,6 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
         check.class(slide, c("numeric", "integer"))
         check.length(slide, 1, " must be a single numeric value.")
     }
-    ## Transforming the slide into a sampler argument
-    slide.sample <- function() {
-        runif(1, min = slide[1], max = slide[2])
-    }
 
     ## Get the root edges to see if it has a 0 length connection with a tip
     root_edges <- tree_bkp$edge[which(tree_bkp$edge[,1] == Ntip(tree) + 1),]

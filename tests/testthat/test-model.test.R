@@ -168,14 +168,19 @@ test_that("model.test example works", {
 })
 
 test_that("model.test.sim example works", {
+
+    error <- capture_error(model.test.sim(model.test.sim(sim = 10, model = rnorm(10))))
+    expect_equal(error[[1]], "model must be either a model name (character) or a dispRity object from model.test().")
+
+
     set.seed(42)
-    models <- list("Trend", "BM", "Stasis")
+    models <- list("Trend", "BM", "Stasis", "EB")
     model_test_output <- model.test(data, models, time.split = 66, verbose = FALSE)
     expect_is(model_test_output, c("dispRity", "model.test"))
     expect_equal(length(model_test_output), 6)
     expect_equal(lapply(model_test_output, length),
-                list("aic.models" = 9,
-                     "full.details" = 3,
+                list("aic.models" = 12,
+                     "full.details" = 4,
                      "call" = 5,
                      "model.data" = 4,
                      "fixed.optima" = 1,
@@ -183,7 +188,7 @@ test_that("model.test.sim example works", {
      
     ## simulations using the output from model.test
     expect_error(model.test.sim(sim = 10, model = data))
-    expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 4))
+    expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 5))
     ## Warning for ignored argument (inherited) + absolute value for sim -10 (silly)
     expect_warning(model_test_sim_output <- model.test.sim(sim = -10, model = model_test_output, time.span = 8, alternative = "lesser"))
     expect_is(model_test_sim_output, c("dispRity", "model.sim"))
@@ -212,7 +217,7 @@ test_that("model.test.sim example works", {
                      "call" = 4,
                      "nsim" = 1,
                      "subsets" = 25,
-                     "model" = 5))
+                     "model" = 6))
 
 
 

@@ -76,6 +76,13 @@ test_that("Sanitizing works", {
     expect_error(
         custom.subsets(data[1:9,], tree)
     )
+    tree <- rtree(9)
+    tree$tip.label <- letters[1:9]
+    data_wrong <- data
+    rownames(data_wrong)[1] <= "AAA"
+    error <- capture_error(custom.subsets(data_wrong, tree))
+    expect_equal(error[[1]], "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+
 })
 
 ## Results
