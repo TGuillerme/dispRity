@@ -216,7 +216,7 @@ test_that("output.numeric.results internal fun", {
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, bhatt.coeff)
 
     ## Get results
-    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("bhatt.coeff", "25%", "75%"))
@@ -250,13 +250,14 @@ test_that("output.htest.results internal fun", {
     }
 })
 
-# test_that("null test handling", {
-#     data(BeckLee_mat50)
-#     data(BeckLee_tree)
-#     disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))
-#     test <- test.dispRity(disp, test = null.test, null.distrib = rnorm)
-
-# })
+test_that("null test handling", {
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))
+    test <- test.dispRity(disp, test = null.test, null.distrib = rnorm)
+    expect_is(test, "randtest")
+    expect_equal(length(test), 2)
+})
 
 
 # test_that("output.lm.results internal fun", {
@@ -366,6 +367,10 @@ test_that("example works fine", {
     bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+
+    error <- capture_error(test.dispRity(sum_of_ranges, t.test, concatenate = FALSE))
+    expect_equal(error[[1]], "Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).")
+
 
     ## Measuring the subsets overlap
     expect_warning(expect_is(
