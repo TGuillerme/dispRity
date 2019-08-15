@@ -216,7 +216,7 @@ test_that("output.numeric.results internal fun", {
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, bhatt.coeff)
 
     ## Get results
-    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("bhatt.coeff", "25%", "75%"))
@@ -229,17 +229,17 @@ test_that("output.htest.results internal fun", {
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, t.test)
 
     ## Get results
-    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
+    test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("statistic: t", "25%", "75%"))
     expect_equal(rownames(test_out), unlist(lapply(comp_subsets, paste, collapse = ":")))
 
     ## Wrapping function
-    test_out <- output.htest.results(details_out, comp_subsets, conc.quantiles=c(0.25, 0.75), con.cen.tend = mean, correction = "none")
+    test_out <- output.htest.results(details_out, comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean, correction = "none")
 
     expect_is(test_out, "list")
-    expect_equal(length(test_out), 3)
+    expect_equal(length(test_out), 4)
 
     elements_names <- c("statistic: t", "parameter: df", "p.value")
     comp_names <- unlist(lapply(comp_subsets, paste, collapse = ":"))
@@ -249,6 +249,16 @@ test_that("output.htest.results internal fun", {
         expect_equal(rownames(test_out[[element]]), comp_names)
     }
 })
+
+test_that("null test handling", {
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))
+    test <- test.dispRity(disp, test = null.test, null.distrib = rnorm)
+    expect_is(test, "randtest")
+    expect_equal(length(test), 2)
+})
+
 
 # test_that("output.lm.results internal fun", {
 #     ## Set up data for lm test
@@ -301,8 +311,8 @@ test_that("test.dispRity works fine", {
 
     ## Correction
     expect_warning(test <- test.dispRity(sum_of_ranges, t.test, correction = "none"))
-    expect_equal(length(test), 3)
-    expect_equal(unlist(lapply(test, colnames)), c("statistic: t", "parameter: df", "p.value"))
+    expect_equal(length(test), 4)
+    expect_equal(unlist(lapply(test, colnames)), c("statistic: t", "parameter: df", "p.value", "stderr"))
     expect_equal(unique(unlist(lapply(test, rownames))), c("V1.1 : V1.2", "V1.1 : V1.3", "V1.2 : V1.3"))
 
     ## Custom comparisons errors management
@@ -334,13 +344,13 @@ test_that("test.dispRity works fine", {
     ## Works with comparisons as a named list
     test_pass <- test.dispRity(sum_of_ranges, t.test, comparisons = list(c("V1.1", "V1.2")))
     expect_is(test_pass, "list")
-    expect_equal(length(test_pass), 3)
+    expect_equal(length(test_pass), 4)
 
     ## Works fine with observed distributions
     data <- dispRity(customised_subsets, metric = centroids)
     expect_warning(results <- test.dispRity(data, t.test, "sequential"))
     expect_is(results, "list")
-    expect_equal(unlist(lapply(results, dim)), rep(c(2,1), 3))
+    expect_equal(unlist(lapply(results, dim)), rep(c(2,1), 4))
 
 })
 
@@ -358,6 +368,10 @@ test_that("example works fine", {
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
 
+    error <- capture_error(test.dispRity(sum_of_ranges, t.test, concatenate = FALSE))
+    expect_equal(error[[1]], "Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).")
+
+
     ## Measuring the subsets overlap
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
@@ -369,8 +383,8 @@ test_that("example works fine", {
     	dim(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
         , c(3,1)))
     expect_warning(expect_equal(
-    	sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
-        , 0.67027))
+    	round(sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")), 5)
+        , round(0.7097568, 5)))
 
     ## Measuring differences from a reference_subsets
     expect_warning(expect_is(
@@ -384,7 +398,7 @@ test_that("example works fine", {
         , 2))
     expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[1]][,1])
-        , 1543))
+        , 1539))
     expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[2]][,1])
         , 3.025477e-17))
@@ -430,7 +444,7 @@ test_that("example works fine", {
         , 3)
     expect_equal(
         as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
-        , c(24.048441,2.053728,9.798655))
+        , c(23.800668,2.064246,9.903960))
 })
 
 

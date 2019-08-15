@@ -30,7 +30,7 @@
 #' @seealso \code{\link{tree.age}}.
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 clean.data <- function(data, tree) {
 
@@ -48,11 +48,9 @@ clean.data <- function(data, tree) {
     ## tree
     tree_class <- check.class(tree, c("phylo", "multiPhylo"), " must be a phylo or multiPhylo object.")
 
-
     ## CLEANING THE DATA/TREES
     ## for a single tree
-    if(tree_class == "phylo") {
-        
+    if(tree_class == "phylo") {        
         cleaned_data <- clean.tree.table(tree, data)
 
     } else {
@@ -63,24 +61,28 @@ clean.data <- function(data, tree) {
         ## Selecting the tips to drop
         tips_to_drop <- unique(unlist(lapply(cleaned_list, function(x) x[[3]])))
         ## removing NAs
-        tips_to_drop <- tips_to_drop[-which(is.na(tips_to_drop))]
+        if(any(is.na(tips_to_drop))) {
+            tips_to_drop <- tips_to_drop[-which(is.na(tips_to_drop))]    
+        }
 
         ## Selecting the rows to drop
         rows_to_drop <- unique(unlist(lapply(cleaned_list, function(x) x[[4]])))
         ## removing NAs
-        rows_to_drop <- rows_to_drop[-which(is.na(rows_to_drop))]
-
+        if(any(is.na(rows_to_drop))) {
+            rows_to_drop <- rows_to_drop[-which(is.na(rows_to_drop))]
+        }
+        
         ## Combining both
         taxa_to_drop <- c(tips_to_drop, rows_to_drop)
 
         ## Dropping the tips across all trees
         if(length(taxa_to_drop) != 0) {
-            tree_new <- lapply(tree, drop.tip, taxa_to_drop) ; class(tree_new) <- 'multiPhylo'
+            tree_new <- lapply(tree, drop.tip, taxa_to_drop)
+            class(tree_new) <- 'multiPhylo'
         } else {
             ## removing taxa from the trees
             ## keep the same trees
             tree_new <- tree
-            if(length(tips_to_drop) == 0) tips_to_drop <- NA
         }
 
         ## Dropping the rows
@@ -90,8 +92,11 @@ clean.data <- function(data, tree) {
         } else {
             ## keep the same data
             data_new <- data
-            if(length(rows_to_drop) == 0) rows_to_drop <- NA
         }
+
+        ## Replacing empty vectors by NAs
+        if(length(tips_to_drop) == 0) tips_to_drop <- NA
+        if(length(rows_to_drop) == 0) rows_to_drop <- NA
 
         ## output list
         cleaned_data <- list("tree" = tree_new, "data" = data_new, "dropped_tips" = tips_to_drop,  "dropped_rows" = rows_to_drop)

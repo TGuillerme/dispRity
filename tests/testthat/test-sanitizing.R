@@ -105,6 +105,10 @@ test_that("check.dist.matrix works", {
     non_dist <- matrix(1:9, 3, 3)
     is_dist <- as.matrix(dist(non_dist))
 
+    test <- check.dist.matrix(dist(non_dist))
+    expect_equal(test[[1]], dist(non_dist))
+    expect_true(test$was_dist)
+
     expect_error(check.dist.matrix(non_dist, just.check = "blabla"))
     expect_error(check.dist.matrix(non_dist, just.check = FALSE))
     expect_false(check.dist.matrix(non_dist, just.check = TRUE))
@@ -145,4 +149,25 @@ test_that("stop.call works", {
 
     test <- capture_error(stop.call(call$character, " works.", "look: "))
     expect_equal(test[[1]], "look: a works.")
+})
+
+
+## Check class
+test_that("check.class works", {
+    list <- list("a" = "a", "1" = 1, "tree" = rtree(5))
+    test <- check.list(list, function(x) !is.null(x))
+    expect_equal(test, c("a" = TRUE, "1" = TRUE, "tree" = TRUE))
+
+    test <- check.list(list, is.null, condition = any)
+    expect_equal(test, c("a" = FALSE, "1" = FALSE, "tree" = FALSE))
+
+    test <- check.list(list, function(x) (x == "a"), condition = any)
+    expect_equal(test, c("a" = TRUE, "1" = FALSE, "tree" = FALSE))    
+})
+
+## Test round
+test_that("test_equal_round works", {
+    x <- 1.111111
+    y <- 1.11
+    expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
 })

@@ -13,9 +13,12 @@
 #' @return
 #' A \code{data.frame} with:
 #' \item{subsets}{the subset names.}
-#' \item{n}{the number of elements in each subset.}
+#' \item{n}{the maximum number of elements in each subset (see details).}
 #' \item{observed}{the observed disparity or the the observed central tendency (<cent_tend>) of disparity (\code{obs.<cent_tend>}).}
 #' \item{bootstraps...}{if \code{data} is bootstrapped, the bootstrapped disparity's central tendency (\code{bs.<cent_tend>}) and the quantiles of the bootstrapped disparities (or, if \code{data} is not bootstrapped but disparity is calculated as a distribution - see \code{\link[dispRity]{dispRity}}) - the quantiles of the observed disparity are displayed).}
+#' 
+#' @details
+#' If the \code{dispRity} object to summarise comes from a \code{\link[dispRity]{chrono.subsets}} using a \code{"multiPhylo"} object, the displayed number of observations (\code{n}) corresponds to the maximum number of observation at the specific time slice (some slices through some trees might have less observations).
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -137,7 +140,6 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             # if(recall){
             #     print.dispRity(data)
             # }
-
             ## Extract the central tendencies
             simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)
 
@@ -147,8 +149,15 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
                                         do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))
             colnames(simulation_results)[1] <- as.character(match_call$cent.tend)
 
+            ## Get inherited subsets (if exist)
+            if(!is.null(data$subsets)) {
+                subset_names <- rev(data$subsets)
+            } else {
+                subset_names <- rev(data$simulation.data$fix$subsets)
+            }
+
             ## Output table
-            output_table <- cbind("subsets" = rev(data$simulation.data$fix$subsets),
+            output_table <- cbind("subsets" = subset_names,
                                   "n" = data$simulation.data$fix$sample_size,
                                   "var" = unname(data$simulation.data$fix$variance),
                                   simulation_results)

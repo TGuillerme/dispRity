@@ -85,9 +85,9 @@
 #}
 #' 
 #' 
-#' @importFrom mnormt rmnorm
+# @importFrom mnormt rmnorm
 #' @author Mark N Puttick and Thomas Guillerme
-#' @export
+# @export
 
 # source("sanitizing.R")
 # source("model.test_fun.R")
@@ -129,6 +129,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         }
         ## Model is inherited from the dispRity object
         model_inherit <- TRUE
+        model_input <- model
     }
 
     ## Setting up the parameters names (used latter in sanitzing)
@@ -331,31 +332,34 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
             output.vcv <- est.VCV(p, data.model.test.int, model.type = model[time.x])
             output.mean <- est.mean(p, data.model.test.int, model.type = model[time.x], optima.level.ou = optima.level.ou, optima.level.stasis = optima.level.stasis, fixed.optima = fixed.optima, est.anc = TRUE, split.time = ou.mean)
 
-            if(model[1] == "BM") {
-                est.anc <- FALSE
-                model.anc <- p[1]
-                time.int <- time.x + 1
-            }
-            
-            if(model[1] == "OU") {
-                optima.level.ou <- optima.level.ou + 1
-                est.anc <- FALSE
-                model.anc <- utils::tail(output.mean, 1)
-                time.int <- time.x + 1
-            }
-            
-            if(model[1] == "Stasis") {
-                optima.level.stasis <- optima.level.stasis + 1
-                model.anc <- p[5]
-                est.anc <- FALSE
-                time.int <- time.x + 1
-            }
-            
-            if(model[1] == "Trend" || model[1] == "EB") {
-                model.anc <- utils::tail(output.mean, 1)
-                est.anc <- FALSE
-                time.int <- time.x + 1
-            }
+            switch(model[1],
+                BM = {
+                    est.anc <- FALSE
+                    model.anc <- p[1]
+                    time.int <- time.x + 1
+                },
+                OU = {
+                    optima.level.ou <- optima.level.ou + 1
+                    est.anc <- FALSE
+                    model.anc <- utils::tail(output.mean, 1)
+                    time.int <- time.x + 1
+                },
+                Stasis = {
+                    optima.level.stasis <- optima.level.stasis + 1
+                    model.anc <- p[5]
+                    est.anc <- FALSE
+                    time.int <- time.x + 1
+                },
+                Trend = {
+                    model.anc <- utils::tail(output.mean, 1)
+                    est.anc <- FALSE
+                    time.int <- time.x + 1
+                },
+                EB = {
+                    model.anc <- utils::tail(output.mean, 1)
+                    est.anc <- FALSE
+                    time.int <- time.x + 1                    
+                })
                 
         # } else {
         
@@ -437,6 +441,9 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
     ## Add the model call
     output$call <- match_call
     output$nsim <- sim
+    if(model_inherit) {
+        output$subsets <- model_input$subsets
+    }
 
     ## Add the inheritence from the previous object
     if(model_inherit) {

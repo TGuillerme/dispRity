@@ -20,8 +20,8 @@ test_that("set.default works", {
         )
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
     expect_equal(
-        round(test[[1]], 5)
-        , round(c(0.84084, 2.01246), 5))
+        round(test[[1]], 3)
+        , round(c(0.968, 2.023), 3))
     expect_equal(
         test[[2]]
         , "Subsets")
@@ -71,8 +71,8 @@ test_that("extract.from.summary works", {
         extract.from.summary(sum_data, what = 3, rarefaction = 5)
         ,as.numeric(rep(NA, 7)))
     expect_equal(
-        extract.from.summary(sum_data, what = 4, rarefaction = FALSE)
-        ,c(1.772, 1.796, 1.871, 1.878, 1.900, 1.884, 1.808))
+        round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
+        ,c(1.78, 1.81, 1.88, 1.88, 1.90, 1.88, 1.82))
 })
 
 test_that("transpose.box works", {
@@ -132,7 +132,6 @@ test_that("plot.dispRity examples work", {
     ## No data
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
     expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
-    expect_error(plot(data))
 
     ## Rarefaction is ignored if no BS
     expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
@@ -160,7 +159,14 @@ test_that("plot.dispRity examples work", {
 
     ## Testing additional behaviours for plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))    
+    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
+
+    ## Auto colouring of quantiles for discrete bins
+    data(BeckLee_tree) ; data(BeckLee_mat50)
+    test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
+    test <- dispRity(boot.matrix(test), metric = c(sum, variances))
+    expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
+
 })
 
 
@@ -176,6 +182,20 @@ test_that("plot.dispRity continuous with NAs", {
     expect_null(plot(test_data))
   
 })
+
+
+test_that("plot.dispRity.discrete with ADD", {
+
+    data(BeckLee_mat50) ; data(BeckLee_tree)
+    result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
+
+    expect_null(plot(result, type = "polygon"))
+    expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
+  
+})
+
+
+
 
 test_that("plot.dispRity with model.test data", {
     load("model_test_data.Rda")
@@ -205,7 +225,6 @@ test_that("plot.dispRity with model.test data", {
 test_that("plot subclasses works", {
   
     ## Randtest
-
     data(BeckLee_mat50)
     ## Calculating the disparity as the ellipsoid volume
     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
@@ -226,5 +245,17 @@ test_that("plot subclasses works", {
     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
     expect_error(plot(dispRity_dtt, cent.tend = var))
 
+})
 
+test_that("plot preview works", {
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+    data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+
+    expect_null(plot.preview(data_cust, dimensions = c(1,2)))
+    expect_null(plot.preview(data_slice, dimensions = c(1,2)))
+    expect_null(plot(data_cust))
+    expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
+    expect_error(plot(data_slice, type = "p"))
 })

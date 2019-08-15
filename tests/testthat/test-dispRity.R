@@ -95,9 +95,7 @@ test_that("disparity.bootstraps internal works", {
     metrics_list <- list("level3.fun" = var, "level2.fun" = NULL, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test0 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test0v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
-
+    test0 <- disparity.bootstraps(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
     ## Should be a array
     expect_is(
         test0
@@ -110,14 +108,11 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test0)
         ,as.numeric(c(data$call$dimensions, data$call$dimensions, data$call$bootstrap[[1]])))
-    ## test0 and test0v are the same
-    expect_true(all(test0 == test0v))
 
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
     ## With matrix decomposition
-    test1 <- disparity.bootstraps.silent(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
-    expect_message(test1v <- disparity.bootstraps.verbose(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition))
+    test1 <- disparity.bootstraps(data$subsets[[1]][[2]], metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -131,14 +126,11 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test1)
         ,as.numeric(c(data$call$dimensions, data$call$bootstrap[[1]])))
-    ## test1 and test1v are the same
-    expect_true(all(test1 == test1v))
 
     ## Without matrix decomposition
     matrix_decomposition = FALSE
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = NULL, "level1.fun" = mean)
-    test2 <- disparity.bootstraps.silent(test1, metrics_list, data, matrix_decomposition)
-    expect_message(test2v <- disparity.bootstraps.verbose(test1, metrics_list, data, matrix_decomposition))
+    test2 <- disparity.bootstraps(test1, metrics_list, data, matrix_decomposition)
 
     ## Should be a matrix
     expect_is(
@@ -148,8 +140,6 @@ test_that("disparity.bootstraps internal works", {
     expect_equal(
         dim(test2)
         , c(1, 11))
-    ## test2 and test2v are the same
-    expect_true(all(test2 == test2v))
 })
 
 
@@ -204,6 +194,18 @@ test_that("Sanitizing works", {
     warn <- capture_warnings(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
     expect_equal(dim, 48)
     expect_equal(warn , "Dimension number too high: set to 48.")
+
+    # Cannot stack metric level 1 on level 2:
+    data(disparity)
+    error <- capture_error(dispRity(disparity, metric = variances))
+    expect_equal(as.character(error), "Error: At least one metric dimension level 1 was already calculated for disparity.\nImpossible to apply a metric higher than dimension level 1.\n")
+    error <- capture_error(dispRity(disparity, metric = c(sum, variances)))
+    expect_equal(as.character(error), "Error: At least one metric dimension level 1 was already calculated for disparity.\nImpossible to apply a metric higher than dimension level 1.\n")
+
+    ## Only dimensions 3!
+    error <- capture_error(dispRity(data, metric = var))
+    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+
 
 
 })
@@ -488,6 +490,78 @@ test_that("dispRity works with function recycling", {
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
+
+
+test_that("dispRity works with multiple trees from time-slicing", {
+    set.seed(444)
+    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
+    taxa <- paleotree::fossilRecord2fossilTaxa(record)
+    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
+    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
+    likFun <- paleotree::make_durationFreqCont(rangesCont)
+    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
+    sRate <- srRes[[1]][2]
+    divRate <- srRes[[1]][1]
+    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
+    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
+    ## Scale the trees to have the same most recent root age
+    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+    ## Make the dummy data
+    set.seed(1)
+    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+
+    ## Works with a multiPhylo object
+    time_slices_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
+
+    ## Test disparity
+    test <- dispRity(time_slices_normal, metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test <- summary(test)
+    expect_equal(sum_test$n, unlist(lapply(test$subsets, lapply, function(x) length(x)/2), use.names = FALSE))
+    expect_equal_round(sum_test$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    ## Works with multiPhylo object and probabilities
+    time_slices_proba <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
+
+    ## Test disparity
+    set.seed(1)
+    test <- dispRity(time_slices_proba, metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test1 <- summary(test)
+    expect_equal(sum_test1$n, unlist(lapply(test$subsets, lapply, length), use.names = FALSE) / 6)
+    expect_equal_round(sum_test1$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    ## Works with level 2 metrics only
+    set.seed(1)
+    test <- dispRity(time_slices_normal, metric = variances)
+    expect_is(test, "dispRity")
+    sum_test2 <- summary(test)
+    expect_equal(sum_test2$n, unlist(lapply(test$subsets, lapply, length), use.names = FALSE) / 2)
+    expect_equal_round(sum_test2$obs.median, unlist(lapply(test$disparity, lapply, median), use.names = FALSE), 3)
+
+    set.seed(1)
+    test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
+    expect_is(test, "dispRity")
+    sum_test3 <- summary(test)
+    expect_equal(sum_test3$n, c(3, 5, 11))
+    expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
+
+    set.seed(1)
+    test <- dispRity(boot.matrix(time_slices_normal), metric = variances)
+    expect_is(test, "dispRity")
+    sum_test4 <- summary(test)
+    expect_equal(sum_test4$n, c(2, 5, 11))
+    expect_equal(sum_test4$obs.median, sum_test2$obs.median)
+
+})
+
+test_that("get.row.col works", {
+    test <- matrix(1, 5, 5)
+    expect_equal(dim(get.row.col(test, 1:5)), c(5, 5))
+    expect_equal(dim(get.row.col(test, 3:1, 4)), c(3, 4))
+})
+
+
 
 
 # test_that("dispRity works in parallel", {

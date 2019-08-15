@@ -165,4 +165,10 @@ test_that("char.diff plot (graphic)", {
     expect_equal(warn, "NAs introduced by coercion")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix, type = "density"))
+    expect_equal(warn, "NAs introduced by coercion")
+    expect_equal(names(test), c("rect", "text"))
+    expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
+
+

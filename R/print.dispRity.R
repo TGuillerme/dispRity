@@ -124,7 +124,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(paste0("Simulated p-value: ", x$p_value , "\n"))
                     cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
 
-                    print(c("Mean.dtt" = mean(x$dtt), "Mean.sim_MDI" = mean(x$sim_MDI), "var.sim_MDI" = var(x$sim_MDI)))
+                    print(c("Mean.dtt" = mean(x$dtt, na.rm = TRUE), "Mean.sim_MDI" = mean(x$sim_MDI, na.rm = TRUE), "var.sim_MDI" = var(x$sim_MDI, na.rm = TRUE)))
 
                     cat(paste0("\nUse plot.dispRity() to visualise."))
                     return()

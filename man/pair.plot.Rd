@@ -4,8 +4,8 @@
 \alias{pair.plot}
 \title{Plots pairwise comparisons}
 \usage{
-pair.plot(data, what, col = c("black", "white"), legend = FALSE, binary,
-  diag, add, lower = TRUE, ...)
+pair.plot(data, what, col = c("black", "white"), legend = FALSE,
+  binary, diag, add, lower = TRUE, ...)
 }
 \arguments{
 \item{data}{A \code{matrix} or a \code{data.frame} object with comparisons' pair names as row names. The number of rows must be equal to a pairwise combination of \code{n} elements (see details).}

@@ -278,11 +278,8 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         list_of_data <- lapply(list_of_data, list.to.table)
 
         ## running the tests
-        try(details_out <- lapply(list_of_data, lapply.lm.type, test, ...), silent = TRUE)
+        details_out <- lapply(list_of_data, lapply.lm.type, test, ...)
         ## try(details_out <- lapply(list_of_data, lapply.lm.type, test), silent = TRUE) ; warning("DEBUG")
-        if(is.null(details_out)) {
-            stop.call(match_call$test, ".", "Comparison type \"all\" is not applicable with ")
-        }
         if(concatenate == FALSE) warning("Comparison type \"all\" is based on concatenated data.\nlm or aov type tests will have an inflated type I error!")
     }
 
@@ -299,7 +296,8 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     if(comp == "null.test") {
         ## Applying the test to the data
         details_out <- test(data, ...)
-        ## details_out <- test(data, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
+        ## details_out <- test(data,null.distrib = rnorm)
+        return(details_out)
     }
 
     ## ----------------------

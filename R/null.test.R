@@ -43,7 +43,7 @@
 #' Diaz, S., Kattge, J., Cornelissen, J.H., Wright, I.J., Lavorel, S., Dray, S., Reu, B., Kleyer, M., Wirth, C., Prentice, I.C. and Garnier, E., \bold{2016}. The global spectrum of plant form and function. Nature, 529(7585), pp.167-171.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 #For testing:
 # source("sanitizing.R")
@@ -98,7 +98,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
 
     ## NULL TESTING
 
-    ## Handle the disparity metrics
+    ## Handle the disparity metrics
     metric <- get.metric.from.call(data, what = "fun")
     args <- get.metric.from.call(data, what = "args")
 
@@ -118,7 +118,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
         ## Apply the randtest to one subsets
         test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[, 3], sim = null_models_results, alter = alter, ...)
         # test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[,3], sim = null_models_results, alter = alter)
-        ## Adding the simulated data
+        ## Adding the simulated data
         test_out$sim <- null_models_results
         ## Store it as a list of one element (to be consistent for S3 methods)
         test_out <- list(test_out)

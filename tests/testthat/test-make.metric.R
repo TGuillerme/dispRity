@@ -23,6 +23,18 @@ test_that("Output is correct", {
     	make.metric(function(x)as.character(x))
     	)
 
+    fun <- function(x, arg) {
+        if(arg == TRUE){
+            return(mean(x))
+        } else {
+            return(mean(x))
+        }
+    }
+
+    expect_error(
+        make.metric(fun, silent = FALSE)
+        )
+
     ## Verbose
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))
@@ -33,6 +45,10 @@ test_that("Output is correct", {
     error <- capture_error(make.metric(test, silent = FALSE))
     expect_equal(error[[1]],
         "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
+        )
+
+    expect_error(
+        make.metric(lapply)
         )
 
     expect_equal(
@@ -65,5 +81,8 @@ test_that("Output is correct", {
 
     expect_equal(capture.output(make.metric(variances)), 
         c("variances outputs a matrix object.", "variances is detected as being a dimension-level 2 function."))
+
+    error <- capture_error(make.metric(make.metric))
+    expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\n    make.metric(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in make.metric.")
 
 })

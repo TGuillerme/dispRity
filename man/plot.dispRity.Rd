@@ -5,16 +5,17 @@
 \title{dispRity object plotting}
 \usage{
 \method{plot}{dispRity}(x, ..., type, quantiles = c(50, 95),
-  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab,
-  ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE,
-  density = NULL, element.pch = 15, nclass = 10, coeff = 1)
+  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim,
+  xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE,
+  add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,
+  2), nclass = 10, coeff = 1)
 }
 \arguments{
 \item{x}{A \code{dispRity} object.}
 
 \item{...}{Any optional arguments to be passed to \code{\link[graphics]{plot}}.}
 
-\item{type}{Either \code{"continuous"} (\code{"c"}), \code{"box"} (\code{"b"}), \code{"line"} (\code{"l"}) or \code{"polygon"} (\code{"p"}). When unspecified, is set to \code{"continuous"} if \code{\link{chrono.subsets}} is used with \code{method = "continuous"}, else is set to \code{"box"}. See details.}
+\item{type}{Either \code{"continuous"}, \code{"box"}, \code{"line"}, \code{"polygon"} or \code{"space"}. When unspecified, if no disparity was calculated, \code{"preview"} is used. If disparity was calculated, \code{"continuous"} is used for \code{\link{chrono.subsets}} and \code{"box"} for \code{\link{custom.subsets}}. See details.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 
@@ -30,7 +31,7 @@
 
 \item{ylab}{Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.}
 
-\item{col}{Optional, some \code{character} string(s) for the colour of the graph.}
+\item{col}{Optional, some \code{character} string(s) for the colour of the plot.}
 
 \item{chrono.subsets}{\code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
 
@@ -40,7 +41,9 @@
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
-\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15})}
+\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).}
+
+\item{dimensions}{optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).}
 
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
@@ -56,6 +59,7 @@ The different \code{type} arguments are:
   \item \code{"box"}: plots the results as discrete box plots (note that this option ignores the user set quantiles and central tendency).
   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
+  \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
 }
 }
 \examples{

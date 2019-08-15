@@ -2,7 +2,7 @@
 #'
 #' @usage slice.tree(tree, age, model, FAD, LAD)
 #' 
-#' @description Time slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
+#' @description Time slicing through a phylogenetic tree.
 #'
 #' @param tree A \code{phylo} object with a \code{root.time} element.
 #' @param age A single \code{numeric} value indicating where to perform the slice.
@@ -26,7 +26,7 @@
 #' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 #' 
 #' @references
 #' Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
@@ -53,32 +53,43 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
     model <- tolower(model)
     check.method(model, c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split"), "Slicing model")
 
-    #FAD/LAD
-    if(missing(FAD)) {
-        FAD <- tree.age(tree)
+    ## Adding a root time if missing
+    if(is.null(tree$root.time)) {
+        tree$root.time <- max(node.depth.edgelength(tree)[1:Ntip(tree)])
     }
-    if(missing(LAD)) {
-        LAD <- tree.age(tree)
+
+    #FAD/LAD
+    has_tree_age <- FALSE
+    if(missing(FAD) && missing(LAD)) {
+        tree_age <- tree.age(tree)
+        FAD <- LAD <- tree_age
+        has_tree_age <- TRUE
+    } else {
+        if(missing(FAD)) {
+            tree_age <- tree.age(tree)
+            FAD <- tree_age
+            has_tree_age <- TRUE
+        }
+        if(missing(LAD)) {
+            tree_age <- tree.age(tree)
+            LAD <- tree_age
+            has_tree_age <- TRUE
+        }
     }
 
     #SLICING A TREE
     #Creating the tree.age matrix
-    tree_age <- tree.age(tree)
+    if(!has_tree_age) {
+        tree_age <- tree.age(tree)
+    }
 
-    #Running the timeSliceTree function (remove warning, called as a message in the original function)
+    ## Making a sharp tree slice
     if(age > max(tree_age[,1])) {
         ## Don't slice the tree if age is too old
         return(NA)
     } else {
-        suppressMessages(
-        try(
-            tree_slice <- paleotree::timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
-        , silent = TRUE)
-        )
-        
-
-        if(!exists("tree_slice")) {
-            ## Slicing through a single edge!
+        tree_slice <- slice.tree.sharp(tree, age)
+        if(is.null(tree_slice)) {
             return(slice.edge(tree, age, model))
         }
     }
@@ -127,26 +138,23 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
                 if(!FAD[which(FAD[, 2] == tree_slice$tip.label[tip]),1] >= age & LAD[which(LAD[, 2] == tree_slice$tip.label[tip]), 1] <= age) {
 
                     #Chose the tip/node following the given model
-                    if(model == "random") {
-                        selected_model <- sample(c("deltran", "acctran"), 1)
-                    } else {
-                        selected_model <- model
-                    }
+                    selected_model <- ifelse(model == "random", sample(c("deltran", "acctran"), 1), model)
 
-                    if(selected_model == "deltran") {
-                        #Parent
-                        tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
-
-                    if(selected_model == "acctran") {
-                        #Offspring
-                        tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
-
-                    if(selected_model == "proximity") {
-                        #Closest
-                        tree_sliced$tip.label[tip] <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice)
-                    }
+                    ## Run the slicing
+                    switch(selected_model,
+                        deltran = {
+                            #Parent
+                            tree_sliced$tip.label[tip] <- slice.tree_DELTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                        },
+                        acctran = {
+                            #Offspring
+                            tree_sliced$tip.label[tip] <- slice.tree_ACCTRAN(tree, tree_slice$tip.label[tip], tree_slice)
+                        },
+                        proximity = {
+                            #Closest
+                            tree_sliced$tip.label[tip] <- slice.tree_PROXIMITY(tree, tree_slice$tip.label[tip], tree_slice)
+                        }
+                    )
                 }
             } 
         }

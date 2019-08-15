@@ -108,6 +108,12 @@ test_that("make.null.model works", {
         test2
         , test3)
 
+    set.seed(1)
+    test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = centroids, args = 0)
+    expect_is(test5, "numeric")
+    expect_equal(length(test5), 5)
+
+
 })
 
 #null.test

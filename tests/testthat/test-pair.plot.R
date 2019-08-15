@@ -47,4 +47,12 @@ test_that("testing examples", {
 
     data[,1] <- 1
     test <- pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "min")
+
+    data2 <- data
+    colnames(data2) <- letters[1:2]
+    test <- pair.plot(data2, what = "a", legend = TRUE)
+    expect_is(test, "list")
+    expect_null(pair.plot(data2, what = "a", legend = TRUE, add = 5, binary = 0.05))
+    expect_null(pair.plot(data2, what = "a", legend = TRUE, add = "TRUE", lower = FALSE, binary = 0.05))
+
 })

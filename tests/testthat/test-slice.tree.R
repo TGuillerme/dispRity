@@ -2,6 +2,32 @@
 
 context("slice.tree")
 
+
+test_that("slice.tree.sharp works", {
+
+    set.seed(42)
+    tree <- rtree(10)
+    tree$root.time <- 10
+
+    ## Gives the same answers as timeSliceTree
+    for(test_slice in c(9,8,7)) {
+        paletest <- paleotree::timeSliceTree(tree, test_slice, drop.extinct = TRUE, plot = FALSE)
+        disptest <- slice.tree.sharp(tree, test_slice)
+        expect_is(paletest, "phylo")
+        expect_is(disptest, "phylo")
+        expect_equal(paletest$tip.label, disptest$tip.label)
+        expect_equal(dist.nodes(paletest), dist.nodes(disptest))
+    }
+    #microbenchmark(timeSliceTree(tree, 8, drop.extinct = TRUE, plot = FALSE), slicing.tree.sharp(tree, 8))
+
+    ## Provides error
+    expect_error(paleotree::timeSliceTree(tree, tree$root.time - (0.06 * tree$root.time), drop.extinct = TRUE, plot = FALSE))
+
+    ## slice.tree.sharp doest not error
+    expect_null(slice.tree.sharp(tree, tree$root.time - (0.06 * tree$root.time)))
+})
+
+
 #Testing slice.tree_parent.node
 #example
 tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
@@ -47,15 +73,18 @@ test_that("slice.tree_offspring.node picks up the offspring tip.node", {
     expect_error(
         slice.tree_offspring.node(tree, '1')
         )
-    expect_error(
+    ## Nulls
+    expect_null(
         slice.tree_offspring.node(tree, 'E', 'E')
         )
-    expect_error(
+    expect_null(
         slice.tree_offspring.node(tree, '5', 'E')
         )
-    expect_error(
+    expect_null(
         slice.tree_offspring.node(tree, '1', '2')
         )
+
+
     #class
     expect_is(
         slice.tree_offspring.node(tree, '1', 'A'), 'character'
@@ -218,6 +247,12 @@ test_that("slice.tree proba works", {
     test0g_2 <- slice.tree(tree, 2.8, "gradual.split", FAD, LAD)
     test0p_2 <- slice.tree(tree, 2.8, "equal.split", FAD, LAD)
     expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(1.000, 1.000, 0.560))
+    expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
+
+    ## Different results (with FAD or LAD)
+    test0g_2 <- slice.tree(tree, 2.8, "gradual.split", FAD = FAD)
+    test0p_2 <- slice.tree(tree, 2.8, "equal.split", LAD = LAD)
+    expect_equal(round(as.numeric(test0g_2[,3]), digit = 3), c(0.9, 0.933, 0.560))
     expect_equal(round(as.numeric(test0p_2[,3]), digit = 3), c(1.000, 1.000, 0.500))
 })
 

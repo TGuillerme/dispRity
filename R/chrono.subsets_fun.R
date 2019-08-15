@@ -1,3 +1,12 @@
+## Set the percentage for reaching the first sample containing three elements
+get.percent.age <- function(tree, percent = 0.01) {
+    ## Increment the percentage until at least three nodes/edges are crossed
+    while(Ntip(slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))) < 3) {
+        percent <- percent + 0.01
+    }
+    return(percent)
+}
+
 
 ## Internal function for adjust.FADLAD
 adjust.age <- function(FADLAD, ages_tree) {
@@ -31,8 +40,11 @@ adjust.FADLAD <- function(FADLAD, tree, data) {
 
 
 ## Discrete time subsets
-chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose) {
+chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose) {
     
+    ## Model option is useless
+    model <- NULL
+
     ## lapply function for getting the interval
     get.interval <- function(interval, time, ages_tree, inc.nodes, verbose) {
         if(verbose) message(".", appendLF = FALSE)
@@ -80,35 +92,46 @@ chrono.subsets.discrete <- function(data, tree, time, FADLAD, inc.nodes, verbose
 }
 
 ## Continuous time subsets
-chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) {
+chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+
+    ## inc.nodes option is useless
+    inc.nodes <- NULL
 
     ## lapply function for getting the slices
-    get.slice <- function(slice, time, model, ages_tree, data, verbose, tree) {
+    get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
 
         ## Verbose
         if(verbose) message(".", appendLF = FALSE)
 
-        ## Getting the tree ages
-        tree_ages <- tree.age(tree)[1:Ntip(tree), ]
-
-        ## Slicing the tree
-        if(time[slice] != min(tree_ages[,1])) {
-            sub_tree <- slice.tree(tree, time[slice], model, FAD = ages_tree$FAD, LAD = ages_tree$LAD)
+        ## Get the age case
+        if(time[slice] > min(tree_ages[,1])) {
+            case <- "older"
         } else {
-            ## Extract only living taxa
-            sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
-
-            if(model == "equal.split" || model == "gradual.split") {
-                ## Transforming the subtree into a probability table
-                tips_list <- sub_tree$tip.label
-                nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
-                sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
-                rownames(sub_tree) <- colnames(sub_tree) <-  NULL
-            }
+            case <- ifelse(time[slice] == min(tree_ages[,1]), "equal", "younger")
         }
 
+        ## Slicing the tree
+        switch(case,
+            older   = {
+                sub_tree <- slice.tree(tree, time[slice], model, FAD = FADLADs$FAD, LAD = FADLADs$LAD)
+            },
+            equal   = {
+                sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
+                if(model == "equal.split" || model == "gradual.split") {
+                    ## Transforming the subtree into a probability table
+                    tips_list <- sub_tree$tip.label
+                    nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
+                    sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
+                    rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+                }
+            },
+            younger = {
+                sub_tree <- NA
+            }
+        )
+
         ## Empty subset
-        if(class(sub_tree) != "phylo" && is.na(sub_tree)) {
+        if(all(class(sub_tree) != "phylo" & is.na(sub_tree))) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
         }
@@ -119,18 +142,18 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
             tips <- sub_tree$tip.label
 
             ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
             ## Getting the list of elements
             return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
         
         } else {
             ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(ages_tree$FAD$ages > time[slice] & ages_tree$LAD$ages < time[slice])]
+            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
             if(model == "equal.split" || model == "gradual.split") {
             ## Return a probability table
-                if(length(taxa) > 0) {
+                if(any(length(taxa) > 0)) {
                     ## Combine the taxa, their ancestor and their probability to the sub_tree table
                     ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
                     sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
@@ -148,7 +171,7 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
             } else {
             ## Return a matrix
 
-                if(length(taxa) > 0) {
+                if(any(length(taxa) > 0)) {
                     sub_tree <- c(sub_tree, taxa)
                 }
 
@@ -159,17 +182,20 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, verbose) 
     }
 
     ## ages of tips/nodes + FAD/LAD
-    ages_tree <- adjust.FADLAD(FADLAD, tree, data)
-    
+    FADLADs <- adjust.FADLAD(FADLAD, tree, data)
+
+    ## Getting the tree ages
+    tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+
     ## verbose
     if(verbose) {
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
-    #get.slice(slice = 20, time, model, ages_tree, data, verbose, tree)
+    #get.slice(slice = 20, time, model, FADLADs, data, verbose, tree)
 
     ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, ages_tree, data, verbose, tree)
+    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, tree_ages, FADLADs, data, verbose, tree)
 
     ## verbose
     if(verbose) {
@@ -188,3 +214,47 @@ make.origin.subsets <- function(data) {
     origin_subsets <- list("origin" = origin)
     return(origin_subsets)
 }
+
+## cbind with missing data
+cbind.fill <- function(x, y) {
+    ## Check the number of rows
+    if(dim(x)[1] == dim(y)[1]) {
+        ## Simple cbind
+        return(list("elements" = cbind(x, y)))
+    } else {
+        ## Minimum number of rows
+        min_rows <- min(dim(x)[1], dim(y)[1])
+        ## Minimal cbind
+        output <- cbind(x[1:min_rows, , drop = FALSE], y[1:min_rows, , drop = FALSE])
+        ## Add the missing rows
+        if(dim(x)[1] == min_rows) {
+            ## Add the y last rows 
+            NAs <- cbind(matrix(NA, ncol = dim(x)[2], nrow = dim(y)[1]-min_rows),
+                            y[-c(1:min_rows), , drop = FALSE])
+        } else {
+            ## Add the x last rows
+            NAs <- cbind(x[-c(1:min_rows), , drop = FALSE],
+                        matrix(NA, ncol = dim(y)[2], nrow = dim(x)[1]-min_rows))
+        }
+        ## Combine both
+        return(list("elements" = rbind(output, NAs)))
+    }
+}
+
+## Recursive combinations of the lists
+recursive.combine.list <- function(list) {
+    if(length(list) == 2) {
+        ## Do cbind on the two elements of the list
+        return(mapply(function(x,y) cbind.fill(x$elements, y$elements),
+                      list[[1]], list[[length(list)]], SIMPLIFY = FALSE))
+    } else {                
+        ## Do cbind on the first and last elements of the list
+        list[[1]] <- mapply(function(x,y) cbind.fill(x$elements, y$elements),
+                            list[[1]], list[[length(list)]], SIMPLIFY = FALSE)
+        ## Remove the last element of the list
+        list[[length(list)]] <- NULL
+        ## Repeat!
+        return(recursive.combine.list(list))
+    }
+}
+

@@ -25,7 +25,7 @@
 #' @seealso \code{\link{custom.subsets}}, \code{\link{tree.age}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## DEBUG
 #source("sanitizing.R")

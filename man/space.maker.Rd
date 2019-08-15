@@ -30,7 +30,7 @@ For example if \code{distribution = c(runif, rnorm, rgamma)} and one wants the d
 
 The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
-The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
+The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one.
 }
 \examples{
 ## A square space

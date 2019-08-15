@@ -4,10 +4,11 @@
 \alias{model.test.wrapper}
 \title{Model test wrapper}
 \usage{
-model.test.wrapper(data, model, pool.variance = NULL, time.split = NULL,
-  fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = TRUE,
-  sim = 1000, plot.sim = TRUE, col.sim, col.obs = "hotpink",
-  lwd.obs = 2, show.p = FALSE, cex.p, legend = FALSE, ...)
+model.test.wrapper(data, model, pool.variance = NULL,
+  time.split = NULL, fixed.optima = FALSE,
+  control.list = list(fnscale = -1), verbose = TRUE, sim = 1000,
+  plot.sim = TRUE, col.sim, col.obs = "hotpink", lwd.obs = 2,
+  show.p = FALSE, cex.p, legend = FALSE, ...)
 }
 \arguments{
 \item{data}{A \code{dispRity} object used to test models of evolution through time.}

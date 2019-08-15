@@ -38,7 +38,7 @@
 #' @seealso \code{\link{test.dispRity}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 #testing
 #source("sanitizing.R")

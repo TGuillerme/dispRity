@@ -12,7 +12,7 @@ boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
-\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).}
+\item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
@@ -35,6 +35,7 @@ Bootstraps and rarefies either a matrix or a list of matrices.
 }
 \details{
 \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
+When the input is \code{"min"}, the smallest number of elements is used (or 3 if some subsets have less than 3 elements).
 
 \code{boot.type}: the different bootstrap algorithms are:
 \itemize{
@@ -45,8 +46,11 @@ Bootstraps and rarefies either a matrix or a list of matrices.
 \code{prob}: This option allows to attribute specific probability to each element to be drawn.
 A probability of 0 will never sample the element, a probability of 1 will sample.
 This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
-If the argument is a \code{matrix}, it must have rownames attrbiutes corresponding to the element names.
+If the argument is a \code{matrix}, it must have rownames attributes corresponding to the element names.
 If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
+
+Multiple trees: If the give \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
+For example, for a slice through two trees resulting in the selection of elements \code{A} and \code{B} in the first tree and \code{A}, \code{B} and \code{C} in the second tree, the \code{"full"} bootstrap algorithm will select three elements (with replacement) between \code{A}, \code{B} and \code{C} with a probability of respectively \eqn{p(A) = 1/3} (\eqn{p(A) = (1/3 + 1/3) / 2}), \eqn{p(B) = 1/3} and \eqn{p(C) = 1/6} (\eqn{p(C) = (0 + 1/3) / 2}).
 }
 \examples{
 ## Load the Beck & Lee 2014 matrix

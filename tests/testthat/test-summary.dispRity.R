@@ -21,12 +21,12 @@ test_that("get.summary", {
     expect_is(test, "list")
     expect_equal(names(test), c("cent_tend", "quantiles"))
     expect_equal(round(test[[1]], digit = 5), round(mean(unlist(disparity$disparity$`30`[[2]])), digit = 5))
-    expect_equal(round(test[[2]], digit = 5), c("25%" = 1.76947, "75%" = 1.87070))
+    expect_equal(round(test[[2]], digit = 2), c("25%" = 1.78, "75%" = 1.88))
 
     test_no_cent_tend <- get.summary(disparity$disparity$`30`[[2]], quantiles = c(50))
     expect_is(test_no_cent_tend, "list")
     expect_equal(names(test_no_cent_tend), "quantiles")
-    expect_equal(round(test_no_cent_tend[[1]], digit = 5), c("25%" = 1.76947, "75%" = 1.87070))
+    expect_equal(round(test_no_cent_tend[[1]], digit = 2), c("25%" = 1.78, "75%" = 1.88))
 
     test_no_quant <- get.summary(disparity$disparity$`30`[[2]], cent.tend = mean)
     expect_is(test_no_quant, "list")
@@ -222,7 +222,7 @@ test_that("Works with subsets and bootstraps", {
         )
     expect_equal(
         test$bs.median
-        ,c(32.65, 34.09))
+        ,c(32.89, 33.78))
 })
 
 #Case 5, time subsets + bootstraps + rarefaction
@@ -251,7 +251,7 @@ test_that("Works with subsets, bootstraps and rarefaction", {
         , c(37.00, NA, NA, 37.97, NA, NA))
     expect_equal(
         test$bs.median
-        , c(32.65, 20.39, 21.86, 33.75, 21.44, 23.33))
+        , c(32.89, 20.21, 21.45, 34.34, 21.45, 23.91))
 })
 
 #Example

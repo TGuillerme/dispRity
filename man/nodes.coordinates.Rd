@@ -39,7 +39,7 @@ ancestral.dist(matrix, nodes.coords = all_anc_centroids)
 
 }
 \seealso{
-\code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}
+\code{\link{ancestral.dist}}, \code{\link{dispRity.metric}}, \code{\link{dispRity}}, \code{\link{get.ancestors}}
 }
 \author{
 Thomas Guillerme

@@ -133,6 +133,15 @@ test_that("fill.dispRity", {
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix))
+
+    test <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
+    test$subsets <- c(list(), list())
+
+    test <- fill.dispRity(test)
+    expect_equal(
+        as.vector(test$subsets[[1]]$elements)
+        , 1:nrow(test$matrix))
+
 })
 
 
@@ -167,7 +176,7 @@ test_that("matrix.dispRity", {
         , c(15, 48))
     expect_equal(
         rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
-        , c("Patriomanis","Patriomanis","Procavia","Oxyclaenus","Pezosiren","Solenodon","Potamogalinae","Procavia","Gomphos","Cynocephalus","Solenodon","Todralestes","Gomphos","Widanelfarasia","Pezosiren"))
+        , c("Eoryctes", "Rhynchocyon", "Pezosiren", "Potamogalinae", "Soricidae", "Myrmecophagidae", "Protictis", "Protictis", "unnamed_cimolestid", "Bradypus", "Mimotona", "Todralestes", "Moeritherium", "Dasypodidae", "Bradypus"))
 })
 
 
@@ -490,6 +499,9 @@ test_that("combine.subsets", {
             as.vector(unlist(lapply(tests[[test]]$subsets, lapply, length)))
             ,expected_elements[[test]])
     }
+
+    error <- capture_error(expect_warning(combine.subsets(data_test1, c(1,1))))
+    expect_equal(error[[1]], "subsets argument must not contain duplicates.")
 })
 
 

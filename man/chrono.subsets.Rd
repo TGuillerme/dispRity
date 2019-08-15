@@ -12,7 +12,7 @@ chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
 \arguments{
 \item{data}{A matrix.}
 
-\item{tree}{A \code{phylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.}
+\item{tree}{A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.}
 
 \item{method}{The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
 

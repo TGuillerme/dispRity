@@ -18,7 +18,7 @@
 #'
 #' The \code{cor.matrix} argument should be a correlation matrix between the dimensions.
 #' If not \code{NULL}, the multidimensional space is multiplied by the the Choleski decomposition (\code{\link[base]{chol}}) of the correlation matrix.
-#' The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one. Its sum must be equal to 1.
+#' The \code{scree} argument is simply a value multiplier for each dimension to adjust their variance to approximate the \code{scree} one.
 #' 
 #'
 #' @examples
@@ -176,14 +176,14 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     if(!is.null(scree)) {
         check.class(scree, "numeric")
         check.length(scree, dimensions, msg = " must be of the same length as the dimensions argument", errorif = FALSE)
-        if(sum(scree) != 1) {
-            stop.call("", "scree argument must be a numeric vector summing to 1.")
-        }
+        # if(sum(scree) != 1) {
+        #     stop.call("", "scree argument must be a numeric vector summing to 1.")
+        # }
     }
 
     ## CREATE THE SPACE
     ## with only one distribution
-    if(uni_distribution == TRUE) {
+    if(uni_distribution) {
 
         if(!is.null(arguments)) {
             ## Setting the n argument
@@ -209,26 +209,29 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         } else {
             ## Applying the function to the space
             space <- as.matrix(lapply(distribution[1:dimensions], function(fun) return(fun(elements))))
-            space <- matrix(unlist(space), nrow=elements, byrow=FALSE)
+            space <- matrix(unlist(space), nrow = elements, byrow = FALSE)
         }
     }
 
     ## Apply the correlation matrix to the space (if !NULL)
     if(!is.null(cor.matrix)) {
-        ## Choleski decomposition
-        choleski_decomposition <- t(chol(cor.matrix))
-        ## Multiply the matrices (transpose space)
-        space <- choleski_decomposition %*% t(space)
-        ## Transpose space again
-        space <- t(space)
+        choleski_decomposition <- try(t(chol(cor.matrix)), silent = TRUE)
+        if(class(choleski_decomposition) == "matrix") {
+            ## Use the Choleski decomposition
+            space <- choleski_decomposition %*% t(space)
+            ## Transpose space again
+            space <- t(space)            
+        } else {
+            space <- space %*% (cor.matrix %*% cor(space))
+            warning(paste0(choleski_decomposition[1], "The resulting correlation is not exact."), call. = TRUE)
+        }
     }
 
     ## Modify the variance for each dimensions
     if(!is.null(scree)) {
         ## Variance corrector
-        effective_var <- apply(space, 2, var)
-        var_modifier <- effective_var * scree
-        space <- t(t(space) * var_modifier)
+        effective_var <- apply(space, 2, var, na.rm = TRUE)
+        space <- space %*% diag(scree)
     }
 
     #output
@@ -256,7 +259,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
 #' \code{\link{space.maker}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## Function for creating a rand
 random.circle <- function(n, distribution, inner = 0, outer = Inf, ...) {

@@ -24,7 +24,7 @@ get.summary <- function(disparity_subsets_rare, cent.tend, quantiles) {
         output$cent_tend <- cent.tend(as.vector(disparity_subsets_rare))
     }
     if(!missing(quantiles)) {
-        output$quantiles <- quantile(as.vector(disparity_subsets_rare), probs = CI.converter(quantiles))
+        output$quantiles <- quantile(as.vector(disparity_subsets_rare), probs = CI.converter(quantiles), na.rm = TRUE)
     }
     return(output)
 }

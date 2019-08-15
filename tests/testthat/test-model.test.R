@@ -5,13 +5,42 @@ context("model.test")
 load("model_test_data.Rda")
 data <- model_test_data
 
+test_that("internal functions work", {
+
+    ## select.model.list
+    data(disparity)
+
+    ## Calculate the variance for metric !level1
+    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+    ## Get data from rarefaction
+    test <- select.model.list(disparity, observed = FALSE, cent.tend = median)    
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    test <- select.model.list(disparity, observed = FALSE, cent.tend = median, rarefaction = 15)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+    ## Get data from time bins
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    expect_warning(disparity <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 15))
+    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+
+})
+
+
 test_that("simple models work", {
 
     ## BM model
     set.seed(1)
     test <- model.test(data, model = "BM", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     # expect_equal(round(test[[2]][[1]]$value, digit = 4), 8.9143) #8.2029
@@ -30,7 +59,7 @@ test_that("simple models work", {
     set.seed(1)
     test <- model.test(data, model = "Stasis", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list")) 
     # expect_equal(round(test[[2]][[1]]$value, digit = 4), -14.9971) #round(-14.7086, digit = 4)
@@ -40,7 +69,7 @@ test_that("simple models work", {
     set.seed(1)
     test <- model.test(data, model = "Trend", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     # expect_equal(round(test[[2]][[1]]$value, digit = 4), 11.1296) #round(10.5916, digit = 4)
@@ -50,7 +79,7 @@ test_that("simple models work", {
     set.seed(1)
     test <- model.test(data, model = "OU", pool.variance = NULL, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     # expect_equal(round(test[[2]][[1]]$value, digit = 4), 11.5986) #round(10.9821, digit = 4)
@@ -60,7 +89,7 @@ test_that("simple models work", {
     set.seed(1)
     test <- model.test(data, model = "multi.OU", pool.variance = NULL, time.split = c(45, 65), fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     # expect_equal(round(test[[2]][[1]]$value, digit = 4), 12.8101) #round(12.0183, digit = 4)
@@ -70,7 +99,7 @@ test_that("simple models work", {
     set.seed(1)
     test <- model.test(data, model = "BM", pool.variance = TRUE, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     test2 <- model.test(data, model = "BM", pool.variance = FALSE, time.split = NULL, fixed.optima = FALSE, control.list = list(fnscale = -1), verbose = FALSE)
@@ -85,7 +114,7 @@ test_that("simple models work", {
     data_tmp <- dispRity(boot.matrix(chrono.subsets(BeckLee_mat99, BeckLee_tree, time = 32, model = "acctran", method = "continuous")), metric = mean)
     verbose <- capture.output(test <- model.test(data_tmp, model = "multi.OU", time.split = NULL, verbose = TRUE))
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     ## Check the message
@@ -102,7 +131,7 @@ test_that("multiple.models work", {
     test <- model.test(data, model = models.to.test, control.list=list(fnscale = -1), time.split = 65, verbose = FALSE) 
 
     expect_equal(class(test), c("dispRity", "model.test"))
-    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima"))
+    expect_equal(names(test), c("aic.models", "full.details", "call", "model.data", "fixed.optima", "subsets"))
     expect_is(test[[1]], c("matrix"))
     expect_is(test[[2]], c("list"))
     expect_equal(dim(test$aic.models), c(13, 3))
@@ -118,13 +147,14 @@ test_that("model.test example works", {
     tests <- model.test(data, models, time.split = 66, verbose = FALSE)
 
     expect_is(tests, c("dispRity", "model.test"))
-    expect_equal(length(tests), 5)
+    expect_equal(length(tests), 6)
     expect_equal(lapply(tests, length),
                 list("aic.models" = 12,
                      "full.details" = 4,
                      "call" = 5,
                      "model.data" = 4,
-                     "fixed.optima" = 1))
+                     "fixed.optima" = 1,
+                     "subsets" = 25))
 
     ## Summarising the models
     summary_out <- summary(tests)
@@ -138,30 +168,37 @@ test_that("model.test example works", {
 })
 
 test_that("model.test.sim example works", {
+
+    error <- capture_error(model.test.sim(model.test.sim(sim = 10, model = rnorm(10))))
+    expect_equal(error[[1]], "model must be either a model name (character) or a dispRity object from model.test().")
+
+
     set.seed(42)
-    models <- list("Trend", "BM", "Stasis")
+    models <- list("Trend", "BM", "Stasis", "EB")
     model_test_output <- model.test(data, models, time.split = 66, verbose = FALSE)
     expect_is(model_test_output, c("dispRity", "model.test"))
-    expect_equal(length(model_test_output), 5)
+    expect_equal(length(model_test_output), 6)
     expect_equal(lapply(model_test_output, length),
-                list("aic.models" = 9,
-                     "full.details" = 3,
+                list("aic.models" = 12,
+                     "full.details" = 4,
                      "call" = 5,
                      "model.data" = 4,
-                     "fixed.optima" = 1))
+                     "fixed.optima" = 1,
+                     "subsets" = 25))
      
     ## simulations using the output from model.test
     expect_error(model.test.sim(sim = 10, model = data))
-    expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 4))
+    expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 5))
     ## Warning for ignored argument (inherited) + absolute value for sim -10 (silly)
-    expect_warning(model_test_sim_output <- model.test.sim(sim = -10, model = model_test_output, time.span = 8, alternative = "lesser"))     
+    expect_warning(model_test_sim_output <- model.test.sim(sim = -10, model = model_test_output, time.span = 8, alternative = "lesser"))
     expect_is(model_test_sim_output, c("dispRity", "model.sim"))
-    expect_equal(length(model_test_sim_output), 5)
+    expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
                      "p.value" = 12,
                      "call" = 5,
                      "nsim" = 1,
+                     "subsets" = 25,
                      "model" = 6))
 
 
@@ -173,13 +210,14 @@ test_that("model.test.sim example works", {
     ## Warning for ignored argument (inherited) + absolute value for sim -10 (silly)
     model_test_sim_output <- model.test.sim(sim = 10, model = model_test_output, model.rank = 3)
     expect_is(model_test_sim_output, c("dispRity", "model.sim"))
-    expect_equal(length(model_test_sim_output), 5)
+    expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
                      "p.value" = 12,
                      "call" = 4,
                      "nsim" = 1,
-                     "model" = 5))
+                     "subsets" = 25,
+                     "model" = 6))
 
 
 

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html >
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>dispRity manual</title>
-  <meta name="description" content="dispRity R package vignette">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>9 Palaeobiology demo: disparity-through-time and within groups | dispRity manual</title>
+  <meta name="description" content="dispRity R package vignette" />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="dispRity manual" />
+  <meta property="og:title" content="9 Palaeobiology demo: disparity-through-time and within groups | dispRity manual" />
   <meta property="og:type" content="book" />
   
   
@@ -17,25 +16,26 @@
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="dispRity manual" />
+  <meta name="twitter:title" content="9 Palaeobiology demo: disparity-through-time and within groups | dispRity manual" />
   
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)">
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2019-03-06">
+<meta name="date" content="2019-08-15" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="the-guts-of-the-disprity-package.html">
-<link rel="next" href="ecology-demo.html">
+<link rel="prev" href="ecology-demo.html">
+<link rel="next" href="developing-disprity.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
@@ -50,41 +50,66 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -131,8 +156,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
-<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
-<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#customised-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
+<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
+<li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -171,43 +196,52 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.2.3" data-path="making-stuff-up.html"><a href="making-stuff-up.html#generating-realistic-spaces"><i class="fa fa-check"></i><b>5.2.3</b> Generating realistic spaces</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>6</b> The guts of the <code>dispRity</code> package</a><ul>
-<li class="chapter" data-level="6.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>6.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="6.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>6.2</b> <code>dispRity</code> utilities</a><ul>
-<li class="chapter" data-level="6.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>6.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
+<li class="chapter" data-level="6" data-path="other-functionalities.html"><a href="other-functionalities.html"><i class="fa fa-check"></i><b>6</b> Other functionalities</a><ul>
+<li class="chapter" data-level="6.1" data-path="other-functionalities.html"><a href="other-functionalities.html#clean.data"><i class="fa fa-check"></i><b>6.1</b> <code>clean.data</code></a></li>
+<li class="chapter" data-level="6.2" data-path="other-functionalities.html"><a href="other-functionalities.html#crown.stem"><i class="fa fa-check"></i><b>6.2</b> <code>crown.stem</code></a></li>
+<li class="chapter" data-level="6.3" data-path="other-functionalities.html"><a href="other-functionalities.html#get.bin.ages"><i class="fa fa-check"></i><b>6.3</b> <code>get.bin.ages</code></a></li>
+<li class="chapter" data-level="6.4" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.4</b> <code>pair.plot</code></a></li>
+<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.5</b> <code>reduce.matrix</code></a></li>
+<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.6</b> <code>slice.tree</code></a></li>
+<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.7</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
+<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.8</b> <code>tree.age</code></a></li>
 </ul></li>
-<li class="chapter" data-level="6.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>6.3</b> The <code>dispRity</code> object content</a><ul>
-<li class="chapter" data-level="6.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>6.3.1</b> <code>$matrix</code></a></li>
-<li class="chapter" data-level="6.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>6.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="6.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>6.3.3</b> <code>$subsets</code></a></li>
-<li class="chapter" data-level="6.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>6.3.4</b> <code>$disparity</code></a></li>
+<li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a><ul>
+<li class="chapter" data-level="7.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>7.1</b> Manipulating <code>dispRity</code> objects</a></li>
+<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
+<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
+<li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
+<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
+<li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>7</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
-<li class="chapter" data-level="7.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>7.1</b> Before starting</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>7.1.1</b> The morphospace</a></li>
-</ul></li>
-<li class="chapter" data-level="7.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>7.2</b> A disparity-through-time analysis</a><ul>
-<li class="chapter" data-level="7.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>7.2.1</b> Splitting the morphospace through time</a></li>
-<li class="chapter" data-level="7.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>7.2.2</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="7.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity"><i class="fa fa-check"></i><b>7.2.3</b> Calculating disparity</a></li>
-<li class="chapter" data-level="7.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>7.2.4</b> Plotting the results</a></li>
-</ul></li>
-<li class="chapter" data-level="7.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>7.3</b> Testing differences</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a><ul>
 <li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
 <li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
 <li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
-<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity-1"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>9</b> Developing <code>dispRity</code></a><ul>
-<li class="chapter" data-level="9.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>9.1</b> More functions</a></li>
-<li class="chapter" data-level="9.2" data-path="developing-disprity.html"><a href="developing-disprity.html#more-manuals"><i class="fa fa-check"></i><b>9.2</b>  More manuals</a></li>
+<li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
+<li class="chapter" data-level="9.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>9.1</b> Before starting</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>9.1.1</b> The morphospace</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>9.2</b> A disparity-through-time analysis</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>9.2.1</b> Splitting the morphospace through time</a></li>
+<li class="chapter" data-level="9.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>9.2.2</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="9.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity-1"><i class="fa fa-check"></i><b>9.2.3</b> Calculating disparity</a></li>
+<li class="chapter" data-level="9.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>9.2.4</b> Plotting the results</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>9.3</b> Testing differences</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>10</b> Developing <code>dispRity</code></a><ul>
+<li class="chapter" data-level="10.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>10.1</b> More functions</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -231,23 +265,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="palaeobiology-demo-disparity-through-time-and-within-groups" class="section level1">
-<h1><span class="header-section-number">7</span> Palaeobiology demo: disparity-through-time and within groups</h1>
-<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.2) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
+<h1><span class="header-section-number">9</span> Palaeobiology demo: disparity-through-time and within groups</h1>
+<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.3) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
 <p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).</p>
 <div id="before-starting" class="section level2">
-<h2><span class="header-section-number">7.1</span> Before starting</h2>
+<h2><span class="header-section-number">9.1</span> Before starting</h2>
 <div id="the-morphospace" class="section level3">
-<h3><span class="header-section-number">7.1.1</span> The morphospace</h3>
-<p>In this example, we are going to use a subset of the data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>. See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details. Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>). The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading demo and the package data
-<span class="kw">library</span>(dispRity)
-
-## Setting the random seed for repeatability
-<span class="kw">set.seed</span>(<span class="dv">123</span>)
-
-## Loading the ordinated matrix/morphospace:
-<span class="kw">data</span>(BeckLee_mat50)
-<span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</code></pre></div>
+<h3><span class="header-section-number">9.1.1</span> The morphospace</h3>
+<p>In this example, we are going to use a subset of the data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.
+See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details.
+Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).
+The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="co">## Loading demo and the package data</span></a>
+<a class="sourceLine" id="cb430-2" data-line-number="2"><span class="kw">library</span>(dispRity)</a>
+<a class="sourceLine" id="cb430-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb430-4" data-line-number="4"><span class="co">## Setting the random seed for repeatability</span></a>
+<a class="sourceLine" id="cb430-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb430-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb430-7" data-line-number="7"><span class="co">## Loading the ordinated matrix/morphospace:</span></a>
+<a class="sourceLine" id="cb430-8" data-line-number="8"><span class="kw">data</span>(BeckLee_mat50)</a>
+<a class="sourceLine" id="cb430-9" data-line-number="9"><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
 <pre><code>##                    [,1]          [,2]        [,3]       [,4]      [,5]
 ## Cimolestes   -0.5319679  0.1117759259  0.09865194 -0.1933148 0.2035833
 ## Maelestes    -0.4087147  0.0139690317  0.26268300  0.2297096 0.1310953
@@ -255,13 +292,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## Bulaklestes  -0.6802291 -0.0134872777  0.11018009 -0.4103588 0.4326298
 ## Daulestes    -0.7386111  0.0009001369  0.12006449 -0.4978191 0.4741342
 ## Uchkudukodon -0.5105254 -0.2420633915  0.44170317 -0.1172972 0.3602273</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(BeckLee_mat50)</code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="kw">dim</span>(BeckLee_mat50)</a></code></pre></div>
 <pre><code>## [1] 50 48</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The morphospace contains 50 taxa and has 48 dimensions (or axes)
-
-## Showing a list of first and last occurrences data for some fossils
-<span class="kw">data</span>(BeckLee_ages)
-<span class="kw">head</span>(BeckLee_ages)</code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" data-line-number="1"><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></a>
+<a class="sourceLine" id="cb434-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb434-3" data-line-number="3"><span class="co">## Showing a list of first and last occurrences data for some fossils</span></a>
+<a class="sourceLine" id="cb434-4" data-line-number="4"><span class="kw">data</span>(BeckLee_ages)</a>
+<a class="sourceLine" id="cb434-5" data-line-number="5"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -269,41 +306,45 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plotting a phylogeny
-<span class="kw">data</span>(BeckLee_tree)
-<span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)
-<span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-110-1.png" width="576" /></p>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1"><span class="co">## Plotting a phylogeny</span></a>
+<a class="sourceLine" id="cb436-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
+<a class="sourceLine" id="cb436-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
+<a class="sourceLine" id="cb436-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-141-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)
-strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-111-1.png" width="672" /></p>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</a>
+<a class="sourceLine" id="cb437-2" data-line-number="2">strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-142-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
-<h2><span class="header-section-number">7.2</span> A disparity-through-time analysis</h2>
+<h2><span class="header-section-number">9.2</span> A disparity-through-time analysis</h2>
 <div id="splitting-the-morphospace-through-time" class="section level3">
-<h3><span class="header-section-number">7.2.1</span> Splitting the morphospace through time</h3>
-<p>One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time subsets that contain the total number of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning). Basically, the full morphospace represents the total number of morphologies across all time and will be greater than any of the time subsets of the morphospace.</p>
-<p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>). In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present. We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Creating the vector of time bins ages
-(time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</code></pre></div>
+<h3><span class="header-section-number">9.2.1</span> Splitting the morphospace through time</h3>
+<p>One of the crucial steps in disparity-through-time analysis is to split the full morphospace into smaller time subsets that contain the total number of morphologies at certain points in time (time-slicing) or during certain periods in time (time-binning).
+Basically, the full morphospace represents the total number of morphologies across all time and will be greater than any of the time subsets of the morphospace.</p>
+<p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>).
+In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present.
+We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" data-line-number="1"><span class="co">## Creating the vector of time bins ages</span></a>
+<a class="sourceLine" id="cb438-2" data-line-number="2">(time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</a></code></pre></div>
 <pre><code>## [1] 100  80  60  40  20   0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Splitting the morphospace using the chrono.subsets function
-(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,
-    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,
-    <span class="dt">FADLAD =</span> BeckLee_ages))</code></pre></div>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1"><span class="co">## Splitting the morphospace using the chrono.subsets function</span></a>
+<a class="sourceLine" id="cb440-2" data-line-number="2">(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,</a>
+<a class="sourceLine" id="cb440-3" data-line-number="3">    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb440-4" data-line-number="4">    <span class="dt">FADLAD =</span> BeckLee_ages))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
-<p>The output object is a <code>dispRity</code> object (see more about that <a href="#The-guts-of-the-dispRity-package">here</a>. In brief, however, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the <code>R</code> console with superfluous output.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the class of the object
-<span class="kw">class</span>(binned_morphospace)</code></pre></div>
+<p>The output object is a <code>dispRity</code> object (see more about that <a href="#The-guts-of-the-dispRity-package">here</a>.
+In brief, however, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the <code>R</code> console with superfluous output.</p>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1"><span class="co">## Printing the class of the object</span></a>
+<a class="sourceLine" id="cb442-2" data-line-number="2"><span class="kw">class</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the content of the object
-<span class="kw">str</span>(binned_morphospace)</code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1"><span class="co">## Printing the content of the object</span></a>
+<a class="sourceLine" id="cb444-2" data-line-number="2"><span class="kw">str</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## List of 3
 ##  $ matrix : num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -323,10 +364,10 @@ strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tre
 ##   ..$ 20 - 0  :List of 1
 ##   .. ..$ elements: int [1:10, 1] 36 37 38 32 33 34 50 48 29 30
 ##  - attr(*, &quot;class&quot;)= chr &quot;dispRity&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(binned_morphospace)</code></pre></div>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1"><span class="kw">names</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;  &quot;call&quot;    &quot;subsets&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Printing the object as a dispRity class
-binned_morphospace</code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" data-line-number="1"><span class="co">## Printing the object as a dispRity class</span></a>
+<a class="sourceLine" id="cb448-2" data-line-number="2">binned_morphospace</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
@@ -334,127 +375,141 @@ binned_morphospace</code></pre></div>
 <p>These objects will gradual.splitly contain more information when completing the following steps in the disparity-through-time analysis.</p>
 </blockquote>
 </div>
-<div id="bootstrapping-the-data" class="section level3">
-<h3><span class="header-section-number">7.2.2</span> Bootstrapping the data</h3>
-<p>Once we obtain our different time subsets, we can bootstrap and rarefy them (i.e. pseudo-replicating the data). The bootstrapping allows us to make each subset more robust to outliers and the rarefaction allows us to compare subsets with the same number of taxa to remove sampling biases (i.e. more taxa in one subset than the others). The <code>boot.matrix</code> function bootstraps the <code>dispRity</code> object and the <code>rarefaction</code> option within performs rarefaction.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time subset 100 times (default)
-(boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace))</code></pre></div>
+<div id="bootstrapping-the-data-1" class="section level3">
+<h3><span class="header-section-number">9.2.2</span> Bootstrapping the data</h3>
+<p>Once we obtain our different time subsets, we can bootstrap and rarefy them (i.e. pseudo-replicating the data).
+The bootstrapping allows us to make each subset more robust to outliers and the rarefaction allows us to compare subsets with the same number of taxa to remove sampling biases (i.e. more taxa in one subset than the others).
+The <code>boot.matrix</code> function bootstraps the <code>dispRity</code> object and the <code>rarefaction</code> option within performs rarefaction.</p>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times (default)</span></a>
+<a class="sourceLine" id="cb450-2" data-line-number="2">(boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Getting the minimum number of rows (i.e. taxa) in the time subsets
-<span class="kw">min</span>(<span class="kw">size.subsets</span>(boot_bin_morphospace))</code></pre></div>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" data-line-number="1"><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></a>
+<a class="sourceLine" id="cb452-2" data-line-number="2"><span class="kw">min</span>(<span class="kw">size.subsets</span>(boot_bin_morphospace))</a></code></pre></div>
 <pre><code>## [1] 6</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Bootstrapping each time subset 100 times and rarefying them 
-(rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,
-    <span class="dt">rarefaction =</span> <span class="dv">6</span>))</code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></a>
+<a class="sourceLine" id="cb454-2" data-line-number="2">(rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb454-3" data-line-number="3">    <span class="dt">rarefaction =</span> <span class="dv">6</span>))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.</code></pre>
 </div>
-<div id="calculating-disparity" class="section level3">
-<h3><span class="header-section-number">7.2.3</span> Calculating disparity</h3>
-<p>We can now calculate the disparity within each time subsets along with some confidence intervals generated by the pseudoreplication step above (bootstraps/rarefaction). Disparity can be calculated in many ways and this package allows users to come up with their own disparity metrics. For more details, please refer to the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a>.</p>
-<p>In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the <code>dispRity</code> function. Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace). Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace. We use this here because it is a standard metric used in disparity-through-time analysis <span class="citation">(Wills, Briggs, and Fortey <a href="#ref-Wills1994">1994–4AD</a>)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity for the bootstrapped data
-(boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
+<div id="calculating-disparity-1" class="section level3">
+<h3><span class="header-section-number">9.2.3</span> Calculating disparity</h3>
+<p>We can now calculate the disparity within each time subsets along with some confidence intervals generated by the pseudoreplication step above (bootstraps/rarefaction).
+Disparity can be calculated in many ways and this package allows users to come up with their own disparity metrics.
+For more details, please refer to the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a>.</p>
+<p>In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the <code>dispRity</code> function.
+Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace).
+Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace.
+We use this here because it is a standard metric used in disparity-through-time analysis <span class="citation">(Wills, Briggs, and Fortey, <a href="#ref-Wills1994">n.d.</a>)</span>.</p>
+<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" data-line-number="1"><span class="co">## Calculating disparity for the bootstrapped data</span></a>
+<a class="sourceLine" id="cb456-2" data-line-number="2">(boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(sum, variances).</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Calculating disparity for the rarefied data
-(rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</code></pre></div>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb458-1" data-line-number="1"><span class="co">## Calculating disparity for the rarefied data</span></a>
+<a class="sourceLine" id="cb458-2" data-line-number="2">(rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.
 ## Disparity was calculated as: c(sum, variances).</code></pre>
-<p>The <code>dispRity</code> function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, subsets, metric, etc.). To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied to a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).</p>
+<p>The <code>dispRity</code> function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, subsets, metric, etc.).
+To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied to a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).</p>
 <p>As for any <code>R</code> package, you can refer to the help files for each individual function for more details.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Summarising the disparity results
-<span class="kw">summary</span>(boot_disparity)</code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" data-line-number="1"><span class="co">## Summarising the disparity results</span></a>
+<a class="sourceLine" id="cb460-2" data-line-number="2"><span class="kw">summary</span>(boot_disparity)</a></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.488 1.087 1.389 1.568 1.648
-## 2  80 - 60 15 1.782     1.679 1.538 1.631 1.728 1.792
-## 3  60 - 40 13 1.913     1.772 1.607 1.734 1.826 1.886
-## 4  40 - 20  6 2.022     1.707 1.212 1.537 1.822 1.942
-## 5   20 - 0 10 1.971     1.794 1.598 1.716 1.842 1.890</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(rare_disparity)</code></pre></div>
+## 1 100 - 80  8 1.675     1.494 1.182 1.409 1.537 1.661
+## 2  80 - 60 15 1.782     1.656 1.517 1.601 1.700 1.776
+## 3  60 - 40 13 1.913     1.783 1.635 1.733 1.803 1.861
+## 4  40 - 20  6 2.022     1.678 1.243 1.589 1.816 1.942
+## 5   20 - 0 10 1.971     1.768 1.573 1.694 1.840 1.912</code></pre>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" data-line-number="1"><span class="kw">summary</span>(rare_disparity)</a></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.484 1.194 1.400 1.547 1.636
-## 2 100 - 80  6    NA     1.477 0.993 1.361 1.569 1.698
-## 3  80 - 60 15 1.782     1.674 1.517 1.600 1.725 1.793
-## 4  80 - 60  6    NA     1.655 1.299 1.532 1.754 1.882
-## 5  60 - 40 13 1.913     1.767 1.601 1.714 1.829 1.861
-## 6  60 - 40  6    NA     1.787 1.314 1.672 1.879 1.984
-## 7  40 - 20  6 2.022     1.736 1.281 1.603 1.822 1.948
-## 8   20 - 0 10 1.971     1.807 1.595 1.729 1.856 1.917
-## 9   20 - 0  6    NA     1.790 1.435 1.718 1.873 1.995</code></pre>
+## 1 100 - 80  8 1.675     1.501 1.253 1.442 1.565 1.614
+## 2 100 - 80  6    NA     1.464 1.004 1.377 1.586 1.705
+## 3  80 - 60 15 1.782     1.649 1.504 1.592 1.699 1.778
+## 4  80 - 60  6    NA     1.673 1.394 1.570 1.792 1.929
+## 5  60 - 40 13 1.913     1.790 1.634 1.729 1.818 1.858
+## 6  60 - 40  6    NA     1.764 1.373 1.638 1.861 1.987
+## 7  40 - 20  6 2.022     1.692 1.063 1.591 1.822 1.904
+## 8   20 - 0 10 1.971     1.786 1.541 1.715 1.841 1.917
+## 9   20 - 0  6    NA     1.808 1.361 1.679 1.880 2.011</code></pre>
 <blockquote>
 <p>The summary.dispRity function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function’s manual for more details.</p>
 </blockquote>
 </div>
 <div id="plotting-the-results" class="section level3">
-<h3><span class="header-section-number">7.2.4</span> Plotting the results</h3>
-<p>It is sometimes easier to visualise the results in a plot than in a table. For that we can use the <code>plot</code> S3 function to plot the <code>dispRity</code> objects (see <code>?plot.dispRity</code> for more details).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Graphical options
-<span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
-
-## Plotting the bootstrapped and rarefied results
-<span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)
-<span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-117-1.png" width="1152" /></p>
+<h3><span class="header-section-number">9.2.4</span> Plotting the results</h3>
+<p>It is sometimes easier to visualise the results in a plot than in a table.
+For that we can use the <code>plot</code> S3 function to plot the <code>dispRity</code> objects (see <code>?plot.dispRity</code> for more details).</p>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" data-line-number="1"><span class="co">## Graphical options</span></a>
+<a class="sourceLine" id="cb464-2" data-line-number="2"><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb464-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb464-4" data-line-number="4"><span class="co">## Plotting the bootstrapped and rarefied results</span></a>
+<a class="sourceLine" id="cb464-5" data-line-number="5"><span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</a>
+<a class="sourceLine" id="cb464-6" data-line-number="6"><span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-148-1.png" width="1152" /></p>
 </div>
 </div>
 <div id="testing-differences" class="section level2">
-<h2><span class="header-section-number">7.3</span> Testing differences</h2>
-<p>Finally, to draw some valid conclusions from these results, we can apply some statistical tests. We can test, for example, if mammalian disparity changed significantly through time over the last 100 million years. To do so, we can compare the means of each time-bin in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em>, and whether this is in turn equal to the disparity in bin <em>n+2</em>, etc. Because our data is temporally autocorrelated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and pseudoreplicated (i.e. each bootstrap draw creates non-independent time subsets because they are all based on the same time subsets), we apply a non-parametric mean comparison: the <code>wilcox.test</code>. Also, we need to apply a p-value correction (e.g. Bonferroni correction) to correct for multiple testing (see <code>?p.adjust</code> for more details).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing the differences between bins in the bootstrapped dataset.
-<span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,
-    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+<h2><span class="header-section-number">9.3</span> Testing differences</h2>
+<p>Finally, to draw some valid conclusions from these results, we can apply some statistical tests.
+We can test, for example, if mammalian disparity changed significantly through time over the last 100 million years.
+To do so, we can compare the means of each time-bin in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em>, and whether this is in turn equal to the disparity in bin <em>n+2</em>, etc.
+Because our data is temporally autocorrelated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and pseudoreplicated (i.e. each bootstrap draw creates non-independent time subsets because they are all based on the same time subsets), we apply a non-parametric mean comparison: the <code>wilcox.test</code>.
+Also, we need to apply a p-value correction (e.g. Bonferroni correction) to correct for multiple testing (see <code>?p.adjust</code> for more details).</p>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1"><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></a>
+<a class="sourceLine" id="cb465-2" data-line-number="2"><span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb465-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          471
-## 80 - 60 : 60 - 40          1562
-## 60 - 40 : 40 - 20          6250
-## 40 - 20 : 20 - 0           3725
+## 100 - 80 : 80 - 60          687
+## 80 - 60 : 60 - 40          1121
+## 60 - 40 : 40 - 20          6566
+## 40 - 20 : 20 - 0           3678
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 7.427563e-28
-## 80 - 60 : 60 - 40  1.798899e-16
-## 60 - 40 : 40 - 20  9.061511e-03
-## 40 - 20 : 20 - 0   7.379715e-03</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Testing the differences between bins in the rarefied dataset.
-<span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,
-    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</code></pre></div>
+## 100 - 80 : 80 - 60 2.330360e-25
+## 80 - 60 : 60 - 40  1.049970e-20
+## 60 - 40 : 40 - 20  5.226732e-04
+## 40 - 20 : 20 - 0   4.968995e-03</code></pre>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1"><span class="co">## Testing the differences between bins in the rarefied dataset.</span></a>
+<a class="sourceLine" id="cb467-2" data-line-number="2"><span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb467-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          662
-## 80 - 60 : 60 - 40          1814
-## 60 - 40 : 40 - 20          5752
-## 40 - 20 : 20 - 0           3621
+## 100 - 80 : 80 - 60          857
+## 80 - 60 : 60 - 40          1049
+## 60 - 40 : 40 - 20          6328
+## 40 - 20 : 20 - 0           3732
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 1.214988e-25
-## 80 - 60 : 60 - 40  2.823697e-14
-## 60 - 40 : 40 - 20  2.653018e-01
-## 40 - 20 : 20 - 0   3.026079e-03</code></pre>
-<p>Here our results show significant changes in disparity through time between all time bins (all p-values &lt; 0.05). However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.</p>
+## 100 - 80 : 80 - 60 1.769873e-23
+## 80 - 60 : 60 - 40  1.916852e-21
+## 60 - 40 : 40 - 20  4.720974e-03
+## 40 - 20 : 20 - 0   7.819379e-03</code></pre>
+<p>Here our results show significant changes in disparity through time between all time bins (all p-values &lt; 0.05).
+However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.</p>
 
 </div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
 <div id="ref-beckancient2014">
-<p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. doi:<a href="https://doi.org/10.1098/rspb.2014.1278">10.1098/rspb.2014.1278</a>.</p>
+<p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278" class="uri">https://doi.org/10.1098/rspb.2014.1278</a>.</p>
 </div>
 <div id="ref-Wills1994">
-<p>Wills, Matthew A., Derek E. G. Briggs, and Richard A. Fortey. 1994–4AD. “Disparity as an Evolutionary Index: A Comparison of Cambrian and Recent Arthropods.” <em>Paleobiology</em> 20 (2). Paleontological Society: 93–130. doi:<a href="https://doi.org/10.2307/2401014">10.2307/2401014</a>.</p>
+<p>Wills, Matthew A., Derek E. G. Briggs, and Richard A. Fortey. n.d. “Disparity as an Evolutionary Index: A Comparison of Cambrian and Recent Arthropods.” <em>Paleobiology</em> 20 (2). Paleontological Society: 93–130. <a href="https://doi.org/10.2307/2401014" class="uri">https://doi.org/10.2307/2401014</a>.</p>
 </div>
 </div>
             </section>
@@ -462,8 +517,8 @@ binned_morphospace</code></pre></div>
           </div>
         </div>
       </div>
-<a href="the-guts-of-the-disprity-package.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ecology-demo.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="developing-disprity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -483,7 +538,7 @@ gitbook.start({
 "google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
 "all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
 },
@@ -493,8 +548,12 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/06_palaeo-demo.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/08_palaeo-demo.Rmd",
 "text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
 },
 "download": null,
 "toc": {
@@ -509,8 +568,8 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');
     script.src = src;

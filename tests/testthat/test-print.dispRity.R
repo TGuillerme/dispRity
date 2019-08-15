@@ -22,8 +22,8 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
-    list <- capture.output(print.dispRity(test, all = TRUE))
-    expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
+    # list <- capture.output(print.dispRity(test, all = TRUE))
+    # expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
 
 
     ## Time subsets
@@ -121,23 +121,95 @@ test_that("randtest printing", {
         "", "    Std.Obs Expectation    Variance ",
         "  -2.023035    5.094270    6.298782 "))
 
-    expect_equal(capture.output(print.dispRity(test, all = TRUE)),
+    # expect_equal(capture.output(print.dispRity(test, all = TRUE)),
+    #     c(
+    #     "[[1]]"                                                                  ,
+    #     "Monte-Carlo test"                                                       ,
+    #     "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
+    #     "    digits = 10)[, 3], alter = alter)"                                  ,
+    #     ""                                                                       ,
+    #     "Observation: 0.01698412 "                                                ,
+    #     ""                                                                       ,
+    #     "Based on 100 replicates"                                                ,
+    #     "Simulated p-value: 0.05940594 "                                         ,
+    #     "Alternative hypothesis: two-sided "                                     ,
+    #     ""                                                                       ,
+    #     "    Std.Obs Expectation    Variance "                             ,
+    #     "  -2.023035    5.094270    6.298782 "                             ,
+    #     ""
+    #     ))
+
+
+    ## Running the test on multiple subsets (may take some time!)
+    ## Generating the subsets
+    groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
+         rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)
+    customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+    ## Bootstrapping the data
+    bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
+    ## Calculating variances of each dimension
+    sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
+    ## Testing against normal distribution
+    results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
+
+    expect_equal(capture.output(print.dispRity(results)),
         c(
-        "[[1]]"                                                                  ,
-        "Monte-Carlo test"                                                       ,
-        "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
-        "    digits = 10)[, 3], alter = alter)"                                  ,
-        ""                                                                       ,
-        "Observation: 0.01698412 "                                                ,
-        ""                                                                       ,
-        "Based on 100 replicates"                                                ,
-        "Simulated p-value: 0.05940594 "                                         ,
-        "Alternative hypothesis: two-sided "                                     ,
-        ""                                                                       ,
-        "    Std.Obs Expectation    Variance "                             ,
-        "  -2.023035    5.094270    6.298782 "                             ,
-        ""
-        ))
+        "$V1.1"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.590785 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        "  -32.60748    47.82240     2.01022 ",
+        ""                                    ,
+        "$V1.2"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.809122 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -34.193688   47.929400    1.819248 ",
+        ""                                    ,
+        "$V1.3"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 1.969031 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        "  -33.94008    48.01460     1.84056 ",
+        ""                                    ,
+        "$V1.4"                               ,
+        "Monte-Carlo test"                    ,
+        "Call: [1] \"dispRity::null.test\""   ,
+        ""                                    ,
+        "Observation: 2.020162 "              ,
+        ""                                    ,
+        "Based on 100 replicates"             ,
+        "Simulated p-value: 0.00990099 "      ,
+        "Alternative hypothesis: two-sided "  ,
+        ""                                    ,
+        "    Std.Obs Expectation    Variance ",
+        " -30.677384   47.884300    2.235166 ",
+        ""                                    ,
+        "NULL"
+        )
+    )
+
 
 })
 
@@ -152,7 +224,7 @@ test_that("dtt printing", {
     ## The average squared pairwise distance metric (used in geiger::dtt)
     average.sq <- function(X) mean(pairwise.dist(X)^2)
     ## Calculate the disparity of the dataset using dtt.dispRity
-    dispRity_dtt <- dtt.dispRity(data = data[], metric = average.sq,
+    dispRity_dtt <- dtt.dispRity(data = data, metric = average.sq,
                                  tree = tree, nsim = 10)
 
     print_dtt <- capture.output(dispRity_dtt)
@@ -160,19 +232,40 @@ test_that("dtt printing", {
     expect_equal(print_dtt,
         c(
         "Disparity-through-time test (modified from geiger:dtt)" ,
-        "Call: dtt.dispRity(data = data[], metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
+        "Call: dtt.dispRity(data = data, metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
         "",
-        "Observation: 0.683588221189817",
+        "Observation: 0.100298654808419",
         "",
         "Model: BM",
         "Based on 10 replicates",
-        "Simulated p-value: 0.9",
+        "Simulated p-value: 1",
         "Alternative hypothesis: two-sided",
         "",
         "    Mean.dtt Mean.sim_MDI  var.sim_MDI ",
-        "  1.09400273   0.66802605   0.02601094 ",
+        "  0.65302742   0.08453948   0.03519623 ",
         "",
         "Use plot.dispRity() to visualise." 
+        ))
+
+    set.seed(1)
+    dispRity_dtt_raw <- dtt.dispRity(data = data, metric = average.sq,
+                                     tree = tree, nsim = 0)
+    print_dtt_raw <- capture.output(dispRity_dtt_raw)
+
+    expect_equal(print_dtt_raw[c(11,12)],
+        c(
+        # "$dtt"                                                                                      ,
+        # " [1] 1.0000000 0.7108704 0.8137332 1.1194885 1.1752659 1.3945462 2.2877953 1.8151213"      ,
+        # " [9] 0.6232065 0.0000000"                                                                  ,
+        # ""                                                                                          ,
+        # "$times"                                                                                    ,
+        # "                 11        12        19        17        13        18        14        16 ",
+        # "0.0000000 0.0000000 0.1450459 0.4944510 0.5212973 0.6062471 1.2191329 1.3625423 1.7906876 ",
+        # "       15 "                                                                                ,
+        # "2.3279070 "                                                                                ,
+        # ""                                                                                          ,
+        "- attr(*, \"class\") = \"dispRity\" \"dtt\""                                               ,
+        "Use plot.dispRity to visualise.Empty dispRity object." 
         ))
 })
 

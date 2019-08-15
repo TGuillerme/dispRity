@@ -22,8 +22,8 @@
 #' @seealso \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
-#' @import geoscale timescales
-#' @export
+# @importFrom geoscale timescales
+# @export
 
 #source("summary.dispRity_fun.R")
 

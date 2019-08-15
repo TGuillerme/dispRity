@@ -84,7 +84,7 @@ test_that("gen.seq.HKY.binary works", {
     char_seq <- character.selector(HKY_seq)
     expect_is(char_seq, "character")
     expect_equal(length(char_seq), Ntip(tree))
-    expect_equal(char_seq, c("T", "T", "T", "T", "T", "C", "C", "C", "C", "C", "C", "C", "T", "C", "C"))
+    expect_equal(char_seq, c("T", "T", "T", "T", "T", "T", "T", "T", "T", "T", "A", "G", "G", "G", "G"))
 
 
     verbose = FALSE
@@ -111,7 +111,7 @@ test_that("gen.seq.HKY.binary works", {
         )
     set.seed(1)
     expect_equal(
-        unique(as.vector(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose))), c("1", "0")
+        unique(as.vector(gen.seq.HKY.binary(rtree(5), c(runif, 2, 2), c(runif, 1, 1), verbose = verbose))), c("0")
         )   
 })
 
@@ -160,6 +160,11 @@ test_that("rTraitDisc.mk works", {
     expect_error(
         rTraitDisc.mk(rtree(5), c(runif,1,1), rates = "a", c(0.5, 0.5), verbose)
         )
+
+    set.seed(1)
+    output <- capture_output(test <- rTraitDisc.mk(rtree(5), c(runif,1,1), c(runif,2,2), c(0.5, 0.5), verbose = TRUE))
+    expect_equal(output, ".")
+    expect_equal(test, c("0", "0", "0", "0", "1"))
 })
 
 #Testing is.invariant
@@ -193,8 +198,8 @@ test_that("MIXED.model works", {
 
     expect_is(Mk, "character")
     expect_is(Mk_or_HKY, "character")
-    expect_equal(Mk, c("1", "2", "0", "0", "2"))
-    expect_equal(Mk_or_HKY, c("0", "0", "0", "0", "0"))
+    expect_equal(Mk, c("0", "2", "2", "2", "0"))
+    expect_equal(Mk_or_HKY, c("1", "0", "1", "0", "0"))
 
 })
 
@@ -263,7 +268,7 @@ test_that("sim.morpho works", {
     verbose <- capture.output(matrixHKY <- sim.morpho(tree, characters = 50, model = "HKY", rates = my_rates, substitution = my_substitutions, verbose = TRUE, invariant = FALSE))
     expect_equal(verbose,
         c("Generating a matrix of 50 characters for 15 taxa:..................................................Done.",
-            "Re-simulating 17 invariant characters:.........................Done.")
+            "Re-simulating 23 invariant characters:.....................................Done.")
         )
 
 })

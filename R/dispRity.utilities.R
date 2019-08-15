@@ -270,7 +270,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
     if(observed) {
         ## Lapply wrapper for getting the disparity observed values
         lapply.observed <- function(disparity) {
-            return(c(disparity$elements))
+            return(c(apply(disparity$elements, 1, median, na.rm = TRUE)))
         }
         return(lapply(data$disparity[subsets], lapply.observed))
     } else {
@@ -286,7 +286,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #'
 #' @param data a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
-#' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
+#' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
 #' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
 #' @param ... optional arguments to be passed to \code{scale}.
 #' 
@@ -295,21 +295,20 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 #' data(disparity)
 #' 
 #' ## Scaling the data
-#' summary(disparity) # No scaling
-#' summary(rescale.dispRity(disparity)) # Dividing by the maximum
+#' summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(rescale.dispRity(disparity, max = 0.1))
+#' summary(rescale.dispRity(disparity, scale = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## DEBUG
 # source("sanitizing.R")
 # data(BeckLee_mat50)
 # groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-# customised_subsets <- cust.subsets(BeckLee_mat50, groups)
+# customised_subsets <- custom.subsets(BeckLee_mat50, groups)
 # bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 7, rarefaction = c(10, 25))
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
@@ -318,7 +317,7 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 # summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
 # summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
 
-rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE, ...) {
+rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
 
     match_call <- match.call()
 
@@ -337,7 +336,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE
     ## Getting the center value
     if(class(center) == "logical") {
         if(center & use.all) {
-            center <- mean(all_data)
+            center <- mean(all_data, na.rm = TRUE)
         }
     } else {
         check.class(center, c("numeric", "integer", "logical"))
@@ -384,7 +383,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = FALSE, use.all = TRUE
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{extract.dispRity}}.
 #'
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 ## DEBUG
 # source("sanitizing.R")
@@ -654,7 +653,7 @@ size.subsets <- function(data) {
 #' @seealso \code{\link{chrono.subsets}}, \code{\link{test.dispRity}}
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list = FALSE) {
 

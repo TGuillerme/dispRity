@@ -4,7 +4,7 @@
 #' 
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
-#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data or a set of \code{numeric} values used to rarefy the data (see details).
+#' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
@@ -19,7 +19,10 @@
 #' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #'
 #' @details  
+#' \code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
+#' 
 #' \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
+#' When the input is \code{"min"}, the smallest number of elements is used (or 3 if some subsets have less than 3 elements).
 #' 
 #' \code{boot.type}: the different bootstrap algorithms are:
 #' \itemize{
@@ -30,9 +33,13 @@
 #' \code{prob}: This option allows to attribute specific probability to each element to be drawn.
 #' A probability of 0 will never sample the element, a probability of 1 will sample.
 #' This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
-#' If the argument is a \code{matrix}, it must have rownames attrbiutes corresponding to the element names.
+#' If the argument is a \code{matrix}, it must have rownames attributes corresponding to the element names.
 #' If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
 #'
+#' Multiple trees: If the give \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
+#' For example, for a slice through two trees resulting in the selection of elements \code{A} and \code{B} in the first tree and \code{A}, \code{B} and \code{C} in the second tree, the \code{"full"} bootstrap algorithm will select three elements (with replacement) between \code{A}, \code{B} and \code{C} with a probability of respectively \eqn{p(A) = 1/3} (\eqn{p(A) = (1/3 + 1/3) / 2}), \eqn{p(B) = 1/3} and \eqn{p(C) = 1/6} (\eqn{p(C) = (0 + 1/3) / 2}).
+#' 
+#' 
 #' @seealso \code{\link{cust.subsets}}, \code{\link{chrono.subsets}}, \code{\link{dispRity}}.
 #'
 #' @examples
@@ -101,7 +108,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         dispRity_object <- make.dispRity(data = data)
         #dispRity_object$subsets$origin$elements <- seq(1:nrow(data))
         data <- dispRity_object
-
     } else {
         ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
@@ -129,14 +135,28 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     if(length(data$subsets) == 0) {
         data <- fill.dispRity(data)
         probabilistic_subsets <- FALSE
+        has_multiple_trees <- FALSE
     } else {
-        ## Check if the subsets have probabilistic data
-        probabilistic_subsets <- ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)
+        if(ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)) {
+            ## Check if the subsets have multiple trees (all are integers)
+            has_multiple_trees <- ifelse(class(unlist(data$subsets)) == "integer", TRUE, FALSE)
+            probabilistic_subsets <- FALSE
+
+            ## Check if it has multiple trees AND has probabilities
+            if(!has_multiple_trees) {
+                has_multiple_trees <- ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) == 3), FALSE, TRUE)
+                probabilistic_subsets <- TRUE
+            }
+        } else {
+            ## Data has no probabilities nor multiple trees
+            has_multiple_trees <- FALSE
+            probabilistic_subsets <- FALSE
+        }
     }
 
     if(!missing(prob)) {
-        if(probabilistic_subsets) {
-            stop.call(match_call$data, paste0(" was generated using a gradual time-slicing (", data$call$subsets[2], ").\nThe prob option is not yet implemented for this case."))
+        if(probabilistic_subsets || has_multiple_trees) {
+            stop.call(match_call$data, paste0(" was generated using a gradual time-slicing or using multiple trees (", data$call$subsets[2], ").\nThe prob option is not yet implemented for this case."))
         } else {
             probabilistic_subsets <- TRUE
             ## Check if prob is the right class
@@ -219,8 +239,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## Is it logical?
     if(class(rarefaction) != "logical") {
         ## Is it numeric?
-        check.class(rarefaction, c("numeric", "integer"), " must be either numeric or logical.")
-        rare_out <- rarefaction
+        rare_class <- check.class(rarefaction, c("numeric", "integer", "character"), " must be either numeric, logical or \"min\".")
+        if(rare_class == "character") {
+            if(rarefaction != "min") {stop("rarefaction argument must be either numeric, logical or \"min\".", call. = FALSE)}
+            rare_out <- min(size.subsets(data))
+            rarefaction <- rare_out <- ifelse(rare_out < 3, 3, rare_out)
+        } else {
+            rare_out <- rarefaction
+        }
     } else {
         if(rarefaction) {
             rarefaction <- seq(from = nrow(data$matrix), to = 3)
@@ -240,25 +266,43 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single"))
-    
-    ## Check whether the subsets (if any)
+    check.method(boot.type, c("full", "single"), "boot.type")
+
+    ## Change boot type to full if single and multiple trees
+    if(boot.type == "single" && has_multiple_trees) {
+        boot.type <- "full"
+        warning(paste0("Multiple trees where used in ", as.expression(match_call$data), ". The 'boot.type' option is set to \"full\"."))
+    }
+
+    # boot.type_class <- class(boot.type)
+    # if(boot.type_class == "character") {
+    #     boot.type <- tolower(boot.type)
+    #     check.method(boot.type, c("full", "single"), "boot.type")
+    #     check.length(boot.type, 1, " must be \"full\", \"single\" or a matrix.")
+    # } else {
+    #     check.class(boot.type, "matrix")
+    #     if(!all(colnames(boot.type) == colnames(data$matrix))) {
+    #         stop("The personalised boot.type matrix must have the same rownames as the data.")
+    #     }
+    # }
 
     ## Set up the bootstrap type function
-    if(boot.type == "full") {
-        if(probabilistic_subsets) {
-            boot.type.fun <- boot.full.proba
-        } else {
-            boot.type.fun <- boot.full
-        }
-    }
-    if(boot.type == "single") {
-        if(probabilistic_subsets) {
-            boot.type.fun <- boot.single.proba
-        } else {
-            boot.type.fun <- boot.single
-        }
-    }
+    switch(boot.type,
+        "full" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.full.proba
+            } else {
+                boot.type.fun <- boot.full
+            }
+        },
+        "single" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.single.proba
+            } else {
+                boot.type.fun <- boot.single
+            }
+        })
+
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
     ##  ~~~

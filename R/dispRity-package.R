@@ -10,21 +10,21 @@
 #'
 #' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
 #'
-#' @import ape
-#' @import stats
-#' @importFrom paleotree timeSliceTree 
-#' @importFrom geometry convhulln 
-#' @importFrom ade4 randtest as.randtest 
-#' @importFrom grDevices colorRampPalette grey 
-#' @importFrom caper comparative.data 
-#' @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-#' @importFrom utils combn data capture.output tail
-#' @importFrom phyclust gen.seq.HKY 
-#' @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
-#' @importFrom vegan adonis vegdist
-#' @importFrom geiger dtt ratematrix sim.char
-#' @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
-##' @importFrom Claddis MorphDistMatrixFast
+# @import ape
+# @import stats
+# @importFrom paleotree timeSliceTree 
+# @importFrom geometry convhulln 
+# @importFrom ade4 randtest as.randtest 
+# @importFrom grDevices colorRampPalette grey 
+# @importFrom caper comparative.data 
+# @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
+# @importFrom utils combn data capture.output tail
+# @importFrom phyclust gen.seq.HKY 
+# @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
+# @importFrom vegan adonis vegdist
+# @importFrom geiger dtt ratematrix sim.char
+# @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
+# @importFrom Claddis MorphDistMatrixFast
 
 
 NULL
@@ -79,6 +79,7 @@ NULL
 #' @seealso BeckLee_disparity BeckLee
 #' @examples
 # set.seed(42)
+#' \dontrun{
 #' ## Loading the data
 #' data(BeckLee_mat99)
 #' data(BeckLee_tree)
@@ -96,6 +97,7 @@ NULL
 #' 
 #' ## Calculating disparity
 #' disparity <- dispRity(bootstraps, metric = c(median, centroids))
+#' }
 # save(disparity, file = "../Data/disparity.rda")
 NULL
 
@@ -113,6 +115,7 @@ NULL
 #' @seealso BeckLee disparity
 #' @examples
 # set.seed(42)
+#' \dontrun{
 #' ## Loading the data
 #' data(BeckLee_mat99)
 #' data(BeckLee_tree)
@@ -129,5 +132,6 @@ NULL
 #' 
 #' ## Calculating disparity
 #' BeckLee_disparity <- dispRity(bootstraps, metric = c(sum, variances))
+#' }
 # save(BeckLee_disparity, file = "../Data/BeckLee_disparity.rda")
 NULL

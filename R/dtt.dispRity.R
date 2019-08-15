@@ -44,7 +44,7 @@
 #' \code{\link[geiger]{dtt}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{plot.dispRity}}.
 #' 
 #' @author Thomas Guillerme
-#' @export
+# @export
 
 # source("sanitizing.R")
 # source("dispRity_fun.R")
@@ -106,29 +106,30 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
 
     ## alternative
     check.method(alternative, c("two-sided", "greater", "lesser"), msg = "alternative")
-    
-    ## Choose the p method
-    if(alternative == "two-sided") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            ## Centring the randoms and observed
-            center_random <- abs(sim_MDI - mean(sim_MDI))
-            center_observed <- abs(MDI - mean(sim_MDI))
-            ## Getting the p
-            return((sum(center_random >= center_observed))/(length(sim_MDI)))
+
+    switch(alternative,
+        "two-sided" = {
+            get.p.value <- function(sim_MDI, MDI, replicates) {
+                ## Centring the randoms and observed
+                center_random <- abs(sim_MDI - mean(sim_MDI, na.rm = TRUE))
+                center_observed <- abs(MDI - mean(sim_MDI, na.rm = TRUE))
+                ## Getting the p
+                return((sum(center_random >= center_observed))/(length(sim_MDI)))
+            }
+        },
+        greater = {
+           get.p.value <- function(sim_MDI, MDI, replicates) {
+                # Getting the p
+                return((sum(sim_MDI >= MDI))/(length(sim_MDI)))
+            }
+        },
+        lesser = {
+            get.p.value <- function(sim_MDI, MDI, replicates) {
+                # Getting the p
+                return((sum(sim_MDI <= MDI))/(length(sim_MDI)))
+            }
         }
-    }
-    if(alternative == "greater") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            # Getting the p
-            return((sum(sim_MDI >= MDI))/(length(sim_MDI)))
-        }
-    }
-    if(alternative == "lesser") {
-        get.p.value <- function(sim_MDI, MDI, replicates) {
-            # Getting the p
-            return((sum(sim_MDI <= MDI))/(length(sim_MDI)))
-        }
-    }
+    )
 
     ## mdi.range
     if(is.null(dots$mdi.range)) {
@@ -163,7 +164,7 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
         colnames(disparity_through_time_sim) <- NULL
 
         ## MDI
-        MDI <- unname(.area.between.curves(lineage_through_time, apply(disparity_through_time_sim, 1, median), disparity_through_time, sort(dots$mdi.range)))
+        MDI <- unname(.area.between.curves(lineage_through_time, apply(disparity_through_time_sim, 1, median, na.rm = TRUE), disparity_through_time, sort(dots$mdi.range)))
 
         ## Get the simulated MDIs
         sim_MDI <- apply(disparity_through_time_sim, 2, function(X) .area.between.curves(x = lineage_through_time, f1 = X, f2 = disparity_through_time))

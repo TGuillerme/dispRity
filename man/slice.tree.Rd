@@ -16,7 +16,7 @@ slice.tree(tree, age, model, FAD, LAD)
 \item{FAD, LAD}{The first and last occurrence data.}
 }
 \description{
-Time slicing through a phylogenetic tree (function modified from paleotree::timeSliceTree).
+Time slicing through a phylogenetic tree.
 }
 \examples{
 set.seed(1)

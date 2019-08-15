@@ -128,11 +128,30 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
     }
+
+    ## Check if metrics are already present whether metrics can be applied
+    if(!is.null(data$call$disparity$metrics$fun)) {
+        ## Check which level of metrics have already been applied
+        if(length(data$call$disparity$metrics$fun) == 1) {
+            applied_levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)
+        } else {
+            applied_levels <- unlist(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE))
+        }   
+
+        ## Can maybe not take a level 2 or 3 metric
+        if(any(applied_levels == "level1") && (!is.null(metrics_list$level3.fun) || !is.null(metrics_list$level2.fun))) {
+            stop.call(msg.pre = "At least one metric dimension level 1 was already calculated for ", call = match_call$data, msg = ".\nImpossible to apply a metric higher than dimension level 1.")
+        }
+    }
+
+    ## Check if the subsets contains probabilities or not
+    has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
 
     ## Dimensions
     if(!missing(dimensions)) {
@@ -201,11 +220,14 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
 
     ## Select the elements if probabilities are used
-    if(ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
+    if(has_probabilities && ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
         ## Sample the elements
+        # lapply_loop <- lapply(lapply_loop, function(X) return(list("elements" = elements.sampler(X$elements))))
         selected_elements <- lapply(lapply_loop, function(X) elements.sampler(X$elements))
+
+        ## Reorder them in the right format
         for(subset in 1:length(selected_elements)) {
-            lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = 1)
+            lapply_loop[[subset]]$elements <- matrix(selected_elements[[subset]], ncol = ncol(data$subsets[[subset]]$elements)/3)
         }
     }
     
@@ -233,7 +255,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     # if(!do_parallel) {
         if(verbose) message("Calculating disparity", appendLF = FALSE)
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        if(verbose) message("Done.", appendLF = FALSE)
+        if(verbose) message("Done.\n", appendLF = FALSE)
     # } else {
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
