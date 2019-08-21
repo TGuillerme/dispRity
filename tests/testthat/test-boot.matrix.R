@@ -31,7 +31,7 @@ test_that("internal: bootstrap replicates", {
     data(disparity)
     subsets <- disparity$subsets[[1]]
 
-    ## Select rarefactions
+    ## Select rarefactions
     expect_equal(
         select.rarefaction(subsets, 8)
         ,list(18, 8))

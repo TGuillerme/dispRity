@@ -1,8 +1,10 @@
 ## Set the percentage for reaching the first sample containing three elements
 get.percent.age <- function(tree, percent = 0.01) {
     ## Increment the percentage until at least three nodes/edges are crossed
-    while(Ntip(slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))) < 3) {
+    tree_slice <- slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))
+    while(is.null(tree_slice) || Ntip(tree_slice) < 3) {
         percent <- percent + 0.01
+        tree_slice <- slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))
     }
     return(percent)
 }
