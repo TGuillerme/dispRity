@@ -34,6 +34,8 @@ Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 Bootstraps and rarefies either a matrix or a list of matrices.
 }
 \details{
+\code{data}: The data is considered as the multidimensional space and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
+
 \code{rarefaction}: when the input is \code{numeric}, the number of elements is set to the value(s) for each bootstrap. If some subsets have fewer elements than the rarefaction value, the subsets is not rarefied.
 When the input is \code{"min"}, the smallest number of elements is used (or 3 if some subsets have less than 3 elements).
 
