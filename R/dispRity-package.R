@@ -8,7 +8,7 @@
 #'
 #' @author Thomas Guillerme <guillert@@tcd.ie>
 #'
-#' @keywords disparity, ordination, phylogeny, cladistic, morphometric, ecology
+#' @concepts disparity ordination phylogeny cladistic morphometric ecology
 #'
 # @import ape
 # @import stats

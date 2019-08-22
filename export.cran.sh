@@ -58,7 +58,7 @@ mkdir ${TMPPATH}/inst/
 cp inst/CITATION ${TMPPATH}/inst/
 cp inst/*.bib ${TMPPATH}/inst/
 mkdir ${TMPPATH}/inst/vignettes
-cp inst/vignettes/* ${TMPPATH}/inst/vignettes/
+cp inst/vignettes/*.Rmd ${TMPPATH}/inst/vignettes/
 
 ## Remove the compiled source
 rm src/*.o
