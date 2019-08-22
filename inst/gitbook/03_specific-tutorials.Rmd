@@ -891,7 +891,7 @@ It can be a common statistical test function (e.g. `stats::t.test`), a function 
 This function also allows users to correct for Type I error inflation (false positives) when using multiple comparisons via the `correction` argument. 
 This argument can be empty (no correction applied) or can contain one of the corrections from the `stats::p.adjust` function (see `?p.adjust`).
 
-Note that the `test.dispRity` algorithm deals with some classical test outputs and summarises the test output.
+Note that the `test.dispRity` algorithm deals with some classical test outputs (`h.test`, `lm` and `numeric` vector) and summarises the test output.
 It is, however, possible to get the full detailed output by using the options `details = TRUE`.
 
 Here we are using the variables generated in the [section above](#summarising-dispRity-data-plots):

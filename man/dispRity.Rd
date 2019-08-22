@@ -7,7 +7,7 @@
 dispRity(data, metric, dimensions, ..., verbose = FALSE)
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{dispRity} object (see details).}
+\item{data}{A matrix or a \code{dispRity} object (see details).}
 
 \item{metric}{A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).}
 

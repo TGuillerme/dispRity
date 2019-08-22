@@ -104,9 +104,6 @@ For the the GitHub version, the differences are that the `release` one is more s
 If you want the latest-latest version of the package I suggest using the GitHub `master` one, especially if you recently emailed me reporting a minor bug or wanting a new functionality!
 Note however that *it can happen* that the `master` version can sometimes be bugged (especially when there are major `R` and `R` packages updates), however, the status of the package state on both the `release` and the `master` version is constantly displayed on the [`README` page](https://github.com/TGuillerme/dispRity/) of the package with the nice badges displaying these different (and constantly tested) information.
 
-Note that when we (the `dispRity` package collaborators!) are developing some more major versions, including some more complex features for example, they will never be released on either the the versions described above.
-Therefore you can rest assure that you will never use a badly bugged version of `dispRity`! Enjoy!
-
 ## Help
 
 If you need help with the package, hopefully the following manual will be useful.

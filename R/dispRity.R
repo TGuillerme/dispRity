@@ -2,7 +2,7 @@
 #'
 #' @description Calculates disparity on a matrix or subsets of a matrix, where the disparity metric can be user specified.
 #'
-#' @param data A \code{matrix} or a \code{dispRity} object (see details).
+#' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.

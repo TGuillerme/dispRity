@@ -16,8 +16,6 @@ output:
 Disparity can be estimated from pretty much any matrix as long as rows represent the elements and columns the dimensions.
 These matrices can be observations, pairwise differences between elements, ordinations, etc...
 
-> Note that whether the matrix is an ordinated one or of any other type, it is always considered as the multidimensional space to analysis and no corrections are applied to it (e.g. if ordinated and with negative eigen values, no correction is used). Always make sure the input is the right multidimensional space to analyse!
-
 ## Ordinated matrices
 
 Classically, when a high number of variables is used, disparity is calculated from ordinated matrices.

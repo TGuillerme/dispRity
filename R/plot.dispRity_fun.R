@@ -489,7 +489,11 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
         if(n_groups == 1) {
             plot_args$col <- "black"
         } else {
-            plot_args$col <- gg.color.hue(n_groups)
+            if(data$call$subsets == "customised") {
+                plot_args$col <- gg.color.hue(n_groups)
+            } else {
+                plot_args$col <- grDevices::heat.colors(n_groups+2)[1:n_groups]
+            }
         }
     } else {
         plot_args$col <- col
@@ -501,13 +505,14 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
         for(class in 1:n_groups) {
             classifier[data$subsets[[class]]$elements[,1]] <- class
         }
+        col_order <- plot_args$col
         plot_args$col <- plot_args$col[classifier]
     }
 
     ## Plot the results
     do.call(plot, plot_args)
     if(n_groups > 1) {
-        legend("topright", legend = names(data$subsets), col = unique(plot_args$col), pch = plot_args$pch, cex = 0.666)
+        legend("topright", legend = names(data$subsets), col = col_order, pch = plot_args$pch, cex = 0.666)
     }
 
     ## Return invisible
