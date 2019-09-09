@@ -44,7 +44,7 @@ print(disparity, all = TRUE)
 ## This is more nearly ~ 5000 lines on my 13 inch laptop screen!
 ```
 
-## `dispRity` utilities
+## `dispRity` utilities {#utilities}
 
 The package also provides some utility functions to facilitate multidimensional analysis.
 

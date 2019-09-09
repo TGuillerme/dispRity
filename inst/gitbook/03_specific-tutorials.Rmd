@@ -595,6 +595,16 @@ summary(dispRity(dummy_space, metric = centroids, centroid = 0))
 summary(dispRity(dummy_space, metric = centroids, centroid = c(0,1,2,3,4)))
 ```
 
+If you have subsets in your `dispRity` object, you can also use the `matrix.dispRity` (see [utilities](#utilities)) and `colMeans` to get the centre of a specific subgroup.
+For example
+
+```{r, warning = FALSE}
+## Create a custom subsets object
+dummy_groups <- custom.subsets(dummy_space, group = list("group1" = 1:5, "group2" = 6:10))
+summary(dispRity(dummy_groups, metric = centroids,
+                 centroid = colMeans(matrix.dispRity(dummy_groups, "group1"))))
+```
+
 The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
 Note that it is possible to measure a ratio from another point than `0` using the `reference` argument.
 It gives indication of the relative displacement of elements in the multidimensional space: a score  >1 signifies a displacement *away* from the reference. A score of >1 signifies a displacement *towards* the reference.
