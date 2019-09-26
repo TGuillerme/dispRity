@@ -121,6 +121,10 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+Shape+of+Weaver%3A+Investigating+Shape+Disparity+in+Orb-Weaving+Spiders+%28Araneae%2C+Araneidae%29+Using+Geometric+Morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+RJ Kallal, Aj Moore, G Hormiga. (**2019**) The Shape of Weaver: Investigating Shape Disparity in Orb-Weaving Spiders (Araneae, Araneidae) Using Geometric Morphometrics. *Evolutionary Biology*. 2019:1-5.[DOI:10.1007/s11692-019-09482-w](https://link.springer.com/article/10.1007/s11692-019-09482-w)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Crocodylomorph+cranial+shape+evolution+and+its+relationship+with+body+size+and+ecology&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 PL Godoy (**2019**). Crocodylomorph cranial shape evolution and its relationship with body size and ecology. *bioRxiv*. 1:640383. [DOI:10.1101/724609 ](https://www.biorxiv.org/content/10.1101/724609v1.full)
 
