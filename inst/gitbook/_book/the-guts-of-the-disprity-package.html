@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2019-08-15" />
+<meta name="date" content="2019-10-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -208,7 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a><ul>
 <li class="chapter" data-level="7.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>7.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
 <li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
 <li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
@@ -275,28 +275,28 @@ These objects allow users to use S3 method functions such as <code>summary.dispR
 <code>dispRity</code> also contains various utility functions that manipulate the <code>dispRity</code> object (e.g. <code>sort.dispRity</code>, <code>extract.dispRity</code> see the full list in the next section).
 These functions modify the <code>dispRity</code> object without having to delve into its complex structure!
 The full structure of a <code>dispRity</code> object is detailed <a href="https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md">here</a>.</p>
-<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb368-1" data-line-number="1"><span class="co">## Loading the example data</span></a>
-<a class="sourceLine" id="cb368-2" data-line-number="2"><span class="kw">data</span>(disparity)</a>
-<a class="sourceLine" id="cb368-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb368-4" data-line-number="4"><span class="co">## What is the class of the median_centroids object?</span></a>
-<a class="sourceLine" id="cb368-5" data-line-number="5"><span class="kw">class</span>(disparity)</a></code></pre></div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1"><span class="co">## Loading the example data</span></a>
+<a class="sourceLine" id="cb370-2" data-line-number="2"><span class="kw">data</span>(disparity)</a>
+<a class="sourceLine" id="cb370-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb370-4" data-line-number="4"><span class="co">## What is the class of the median_centroids object?</span></a>
+<a class="sourceLine" id="cb370-5" data-line-number="5"><span class="kw">class</span>(disparity)</a></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1"><span class="co">## What does the object contain?</span></a>
-<a class="sourceLine" id="cb370-2" data-line-number="2"><span class="kw">names</span>(disparity)</a></code></pre></div>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1"><span class="co">## What does the object contain?</span></a>
+<a class="sourceLine" id="cb372-2" data-line-number="2"><span class="kw">names</span>(disparity)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;    &quot;call&quot;      &quot;subsets&quot;   &quot;disparity&quot;</code></pre>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1"><span class="co">## Summarising it using the S3 method print.dispRity</span></a>
-<a class="sourceLine" id="cb372-2" data-line-number="2">disparity</a></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="co">## Summarising it using the S3 method print.dispRity</span></a>
+<a class="sourceLine" id="cb374-2" data-line-number="2">disparity</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 7 continuous (acctran) time subsets for 99 elements with 97 dimensions:
 ##      90, 80, 70, 60, 50 ...
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 20, 15, 10, 5 elements.
 ## Disparity was calculated as: c(median, centroids).</code></pre>
 <p>Note that it is always possible to recall the full object using the argument <code>all = TRUE</code> in <code>print.dispRity</code>:</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="co">## Display the full object</span></a>
-<a class="sourceLine" id="cb374-2" data-line-number="2"><span class="kw">print</span>(disparity, <span class="dt">all =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb374-3" data-line-number="3"><span class="co">## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</span></a></code></pre></div>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb376-1" data-line-number="1"><span class="co">## Display the full object</span></a>
+<a class="sourceLine" id="cb376-2" data-line-number="2"><span class="kw">print</span>(disparity, <span class="dt">all =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb376-3" data-line-number="3"><span class="co">## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</span></a></code></pre></div>
 </div>
-<div id="disprity-utilities" class="section level2">
+<div id="utilities" class="section level2">
 <h2><span class="header-section-number">7.2</span> <code>dispRity</code> utilities</h2>
 <p>The package also provides some utility functions to facilitate multidimensional analysis.</p>
 <div id="disprity-object-utilities" class="section level3">
@@ -305,26 +305,26 @@ The full structure of a <code>dispRity</code> object is detailed <a href="https:
 <div id="make.disprity" class="section level4">
 <h4><span class="header-section-number">7.2.1.1</span> <code>make.dispRity</code></h4>
 <p>This function creates empty <code>dispRity</code> objects.</p>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1"><span class="co">## Creating an empty dispRity object</span></a>
-<a class="sourceLine" id="cb375-2" data-line-number="2"><span class="kw">make.dispRity</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co">## Creating an empty dispRity object</span></a>
+<a class="sourceLine" id="cb377-2" data-line-number="2"><span class="kw">make.dispRity</span>()</a></code></pre></div>
 <pre><code>## Empty dispRity object.</code></pre>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co">## Creating an &quot;empty&quot; dispRity object with a matrix</span></a>
-<a class="sourceLine" id="cb377-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="co">## Creating an &quot;empty&quot; dispRity object with a matrix</span></a>
+<a class="sourceLine" id="cb379-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## Contains only a matrix 5x4.</code></pre>
 </div>
 <div id="fill.disprity" class="section level4">
 <h4><span class="header-section-number">7.2.1.2</span> <code>fill.dispRity</code></h4>
 <p>This function initialises a <code>dispRity</code> object and generates its call properties.</p>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="co">## The dispRity object&#39;s call is indeed empty</span></a>
-<a class="sourceLine" id="cb379-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1"><span class="co">## The dispRity object&#39;s call is indeed empty</span></a>
+<a class="sourceLine" id="cb381-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
 <pre><code>## list()</code></pre>
-<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1"><span class="co">## Filling an empty disparity object (that needs to contain at least a matrix)</span></a>
-<a class="sourceLine" id="cb381-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">fill.dispRity</span>(disparity_obj))</a></code></pre></div>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" data-line-number="1"><span class="co">## Filling an empty disparity object (that needs to contain at least a matrix)</span></a>
+<a class="sourceLine" id="cb383-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">fill.dispRity</span>(disparity_obj))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 elements with 4 dimensions.</code></pre>
-<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" data-line-number="1"><span class="co">## The dipRity object has now the correct minimal attributes</span></a>
-<a class="sourceLine" id="cb383-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="co">## The dipRity object has now the correct minimal attributes</span></a>
+<a class="sourceLine" id="cb385-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
 <pre><code>## $dimensions
 ## [1] 4</code></pre>
 </div>
@@ -332,15 +332,15 @@ The full structure of a <code>dispRity</code> object is detailed <a href="https:
 <h4><span class="header-section-number">7.2.1.3</span> <code>matrix.dispRity</code></h4>
 <p>This function extracts a specific matrix from a disparity object.
 The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
-<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="co">## Extracting the matrix containing the coordinates of the elements at time 50</span></a>
-<a class="sourceLine" id="cb385-2" data-line-number="2"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="st">&quot;50&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" data-line-number="1"><span class="co">## Extracting the matrix containing the coordinates of the elements at time 50</span></a>
+<a class="sourceLine" id="cb387-2" data-line-number="2"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="st">&quot;50&quot;</span>))</a></code></pre></div>
 <pre><code>##  num [1:18, 1:97] -0.1038 0.2844 0.2848 0.0927 0.1619 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : chr [1:18] &quot;Leptictis&quot; &quot;Dasypodidae&quot; &quot;n24&quot; &quot;Potamogalinae&quot; ...
 ##   ..$ : NULL</code></pre>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" data-line-number="1"><span class="co">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level</span></a>
-<a class="sourceLine" id="cb387-2" data-line-number="2"><span class="co">## (15 elements) from the second group (80 Mya)</span></a>
-<a class="sourceLine" id="cb387-3" data-line-number="3"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" data-line-number="1"><span class="co">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level</span></a>
+<a class="sourceLine" id="cb389-2" data-line-number="2"><span class="co">## (15 elements) from the second group (80 Mya)</span></a>
+<a class="sourceLine" id="cb389-3" data-line-number="3"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</a></code></pre></div>
 <pre><code>##  num [1:15, 1:97] -0.7161 0.3496 -0.573 -0.0445 -0.1427 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : chr [1:15] &quot;n7&quot; &quot;n34&quot; &quot;Maelestes&quot; &quot;n20&quot; ...
@@ -349,53 +349,53 @@ The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
 <div id="get.subsets" class="section level4">
 <h4><span class="header-section-number">7.2.1.4</span> <code>get.subsets</code></h4>
 <p>This function creates a dispRity object that contains only elements from one specific subsets.</p>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" data-line-number="1"><span class="co">## Extracting all the data for the crown mammals</span></a>
-<a class="sourceLine" id="cb389-2" data-line-number="2">(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))</a>
-<a class="sourceLine" id="cb389-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb389-4" data-line-number="4"><span class="co">## The object keeps the properties of the parent object but is composed of only one subsets</span></a>
-<a class="sourceLine" id="cb389-5" data-line-number="5"><span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</a></code></pre></div>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" data-line-number="1"><span class="co">## Extracting all the data for the crown mammals</span></a>
+<a class="sourceLine" id="cb391-2" data-line-number="2">(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))</a>
+<a class="sourceLine" id="cb391-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb391-4" data-line-number="4"><span class="co">## The object keeps the properties of the parent object but is composed of only one subsets</span></a>
+<a class="sourceLine" id="cb391-5" data-line-number="5"><span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</a></code></pre></div>
 </div>
 <div id="combine.subsets" class="section level4">
 <h4><span class="header-section-number">7.2.1.5</span> <code>combine.subsets</code></h4>
 <p>This function allows to merge different subsets.
 If the</p>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="co">## Combine the two first subsets in the dispRity data example</span></a>
-<a class="sourceLine" id="cb390-2" data-line-number="2"><span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="co">## Combine the two first subsets in the dispRity data example</span></a>
+<a class="sourceLine" id="cb392-2" data-line-number="2"><span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a></code></pre></div>
 <p>Note that the computed values (bootstrapped data + disparity metric) are not merge.</p>
 </div>
 <div id="extract.disprity" class="section level4">
 <h4><span class="header-section-number">7.2.1.6</span> <code>extract.dispRity</code></h4>
 <p>This function extracts the calculated disparity values of a specific matrix.</p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" data-line-number="1"><span class="co">## Extracting the observed disparity (default)</span></a>
-<a class="sourceLine" id="cb391-2" data-line-number="2"><span class="kw">extract.dispRity</span>(disparity)</a>
-<a class="sourceLine" id="cb391-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb391-4" data-line-number="4"><span class="co">## Extracting the disparity from the bootstrapped values from the</span></a>
-<a class="sourceLine" id="cb391-5" data-line-number="5"><span class="co">## 10th rarefaction level from the second subsets (80 Mya)</span></a>
-<a class="sourceLine" id="cb391-6" data-line-number="6"><span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="co">## Extracting the observed disparity (default)</span></a>
+<a class="sourceLine" id="cb393-2" data-line-number="2"><span class="kw">extract.dispRity</span>(disparity)</a>
+<a class="sourceLine" id="cb393-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb393-4" data-line-number="4"><span class="co">## Extracting the disparity from the bootstrapped values from the</span></a>
+<a class="sourceLine" id="cb393-5" data-line-number="5"><span class="co">## 10th rarefaction level from the second subsets (80 Mya)</span></a>
+<a class="sourceLine" id="cb393-6" data-line-number="6"><span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</a></code></pre></div>
 </div>
 <div id="rescale.disprity" class="section level4">
 <h4><span class="header-section-number">7.2.1.7</span> <code>rescale.dispRity</code></h4>
 <p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
-<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="co">## Getting the disparity values of the time subsets</span></a>
-<a class="sourceLine" id="cb392-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(disparity))</a>
-<a class="sourceLine" id="cb392-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb392-4" data-line-number="4"><span class="co">## Scaling the same disparity values</span></a>
-<a class="sourceLine" id="cb392-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb392-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb392-7" data-line-number="7"><span class="co">## Scaling and centering:</span></a>
-<a class="sourceLine" id="cb392-8" data-line-number="8"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb392-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb392-10" data-line-number="10"><span class="co">## Rescaling the value by dividing by a maximum value</span></a>
-<a class="sourceLine" id="cb392-11" data-line-number="11"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" data-line-number="1"><span class="co">## Getting the disparity values of the time subsets</span></a>
+<a class="sourceLine" id="cb394-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(disparity))</a>
+<a class="sourceLine" id="cb394-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb394-4" data-line-number="4"><span class="co">## Scaling the same disparity values</span></a>
+<a class="sourceLine" id="cb394-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</a>
+<a class="sourceLine" id="cb394-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb394-7" data-line-number="7"><span class="co">## Scaling and centering:</span></a>
+<a class="sourceLine" id="cb394-8" data-line-number="8"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</a>
+<a class="sourceLine" id="cb394-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb394-10" data-line-number="10"><span class="co">## Rescaling the value by dividing by a maximum value</span></a>
+<a class="sourceLine" id="cb394-11" data-line-number="11"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</a></code></pre></div>
 </div>
 <div id="sort.disprity" class="section level4">
 <h4><span class="header-section-number">7.2.1.8</span> <code>sort.dispRity</code></h4>
 <p>This is the S3 method of <code>sort</code> for sorting the subsets alphabetically (default) or following a specific pattern.</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="co">## Sorting the disparity subsets in inverse alphabetic order</span></a>
-<a class="sourceLine" id="cb393-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb393-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb393-4" data-line-number="4"><span class="co">## Customised sorting</span></a>
-<a class="sourceLine" id="cb393-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" data-line-number="1"><span class="co">## Sorting the disparity subsets in inverse alphabetic order</span></a>
+<a class="sourceLine" id="cb395-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))</a>
+<a class="sourceLine" id="cb395-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb395-4" data-line-number="4"><span class="co">## Customised sorting</span></a>
+<a class="sourceLine" id="cb395-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</a></code></pre></div>
 </div>
 </div>
 </div>

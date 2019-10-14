@@ -224,14 +224,17 @@ time_slices <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 boot.matrix(time_slices, bootstraps = 100)
 ```
 
-## Disparity metrics
+## Disparity metrics {#disparity-metrics}
 
 There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue _et al._ 2013), the sum and the product of the ranges and variances (Wills _et al._ 1994) or the median position of the elements relative to their centroid (Wills _et al._ 1994). 
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
+Check out this pre-print on selecting the best metric for your specific question on [biorXiv](https://www.biorxiv.org/content/10.1101/801571v1).
+<!-- biorXiv preprint -->
+You can also use the  [`moms` shiny app](https://tguillerme.shinyapps.io/moms/) to test which metric captures which aspect of traitspace occupancy regarding your specific space and your specific question.
 
-Because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
+Regardless, and because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
 In fact, the core function of the package, `dispRity`, allows the user to define any metric with the `metric` argument.
 However the `metric` argument has to follow certain rules:
 
@@ -396,6 +399,9 @@ Level | Name | Description | Source |
 It can, however, be fixed to a different value by using the `centroid` argument `centroids(space, centroid = rep(0, ncol(space)))`, for example the origin of the ordinated space.
 
 2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (*not* PCA).
+
+You can find more informations on the vast variety of metrics that you can use in your analysis in this [preprint](https://www.biorxiv.org/content/10.1101/801571v1).
+<!-- biorXiv preprint -->
 
 ### Equations and implementations
 Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).

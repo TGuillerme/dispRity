@@ -125,7 +125,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2019-08-15}
+    \date{2019-10-14}
 
 \usepackage{booktabs}
 
@@ -1233,8 +1233,10 @@ There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g.~a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue \emph{et al.} 2013), the sum and the product of the ranges and variances (Wills \emph{et al.} 1994) or the median position of the elements relative to their centroid (Wills \emph{et al.} 1994).
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
+Check out this pre-print on selecting the best metric for your specific question on \href{https://www.biorxiv.org/content/10.1101/801571v1}{biorXiv}.
+You can also use the \href{https://tguillerme.shinyapps.io/moms/}{\texttt{moms} shiny app} to test which metric captures which aspect of traitspace occupancy regarding your specific space and your specific question.
 
-Because of this great diversity of metrics, the package \texttt{dispRity} does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
+Regardless, and because of this great diversity of metrics, the package \texttt{dispRity} does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
 In fact, the core function of the package, \texttt{dispRity}, allows the user to define any metric with the \texttt{metric} argument.
 However the \texttt{metric} argument has to follow certain rules:
 
@@ -1686,6 +1688,8 @@ The variance of each dimension\strut
 It can, however, be fixed to a different value by using the \texttt{centroid} argument \texttt{centroids(space,\ centroid\ =\ rep(0,\ ncol(space)))}, for example the origin of the ordinated space.
 
 2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (\emph{not} PCA).
+
+You can find more informations on the vast variety of metrics that you can use in your analysis in this \href{https://www.biorxiv.org/content/10.1101/801571v1}{preprint}.
 
 \hypertarget{equations-and-implementations}{%
 \subsection{Equations and implementations}\label{equations-and-implementations}}
@@ -2144,6 +2148,24 @@ It is however possible to fix the coordinates of the centroid to a specific poin
 ## 1       1 10      5.489 4.293 5.032 6.155 6.957
 \end{verbatim}
 
+If you have subsets in your \texttt{dispRity} object, you can also use the \texttt{matrix.dispRity} (see \protect\hyperlink{utilities}{utilities}) and \texttt{colMeans} to get the centre of a specific subgroup.
+For example
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Create a custom subsets object}
+\NormalTok{dummy_groups <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(dummy_space, }\DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\StringTok{"group1"}\NormalTok{ =}\StringTok{ }\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\StringTok{"group2"}\NormalTok{ =}\StringTok{ }\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy_groups, }\DataTypeTok{metric =}\NormalTok{ centroids,}
+                 \DataTypeTok{centroid =} \KeywordTok{colMeans}\NormalTok{(}\KeywordTok{matrix.dispRity}\NormalTok{(dummy_groups, }\StringTok{"group1"}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n obs.median  2.5%   25%   75% 97.5%
+## 1  group1 5      2.011 0.902 1.389 2.284 3.320
+## 2  group2 5      1.362 0.760 1.296 1.505 1.985
+\end{verbatim}
+
 The \texttt{displacements} distance is the ratio between the \texttt{centroids} distance and the \texttt{centroids} distance with \texttt{centroid\ =\ 0}.
 Note that it is possible to measure a ratio from another point than \texttt{0} using the \texttt{reference} argument.
 It gives indication of the relative displacement of elements in the multidimensional space: a score \textgreater{}1 signifies a displacement \emph{away} from the reference. A score of \textgreater{}1 signifies a displacement \emph{towards} the reference.
@@ -2197,7 +2219,7 @@ Therefore this functions needs a tree and node coordinates as additional argumen
 
 \begin{verbatim}
 ##   subsets n obs.median  2.5%   25%   75% 97.5%
-## 1       1 9      3.862 0.346 1.809 6.239 7.445
+## 1       1 9      4.052 0.253 1.729 6.797   9.7
 \end{verbatim}
 
 \begin{Shaded}
@@ -2209,7 +2231,7 @@ Therefore this functions needs a tree and node coordinates as additional argumen
 
 \begin{verbatim}
 ##   subsets n   obs
-## 1       1 9 35.91
+## 1       1 9 41.98
 \end{verbatim}
 
 \hypertarget{minimal-spanning-tree-length}{%
@@ -2327,10 +2349,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 2.823     2.403 1.481 2.144 2.594 2.823
-## 2      80 19 3.233     3.064 2.863 2.983 3.160 3.234
-## 3      40 15 3.359     3.163 2.719 3.032 3.259 3.402
-## 4       0 10 4.055     3.684 3.029 3.581 3.783 3.946
+## 1     120  5 2.823     2.295 1.376 2.023 2.594 2.823
+## 2      80 19 3.233     3.077 2.796 2.987 3.148 3.241
+## 3      40 15 3.359     3.172 2.723 3.050 3.261 3.415
+## 4       0 10 4.055     3.666 3.162 3.510 3.765 3.956
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed (i.e.~non-bootstrapped) disparity are also calculated.
@@ -2344,12 +2366,12 @@ This is specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 1.995     1.929 1.874 1.912 1.942 1.970
-## 2   crown 29    NA     1.930 1.881 1.915 1.947 1.975
-## 3   crown 28    NA     1.936 1.871 1.914 1.951 1.978
-## 4   crown 27    NA     1.937 1.879 1.919 1.947 1.970
-## 5   crown 26    NA     1.928 1.869 1.913 1.947 1.972
-## 6   crown 25    NA     1.923 1.873 1.908 1.945 1.970
+## 1   crown 30 1.995     1.926 1.865 1.911 1.947 1.977
+## 2   crown 29    NA     1.927 1.875 1.912 1.946 1.979
+## 3   crown 28    NA     1.937 1.874 1.917 1.954 1.980
+## 4   crown 27    NA     1.937 1.879 1.915 1.950 1.971
+## 5   crown 26    NA     1.928 1.863 1.915 1.945 1.977
+## 6   crown 25    NA     1.933 1.868 1.916 1.952 1.980
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2377,10 +2399,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.sd    6%   94%
-## 1     120  5 2.823 0.338 1.767 2.823
-## 2      80 19 3.233 0.119 2.908 3.216
-## 3      40 15 3.359 0.178 2.841 3.369
-## 4       0 10 4.055 0.226 3.265 3.900
+## 1     120  5 2.823 0.385 1.729 2.823
+## 2      80 19 3.233 0.121 2.887 3.223
+## 3      40 15 3.359 0.177 2.759 3.345
+## 4       0 10 4.055 0.222 3.273 3.926
 \end{verbatim}
 
 \begin{Shaded}
@@ -2400,10 +2422,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  5 2.82292   2.40331 1.48096 2.14432 2.59439 2.82292
-## 2      80 19 3.23312   3.06403 2.86262 2.98261 3.16024 3.23409
-## 3      40 15 3.35947   3.16330 2.71937 3.03205 3.25855 3.40218
-## 4       0 10 4.05457   3.68403 3.02885 3.58090 3.78324 3.94556
+## 1     120  5 2.82292   2.29516 1.37637 2.02338 2.59439 2.82292
+## 2      80 19 3.23312   3.07746 2.79566 2.98702 3.14797 3.24115
+## 3      40 15 3.35947   3.17233 2.72329 3.05018 3.26147 3.41501
+## 4       0 10 4.05457   3.66638 3.16159 3.50959 3.76453 3.95620
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as easy to modify as any dataframe using \texttt{dplyr}.
@@ -2460,7 +2482,7 @@ Additionally, when the data is rarefied, one can indicate which level of rarefac
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2489,7 +2511,7 @@ Since \texttt{plot.dispRity} uses the arguments from the generic \texttt{plot} m
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2514,7 +2536,7 @@ In addition to the classic \texttt{plot} arguments, the function can also take a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2542,7 +2564,7 @@ For comparing results, it is also possible to add a plot to the existent plot by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-59-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2563,7 +2585,7 @@ Finally, if your data has been fully rarefied, it is also possible to easily loo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-60-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2615,7 +2637,7 @@ For example custom subsets \emph{vs.} time subsets:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 \begin{quote}
 DISCLAIMER: This functionality can be handy for exploring the data (e.g.~to visually check whether the subset attribution worked) but it might be misleading on how the data is \emph{actually} distributed in the multidimensional space!
@@ -2666,19 +2688,19 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 \begin{verbatim}
 ## [[1]]
 ##              statistic: t
-## crown : stem     71.35019
+## crown : stem     65.29366
 ## 
 ## [[2]]
 ##              parameter: df
-## crown : stem      176.0866
+## crown : stem      189.5275
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 7.057325e-132
+## crown : stem 7.154503e-132
 ## 
 ## [[4]]
 ##                   stderr
-## crown : stem 0.004116325
+## crown : stem 0.004510533
 \end{verbatim}
 
 \begin{Shaded}
@@ -2695,13 +2717,13 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 71.35, df = 176.09, p-value < 2.2e-16
+## t = 65.294, df = 189.53, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2855769 0.3018243
+##  0.2856119 0.3034065
 ## sample estimates:
 ## mean of x mean of y 
-##  1.928095  1.634394
+##  1.926252  1.631743
 \end{verbatim}
 
 \begin{Shaded}
@@ -2716,15 +2738,15 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 \begin{verbatim}
 ## [[1]]
 ##          statistic: W
-## 120 : 80           44
-## 80 : 40          3219
-## 40 : 0            489
+## 120 : 80           47
+## 80 : 40          3211
+## 40 : 0            436
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 2.843186e-33
-## 80 : 40  4.075680e-05
-## 40 : 0   9.089860e-28
+## 120 : 80 3.119034e-33
+## 80 : 40  3.727379e-05
+## 40 : 0   2.138431e-28
 \end{verbatim}
 
 \begin{Shaded}
@@ -2744,7 +2766,7 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 ##                    bhatt.coeff
 ## 120 - 80 : 80 - 40   0.0000000
 ## 120 - 80 : 40 - 0    0.0000000
-## 80 - 40 : 40 - 0     0.5032302
+## 80 - 40 : 40 - 0     0.4217128
 \end{verbatim}
 
 Because of the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
@@ -2970,7 +2992,7 @@ Unfortunately, this implementation is slower that \texttt{geiger::dtt} (so if yo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 Note that, like in the original \texttt{dtt} function, it is possible to change the evolutionary model (see \texttt{?geiger::sim.char} documentation).
 
@@ -3021,7 +3043,7 @@ These results have an attributed \texttt{dispRity} and \texttt{randtest} class a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 For more details on generating spaces see the \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}} function tutorial.
 
@@ -3816,10 +3838,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  5      1.508     1.360 0.812 1.144 1.553 1.839
-## 2      80 19      1.790     1.699 1.405 1.591 1.812 1.945
-## 3      40 15      1.689     1.681 1.336 1.563 1.843 2.064
-## 4       0 10      1.910     1.803 1.372 1.699 1.956 2.098
+## 1     120  5      1.508     1.278 0.536 1.108 1.565 1.863
+## 2      80 19      1.790     1.696 1.403 1.587 1.811 1.943
+## 3      40 15      1.689     1.676 1.349 1.567 1.843 2.065
+## 4       0 10      1.910     1.812 1.356 1.681 1.959 2.106
 \end{verbatim}
 
 \begin{Shaded}
@@ -3831,10 +3853,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 1.508     1.421 0.789 1.219 1.479 1.615
-## 2      80 19 1.790     1.699 1.570 1.647 1.731 1.781
-## 3      40 15 1.689     1.680 1.520 1.621 1.721 1.791
-## 4       0 10 1.910     1.807 1.550 1.772 1.852 1.945
+## 1     120  5 1.508     1.289 0.535 0.946 1.477 1.527
+## 2      80 19 1.790     1.696 1.561 1.645 1.732 1.781
+## 3      40 15 1.689     1.673 1.503 1.622 1.714 1.812
+## 4       0 10 1.910     1.808 1.564 1.775 1.862 1.941
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly different than before.
@@ -3855,7 +3877,7 @@ Another, maybe more intuitive way, to compare both approaches for measuring disp
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3879,12 +3901,12 @@ We can then test for differences in the resulting distributions using \texttt{te
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.1121007
-## 120 : 40   0.2407057
-## 120 : 0    0.1507107
-## 80 : 40    0.9308723
-## 80 : 0     0.5340463
-## 40 : 0     0.5241821
+## 120 : 80   0.2091605
+## 120 : 40   0.2588339
+## 120 : 0    0.1480949
+## 80 : 40    0.9510591
+## 80 : 0     0.5641736
+## 40 : 0     0.6361825
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the distribution of median distances from centroids among each pair of time slices.
@@ -3908,12 +3930,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.6296718
-## 120 : 40   0.6853292
-## 120 : 0    0.5733186
-## 80 : 40    0.9400499
-## 80 : 0     0.8685040
-## 40 : 0     0.9277124
+## 120 : 80   0.6229758
+## 120 : 40   0.6749222
+## 120 : 0    0.5904302
+## 80 : 40    0.9421894
+## 80 : 0     0.8622696
+## 40 : 0     0.9276838
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps.
@@ -3936,12 +3958,12 @@ A second solution is to compare the distributions to each other \emph{for each r
 
 \begin{verbatim}
 ##          bhatt.coeff       2.5%       25%       75%     97.5%
-## 120 : 80   0.2875529 0.00000000 0.1777047 0.4006176 0.5681645
-## 120 : 40   0.3134755 0.00000000 0.2232051 0.4309401 0.6264552
-## 120 : 0    0.2198913 0.00000000 0.0000000 0.3464102 0.6319158
-## 80 : 40    0.6224908 0.27975876 0.5215252 0.7500784 0.9247555
-## 80 : 0     0.4593145 0.07254763 0.3317231 0.5685736 0.7538037
-## 40 : 0     0.5118333 0.03878359 0.3999051 0.6473892 0.8229464
+## 120 : 80   0.2706528 0.00000000 0.1450953 0.3870164 0.5471271
+## 120 : 40   0.3125070 0.00000000 0.1632993 0.4581989 0.7151557
+## 120 : 0    0.2230302 0.00000000 0.0000000 0.3162278 0.5656854
+## 80 : 40    0.6436573 0.33991215 0.5090998 0.7713835 0.9007862
+## 80 : 0     0.4487470 0.11355055 0.3502909 0.5752371 0.7888732
+## 40 : 0     0.4997567 0.09771435 0.3265986 0.6370727 0.8483180
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in the first column (\texttt{bhatt.coeff}) and then the distribution of these overlaps among each pair of bootstraps.
@@ -4062,7 +4084,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in terms of scale.
 The median centroids distance is expressed in km in the ``Distance differences'' plots and in Euclidean units of variation in the ``Ordinated differences'' plots.
@@ -4307,7 +4329,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:
 
@@ -4362,7 +4384,7 @@ The maximum boundary is equivalent to the radius of the circle (it removes coord
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4411,7 +4433,7 @@ I suggest using the excellent \texttt{scatterplot3d} package to play around and 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-100-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-101-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4461,7 +4483,7 @@ For example, we can extract the parameters of the \texttt{BeckLee\_mat50} ordina
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-101-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to test several hypothesis:
 
@@ -4505,7 +4527,7 @@ It is now possible to simulate a space using these observed arguments to test se
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-103-1.pdf}
 
 If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.
 
@@ -4641,7 +4663,7 @@ This can be useful when getting pairwise comparisons and if you'd like to see at
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 Here blue squares are ones that have a high value and orange ones the ones that have low values.
 Note that the values plotted correspond the first column of the data as designated by \texttt{what\ =\ 1}.
@@ -4657,7 +4679,7 @@ It is also possible to add some tokens or symbols to quickly highlight to specif
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 This function can also be used as a binary display when running a series of pairwise t-tests.
 For example, the following script runs a wilcoxon test between the time-slices from the \texttt{disparity} example dataset and displays in black which pairs of slices have a p-value below 0.05:
@@ -4675,7 +4697,7 @@ For example, the following script runs a wilcoxon test between the time-slices f
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 \hypertarget{reduce.matrix}{%
 \section{\texorpdfstring{\texttt{reduce.matrix}}{reduce.matrix}}\label{reduce.matrix}}
@@ -4700,7 +4722,7 @@ For example, if we have a patchy matrix like so (where the black squares represe
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 We can use the \texttt{reduce.matrix} to double check whether any rows cannot be compared.
 The functions needs as an input the type of distance that will be used, say a \texttt{"gower"} distance:
@@ -4728,7 +4750,7 @@ We can not remove the rows 1 and 9 and see if that improved the overlap:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \hypertarget{slice.tree}{%
 \section{\texorpdfstring{\texttt{slice.tree}}{slice.tree}}\label{slice.tree}}
@@ -4761,7 +4783,7 @@ The function works by using at least a tree, a slice age and a model:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-112-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
 
 \hypertarget{slide.nodes-and-remove.zero.brlen}{%
 \section{\texorpdfstring{\texttt{slide.nodes} and \texttt{remove.zero.brlen}}{slide.nodes and remove.zero.brlen}}\label{slide.nodes-and-remove.zero.brlen}}
@@ -4792,7 +4814,7 @@ You can move the node ``down'' (towards the roots) using a negative value.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
 
 The \texttt{remove.zero.brlen} is a ``clever'' wrapping function that uses the \texttt{slide.nodes} function to stochastically remove zero branch lengths across a whole tree.
 This function will slide nodes up or down in successive postorder traversals (i.e.~going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
@@ -4852,7 +4874,7 @@ By default it is trying to slide the nodes using 1\% of the minimum branch lengt
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
 
 \hypertarget{tree.age}{%
 \section{\texorpdfstring{\texttt{tree.age}}{tree.age}}\label{tree.age}}
@@ -5020,8 +5042,8 @@ Note that it is always possible to recall the full object using the argument \te
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{disprity-utilities}{%
-\section{\texorpdfstring{\texttt{dispRity} utilities}{dispRity utilities}}\label{disprity-utilities}}
+\hypertarget{utilities}{%
+\section{\texorpdfstring{\texttt{dispRity} utilities}{dispRity utilities}}\label{utilities}}
 
 The package also provides some utility functions to facilitate multidimensional analysis.
 
@@ -5430,7 +5452,7 @@ A classical way to represent this ordinated data would be to use two dimensional
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-131-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-132-1.pdf}
 
 This shows the distribution of the different species in the petal-space along the two first axis of variation.
 This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA).
@@ -5446,7 +5468,7 @@ If we look at the two other axis we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-132-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-133-1.pdf}
 
 Additionally, these two represented dimensions do not represent a biological reality \emph{per se}; i.e.~the values on the first dimension do not represent a continuous trait (e.g.~petal length), instead they just represent the ordinations of correlations between the data and some factors.
 
@@ -5560,7 +5582,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-137-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-138-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!
 
@@ -5655,7 +5677,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-139-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-140-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5666,7 +5688,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-140-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-141-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or uniform.
 This is expected because of the simplicity of these parameters.
@@ -5752,7 +5774,7 @@ The ordinated matrix will represent our full morphospace, i.e.~all the mammalian
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-141-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-142-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap} package!
@@ -5765,7 +5787,7 @@ You can have an even nicer looking tree if you use the \texttt{strap} package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-142-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-143-1.pdf}
 
 \hypertarget{a-disparity-through-time-analysis}{%
 \section{A disparity-through-time analysis}\label{a-disparity-through-time-analysis}}
@@ -6026,7 +6048,7 @@ For that we can use the \texttt{plot} S3 function to plot the \texttt{dispRity} 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-148-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-149-1.pdf}
 
 \hypertarget{testing-differences}{%
 \section{Testing differences}\label{testing-differences}}
