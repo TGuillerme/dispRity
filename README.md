@@ -15,7 +15,6 @@ Development (master):
 [![develVersion](https://img.shields.io/badge/devel%20version-1.3.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
-
 CRAN:
 
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.3.3-6666ff.svg)](https://cran.r-project.org/)
