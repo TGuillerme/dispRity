@@ -209,8 +209,7 @@ Of course, one could directly supply the subsets generated above (using `chrono.
 ```{r, eval=TRUE}
 ## Creating subsets of crown and stem mammals
 crown_stem <- custom.subsets(BeckLee_mat50,
-                                group = list("crown" = c(16, 19:41, 45:50), 
-                                             "stem" = c(1:15, 17:18, 42:44)))
+                                group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
 ## Bootstrapping and rarefying these groups
 boot.matrix(crown_stem, bootstraps = 200, rarefaction = TRUE)
 
@@ -688,8 +687,7 @@ This function is an S3 function (`summary.dispRity`) allowing users to summarise
 ```{r}
 ## Example data from previous sections
 crown_stem <- custom.subsets(BeckLee_mat50,
-                                group = list("crown" = c(16, 19:41, 45:50), 
-                                             "stem" = c(1:15, 17:18, 42:44)))
+                                group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
 ## Bootstrapping and rarefying these groups
 boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE)
 ## Calculate disparity
