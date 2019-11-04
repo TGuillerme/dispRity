@@ -131,8 +131,6 @@ Used in
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Origin+of+horsetails+and+the+role+of+whole-genome+duplication+in+plant+macroevolution&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 JW Clark, MN Puttick MN, PC Donoghue. (**2019**) Origin of horsetails and the role of whole-genome duplication in plant macroevolution. *Proceedings of the Royal Society B* 286(1914):20191662. [DOI: 10.1098/rspb.2019.1662](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2019.1662)
 
-V Weisbecker, T Guillerme, C Speck, E Sherratt, H Mehari Abraha, AC Sharp, CE Terhune, S Collins, S Johnston, O Panagiotopoulou. (**2019**) Individual variation of the masticatory system dominates 3D skull shape in the herbivory-adapted marsupial wombats. *Frontiers in Zoology*, 16, 41. [DOI: 10.1186/s12983-019-0338-5](https://frontiersinzoology.biomedcentral.com/articles/10.1186/s12983-019-0338-5)
-
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Individual+variation+of+the+masticatory+system+dominates+3D+skull+shape+in+the+herbivory-adapted+marsupial+wombats.&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 V Weisbecker, T Guillerme, C Speck, E Sherratt, H Mehari Abraha, AC Sharp, CE Terhune, S Collins, S Johnston, O Panagiotopoulou. (**2019**) Individual variation of the masticatory system dominates 3D skull shape in the herbivory-adapted marsupial wombats. *Frontiers in Zoology*, 16, 41. [DOI: 10.1186/s12983-019-0338-5](https://frontiersinzoology.biomedcentral.com/articles/10.1186/s12983-019-0338-5)
 
