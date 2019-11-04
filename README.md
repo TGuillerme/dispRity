@@ -129,6 +129,10 @@ Some ideas/functionalities/implementations in this package where implemented fol
 Used in
 -------
 
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Individual+variation+of+the+masticatory+system+dominates+3D+skull+shape+in+the+herbivory-adapted+marsupial+wombats.&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+V Weisbecker, T Guillerme, C Speck, E Sherratt, H Mehari Abraha, AC Sharp, CE Terhune, S Collins, S Johnston, O Panagiotopoulou. (**2019**) Individual variation of the masticatory system dominates 3D skull shape in the herbivory-adapted marsupial wombats. *Frontiers in Zoology*, 16, 41. [DOI: 10.1186/s12983-019-0338-5](https://frontiersinzoology.biomedcentral.com/articles/10.1186/s12983-019-0338-5)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+metrics+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 T Guillerme, MN Puttick, AE Marcy, V Weisbecker. (**2019**) Shifting spaces: which disparity or dissimilarity metrics best summarise occupancy in multidimensional spaces? *biorXiv*. 801571. [DOI: 10.1101/801571 ](https://www.biorxiv.org/content/10.1101/801571v1).
 
