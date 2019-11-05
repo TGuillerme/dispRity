@@ -128,10 +128,13 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Morphological+disparity+in+theropod+jaws%3A+comparing+discrete+characters+and+geometric+morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+J Schaeffer, MJ Benton, EJ Rayfield, TL Stubbs. (**2019**), Morphological disparity in theropod jaws: comparing discrete characters and geometric morphometrics. *Palaeontology*.[DOI: 10.1111/pala.12455](https://onlinelibrary.wiley.com/doi/full/10.1111/pala.12455)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Origin+of+horsetails+and+the+role+of+whole-genome+duplication+in+plant+macroevolution&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 JW Clark, MN Puttick MN, PC Donoghue. (**2019**) Origin of horsetails and the role of whole-genome duplication in plant macroevolution. *Proceedings of the Royal Society B* 286(1914):20191662. [DOI: 10.1098/rspb.2019.1662](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2019.1662)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Individual+variation+of+the+masticatory+system+dominates+3D+skull+shape+in+the+herbivory-adapted+marsupial+wombats.&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Individual+variation+of+the+masticatory+system+dominates+3D+skull+shape+in+the+herbivory-adapted+marsupial+wombats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 V Weisbecker, T Guillerme, C Speck, E Sherratt, H Mehari Abraha, AC Sharp, CE Terhune, S Collins, S Johnston, O Panagiotopoulou. (**2019**) Individual variation of the masticatory system dominates 3D skull shape in the herbivory-adapted marsupial wombats. *Frontiers in Zoology*, 16, 41. [DOI: 10.1186/s12983-019-0338-5](https://frontiersinzoology.biomedcentral.com/articles/10.1186/s12983-019-0338-5)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+metrics+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
