@@ -128,6 +128,9 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
+<!-- > 19 publications have used `dispRity` since 2018 (12.6 per year). (calculated on the 07/11/2019). -->
+
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Morphological+disparity+in+theropod+jaws%3A+comparing+discrete+characters+and+geometric+morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 J Schaeffer, MJ Benton, EJ Rayfield, TL Stubbs. (**2019**), Morphological disparity in theropod jaws: comparing discrete characters and geometric morphometrics. *Palaeontology*.[DOI: 10.1111/pala.12455](https://onlinelibrary.wiley.com/doi/full/10.1111/pala.12455)
 
