@@ -8,7 +8,7 @@
 #'
 #' @author Thomas Guillerme <guillert@@tcd.ie>
 #'
-#' @concepts disparity ordination phylogeny cladistic morphometric ecology
+#' @concept disparity ordination phylogeny cladistic morphometric ecology
 #'
 # @import ape
 # @import stats
