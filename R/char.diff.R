@@ -52,7 +52,7 @@ char.diff <- function(matrix, method = "hamming"){#, special.tokens)  {
     ## Sanitizing
     matrix_class <- check.class(matrix, c("matrix", "list"))
     ## Method is Gower by default
-    avail_methods <- c("hamming", "gower", "euclidean", "ged", "mord")
+    avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
     check.method(method, avail_methods, msg = "method")
     #PMATCH SWITCH
     # method <- pmatch(method, avail_methods)
@@ -91,7 +91,18 @@ char.diff <- function(matrix, method = "hamming"){#, special.tokens)  {
 
     ## Calculating the gower distance
     #options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
+    switch(method,
+        hamming   = {output <- as.matrix(.Call("C_diff_hamming", matrix, method, attrs))},
+        gower     = {output <- as.matrix(.Call("C_diff_gower", matrix, method, attrs))},
+        manhattan = {stop("manhattan not implemented yet");
+                     output <- as.matrix(.Call("C_diff_manhattan", matrix, method, attrs))},
+        euclidean = {stop("euclidean not implemented yet");
+                     output <- as.matrix(.Call("C_diff_euclidean", matrix, method, attrs))},
+        ged       = {stop("ged not implemented yet");
+                     output <- as.matrix(.Call("C_diff_ged", matrix, method, attrs))},
+        mord      = {stop("mord not implemented yet");
+                     output <- as.matrix(.Call("C_diff_mord", matrix, method, attrs))},
+    )
     #options(warn = 0)
 
     ## Calculating the character difference

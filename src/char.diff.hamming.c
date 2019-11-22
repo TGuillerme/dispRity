@@ -15,59 +15,6 @@
 
 #include "dispRity.h"
 
-// #################
-// Character difference logic
-// #################
-
-// Convert character into number
-double character_to_numeric(char c)
-{
-    double n = -1;
-    static const char * const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    char *p = strchr(alphabet, (unsigned char)c);
-
-    if (p) {
-        n = p - alphabet;
-    }
-
-    return n;
-}
-
-// Normalise a single numeric character
-void Normalise_single_character(double *vector, int count)
-{
-    int element, i, j, k;
-    char vector_char[count], element_char;
-    char alphabet[] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','\0'};
-
-    // Getting each unique element of the vector and translating them into standardised characters
-    element = 0;
-
-    for (i = 0; i < count; ++i) {
-        for (j = 0; j < i; ++j) {
-            if (vector[i] == vector[j])
-               break;
-        }
-
-        if (i == j) {
-            // If encountering unique characters, attribute the first letter of the alphabet and so on
-            element_char = alphabet[element];
-            for(k = 0; k < count; k++) {
-                if(vector[k] == vector[i]) {
-                    vector_char[k] = element_char;
-                }
-            }
-            element ++;
-        }
-    }
-
-    // Transforming the character back to numeric (double)
-    for(k = 0; k < count ; k++) {
-        vector[k] = character_to_numeric(vector_char[k]);
-    }
-}
-
-
 // Calculating the Hamming character distance
 static double R_Hamming(double *x, int nr, int nc, int i1, int i2)
 {
@@ -117,14 +64,8 @@ static double R_Hamming(double *x, int nr, int nc, int i1, int i2)
     }
 }
 
-
-// Allowed methods
-enum { HAMMING=1};
-/* == 1,2,..., defined by order in the R function dist */
-
-
 // R_distance function (R::dist())
-void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
+void R_distanceHamming(double *x, int *nr, int *nc, double *d, int *diag, int *method)
 {
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
@@ -199,7 +140,7 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
 
 
 // R/C interface (former Diff)
-SEXP C_char_diff(SEXP x, SEXP smethod, SEXP attrs)
+SEXP C_diff_hamming(SEXP x, SEXP smethod, SEXP attrs)
 {
     // Define the variable
     SEXP result;
@@ -212,7 +153,7 @@ SEXP C_char_diff(SEXP x, SEXP smethod, SEXP attrs)
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distance(REAL(x), &nr, &nc, REAL(result), &diag, &method);
+    R_distanceHamming(REAL(x), &nr, &nc, REAL(result), &diag, &method);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
