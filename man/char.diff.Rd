@@ -4,10 +4,12 @@
 \alias{char.diff}
 \title{Character differences}
 \usage{
-char.diff(matrix)
+char.diff(matrix, method = "hamming")
 }
 \arguments{
-\item{matrix}{A discrete matrix or a list containing discrete characters.}
+\item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
+
+\item{method}{The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
@@ -16,6 +18,15 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
+The different distances to calculate are:
+\itemize{
+     \item \code{"hamming"} The Hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
+     \item \code{"gower"} The Gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2)
+     \item \code{"euclidean"} The Euclidean distance: @@
+     \item \code{"ged"} The Generalised Euclidean Distance (Wills @@): @@
+     \item \code{"mord"} The maximum observable distance (Lloyd @@): @@
+}
+
 The character difference is calculated as half the sum of the Gower distances between the characters.
 }
 \examples{
@@ -28,6 +39,9 @@ char.diff(morpho_matrix)
 
 }
 \references{
+Wills @@
+Hamming @@
+Lloyd @@
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{

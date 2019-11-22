@@ -16,7 +16,7 @@
 #include "dispRity.h"
 
 // #################
-// Character difference (Gower) logic
+// Character difference logic
 // #################
 
 // Convert character into number
@@ -34,7 +34,8 @@ double character_to_numeric(char c)
 }
 
 // Normalise a single numeric character
-void Normalise_single_character(double *vector, int count) {
+void Normalise_single_character(double *vector, int count)
+{
     int element, i, j, k;
     char vector_char[count], element_char;
     char alphabet[] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','\0'};
@@ -64,12 +65,11 @@ void Normalise_single_character(double *vector, int count) {
     for(k = 0; k < count ; k++) {
         vector[k] = character_to_numeric(vector_char[k]);
     }
-
 }
 
 
-// Calculating the Gower character distance
-static double R_Gower(double *x, int nr, int nc, int i1, int i2)
+// Calculating the Hamming character distance
+static double R_Hamming(double *x, int nr, int nc, int i1, int i2)
 {
     double diff, dist, vector1[nc], vector2[nc];
     int count, i, k;
@@ -117,8 +117,9 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
     }
 }
 
+
 // Allowed methods
-enum { GOWER=1};
+enum { HAMMING=1};
 /* == 1,2,..., defined by order in the R function dist */
 
 
@@ -133,7 +134,32 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
 #ifdef _OPENMP
     int nthreads;
 #endif
-    distfun = R_Gower;
+
+    // switch(*method) {
+    // // case HAMMING:
+    // //     distfun = R_Hamming;
+    // //     break;
+    // // case MAXIMUM:
+    // //     distfun = R_maximum;
+    // //     break;
+    // // case MANHATTAN:
+    // //     distfun = R_manhattan;
+    // //     break;
+    // // case CANBERRA:
+    // //     distfun = R_canberra;
+    // //     break;
+    // // case BINARY:
+    // //     distfun = R_dist_binary;
+    // //     break;
+    // // case MINKOWSKI:
+    // //     if(!R_FINITE(*p) || *p <= 0)
+    // //         error(_("distance(): invalid p"));
+    // //     break;
+    // default:
+    //     error(_("distance(): invalid distance"));
+    // }
+
+    distfun = R_Hamming;
 
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
 

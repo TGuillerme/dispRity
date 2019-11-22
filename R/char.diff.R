@@ -2,10 +2,26 @@
 #'
 #' @description Calculates the character difference from a discrete matrix
 #'
-#' @param matrix A discrete matrix or a list containing discrete characters.
+#' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
+#' @param method The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
+# @param special.tokens optional, a named \code{vector} of special tokens. By default \code{special.tokens <- list(missing = "?", inapplicable = "-", polymorphism = "&", uncertainty = "/")}.
+# @param special.behaviour optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' 
 #' @details
+#' The different distances to calculate are:
+#' \itemize{
+#'      \item \code{"hamming"} The Hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
+#'      \item \code{"gower"} The Gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2)
+#'      \item \code{"euclidean"} The Euclidean distance: @@@
+#'      \item \code{"ged"} The Generalised Euclidean Distance (Wills @@@): @@@
+#'      \item \code{"mord"} The maximum observable distance (Lloyd @@@): @@@
+#' }
+#' 
 #' The character difference is calculated as half the sum of the Gower distances between the characters.
+#' 
+#' 
+# \code{special.behaviour} allows to generate a special rule for the \code{special.tokens}. he functions should take \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviour = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
+#' 
 #' 
 #' @return
 #' A character difference value or a matrix of class \code{char.diff}
@@ -23,17 +39,24 @@
 #' @author Thomas Guillerme
 #' 
 #' @references
+#' Wills @@@
+#' Hamming @@@
+#' Lloyd @@@
 #' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 
 
-char.diff <- function (matrix)  {
+char.diff <- function(matrix, method = "hamming"){#, special.tokens)  {
 
     options(warn = -1)
 
     ## Sanitizing
     matrix_class <- check.class(matrix, c("matrix", "list"))
     ## Method is Gower by default
-    method = "Gower"
+    avail_methods <- c("hamming", "gower", "euclidean", "ged", "mord")
+    check.method(method, avail_methods, msg = "method")
+    #PMATCH SWITCH
+    # method <- pmatch(method, avail_methods)
+
 
     if(matrix_class == "list") {
 
@@ -60,7 +83,11 @@ char.diff <- function (matrix)  {
     N <- nrow(matrix)
     
     ## Setting the attributes
+    #PMATCH SWITCH
+    # attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = avail_methods[method], call = match.call(),  class = "dist")
+    #NO PMATCH SWITCH
     attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
+
 
     ## Calculating the gower distance
     #options(warn = -1) #TG: NA's get introduced. Don't care!

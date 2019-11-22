@@ -22,8 +22,12 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.3.2 (2019-10-11)
+dispRity v1.3.3 (2019-11-22)
 =========================
+
+### NEW FEATURES
+
+ * *New* options in `char.diff`: it is now possible to specify the type of difference (distance) to calculate among `"hamming"` (default), `"gower"`, `"euclidean"`, `"manhattan"`, `"ged"` and `"mord"`. It is also possible to give special behaviours for different discrete morphological data tokens (missing, inapplicable, polymorphisms and uncertainties)!
 
 ### BUG FIXES
 
