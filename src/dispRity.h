@@ -54,6 +54,7 @@ SEXP            C_diff_hamming  (SEXP x, SEXP smethod, SEXP stranslate, SEXP att
 SEXP            C_diff_gower    (SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
 SEXP            C_diff_euclidean(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
 SEXP            C_diff_manhattan(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
+SEXP            C_diff_binary   (SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
 // SEXP            C_diff_ged(SEXP x, SEXP smethod, SEXP attrs);
 // SEXP            C_diff_mord(SEXP x, SEXP smethod, SEXP attrs);
 

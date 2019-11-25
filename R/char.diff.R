@@ -5,8 +5,8 @@
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
 #' @param method The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein @@@) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
-# @param special.tokens optional, a named \code{vector} of special tokens. By default \code{special.tokens <- list(missing = "?", inapplicable = "-", polymorphism = "&", uncertainty = "/")}.
-# @param special.behaviour optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
+#' @param special.tokens optional, a named \code{vector} of special tokens. By default \code{special.tokens <- list(missing = "?", inapplicable = "-", polymorphism = "&", uncertainty = "/")}.
+#' @param special.behaviour optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' 
 #' @details
 #' The different distances to calculate are:
@@ -48,7 +48,7 @@
 #' Felsenstein @@@
 #' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE){#, special.tokens)  {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens)  {
 
     options(warn = -1)
 

@@ -15,8 +15,8 @@
 
 #include "dispRity.h"
 
-// Calculating the Hamming character distance
-static double R_Hamming(double *x, int nr, int nc, int i1, int i2, int translate)
+// Calculating the Binary character distance
+static double R_Binary(double *x, int nr, int nc, int i1, int i2, int translate)
 {
     double diff, dist, vector1[nc], vector2[nc];
     int count, i, k;
@@ -55,6 +55,25 @@ static double R_Hamming(double *x, int nr, int nc, int i1, int i2, int translate
         if(diff > 1) {
             diff = 1;   
         }
+
+
+
+
+        // Using some kind of bitwise operations for missing data
+        if (a & b == 0) { // If nothing in common increment + 1.
+            // Probably needs to translate characters to binarisable form: 1, 2, 4, 8, 16, etc. This can be done in R separately (using C?) before hand along with character translation:
+            // Transform the matrix into binary integers and optionally translate it.
+            // Then pass it to the R_distance function and measure the specific type of distance in terms of binary.
+            // Works only for Hamming?
+
+            ++dist;
+        }
+
+
+
+
+
+
         // Increment the differences
         if(!ISNAN(diff)) {
             dist += diff;
@@ -71,7 +90,7 @@ static double R_Hamming(double *x, int nr, int nc, int i1, int i2, int translate
 }
 
 // R_distance function (R::dist())
-void R_distanceHamming(double *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate)
+void R_distanceBinary(double *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate)
 {
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
@@ -82,7 +101,7 @@ void R_distanceHamming(double *x, int *nr, int *nc, double *d, int *diag, int *m
     int nthreads;
 #endif
 
-    distfun = R_Hamming;
+    distfun = R_Binary;
 
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
 
@@ -122,7 +141,7 @@ void R_distanceHamming(double *x, int *nr, int *nc, double *d, int *diag, int *m
 
 
 // R/C interface (former Diff)
-SEXP C_diff_hamming(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs)
+SEXP C_diff_binary(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs)
 {
     // Define the variable
     SEXP result;
@@ -135,7 +154,7 @@ SEXP C_diff_hamming(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs)
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distanceHamming(REAL(x), &nr, &nc, REAL(result), &diag, &method, &translate);
+    R_distanceBinary(REAL(x), &nr, &nc, REAL(result), &diag, &method, &translate);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
