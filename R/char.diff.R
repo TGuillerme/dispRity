@@ -91,10 +91,10 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE){#, special.t
     ## Calculating the gower distance
     #options(warn = -1) #TG: NA's get introduced. Don't care!
     switch(method,
-        hamming   = {output <- as.matrix(.Call("C_diff_hamming", matrix, method, as.integer(translate), attrs))},
-        gower     = {output <- as.matrix(.Call("C_diff_gower"  , matrix, method, as.integer(translate), attrs))},
+        hamming   = {output <- as.matrix(.Call("C_diff_hamming"  , matrix, method, as.integer(translate), attrs))},
+        gower     = {output <- as.matrix(.Call("C_diff_gower"    , matrix, method, as.integer(translate), attrs))},
+        euclidean = {output <- as.matrix(.Call("C_diff_euclidean", matrix, method, as.integer(translate), attrs))},
         manhattan = {output <- as.matrix(dist(matrix, method = "manhattan"))},
-        euclidean = {output <- as.matrix(dist(matrix, method = "euclidean"))},
         ged       = {stop("ged not implemented yet");
                      output <- as.matrix(.Call("C_diff_ged", matrix, method, attrs))},
         mord      = {stop("mord not implemented yet");

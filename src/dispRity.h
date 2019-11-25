@@ -50,10 +50,10 @@
 // double          character_to_numeric(char c);
 // void            Normalise_single_character(double *vector, int count);
 // void            R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method);
-SEXP            C_diff_hamming(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
-SEXP            C_diff_gower  (SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
+SEXP            C_diff_hamming  (SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
+SEXP            C_diff_gower    (SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
+SEXP            C_diff_euclidean(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs);
 // SEXP            C_diff_manhattan(SEXP x, SEXP smethod, SEXP attrs);
-// SEXP            C_diff_euclidean(SEXP x, SEXP smethod, SEXP attrs);
 // SEXP            C_diff_ged(SEXP x, SEXP smethod, SEXP attrs);
 // SEXP            C_diff_mord(SEXP x, SEXP smethod, SEXP attrs);
 

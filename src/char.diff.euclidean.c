@@ -20,7 +20,7 @@
 // #################
 
 // Calculating the Euclidean character distance
-static double R_Euclidean(double *x, int nr, int nc, int i1, int i2)
+static double R_Euclidean(double *x, int nr, int nc, int i1, int i2, int translate)
 {
     double diff, dist, vector1[nc], vector2[nc];
     int count, i, k;
@@ -44,26 +44,30 @@ static double R_Euclidean(double *x, int nr, int nc, int i1, int i2)
         i2 += nr;
     }
 
+    // Return NA if incomparable
+    if(count == 0) return NA_REAL;
+
     // Normalising the characters
-    Normalise_single_character(vector1, count);
-    Normalise_single_character(vector2, count);
+    if(translate) {
+        Normalise_single_character(vector1, count);
+        Normalise_single_character(vector2, count);
+    }
 
     // Absolute character difference
     for(k = 0 ; k < count ; k++) {
-         diff = fabs(vector1[k] - vector2[k]);
-        // Increment the differences
+         diff = (vector1[k] - vector2[k]);
+        // Square the differences
         if(!ISNAN(diff)) {
-            dist += diff;
+            dist += diff * diff;
         }        
     }
 
-    if(count == 0) {
-        return NA_REAL;
-    } else {
-        dist = dist/(count - 1);
-        return dist;
-    }
+    // Scale
+    if(count != nc) dist /= ((double)count/nc);
+    // Squre
+    return sqrt(dist);
 }
+
 
 // R_distance function (R::dist())
 void R_distanceEuclidean(double *x, int *nr, int *nc, double *d, int *diag, int *method, int* translate)
