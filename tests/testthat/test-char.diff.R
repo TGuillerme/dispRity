@@ -157,6 +157,15 @@ test_that("different methods", {
     expect_equal(test_hamming["A", "E"], 0)
     expect_equal(test_hamming["B", "C"], 0)
     expect_equal(test_hamming["B", "D"], 0.75)
+    expect_warning(test_hamming_untrans <- round(char.diff(matrix, method = "hamming", translate = FALSE), 2))
+    expect_equal(test_hamming_untrans["A", "B"], test_hamming_untrans["B", "A"])
+    expect_equal(test_hamming_untrans["A", "B"], round(1/5, 2))
+    expect_equal(test_hamming_untrans["A", "C"], round(4/5, 2))
+    expect_equal(test_hamming_untrans["A", "D"], round(3/5, 2))
+    expect_equal(test_hamming_untrans["A", "E"], round(5/5, 2))
+    expect_equal(test_hamming_untrans["B", "C"], round(4/5, 2))
+    expect_equal(test_hamming_untrans["B", "D"], round(3/5, 2))
+
 
     ## Gower differences
     expect_warning(test_gower <- round(char.diff(matrix, method = "gower"), 2))
@@ -167,6 +176,22 @@ test_that("different methods", {
     expect_equal(test_gower["A", "E"], 0)
     expect_equal(test_gower["B", "C"], 0)
     expect_equal(test_gower["B", "D"], 1.5)
+
+    matrix <- do.call(cbind, list(A = c(0, 1, 0, 1, 1), #1, 2, 1, 2, 2
+                                  B = c(0, 1, 1, 1, 1), #1, 2, 2, 2, 2
+                                  C = c(0, 2, 2, 2, 2), #1, 2, 2, 2, 2
+                                  D = c(0, 1, 2, 3, 4), #1, 2, 3, 4, 5
+                                  E = c(1, 2, 1, 2, 2)))#1, 2, 1, 2, 2
+
+    expect_warning(test_gower_untrans <- round(char.diff(matrix, method = "gower", translate = FALSE), 2))
+    expect_equal(test_gower_untrans["A", "B"], test_gower_untrans["B", "A"])
+    expect_equal(test_gower_untrans["A", "B"], round(1/5, 2))
+    expect_equal(test_gower_untrans["A", "C"], round(5/5, 2))
+    expect_equal(test_gower_untrans["A", "D"], round(7/5, 2))
+    expect_equal(test_gower_untrans["A", "E"], round(5/5, 2))
+    expect_equal(test_gower_untrans["B", "C"], round(4/5, 2))
+    expect_equal(test_gower_untrans["B", "D"], round(6/5, 2))
+
 
     ## Manhattan
     test_manhattan <- round(char.diff(matrix, method = "manhattan"), 2)

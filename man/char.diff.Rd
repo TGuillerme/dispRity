@@ -10,6 +10,8 @@ char.diff(matrix, method = "hamming", translate = TRUE)
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
 
 \item{method}{The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.}
+
+\item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein @@) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
@@ -28,7 +30,7 @@ The different distances to calculate are:
      \item \code{"mord"} The maximum observable distance (Lloyd @@): @@
 }
 
-We using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}.
+We using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 }
 \examples{
 ## Comparing two characters

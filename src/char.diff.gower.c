@@ -20,7 +20,7 @@
 // #################
 
 // Calculating the Gower character distance
-static double R_Gower(double *x, int nr, int nc, int i1, int i2)
+static double R_Gower(double *x, int nr, int nc, int i1, int i2, int translate)
 {
     double diff, dist, vector1[nc], vector2[nc];
     int count, i, k;
@@ -45,8 +45,10 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
     }
 
     // Normalising the characters
-    Normalise_single_character(vector1, count);
-    Normalise_single_character(vector2, count);
+    if(translate) {
+        Normalise_single_character(vector1, count);
+        Normalise_single_character(vector2, count);
+    }
 
     // Absolute character difference
     for(k = 0 ; k < count ; k++) {
@@ -60,46 +62,26 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
     if(count == 0) {
         return NA_REAL;
     } else {
-        dist = dist/(count - 1);
+        if(translate) {
+            dist = dist/(count - 1);
+        } else {
+            dist = dist/count;
+        }
         return dist;
     }
 }
 
 // R_distance function (R::dist())
-void R_distanceGower(double *x, int *nr, int *nc, double *d, int *diag, int *method)
+void R_distanceGower(double *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate)
 {
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
-    double (*distfun)(double*, int, int, int, int) = NULL;
+    double (*distfun)(double*, int, int, int, int, int) = NULL;
 
     //Open MPI
 #ifdef _OPENMP
     int nthreads;
 #endif
-
-    // switch(*method) {
-    // // case HAMMING:
-    // //     distfun = R_Gower;
-    // //     break;
-    // // case MAXIMUM:
-    // //     distfun = R_maximum;
-    // //     break;
-    // // case MANHATTAN:
-    // //     distfun = R_manhattan;
-    // //     break;
-    // // case CANBERRA:
-    // //     distfun = R_canberra;
-    // //     break;
-    // // case BINARY:
-    // //     distfun = R_dist_binary;
-    // //     break;
-    // // case MINKOWSKI:
-    // //     if(!R_FINITE(*p) || *p <= 0)
-    // //         error(_("distance(): invalid p"));
-    // //     break;
-    // default:
-    //     error(_("distance(): invalid distance"));
-    // }
 
     distfun = R_Gower;
 
@@ -116,7 +98,7 @@ void R_distanceGower(double *x, int *nr, int *nc, double *d, int *diag, int *met
     ij = 0;
     for(j = 0 ; j <= *nr ; j++)
         for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j);
+        d[ij++] = distfun(x, *nr, *nc, i, j, *translate);
     }
     else
     /* This produces uneven thread workloads since the outer loop
@@ -129,23 +111,23 @@ void R_distanceGower(double *x, int *nr, int *nc, double *d, int *diag, int *met
     for(j = 0 ; j <= *nr ; j++) {
         ij = j * (*nr - dc) + j - ((1 + j) * j) / 2;
         for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j);
+        d[ij++] = distfun(x, *nr, *nc, i, j, *translate);
     }
 #else
     ij = 0;
     for(j = 0 ; j <= *nr ; j++)
     for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j);
+        d[ij++] = distfun(x, *nr, *nc, i, j, *translate);
 #endif
 }
 
 
 // R/C interface (former Diff)
-SEXP C_diff_gower(SEXP x, SEXP smethod, SEXP attrs)
+SEXP C_diff_gower(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs)
 {
     // Define the variable
     SEXP result;
-    int nr = nrows(x), nc = ncols(x), method = asInteger(smethod);
+    int nr = nrows(x), nc = ncols(x), method = asInteger(smethod), translate = asInteger(stranslate);
     int diag = 0;
     R_xlen_t N;
     N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
@@ -154,7 +136,7 @@ SEXP C_diff_gower(SEXP x, SEXP smethod, SEXP attrs)
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distanceGower(REAL(x), &nr, &nc, REAL(result), &diag, &method);
+    R_distanceGower(REAL(x), &nr, &nc, REAL(result), &diag, &method, &translate);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes

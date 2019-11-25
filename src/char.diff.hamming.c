@@ -61,7 +61,11 @@ static double R_Hamming(double *x, int nr, int nc, int i1, int i2, int translate
     if(count == 0) {
         return NA_REAL;
     } else {
-        dist = dist/(count - 1);
+        if(translate) {
+            dist = dist/(count - 1);
+        } else {
+            dist = dist/count;
+        }
         return dist;
     }
 }
