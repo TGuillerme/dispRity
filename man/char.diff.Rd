@@ -4,7 +4,7 @@
 \alias{char.diff}
 \title{Character differences}
 \usage{
-char.diff(matrix, method = "hamming")
+char.diff(matrix, method = "hamming", translate = TRUE)
 }
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
@@ -20,14 +20,15 @@ Calculates the character difference from a discrete matrix
 \details{
 The different distances to calculate are:
 \itemize{
-     \item \code{"hamming"} The Hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
-     \item \code{"gower"} The Gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2)
+     \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
+     \item \code{"gower"} The scaled gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2). The characters are translated following the \emph{xyz} notation (The first token is translated to 1, the second to 2, etc. - Felsenstein @@).
      \item \code{"euclidean"} The Euclidean distance: @@
+     \item \code{"manhattan"} The Manhattan distance: @@
      \item \code{"ged"} The Generalised Euclidean Distance (Wills @@): @@
      \item \code{"mord"} The maximum observable distance (Lloyd @@): @@
 }
 
-The character difference is calculated as half the sum of the Gower distances between the characters.
+We using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}.
 }
 \examples{
 ## Comparing two characters
@@ -42,6 +43,7 @@ char.diff(morpho_matrix)
 Wills @@
 Hamming @@
 Lloyd @@
+Felsenstein @@
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
