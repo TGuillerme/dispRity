@@ -25,13 +25,20 @@ dispRity 0.2.0 (2016-04-01)
 dispRity v1.3.2 (2019-10-11)
 =========================
 
+### NEW FEATURES
+
+  * `"dispRity"` objects can now have list of matrices rather than a single matrix. These matrices can match `"multiPhylo"` objects in `chrono.subsets` for time-slicing through multiple trees with different topologies!
+  * `clean.data` now cleans matrices or list of matrices and single trees (`"phylo"`) or list of trees (`"multiPhylo"`).
+  * **New argument** in `clean.data`: `pairwise` now allows to clean matrices and tree two by two.
+
 ### BUG FIXES
 
-  * update `redcude.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
+  * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
 
 ### MINOR IMPROVEMENTS
 
   * minor warning message fix for `plot.dispRity` with time slices.
+  * `clean.data` now uses a recursive loop that makes it much faster.
 
 dispRity v1.3 *many metrics* (2019-08-15)
 =========================
