@@ -60,6 +60,55 @@ check.class <- function(object, class, msg, errorif = FALSE) {
 }
 
 
+## Special function for checking the $matrix element
+check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
+
+    ## Get call and message
+    match_call <- match.call()
+    msg <- paste(" must be a matrix or a list of matrices.")
+    stop.tree <- function(match_call) {
+        stop(paste0(as.expression(match_call$data), " does not match ", as.expression(match_call$tree), ". Use the following to match both:\n    clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ")" ), call. = FALSE)
+    }
+
+    ## Class check
+    data_class <- check.class(data, c("matrix", "list"))
+
+    ## Single matrix case
+    if(data_class == "matrix") {
+        ## Count the size
+        if(count) {
+            output <- list(dim(data))
+        }
+    } else {
+        ## Check whether each elements are matrices
+        all_matrix <- unlist(lapply(data, class))
+        if(is.null(all_matrix) || any(all_matrix != "matrix")) {
+            stop(as.expression(match_call$data), msg , call. = FALSE)
+        }
+
+        ## Count the sizes
+        if(count) {
+            output <- lapply(data, dim)
+        }
+    }
+
+    ## Check the tree
+    if(!is.null(tree)) {
+        cleaned <- clean.data(data, tree, pairwise)
+        if(!is.na(cleaned$dropped_rows) || !is.na(cleaned$dropped_rows)) {
+            stop.tree(match_call)
+        }
+    }
+
+    if(count) {
+        return(output)
+    } else {
+        return(invisible())
+    }
+}
+
+
+
 ## Checking the class of an object and returning an error message if != class
 check.length <- function(object, length, msg, errorif = FALSE) {
 
