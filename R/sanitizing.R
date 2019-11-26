@@ -103,7 +103,7 @@ check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
     if(count) {
         return(output)
     } else {
-        return(invisible())
+        return(class(data))
     }
 }
 

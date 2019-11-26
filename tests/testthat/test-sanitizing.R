@@ -183,10 +183,10 @@ test_that("test.matrix works", {
     class(tree_long) <- "multiPhylo"
 
     ## Test pass
-    expect_null(check.matrix(data1))
-    expect_null(check.matrix(data_long))
-    expect_null(check.matrix(data1, tree = tree1))
-    expect_null(check.matrix(list(data1, data1), tree = tree1))
+    expect_equal(check.matrix(data1), "matrix")
+    expect_equal(check.matrix(data_long), "list")
+    expect_equal(check.matrix(data1, tree = tree1), "matrix")
+    expect_equal(check.matrix(list(data1, data1), tree = tree1), "list")
 
     ## Test fails
     error <- capture_error(check.matrix(list("A", "

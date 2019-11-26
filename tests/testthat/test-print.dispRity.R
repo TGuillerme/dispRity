@@ -22,6 +22,14 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
+    ## Empty object with multiple matrices
+    test <- make.dispRity(data = list(matrix(1), matrix(1)))
+    expect_equal(capture.output(test), 
+        c(
+        " ---- dispRity object ---- ",
+        "Contains only a matrix 1x1."
+    ))
+
     # list <- capture.output(print.dispRity(test, all = TRUE))
     # expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
 

@@ -112,7 +112,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Check data class
     if(class(data) != "dispRity") {
-        check.class(data, "matrix")
+        matrix_class <- check.matrix(data)
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {

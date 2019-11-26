@@ -97,7 +97,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## If class is dispRity, data is serial
     if(class(data) != "dispRity") {
         ## Data must be a matrix
-        check.class(data, "matrix")
+        matrix_class <- check.matrix(data)
 
         ## Check whether it is a distance matrix
         if(check.dist.matrix(data, just.check = TRUE)) {

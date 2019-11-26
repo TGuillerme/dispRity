@@ -118,7 +118,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## ----------------------
     ## DATA
     ## data must be a matrix
-    check.class(data, "matrix")
+    matrix_class <- check.matrix(data)
 
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data, just.check = TRUE)) {

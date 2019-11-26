@@ -6,7 +6,7 @@
 #'
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
-#' @param data A \code{matrix}.
+#' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' 
@@ -26,7 +26,13 @@ make.dispRity <- function(data, call, subsets) {
 
     ## Add the matrix
     if(!missing(data)) {
-        check.class(data, "matrix")
+        data_class <- check.class(data, c("matrix", "list"))
+        if(data_class != "matrix") {
+            all_matrix <- unlist(lapply(data, class))
+            if(is.null(all_matrix) || any(all_matrix != "matrix")) {
+                stop("data must be a matrix or a list of matrices.")
+            }
+        }
         dispRity_object$matrix <- data
     }
 

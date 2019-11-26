@@ -7,7 +7,7 @@
 make.dispRity(data, call, subsets)
 }
 \arguments{
-\item{data}{A \code{matrix}.}
+\item{data}{A \code{matrix} or a \code{list} of matrices.}
 
 \item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 
