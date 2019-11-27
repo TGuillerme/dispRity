@@ -71,25 +71,28 @@ check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
     }
 
     ## Class check
-    data_class <- check.class(data, c("matrix", "list"))
+    data_class <- check.class(data, "list", msg)
 
     ## Single matrix case
-    if(data_class == "matrix") {
-        ## Count the size
-        if(count) {
-            output <- list(dim(data))
-        }
+    if(length(data) == 1) {
+        ## Check the class
+        data_class <- check.class(data[[1]], "matrix", msg)
     } else {
         ## Check whether each elements are matrices
         all_matrix <- unlist(lapply(data, class))
         if(is.null(all_matrix) || any(all_matrix != "matrix")) {
             stop(as.expression(match_call$data), msg , call. = FALSE)
         }
-
-        ## Count the sizes
-        if(count) {
-            output <- lapply(data, dim)
+        ## Check whether each matrix has the same dimensions
+        dimensions <- unique(unlist(lapply(data, dim)))
+        if(length(dimensions) > 2) {
+            stop.call(match_call$data, msg.pre = "Some matrices in ", msg = " have different dimensions.")
         }
+    }
+
+    ## Count the sizes
+    if(count) {
+        output <- lapply(data, dim)
     }
 
     ## Check the tree
@@ -103,11 +106,9 @@ check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
     if(count) {
         return(output)
     } else {
-        return(class(data))
+        return(length(data))
     }
 }
-
-
 
 ## Checking the class of an object and returning an error message if != class
 check.length <- function(object, length, msg, errorif = FALSE) {
