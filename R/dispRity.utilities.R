@@ -132,7 +132,7 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
     if(missing(subsets)) {
         output <- data$matrix
     } else {
-        ## Select the rows
+        ## Select the rows
         if(missing(rarefaction) || missing(bootstrap)) {
             rows <- data$subsets[[subsets]][[rarefaction+1]][,bootstrap]
         } else {
