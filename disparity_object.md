@@ -15,7 +15,7 @@ object = class:"dispRity"
 	|	|
 	|	\---$bootstrap = class:"character"
 	|	|
-	|	\---$dimensions = class:"numeric"
+	|	\---$dimensions = class:"list"
 	|	|
 	|	\---$metric
 	|       |

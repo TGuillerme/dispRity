@@ -27,7 +27,7 @@ dispRity v1.3.2 (2019-10-11)
 
 ### NEW FEATURES
 
-  * Change in `dispRity` object structure. `dispRity$matrix` is now a `list` of one matrix or more.
+  * Change in `dispRity` object structure. `dispRity$matrix` is now a `list` of one matrix or more. All the functions in the package have been updated to make this change invisible at the user level.
   * `clean.data` now cleans matrices or list of matrices and single trees (`"phylo"`) or list of trees (`"multiPhylo"`).
   * **New argument** in `clean.data`: `pairwise` now allows to clean matrices and tree two by two.
 
