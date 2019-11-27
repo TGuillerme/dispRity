@@ -90,6 +90,14 @@ check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
         }
     }
 
+    ## Check rownames
+    rownames <- unlist(lapply(data, rownames))
+    if(!is.null(rownames)) {
+        if(length(unique(rownames)) > nrow(data[[1]])) {
+            stop.call(match_call$data, msg.pre = "All matrices in ", msg = " must have the same rownames.")
+        }
+    }
+
     ## Count the sizes
     if(count) {
         output <- lapply(data, dim)
