@@ -1,5 +1,76 @@
 context("char.diff")
 
+test_that("convert.bitwise works", {
+    ## Full characters
+    expect_equal(convert.bitwise(0), 1)
+    expect_equal(convert.bitwise("0"), 1)
+    expect_equal(convert.bitwise(1), 2)
+    expect_equal(convert.bitwise("1"), 2)
+    expect_equal(convert.bitwise(2), 4)
+    expect_equal(convert.bitwise("2"), 4)
+    expect_equal(convert.bitwise(3), 8)
+    expect_equal(convert.bitwise("3"), 8)
+    expect_equal(convert.bitwise(4), 16)
+    expect_equal(convert.bitwise("4"), 16)
+
+    ## Special tokens
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
+    all_states <- c(0,1,2,3)
+    expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours, all_states), 7)
+    expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours, all_states), 3)
+    expect_equal(convert.bitwise("-", special.tokens, special.behaviours, all_states), 0)
+    expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15)
+
+    ## Add some weird token
+    special.tokens["weird"] <- "\\@"
+    special.behaviours$weird <- function(x,y) return(as.integer(1000))
+    expect_equal(convert.bitwise("1@2", special.tokens, special.behaviours, all_states), 2^1000)
+})
+
+
+test_that("convert.character works", {
+
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
+
+    simple_character <- c("0", "0", "1", "0", "0")
+    expect_equal(
+        convert.character(c("0", "0", "1", "0", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "0" = 1, "0" = 1))
+    expect_equal(
+        unname(convert.character(c("0", "0", "10", "0", "0"), special.tokens, special.behaviours))
+        ,c(1, 1, 1024, 1, 1))
+    expect_equal(
+        convert.character(c("0", "0", "1", "?", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 3, "0" = 1))
+    expect_equal(
+        convert.character(c("0", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 7, "2" = 4))
+    expect_equal(
+        convert.character(c("0/1", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "0" = 1, "1" = 2, "?" = 7, "2" = 4))
+    expect_equal(
+        convert.character(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1" = 2, "?" = 7, "2" = 4))
+    expect_equal(
+        convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1&3" = 10, "?" = 11, "3" = 8))
+})
+
+
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
     B <- c(0,1,1,1,1)

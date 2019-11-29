@@ -5,8 +5,8 @@
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
 #' @param method The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein @@@) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
-#' @param special.tokens optional, a named \code{vector} of special tokens. By default \code{special.tokens <- list(missing = "?", inapplicable = "-", polymorphism = "&", uncertainty = "/")}.
-#' @param special.behaviour optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
+#' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\"}). By default \code{special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")}. Make sure 
+#' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' 
 #' @details
 #' The different distances to calculate are:
@@ -23,7 +23,20 @@
 #' 
 #' 
 #' 
-# \code{special.behaviour} allows to generate a special rule for the \code{special.tokens}. he functions should take \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviour = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
+#' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} and should output a non 0 integer. By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an extra state.
+#' 
+#' \itemize {
+#'      \item{code{special.behaviours$missing = function(x,y) return(as.integer(y))}}
+#'      \item{code{special.behaviours$inapplicable = function(x,y) return(as.integer(-1))}}
+#'      \item{code{special.behaviours$polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]]))}}
+#'      \item{code{special.behaviours$uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))}}
+#' }
+#' 
+#' 
+#' 
+#' \code{special.behaviours <- list(missing = function(x,y) return(as.integer(y)), polymorphisms = function(x, y) return())}
+#' 
+#' \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
 #' 
 #' 
 #' @return
@@ -48,7 +61,7 @@
 #' Felsenstein @@@
 #' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens)  {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours)  {
 
     options(warn = -1)
 
@@ -65,6 +78,42 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Method is Gower by default
     avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
     check.method(method, avail_methods, msg = "method")
+
+    ## Special tokens
+    if(missing(special.tokens)) {
+        special.tokens <- character()
+    }
+    check.class(special.tokens, "character")
+    if(is.na(special.tokens["missing"])) {
+        special.tokens["missing"] <- "\\?"
+    }
+    if(is.na(special.tokens["inapplicable"])) {
+        special.tokens["inapplicable"] <- "\\-"
+    }
+    if(is.na(special.tokens["polymorphism"])) {
+        special.tokens["polymorphism"] <- "\\&"
+    }
+    if(is.na(special.tokens["uncertainty"])) {
+        special.tokens["uncertainty"] <- "\\/"
+    }
+
+    ## Special behaviours
+    if(missing(special.behaviours)) {
+        special.behaviours <- list()
+    }
+    check.class(special.behaviours, "list")
+    if(is.null(special.behaviours$missing)) {
+        special.behaviours$missing <- function(x,y) return(as.integer(y))
+    }
+    if(is.null(special.behaviours$inapplicable)) {
+        special.behaviours$inapplicable <- function(x,y) return(as.integer(-1))
+    }
+    if(is.null(special.behaviours$polymorphism)) {
+        special.behaviours$polymorphism <- function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]]))
+    }
+    if(is.null(special.behaviours$uncertainty)) {
+        special.behaviours$uncertainty <- function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+    }
 
     ## translate
     check.class(translate, "logical")

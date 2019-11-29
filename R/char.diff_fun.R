@@ -1,5 +1,3 @@
-
-
 ## Functions for getting the the density plot limits
 get.max.x <- function(density) return(max(density$x))
 get.max.y <- function(density) return(max(density$y))
@@ -15,6 +13,45 @@ select.nas <- function(column) {
     }
 }
 
+# ## Binary bit converter for a single character (token)
+# convert.bitwise <- function(token, special.tokens = NULL, special.behaviours = NULL, all_states = NULL) {
+#     binary <- function(token) {
+#         return(round(sum(2^token)))
+#     }
+
+#     ## Convert character as bitwise:
+#     options(warn = -1)
+#     converted_token <- as.integer(token)
+#     options(warn = 0)
+#     if(!is.na(converted_token)) {
+#         ## Convert the token into a bitwise
+#         return(binary(converted_token))
+#     } else {
+#         ## Convert the token according to its behaviour
+#         behaviour <- names(which(sapply(special.tokens, grepl, token)))
+
+#         ## Convert to a bitwise convertible token
+#         return(binary(as.integer(special.behaviours[behaviour][[1]](token, all_states))))
+#     }
+# }
+
+# ## Binary bit converter for a whole character
+# convert.character <- function(character, special.tokens, special.behaviours) {
+#     ## Get all states
+#     recursive.sub <- function(patterns, character) {
+#         if(length(patterns) == 0) {
+#             return(character)
+#         } else {
+#             character <- gsub(patterns[[1]], "", character)
+#             patterns <- patterns[-1]
+#             return(recursive.sub(patterns, character))
+#         }
+#     }
+#     all_states <- as.integer(sort(unique(strsplit(paste0(recursive.sub(special.tokens, unique(character)), collapse = ""), split = "")[[1]])))
+
+#     ## Convert all characters
+#     return(sapply(character, convert.bitwise, special.tokens, special.behaviours,all_states))
+# }
 
 plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab) {
     ## Removing columns with NAs
