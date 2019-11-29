@@ -93,7 +93,7 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
     ## Calculates disparity from a bootstrap table
     decompose.matrix <- function(one_bootstrap, fun, data, ...) {
         # return(c(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...), rep(NA, length(which(is.na(one_bootstrap))))))
-        return(fun( data$matrix[na.omit(one_bootstrap), 1:data$call$dimensions], ...))
+        return(fun( data$matrix[[1]][na.omit(one_bootstrap), 1:data$call$dimensions], ...))
         # return(fun( get.row.col(data$matrix, na.omit(one_bootstrap)), ...))
     }
 

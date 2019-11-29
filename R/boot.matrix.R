@@ -185,14 +185,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Check the names
-            if(!all(prob_names %in% rownames(data$matrix))) {
+            if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
                 stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
             } else {
                 ## Check if they are any names missing
-                missing_rows <- rownames(data$matrix) %in% prob_names
+                missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
                 if(any(missing_rows)) {
                     extra_prob <- rep(1, length(which(!missing_rows)))
-                    names(extra_prob) <- rownames(data$matrix)[!missing_rows]
+                    names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
                     prob <- c(extra_prob, prob)
                 }
             }
@@ -208,7 +208,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Renaming the elements to match the numbers in subsets
-            names(prob) <- match(names(prob), rownames(data$matrix))
+            names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
 
             ## Update the dispRity object
             add.prob <- function(one_subset, prob) {
@@ -249,7 +249,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     } else {
         if(rarefaction) {
-            rarefaction <- seq(from = nrow(data$matrix), to = 3)
+            rarefaction <- seq(from = nrow(data$matrix[[1]]), to = 3)
             rare_out <- "full"
         } else {
             rarefaction <- NULL
@@ -316,13 +316,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
             stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         }
         data$call$dimensions <- dimensions
     } else {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Return object if BS = 0

@@ -118,15 +118,19 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## ----------------------
     ## DATA
     ## data must be a matrix
+    if(class(data) != "list") {
+        data <- list(data)
+    }
     matrix_class <- check.matrix(data)
 
     ## Check whether it is a distance matrix
-    if(check.dist.matrix(data, just.check = TRUE)) {
+    is_distance <- unlist(lapply(data, check.dist.matrix, just.check = TRUE))
+    if(any(is_distance)) {
         warning("chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
     }
 
     ## nrow_data variable declaration
-    nrow_data <- nrow(data) #TG: $matrix
+    nrow_data <- nrow(data[[1]]) #TG: $matrix
 
     ## TREE (1)
     ## tree must be a phylo object

@@ -112,17 +112,20 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Check data class
     if(class(data) != "dispRity") {
-        matrix_class <- check.matrix(data)
+        if(class(data) != "list") {
+            data <- list(data)
+        }
+        matrices <- check.matrix(data)
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
         ## Making sure matrix exist
-        if(is.null(data$matrix)) {
+        if(is.null(data$matrix[[1]])) {
             stop.call(match_call$data, " must contain a matrix.")
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- ncol(data$matrix)
+            data$call$dimensions <- ncol(data$matrix[[1]])
         }
     }
 
@@ -161,10 +164,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
-            warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))
-            dimensions <- ncol(data$matrix)
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
+            warning(paste0("Dimension number too high: set to ", ncol(data$matrix[[1]]), "."))
+            dimensions <- ncol(data$matrix[[1]])
         }
         data$call$dimensions <- dimensions
     }

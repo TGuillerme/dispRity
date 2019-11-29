@@ -78,7 +78,7 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
     ## data
     data_class <- check.class(data, c("dispRity", "matrix"))
     if(data_class == "dispRity") {
-        data <- data$matrix
+        data <- data$matrix[[1]]
     }
 
     ## metric
