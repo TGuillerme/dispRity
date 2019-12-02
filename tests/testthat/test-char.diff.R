@@ -256,26 +256,24 @@ test_that("different methods", {
     expect_equal(test_gower_untrans["B", "C"], round(4/5, 2))
     expect_equal(test_gower_untrans["B", "D"], round(6/5, 2))
 
+    matrix <- do.call(cbind, list(A = c(0, 1, 0, 1, 1), #1, 2, 1, 2, 2
+                                  B = c(0, 1, 1, 1, 1), #1, 2, 2, 2, 2
+                                  C = c(0, 2, 2, 2, 2), #1, 2, 2, 2, 2
+                                  D = c(0, 1, 2, 3, 4), #1, 2, 3, 4, 5
+                                  E = c(1, 2, 1, 2, 2)))#1, 2, 1, 2, 2
+
     ## Manhattan
-    expect_warning(test_manhattan_untrans <- round(char.diff(matrix, method = "manhattan", translate = FALSE), 2))
-    expect_equal(test_manhattan_untrans["A", "B"], test_manhattan_untrans["B", "A"])
-    expect_equal(test_manhattan_untrans["A", "B"], 1)
-    expect_equal(test_manhattan_untrans["A", "C"], 5)
-    expect_equal(test_manhattan_untrans["A", "D"], 7)
-    expect_equal(test_manhattan_untrans["A", "E"], 5)
-    expect_equal(test_manhattan_untrans["B", "C"], 4)
-    expect_equal(test_manhattan_untrans["B", "D"], 6)
-    expect_warning(test_manhattan <- round(char.diff(matrix, method = "manhattan"), 2))
+    test_manhattan <- round(char.diff(matrix, method = "manhattan"), 2)
     expect_equal(test_manhattan["A", "B"], test_manhattan["B", "A"])
     expect_equal(test_manhattan["A", "B"], 1)
-    expect_equal(test_manhattan["A", "C"], 1)
+    expect_equal(test_manhattan["A", "C"], 5)
     expect_equal(test_manhattan["A", "D"], 7)
-    expect_equal(test_manhattan["A", "E"], 0)
-    expect_equal(test_manhattan["B", "C"], 0)
+    expect_equal(test_manhattan["A", "E"], 5)
+    expect_equal(test_manhattan["B", "C"], 4)
     expect_equal(test_manhattan["B", "D"], 6)
 
     ## Euclidean
-    expect_warning(test_euclidean_untrans <- round(char.diff(matrix, method = "euclidean", translate = FALSE), 2))
+    test_euclidean_untrans <- round(char.diff(matrix, method = "euclidean", translate = FALSE), 2)
     expect_equal(test_euclidean_untrans["A", "B"], test_euclidean_untrans["B", "A"])
     expect_equal(test_euclidean_untrans["A", "B"], 1)
     expect_equal(test_euclidean_untrans["A", "C"], 2.65)

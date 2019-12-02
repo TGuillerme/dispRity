@@ -44,9 +44,6 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2, int translate)
         i2 += nr;
     }
 
-    // Return NA if nothing is comparable
-    if(count == 0) return NA_REAL;
-
     // Normalising the characters
     if(translate) {
         Normalise_single_character(vector1, count);
@@ -62,13 +59,16 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2, int translate)
         }        
     }
 
-    // Scale the distance
-    if(translate) {
-        dist = dist/(count - 1);
+    if(count == 0) {
+        return NA_REAL;
     } else {
-        dist = dist/count;
+        if(translate) {
+            dist = dist/(count - 1);
+        } else {
+            dist = dist/count;
+        }
+        return dist;
     }
-    return dist;
 }
 
 // R_distance function (R::dist())

@@ -44,7 +44,7 @@ static double R_Euclidean(double *x, int nr, int nc, int i1, int i2, int transla
         i2 += nr;
     }
 
-    // Return NA if nothing is comparable
+    // Return NA if incomparable
     if(count == 0) return NA_REAL;
 
     // Normalising the characters
@@ -64,7 +64,7 @@ static double R_Euclidean(double *x, int nr, int nc, int i1, int i2, int transla
 
     // Scale
     if(count != nc) dist /= ((double)count/nc);
-    // Square
+    // Squre
     return sqrt(dist);
 }
 
