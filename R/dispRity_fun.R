@@ -5,8 +5,7 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
 
     ## Get the metric handle
     if(length_metric == 1) {
-
-        if(class(metric) != "list") {
+        if(!is(metric, "list")) {
             ## Metric was fed as a single element
             check.class(metric, "function")
         } else {
@@ -32,7 +31,9 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
     } else {
         ## Check all the metrics
         for(i in 1:length_metric) {
-            if(class(metric[[i]]) != "function") stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
+            if(!is(metric[[i]], "function")) {
+                stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
+            }
         }
         ## Sorting the metrics by levels
         ## getting the metric levels
@@ -106,7 +107,7 @@ apply.decompose.matrix <- function(one_bs_matrix, fun, data, use_array, ...) {
         results_out <- apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...)
 
         ## Return the results
-        if(class(results_out) == "matrix") {
+        if(is(results_out, "matrix")) {
             return(results_out)
         } else {
             ## Make the results into a matrix with the same size
@@ -146,7 +147,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
     }
 
     if(!is.null(metrics_list$level1.fun)) {
-        margin <- ifelse(class(disparity_out) != "array", 2, 3)
+        margin <- length(dim(disparity_out))
         disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
         disparity_out <- t(as.matrix(disparity_out))
     }

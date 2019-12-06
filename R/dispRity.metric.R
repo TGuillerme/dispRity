@@ -398,7 +398,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
         }
     }
     
-    switch(class(nodes.coords),
+    switch(class(nodes.coords)[1],
         matrix = {
             ## Converting both matrix and nodes.coords in lists
             matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)

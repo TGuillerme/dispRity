@@ -133,11 +133,11 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
     match_call <- match.call()
 
     ## Checking the input type
-    if(!any(class(matrix) == "matrix")) {
+    if(!is(matrix, "matrix")) {
         stop.call(match_call$matrix, " must be a matrix.")
     } else {
         ## If the input is just a matrix, calculate the characters differences
-        if(!any(class(matrix) == "char.diff")) {
+        if(!is(matrix, "char.diff")) {
             matrix <- char.diff(matrix)
         }
     }
@@ -183,7 +183,7 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
             check.class(main, "character")
             check.length(main, 1, " must be a single character string.", errorif = FALSE)
         }
-        if(class(legend) == "logical" & legend == TRUE) {
+        if(is(legend, "logical") && legend == TRUE) {
             legend <- c("Combined", "Individual")
         }
         if(missing(col)) {
