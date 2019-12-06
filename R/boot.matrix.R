@@ -95,7 +95,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## ----------------------
     ## DATA
     ## If class is dispRity, data is serial
-    if(class(data) != "dispRity") {
+    if(!is(data, "dispRity")) {
         ## Data must be a matrix
         check.class(data, "matrix")
 
@@ -139,7 +139,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     } else {
         if(ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)) {
             ## Check if the subsets have multiple trees (all are integers)
-            has_multiple_trees <- ifelse(class(unlist(data$subsets)) == "integer", TRUE, FALSE)
+            has_multiple_trees <- ifelse(class(unlist(data$subsets))[1] == "integer", TRUE, FALSE)
             probabilistic_subsets <- FALSE
 
             ## Check if it has multiple trees AND has probabilities
@@ -237,7 +237,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     ## RAREFACTION
     ## Is it logical?
-    if(class(rarefaction) != "logical") {
+    if(!is(rarefaction, "logical")) {
         ## Is it numeric?
         rare_class <- check.class(rarefaction, c("numeric", "integer", "character"), " must be either numeric, logical or \"min\".")
         if(rare_class == "character") {

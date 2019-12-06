@@ -16,7 +16,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
 
         test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)), silent = TRUE)
 
-        if(class(test) == "try-error") {
+        if(is(test, "try-error")) {
             ## Deal with NAs down the line
             factors_out <- make.time.factor(data, pool = TRUE, time = FALSE)
 
