@@ -103,7 +103,7 @@ cd cran_tmp/
 R CMD build dispRity
 
 ## Check the package
-R CMD check dispRity_*.tar.gz
+R CMD check --as-cran dispRity_*.tar.gz
 #--install-args=_R_CHECK_LENGTH_1_LOGIC2_ 
 #--as-cran 
 

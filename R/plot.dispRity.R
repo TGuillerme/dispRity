@@ -139,7 +139,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## Subclass plots
 
         ## randtests plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
+        if(is(data, c("dispRity")) && is(data, c("randtest"))) {
             ## sanitising
             check.class(nclass, "numeric")
             check.class(coeff, "numeric")
@@ -167,8 +167,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
-
+        if(is(data, c("dispRity")) && is(data, c("dtt"))) {
             ## Silence warnings
             options(warn = -1)
 
@@ -245,7 +244,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         } 
 
         ## model.test plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+        if(is(data, c("dispRity")) && is(data, c("model.test"))) {
 
             ## Colours
             if(missing(col)) {
@@ -266,7 +265,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         
         ## model.sim plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
+        if(is(data, c("dispRity")) && is(data, c("model.sim"))) {
             
             ## xlab
             if(missing(xlab)) { 
@@ -435,7 +434,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
     ## Check class
     silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
-    if(class(rarefaction) != "logical") {
+    if(!is(rarefaction, "logical")) {
         ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")

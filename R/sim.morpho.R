@@ -86,23 +86,23 @@ sim.morpho <- function(tree, characters, states = 1, model = "ER", rates, substi
     }
 
     #model
-    if(class(model) != "function") {
+    if(!is(model, "function")) {
         #model is not a sure function
         model <- toupper(model)
         implemented_models <- c("ER", "HKY", "MIXED")
         check.method(model, implemented_models, "The model")
         model_name <- model
         #Setting up the model
-        if(class(model) != "function" && model_name == "ER") {
+        if(!is(model, "function") && model_name == "ER") {
             model <- rTraitDisc.mk
             #Warning on the substitutions:
             substitution <- c(stats::runif, 1, 1)
             #message("Substitution parameter is ignored for the ER model.")
         }
-        if(class(model) != "function" && model_name == "HKY") {
+        if(!is(model, "function") && model_name == "HKY") {
             model <- gen.seq.HKY.binary
         }
-        if(class(model) != "function" && model_name == "MIXED") {
+        if(!is(model, "function") && model_name == "MIXED") {
             model <- MIXED.model
         }
 
