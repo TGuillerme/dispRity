@@ -435,7 +435,7 @@ test_that("boot.matrix detects distance matrices", {
 })
 
 test_that("boot.matrix works with multiple trees AND probabilities", {
-
+    library(paleotree)
     set.seed(42)
     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
     taxa <- paleotree::fossilRecord2fossilTaxa(record)

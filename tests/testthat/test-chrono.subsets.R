@@ -538,6 +538,7 @@ test_that("cbind.fill and recursive.combine list works", {
 
 test_that("chrono.subsets works with multiPhylo", {
     #Simulate some fossil ranges with simFossilRecord
+    library(paleotree)
     set.seed(42)
     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
     taxa <- paleotree::fossilRecord2fossilTaxa(record)

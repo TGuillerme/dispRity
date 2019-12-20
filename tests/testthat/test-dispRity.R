@@ -493,6 +493,7 @@ test_that("dispRity works with function recycling", {
 
 
 test_that("dispRity works with multiple trees from time-slicing", {
+    library(paleotree)
     set.seed(42)
     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
     taxa <- paleotree::fossilRecord2fossilTaxa(record)
