@@ -538,7 +538,7 @@ test_that("cbind.fill and recursive.combine list works", {
 
 test_that("chrono.subsets works with multiPhylo", {
     #Simulate some fossil ranges with simFossilRecord
-    set.seed(444)
+    set.seed(42)
     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
     taxa <- paleotree::fossilRecord2fossilTaxa(record)
     rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
@@ -580,18 +580,18 @@ test_that("chrono.subsets works with multiPhylo", {
 
     expect_is(test, "dispRity")
     expect_equal(names(test), c("matrix", "call", "subsets"))
-    expect_equal(names(test$subsets), c("16.2765357153421", "8.13826785767107", "0"))
+    expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 5, 2, 11, 2))
-    expect_equal(unique(c(test$subsets[[2]]$elements)), c(18, 25, 23, 9, 26, NA))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 26, 21, NA, 2, 25, 27))
 
     ## Works with discrete
     test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 4, 2, 19, 2))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(6, 2, 5, 2, 14, 2))
 
     ## Works with probabilities
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 5, 6, 11, 6))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
 })

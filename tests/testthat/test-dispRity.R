@@ -493,7 +493,7 @@ test_that("dispRity works with function recycling", {
 
 
 test_that("dispRity works with multiple trees from time-slicing", {
-    set.seed(444)
+    set.seed(42)
     record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
     taxa <- paleotree::fossilRecord2fossilTaxa(record)
     rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
@@ -543,14 +543,14 @@ test_that("dispRity works with multiple trees from time-slicing", {
     test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
     expect_is(test, "dispRity")
     sum_test3 <- summary(test)
-    expect_equal(sum_test3$n, c(3, 5, 11))
+    expect_equal(sum_test3$n, c(3, 7, 10))
     expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
 
     set.seed(1)
     test <- dispRity(boot.matrix(time_slices_normal), metric = variances)
     expect_is(test, "dispRity")
     sum_test4 <- summary(test)
-    expect_equal(sum_test4$n, c(2, 5, 11))
+    expect_equal(sum_test4$n, c(3, 5, 10))
     expect_equal(sum_test4$obs.median, sum_test2$obs.median)
 
 })
