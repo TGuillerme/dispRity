@@ -10,7 +10,7 @@ importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "pa
 importFrom("grDevices", "colorRampPalette", "grey", "hcl", "heat.colors")
 importFrom("methods", "hasArg")
 importFrom("mnormt", "dmnorm", "rmnorm")
-importFrom("paleotree", "timeSliceTree")
+# importFrom("paleotree", "timeSliceTree")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("utils", "combn", "data", "capture.output", "tail")

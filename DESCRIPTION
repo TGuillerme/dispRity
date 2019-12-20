@@ -20,7 +20,6 @@ Imports:
 	grDevices,
 	methods,
 	mnormt,
-	paleotree,
 	phangorn,
 	phyclust,
 	utils,

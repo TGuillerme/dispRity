@@ -12,7 +12,6 @@
 #'
 # @import ape
 # @import stats
-# @importFrom paleotree timeSliceTree 
 # @importFrom geometry convhulln 
 # @importFrom ade4 randtest as.randtest 
 # @importFrom grDevices colorRampPalette grey 
