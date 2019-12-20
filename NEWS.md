@@ -34,6 +34,7 @@ dispRity v1.3.4 (2019-12-20)
 
   * minor warning message fix for `plot.dispRity` with time slices.
   * removed `paleotree` package dependency (though the links to this excellent package are still there!).
+  * increased `R` version requirement to `3.5`.
 
 dispRity v1.3 *many metrics* (2019-08-15)
 =========================
