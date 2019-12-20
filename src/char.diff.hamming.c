@@ -70,6 +70,91 @@ static double R_Hamming(double *x, int nr, int nc, int i1, int i2, int translate
     }
 }
 
+
+
+// static double R_Hamming_bitwise(double *x, int nr, int nc, int i1, int i2, int translate)
+// {
+//     double diff, dist, character1[nc], character2[nc];
+//     int count, i, k;
+
+//     //Initialise the values
+//     count= 0;
+//     dist = 0;
+
+//     //Isolating the two comparable characters
+//     for(i = 0 ; i < nc ; i++) {
+//         if(both_non_NA(x[i1], x[i2])) {
+            
+//             // Create the vectors
+//             character1[count] = x[i1];
+//             character2[count] = x[i2];
+
+//             //Increment the counter
+//             count++;
+//         }
+//         i1 += nr;
+//         i2 += nr;
+//     }
+
+//     // // Normalising the characters
+//     // if(translate) {
+//     //     Normalise_single_character(vector1, count);
+//     //     Normalise_single_character(vector2, count);
+//     // }
+
+
+//     // Using a pop count:
+//     // https://en.wikipedia.org/wiki/Hamming_weight
+//     int popcount64d(uint64_t diff)
+//     {
+//         int count;
+//         for (count=0; x; count++)
+//             x &= x - 1;
+//         return count;
+//     }
+
+
+
+
+
+
+
+
+
+
+
+
+//     for(k = 0 ; k < count ; k++) { 
+//         // Get the difference for the whole vector
+//         diff = vector1[k] ^ vector2[k]
+//         if(diff > 0) {
+//             // Increment the difference
+//             dist += 1 ;
+//         }
+
+//         diff = fabs(vector1[k] - vector2[k]);
+//         // Normalise the difference (Fitch like)
+//         if(diff > 1) {
+//             diff = 1;   
+//         }
+//         // Increment the differences
+//         if(!ISNAN(diff)) {
+//             dist += diff;
+//         }        
+//     }
+
+//     if(count == 0) {
+//         return NA_REAL;
+//     } else {
+//         if(translate) {
+//             dist = dist/(count - 1);
+//         } else {
+//             dist = dist/count;
+//         }
+//         return dist;
+//     }
+// }
+
 // R_distance function (R::dist())
 void R_distanceHamming(double *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate)
 {
