@@ -1,6 +1,7 @@
 library(Claddis)
 library(mulTree)
 library(paleotree)
+library(geiger)
 source("MorphDistMatrix.verbose.R")
 source("anc.state.R")
 source("anc.state_fun.R")
@@ -141,3 +142,14 @@ data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]
 paleotree_data <- list(tree = tree, data = data)
 
 save(paleotree_data, file="../paleotree_test_data.Rda")
+
+
+
+
+####################
+## geiger data
+####################
+
+geiger_test_data <- get(data(geospiza))
+
+save(geiger_test_data, file="../geiger_test_data.Rda")
