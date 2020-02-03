@@ -22,13 +22,14 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.3.4 (2019-12-20)
+dispRity v1.3.5 (2019-02-03)
 =========================
 
 ### BUG FIXES
 
   * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
   * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
+  * updated `...` argument bug PR#16223.
 
 ### MINOR IMPROVEMENTS
 
