@@ -22,8 +22,12 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.3.5 (2019-02-03)
+dispRity v1.3.5 (2020-02-12)
 =========================
+
+### NEW FEATURES
+
+ * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
 
 ### BUG FIXES
 

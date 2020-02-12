@@ -41,6 +41,7 @@ export(test.dispRity)
 
 ##disparity metrics
 export(ancestral.dist)
+export(angles)
 export(centroids)
 export(convhull.volume)
 export(convhull.surface)

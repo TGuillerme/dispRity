@@ -4,7 +4,7 @@ context("dispRity.metric")
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?centroids\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?mode.val\n?n.ball.volume")
 })
 
@@ -555,3 +555,33 @@ test_that("func.div", {
         )
 })
 
+test_that("angles", {
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    matrix[,1] <- 1:9
+    matrix[,2] <- matrix[,1]*2
+    matrix[,3] <- matrix[,1]/2
+
+    ## Angles in degrees
+    test_angles <- angles(matrix)
+
+    expect_equal(length(test_angles), ncol(matrix))
+    expect_equal(test_angles[1], 45)
+    expect_equal(round(test_angles[2], 1), 26.6)
+    expect_equal(round(test_angles[3], 1), 63.4)
+
+    ## Angles in degrees with base shift (90)
+    test_angles2 <- angles(matrix, base = 90)
+    expect_equal(test_angles2, test_angles + 90)
+
+    ## Angles in radian
+    test_angles2 <- angles(matrix, unit = "radian")
+    expect_equal(test_angles2 * 180/pi, test_angles)
+
+    ## Angles in slopes
+    test_angles2 <- angles(matrix, unit = "slope")
+    expect_equal(test_angles2[1], 1)
+    expect_equal(test_angles2[2], 0.5)
+    expect_equal(test_angles2[3], 2)
+
+})
