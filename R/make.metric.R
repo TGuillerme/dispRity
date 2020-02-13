@@ -48,6 +48,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
     ## Sanitizing
     ## fun
     check.class(fun, "function")
+    dots <- list(...)
 
     ## Getting the function name
     match_call <- match.call()
@@ -59,8 +60,13 @@ make.metric <- function(fun, ..., silent = FALSE) {
     ## Testing the metric
     test <- NULL
     op <- options(warn = -1)
-    test <- try(fun(matrix, ...), silent = TRUE)
-    #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
+
+    ## Skip the dots if the dots has a tree argument
+    if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots)) ) {
+        test <- try(test <- fun(matrix), silent = TRUE)    
+    } else {
+        test <- try(fun(matrix, ...), silent = TRUE)
+    }
     options(op)
 
     if(any("try-error" %in% test) || any(is.na(test))) {

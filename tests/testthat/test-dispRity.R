@@ -12,6 +12,13 @@ verbose = TRUE
 data <- data_subsets_boot
 
 
+test_that("chrono.subsets + ancestral.dist doesn't work yet", {
+
+    expect_warning(error <- capture_error(dispRity(data_subsets_simple, metric = ancestral.dist, tree = BeckLee_tree)))
+    expect_equal(error[[1]], "ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
+})
+
+
 test_that("get.dispRity.metric.handle", {
     match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
     

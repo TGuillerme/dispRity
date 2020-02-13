@@ -34,6 +34,7 @@ dispRity v1.3.5 (2020-02-12)
   * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
   * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
   * updated `...` argument bug PR#16223.
+  * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
 
 ### MINOR IMPROVEMENTS
 

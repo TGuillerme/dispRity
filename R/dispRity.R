@@ -130,6 +130,12 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
+    ## Temporary stop if ancestral.dist is used on chrono.subsets
+    if(names(time_trait_space$call) == "subsets" && match_call$metric == "ancestral.dist") {
+        stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
+    }
+
+
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
