@@ -131,7 +131,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     # metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
     ## Temporary stop if ancestral.dist is used on chrono.subsets
-    if(names(data$call) == "subsets" && match_call$metric == "ancestral.dist") {
+    if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
         stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
     }
 
