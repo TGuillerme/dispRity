@@ -94,14 +94,14 @@ custom.subsets <- function(data, group) {
 
     ## group
     ## group is a matrix or a data.frame
-    if(class(group) == "matrix" || class(group) == "data.frame") {
+    if(is(group, "matrix") || is(group, "data.frame")) {
         group_class <- "data.frame"
         group <- as.data.frame(group)
     } else {
-        if(class(group) == "list") {
+        if(is(group, "list")) {
             group_class <- "list"
         } else {
-            if(class(group) == "phylo") {
+            if(is(group, "phylo")) {
 
                 group_class <- "phylo"
                 ## Matching the tree and the data

@@ -133,13 +133,13 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
         )
 
         ## Empty subset
-        if(all(class(sub_tree) != "phylo" & is.na(sub_tree))) {
+        if(all(!is(sub_tree, "phylo") & is.na(sub_tree))) {
             warning("The slice ", time[slice], " is empty.", call. = FALSE)
             return(list("elements" = matrix(NA)))
         }
 
         ## Output are single trees
-        if(class(sub_tree) == "phylo") {
+        if(is(sub_tree, "phylo")) {
             ## Select the tips 
             tips <- sub_tree$tip.label
 

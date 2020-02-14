@@ -71,7 +71,7 @@ round.column <- function(column, digits) {
     ## Get the digits value
     digits <- ifelse(digits != "default", digits, get.digit(as.numeric(column)))
     ## Round the table
-    if(class(column) != "group") {
+    if(!is(column, "group")) {
         return(round(as.numeric(column), digits = digits))
     } else {
         return(round(as.numeric(as.character(column)), digits = digits))

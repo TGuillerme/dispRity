@@ -48,6 +48,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
     ## Sanitizing
     ## fun
     check.class(fun, "function")
+    dots <- list(...)
 
     ## Getting the function name
     match_call <- match.call()
@@ -59,8 +60,13 @@ make.metric <- function(fun, ..., silent = FALSE) {
     ## Testing the metric
     test <- NULL
     op <- options(warn = -1)
-    test <- try(fun(matrix, ...), silent = TRUE)
-    #try(test <- fun(matrix), silent = TRUE) ; warning("DEBUG")
+
+    ## Skip the dots if the dots has a tree argument
+    if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots)) ) {
+        test <- try(test <- fun(matrix), silent = TRUE)    
+    } else {
+        test <- try(fun(matrix, ...), silent = TRUE)
+    }
     options(op)
 
     if(any("try-error" %in% test) || any(is.na(test))) {
@@ -74,7 +80,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
         ##########
 
         ## If class is matrix -> level3.fun
-        if(class(test)[1] == "matrix") {
+        if(is(test, "matrix")) {
             fun_type <- "level3"
             if(silent != TRUE) {
                 cat(paste(as.expression(match_call$fun)," outputs a matrix object.\n", as.expression(match_call$fun), " is detected as being a dimension-level 3 function.", sep = ""))
@@ -82,7 +88,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
             }
         } else {
             ## If class is numeric
-            if(class(test)[1] == "numeric") {
+            if(is(test, "numeric")) {
                 ## If only one value -> level1.fun
                 if(length(test) == 1) {
                     fun_type <- "level1"

@@ -376,6 +376,7 @@ The detailed list can be found in `?dispRity.metric` along with some description
 Level | Name | Description | Source | 
 ------|------|---------------------------------------------------|--------|
 2 | `ancestral.dist` | The distance between an element and its ancestor | `dispRity` |
+2 | `angles` | The angle of main variation of each dimensions | `dispRity` |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
@@ -675,6 +676,18 @@ summary(dispRity(dummy_space, metric = func.eve))
 summary(dispRity(dummy_space, metric = func.eve, method = "manhattan"))
 ```
 
+#### Orientation: angles
+
+The `angle` performs a least square regression (via the `lm` function) and returns slope of the main axis of variation for each dimension. This slope can be converted into different units, `"slope"`, `"degree"` (the default) and `"radian"`. This can be changed through the `unit` argument. 
+By default, the angle is measured from the slope 0 (the horizontal line in a 2D plot) but this can be changed through the `base` argument (using the defined `unit`):
+
+```{r}
+## The distribution of each angles in degrees for each main axis in the matrix
+summary(dispRity(dummy_space, metric = angles))
+
+## The distribution of slopes deviating from the 1:1 slope:
+summary(dispRity(dummy_space, metric = angles, unit = "slope", base = 1))
+```
 
 ## Summarising dispRity data (plots)
 

@@ -49,7 +49,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
     #Sanitizing
     #data
-    if(class(data) == "matrix") {
+    if(is(data, "matrix")) {
         data <- as.data.frame(data)
     } 
     check.class(data, "data.frame")
@@ -63,7 +63,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
     #what should exist
     check.length(what, 1, " must be a single 'numeric' or 'character' string designating which column to plot.")
-    if(class(what) == "numeric") {
+    if(is(what, "numeric")) {
         results <- data[,what]
     } else {
         check.class(what, "character", msg = " must be a single 'numeric' or 'character' string designating which column to plot.")
@@ -94,7 +94,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
     #diag
     if(!missing(diag)) {
-        if(class(diag) == "character") {
+        if(is(diag, "character")) {
             check.length(diag, 1, " must be a single numeric character or 'max' or 'min'.")
             if(diag != "max" && diag != "min") {
                 stop.call("", "diag argument must be a single numeric character or 'max' or 'min'.")
@@ -111,7 +111,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     #add
     if(!missing(add)) {
         check.length(add, 1, " must be a single 'numeric' or 'character' string.")
-        if(class(add) != "character" && class(add) != "numeric") {
+        if(!is(add, "character") && !is(add, "numeric")) {
             stop.call("", "add must be a single 'numeric' or 'character' string.")
         }
         if(missing(binary)) {
@@ -128,7 +128,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
     if(!missing(diag)) {
         if(diag == "max") diag(matrix_plot) <- max(results, na.rm = TRUE)
         if(diag == "min") diag(matrix_plot) <- min(results, na.rm = TRUE)
-        if(class(diag) == "numeric") diag(matrix_plot) <- diag
+        if(is(diag, "numeric")) diag(matrix_plot) <- diag
     }
 
     #Applying threshold
@@ -150,7 +150,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
         #Adding the legend
         if(legend == TRUE) {
-            if(class(what) == "character") {
+            if(is(what, "character")) {
                 legend(0, 1, pch = 15, col = col, c(paste("min =", min(matrix_plot, na.rm = TRUE)), paste("max =", max(matrix_plot, na.rm = TRUE))), bty="n", title = what)
             } else {
                 legend(0, 1, pch = 15, col = col, c(paste("min =", min(matrix_plot, na.rm = TRUE)), paste("max =", max(matrix_plot, na.rm = TRUE))), bty="n")
@@ -163,7 +163,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
                 xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,1]]
                 ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 0, arr.ind = TRUE)[,2]]
                 #Adding the 0s symbols
-                if(class(add) == "numeric") {
+                if(is(add, "numeric")) {
                     #Symbol is a point
                     points(x = xs, y = ys, col = col[1], pch = add, ...)
                 } else {
@@ -176,7 +176,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
                 xs <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,1]]
                 ys <- seq(from = 0, to = 1, length = length(elements))[which(matrix_plot == 1, arr.ind = TRUE)[,2]]
                 #Adding the 0s symbols
-                if(class(add) == "numeric") {
+                if(is(add, "numeric")) {
                     #Symbol is a point
                     points(x = xs, y = ys, col = col[1], pch = add, ...)
                 } else {

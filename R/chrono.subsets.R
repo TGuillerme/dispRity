@@ -259,7 +259,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
 
     ## t0
-    if(class(t0) != "logical") {
+    if(!is(t0, "logical")) {
         silent <- check.class(t0, c("numeric", "integer"), msg = " must be logical or a single numeric value.")
         check.length(t0, 1, errorif = FALSE, msg = " must be logical or a single numeric value.")
     } 
@@ -283,8 +283,8 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             ## Set tmax
             tmax <- min(unlist(lapply(tree.age_tree, function(x) min(x$ages))))
             ## Set up t0
-            if(class(t0) == "logical") {
-                if(t0 == FALSE) {
+            if(is(t0, "logical")) {
+                if(!t0) {
                     ## Get the percentages
                     percents <- lapply(tree, get.percent.age)
 

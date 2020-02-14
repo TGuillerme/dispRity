@@ -46,7 +46,7 @@ check.subsets <- function(subsets, data) {
     if(length(subsets) > length(data$subsets)) {
         stop("Not enough subsets in the original data.")
     } else {
-        if(class(subsets) == "numeric" | class(subsets) == "integer") {
+        if(is(subsets, "numeric") || is(subsets, "integer")) {
             if(any(is.na(match(subsets, 1:length(data$subsets))))) {
 
                 subsets <- subsets[which(is.na(match(subsets, 1:length(data$subsets))))]
@@ -55,7 +55,7 @@ check.subsets <- function(subsets, data) {
 
             }
         } else {
-            if(class(subsets) == "character") {
+            if(is(subsets, "character")) {
                 if(any(is.na(match(subsets, names(data$subsets))))) {
 
                     subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]

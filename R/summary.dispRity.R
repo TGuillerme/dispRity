@@ -106,7 +106,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     if(length(class(data)) > 1) {
 
         ## Model test summary
-        if(class(data)[2] == "model.test") {
+        if(is(data, "model.test")) {
             ## Extracting the AICs and the log likelihoods
             base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
 
@@ -135,7 +135,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         }
         
         # Model sim summary
-        if(class(data)[2] == "model.sim") {
+        if(is(data, "model.sim")) {
 
             # if(recall){
             #     print.dispRity(data)

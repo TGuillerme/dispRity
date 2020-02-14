@@ -16,8 +16,6 @@ apply.NA(matrix, NAs, tree, invariant = FALSE, verbose = FALSE)
 \item{invariant}{Whether to allow invariant sites among the characters with inapplicable data. If \code{invariant = FALSE} the algorithm will try to remove such characters (if possible).}
 
 \item{verbose}{Whether to be verbose or not.}
-
-\item{...}{Any additional arguments.}
 }
 \description{
 Apply inapplicable characters to discrete morphological matrix.

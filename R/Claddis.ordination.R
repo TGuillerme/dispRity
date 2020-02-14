@@ -118,7 +118,7 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     ordination <- do.call(stats::cmdscale, arg.cmdscale)
     # ordination <- stats::cmdscale(distance, k = k, add = add, ...)
 
-    if(class(ordination) != "matrix") {
+    if(!is(ordination, "matrix")) {
         ordination <- ordination$points
     }
 

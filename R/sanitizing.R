@@ -148,7 +148,7 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
     was_dist <- FALSE
 
     ## Check if distance
-    if(class(matrix)[1] == "dist") {
+    if(is(matrix, "dist")) {
         return(list(matrix, "was_dist" = TRUE))
     }
 

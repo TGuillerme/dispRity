@@ -12,7 +12,7 @@ Development (master):
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.3.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.3.5-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
@@ -130,6 +130,8 @@ Used in
 -------
 <!-- > 19 publications have used `dispRity` since 2018 (12.6 per year). (calculated on the 07/11/2019). -->
 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Otolith+morphological+divergences+of+successful+Lessepsian+fishes+on+the+Mediterranean+coastal+waters&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+VM Tuset, A Lombarte, M Bariche, F Maynou, E Azzurro. (**2020**) Otolith morphological divergences of successful Lessepsian fishes on the Mediterranean coastal waters. *Estuarine, Coastal and Shelf Science*.[DOI: 10.1016/j.ecss.2020.106631](https://www.sciencedirect.com/science/article/pii/S0272771419311291)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Morphological+disparity+in+theropod+jaws%3A+comparing+discrete+characters+and+geometric+morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 J Schaeffer, MJ Benton, EJ Rayfield, TL Stubbs. (**2019**), Morphological disparity in theropod jaws: comparing discrete characters and geometric morphometrics. *Palaeontology*.[DOI: 10.1111/pala.12455](https://onlinelibrary.wiley.com/doi/full/10.1111/pala.12455)

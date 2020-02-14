@@ -216,7 +216,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     ## Apply the correlation matrix to the space (if !NULL)
     if(!is.null(cor.matrix)) {
         choleski_decomposition <- try(t(chol(cor.matrix)), silent = TRUE)
-        if(class(choleski_decomposition) == "matrix") {
+        if(is(choleski_decomposition, "matrix")) {
             ## Use the Choleski decomposition
             space <- choleski_decomposition %*% t(space)
             ## Transpose space again

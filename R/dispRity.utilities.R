@@ -353,7 +353,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
     }
 
     ## Getting the center value
-    if(class(center) == "logical") {
+    if(is(center, "logical")) {
         if(center & use.all) {
             center <- mean(all_data, na.rm = TRUE)
         }
@@ -363,7 +363,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
     }
 
     ## Getting the scale value
-    if(class(scale) == "logical") {
+    if(is(scale, "logical")) {
         if(scale & use.all) {
             scale <- max(all_data)
         }

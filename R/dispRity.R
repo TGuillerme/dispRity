@@ -116,6 +116,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
             data <- list(data)
         }
         matrices <- check.matrix(data)
+
         ## Create the dispRity object
         data <- fill.dispRity(make.dispRity(data = data))
     } else {
@@ -132,6 +133,12 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call)
+
+    ## Temporary stop if ancestral.dist is used on chrono.subsets
+    if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
+        stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
+    }
+
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {

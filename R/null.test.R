@@ -114,7 +114,7 @@ null.test <- function(data, replicates = 100, null.distrib, null.args = NULL, nu
     }
 
     ## testing the null hypothesis
-    if(class(null_models_results) != "list") {
+    if(!is(null_models_results, "list")) {
         ## Apply the randtest to one subsets
         test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[, 3], sim = null_models_results, alter = alter, ...)
         # test_out  <- ade4::as.randtest(obs = summary(data, digits = 10)[,3], sim = null_models_results, alter = alter)

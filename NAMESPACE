@@ -8,9 +8,9 @@ importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 importFrom("geometry", "convhulln")
 importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend", "barplot")
 importFrom("grDevices", "colorRampPalette", "grey", "hcl", "heat.colors")
-importFrom("methods", "hasArg")
+importFrom("methods", "hasArg")#, "is")
 importFrom("mnormt", "dmnorm", "rmnorm")
-importFrom("paleotree", "timeSliceTree")
+# importFrom("paleotree", "timeSliceTree")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("utils", "combn", "data", "capture.output", "tail")
@@ -41,6 +41,7 @@ export(test.dispRity)
 
 ##disparity metrics
 export(ancestral.dist)
+export(angles)
 export(centroids)
 export(convhull.volume)
 export(convhull.surface)
@@ -108,7 +109,8 @@ export(get.contrast.matrix)
 export(plot.char.diff)
 export(sim.morpho)
 
-##S3 methods
+##S3 
+
 S3method(adonis, dispRity)
 S3method(dtt, dispRity)
 S3method(matrix, dispRity)
