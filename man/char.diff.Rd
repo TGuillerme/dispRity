@@ -4,19 +4,10 @@
 \alias{char.diff}
 \title{Character differences}
 \usage{
-char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
-  special.behaviours)
+char.diff(matrix)
 }
 \arguments{
-\item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
-
-\item{method}{The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.}
-
-\item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
-
-\item{special.tokens}{optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}.}
-
-\item{special.behaviours}{optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.}
+\item{matrix}{A discrete matrix or a list containing discrete characters.}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
@@ -25,30 +16,7 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
-The different distances to calculate are:
-\itemize{
-     \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
-     \item \code{"gower"} The scaled gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2). The characters are translated following the \emph{xyz} notation (The first token is translated to 1, the second to 2, etc. - Felsenstein XXX).
-     \item \code{"euclidean"} The Euclidean distance: XXX
-     \item \code{"manhattan"} The Manhattan distance: XXX
-     \item \code{"ged"} The Generalised Euclidean Distance (Wills XXX): XXX
-     \item \code{"mord"} The maximum observable distance (Lloyd XXX): XXX
-}
-
-When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
-
-
-
-\code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} and should output a non 0 integer. By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an extra state.
-
-\itemize{
-     \item{code{missing = function(x,y) as.integer(y)}}
-     \item{code{inapplicable = function(x,y) as.integer(-1)}}
-     \item{code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
-     \item{code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
-}
-
-\code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
+The character difference is calculated as half the sum of the Gower distances between the characters.
 }
 \examples{
 ## Comparing two characters
@@ -60,10 +28,6 @@ char.diff(morpho_matrix)
 
 }
 \references{
-Wills XXX
-Hamming XXX
-Lloyd XXX
-Felsenstein XXX
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
