@@ -1,35 +1,75 @@
 context("char.diff")
 
-# test_that("internal function char.diff", {
+test_that("convert.bitwise works", {
+    ## Full characters
+    expect_equal(convert.bitwise(0), 1)
+    expect_equal(convert.bitwise("0"), 1)
+    expect_equal(convert.bitwise(1), 2)
+    expect_equal(convert.bitwise("1"), 2)
+    expect_equal(convert.bitwise(2), 4)
+    expect_equal(convert.bitwise("2"), 4)
+    expect_equal(convert.bitwise(3), 8)
+    expect_equal(convert.bitwise("3"), 8)
+    expect_equal(convert.bitwise(4), 16)
+    expect_equal(convert.bitwise("4"), 16)
 
-#     A <- c(1,0,0,0,0)
-#     B <- c(0,1,1,1,1)
-#     C <- c(9,8,8,8,8)
+    ## Special tokens
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
+    all_states <- c(0,1,2,3)
+    expect_warning(expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours, all_states), 7))
+    expect_warning(expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours, all_states), 3))
+    expect_warning(expect_equal(convert.bitwise("-", special.tokens, special.behaviours, all_states), 0))
+    expect_warning(expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15))
 
-#     ## Convert character works (translate digits in letters)
-#     expect_equal(convert.character(A), c("B", rep("A", 4)))
+    ## Add some weird token
+    special.tokens["weird"] <- "\\@"
+    special.behaviours$weird <- function(x,y) return(as.integer(1000))
+    expect_warning(expect_equal(convert.bitwise("1@2", special.tokens, special.behaviours, all_states), 2^1000))
+})
 
-#     ## Normalise character works (translate digits in normalised way)
-#     expect_true(all(is.na(normalise.character(A, c("a","b")))))
-#     expect_equal(normalise.character(A, c(0,1)), normalise.character(B, c(1,0)))
-#     expect_equal(normalise.character(A, c(0,1)), normalise.character(C, c(9,8)))
-#     expect_equal(normalise.character(B, c(1,0)), normalise.character(C, c(9,8)))
 
-#     ## char.diff_R is the same as char.diff for a list
-#     matrix <- list(A, B)
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
+test_that("convert.character works", {
 
-#     ## char.diff works with characters
-#     matrix <- list(as.character(A), as.character(B))
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
 
-#     ## char.diff_R
-#     A <- c(1,2,3,1,1,3)
-#     B <- c(NA,2,3,NA,1,3)
-#     matrix <- list(as.character(A), as.character(B))
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+    simple_character <- c("0", "0", "1", "0", "0")
+    expect_equal(
+        convert.character(c("0", "0", "1", "0", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "0" = 1, "0" = 1))
+    expect_equal(
+        unname(convert.character(c("0", "0", "10", "0", "0"), special.tokens, special.behaviours))
+        ,c(1, 1, 1024, 1, 1))
+    expect_warning(expect_equal(
+        convert.character(c("0", "0", "1", "?", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 3, "0" = 1)))
+    expect_warning(expect_equal(
+        convert.character(c("0", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1&3" = 10, "?" = 11, "3" = 8)))
+})
 
-# })
 
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
@@ -171,4 +211,82 @@ test_that("char.diff plot (graphic)", {
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
 
+test_that("different methods", {
+    # Testing
+    matrix <- do.call(cbind, list(A = c(0, 1, 0, 1, 1), #1, 2, 1, 2, 2
+                                  B = c(0, 1, 1, 1, 1), #1, 2, 2, 2, 2
+                                  C = c(0, 2, 2, 2, 2), #1, 2, 2, 2, 2
+                                  D = c(0, 1, 2, 3, 4), #1, 2, 3, 4, 5
+                                  E = c(1, 2, 1, 2, 2)))#1, 2, 1, 2, 2
 
+    ## Hamming differences
+    expect_warning(test_hamming <- round(char.diff(matrix, method = "hamming"), 2))
+    expect_equal(test_hamming["A", "B"], test_hamming["B", "A"])
+    expect_equal(test_hamming["A", "B"], 0.25)
+    expect_equal(test_hamming["A", "C"], 0.25)
+    expect_equal(test_hamming["A", "D"], 0.75)
+    expect_equal(test_hamming["A", "E"], 0)
+    expect_equal(test_hamming["B", "C"], 0)
+    expect_equal(test_hamming["B", "D"], 0.75)
+    expect_warning(test_hamming_untrans <- round(char.diff(matrix, method = "hamming", translate = FALSE), 2))
+    expect_equal(test_hamming_untrans["A", "B"], test_hamming_untrans["B", "A"])
+    expect_equal(test_hamming_untrans["A", "B"], round(1/5, 2))
+    expect_equal(test_hamming_untrans["A", "C"], round(4/5, 2))
+    expect_equal(test_hamming_untrans["A", "D"], round(3/5, 2))
+    expect_equal(test_hamming_untrans["A", "E"], round(5/5, 2))
+    expect_equal(test_hamming_untrans["B", "C"], round(4/5, 2))
+    expect_equal(test_hamming_untrans["B", "D"], round(3/5, 2))
+
+
+    ## Gower differences
+    expect_warning(test_gower <- round(char.diff(matrix, method = "gower"), 2))
+    expect_equal(test_gower["A", "B"], test_gower["B", "A"])
+    expect_equal(test_gower["A", "B"], 0.25)
+    expect_equal(test_gower["A", "C"], 0.25)
+    expect_equal(test_gower["A", "D"], 1.75)
+    expect_equal(test_gower["A", "E"], 0)
+    expect_equal(test_gower["B", "C"], 0)
+    expect_equal(test_gower["B", "D"], 1.5)
+    expect_warning(test_gower_untrans <- round(char.diff(matrix, method = "gower", translate = FALSE), 2))
+    expect_equal(test_gower_untrans["A", "B"], test_gower_untrans["B", "A"])
+    expect_equal(test_gower_untrans["A", "B"], round(1/5, 2))
+    expect_equal(test_gower_untrans["A", "C"], round(5/5, 2))
+    expect_equal(test_gower_untrans["A", "D"], round(7/5, 2))
+    expect_equal(test_gower_untrans["A", "E"], round(5/5, 2))
+    expect_equal(test_gower_untrans["B", "C"], round(4/5, 2))
+    expect_equal(test_gower_untrans["B", "D"], round(6/5, 2))
+
+    matrix <- do.call(cbind, list(A = c(0, 1, 0, 1, 1), #1, 2, 1, 2, 2
+                                  B = c(0, 1, 1, 1, 1), #1, 2, 2, 2, 2
+                                  C = c(0, 2, 2, 2, 2), #1, 2, 2, 2, 2
+                                  D = c(0, 1, 2, 3, 4), #1, 2, 3, 4, 5
+                                  E = c(1, 2, 1, 2, 2)))#1, 2, 1, 2, 2
+
+    ## Manhattan
+    test_manhattan <- round(char.diff(matrix, method = "manhattan"), 2)
+    expect_equal(test_manhattan["A", "B"], test_manhattan["B", "A"])
+    expect_equal(test_manhattan["A", "B"], 1)
+    expect_equal(test_manhattan["A", "C"], 5)
+    expect_equal(test_manhattan["A", "D"], 7)
+    expect_equal(test_manhattan["A", "E"], 5)
+    expect_equal(test_manhattan["B", "C"], 4)
+    expect_equal(test_manhattan["B", "D"], 6)
+
+    ## Euclidean
+    expect_warning(test_euclidean_untrans <- round(char.diff(matrix, method = "euclidean", translate = FALSE), 2))
+    expect_equal(test_euclidean_untrans["A", "B"], test_euclidean_untrans["B", "A"])
+    expect_equal(test_euclidean_untrans["A", "B"], 1)
+    expect_equal(test_euclidean_untrans["A", "C"], 2.65)
+    expect_equal(test_euclidean_untrans["A", "D"], 4.12)
+    expect_equal(test_euclidean_untrans["A", "E"], 2.24)
+    expect_equal(test_euclidean_untrans["B", "C"], 2)
+    expect_equal(test_euclidean_untrans["B", "D"], 3.74)
+    expect_warning(test_euclidean <- round(char.diff(matrix, method = "euclidean"), 2))
+    expect_equal(test_euclidean["A", "B"], test_euclidean["B", "A"])
+    expect_equal(test_euclidean["A", "B"], round(sqrt(1^2), 2))
+    expect_equal(test_euclidean["A", "C"], round(sqrt(1^2), 2))
+    expect_equal(test_euclidean["A", "D"], round(sqrt(sum(c(2^2, 2^2, 3^2))), 2))
+    expect_equal(test_euclidean["A", "E"], 0)
+    expect_equal(test_euclidean["B", "C"], 0)
+    expect_equal(test_euclidean["B", "D"], round(sqrt(sum(c(1^2, 2^2, 3^2))), 2))
+})

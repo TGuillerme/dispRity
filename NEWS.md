@@ -28,6 +28,7 @@ dispRity v1.3.5 (2020-02-12)
 ### NEW FEATURES
 
  * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
+ * *New* options in `char.diff`: it is now possible to specify the type of difference (distance) to calculate among `"hamming"` (default), `"gower"`, `"euclidean"`, `"manhattan"`, `"ged"` and `"mord"`. It is also possible to give special behaviours for different discrete morphological data tokens (missing, inapplicable, polymorphisms and uncertainties)!
 
 ### BUG FIXES
 
