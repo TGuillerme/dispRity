@@ -3,12 +3,12 @@
 #'
 #' @description Splits the data into a customized subsets list.
 #'
-#' @param data A \code{matrix}.
+#' @param data A \code{matrix} or a \code{list} of matrices (with the same dimensions).
 #' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' \item{matrix}{the multidimensional space (a \code{list} of \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
 #' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #'
@@ -67,17 +67,29 @@ custom.subsets <- function(data, group) {
     ## ----------------------
     ## DATA
     ## data must be a matrix
-    check.class(data, "matrix")
+    if(class(data) != "list") {
+        data <- list(data)
+    }
+    matrices <- check.matrix(data)
 
     ## Check whether it is a distance matrix
-    if(check.dist.matrix(data, just.check = TRUE)) {
+    is_distance <- unlist(lapply(data, check.dist.matrix, just.check = TRUE))
+    if(any(is_distance)) {
         warning("custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
     }
 
     ## data must have rownames
-    if(is.null(rownames(data))) {
-        warning(paste("Rownames generated for ", as.expression(match_call$data), " as seq(1:", nrow(data) ,")", sep = ""))
-        rownames(data) <- seq(1:nrow(data))
+    rownames <- unlist(lapply(data, rownames))
+    if(is.null(rownames)) {
+        ## Ping warning (once!)
+        warning(paste("Rownames generated for ", as.expression(match_call$data), " as seq(1:", nrow(data[[1]]) ,")", sep = ""))
+
+        ## Apply rownames
+        apply.rownames <- function(data) {
+            rownames(data) <- seq(1:nrow(data))
+            return(data)
+        }
+        data <- lapply(data, apply.rownames)
     } 
 
     ## group
@@ -93,25 +105,25 @@ custom.subsets <- function(data, group) {
 
                 group_class <- "phylo"
                 ## Matching the tree and the data
-                if(any(is.na(match(group$tip.label, rownames(data))))) {
+                if(any(is.na(match(group$tip.label, rownames(data[[1]]))))) {
                     stop.call("", "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
                 }
 
                 if(is.null(group$node.label)) {
                     ## No nodes
-                    if(nrow(data) != Ntip(group)) {
+                    if(nrow(data[[1]]) != Ntip(group)) {
                         stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
                     }
                     inc.nodes <- FALSE
                 } else {
                     ## Are the nodes relevant in the data
-                    if(nrow(data) == (Ntip(group) + Nnode(group))) {
-                        if(any(is.na(match(group$node.label, rownames(data))))) {
+                    if(nrow(data[[1]]) == (Ntip(group) + Nnode(group))) {
+                        if(any(is.na(match(group$node.label, rownames(data[[1]]))))) {
                             stop.call("", "Some nodes in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
                         }
                         inc.nodes <- TRUE
                     } else {
-                        if(nrow(data) == Ntip(group)) {
+                        if(nrow(data[[1]]) == Ntip(group)) {
                             inc.nodes <- FALSE
                         } else {
                             stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
@@ -132,7 +144,7 @@ custom.subsets <- function(data, group) {
         ## Using a data.frame or a matrix
 
         ## must have the same labels as data
-        if(!all( as.character(rownames(group)) %in% as.character(rownames(data)))) {
+        if(!all( as.character(rownames(group)) %in% as.character(rownames(data[[1]])))) {
             stop.call("", "Row names in data and group arguments don't match.")
         }
 
@@ -142,7 +154,7 @@ custom.subsets <- function(data, group) {
         }
 
         ## Creating the subsets
-        subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data), recursive = FALSE)
+        subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data[[1]]), recursive = FALSE)
     } else {
 
         if(group_class == "phylo") {
@@ -191,17 +203,17 @@ custom.subsets <- function(data, group) {
         ## Cleaning groups
         if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
             ## The list must have the same columns as in the data
-            if(max(unlist(group[group_select])) > nrow(data)) {
+            if(max(unlist(group[group_select])) > nrow(data[[1]])) {
                 stop.call("", "Row numbers in group don't match the row numbers in data.")
             }
         } else {
             if(all(unique(unlist(lapply(group[group_select], class))) == "character")) {
-                if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data)))) {
+                if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data[[1]])))) {
                     stop.call("", "Row names in data and group arguments don't match.")
                 }
                 
                 ## Convert the row names into row numbers
-                group <- lapply(group, convert.name.to.numbers, data)
+                group <- lapply(group, convert.name.to.numbers, data[[1]])
 
             } else {
                 stop.call("", "group argument must be a list of row names or row numbers.")

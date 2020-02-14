@@ -6,7 +6,7 @@
 #'
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
-#' @param data A \code{matrix}.
+#' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' 
@@ -26,7 +26,10 @@ make.dispRity <- function(data, call, subsets) {
 
     ## Add the matrix
     if(!missing(data)) {
-        check.class(data, "matrix")
+        if(class(data) == "matrix") {
+            data <- list(data)
+        }
+        check.matrix(data)
         dispRity_object$matrix <- data
     }
 
@@ -67,20 +70,19 @@ fill.dispRity <- function(data) {
 
     ## Data have a matrix
     if(!is.null(data$matrix)) {
-        check.class(data$matrix, "matrix")
+        matrix_class <- check.matrix(data$matrix)
     } else {
         stop.call("", "dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
     }
 
     ## Dimensions
     if(length(data$call$dimensions) == 0) {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Fill empty subsets
     if(length(data$subsets) == 0) {
-        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix)))))
-        #data$subsets[[1]][[1]] <- matrix(1:nrow(data$matrix))
+        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
     } else {
         for(subsets in 2:length(data$subsets)) {
             data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
@@ -94,7 +96,7 @@ fill.dispRity <- function(data) {
 #' @title Fetching a matrix from a \code{dispRity} object.
 #' @aliases fetch.matrix
 #'
-#' @description Fetching a specific matrix from a \code{dispRity} object.
+#' @description Fetching a specific matrix or list of matrices from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
 #' @param subsets A \code{numeric} value to select subsets (\code{0} is no subsets; default).
@@ -120,6 +122,7 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
 
     ## Sanitizing
     check.class(data, "dispRity")
+    matrices <- check.matrix(data$matrix)
 
     ## Add the dimensions if missing
     if(is.null(data$call$dimensions)) {
@@ -127,13 +130,29 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
     }
 
     if(missing(subsets)) {
-        return(data$matrix)
+        output <- data$matrix
     } else {
+        ## Select the rows
         if(missing(rarefaction) || missing(bootstrap)) {
-            return(data$matrix[data$subsets[[subsets]]$elements, 1:data$call$dimensions])
+            rows <- data$subsets[[subsets]][[rarefaction+1]][,bootstrap]
         } else {
-            return(data$matrix[data$subsets[[subsets]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
+            rows <- data$subsets[[subsets]]$elements
         }
+        
+        ## Get the corresponding matrix        
+        get.matrix <- function(matrix, rows, cols) {
+            return(matrix[rows, cols])
+        }
+        output <- lapply(get.matrix, data$matrix,
+                                     rows = rows,
+                                     cols = 1:data$call$dimensions)
+    }
+
+    ## Return the matrix or the list of matrices
+    if(matrices == 1) {
+        return(output[[1]])
+    } else {
+        return(output)
     }
 }
 

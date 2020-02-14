@@ -29,6 +29,9 @@ dispRity v1.3.5 (2020-02-12)
 
  * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
  * *New* options in `char.diff`: it is now possible to specify the type of difference (distance) to calculate among `"hamming"` (default), `"gower"`, `"euclidean"`, `"manhattan"`, `"ged"` and `"mord"`. It is also possible to give special behaviours for different discrete morphological data tokens (missing, inapplicable, polymorphisms and uncertainties)!
+  * Change in `dispRity` object structure. `dispRity$matrix` is now a `list` of one matrix or more. All the functions in the package have been updated to make this change invisible at the user level.
+  * `clean.data` now cleans matrices or list of matrices and single trees (`"phylo"`) or list of trees (`"multiPhylo"`).
+  * **New argument** in `clean.data`: `pairwise` now allows to clean matrices and tree two by two.
 
 ### BUG FIXES
 
@@ -42,6 +45,7 @@ dispRity v1.3.5 (2020-02-12)
   * minor warning message fix for `plot.dispRity` with time slices.
   * removed `paleotree` package dependency (though the links to this excellent package are still there!).
   * increased `R` version requirement to `3.5`.
+  * `clean.data` now uses a recursive loop that makes it much faster.
 
 dispRity v1.3 *many metrics* (2019-08-15)
 =========================

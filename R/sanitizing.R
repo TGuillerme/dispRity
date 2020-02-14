@@ -60,6 +60,64 @@ check.class <- function(object, class, msg, errorif = FALSE) {
 }
 
 
+## Special function for checking the $matrix element
+check.matrix <- function(data, count = FALSE, tree = NULL, pairwise = FALSE) {
+
+    ## Get call and message
+    match_call <- match.call()
+    msg <- paste(" must be a matrix or a list of matrices.")
+    stop.tree <- function(match_call) {
+        stop(paste0(as.expression(match_call$data), " does not match ", as.expression(match_call$tree), ". Use the following to match both:\n    clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ")" ), call. = FALSE)
+    }
+
+    ## Class check
+    data_class <- check.class(data, "list", msg)
+
+    ## Single matrix case
+    if(length(data) == 1) {
+        ## Check the class
+        data_class <- check.class(data[[1]], "matrix", msg)
+    } else {
+        ## Check whether each elements are matrices
+        all_matrix <- unlist(lapply(data, class))
+        if(is.null(all_matrix) || any(all_matrix != "matrix")) {
+            stop(as.expression(match_call$data), msg , call. = FALSE)
+        }
+        ## Check whether each matrix has the same dimensions
+        dimensions <- unique(unlist(lapply(data, dim)))
+        if(length(dimensions) > 2) {
+            stop.call(match_call$data, msg.pre = "Some matrices in ", msg = " have different dimensions.")
+        }
+    }
+
+    ## Check rownames
+    rownames <- unlist(lapply(data, rownames))
+    if(!is.null(rownames)) {
+        if(length(unique(rownames)) > nrow(data[[1]])) {
+            stop.call(match_call$data, msg.pre = "All matrices in ", msg = " must have the same rownames.")
+        }
+    }
+
+    ## Count the sizes
+    if(count) {
+        output <- lapply(data, dim)
+    }
+
+    ## Check the tree
+    if(!is.null(tree)) {
+        cleaned <- clean.data(data, tree, pairwise)
+        if(!is.na(cleaned$dropped_rows) || !is.na(cleaned$dropped_rows)) {
+            stop.tree(match_call)
+        }
+    }
+
+    if(count) {
+        return(output)
+    } else {
+        return(length(data))
+    }
+}
+
 ## Checking the class of an object and returning an error message if != class
 check.length <- function(object, length, msg, errorif = FALSE) {
 

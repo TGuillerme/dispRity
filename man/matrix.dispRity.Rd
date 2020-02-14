@@ -17,7 +17,7 @@ matrix.dispRity(data, subsets, rarefaction, bootstrap)
 \item{bootstrap}{A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).}
 }
 \description{
-Fetching a specific matrix from a \code{dispRity} object.
+Fetching a specific matrix or list of matrices from a \code{dispRity} object.
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
