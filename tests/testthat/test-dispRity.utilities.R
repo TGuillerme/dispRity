@@ -90,9 +90,6 @@ test_that("make.matrix", {
         ,"dispRity")
     expect_is(
         test2$matrix
-        ,"list")
-    expect_is(
-        test2$matrix[[1]]
         ,"matrix")
     expect_is(
         test2$call
@@ -103,38 +100,6 @@ test_that("make.matrix", {
     expect_equal(
         length(unlist(test2))
         , 12)
-
-    ## multiple matrices
-    list <- list(matrix(rnorm(12), ncol = 3), matrix(rnorm(12), ncol = 3))
-    test3 <- make.dispRity(data = list)
-
-    expect_is(
-        test3
-        ,"dispRity")
-    expect_is(
-        test3$matrix
-        ,"list")
-    expect_is(
-        test3$matrix[[1]]
-        ,"matrix")
-    expect_is(
-        test3$matrix[[2]]
-        ,"matrix")
-    expect_is(
-        test3$call
-        ,"list")
-    expect_is(
-        test3$subsets
-        ,"list")
-    expect_equal(
-        length(unlist(test3))
-        , 24)
-
-    error <- capture_error(make.dispRity(data = list(1, 2)))
-    error2 <- capture_error(make.dispRity(data = list()))
-    expect_equal(error[[1]], "data must be a matrix or a list of matrices.")
-    expect_equal(error2[[1]], "data must be a matrix or a list of matrices.")
-
 })
 
 
@@ -149,7 +114,7 @@ test_that("fill.dispRity", {
         test
         ,"dispRity")
     expect_is(
-        test$matrix[[1]]
+        test$matrix
         ,"matrix")
     expect_is(
         test$call
@@ -164,10 +129,10 @@ test_that("fill.dispRity", {
         , 12)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , ncol(test$matrix))
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
-        , 1:nrow(test$matrix[[1]]))
+        , 1:nrow(test$matrix))
 
     test <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
     test$subsets <- c(list(), list())
@@ -175,8 +140,10 @@ test_that("fill.dispRity", {
     test <- fill.dispRity(test)
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
-        , 1:nrow(test$matrix[[1]]))
+        , 1:nrow(test$matrix))
+
 })
+
 
 ## matrix.dispRity
 test_that("matrix.dispRity", {

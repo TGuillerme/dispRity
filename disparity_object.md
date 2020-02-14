@@ -1,13 +1,9 @@
 ### Structure of `dispRity` objects (lite version)
 
 ```
-object = class:"dispRity"
+object
 	|
-	\---$matrix* = class:"list" (a list of at least one trait-space)
-	|	|
-	|	\---[[1]]* = class:"matrix" (with elements as rows and traits as columns)
-	|	|
-	|	\---[[...]] = class:"matrix" (additional trait-spaces)
+	\---$matrix* = class:"matrix" (original ordinated matrix)
 	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|
@@ -15,7 +11,7 @@ object = class:"dispRity"
 	|	|
 	|	\---$bootstrap = class:"character"
 	|	|
-	|	\---$dimensions = class:"list"
+	|	\---$dimensions = class:"numeric"
 	|	|
 	|	\---$metric
 	|       |
