@@ -35,7 +35,6 @@ dispRity v1.3.5 (2020-02-12)
   * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
   * updated `...` argument bug PR#16223.
   * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
-  * *New* options in `char.diff`: @@@
 
 ### MINOR IMPROVEMENTS
 
