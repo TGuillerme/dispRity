@@ -19,55 +19,6 @@
 // Character difference (Gower) logic
 // #################
 
-// Convert character into number
-double character_to_numeric(char c)
-{
-    double n = -1;
-    static const char * const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    char *p = strchr(alphabet, (unsigned char)c);
-
-    if (p) {
-        n = p - alphabet;
-    }
-
-    return n;
-}
-
-// Normalise a single numeric character
-void Normalise_single_character(double *vector, int count) {
-    int element, i, j, k;
-    char vector_char[count], element_char;
-    char alphabet[] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','\0'};
-
-    // Getting each unique element of the vector and translating them into standardised characters
-    element = 0;
-
-    for (i = 0; i < count; ++i) {
-        for (j = 0; j < i; ++j) {
-            if (vector[i] == vector[j])
-               break;
-        }
-
-        if (i == j) {
-            // If encountering unique characters, attribute the first letter of the alphabet and so on
-            element_char = alphabet[element];
-            for(k = 0; k < count; k++) {
-                if(vector[k] == vector[i]) {
-                    vector_char[k] = element_char;
-                }
-            }
-            element ++;
-        }
-    }
-
-    // Transforming the character back to numeric (double)
-    for(k = 0; k < count ; k++) {
-        vector[k] = character_to_numeric(vector_char[k]);
-    }
-
-}
-
-
 // Calculating the Gower character distance
 static double R_Gower(double *x, int nr, int nc, int i1, int i2)
 {
@@ -92,10 +43,6 @@ static double R_Gower(double *x, int nr, int nc, int i1, int i2)
         i1 += nr;
         i2 += nr;
     }
-
-    // Normalising the characters
-    Normalise_single_character(vector1, count);
-    Normalise_single_character(vector2, count);
 
     for(k = 0 ; k < count ; k++) {
          diff = fabs(vector1[k] - vector2[k]);
