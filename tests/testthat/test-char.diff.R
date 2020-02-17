@@ -1,35 +1,89 @@
 context("char.diff")
 
-# test_that("internal function char.diff", {
+test_that("translate.xyz works", {
 
-#     A <- c(1,0,0,0,0)
-#     B <- c(0,1,1,1,1)
-#     C <- c(9,8,8,8,8)
+    special.tokens <- c("\\/", "\\&", "\\?")
 
-#     ## Convert character works (translate digits in letters)
-#     expect_equal(convert.character(A), c("B", rep("A", 4)))
+    expect_equal(translate.xyz(c("0"), special.tokens),
+                 as.character(c(1)))
+    expect_equal(translate.xyz(c("1024"), special.tokens),
+                 as.character(c(1)))
+    expect_equal(translate.xyz(c("0", "1"), special.tokens),
+                 as.character(c(1, 2)))
+    expect_equal(translate.xyz(c("77", "1/77", "?", "9"), special.tokens),
+                 c("1", "2/1", "?", "3"))
+})
 
-#     ## Normalise character works (translate digits in normalised way)
-#     expect_true(all(is.na(normalise.character(A, c("a","b")))))
-#     expect_equal(normalise.character(A, c(0,1)), normalise.character(B, c(1,0)))
-#     expect_equal(normalise.character(A, c(0,1)), normalise.character(C, c(9,8)))
-#     expect_equal(normalise.character(B, c(1,0)), normalise.character(C, c(9,8)))
+test_that("convert.bitwise works", {
+    ## Full characters
+    expect_equal(convert.bitwise(0), 1)
+    expect_equal(convert.bitwise("0"), 1)
+    expect_equal(convert.bitwise(1), 2)
+    expect_equal(convert.bitwise("1"), 2)
+    expect_equal(convert.bitwise(2), 4)
+    expect_equal(convert.bitwise("2"), 4)
+    expect_equal(convert.bitwise(3), 8)
+    expect_equal(convert.bitwise("3"), 8)
+    expect_equal(convert.bitwise(4), 16)
+    expect_equal(convert.bitwise("4"), 16)
 
-#     ## char.diff_R is the same as char.diff for a list
-#     matrix <- list(A, B)
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(list(A,B)))
+    ## Special tokens
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
+    all_states <- c(0,1,2,3)
+    expect_warning(expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours, all_states), 7))
+    expect_warning(expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours, all_states), 3))
+    expect_warning(expect_equal(convert.bitwise("-", special.tokens, special.behaviours, all_states), 0))
+    expect_warning(expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15))
 
-#     ## char.diff works with characters
-#     matrix <- list(as.character(A), as.character(B))
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
+    ## Add some weird token
+    special.tokens["weird"] <- "\\§"
+    special.behaviours$weird <- function(x,y) return(as.integer(1000))
+    expect_warning(expect_equal(convert.bitwise("1§2", special.tokens, special.behaviours, all_states), 2^1000))
+})
 
-#     ## char.diff_R
-#     A <- c(1,2,3,1,1,3)
-#     B <- c(NA,2,3,NA,1,3)
-#     matrix <- list(as.character(A), as.character(B))
-#     expect_equal(char.diff_R(matrix[[1]], matrix[[2]]), char.diff(matrix))
 
-# })
+test_that("convert.character works", {
+
+    special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
+    ## Special behaviours
+    special.behaviours <- list(
+        missing = function(x,y) return(as.integer(y)),
+        inapplicable = function(x,y) return(as.integer(-1)),
+        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
+        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        )
+
+    simple_character <- c("0", "0", "1", "0", "0")
+    expect_equal(
+        convert.character(c("0", "0", "1", "0", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "0" = 1, "0" = 1))
+    expect_equal(
+        unname(convert.character(c("0", "0", "10", "0", "0"), special.tokens, special.behaviours))
+        ,c(1, 1, 1024, 1, 1))
+    expect_warning(expect_equal(
+        convert.character(c("0", "0", "1", "?", "0"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 3, "0" = 1)))
+    expect_warning(expect_equal(
+        convert.character(c("0", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1" = 2, "?" = 7, "2" = 4)))
+    expect_warning(expect_equal(
+        convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
+        ,c("0/1" = 3, "-" = 0, "1&3" = 10, "?" = 11, "3" = 8)))
+})
+
 
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
@@ -86,7 +140,7 @@ colnames(matrix_simple) <- LETTERS[1:3]
 
 test_that("char.diff matrix", {
     tests <- list()
-    expect_warning(tests[[1]] <- round(char.diff(matrix_simple), digits = 7))
+    expect_warning(tests[[1]] <- round(char.diff(matrix_simple, special.tokens = c("missing" = NA)), digits = 7))
     expect_warning(tests[[2]] <- round(char.diff(matrix_multi), digits = 7))
     expect_warning(tests[[3]] <- round(char.diff(matrix_binary), digits = 7))
 
@@ -149,12 +203,12 @@ test_that("char.diff plot (graphic)", {
 
 
     ## Plotting a matrix
-    capture_warnings(test <- plot.char.diff(morpho_matrix))
+    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix))
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 
     ## Plotting the density profile of a char.diff object
-    capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
+    warn <- capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
     test <- plot(char.diff_matrix, type = "density")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
@@ -162,11 +216,11 @@ test_that("char.diff plot (graphic)", {
     ## With NA
     morpho_matrix[, 1] <- NA
     warn <- capture_warnings(test <- plot.char.diff(morpho_matrix))
-    expect_equal(warn, "NAs introduced by coercion")
+    expect_equal(warn[2], "NAs introduced by coercion")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
     warn <- capture_warnings(test <- plot.char.diff(morpho_matrix, type = "density"))
-    expect_equal(warn, "NAs introduced by coercion")
+    expect_equal(warn[2], "NAs introduced by coercion")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
