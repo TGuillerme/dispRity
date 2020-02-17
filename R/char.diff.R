@@ -7,6 +7,8 @@
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
+#' @param ordered \code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.
+#' 
 #' 
 #' @details
 #' The different distances to calculate are:
@@ -76,7 +78,7 @@
 
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours)  {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE)  {
 
     options(warn = -1)
 
@@ -166,8 +168,18 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Convert to bitwise format
     matrix <- apply(matrix, 2, convert.character, special.tokens, special.behaviours)
 
-
-
+    ## ordered
+    check.class(ordered, "logical")
+    if(length(ordered) > 1) {
+        check.length(ordered, ncol(matrix), msg = paste0(" must be of the same length as the number of columns in the matrix (", ncol(matrix), ")."))
+        ## Split the matrix in two if there are two ordered/non-ordered characters
+        double_matrix <- TRUE
+        ordered_matrix <- matrix[,ordered]
+        unorder_matrix <- matrix[,!ordered]
+        stop("Does not work with different ordered/unord characters yet.")
+    } else {
+        double_matrix <- FALSE
+    }
 
     ## Options to remove:
     diag = FALSE
