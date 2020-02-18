@@ -46,6 +46,5 @@
 // ~~~~~~~~~~~~~~~~~~~~
 
 // char.diff
-void            R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method);
 SEXP            C_char_diff(SEXP x, SEXP smethod, SEXP attrs);
 

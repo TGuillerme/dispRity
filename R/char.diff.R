@@ -8,6 +8,7 @@
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param ordered \code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.
+#' @param algorithm "normal" or "bitwise" DEBUG
 #' 
 #' 
 #' @details
@@ -78,7 +79,7 @@
 
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE)  {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, algorithm = "double")  {
 
     options(warn = -1)
 
@@ -181,21 +182,46 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         double_matrix <- FALSE
     }
 
-    ## Options to remove:
-    diag = FALSE
-    upper = FALSE
 
-    ## Getting the matrix parameters
-    matrix <- t(matrix)
-    N <- nrow(matrix)
-    
-    ## Setting the attributes
-    attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
+    if(algorithm != "bitwise") {
+        ## Options to remove:
+        diag = FALSE
+        upper = FALSE
 
-    ## Calculating the gower distance
-    #options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
-    #options(warn = 0)
+        ## Getting the matrix parameters
+        matrix <- t(matrix)
+        N <- nrow(matrix)
+        
+        ## Setting the attributes
+        attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
+
+        ## Calculating the gower distance
+        #options(warn = -1) #TG: NA's get introduced. Don't care!
+        output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
+        #options(warn = 0)
+    } else {
+        warning("DEBUG: char.diff with bitwise distance.")
+        ## Options to remove:
+        diag = FALSE
+        upper = FALSE
+
+        ## Getting the matrix parameters
+        matrix <- t(matrix)
+        nrows <- nrow(matrix)
+        
+        ## Setting the attributes
+        attrs <- list(Size = nrows,
+                      Labels = dimnames(matrix)[[1L]],
+                      Diag = diag,
+                      Upper = upper,
+                      method = method,
+                      call = match.call(),
+                      class = "dist")
+
+        ## Calculating the gower distance
+        #options(warn = -1) #TG: NA's get introduced. Don't care!
+        output <- as.matrix(.Call("C_bitwisedist", matrix, method, attrs))
+    }
 
     ## Calculating the character difference
     #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)

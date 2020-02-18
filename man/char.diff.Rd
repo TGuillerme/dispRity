@@ -5,7 +5,7 @@
 \title{Character differences}
 \usage{
 char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
-  special.behaviours, ordered = FALSE)
+  special.behaviours, ordered = FALSE, algorithm = "double")
 }
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
@@ -19,6 +19,8 @@ char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
 \item{special.behaviours}{optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.}
 
 \item{ordered}{\code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.}
+
+\item{algorithm}{"normal" or "bitwise" DEBUG}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
