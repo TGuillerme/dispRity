@@ -20,9 +20,10 @@
 // #################
 
 // Calculating the Gower character distance
-static int R_bitwise(int *x, int nr, int nc, int i1, int i2)
+static double R_bitwise(int *x, int nr, int nc, int i1, int i2)
 {
-    int diff, dist, vector1[nc], vector2[nc];
+    double diff, dist;
+    int vector1[nc], vector2[nc];
     int count, i, k;
 
     //Initialise the values
@@ -69,11 +70,11 @@ enum { GOWER=1};
 
 
 // R_distance_bitwise function (R::dist())
-void R_distance_bitwise(int *x, int *nr, int *nc, int *d, int *diag, int *method)
+void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method)
 {
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
-    int (*distfun)(int*, int, int, int, int) = NULL;
+    double (*distfun)(int*, int, int, int, int) = NULL;
 
     //Open MPI
 #ifdef _OPENMP
@@ -127,12 +128,12 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP attrs)
     int diag = 0;
     R_xlen_t N;
     N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
-    PROTECT(result = allocVector(INTSXP, N));
+    PROTECT(result = allocVector(REALSXP, N));
     if(TYPEOF(x) != INTSXP) x = coerceVector(x, INTSXP);
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distance_bitwise(INTEGER(x), &nr, &nc, INTEGER(result), &diag, &method);
+    R_distance_bitwise(INTEGER(x), &nr, &nc, REAL(result), &diag, &method);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
