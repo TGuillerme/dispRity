@@ -182,6 +182,8 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         double_matrix <- FALSE
     }
 
+    cat("DEBUG: passed preparations\n")
+
 
     if(algorithm != "bitwise") {
         ## Options to remove:
@@ -201,6 +203,10 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         #options(warn = 0)
     } else {
         warning("DEBUG: char.diff with bitwise distance.")
+
+        ## Making the matrix as integers
+        matrix <- apply(matrix, c(1,2), as.integer)
+
         ## Options to remove:
         diag = FALSE
         upper = FALSE
@@ -217,6 +223,11 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
                       method = method,
                       call = match.call(),
                       class = "dist")
+
+
+        cat("matrix elements passed as:\n")
+        cat(unique(apply(matrix, c(1,2), class)))
+        cat("\n")
 
         ## Calculating the gower distance
         #options(warn = -1) #TG: NA's get introduced. Don't care!
