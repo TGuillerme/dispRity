@@ -20,9 +20,9 @@
 // #################
 
 // Calculating the Gower character distance
-static double R_bitwise(double *x, int nr, int nc, int i1, int i2)
+static int R_bitwise(int *x, int nr, int nc, int i1, int i2)
 {
-    double diff, dist, vector1[nc], vector2[nc];
+    int diff, dist, vector1[nc], vector2[nc];
     int count, i, k;
 
     //Initialise the values
@@ -57,9 +57,8 @@ static double R_bitwise(double *x, int nr, int nc, int i1, int i2)
     }
 
     if(count == 0) {
-        return NA_REAL;
+        return NA_INTEGER;
     } else {
-        dist = dist/(count - 1);
         return dist;
     }
 }
@@ -70,11 +69,11 @@ enum { GOWER=1};
 
 
 // R_distance_bitwise function (R::dist())
-void R_distance_bitwise(double *x, int *nr, int *nc, double *d, int *diag, int *method)
+void R_distance_bitwise(int *x, int *nr, int *nc, int *d, int *diag, int *method)
 {
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
-    double (*distfun)(double*, int, int, int, int) = NULL;
+    int (*distfun)(int*, int, int, int, int) = NULL;
 
     //Open MPI
 #ifdef _OPENMP
@@ -128,12 +127,12 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP attrs)
     int diag = 0;
     R_xlen_t N;
     N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
-    PROTECT(result = allocVector(REALSXP, N));
-    if(TYPEOF(x) != REALSXP) x = coerceVector(x, REALSXP);
+    PROTECT(result = allocVector(INTSXP, N));
+    if(TYPEOF(x) != INTSXP) x = coerceVector(x, INTSXP);
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distance_bitwise(REAL(x), &nr, &nc, REAL(result), &diag, &method);
+    R_distance_bitwise(INTEGER(x), &nr, &nc, INTEGER(result), &diag, &method);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
