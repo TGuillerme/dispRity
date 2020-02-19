@@ -166,6 +166,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
     ## translate
     check.class(translate, "logical")
+    translate <- as.integer(translate)
 
     ## Translate characters (by token)
     if(translate) {
@@ -186,6 +187,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         stop("Does not work with different ordered/unord characters yet.")
     } else {
         double_matrix <- FALSE
+        order <- as.integer(ordered)
     }
 
     if(algorithm != "bitwise") {
@@ -229,7 +231,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
         ## Calculating the gower distance
         #options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_bitwisedist", matrix, method, attrs))
+        output <- as.matrix(.Call("C_bitwisedist", matrix, method, translate, attrs))
     }
 
     ## Calculating the character difference
