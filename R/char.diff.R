@@ -203,9 +203,9 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
 
         ## Calculating the gower distance
-        #options(warn = -1) #TG: NA's get introduced. Don't care!
+        options(warn = -1) #TG: NA's get introduced. Don't care!
         output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
-        #options(warn = 0)
+        options(warn = 0)
     } else {
         warning("DEBUG: char.diff with bitwise distance.")
 
@@ -230,8 +230,9 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
                       class = "dist")
 
         ## Calculating the gower distance
-        #options(warn = -1) #TG: NA's get introduced. Don't care!
+        options(warn = -1) #TG: NA's get introduced. Don't care!
         output <- as.matrix(.Call("C_bitwisedist", matrix, method, translate, order, attrs))
+        options(warn = 0)
     }
 
     ## Calculating the character difference
