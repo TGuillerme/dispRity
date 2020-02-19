@@ -174,9 +174,6 @@ static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int
 }
 
 
-// Allowed methods
-enum { HAMMING=1, OTHER };
-
 // R_distance_bitwise function (R::dist())
 void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
 {
@@ -192,18 +189,20 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
 #ifdef _OPENMP
     int nthreads;
 #endif
-    distfun = R_hamming;
+    // distfun = R_hamming;
 
-    // switch(*method) {
-    //     case HAMMING:
-    //         distfun = R_hamming;
-    //     break;
-    //     case OTHER:
-    //         distfun = R_other;
-    //     break;
-    //     default:
-    //         error(_("distance(): invalid distance"));
-    // }
+    switch(*method) {
+        case 1:
+            distfun = R_hamming;
+            printf("Selected hamming distance\n");
+        break;
+        case 2:
+            distfun = R_other;
+            printf("Selected other distance\n");
+        break;
+        // default:
+        //     error(_("distance(): invalid distance"));
+    }
 
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
 
