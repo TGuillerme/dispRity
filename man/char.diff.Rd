@@ -5,7 +5,7 @@
 \title{Character differences}
 \usage{
 char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
-  special.behaviours, ordered = FALSE, algorithm = "double")
+  special.behaviours, ordered = FALSE)
 }
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
@@ -14,13 +14,11 @@ char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
 
 \item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
 
-\item{special.tokens}{optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that the symbol "@" is reserved and cannot be used.}
+\item{special.tokens}{optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.}
 
 \item{special.behaviours}{optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.}
 
 \item{ordered}{\code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.}
-
-\item{algorithm}{"normal" or "bitwise" DEBUG}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
@@ -44,13 +42,13 @@ When using \code{translate = TRUE}, the characters are translated following the 
 \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}. Note that \code{NA}s are skipped in the distance calculations.
 
 \itemize{
-     \item{code{missing = function(x,y) as.integer(y)}}
+     \item{code{missing = function(x,y) NA}}
      \item{code{inapplicable = function(x,y) NA}}
      \item{code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
      \item{code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
 }
 
-\code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
+\code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
 
 IMPORTANT: Note that the number of symbols per character is limited to the number of bytes in your machine (32 or 64).
 }

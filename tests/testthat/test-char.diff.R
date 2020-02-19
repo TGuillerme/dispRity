@@ -26,6 +26,7 @@ test_that("convert.bitwise works", {
     expect_equal(convert.bitwise("3"), 8)
     expect_equal(convert.bitwise(4), 16)
     expect_equal(convert.bitwise("4"), 16)
+    expect_true(is.na(convert.bitwise(NA)))
 
     ## Special tokens
     special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
@@ -90,30 +91,44 @@ test_that("char.diff pair", {
     B <- c(0,1,1,1,1)
 
     ## Difference is 0
-    expect_warning(expect_equal(char.diff(list(A,B)), 0))
+    expect_equal(char.diff(list(A,B)), 0)
+    expect_equal(char.diff(list(A,B), translate = FALSE), 1)
+    expect_equal(char.diff(list(A,B), ordered = TRUE), 0)
+    expect_equal(char.diff(list(A,B), translate = FALSE, ordered = TRUE), 1)
     ## Difference is triangular
-    expect_warning(expect_equal(char.diff(list(A,B)), char.diff(list(A,B))))
+    expect_equal(char.diff(list(A,B)), char.diff(list(A,B)))
 
     C <- c(1,1,0,0,0)
 
     ## Difference is 0.25
-    expect_warning(expect_equal(char.diff(list(A,C)), 0.25))
+    expect_equal(char.diff(list(A,C)), 0.25)
+    expect_equal(char.diff(list(A,C), translate = FALSE), 0.2)
+    expect_equal(char.diff(list(A,C), ordered = TRUE), 0.25)
+    expect_equal(char.diff(list(A,C), translate = FALSE, ordered = TRUE), 0.2)
+
     ## Difference is triangular
-    expect_warning(expect_equal(char.diff(list(A,C)), char.diff(list(C,A))))
+    expect_equal(char.diff(list(A,C)), char.diff(list(C,A)))
 
     D <- c(0,1,1,0,0)
 
     ## Difference is 0.5
-    expect_warning(expect_equal(char.diff(list(A,D)), 0.5))
+    expect_equal(char.diff(list(A,D)), 0.5)
+    expect_equal(char.diff(list(A,D), translate = FALSE), 0.6)
+    expect_equal(char.diff(list(A,D), ordered = TRUE), 0.5)
+    expect_equal(char.diff(list(A,D), translate = FALSE, ordered = TRUE), 0.6)
+
     ## Difference is triangular
-    expect_warning(expect_equal(char.diff(list(A,D)), char.diff(list(D,A))))
+    expect_equal(char.diff(list(A,D)), char.diff(list(D,A)))
 
     E <- c(1,0,0,1,1)
 
     ## Difference is equal to D
-    expect_warning(expect_equal(char.diff(list(D,E)), 0))
+    expect_equal(char.diff(list(D,E)), 0)
+    expect_equal(char.diff(list(E,D), translate = FALSE), 1)
+    expect_equal(char.diff(list(E,D), ordered = TRUE), 0)
+    expect_equal(char.diff(list(E,D), translate = FALSE, ordered = TRUE), 1)
     ## Difference is triangular (with D)
-    expect_warning(expect_equal(char.diff(list(A,E)), char.diff(list(A,D))))
+    expect_equal(char.diff(list(A,E)), char.diff(list(A,D)))
 })
 
 ## Matrices                     #A,B,C,D,E
@@ -140,9 +155,9 @@ colnames(matrix_simple) <- LETTERS[1:3]
 
 test_that("char.diff matrix", {
     tests <- list()
-    expect_warning(tests[[1]] <- round(char.diff(matrix_simple, special.tokens = c("missing" = NA)), digits = 7))
-    expect_warning(tests[[2]] <- round(char.diff(matrix_multi), digits = 7))
-    expect_warning(tests[[3]] <- round(char.diff(matrix_binary), digits = 7))
+    tests[[1]] <- round(char.diff(matrix_simple), digits = 7)
+    tests[[2]] <- round(char.diff(matrix_multi), digits = 7)
+    tests[[3]] <- round(char.diff(matrix_binary), digits = 7)
 
     expect_dims <- list(c(3,3), c(7,7), c(5,5))
     expect_diff <- list(c(0.0, 0.0, 1.0, 0.0, 0.0, 0.3333333, 1.0, 0.3333333, 0.0), 
@@ -194,12 +209,12 @@ test_that("char.diff plot (graphic)", {
 
     ## Errors
     expect_error(plot.char.diff("bob", type = "density"))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", legend.pos = 1)))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", main = c("main", "bob"))))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", col = "blue")))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "matrix", col = "blue")))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", xlab = c("main", "bob"))))
-    expect_warning(expect_error(plot.char.diff(morpho_matrix, type = "density", ylab = c("main", "bob"))))
+    expect_error(plot.char.diff(morpho_matrix, type = "density", legend.pos = 1))
+    expect_error(plot.char.diff(morpho_matrix, type = "density", main = c("main", "bob")))
+    expect_error(plot.char.diff(morpho_matrix, type = "density", col = "blue"))
+    expect_error(plot.char.diff(morpho_matrix, type = "matrix", col = "blue"))
+    expect_error(plot.char.diff(morpho_matrix, type = "density", xlab = c("main", "bob")))
+    expect_error(plot.char.diff(morpho_matrix, type = "density", ylab = c("main", "bob")))
 
 
     ## Plotting a matrix
@@ -215,11 +230,10 @@ test_that("char.diff plot (graphic)", {
 
     ## With NA
     morpho_matrix[, 1] <- NA
-    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix))
-    expect_equal(warn[2], "numeric NAs where converted to \"\\?\".")
+    test <- plot.char.diff(morpho_matrix)
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
-    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix, type = "density"))
+    test <- plot.char.diff(morpho_matrix, type = "density")
     expect_equal(warn[2], "numeric NAs where converted to \"\\?\".")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")

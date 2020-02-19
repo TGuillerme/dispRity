@@ -5,10 +5,9 @@
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
 #' @param method The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
-#' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that the symbol "@" is reserved and cannot be used.
+#' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param ordered \code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.
-#' @param algorithm "normal" or "bitwise" DEBUG
 #' 
 #' 
 #' @details
@@ -27,13 +26,13 @@
 #' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}. Note that \code{NA}s are skipped in the distance calculations.
 #' 
 #' \itemize{
-#'      \item{code{missing = function(x,y) as.integer(y)}}
+#'      \item{code{missing = function(x,y) NA}}
 #'      \item{code{inapplicable = function(x,y) NA}}
 #'      \item{code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
 #'      \item{code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
 #' }
 #'
-#' \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA))} to make all comparisons containing the special token containing \code{"?"} return a difference of \code{NA}.
+#' \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
 #' 
 #' IMPORTANT: Note that the number of symbols per character is limited to the number of bytes in your machine (32 or 64).
 #' 
@@ -85,7 +84,7 @@
 
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, algorithm = "double") {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE) {
 
     options(warn = -1)
 
@@ -111,24 +110,21 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    warning("char.diff::DEBUG: methods")
-    # avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
-    avail_methods <- c("hamming", "other")
+    avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
     check.method(method, avail_methods, msg = "method")
+    if(method != "hamming") {
+        c_method <- 2
+        warning("DEBUG:char.diff: method can only be hamming for now.")
+    }
     c_method <- pmatch(method, avail_methods)
 
     ## Special tokens
     if(missing(special.tokens)) {
         special.tokens <- character()
     }
-    check.class(special.tokens, c("character", "logical")) # can also be NA
+    check.class(special.tokens, c("character"))
     if(is.na(special.tokens["missing"])) {
         special.tokens["missing"] <- "\\?"
-    }
-    ## Convert NAs to "?" if badly converted
-    if(any(is.na(matrix))) {
-        matrix <- ifelse(is.na(matrix), special.tokens["missing"], matrix)
-        warning(paste0("numeric NAs where converted to \"", special.tokens["missing"], "\"."))
     }
     if(is.na(special.tokens["inapplicable"])) {
         special.tokens["inapplicable"] <- "\\-"
@@ -141,9 +137,9 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Checking for the reserved character
-    reserved <- grep("\\@", special.tokens)
-    if(length(reserved) > 0) {
-        stop("special.tokens cannot contain the character '@' since it is reserved for this function.")
+    reserved <- c("\\@", "@", NA) %in% special.tokens
+    if(any(reserved)) {
+        stop("special.tokens cannot contain the character '@' or 'NA' since it is reserved for this function.")
     }
 
     ## Special behaviours
@@ -152,7 +148,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
     check.class(special.behaviours, "list")
     if(is.null(special.behaviours$missing)) {
-        special.behaviours$missing <- function(x,y) return(as.integer(y))
+        special.behaviours$missing <- function(x,y) return(NA)
     }
     if(is.null(special.behaviours$inapplicable)) {
         special.behaviours$inapplicable <- function(x,y) return(NA)
@@ -190,50 +186,47 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         order <- as.integer(ordered)
     }
 
-    if(algorithm != "bitwise") {
-        ## Options to remove:
-        diag = FALSE
-        upper = FALSE
+    # if(algorithm != "bitwise") {
+    #     ## Options to remove:
+    #     diag = FALSE
+    #     upper = FALSE
 
-        ## Getting the matrix parameters
-        matrix <- t(matrix)
-        N <- nrow(matrix)
+    #     ## Getting the matrix parameters
+    #     matrix <- t(matrix)
+    #     N <- nrow(matrix)
         
-        ## Setting the attributes
-        attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
+    #     ## Setting the attributes
+    #     attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
 
-        ## Calculating the gower distance
-        options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
-        options(warn = 0)
-    } else {
-        warning("DEBUG: char.diff with bitwise distance.")
+    #     ## Calculating the gower distance
+    #     options(warn = -1) #TG: NA's get introduced. Don't care!
+    #     output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
+    #     options(warn = 0)
+    # } else {
+    ## Making the matrix as integers
+    matrix <- apply(matrix, c(1,2), as.integer)
 
-        ## Making the matrix as integers
-        matrix <- apply(matrix, c(1,2), as.integer)
+    ## Options to remove:
+    diag = FALSE
+    upper = FALSE
 
-        ## Options to remove:
-        diag = FALSE
-        upper = FALSE
+    ## Getting the matrix parameters
+    matrix <- t(matrix)
+    nrows <- nrow(matrix)
+    
+    ## Setting the attributes
+    attrs <- list(Size = nrows,
+                  Labels = dimnames(matrix)[[1L]],
+                  Diag = diag,
+                  Upper = upper,
+                  method = method,
+                  call = match.call(),
+                  class = "dist")
 
-        ## Getting the matrix parameters
-        matrix <- t(matrix)
-        nrows <- nrow(matrix)
-        
-        ## Setting the attributes
-        attrs <- list(Size = nrows,
-                      Labels = dimnames(matrix)[[1L]],
-                      Diag = diag,
-                      Upper = upper,
-                      method = method,
-                      call = match.call(),
-                      class = "dist")
-
-        ## Calculating the gower distance
-        options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
-        options(warn = 0)
-    }
+    ## Calculating the gower distance
+    options(warn = -1) #TG: NA's get introduced. Don't care!
+    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
+    options(warn = 0)
 
     ## Calculating the character difference
     #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)

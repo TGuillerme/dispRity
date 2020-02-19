@@ -27,8 +27,14 @@ translate.xyz <- function(one_character, special.tokens) {
 
 ## Binary bit converter for a single character (token)
 convert.bitwise <- function(token, special.tokens = NULL, special.behaviours = NULL, all_states = NULL) {
+    ## Getting binary numbers
     binary <- function(token) {
         return(round(sum(2^token)))
+    }
+
+    ## If token is NA straight, return NA
+    if(is.na(token)) {
+        return(NA)
     }
 
     ## Convert character as bitwise:

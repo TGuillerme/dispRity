@@ -194,11 +194,9 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
     switch(*method) {
         case 1:
             distfun = R_hamming;
-            printf("Selected hamming distance\n");
         break;
         case 2:
             distfun = R_other;
-            printf("Selected other distance\n");
         break;
         // default:
         //     error(_("distance(): invalid distance"));
