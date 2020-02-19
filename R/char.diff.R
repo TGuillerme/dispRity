@@ -231,7 +231,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
         ## Calculating the gower distance
         #options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_bitwisedist", matrix, method, translate, attrs))
+        output <- as.matrix(.Call("C_bitwisedist", matrix, method, translate, order, attrs))
     }
 
     ## Calculating the character difference

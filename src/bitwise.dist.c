@@ -114,7 +114,7 @@ enum { GOWER=1};
 
 
 // R_distance_bitwise function (R::dist())
-void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate)
+void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
 {
     int dc, i, j;
     size_t ij;  /* can exceed 2^31 - 1 */
@@ -167,11 +167,11 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
 
 
 // R/C interface (former Diff)
-SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs) //, SEXP sorder
+SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attrs) //, SEXP sorder
 {
     // Define the variable
     SEXP result;
-    int nr = nrows(x), nc = ncols(x), method = asInteger(smethod), translate = asInteger(stranslate);//, order = asInteger(sorder);
+    int nr = nrows(x), nc = ncols(x), method = asInteger(smethod), translate = asInteger(stranslate), order = asInteger(sorder);
     int diag = 0;
     R_xlen_t N;
     N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
@@ -180,7 +180,7 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP attrs) //, SEXP s
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distance_bitwise(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate); //&order, 
+    R_distance_bitwise(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate, &order);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
