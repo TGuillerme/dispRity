@@ -24,11 +24,11 @@
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 #' 
-#' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} and should output a non 0 integer. By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an extra state.
+#' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}. Note that \code{NA}s are skipped in the distance calculations.
 #' 
 #' \itemize{
 #'      \item{code{missing = function(x,y) as.integer(y)}}
-#'      \item{code{inapplicable = function(x,y) as.integer(y)}}
+#'      \item{code{inapplicable = function(x,y) return(NA)}}
 #'      \item{code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
 #'      \item{code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
 #' }
@@ -47,6 +47,12 @@
 #' ## Pairwise comparisons in a morphological matrix
 #' morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 #' char.diff(morpho_matrix)
+#' 
+#' ## Comparing morphological characters as text
+#' 
+#' ## Using different special tokens
+#' 
+#' ## Using different special behaviours
 #' 
 #' @seealso \code{\link{plot.char.diff}}.
 #' 
@@ -149,7 +155,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         special.behaviours$missing <- function(x,y) return(as.integer(y))
     }
     if(is.null(special.behaviours$inapplicable)) {
-        special.behaviours$inapplicable <- function(x,y) return(as.integer(y))
+        special.behaviours$inapplicable <- function(x,y) return(NA)
     }
     if(is.null(special.behaviours$polymorphism)) {
         special.behaviours$polymorphism <- function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]]))

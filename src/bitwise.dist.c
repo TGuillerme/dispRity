@@ -15,20 +15,64 @@
 
 #include "dispRity.h"
 
-// #################
-// Character difference (Gower) logic
-// #################
+/* 
+ * bitwise_compare function
+ * 
+ * Compares the distance between two characters
+ *
+ * @param char1, char2: two integers to compare (two cells in the matrix)
+ * @param order: an integer used as logical whether to order characters (order != 0) or not (order == 0).
+ * @returns an integer equal to the distance between both characters
+ */
+static inline int bitwise_compare(int char1, int char2, int order) {
+    // initialise all values to 0
+    int count, result, dist, buffer = 0;
+    
+    // Comparing both characters
+    result = char1 & char2;
+    
+    if(result == 0) {
+        // If there is no union between the two characters, count the distance
+        if(order == 0) {
+            // increment Fitch (easy)
+            dist = 1;
+        } else {
+            // increment wagner
+            if(char1 > char2){
+                // Shift char1 until there is an intersection
+                buffer = char1;
+                while((buffer & char2) == 0) {
+                    buffer = buffer >> 1;
+                    count++;
+                }
+            } else {
+                
+                // Shift char2 until there is an intersection
+                buffer = char2;
+                while((buffer & char1) == 0) {
+                    buffer = buffer >> 1;
+                    count++;
+                }
+            }
+            dist = count;
+        }
+    }
+    return dist;
+}
 
-// Calculating the Gower character distance
-static double R_bitwise(int *x, int nr, int nc, int i1, int i2)
+
+// Calculating the hamming character distance
+static double R_hamming(int *x, int nr, int nc, int i1, int i2)//, int order, int translate)
 {
-    double diff, dist;
-    int vector1[nc], vector2[nc];
-    int count, i, k;
+    
+    // DEBUG
+    int order = 0;
+    int translate = 1;
 
-    //Initialise the values
-    count= 0;
-    dist = 0;
+
+    int vector1[nc], vector2[nc];
+    int count, i, k, diff, dist = 0;
+    double result;
 
     //Isolating the two comparable characters
     for(i = 0 ; i < nc ; i++) {
@@ -46,21 +90,21 @@ static double R_bitwise(int *x, int nr, int nc, int i1, int i2)
     }
 
     for(k = 0 ; k < count ; k++) {
-         diff = fabs(vector1[k] - vector2[k]);
-        // Normalise the difference (Fitch like)
-        if(diff > 1) {
-            diff = 1;   
-        }
-        // Increment the differences
-        if(!ISNAN(diff)) {
-            dist += diff;
-        }        
+        diff = bitwise_compare(vector1[k], vector2[k], order);
+        dist = dist + diff;
     }
 
     if(count == 0) {
-        return NA_INTEGER;
+        return NA_REAL;
     } else {
-        return dist;
+        if(translate == 0) {
+            // Return the hamming distance differences/counts
+            result = (double)dist/count;
+        } else {
+            // Return the corrected distance (differences / (counts - 1))
+            result = (double)dist/(count-1);
+        }
+        return result;
     }
 }
 
@@ -75,12 +119,14 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
     int dc, i, j;
     size_t  ij;  /* can exceed 2^31 - 1 */
     double (*distfun)(int*, int, int, int, int) = NULL;
+    // double (*distfun)(int*, int, int, int, int, int, int) = NULL;
+    // distfun(matrix, nrows, ncolumns, i1, i2, order, translate)
 
     //Open MPI
 #ifdef _OPENMP
     int nthreads;
 #endif
-    distfun = R_bitwise;
+    distfun = R_hamming;
 
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
 

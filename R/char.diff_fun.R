@@ -1,3 +1,18 @@
+## Functions for getting the the density plot limits
+get.max.x <- function(density) return(max(density$x))
+get.max.y <- function(density) return(max(density$y))
+get.min.x <- function(density) return(min(density$x))
+get.min.y <- function(density) return(min(density$y))
+
+## Removing columns with only NAs
+select.nas <- function(column) {
+    if((length(column) - length(which(is.na(column)))) <= 2) {
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
+}
+
 ## Translate a character to Felsenstein's xyz notation
 translate.xyz <- function(one_character, special.tokens) {
     ## Get the symbols in order of appearance
@@ -66,24 +81,6 @@ convert.character <- function(character, special.tokens, special.behaviours) {
 }
 
 
-
-
-
-
-## Functions for getting the the density plot limits
-get.max.x <- function(density) return(max(density$x))
-get.max.y <- function(density) return(max(density$y))
-get.min.x <- function(density) return(min(density$x))
-get.min.y <- function(density) return(min(density$y))
-
-## Removing columns with only NAs
-select.nas <- function(column) {
-    if((length(column) - length(which(is.na(column)))) <= 2) {
-        return(TRUE)
-    } else {
-        return(FALSE)
-    }
-}
 
 plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab) {
     ## Removing columns with NAs
