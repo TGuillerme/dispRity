@@ -120,10 +120,62 @@ static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, i
     }
 }
 
-// Allowed methods
-enum { GOWER=1};
-/* == 1,2,..., defined by order in the R function dist */
+// Other method placeholder
+static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+{
+    
+    //DEBUG
+    // int order = 0;
 
+    // Declaring variables (result is int)    
+    int vector1[nc], vector2[nc];
+    int count = 0, i = 0, k = 0, diff = 0, dist = 0;
+    double result = 0;
+
+    //Isolating the two comparable characters
+    for(i = 0 ; i < nc ; i++) {
+        if(both_non_NA(x[i1], x[i2])) {
+            
+            // Create the vectors
+            vector1[count] = x[i1];
+            vector2[count] = x[i2];
+
+            //Increment the counter
+            count++;
+        }
+        i1 += nr;
+        i2 += nr;
+    }
+
+    for(k = 0 ; k < count ; k++) {
+        //printf("R_hamming: (compare) order = %i\n", order);
+        diff = bitwise_compare(vector1[k], vector2[k], order);
+        dist = dist + diff;
+        //printf("R_hamming: (compare) dist = %i\n", dist);
+    }
+
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        //printf("R_hamming: (out2) count = %i\n", count);
+        if(translate == 0) {
+            // Return the hamming distance differences/counts
+            //printf("R_hamming: (out2.1) translate = %i, dist = %i, count = %i\n", translate, dist, count);
+            result = (double)dist/count;
+        } else {
+            // Return the corrected distance (differences / (counts - 1))
+            //printf("R_hamming: (out2.2) translate = %i, dist = %i, count = %i\n", translate, dist, count);
+            result = (double)dist/(count-1);
+
+        }
+        // //printf("R_hamming: (out2) result = %lf\n", result);
+        return result;
+    }
+}
+
+
+// Allowed methods
+enum { HAMMING=1, OTHER };
 
 // R_distance_bitwise function (R::dist())
 void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
@@ -141,6 +193,17 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
     int nthreads;
 #endif
     distfun = R_hamming;
+
+    // switch(*method) {
+    //     case HAMMING:
+    //         distfun = R_hamming;
+    //     break;
+    //     case OTHER:
+    //         distfun = R_other;
+    //     break;
+    //     default:
+    //         error(_("distance(): invalid distance"));
+    // }
 
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
 

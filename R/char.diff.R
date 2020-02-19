@@ -110,12 +110,12 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         stop("The matrix cannot contain the character '@' since it is reserved for this function.")
     }
 
-    ## Method is Gower by default
-    avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord", "bitwise")
+    ## Method is hamming by default
+    warning("char.diff::DEBUG: methods")
+    # avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
+    avail_methods <- c("hamming", "other")
     check.method(method, avail_methods, msg = "method")
-    if(method == "bitwise") {
-        warning("Method name debug")
-    }
+    c_method <- pmatch(method, avail_methods)
 
     ## Special tokens
     if(missing(special.tokens)) {
@@ -231,7 +231,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
         ## Calculating the gower distance
         options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_bitwisedist", matrix, method, translate, order, attrs))
+        output <- as.matrix(.Call("C_bitwisedist", matrix, cmethod, translate, order, attrs))
         options(warn = 0)
     }
 
