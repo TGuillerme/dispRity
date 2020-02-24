@@ -81,7 +81,11 @@
 # [5,]    1    4
 
 
-
+# method = "hamming"
+# translate = TRUE
+# special.tokens <- character()
+# special.behaviours <- list()
+# ordered <- FALSE
 
 
 char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE) {
@@ -162,12 +166,13 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
     ## translate
     check.class(translate, "logical")
-    translate <- as.integer(translate)
 
     ## Translate characters (by token)
     if(translate) {
         matrix <- apply(matrix, 2, translate.xyz, special.tokens)
     }
+    ## Convert as integer for C
+    translate <- as.integer(translate)
 
     ## Convert to bitwise format
     matrix <- apply(matrix, 2, convert.character, special.tokens, special.behaviours)

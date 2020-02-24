@@ -30,19 +30,16 @@ static inline int bitwise_compare(int char1, int char2, int order) {
     
     // Comparing both characters
     result = char1 & char2;
-    //printf("bitwise_compare: result = %i\n", result);
 
     if(result == 0) {
         // If there is no union between the two characters, count the distance
         if(order == 0) {
-            ////printf("bitwise_compare: (!order) order = %i\n", order);
+            // printf("bitwise_compare: %i & %i = dist + %i\n", char1, char2, dist);
             // increment Fitch (easy)
             dist = 1;
         } else {
-            ////printf("bitwise_compare: (order) order = %i\n", order);
             // increment wagner
             if(char1 > char2){
-                ////printf("bitwise_compare: (order1) char1 = %i, char2 = %i\n", char1, char2);
                 // Shift char1 until there is an intersection
                 buffer = char1;
                 while((buffer & char2) == 0) {
@@ -50,7 +47,6 @@ static inline int bitwise_compare(int char1, int char2, int order) {
                     count++;
                 }
             } else {
-                ////printf("bitwise_compare: (order2) char1 = %i, char2 = %i\n", char1, char2);
                 // Shift char2 until there is an intersection
                 buffer = char2;
                 while((buffer & char1) == 0) {
@@ -59,10 +55,10 @@ static inline int bitwise_compare(int char1, int char2, int order) {
                 }
             }
             dist = count;
+            // printf("bitwise_compare: %i & %i = dist + %i\n", char1, char2, dist);
         }
     }
 
-    //printf("bitwise_compare: dist = %i\n", dist);
     return dist;
 }
 
@@ -70,9 +66,6 @@ static inline int bitwise_compare(int char1, int char2, int order) {
 // Calculating the hamming character distance
 static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int order)
 {
-    
-    //DEBUG
-    // int order = 0;
 
     // Declaring variables (result is int)    
     int vector1[nc], vector2[nc];
@@ -81,7 +74,9 @@ static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, i
 
     //Isolating the two comparable characters
     for(i = 0 ; i < nc ; i++) {
-        if(both_non_NA(x[i1], x[i2])) {
+        //if(both_non_NA(x[i1], x[i2])) {
+        // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
             
             // Create the vectors
             vector1[count] = x[i1];
@@ -94,28 +89,33 @@ static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, i
         i2 += nr;
     }
 
+    // int loop;
+    // printf("vector1 = ");
+    // for(loop = 0; loop < count; loop++) {
+    //     printf("%d ", vector1[loop]);
+    // }
+    // printf("\n");
+    // printf("vector2 = ");
+    // for(loop = 0; loop < count; loop++) {
+    //     printf("%d ", vector2[loop]);
+    // }
+    // printf("\n");
+
     for(k = 0 ; k < count ; k++) {
-        //printf("R_hamming: (compare) order = %i\n", order);
         diff = bitwise_compare(vector1[k], vector2[k], order);
         dist = dist + diff;
-        //printf("R_hamming: (compare) dist = %i\n", dist);
     }
 
     if(count == 0) {
         return NA_REAL;
     } else {
-        //printf("R_hamming: (out2) count = %i\n", count);
         if(translate == 0) {
             // Return the hamming distance differences/counts
-            //printf("R_hamming: (out2.1) translate = %i, dist = %i, count = %i\n", translate, dist, count);
             result = (double)dist/count;
         } else {
             // Return the corrected distance (differences / (counts - 1))
-            //printf("R_hamming: (out2.2) translate = %i, dist = %i, count = %i\n", translate, dist, count);
             result = (double)dist/(count-1);
-
         }
-        // //printf("R_hamming: (out2) result = %lf\n", result);
         return result;
     }
 }
@@ -148,27 +148,21 @@ static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int
     }
 
     for(k = 0 ; k < count ; k++) {
-        //printf("R_hamming: (compare) order = %i\n", order);
         diff = bitwise_compare(vector1[k], vector2[k], order);
         dist = dist + diff;
-        //printf("R_hamming: (compare) dist = %i\n", dist);
     }
 
     if(count == 0) {
         return NA_REAL;
     } else {
-        //printf("R_hamming: (out2) count = %i\n", count);
         if(translate == 0) {
             // Return the hamming distance differences/counts
-            //printf("R_hamming: (out2.1) translate = %i, dist = %i, count = %i\n", translate, dist, count);
             result = (double)dist/count;
         } else {
             // Return the corrected distance (differences / (counts - 1))
-            //printf("R_hamming: (out2.2) translate = %i, dist = %i, count = %i\n", translate, dist, count);
             result = (double)dist/(count-1);
 
         }
-        // //printf("R_hamming: (out2) result = %lf\n", result);
         return result;
     }
 }
@@ -182,8 +176,6 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
     // double (*distfun)(int*, int, int, int, int) = NULL;
     double (*distfun)(int*, int, int, int, int, int, int) = NULL;
     // distfun(matrix, nrows, ncolumns, i1, i2, translate, order)
-
-    //printf("R_distance_bitwise: translate = %i, order = %i\n", *translate, *order);
 
     //Open MPI
 #ifdef _OPENMP
@@ -245,7 +237,6 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attr
     // Define the variable
     SEXP result;
     int nr = nrows(x), nc = ncols(x), method = asInteger(smethod), translate = asInteger(stranslate), order = asInteger(sorder);
-    //printf("C_bitwisedist: translate = %i, order = %i\n", translate, order);
     int diag = 0;
     R_xlen_t N;
     N = (R_xlen_t)nr * (nr-1)/2; /* avoid int overflow for N ~ 50,000 */
