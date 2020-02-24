@@ -155,7 +155,7 @@ colnames(matrix_simple) <- LETTERS[1:3]
 
 test_that("char.diff matrix", {
     tests <- list()
-    tests[[1]] <- round(char.diff(matrix_simple), digits = 7)
+    expect_warning(tests[[1]] <- round(char.diff(matrix_simple), digits = 7))
     tests[[2]] <- round(char.diff(matrix_multi), digits = 7)
     tests[[3]] <- round(char.diff(matrix_binary), digits = 7)
 
@@ -178,7 +178,7 @@ test_that("char.diff matrix", {
     set.seed(1)
     matrix_alpha <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
     matrix_alpha <- apply(matrix_alpha, 2, as.character)
-    expect_warning(test <- char.diff(matrix_alpha))
+    test <- char.diff(matrix_alpha)
     expect_is(test, c("matrix", "char.diff"))
 })
 
@@ -230,11 +230,10 @@ test_that("char.diff plot (graphic)", {
 
     ## With NA
     morpho_matrix[, 1] <- NA
-    test <- plot.char.diff(morpho_matrix)
+    expect_warning(test <- plot.char.diff(morpho_matrix))
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
-    test <- plot.char.diff(morpho_matrix, type = "density")
-    expect_equal(warn[2], "numeric NAs where converted to \"\\?\".")
+    expect_warning(test <- plot.char.diff(morpho_matrix, type = "density"))
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
