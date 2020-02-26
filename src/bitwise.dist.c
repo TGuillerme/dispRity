@@ -93,8 +93,21 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
         i2 += nr;
     }
 
+    int loop;
+    printf("vector1 = ");
+    for(loop = 0; loop < count; loop++) {
+        printf("%d ", vector1[loop]);
+    }
+    printf("\n");
+    printf("vector2 = ");
+    for(loop = 0; loop < count; loop++) {
+        printf("%d ", vector2[loop]);
+    }
+    printf("\n");
+    printf("order is %i\n", order);
+
+
     for(k = 0 ; k < count ; k++) {
-        // printf("ordered is = %i", order);
         diff = bitwise_compare(vector1[k], vector2[k], order);
         dist = dist + diff;
     }
@@ -228,6 +241,7 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
 void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
 {
     int dc, i, j;
+    int orderi = 0;
     size_t ij;  /* can exceed 2^31 - 1 */
     double (*distfun)(int*, int, int, int, int, int, int) = NULL;
     // distfun(matrix, nrows, ncolumns, i1, i2, translate, order)
@@ -264,8 +278,9 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
        if it matters on some platforms */
     ij = 0;
     for(j = 0 ; j <= *nr ; j++)
-        for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+        for(i = j+dc ; i < *nr ; i++){
+            d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+        }
     }
     else
     /* This produces uneven thread workloads since the outer loop
@@ -277,14 +292,20 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
     firstprivate(nr, dc, d, method, distfun, nc, x)
     for(j = 0 ; j <= *nr ; j++) {
         ij = j * (*nr - dc) + j - ((1 + j) * j) / 2;
-        for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+        for(i = j+dc ; i < *nr ; i++){
+            d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+        }
     }
 #else
     ij = 0;
-    for(j = 0 ; j <= *nr ; j++)
-    for(i = j+dc ; i < *nr ; i++)
-        d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+    for(j = 0 ; j <= *nr ; j++) {
+        for(i = j+dc ; i < *nr ; i++) {
+            orderi += 1;
+            printf("iteration of orderi = %i\n", orderi);
+            // printf("order value = %i\n", *order[orderi]);
+            d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+        }
+    }
 #endif
 }
 
