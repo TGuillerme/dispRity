@@ -118,7 +118,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    avail_methods <- c("hamming", "row", "comparable")
+    avail_methods <- c("hamming", "raw", "comparable", "euclidean", "gower")
     check.method(method, avail_methods, msg = "method")
     c_method <- pmatch(method, avail_methods)
 

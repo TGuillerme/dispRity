@@ -249,6 +249,29 @@ test_that("order works as a logical vector", {
 
 })
 
+
+test_that("Test other distances", {
+    ## Raw
+    expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), translate = FALSE, method = "raw"), 0)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "raw"), 4)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "raw"), 0)
+    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "raw"), 0))
+    ## Comparable
+    expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), method = "comparable"), 4)
+    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "comparable"), 1))
+    ## Euclidean
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
+    ## Ordered
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
+})
+
+
+
+
+
+
 test_that("char.diff plot functions", {
 
     ## Getting the max/min x/y from a density

@@ -63,8 +63,15 @@ static inline int bitwise_compare(int char1, int char2, int order) {
 }
 
 
+// Available distance methods
+#define HAMMING 1
+#define RAW 2
+#define COMPARABLE 3
+#define EUCLIDEAN 4
+#define GOWER 5
+
 // Calculating the hamming character distance
-static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int order)
 {
 
     // Declaring variables (result is int)    
@@ -120,8 +127,8 @@ static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, i
     }
 }
 
-// Calculating the hamming character distance
-static double R_raw(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+// Calculating the raw difference
+static double bitwise_raw(int *x, int nr, int nc, int i1, int i2, int translate, int order)
 {
 
     // Declaring variables (result is int)    
@@ -159,43 +166,132 @@ static double R_raw(int *x, int nr, int nc, int i1, int i2, int translate, int o
     }
 }
 
-// Calculating the hamming character distance
-// static double R_raw(int *x, int nr, int nc, int i1, int i2, int translate, int order)
-// {
+// Counting the number of comparable characters
+static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+{
 
-//     // Declaring variables (result is int)    
-//     int vector1[nc], vector2[nc];
-//     int count = 0, i = 0, k = 0;
-//     double result = 0;
+    // Declaring variables (result is int)    
+    int vector1[nc], vector2[nc];
+    int count = 0, i = 0, k = 0;
+    double result = 0;
 
-//     //Isolating the two comparable characters
-//     for(i = 0 ; i < nc ; i++) {
-//         //if(both_non_NA(x[i1], x[i2])) {
-//         // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
-//         if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+    //Isolating the two comparable characters
+    for(i = 0 ; i < nc ; i++) {
+        //if(both_non_NA(x[i1], x[i2])) {
+        // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
             
-//             // Create the vectors
-//             vector1[count] = x[i1];
-//             vector2[count] = x[i2];
+            // Create the vectors
+            vector1[count] = x[i1];
+            vector2[count] = x[i2];
 
-//             //Increment the counter
-//             count++;
-//         }
-//         i1 += nr;
-//         i2 += nr;
-//     }
+            //Increment the counter
+            count++;
+        }
+        i1 += nr;
+        i2 += nr;
+    }
 
-//     if(count == 0) {
-//         return NA_REAL;
-//     } else {
-//         result = (double)count;
-//         return result;
-//     }
-// }
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        result = (double)count;
+        return result;
+    }
+}
+
+// Calculating the euclidean distance
+static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+{
+
+    // Declaring variables (result is int)    
+    int vector1[nc], vector2[nc];
+    int count = 0, i = 0, k = 0, diff = 0, dist = 0;
+    double result = 0;
+
+    //Isolating the two comparable characters
+    for(i = 0 ; i < nc ; i++) {
+        //if(both_non_NA(x[i1], x[i2])) {
+        // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+            
+            // Create the vectors
+            vector1[count] = x[i1];
+            vector2[count] = x[i2];
+
+            //Increment the counter
+            count++;
+        }
+        i1 += nr;
+        i2 += nr;
+    }
+
+    for(k = 0 ; k < count ; k++) {
+        diff = bitwise_compare(vector1[k], vector2[k], order);
+        dist += diff * diff;
+    }
+
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        // euclidean distance
+        if(count != nc) {
+            // Scale distance if they where NAs
+            dist /= ((double)count/nc);
+        }
+        result = sqrt(dist);
+        return result;
+    }
+}
 
 
-// R_distance_bitwise function (R::dist())
-void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
+// Calculating the gower distance
+static double bitwise_gower(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+{
+
+    // Declaring variables (result is int)    
+    int vector1[nc], vector2[nc];
+    int count = 0, i = 0, k = 0, diff = 0, dist = 0;
+    double result = 0;
+
+    //Isolating the two comparable characters
+    for(i = 0 ; i < nc ; i++) {
+        //if(both_non_NA(x[i1], x[i2])) {
+        // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+            
+            // Create the vectors
+            vector1[count] = x[i1];
+            vector2[count] = x[i2];
+
+            //Increment the counter
+            count++;
+        }
+        i1 += nr;
+        i2 += nr;
+    }
+
+    for(k = 0 ; k < count ; k++) {
+        diff = bitwise_compare(vector1[k], vector2[k], order);
+        dist += diff * diff;
+    }
+
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        // euclidean distance
+        if(count != nc) {
+            // Scale distance if they where NAs
+            dist /= ((double)count/nc);
+        }
+        result = sqrt(dist);
+        return result;
+    }
+}
+
+
+// dispRity_bitwise_distance function (R::dist())
+void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
 {
     int dc, i, j;
     size_t ij;  /* can exceed 2^31 - 1 */
@@ -207,18 +303,24 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
 #ifdef _OPENMP
     int nthreads;
 #endif
-    // distfun = R_hamming;
+    // distfun = bitwise_hamming;
 
     switch(*method) {
-        case 1:
-            distfun = R_hamming;
+        case HAMMING:
+            distfun = bitwise_hamming;
         break;
-        case 2:
-            distfun = R_raw;
+        case RAW:
+            distfun = bitwise_raw;
         break;
-        // case 3:
-        //     distfun = R_comparable;
-        // break;
+        case COMPARABLE:
+            distfun = bitwise_comparable;
+        break;
+        case EUCLIDEAN:
+            distfun = bitwise_euclidean;
+        break;
+        case GOWER:
+            distfun = bitwise_gower;
+        break;
         // default:
         //     error(_("distance(): invalid distance"));
     }
@@ -274,7 +376,7 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attr
     PROTECT(x);
     
     // Calculate the distance matrix
-    R_distance_bitwise(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate, &order);
+    dispRity_bitwise_distance(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate, &order);
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
