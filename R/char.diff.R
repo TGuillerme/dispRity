@@ -8,6 +8,7 @@
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param ordered \code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.
+#' @param by.col \code{logical}, whether to measure the distance by columns (\code{TRUE} - default) or by rows (\code{FALSE}).
 #' 
 #' 
 #' @details
@@ -92,7 +93,7 @@
 # ordered <- FALSE
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE) {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, by.col = TRUE) {
 
     options(warn = -1)
 
@@ -114,7 +115,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Checking for the reserved character
     reserved <- grep("\\@", matrix)
     if(length(reserved) > 0) {
-        stop("The matrix cannot contain the character '@' since it is reserved for this function.")
+        stop("The matrix cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
     }
 
     ## Method is hamming by default
@@ -130,24 +131,39 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     if(missing(special.tokens)) {
         special.tokens <- character()
     }
-    check.class(special.tokens, c("character"))
-    if(is.na(special.tokens["missing"])) {
+    check.class(special.tokens, c("character", "logical")) # Can be NA
+    not.exist <- function(special.tokens, token) {
+        name_token <- names(special.tokens[token])
+        return(is.null(name_token) || is.na(name_token))
+    }
+    if(not.exist(special.tokens, "missing")) {
         special.tokens["missing"] <- "\\?"
     }
-    if(is.na(special.tokens["inapplicable"])) {
+    if(not.exist(special.tokens, "inapplicable")) {
         special.tokens["inapplicable"] <- "\\-"
     }
-    if(is.na(special.tokens["polymorphism"])) {
+    if(not.exist(special.tokens, "polymorphism")) {
         special.tokens["polymorphism"] <- "\\&"
     }
-    if(is.na(special.tokens["uncertainty"])) {
+    if(not.exist(special.tokens, "uncertainty")) {
         special.tokens["uncertainty"] <- "\\/"
     }
 
     ## Checking for the reserved character
-    reserved <- c("\\@", "@", NA) %in% special.tokens
+    reserved <- c("\\@", "@") %in% special.tokens
     if(any(reserved)) {
-        stop("special.tokens cannot contain the character '@' or 'NA' since it is reserved for this function.")
+        stop("special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+    }
+
+    ## Checking whether the special.tokens are unique
+    if(length(unique(special.tokens)) != 4) {
+        stop("special.tokens cannot contain duplicated tokens.")
+    }
+
+    ## If any special token is NA, convert them as "N.A" temporarily
+    if(any(is.na(special.tokens))) {
+        matrix <- ifelse(is.na(matrix), "N.A", matrix)
+        special.tokens[which(is.na(special.tokens))] <- "N.A"
     }
 
     ## Special behaviours
@@ -167,6 +183,9 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     if(is.null(special.behaviours$uncertainty)) {
         special.behaviours$uncertainty <- function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
     }
+
+    ## by.col
+    check.class(by.col, "logical")
 
     ## translate
     check.class(translate, "logical")
@@ -195,51 +214,51 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         order <- as.integer(ordered)
     }
 
-    # if(algorithm != "bitwise") {
-    #     ## Options to remove:
-    #     diag = FALSE
-    #     upper = FALSE
+    ## Wrapper function for bitwise dist
+    wrap.bitwise.dist <- function(matrix, c_method, translate, order, by.col) {
 
-    #     ## Getting the matrix parameters
-    #     matrix <- t(matrix)
-    #     N <- nrow(matrix)
+        ## Making the matrix as integers
+        matrix <- apply(matrix, c(1,2), as.integer)
+
+        ## Options to remove:
+        diag = FALSE
+        upper = FALSE
+
+        ## Getting the matrix parameters
+        if(by.col){
+            matrix <- t(matrix)
+        }
+        nrows <- nrow(matrix)
         
-    #     ## Setting the attributes
-    #     attrs <- list(Size = N, Labels = dimnames(matrix)[[1L]], Diag = diag, Upper = upper, method = method, call = match.call(),  class = "dist")
+        ## Setting the attributes
+        attrs <- list(Size = nrows,
+                      Labels = dimnames(matrix)[[1L]],
+                      Diag = diag,
+                      Upper = upper,
+                      method = method,
+                      call = match.call(),
+                      class = "dist")
 
-    #     ## Calculating the gower distance
-    #     options(warn = -1) #TG: NA's get introduced. Don't care!
-    #     output <- as.matrix(.Call("C_char_diff", matrix, method, attrs))
-    #     options(warn = 0)
-    # } else {
-    ## Making the matrix as integers
-    matrix <- apply(matrix, c(1,2), as.integer)
+        ## Calculating the gower distance
+        options(warn = -1) #TG: NA's get introduced. Don't care!
+        output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
+        options(warn = 0)
 
-    ## Options to remove:
-    diag = FALSE
-    upper = FALSE
+        ## Calculating the character difference
+        #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
+        output <- round(output, digits = 10)
+        return(output)
+    }
 
-    ## Getting the matrix parameters
-    matrix <- t(matrix)
-    nrows <- nrow(matrix)
-    
-    ## Setting the attributes
-    attrs <- list(Size = nrows,
-                  Labels = dimnames(matrix)[[1L]],
-                  Diag = diag,
-                  Upper = upper,
-                  method = method,
-                  call = match.call(),
-                  class = "dist")
-
-    ## Calculating the gower distance
-    options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
-    options(warn = 0)
-
-    ## Calculating the character difference
-    #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
-    output <- round(output, digits = 10)
+    ## Apply the bitwise distance
+    if(double_matrix) {
+        ## Calculating the distances 
+        ordered_output <- wrap.bitwise.dist(ordered_matrix, c_method, translate, order = 1, by.col)
+        unordered_output <- wrap.bitwise.dist(unorder_matrix, c_method, translate, order = 0, by.col)
+        ## Combining the matrices together
+    } else {
+        output <- wrap.bitwise.dist(matrix, c_method, translate, order, by.col)
+    }
 
     if(ncol(output) == 2) {
         ## Return a single numeric value if comparing two characters

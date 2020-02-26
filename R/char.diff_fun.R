@@ -65,7 +65,9 @@ convert.character <- function(character, special.tokens, special.behaviours) {
             return(recursive.sub(patterns, character))
         }
     }
+    options(warn = -1)
     all_states <- as.integer(sort(unique(strsplit(paste0(recursive.sub(special.tokens, unique(character)), collapse = ""), split = "")[[1]])))
+    options(warn = 0)
 
     ## Convert all characters
     return(sapply(character, convert.bitwise, special.tokens, special.behaviours,all_states))

@@ -83,6 +83,7 @@ test_that("convert.character works", {
     expect_warning(expect_equal(
         convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
         ,c("0/1" = 3, "-" = 0, "1&3" = 10, "?" = 11, "3" = 8)))
+
 })
 
 
@@ -182,6 +183,40 @@ test_that("char.diff matrix", {
     expect_is(test, c("matrix", "char.diff"))
 })
 
+test_that("char.diff NA, translate and order function works", {
+
+matrix_simple <- matrix(data = c(1,NA,3,NA,
+                                 7,7,2,2,
+                                 1,1,1,0), ncol = 3, byrow = FALSE)
+colnames(matrix_simple) <- LETTERS[1:3]
+
+## Correct NA behaviour
+expect_warning(test_NA1 <- round(char.diff(matrix_simple), 5))
+expect_warning(test_NA2 <- round(char.diff(matrix_simple,
+                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                      special.tokens = c(missing = NA)), 5))
+
+expect_equal(as.vector(test_NA1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
+expect_equal(as.vector(test_NA2), c(0.00000, 0.00000, 0.33333, 0.00000, 0.00000, 0.33333, 0.33333, 0.33333, 0.00000))
+
+## NA + translate
+expect_warning(test_tr1 <- round(char.diff(matrix_simple, translate = FALSE), 2))
+expect_equal(as.vector(test_tr1), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
+expect_warning(test_tr2 <- char.diff(matrix_simple, translate = FALSE,
+                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                      special.tokens = c(missing = NA)))
+expect_equal(as.vector(test_tr2), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
+
+## NA + translate + order
+expect_warning(test_ord1 <- round(char.diff(matrix_simple, translate = TRUE, order = TRUE), 5))
+expect_equal(as.vector(test_ord1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
+expect_warning(test_ord2 <- round(char.diff(matrix_simple, translate = FALSE, order = TRUE), 5))
+expect_equal(as.vector(test_ord2), c(0.00, 3.50, 1.00, 3.50, 0.00, 3.75, 1.00, 3.75, 0.00))
+expect_warning(test_ord3 <- char.diff(matrix_simple, translate = FALSE, order = TRUE,
+                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                      special.tokens = c(missing = NA)))
+expect_equal(as.vector(test_ord3), c(0.00, 3.00, 0.75, 3.00, 0.00, 3.75, 0.75, 3.75, 0.00))
+})
 
 test_that("char.diff plot functions", {
 
