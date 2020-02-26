@@ -218,6 +218,37 @@ expect_warning(test_ord3 <- char.diff(matrix_simple, translate = FALSE, order = 
 expect_equal(as.vector(test_ord3), c(0.00, 3.00, 0.75, 3.00, 0.00, 3.75, 0.75, 3.75, 0.00))
 })
 
+
+test_that("order works as a logical vector", {
+
+    matrix_multi <- matrix(data = c(1,2,0,0,1,2,1,
+                                    2,3,1,2,2,0,2,
+                                    0,4,2,1,1,2,2,
+                                    0,4,0,0,0,1,0,
+                                    0,4,0,0,0,1,0), ncol = 7, byrow = TRUE)
+    colnames(matrix_multi) <- LETTERS[1:7]
+    rownames(matrix_multi) <- letters[1:5]
+
+    ## Handling dimnames correctly
+    test1 <- char.diff(matrix_multi, by.col = TRUE)
+    test2 <- char.diff(matrix_multi, by.col = FALSE)
+    expect_equal(dim(test1), c(7, 7))
+    expect_equal(dim(test2), c(5, 5))
+    expect_equal(colnames(test1), LETTERS[1:7])
+    expect_equal(colnames(test2), letters[1:5])
+
+    ## Handling ordering errors
+    error <- capture_error(char.diff(matrix_multi, by.col = TRUE, order = c(T, T, T, T, T, F, T, F)))
+    expect_equal(error[[1]], "ordered must be of the same length as the number of columns in the matrix (7).")
+    error <- capture_error(char.diff(matrix_multi, by.col = FALSE, order = c(T, T, T, T, T, F, T, F)))
+    expect_equal(error[[1]], "ordered must be of the same length as the number of rows in the matrix (5).")
+
+    ## Handling multi ordering
+    # char.diff(matrix_multi, by.col = TRUE, ordered = c(T, T, T, T, F, F, F))
+
+
+})
+
 test_that("char.diff plot functions", {
 
     ## Getting the max/min x/y from a density

@@ -16,11 +16,8 @@
 #' The different distances to calculate are:
 #' \itemize{
 #'      \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
-#'      \item \code{"gower"} The scaled gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2). The characters are translated following the \emph{xyz} notation (The first token is translated to 1, the second to 2, etc. - Felsenstein XXX).
-#'      \item \code{"euclidean"} The Euclidean distance: XXX
-#'      \item \code{"manhattan"} The Manhattan distance: XXX
-#'      \item \code{"ged"} The Generalised Euclidean Distance (Wills XXX): XXX
-#'      \item \code{"mord"} The maximum observable distance (Lloyd XXX): XXX
+#'      \item \code{"raw"} The raw distance between characters (depending on \code{ordered}).
+#'      \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared).
 #' }
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
@@ -106,9 +103,11 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         ## Convert into a matrix
         matrix <- matrix(c(unlist(matrix)), byrow = FALSE, ncol = 2)
     }
+    ## Save the dimension names
+    matrix_dimnames <- dimnames(matrix)
 
     ## Convert to character
-    if(unique(apply(matrix, 2, class))[1] == "numeric") {
+    if(unique(apply(matrix, 2, class))[1] %in% c("numeric", "integer")) {
         matrix <- apply(matrix, 2, as.character)
     }
 
@@ -119,12 +118,8 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    avail_methods <- c("hamming", "gower", "manhattan", "euclidean", "ged", "mord")
+    avail_methods <- c("hamming", "row", "comparable")
     check.method(method, avail_methods, msg = "method")
-    if(method != "hamming") {
-        c_method <- 2
-        warning("DEBUG:char.diff: method can only be hamming for now.")
-    }
     c_method <- pmatch(method, avail_methods)
 
     ## Special tokens
@@ -203,7 +198,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## ordered
     check.class(ordered, "logical")
     if(length(ordered) > 1) {
-        check.length(ordered, ncol(matrix), msg = paste0(" must be of the same length as the number of columns in the matrix (", ncol(matrix), ")."))
+        check.length(ordered, ifelse(by.col, ncol(matrix), nrow(matrix)), msg = paste0(" must be of the same length as the number of ", ifelse(by.col, "columns", "rows"), " in the matrix (", ifelse(by.col, ncol(matrix), nrow(matrix)), ")."))
         ## Split the matrix in two if there are two ordered/non-ordered characters
         double_matrix <- TRUE
         ordered_matrix <- matrix[,ordered]
@@ -215,7 +210,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Wrapper function for bitwise dist
-    wrap.bitwise.dist <- function(matrix, c_method, translate, order, by.col) {
+    wrap.bitwise.dist <- function(matrix, c_method, translate, order, by.col, matrix_dimnames) {
 
         ## Making the matrix as integers
         matrix <- apply(matrix, c(1,2), as.integer)
@@ -227,12 +222,19 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         ## Getting the matrix parameters
         if(by.col){
             matrix <- t(matrix)
+            labels <- matrix_dimnames[[2]]
+        } else {
+            labels <- matrix_dimnames[[1]]
         }
         nrows <- nrow(matrix)
+        if(is.null(labels)) {
+            labels <- seq(1:nrows)
+        }
+
         
         ## Setting the attributes
         attrs <- list(Size = nrows,
-                      Labels = dimnames(matrix)[[1L]],
+                      Labels = labels,
                       Diag = diag,
                       Upper = upper,
                       method = method,
@@ -253,11 +255,11 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Apply the bitwise distance
     if(double_matrix) {
         ## Calculating the distances 
-        ordered_output <- wrap.bitwise.dist(ordered_matrix, c_method, translate, order = 1, by.col)
-        unordered_output <- wrap.bitwise.dist(unorder_matrix, c_method, translate, order = 0, by.col)
+        ordered_output <- wrap.bitwise.dist(ordered_matrix, c_method, translate, order = 1, by.col, matrix_dimnames)
+        unordered_output <- wrap.bitwise.dist(unorder_matrix, c_method, translate, order = 0, by.col, matrix_dimnames)
         ## Combining the matrices together
     } else {
-        output <- wrap.bitwise.dist(matrix, c_method, translate, order, by.col)
+        output <- wrap.bitwise.dist(matrix, c_method, translate, order, by.col, matrix_dimnames)
     }
 
     if(ncol(output) == 2) {

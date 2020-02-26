@@ -120,12 +120,9 @@ static double R_hamming(int *x, int nr, int nc, int i1, int i2, int translate, i
     }
 }
 
-// Other method placeholder
-static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+// Calculating the hamming character distance
+static double R_raw(int *x, int nr, int nc, int i1, int i2, int translate, int order)
 {
-    
-    //DEBUG
-    // int order = 0;
 
     // Declaring variables (result is int)    
     int vector1[nc], vector2[nc];
@@ -134,7 +131,9 @@ static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int
 
     //Isolating the two comparable characters
     for(i = 0 ; i < nc ; i++) {
-        if(both_non_NA(x[i1], x[i2])) {
+        //if(both_non_NA(x[i1], x[i2])) {
+        // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
             
             // Create the vectors
             vector1[count] = x[i1];
@@ -155,17 +154,44 @@ static double R_other(int *x, int nr, int nc, int i1, int i2, int translate, int
     if(count == 0) {
         return NA_REAL;
     } else {
-        if(translate == 0) {
-            // Return the hamming distance differences/counts
-            result = (double)dist/count;
-        } else {
-            // Return the corrected distance (differences / (counts - 1))
-            result = (double)dist/(count-1);
-
-        }
+        result = (double)dist;
         return result;
     }
 }
+
+// Calculating the hamming character distance
+// static double R_raw(int *x, int nr, int nc, int i1, int i2, int translate, int order)
+// {
+
+//     // Declaring variables (result is int)    
+//     int vector1[nc], vector2[nc];
+//     int count = 0, i = 0, k = 0;
+//     double result = 0;
+
+//     //Isolating the two comparable characters
+//     for(i = 0 ; i < nc ; i++) {
+//         //if(both_non_NA(x[i1], x[i2])) {
+//         // if(!NA_INTEGER(x[i1]) && !NA_INTEGER(x[i2])) {
+//         if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+            
+//             // Create the vectors
+//             vector1[count] = x[i1];
+//             vector2[count] = x[i2];
+
+//             //Increment the counter
+//             count++;
+//         }
+//         i1 += nr;
+//         i2 += nr;
+//     }
+
+//     if(count == 0) {
+//         return NA_REAL;
+//     } else {
+//         result = (double)count;
+//         return result;
+//     }
+// }
 
 
 // R_distance_bitwise function (R::dist())
@@ -188,8 +214,11 @@ void R_distance_bitwise(int *x, int *nr, int *nc, double *d, int *diag, int *met
             distfun = R_hamming;
         break;
         case 2:
-            distfun = R_other;
+            distfun = R_raw;
         break;
+        // case 3:
+        //     distfun = R_comparable;
+        // break;
         // default:
         //     error(_("distance(): invalid distance"));
     }

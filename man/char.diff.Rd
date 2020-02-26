@@ -32,11 +32,8 @@ Calculates the character difference from a discrete matrix
 The different distances to calculate are:
 \itemize{
      \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
-     \item \code{"gower"} The scaled gower distance: the absolute distance between each pairs of comparable characters (e.g. does interpret the character token significance; the differences are ordered and absolute: 0-2 = 2). The characters are translated following the \emph{xyz} notation (The first token is translated to 1, the second to 2, etc. - Felsenstein XXX).
-     \item \code{"euclidean"} The Euclidean distance: XXX
-     \item \code{"manhattan"} The Manhattan distance: XXX
-     \item \code{"ged"} The Generalised Euclidean Distance (Wills XXX): XXX
-     \item \code{"mord"} The maximum observable distance (Lloyd XXX): XXX
+     \item \code{"raw"} The raw distance between characters (depending on \code{ordered}).
+     \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared).
 }
 
 When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
