@@ -30,11 +30,18 @@ Calculates the character difference from a discrete matrix
 }
 \details{
 The different distances to calculate are:
+
 \itemize{
-     \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters (i.e. does not interpret the character token significance; the differences are non-ordered Fitch-like: 0-2 = 1).
-     \item \code{"raw"} The raw distance between characters (depending on \code{ordered}).
-     \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared).
+     \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters. This is equal to the Gower for non-numeric comparisons (e.g. character tokens).
+         \eqn{d[jk] = sum(abs(x[ij] - x[ik])/n)}
+     \item \code{"manhattan"} The "raw" distance between pairs of characters:
+         \eqn{d[jk] = sum(abs(x[ij] - x[ik]))}
+     \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared):
+         \eqn{d[jk] = sum((x_{ij}-x_{ik}) / (x_{ij}-x_{ik}))}
+     \item \code{"euclidean"} The euclidean distance:
+         \eqn{d[jk] = sqrt(sum((x[ij]-x[ik])^2))}
 }
+
 
 When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 
@@ -55,18 +62,33 @@ If you want to treat \code{NA} values as any possible observed state, you need t
 IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64).
 }
 \examples{
-## Comparing two characters
+## Comparing two binary characters
 char.diff(list(c(0, 1, 0, 1), c(0, 1, 1, 1)))
 
 ## Pairwise comparisons in a morphological matrix
 morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 char.diff(morpho_matrix)
 
-## Comparing morphological characters as text
+## Adding special tokens to the matrix
+morpho_matrix[sample(1:100, 10)] <- c("?", "0&1", "-")
+char.diff(morpho_matrix)
 
-## Using different special tokens
+## Modifying special behaviours for tokens with "&" to be treated as NA
+char.diff(morpho_matrix,
+          special.behaviours = list(polymorphism = function(x,y) return(NA)))
 
-## Using different special behaviours
+## Adding a special character with a special behaviour (count "\%" as "100")
+morpho_matrix[sample(1:100, 5)] <- "\%"
+char.diff(morpho_matrix,
+          special.tokens = c("paragraph" = "\\\\\%"),
+          special.behaviours = list(paragraph = function(x,y) as.integer(100)))
+
+## Comparing characters with/without translation
+char.diff(list(c(0, 1, 0, 1), c(1, 0, 1, 0)), method = "manhattan")
+# no character difference
+char.diff(list(c(0, 1, 0, 1), c(1, 0, 1, 0)), method = "manhattan",
+          translate = FALSE)
+# all four character states are different
 
 }
 \references{
@@ -77,7 +99,7 @@ Felsenstein XXX
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
-\code{\link{plot.char.diff}}.
+\code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[cluster]{daisy}}
 }
 \author{
 Thomas Guillerme

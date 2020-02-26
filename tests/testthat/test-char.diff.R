@@ -44,9 +44,9 @@ test_that("convert.bitwise works", {
     expect_warning(expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15))
 
     ## Add some weird token
-    special.tokens["weird"] <- "\\§"
+    special.tokens["weird"] <- "\\%"
     special.behaviours$weird <- function(x,y) return(as.integer(1000))
-    expect_warning(expect_equal(convert.bitwise("1§2", special.tokens, special.behaviours, all_states), 2^1000))
+    expect_warning(expect_equal(convert.bitwise("1%2", special.tokens, special.behaviours, all_states), 2^1000))
 })
 
 
@@ -229,7 +229,7 @@ test_that("order works as a logical vector", {
     colnames(matrix_multi) <- LETTERS[1:7]
     rownames(matrix_multi) <- letters[1:5]
 
-    ## Handling dimnames correctly
+    ## Handling dimnames correctly
     test1 <- char.diff(matrix_multi, by.col = TRUE)
     test2 <- char.diff(matrix_multi, by.col = FALSE)
     expect_equal(dim(test1), c(7, 7))
@@ -237,7 +237,7 @@ test_that("order works as a logical vector", {
     expect_equal(colnames(test1), LETTERS[1:7])
     expect_equal(colnames(test2), letters[1:5])
 
-    ## Handling ordering errors
+    ## Handling ordering errors
     error <- capture_error(char.diff(matrix_multi, by.col = TRUE, order = c(T, T, T, T, T, F, T, F)))
     expect_equal(error[[1]], "ordered must be of the same length as the number of columns in the matrix (7).")
     error <- capture_error(char.diff(matrix_multi, by.col = FALSE, order = c(T, T, T, T, T, F, T, F)))
@@ -252,10 +252,10 @@ test_that("order works as a logical vector", {
 
 test_that("Test other distances", {
     ## Raw
-    expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), translate = FALSE, method = "raw"), 0)
-    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "raw"), 4)
-    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "raw"), 0)
-    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "raw"), 0))
+    expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), translate = FALSE, method = "manhattan"), 0)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "manhattan"), 4)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "manhattan"), 0)
+    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "manhattan"), 0))
     ## Comparable
     expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), method = "comparable"), 4)
     expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "comparable"), 1))
