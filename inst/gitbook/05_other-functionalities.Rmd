@@ -18,6 +18,105 @@ The `dispRity` package also contains several other functions that are not specif
 However, we decided to make these functions also available at a user level since they can be handy for certain specific operations!
 You'll find a brief description of each of them (alphabetically) here:
 
+## `char.diff`
+
+This is yet another function for calculating distance matrices.
+There are many functions for calculating pairwise distance matrices in `R` (`stats::dist`, `vegan::vegdist`, `cluster::daisy` or `Claddis::MorphDistMatrix`) but this one is the `dispRity` one.
+It is slightly different to the ones mentioned above (though not that dissimilar from `Claddis::MorphDistMatrix`) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).
+
+The function intakes a matrix with either `numeric` or `integer` (`NA` included) or matrices with `character` that are indeed `integers` (e.g.`"0"` and `"1"`).
+It then uses a [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operations_in_C) architecture implemented in `C` that renders the function pretty fast and pretty modular.
+This bitwise operations translates the character states into binary values.
+This way, `0` becomes `1`, `1` becomes `2`, `2` becomes `4`, `3` becomes `8`, etc...
+Specifically it can handle any rules specific to special tokens (i.e. symbols) for discrete morphological characters. For example, should you treat missing values `"?"` as `NA` (ignoring them) or as any possible character state (e.g. `c("0", "1")`?)? And how to treat characters with a ampersand (`"&"`)? `char.diff` can answer to all these questions!
+
+Let's start by a basic binary matrix 4\*3 with random `integer`:
+
+```{r}
+## A random binary matrix
+matrix_binary <- matrix(sample(c(0,1), 12, replace = TRUE), ncol = 4,
+                        dimnames = list(letters[1:3], LETTERS[1:4]))
+```
+
+By default, `char.diff` measures the hamming distance between characters:
+
+```{r}
+## The hamming distance between characters
+(differences <- char.diff(matrix_binary))
+```
+
+Note that the results is just a pairwise distance (dissimilarity) matrix with some special dual class `matrix` and `char.diff`.
+This means it can easily be plotted via the disparity package:
+
+```{r}
+## Visualising the matrix
+plot(differences)
+```
+
+You can check all the numerous plotting options in the `?plot.char.diff` manual (it won't be developed here).
+
+The `char.diff` function has much more options however (see all of them in the `?char.diff` manual) for example to measure different differences (via `method`) or making the comparison work per row (for a distance matrix between the rows):
+
+```{r}
+## Euclidean distance between rows
+char.diff(matrix_binary, by.col = FALSE, method = "euclidean")
+```
+
+We can however make it more interesting by playing with the different rules to play with different tokens.
+First let's create a matrix with morphological characters as numeric `character`s:
+
+```{r}
+## A random character matrix
+(matrix_character <- matrix(sample(c("0","1","2"), 30, replace = TRUE), ncol = 5,
+                           dimnames = list(letters[1:6], LETTERS[1:5])))
+
+## The hamming difference between columns
+char.diff(matrix_character)
+```
+
+Here the characters are automatically converted into bitwise integers to be compared efficiently. We can now add some more special tokens like `"?"` or `"0/1"` for uncertainties between state `"0"` and `"1"` but not `"2"`:
+
+```{r}
+## Adding uncertain characters
+matrix_character[sample(1:30, 8)] <- "0/1"
+
+## Adding missing data
+(matrix_character[sample(1:30, 5)] <- "?")
+
+## The hamming difference between columns including the special characters
+char.diff(matrix_character)
+```
+
+Note here that it detected the default behaviours for the special tokens `"?"` and `"/"`: `"?"` are treated as `NA` (not compared) and `"/"` are treated as both states (e.g. `"0/1"` is treated as `"0"` and as `"1"`).
+We can specify both the special tokens and the special behaviours to consider via `special.tokens` and `special.behaviours`.
+The `special.tokens` are `missing = "?"`, `inapplicable = "-"`, `uncertainty = "\"` and `polymorphism = "&"` meaning we don't have to modify them for now.
+However, say we want to change the behaviour for `"?"` and treat them as all possible characters and treat `"/"` as only the character `"0"` (as an integer) we can specify them giving a behaviour function:
+
+```{r}
+## Specifying some special behaviours
+my_special_behaviours <- list(missing = function(x,y) return(y),
+                              uncertainty = function(x,y) return(as.integer(0)))
+
+## Passing these special behaviours to the char.diff function
+char.diff(matrix_character, special.behaviour = my_special_behaviours)
+```
+
+The results are quiet different as before! Note that you can also specify some really specific behaviours for any type of special token.
+
+```{r}
+## Adding weird tokens to the matrix
+matrix_character[sample(1:30, 8)] <- "%"
+
+## Specify the new token and the new behaviour
+char.diff(matrix_character, special.tokens = c(weird_one = "%"),
+                            special.behaviours = list(
+                                weird_one = function(x,y) return(as.integer(42)))
+                            )
+```
+
+Of course the results can be quiet surprising then... But that's the essence of the modularity. You can see more options in the function manual `?char.diff`!
+
+
 ## `clean.data`
 
 This is a rather useful function that allows matching a `matrix` or a `data.frame` to a tree (`phylo`) or a distribution of trees (`multiPhylo`).
@@ -66,7 +165,7 @@ This utility function allows to plot a matrix image of pairwise comparisons.
 This can be useful when getting pairwise comparisons and if you'd like to see at a glance which pairs of comparisons have high or low values.
 
 ```{r}
-## Random data
+## Random data
 data <- matrix(data = runif(42), ncol = 2)
 
 ## Plotting the first column as a pairwise comparisons
@@ -81,7 +180,7 @@ It is also possible to add some tokens or symbols to quickly highlight to specif
 ```{r}
 ## The same plot as before without the diagonal being the maximal observed value
 pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "max")
-## Highlighting with an asterisk which squares have a value below 0.2
+## Highlighting with an asterisk which squares have a value below 0.2
 pair.plot(data, what = 1, binary = 0.2, add = "*", cex = 2)
 ```
 
@@ -205,7 +304,7 @@ tree_no_zero <- remove.zero.brlen(tree)
 ## Exaggerating the removal (to make it visible)
 tree_exaggerated <- remove.zero.brlen(tree, slide = 1)
 
-## Check the differences
+## Check the differences
 any(tree$edge.length == 0)
 any(tree_no_zero$edge.length == 0)
 any(tree_exaggerated$edge.length == 0)
@@ -225,7 +324,7 @@ This function allows to quickly calculate the ages of each tips and nodes presen
 ```{r}
 set.seed(1)
 tree <- rtree(10)
-## The tree age from a 10 tip tree
+## The tree age from a 10 tip tree
 tree.age(tree)
 ```
 
