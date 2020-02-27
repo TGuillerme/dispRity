@@ -7,7 +7,7 @@
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
-#' @param ordered \code{logical}, whether the character should be treated as ordered (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows in \code{matrix} to specify ordering for each character.
+#' @param order \code{logical}, whether the character should be treated as order (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows or columns in \code{matrix} (depending on \code{by.col}) to specify ordering for each character.
 #' @param by.col \code{logical}, whether to measure the distance by columns (\code{TRUE} - default) or by rows (\code{FALSE}).
 #' 
 #' 
@@ -109,10 +109,10 @@
 # translate = TRUE
 # special.tokens <- character()
 # special.behaviours <- list()
-# ordered <- FALSE
+# order <- FALSE
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, by.col = TRUE, test) {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE, test) {
 
     options(warn = -1)
 
@@ -217,33 +217,19 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Convert to bitwise format
     matrix <- apply(matrix, 2, convert.character, special.tokens, special.behaviours)
 
-    ## ordered
-    check.class(ordered, "logical")
-    if(length(ordered) > 1) {
-        check.length(ordered, ifelse(by.col, ncol(matrix), nrow(matrix)), msg = paste0(" must be of the same length as the number of ", ifelse(by.col, "columns", "rows"), " in the matrix (", ifelse(by.col, ncol(matrix), nrow(matrix)), ")."))
-        ## Split the matrix in two if there are two ordered/non-ordered characters
-        double_matrix <- TRUE
-        ordered_matrix <- matrix[,ordered]
-        unorder_matrix <- matrix[,!ordered]
-        stop("Does not work with different ordered/unord characters yet.")
-    } else {
-        double_matrix <- FALSE
-        order <- as.integer(ordered)
-    }
-
-    check.class(test, "logical")
-    if(length(test) > 1) {
+    ## order
+    check.class(order, "logical")
+    if(length(order) > 1) {
         ## Checking the ordering vector
-        check.length(test, ifelse(by.col, ncol(matrix), nrow(matrix)), msg = paste0(" must be of the same length as the number of ", ifelse(by.col, "columns", "rows"), " in the matrix (", ifelse(by.col, ncol(matrix), nrow(matrix)), ")."))
+        check.length(order, ifelse(!by.col, ncol(matrix), nrow(matrix)), msg = paste0(" must be of the same length as the number of ", ifelse(!by.col, "columns", "rows"), " in the matrix (", ifelse(!by.col, ncol(matrix), nrow(matrix)), ")."))
     } else {
-        ## Creating the ordering vector
-        test <- rep(test, ifelse(by.col, ncol(matrix), nrow(matrix)))
+        ## Creating the ordering vector for each comparisons
+        # n <- ifelse(by.col, ncol(matrix), nrow(matrix))
+        # order <- rep(order, (n*(n-1))/2)
+        order <- rep(order, ifelse(!by.col, ncol(matrix), nrow(matrix)))
     }
     ## Coercing the logical vector into an integer one
-    test <- as.integer(test)
-    cat("test is: ")
-    cat(test)
-    cat("\n")
+    order <- as.integer(order)
 
     ## Making the matrix as integers
     matrix <- apply(matrix, c(1,2), as.integer)
@@ -264,7 +250,6 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         labels <- seq(1:nrows)
     }
 
-    
     ## Setting the attributes
     attrs <- list(Size = nrows,
                   Labels = labels,
@@ -276,7 +261,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
     ## Calculating the gower distance
     options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs, test))
+    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
     options(warn = 0)
 
     ## Calculating the character difference

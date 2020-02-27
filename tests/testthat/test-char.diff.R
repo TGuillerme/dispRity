@@ -94,8 +94,8 @@ test_that("char.diff pair", {
     ## Difference is 0
     expect_equal(char.diff(list(A,B)), 0)
     expect_equal(char.diff(list(A,B), translate = FALSE), 1)
-    expect_equal(char.diff(list(A,B), ordered = TRUE), 0)
-    expect_equal(char.diff(list(A,B), translate = FALSE, ordered = TRUE), 1)
+    expect_equal(char.diff(list(A,B), order = TRUE), 0)
+    expect_equal(char.diff(list(A,B), translate = FALSE, order = TRUE), 1)
     ## Difference is triangular
     expect_equal(char.diff(list(A,B)), char.diff(list(A,B)))
 
@@ -104,8 +104,8 @@ test_that("char.diff pair", {
     ## Difference is 0.25
     expect_equal(char.diff(list(A,C)), 0.25)
     expect_equal(char.diff(list(A,C), translate = FALSE), 0.2)
-    expect_equal(char.diff(list(A,C), ordered = TRUE), 0.25)
-    expect_equal(char.diff(list(A,C), translate = FALSE, ordered = TRUE), 0.2)
+    expect_equal(char.diff(list(A,C), order = TRUE), 0.25)
+    expect_equal(char.diff(list(A,C), translate = FALSE, order = TRUE), 0.2)
 
     ## Difference is triangular
     expect_equal(char.diff(list(A,C)), char.diff(list(C,A)))
@@ -115,8 +115,8 @@ test_that("char.diff pair", {
     ## Difference is 0.5
     expect_equal(char.diff(list(A,D)), 0.5)
     expect_equal(char.diff(list(A,D), translate = FALSE), 0.6)
-    expect_equal(char.diff(list(A,D), ordered = TRUE), 0.5)
-    expect_equal(char.diff(list(A,D), translate = FALSE, ordered = TRUE), 0.6)
+    expect_equal(char.diff(list(A,D), order = TRUE), 0.5)
+    expect_equal(char.diff(list(A,D), translate = FALSE, order = TRUE), 0.6)
 
     ## Difference is triangular
     expect_equal(char.diff(list(A,D)), char.diff(list(D,A)))
@@ -126,8 +126,8 @@ test_that("char.diff pair", {
     ## Difference is equal to D
     expect_equal(char.diff(list(D,E)), 0)
     expect_equal(char.diff(list(E,D), translate = FALSE), 1)
-    expect_equal(char.diff(list(E,D), ordered = TRUE), 0)
-    expect_equal(char.diff(list(E,D), translate = FALSE, ordered = TRUE), 1)
+    expect_equal(char.diff(list(E,D), order = TRUE), 0)
+    expect_equal(char.diff(list(E,D), translate = FALSE, order = TRUE), 1)
     ## Difference is triangular (with D)
     expect_equal(char.diff(list(A,E)), char.diff(list(A,D)))
 })
@@ -239,12 +239,12 @@ test_that("order works as a logical vector", {
 
     ## Handling ordering errors
     error <- capture_error(char.diff(matrix_multi, by.col = TRUE, order = c(T, T, T, T, T, F, T, F)))
-    expect_equal(error[[1]], "ordered must be of the same length as the number of columns in the matrix (7).")
+    expect_equal(error[[1]], "order must be of the same length as the number of rows in the matrix (5).")
     error <- capture_error(char.diff(matrix_multi, by.col = FALSE, order = c(T, T, T, T, T, F, T, F)))
-    expect_equal(error[[1]], "ordered must be of the same length as the number of rows in the matrix (5).")
+    expect_equal(error[[1]], "order must be of the same length as the number of columns in the matrix (7).")
 
     ## Handling multi ordering
-    # char.diff(matrix_multi, by.col = TRUE, ordered = c(T, T, T, T, F, F, F))
+    # char.diff(matrix_multi, by.col = TRUE, order = c(T, T, T, T, F, F, F))
 
 
 })
