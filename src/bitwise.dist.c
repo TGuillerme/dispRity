@@ -238,7 +238,7 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
 }
 
 // dispRity_bitwise_distance function (R::dist())
-void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
+void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order, int *test)
 {
     int dc, i, j;
     int orderi = 0;
@@ -300,10 +300,9 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
     ij = 0;
     for(j = 0 ; j <= *nr ; j++) {
         for(i = j+dc ; i < *nr ; i++) {
-            orderi += 1;
-            printf("iteration of orderi = %i\n", orderi);
-            // printf("order value = %i\n", *order[orderi]);
+            printf("test value = %i\n", test[orderi]);
             d[ij++] = distfun(x, *nr, *nc, i, j, *translate, *order);
+            orderi += 1;
         }
     }
 #endif
@@ -311,7 +310,7 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
 
 
 // R/C interface (former Diff)
-SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attrs) //, SEXP sorder
+SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attrs, SEXP test)
 {
     // Define the variable
     SEXP result;
@@ -322,9 +321,12 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attr
     PROTECT(result = allocVector(REALSXP, N));
     if(TYPEOF(x) != INTSXP) x = coerceVector(x, INTSXP);
     PROTECT(x);
+
+    if(TYPEOF(test) != INTSXP) test = coerceVector(test, INTSXP);
+    PROTECT(test);
     
     // Calculate the distance matrix
-    dispRity_bitwise_distance(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate, &order);
+    dispRity_bitwise_distance(INTEGER(x), &nr, &nc, REAL(result), &diag, &method, &translate, &order, INTEGER(test));
     
     // Wrap up the results
     SEXP names = PROTECT(getAttrib(attrs, R_NamesSymbol)); // Row/column names attributes
@@ -332,7 +334,7 @@ SEXP C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attr
         setAttrib(result, install(translateChar(STRING_ELT(names, i))), VECTOR_ELT(attrs, i));
     }
 
-    UNPROTECT(3);
+    UNPROTECT(4);
 
     return result;
 }

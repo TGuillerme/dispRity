@@ -112,7 +112,7 @@
 # ordered <- FALSE
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, by.col = TRUE) {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, ordered = FALSE, by.col = TRUE, test) {
 
     options(warn = -1)
 
@@ -231,58 +231,57 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         order <- as.integer(ordered)
     }
 
-    ## Wrapper function for bitwise dist
-    wrap.bitwise.dist <- function(matrix, c_method, translate, order, by.col, matrix_dimnames) {
-
-        ## Making the matrix as integers
-        matrix <- apply(matrix, c(1,2), as.integer)
-
-        ## Options to remove:
-        diag = FALSE
-        upper = FALSE
-
-        ## Getting the matrix parameters
-        if(by.col){
-            matrix <- t(matrix)
-            labels <- matrix_dimnames[[2]]
-        } else {
-            labels <- matrix_dimnames[[1]]
-        }
-        nrows <- nrow(matrix)
-        if(is.null(labels)) {
-            labels <- seq(1:nrows)
-        }
-
-        
-        ## Setting the attributes
-        attrs <- list(Size = nrows,
-                      Labels = labels,
-                      Diag = diag,
-                      Upper = upper,
-                      method = method,
-                      call = match.call(),
-                      class = "dist")
-
-        ## Calculating the gower distance
-        options(warn = -1) #TG: NA's get introduced. Don't care!
-        output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
-        options(warn = 0)
-
-        ## Calculating the character difference
-        #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
-        output <- round(output, digits = 10)
-        return(output)
-    }
-
-    ## Apply the bitwise distance
-    if(double_matrix) {
-        ## Calculating the distances 
-        ordered_output <- wrap.bitwise.dist(ordered_matrix, c_method, translate, order = 1, by.col, matrix_dimnames)
-        unordered_output <- wrap.bitwise.dist(unorder_matrix, c_method, translate, order = 0, by.col, matrix_dimnames)
-        ## Combining the matrices together
+    check.class(test, "logical")
+    if(length(test) > 1) {
+        ## Checking the ordering vector
+        check.length(test, ifelse(by.col, ncol(matrix), nrow(matrix)), msg = paste0(" must be of the same length as the number of ", ifelse(by.col, "columns", "rows"), " in the matrix (", ifelse(by.col, ncol(matrix), nrow(matrix)), ")."))
     } else {
-        output <- wrap.bitwise.dist(matrix, c_method, translate, order, by.col, matrix_dimnames)
+        ## Creating the ordering vector
+        test <- rep(test, ifelse(by.col, ncol(matrix), nrow(matrix)))
     }
+    ## Coercing the logical vector into an integer one
+    test <- as.integer(test)
+    cat("test is: ")
+    cat(test)
+    cat("\n")
+
+    ## Making the matrix as integers
+    matrix <- apply(matrix, c(1,2), as.integer)
+
+    ## Options to remove:
+    diag = FALSE
+    upper = FALSE
+
+    ## Getting the matrix parameters
+    if(by.col){
+        matrix <- t(matrix)
+        labels <- matrix_dimnames[[2]]
+    } else {
+        labels <- matrix_dimnames[[1]]
+    }
+    nrows <- nrow(matrix)
+    if(is.null(labels)) {
+        labels <- seq(1:nrows)
+    }
+
+    
+    ## Setting the attributes
+    attrs <- list(Size = nrows,
+                  Labels = labels,
+                  Diag = diag,
+                  Upper = upper,
+                  method = method,
+                  call = match.call(),
+                  class = "dist")
+
+    ## Calculating the gower distance
+    options(warn = -1) #TG: NA's get introduced. Don't care!
+    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs, test))
+    options(warn = 0)
+
+    ## Calculating the character difference
+    #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
+    output <- round(output, digits = 10)
 
     if(ncol(output) == 2) {
         ## Return a single numeric value if comparing two characters

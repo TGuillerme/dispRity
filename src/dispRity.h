@@ -46,5 +46,5 @@
 // ~~~~~~~~~~~~~~~~~~~~
 
 // char.diff
-SEXP            C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attrs);
+SEXP            C_bitwisedist(SEXP x, SEXP smethod, SEXP stranslate, SEXP sorder, SEXP attrs, SEXP test);
 
