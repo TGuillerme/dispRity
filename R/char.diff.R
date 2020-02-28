@@ -114,13 +114,16 @@
 
 char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE, test) {
 
+    match_call <- match.call()
     options(warn = -1)
 
     ## Sanitizing
     matrix_class <- check.class(matrix, c("matrix", "list"))
     if(matrix_class == "list") {
         ## Check length
-        check.length(matrix, 2, " must contain only two elements", errorif = FALSE)
+        if(length(matrix) != 2) {
+            stop(paste0("When matrix argument is a list, it must contain only two elements.\nYou can convert ", as.expression(match_call$matrix), " to a matrix using:\n", as.expression(match_call$matrix), " <- do.call(rbind, ", as.expression(match_call$matrix), ")"))
+        }
 
         ## Convert into a matrix
         matrix <- matrix(c(unlist(matrix)), byrow = FALSE, ncol = 2)
@@ -129,7 +132,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     matrix_dimnames <- dimnames(matrix)
 
     ## Convert to character
-    if(unique(apply(matrix, 2, class))[1] %in% c("numeric", "integer")) {
+    if(class(matrix[[1]]) %in% c("numeric", "integer")) {
         matrix <- apply(matrix, 2, as.character)
     }
 
@@ -180,7 +183,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## If any special token is NA, convert them as "N.A" temporarily
     if(any(is.na(special.tokens))) {
         matrix <- ifelse(is.na(matrix), "N.A", matrix)
-        special.tokens[which(is.na(special.tokens))] <- "N.A"
+        special.tokens[is.na(special.tokens)] <- "N.A"
     }
 
     ## Special behaviours
@@ -232,7 +235,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     order <- as.integer(order)
 
     ## Making the matrix as integers
-    matrix <- apply(matrix, c(1,2), as.integer)
+    # matrix <- apply(matrix, c(1,2), as.integer)
 
     ## Options to remove:
     diag = FALSE

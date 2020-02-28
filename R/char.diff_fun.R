@@ -1,4 +1,4 @@
-## Translate a character to Felsenstein's xyz notation
+## Translate a character to Felsenstein's xyz notation (to do in C?)
 translate.xyz <- function(one_character, special.tokens) {
     ## Get the symbols in order of appearance
     symbols <- grep("\\d+", unique(unlist(strsplit(unique(one_character), split = paste0("[", paste(special.tokens, collapse = ""),"]")))), value = TRUE)
@@ -27,9 +27,10 @@ translate.xyz <- function(one_character, special.tokens) {
 
 ## Binary bit converter for a single character (token)
 convert.bitwise <- function(token, special.tokens = NULL, special.behaviours = NULL, all_states = NULL) {
+
     ## Getting binary numbers
     binary <- function(token) {
-        return(round(sum(2^token)))
+        return(sum(2^token))
     }
 
     ## If token is NA straight, return NA
@@ -46,10 +47,9 @@ convert.bitwise <- function(token, special.tokens = NULL, special.behaviours = N
         return(binary(converted_token))
     } else {
         ## Convert the token according to its behaviour
-        behaviour <- names(which(sapply(special.tokens, grepl, token)))
-
+        behaviour <- names(special.tokens[sapply(special.tokens, grepl, token)])
         ## Convert to a bitwise convertible token
-        return(binary(as.integer(special.behaviours[behaviour][[1]](token, all_states))))
+        return(binary(special.behaviours[behaviour][[1]](token, all_states)))
     }
 }
 

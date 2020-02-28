@@ -33,14 +33,14 @@ test_that("convert.bitwise works", {
     ## Special behaviours
     special.behaviours <- list(
         missing = function(x,y) return(as.integer(y)),
-        inapplicable = function(x,y) return(as.integer(-1)),
+        inapplicable = function(x,y) return(NA),
         polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
         uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
         )
     all_states <- c(0,1,2,3)
     expect_warning(expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours, all_states), 7))
     expect_warning(expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours, all_states), 3))
-    expect_warning(expect_equal(convert.bitwise("-", special.tokens, special.behaviours, all_states), 0))
+    expect_warning(expect_true(is.na(convert.bitwise("-", special.tokens, special.behaviours, all_states))))
     expect_warning(expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15))
 
     ## Add some weird token
@@ -56,7 +56,7 @@ test_that("convert.character works", {
     ## Special behaviours
     special.behaviours <- list(
         missing = function(x,y) return(as.integer(y)),
-        inapplicable = function(x,y) return(as.integer(-1)),
+        inapplicable = function(x,y) return(NA),
         polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
         uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
         )
@@ -79,10 +79,10 @@ test_that("convert.character works", {
         ,c("0/1" = 3, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
     expect_warning(expect_equal(
         convert.character(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
-        ,c("0/1" = 3, "-" = 0, "1" = 2, "?" = 7, "2" = 4)))
+        ,c("0/1" = 3, "-" = NA, "1" = 2, "?" = 7, "2" = 4)))
     expect_warning(expect_equal(
         convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
-        ,c("0/1" = 3, "-" = 0, "1&3" = 10, "?" = 11, "3" = 8)))
+        ,c("0/1" = 3, "-" = NA, "1&3" = 10, "?" = 11, "3" = 8)))
 
 })
 
