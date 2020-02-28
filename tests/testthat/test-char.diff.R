@@ -265,6 +265,11 @@ test_that("Test other distances", {
     ## Ordered
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
+    ## Test maximum
+    expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,1)), method = "maximum"), 0)
+    expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,3)), method = "maximum"), 1)
+    expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, translate = FALSE), 2)
+    expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, order = TRUE, translate = FALSE), 2)
 })
 
 

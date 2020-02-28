@@ -29,19 +29,21 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
-The different distances to calculate are:
+Each method for calculating distance is expressed as a function of \eqn{d(x, y)} where \eqn{x} and \eqn{y} are a pair of columns (if \code{by.col = TRUE}) or rows in the matrix and \emph{n} is the number of comparable rows (if \code{by.col = TRUE}) or columns between them and \emph{i} is any specific pair of rows (if \code{by.col = TRUE}) or columns.
+The different methods are:
 
 \itemize{
-     \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters. This is equal to the Gower for non-numeric comparisons (e.g. character tokens).
-         \eqn{d[jk] = sum(abs(x[ij] - x[ik])/n)}
-     \item \code{"manhattan"} The "raw" distance between pairs of characters:
-         \eqn{d[jk] = sum(abs(x[ij] - x[ik]))}
-     \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared):
-         \eqn{d[jk] = sum((x_{ij}-x_{ik}) / (x_{ij}-x_{ik}))}
-     \item \code{"euclidean"} The euclidean distance:
-         \eqn{d[jk] = sqrt(sum((x[ij]-x[ik])^2))}
+     \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens).
+         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])/n}
+     \item \code{"manhattan"} The "raw" distance between characters:
+         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
+     \item \code{"comparable"} The number of comparable characters (i.e. the number of tokens that can be compared):
+         \eqn{d(x,y) = sum[i,n]((x[i] - y[i])/(x[i] - y[i]))}
+     \item \code{"euclidean"} The euclidean distance between characters:
+         \eqn{d(x,y) = sqrt(sum[i,n]((x[i] - y[i])^2))}
+     \item \code{"maximum"} The maximum distance between characters:
+         \eqn{d(x,y) = max(abs(x[i] - y[i]))}
 }
-
 
 When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 

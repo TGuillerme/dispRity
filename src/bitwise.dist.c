@@ -110,8 +110,10 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
     for(k = 0 ; k < count ; k++) {
         if(order[k] == 0) {
             diff = bitwise_compare_unordered(vector1[k], vector2[k]);
+            // printf("(unord) %i - %i = %i\n", vector1[k], vector2[k], diff);
         } else {
             diff = bitwise_compare_ordered(vector1[k], vector2[k]);
+            // printf("(order) %i - %i = %i\n", vector1[k], vector2[k], diff);
         }
         // diff = bitwise_compare(vector1[k], vector2[k], order[k]);
         dist = dist + diff;
@@ -123,9 +125,11 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
         if(translate == 0) {
             // Return the hamming distance differences/counts
             result = (double)dist/count;
+            // printf("result = %i / %i\n", dist, count);
         } else {
             // Return the corrected distance (differences / (counts - 1))
             result = (double)dist/(count-1);
+            // printf("result = %i /(%i - 1)\n", dist, count);
         }
         return result;
     }

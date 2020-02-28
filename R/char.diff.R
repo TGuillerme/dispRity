@@ -22,13 +22,12 @@
 #'      \item \code{"manhattan"} The "raw" distance between characters:
 #'          \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
 #'      \item \code{"comparable"} The number of comparable characters (i.e. the number of tokens that can be compared):
-#'          \eqn{d(x,y) = sum((x[i] - y[i])/(x[i] - y[i]))}
+#'          \eqn{d(x,y) = sum[i,n]((x[i] - y[i])/(x[i] - y[i]))}
 #'      \item \code{"euclidean"} The euclidean distance between characters:
-#'          \eqn{d(x,y) = sqrt(sum((x[i] - y[i])^2))}
+#'          \eqn{d(x,y) = sqrt(sum[i,n]((x[i] - y[i])^2))}
 #'      \item \code{"maximum"} The maximum distance between characters:
 #'          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
 #' }
-#' 
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 #' 
