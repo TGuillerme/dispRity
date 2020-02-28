@@ -263,7 +263,7 @@ static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int transl
                 diff = bitwise_compare_ordered(x[i1], x[i2]);
             }
 
-            if(!ISNAN(diff)) {
+            if(diff != NA_INTEGER) {
                 // If the difference is greater than the distance, increase the distance to that difference
                 if(diff > dist) {
                     dist = diff;
