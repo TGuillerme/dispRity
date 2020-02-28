@@ -24,44 +24,47 @@
  * @param order: an integer used as logical whether to order characters (order != 0) or not (order == 0).
  * @returns an integer equal to the distance between both characters
  */
-static inline int bitwise_compare(int char1, int char2, int order) {
+static inline int bitwise_compare_unordered(int char1, int char2) {
     // initialise all values to 0
-    int count = 0, result = 0, dist = 0, buffer = 0;
-    
-    // Comparing both characters
+    int result = 0, dist = 0;
     result = char1 & char2;
 
+    // If there is no union between the two characters, count the distance
     if(result == 0) {
-        // If there is no union between the two characters, count the distance
-        if(order == 0) {
-            // printf("bitwise_compare: %i & %i = dist + %i\n", char1, char2, dist);
-            // increment Fitch (easy)
-            dist = 1;
-        } else {
-            // increment wagner
-            if(char1 > char2){
-                // Shift char1 until there is an intersection
-                buffer = char1;
-                while((buffer & char2) == 0) {
-                    buffer = buffer >> 1;
-                    count++;
-                }
-            } else {
-                // Shift char2 until there is an intersection
-                buffer = char2;
-                while((buffer & char1) == 0) {
-                    buffer = buffer >> 1;
-                    count++;
-                }
-            }
-            dist = count;
-            // printf("bitwise_compare: %i & %i = dist + %i\n", char1, char2, dist);
-        }
+        dist = 1;
     }
 
     return dist;
 }
 
+static inline int bitwise_compare_ordered(int char1, int char2) {
+    // initialise all values to 0
+    int result = 0, dist = 0, buffer = 0;
+
+    result = char1 & char2;
+
+    // If there is no union between the two characters, count the distance
+    if(result == 0) {
+        // increment wagner
+        if(char1 > char2){
+            // Shift char1 until there is an intersection
+            buffer = char1;
+            while((buffer & char2) == 0) {
+                buffer = buffer >> 1;
+                dist++;
+            }
+        } else {
+            // Shift char2 until there is an intersection
+            buffer = char2;
+            while((buffer & char1) == 0) {
+                buffer = buffer >> 1;
+                dist++;
+            }
+        }
+    }
+
+    return dist;
+}
 
 // Available distance methods
 #define HAMMING 1
@@ -112,7 +115,12 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
     // printf("\n");
 
     for(k = 0 ; k < count ; k++) {
-        diff = bitwise_compare(vector1[k], vector2[k], order[k]);
+        if(order[k] == 0) {
+            diff = bitwise_compare_unordered(vector1[k], vector2[k]);
+        } else {
+            diff = bitwise_compare_ordered(vector1[k], vector2[k]);
+        }
+        // diff = bitwise_compare(vector1[k], vector2[k], order[k]);
         dist = dist + diff;
     }
 
@@ -156,7 +164,11 @@ static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int tran
     }
 
     for(k = 0 ; k < count ; k++) {
-        diff = bitwise_compare(vector1[k], vector2[k], order[k]);
+        if(order[k] == 0) {
+            diff = bitwise_compare_unordered(vector1[k], vector2[k]);
+        } else {
+            diff = bitwise_compare_ordered(vector1[k], vector2[k]);
+        }
         dist += diff;
     }
 
@@ -221,7 +233,11 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
     }
 
     for(k = 0 ; k < count ; k++) {
-        diff = bitwise_compare(vector1[k], vector2[k], order[k]);
+        if(order[k] == 0) {
+            diff = bitwise_compare_unordered(vector1[k], vector2[k]);
+        } else {
+            diff = bitwise_compare_ordered(vector1[k], vector2[k]);
+        }
         dist += diff * diff;
     }
 

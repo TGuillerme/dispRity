@@ -112,7 +112,7 @@
 # order <- FALSE
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE, test) {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE) {
 
     match_call <- match.call()
     options(warn = -1)

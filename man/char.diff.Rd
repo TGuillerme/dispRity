@@ -5,7 +5,7 @@
 \title{Character differences}
 \usage{
 char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
-  special.behaviours, order = FALSE, by.col = TRUE, test)
+  special.behaviours, order = FALSE, by.col = TRUE)
 }
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
