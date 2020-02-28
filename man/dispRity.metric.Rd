@@ -23,6 +23,7 @@
 \alias{quantiles}
 \alias{func.eve}
 \alias{func.div}
+\alias{angles}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)

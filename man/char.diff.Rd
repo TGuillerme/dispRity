@@ -4,10 +4,23 @@
 \alias{char.diff}
 \title{Character differences}
 \usage{
-char.diff(matrix)
+char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
+  special.behaviours, order = FALSE, by.col = TRUE)
 }
 \arguments{
-\item{matrix}{A discrete matrix or a list containing discrete characters.}
+\item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
+
+\item{method}{The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.}
+
+\item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
+
+\item{special.tokens}{optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.}
+
+\item{special.behaviours}{optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.}
+
+\item{order}{\code{logical}, whether the character should be treated as order (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows or columns in \code{matrix} (depending on \code{by.col}) to specify ordering for each character.}
+
+\item{by.col}{\code{logical}, whether to measure the distance by columns (\code{TRUE} - default) or by rows (\code{FALSE}).}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}
@@ -16,22 +29,79 @@ A character difference value or a matrix of class \code{char.diff}
 Calculates the character difference from a discrete matrix
 }
 \details{
-The character difference is calculated as half the sum of the Gower distances between the characters.
+Each method for calculating distance is expressed as a function of \eqn{d(x, y)} where \eqn{x} and \eqn{y} are a pair of columns (if \code{by.col = TRUE}) or rows in the matrix and \emph{n} is the number of comparable rows (if \code{by.col = TRUE}) or columns between them and \emph{i} is any specific pair of rows (if \code{by.col = TRUE}) or columns.
+The different methods are:
+
+\itemize{
+     \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens).
+         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])/n}
+     \item \code{"manhattan"} The "raw" distance between characters:
+         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
+     \item \code{"comparable"} The number of comparable characters (i.e. the number of tokens that can be compared):
+         \eqn{d(x,y) = sum[i,n]((x[i] - y[i])/(x[i] - y[i]))}
+     \item \code{"euclidean"} The euclidean distance between characters:
+         \eqn{d(x,y) = sqrt(sum[i,n]((x[i] - y[i])^2))}
+     \item \code{"maximum"} The maximum distance between characters:
+         \eqn{d(x,y) = max(abs(x[i] - y[i]))}
+}
+
+When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
+
+\code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}.
+
+\itemize{
+     \item{\code{missing = function(x,y) NA}}
+     \item{\code{inapplicable = function(x,y) NA}}
+     \item{\code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
+     \item{\code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
+}
+
+\code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
+
+IMPORTANT: Note that for any distance method, \code{NA} values are skipped in the distance calculations (e.g. distance(\code{A = {1, NA, 2}, B = {1, 2, 3}}) is treated as distance(\code{A = {1, 2}, B = {1, 3}})).
+If you want to treat \code{NA} values as any possible observed state, you need to define the following behaviour: \code{special.behaviour$missing = function(x,y) as.integer(y)}.
+
+IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64).
 }
 \examples{
-## Comparing two characters
+## Comparing two binary characters
 char.diff(list(c(0, 1, 0, 1), c(0, 1, 1, 1)))
 
 ## Pairwise comparisons in a morphological matrix
 morpho_matrix <- matrix(sample(c(0,1), 100, replace = TRUE), 10)
 char.diff(morpho_matrix)
 
+## Adding special tokens to the matrix
+morpho_matrix[sample(1:100, 10)] <- c("?", "0&1", "-")
+char.diff(morpho_matrix)
+
+## Modifying special behaviours for tokens with "&" to be treated as NA
+char.diff(morpho_matrix,
+          special.behaviours = list(polymorphism = function(x,y) return(NA)))
+
+## Adding a special character with a special behaviour (count "\%" as "100")
+morpho_matrix[sample(1:100, 5)] <- "\%"
+char.diff(morpho_matrix,
+          special.tokens = c("paragraph" = "\\\\\%"),
+          special.behaviours = list(paragraph = function(x,y) as.integer(100)))
+
+## Comparing characters with/without translation
+char.diff(list(c(0, 1, 0, 1), c(1, 0, 1, 0)), method = "manhattan")
+# no character difference
+char.diff(list(c(0, 1, 0, 1), c(1, 0, 1, 0)), method = "manhattan",
+          translate = FALSE)
+# all four character states are different
+
 }
 \references{
+Wills XXX
+Hamming XXX
+Lloyd XXX
+Felsenstein XXX
 Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
 }
 \seealso{
-\code{\link{plot.char.diff}}.
+\code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[cluster]{daisy}}
 }
 \author{
 Thomas Guillerme
