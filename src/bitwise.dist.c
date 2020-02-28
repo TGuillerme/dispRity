@@ -66,15 +66,8 @@ static inline int bitwise_compare_ordered(int char1, int char2) {
     return dist;
 }
 
-// Available distance methods
-#define HAMMING 1
-#define MANHATTAN 2
-#define COMPARABLE 3
-#define EUCLIDEAN 4
-
 // Calculating the hamming character distance
-static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int *order)
-{
+static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
     int vector1[nc], vector2[nc], orders[nc];
@@ -139,8 +132,7 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
 }
 
 // Calculating the manhattan difference
-static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int translate, int *order)
-{
+static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
     int vector1[nc], vector2[nc], orders[nc];
@@ -181,8 +173,7 @@ static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int tran
 }
 
 // Counting the number of comparable characters
-static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int translate, int *order)
-{
+static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
     int count = 0, i = 0, k = 0, diff = 0, dist = 0;
@@ -208,8 +199,7 @@ static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int tra
 }
 
 // Calculating the euclidean distance
-static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int translate, int *order)
-{
+static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
     int vector1[nc], vector2[nc], orders[nc];
@@ -254,6 +244,47 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
     }
 }
 
+// Calculating the maximum distance
+static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
+
+    // Declaring variables (result is int)
+    int diff = 0, dist = 0, count = 0, i;
+
+    for(i = 0 ; i < nc ; i++) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+            
+            if(order[i1] == 0) { 
+                diff = bitwise_compare_unordered(x[i1], x[i2]);
+            } else {
+                diff = bitwise_compare_ordered(x[i1], x[i2]);
+            }
+
+            if(!ISNAN(diff)) {
+                // If the difference is greater than the distance, increase the distance to that difference
+                if(diff > dist) {
+                    dist = diff;
+                }
+                count++;
+            }
+        }
+        i1 += nr;
+        i2 += nr;
+    }
+
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        return dist;
+    }
+}
+
+// Available distance methods
+#define HAMMING 1
+#define MANHATTAN 2
+#define COMPARABLE 3
+#define EUCLIDEAN 4
+#define MAXIMUM 5
+
 // dispRity_bitwise_distance function (R::dist())
 void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
 {
@@ -289,6 +320,9 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
         break;
         case EUCLIDEAN:
             distfun = bitwise_euclidean;
+        break;
+        case MAXIMUM:
+            distfun = bitwise_maximum;
         break;
     }
 

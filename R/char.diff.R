@@ -13,17 +13,20 @@
 #' 
 #' @details
 #' 
-#' The different distances to calculate are:
+#' Each method for calculating distance is expressed as a function of \eqn{d(x, y)} where \eqn{x} and \eqn{y} are a pair of columns (if \code{by.col = TRUE}) or rows in the matrix and \emph{n} is the number of comparable rows (if \code{by.col = TRUE}) or columns between them and \emph{i} is any specific pair of rows (if \code{by.col = TRUE}) or columns.
+#' The different methods are:
 #' 
 #' \itemize{
-#'      \item \code{"hamming"} The scaled hamming distance: the relative distance between each pairs of comparable characters. This is equal to the Gower for non-numeric comparisons (e.g. character tokens).
-#'          \eqn{d[jk] = sum(abs(x[ij] - x[ik])/n)}
-#'      \item \code{"manhattan"} The "raw" distance between pairs of characters:
-#'          \eqn{d[jk] = sum(abs(x[ij] - x[ik]))}
-#'      \item \code{"comparable"} The comparable distance between characters (i.e. the number of tokens that can be compared):
-#'          \eqn{d[jk] = sum((x_{ij}-x_{ik}) / (x_{ij}-x_{ik}))}
-#'      \item \code{"euclidean"} The euclidean distance:
-#'          \eqn{d[jk] = sqrt(sum((x[ij]-x[ik])^2))}
+#'      \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens).
+#'          \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])/n}
+#'      \item \code{"manhattan"} The "raw" distance between characters:
+#'          \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
+#'      \item \code{"comparable"} The number of comparable characters (i.e. the number of tokens that can be compared):
+#'          \eqn{d(x,y) = sum((x[i] - y[i])/(x[i] - y[i]))}
+#'      \item \code{"euclidean"} The euclidean distance between characters:
+#'          \eqn{d(x,y) = sqrt(sum((x[i] - y[i])^2))}
+#'      \item \code{"maximum"} The maximum distance between characters:
+#'          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
 #' }
 #' 
 #' 
@@ -143,7 +146,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean")
+    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean", "maximum")
     check.method(method, avail_methods, msg = "method")
     c_method <- pmatch(method, avail_methods)
 
@@ -269,7 +272,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
     ## Calculating the character difference
     #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
-    output <- round(output, digits = 10)
+    # output <- round(output, digits = 10)
 
     if(ncol(output) == 2) {
         ## Return a single numeric value if comparing two characters
