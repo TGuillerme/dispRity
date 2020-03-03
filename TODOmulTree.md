@@ -6,6 +6,8 @@ Changing the `dispRity` structure to allow list of matrices
 
 # Individual function changes
 
+THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
+
 ## `make.dispRity`
 
  - [ ] make a list of one matrix.
