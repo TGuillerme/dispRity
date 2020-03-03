@@ -24,7 +24,7 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `fill.dispRity`
 
- - [ ] make a list of N matrices (using `check.dispRity.data`). 
+ - [x] make a list of N matrices (using `check.dispRity.data`). 
 
 ## `dispRity`
 

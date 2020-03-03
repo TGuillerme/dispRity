@@ -68,21 +68,16 @@ make.dispRity <- function(data, call, subsets) {
 fill.dispRity <- function(data) {
 
     ## Data have a matrix
-    if(!is.null(data$matrix)) {
-        check.class(data$matrix, c("matrix", "list"))
-    } else {
-        stop.call("", "dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
-    }
+    data$matrix <- check.dispRity.data(data$matrix)
 
     ## Dimensions
     if(length(data$call$dimensions) == 0) {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Fill empty subsets
     if(length(data$subsets) == 0) {
-        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix)))))
-        #data$subsets[[1]][[1]] <- matrix(1:nrow(data$matrix))
+        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
     } else {
         for(subsets in 2:length(data$subsets)) {
             data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
