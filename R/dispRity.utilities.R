@@ -22,12 +22,14 @@
 
 make.dispRity <- function(data, call, subsets) {
     ## Make the empty object
-    dispRity_object <- list("matrix" = NULL , "call" = list(), "subsets" = list())
+    dispRity_object <- list("matrix" = list(NULL) , "call" = list(), "subsets" = list())
 
     ## Add the matrix
     if(!missing(data)) {
-        check.class(data, "matrix")
-        dispRity_object$matrix <- data
+        data_class <- check.class(data, c("matrix", "list"))
+        switch(data_class,
+            matrix = {dispRity_object$matrix <- list(data)},
+            list = {dispRity_object$matrix <- data})
     }
 
     ## Add the call
@@ -67,7 +69,7 @@ fill.dispRity <- function(data) {
 
     ## Data have a matrix
     if(!is.null(data$matrix)) {
-        check.class(data$matrix, "matrix")
+        check.class(data$matrix, c("matrix", "list"))
     } else {
         stop.call("", "dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
     }

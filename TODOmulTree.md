@@ -1,7 +1,9 @@
 # mulTree shift:
+
 Changing the `dispRity` structure to allow list of matrices
 
 ## NEWS:
+
 * All `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
 
 # Individual function changes
@@ -10,17 +12,19 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `make.dispRity`
 
- - [ ] make a list of one matrix.
+ - [x] make a list of one matrix.
+
+## `check.dispRity.data`
+
+ - [x] checks data to be matrix or list.
+ - [x] if list check dimnames equal
+ - [x] if no.dimnames add integers
+ - [x] sort dimnames
+ - [x] return list of data
 
 ## `fill.dispRity`
 
- - [ ] make a list of N matrices. 
-
-## `check.dispRity`
-
- - [ ] checks data to be dispRity object or not.
- - [ ] if not dispRity, make it into a list matrix
- - [ ] option for now: force all matrices to have the same dimnames and create a `equal_dimnames` for `print.dispRity` and future options.
+ - [ ] make a list of N matrices (using `check.dispRity.data`). 
 
 ## `dispRity`
 

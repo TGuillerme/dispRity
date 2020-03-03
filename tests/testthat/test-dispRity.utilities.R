@@ -73,8 +73,11 @@ test_that("make.matrix", {
     expect_is(
         test1
         ,"dispRity")
-    expect_equal(
+    expect_is(
         test1$matrix
+        ,"list")
+    expect_equal(
+        test1$matrix[[1]]
         ,NULL)
     expect_is(
         test1$call
@@ -83,13 +86,18 @@ test_that("make.matrix", {
         test1$subsets
         ,"list")
 
-    test2 <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
+    data_test <- matrix(rnorm(12), ncol = 3)
+
+    test2 <- make.dispRity(data = data_test)
 
     expect_is(
         test2
         ,"dispRity")
     expect_is(
         test2$matrix
+        ,"list")
+    expect_is(
+        test2$matrix[[1]]
         ,"matrix")
     expect_is(
         test2$call
@@ -100,6 +108,32 @@ test_that("make.matrix", {
     expect_equal(
         length(unlist(test2))
         , 12)
+
+    test3 <- make.dispRity(data = list(data_test))
+
+    expect_is(
+        test3
+        ,"dispRity")
+    expect_is(
+        test3$matrix
+        ,"list")
+    expect_is(
+        test3$matrix[[1]]
+        ,"matrix")
+    expect_is(
+        test3$call
+        ,"list")
+    expect_is(
+        test3$subsets
+        ,"list")
+    expect_equal(
+        length(unlist(test3))
+        , 12)
+
+    test4 <- make.dispRity(data = list(data_test, data_test))
+    expect_equal(
+        length(unlist(test4))
+        , 24)
 })
 
 
