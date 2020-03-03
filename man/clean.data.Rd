@@ -4,17 +4,15 @@
 \alias{clean.data}
 \title{Cleaning phylogenetic data}
 \usage{
-clean.data(data, tree, pairwise = FALSE)
+clean.data(data, tree)
 }
 \arguments{
-\item{data}{A \code{data.frame}, \code{matrix} or a \code{list} of data frames or matrices with the elements names as row names.}
+\item{data}{A \code{data.frame} or \code{matrix} with the elements names as row names.}
 
 \item{tree}{A \code{phylo} or \code{multiPhylo} object.}
-
-\item{pairwise}{\code{logical}, the same number of datasets and trees are provided, whether to match them only two by two (\code{TRUE}) or not (\code{FALSE} - default).}
 }
 \value{
-A \code{list} containing the cleaned data(s) and tree(s) and information on the eventual dropped tips and rows.
+A \code{list} containing the cleaned data and tree(s) and information on the eventual dropped tips and rows.
 }
 \description{
 Cleans a table/tree to match with a given table/tree

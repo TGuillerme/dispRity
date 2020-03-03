@@ -1,6 +1,49 @@
 # TEST clean.data
 context("clean.data")
 
+# Testing clean.tree.table
+tree <- rtree(6, tip.label = LETTERS[1:6])
+data <- matrix(data =c(rnorm(4), runif(4)), 4, 2, dimnames = list(LETTERS[2:5]))
+test <- clean.tree.table(tree, data)
+test_that("clean.tree.table works", {
+    # Errors
+    expect_error(
+    	clean.tree.table(TRUE)
+    	)
+    # Output is a list...
+    expect_is(
+    	test, "list"
+    	)
+    # ... of 4 elements.
+    expect_equal(
+    	length(test), 4
+    	)
+    # First element is a tree...
+    expect_is(
+    	test[[1]], "phylo"
+    	)
+    # ...with three taxa.
+    expect_equal(
+    	Ntip(test[[1]]), 4
+    	)
+    # Second element is a table...
+    expect_is(
+    	test[[2]], "matrix"
+    	)
+    # ...with three rows.
+    expect_equal(
+    	nrow(test[[2]]), 4
+    	)
+    # Third element contains "F" and "A"
+    expect_equal(
+    	sort(test[[3]]), c("A", "F")
+    	)
+    # Forth element contains NA
+    expect_equal(
+    	test[[4]], NA
+    	)
+})
+
 #Testing clean.data
 trees_list <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETTERS[1:4]), rtree(6, tip.label = LETTERS[1:6])) ; class(trees_list) <- "multiPhylo"
 dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
@@ -40,7 +83,7 @@ test_that("clean.data works", {
     	)
     # Third element contains "F"
     expect_equal(
-    	cleaned[[3]], c("E", "F")
+    	cleaned[[3]], "F"
     	)
     # Forth element contains "E"
     expect_equal(
@@ -79,37 +122,3 @@ test_that("clean.data works", {
     expect_equal(clean.data(dummy_data, multi_tree)$dropped_rows, NA)
 })
 
-
-test_that("clean.data works with multiple tables and pairwise", {
-    data1 <- matrix(c(rnorm(4), runif(4)), 4, 2, dimnames = list(LETTERS[1:4], c("var1", "var2")))
-    data2 <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
-    data_long <- list(data1, data2)
-    tree1 <- rtree(4, tip.label = LETTERS[1:4])
-    tree_long <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETTERS[1:4]))
-    class(tree_long) <- "multiPhylo"
-
-    test <- clean.data(data_long, tree_long)
-
-    expect_is(test, "list")
-    expect_equal(length(test$data), 2)
-    expect_equal(length(test$tree), 2)
-    expect_equal(test$dropped_tips, c("E"))
-    expect_equal(test$dropped_rows, c("E"))
-
-    test_pair <- clean.data(data_long, tree_long, 
-        pairwise = TRUE)
-
-    expect_is(test_pair, "list")
-    expect_equal(length(test_pair), 2)
-    expect_equal(length(test_pair[[1]]$data), 1)
-    expect_equal(length(test_pair[[2]]$data), 1)
-    expect_equal(length(test_pair[[1]]$tree), 1)
-    expect_equal(length(test_pair[[2]]$tree), 1)
-    expect_equal(test_pair[[1]]$dropped_tips, c("E"))
-    expect_equal(test_pair[[1]]$dropped_rows, c(NA))
-    expect_equal(test_pair[[2]]$dropped_tips, c(NA))
-    expect_equal(test_pair[[2]]$dropped_rows, c("E"))
-
-    error <- capture_error(clean.data(data2, tree_long, pairwise = TRUE))
-    expect_equal(error[[1]], "Both data2 and tree_long must have the same length.")
-})

@@ -10,13 +10,13 @@
 custom.subsets(data, group)
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{list} of matrices (with the same dimensions).}
+\item{data}{A \code{matrix}.}
 
 \item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:
-\item{matrix}{the multidimensional space (a \code{list} of \code{matrix}).}
+\item{matrix}{the multidimensional space (a \code{matrix}).}
 \item{call}{A \code{list} containing the called arguments.}
 \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 

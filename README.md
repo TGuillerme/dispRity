@@ -130,6 +130,12 @@ Used in
 -------
 <!-- > 19 publications have used `dispRity` since 2018 (12.6 per year). (calculated on the 07/11/2019). -->
 
+* <a href="ttps://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Early+high+rates+and+disparity+in+the+evolution+of+ichthyosaurs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+BC Moon, TL Stubbs. (**2020**) Early high rates and disparity in the evolution of ichthyosaurs. *Communications Biology*. 3(1):1-8.[DOI: 10.1038/s42003-020-0779-6](https://www.nature.com/articles/s42003-020-0779-6)
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Crocodylomorph+cranial+shape+evolution+and+its+relationship+with+body+size+and+ecology&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+PL Godoy. (**2020**) Crocodylomorph cranial shape evolution and its relationship with body size and ecology. *Journal of Evolutionary Biology*. 33(1):4-21. [DOI: 10.1111/jeb.13540](https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Otolith+morphological+divergences+of+successful+Lessepsian+fishes+on+the+Mediterranean+coastal+waters&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 VM Tuset, A Lombarte, M Bariche, F Maynou, E Azzurro. (**2020**) Otolith morphological divergences of successful Lessepsian fishes on the Mediterranean coastal waters. *Estuarine, Coastal and Shelf Science*.[DOI: 10.1016/j.ecss.2020.106631](https://www.sciencedirect.com/science/article/pii/S0272771419311291)
 

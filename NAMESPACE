@@ -104,9 +104,9 @@ export(get.ancestors)
 ##Morphological data analysis
 export(apply.NA)
 export(char.diff)
+export(plot.char.diff)
 export(check.morpho)
 export(get.contrast.matrix)
-export(plot.char.diff)
 export(sim.morpho)
 
 ##S3 

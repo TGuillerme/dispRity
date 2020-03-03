@@ -14,7 +14,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
     ## Output one factor
     output.factor <- function(factors, one_group_variable, data) {
 
-        test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix[[1]])), silent = TRUE)
+        test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)), silent = TRUE)
 
         if(is(test, "try-error")) {
             ## Deal with NAs down the line
@@ -41,7 +41,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
         ## Individual time series
         make.time.series <- function(one_time_subset, data) {
             ## Generate the time series
-            time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix[[1]]), dimnames = list(rownames(data$matrix[[1]])))
+            time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix), dimnames = list(rownames(data$matrix)))
             time_series[as.vector(one_time_subset), 1] <- TRUE
             return(time_series)
         }
@@ -59,7 +59,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
         if(pool) {
             ## Translating the data
             groups <- t(apply(groups, 1, function (X) ifelse(X, names(X), NA)))
-            groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix[[1]]), colnames)))
+            groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), colnames)))
         } else {
             ## Binarise the data
             if(time) {

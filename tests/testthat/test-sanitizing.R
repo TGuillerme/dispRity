@@ -171,36 +171,3 @@ test_that("test_equal_round works", {
     y <- 1.11
     expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
 })
-
-## Test check.matrix
-test_that("test.matrix works", {
-
-    data1 <- matrix(c(rnorm(4), runif(4)), 4, 2, dimnames = list(LETTERS[1:4], c("var1", "var2")))
-    data2 <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
-    data3 <- matrix(c(rnorm(4), runif(4)), 4, 2, dimnames = list(LETTERS[2:5], c("var1", "var2")))
-    data_long <- list(data1, data1)
-    tree1 <- rtree(4, tip.label = LETTERS[1:4])
-    tree_long <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETTERS[1:4]), rtree(6, tip.label = LETTERS[1:6]))
-    class(tree_long) <- "multiPhylo"
-
-    ## Test pass
-    expect_equal(check.matrix(list(data1)), 1)
-    expect_equal(check.matrix(data_long), 2)
-    expect_equal(check.matrix(list(data1), tree = tree1), 1)
-    expect_equal(check.matrix(list(data1, data1), tree = tree1), 2)
-
-    ## Test fails
-    error <- capture_error(check.matrix(list("A", "B")))
-    expect_equal(error[[1]], "list(\"A\", \"B\") must be a matrix or a list of matrices.")
-    error <- capture_error(check.matrix(data_long, tree = tree_long))
-    expect_equal(error[[1]], "data_long does not match tree_long. Use the following to match both:\n    clean.data(data_long, tree_long)")
-    error <- capture_error(check.matrix(list(data1, data2)))
-    expect_equal(error[[1]], "Some matrices in list(data1, data2) have different dimensions.")
-    error <- capture_error(check.matrix(list(data1, data3)))
-    expect_equal(error[[1]], "All matrices in list(data1, data3) must have the same rownames.")
-
-    ## Counting works
-    expect_equal(check.matrix(list(data1), count = TRUE), list(c(4,2)))
-    expect_equal(check.matrix(list(data2), count = TRUE), list(c(5,2)))
-    expect_equal(check.matrix(data_long, count = TRUE), list(c(4,2), c(5,2)))
-})

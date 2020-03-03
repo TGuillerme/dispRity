@@ -30,6 +30,7 @@ test_that("split.elements.data.frame", {
     expect_equal(length(test), 2)
     expect_equal(names(test), c("1", "2"))
     expect_equal(as.vector(unlist(lapply(test, lapply, length))), c(5,5))
+
 })
 
 
@@ -80,7 +81,7 @@ test_that("Sanitizing works", {
     data_wrong <- data
     rownames(data_wrong)[1] <= "AAA"
     error <- capture_error(custom.subsets(data_wrong, tree))
-    expect_equal(error[[1]], "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+    expect_equal(error[[1]], "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
 
 })
 
@@ -224,6 +225,8 @@ test_that("clade subsets works", {
     expect_equal(nrow(without_nodes$subsets[[1]]$elements), nrow(BeckLee_mat50))
     expect_equal(nrow(with_nodes$subsets[[1]]$elements), nrow(BeckLee_mat99))
 })
+
+
 
 test_that("custom.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)

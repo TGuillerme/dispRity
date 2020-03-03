@@ -2,12 +2,11 @@
 #'
 #' @description Cleans a table/tree to match with a given table/tree
 #'
-#' @param data A \code{data.frame}, \code{matrix} or a \code{list} of data frames or matrices with the elements names as row names.
+#' @param data A \code{data.frame} or \code{matrix} with the elements names as row names.
 #' @param tree A \code{phylo} or \code{multiPhylo} object.
-#' @param pairwise \code{logical}, the same number of datasets and trees are provided, whether to match them only two by two (\code{TRUE}) or not (\code{FALSE} - default).
 #'
 #' @return
-#' A \code{list} containing the cleaned data(s) and tree(s) and information on the eventual dropped tips and rows.
+#' A \code{list} containing the cleaned data and tree(s) and information on the eventual dropped tips and rows.
 #'
 #' @examples
 #' ##Creating a set of different trees
@@ -32,56 +31,78 @@
 #' 
 #' @author Thomas Guillerme
 # @export
-clean.data <- function(data, tree, pairwise = FALSE) {
+
+clean.data <- function(data, tree) {
 
     ## Get call
     match_call <- match.call()
 
     ## SANITIZING
+    ## data
+    silent <- check.class(data, c("matrix", "data.frame"), " must be a data.frame or matrix object.")
+    ##  must have row names
+    if(is.null(rownames(data))) {
+        stop.call(match_call$data, " must have row names.")
+    }
+
     ## tree
     tree_class <- check.class(tree, c("phylo", "multiPhylo"), " must be a phylo or multiPhylo object.")
-    if(tree_class == "phylo") {
-        ## Make into a list
-        tree <- list(tree)
-    }
 
-    ## data
-    data_class <- check.class(data, c("matrix", "data.frame", "list"), " must be a data.frame, a matrix or a list of data frames and matrices.")
+    ## CLEANING THE DATA/TREES
+    ## for a single tree
+    if(tree_class == "phylo") {        
+        cleaned_data <- clean.tree.table(tree, data)
 
-    ## check classes
-    if(data_class == "list") {
-        ## Check internal classes
-        data_classes <- unlist(lapply(data, class))
-        if(any(!(data_classes %in% c("matrix", "data.frame")))) {
-            stop(paste0(match_call$data, " must be a data.frame, a matrix or a list of data frames and matrices."), call. = FALSE)
-        }
-
-        ## Check for rownames
-        data_rownames <- unlist(lapply(data, rownames))
-        if(any(is.null(data_rownames))) {
-            stop.call(match_call$data, " must have row names for each matrix or data.frame in the list.")
-        }
     } else {
-        ## Make into a list
-        data <- list(data)
-    }
+        ## for multiple trees
+        ## lapply function
+        cleaned_list <- lapply(tree, clean.tree.table, data = data)
 
-    if(!pairwise) { 
-        ## Run normal comparisons (all to all)
-        return(clean.data.internal(data, tree, tree_class, data_class))
-    } else {
-        ## Check whether both have the same length
-        if(length(data) != length(tree)) {
-            stop.call(msg.pre = "Both ", call = match_call$data, msg = paste0(" and ", as.expression(match_call$tree), " must have the same length."))
+        ## Selecting the tips to drop
+        tips_to_drop <- unique(unlist(lapply(cleaned_list, function(x) x[[3]])))
+        ## removing NAs
+        if(any(is.na(tips_to_drop))) {
+            tips_to_drop <- tips_to_drop[-which(is.na(tips_to_drop))]    
         }
 
-        ## Double list everything
-        lapply(data, function(x) list(x))
+        ## Selecting the rows to drop
+        rows_to_drop <- unique(unlist(lapply(cleaned_list, function(x) x[[4]])))
+        ## removing NAs
+        if(any(is.na(rows_to_drop))) {
+            rows_to_drop <- rows_to_drop[-which(is.na(rows_to_drop))]
+        }
+        
+        ## Combining both
+        taxa_to_drop <- c(tips_to_drop, rows_to_drop)
 
-        ## Apply a pairwise comparison only
-        return(mapply(clean.data.internal,
-                     lapply(data, function(x) list(x)),
-                     lapply(tree, function(x) list(x)),
-                     MoreArgs = list(tree_class = tree_class, data_class = data_class), SIMPLIFY = FALSE))
+        ## Dropping the tips across all trees
+        if(length(taxa_to_drop) != 0) {
+            tree_new <- lapply(tree, drop.tip, taxa_to_drop)
+            class(tree_new) <- 'multiPhylo'
+        } else {
+            ## removing taxa from the trees
+            ## keep the same trees
+            tree_new <- tree
+        }
+
+        ## Dropping the rows
+        if(length(rows_to_drop) != 0) {
+            ## removing taxa from the data
+            data_new <- data[-match(rows_to_drop, rownames(data)),]
+        } else {
+            ## keep the same data
+            data_new <- data
+        }
+
+        ## Replacing empty vectors by NAs
+        if(length(tips_to_drop) == 0) tips_to_drop <- NA
+        if(length(rows_to_drop) == 0) rows_to_drop <- NA
+
+        ## output list
+        cleaned_data <- list("tree" = tree_new, "data" = data_new, "dropped_tips" = tips_to_drop,  "dropped_rows" = rows_to_drop)
     }
+
+    return(cleaned_data)
+
+## End
 }

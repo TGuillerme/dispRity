@@ -182,11 +182,11 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     check.class(warn, "logical")
     
     ## Checking if the data is a distance matrix or not
-    matrix <- check.dist.matrix(data$matrix[[1]], method = method)
+    matrix <- check.dist.matrix(data$matrix, method = method)
     was_dist <- matrix[[2]]
     matrix <- matrix[[1]]
     if(warn && !was_dist) {
-        warning("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix[[1]])).\nMake sure that this is the desired methodological approach!")
+        warning("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).\nMake sure that this is the desired methodological approach!")
     }
 
     ## Making the predictors table
