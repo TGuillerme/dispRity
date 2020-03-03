@@ -1,0 +1,58 @@
+# mulTree shift:
+Changing the `dispRity` structure to allow list of matrices
+
+## NEWS:
+* All `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
+
+# Individual function changes
+
+## `make.dispRity`
+
+ - [ ] make a list of one matrix.
+
+## `fill.dispRity`
+
+ - [ ] make a list of N matrices. 
+
+## `check.dispRity`
+
+ - [ ] checks data to be dispRity object or not.
+ - [ ] if not dispRity, make it into a list matrix
+ - [ ] option for now: force all matrices to have the same dimnames and create a `equal_dimnames` for `print.dispRity` and future options.
+
+## `dispRity`
+
+ - [ ] use check.dispRity
+ - [ ] apply the disparity calculation to all the matrices
+ - [ ] return disparity values as observed (length = length(matrices)) and normal bootstraps
+
+## `dispRity.utilities`
+
+ - [ ] `extract.dispRity` works on list rather than matrices
+ - [ ] `rescale.dispRity` works on list rather than matrices
+ - [ ] `combine.subsets`  works on list rather than matrices
+
+## `print.dispRity`
+
+ - [ ] now also print the number of matrices
+
+## `plot.dispRity` 
+
+ - [ ] `type = "preview"` has a matrix selector
+
+## `boot.matrix`
+
+ - [ ] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before
+ - [ ] bootstraps individual matrices option: picks the row numbers for each matrix (similar as before)
+
+## `custom.subsets`
+
+ - [ ] creates the subsets for each matrices (matches the dimensions names). Use call argument `equal_dimnames` to speed up matching (apply the sub-setting only once).
+
+## `chrono.subsets`
+
+ - [ ] apply the time slicing to all matrices by matching each tree to the matrix. If all trees are binary, they can have the same node numbers (names) and if the call argument `equal_dimnames` is the same the time slicing is applied only once (speed up).
+
+## `null.test`
+
+ - [ ] pass the elements for simulating the space from the list of matrices rather than a single matrix.
