@@ -28,9 +28,11 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `dispRity`
 
- - [ ] use check.dispRity
- - [ ] apply the disparity calculation to all the matrices
- - [ ] return disparity values as observed (length = length(matrices)) and normal bootstraps
+ - [x] use check.dispRity
+ - [x] apply the disparity calculation to all the matrices
+ - [x] return disparity values as observed (length = length(matrices)) and normal bootstraps
+ - [ ] test on all disparity tests
+ - [ ] update example data
 
 ## `dispRity.utilities`
 
