@@ -555,6 +555,38 @@ test_that("get.row.col works", {
     expect_equal(dim(get.row.col(test, 3:1, 4)), c(3, 4))
 })
 
+test_that("dispRity works with multiple matrices", {
+
+    set.seed(42)
+    one_matrix <- matrix(1, 5, 10)
+    data <- list(one_matrix, one_matrix, one_matrix)
+
+    ## Works with level one
+    expect_warning(test <- dispRity(data, metric = c(sum)))
+    expect_is(test, "dispRity")
+    expect_equal(length(test$disparity[[1]]$elements), 3)
+    expect_equal(sum(test$disparity[[1]]$elements), 150)
+
+    ## Works with level two
+    expect_warning(test <- dispRity(data, metric =  ranges))
+    expect_is(test, "dispRity")
+    expect_equal(length(test$disparity[[1]]$elements), 30)
+
+    ## Works with probabilities
+
+    ## Works with subsets
+
+    ## Works with bootstrap
+
+    ## Works with multiple trees
+
+    ## Works with bootstrap, subsets and probabilities
+
+    ## Works with bootstrap, subsets, probabilities and multiple trees
+
+
+})
+
 
 
 

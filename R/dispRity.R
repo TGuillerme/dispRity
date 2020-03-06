@@ -110,19 +110,17 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     # warning("DEBUG") ; return(match_call)
 
-    ## Check data class
+    ## Check data input
     if(!is(data, "dispRity")) {
-        check.class(data, "matrix")
-        ## Create the dispRity object
-        data <- fill.dispRity(make.dispRity(data = data))
+        data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
     } else {
         ## Making sure matrix exist
-        if(is.null(data$matrix)) {
-            stop.call(match_call$data, " must contain a matrix.")
+        if(is.null(data$matrix[[1]])) {
+            stop.call(match_call$data, " must contain a matrix or a list of matrices.")
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- ncol(data$matrix)
+            data$call$dimensions <- ncol(data$matrix[[1]])
         }
     }
 
