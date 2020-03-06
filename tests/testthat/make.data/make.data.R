@@ -1,95 +1,50 @@
-library(Claddis)
-library(mulTree)
+library(dispRity)
 library(paleotree)
 library(geiger)
-source("MorphDistMatrix.verbose.R")
-source("anc.state.R")
-source("anc.state_fun.R")
-source("anc.unc.R")
+source("multi.ace.R")
+source("convert.tokens.R")
 source("read.nexus.data.R")
 ## matrix
-Nexus_matrix <- do.call(rbind, read.nexus.data("2014-Beck-ProcB-matrix-morpho.nex"))
+matrix <- do.call(rbind, read.nexus.data("2014-Beck-ProcB-matrix-morpho.nex"))
+
 ## tree
 tree <- read.nexus("2014-Beck-ProcB-TEM.tre")
-
-#######################################
-## Cleaning the matrices and the trees
-#######################################
-
-## Removing some species
+tree$node.labels <- seq(1:Nnode(tree)) + Ntip(tree)
 tree_tmp <- extract.clade(tree, 133)
 tree_tmp <- drop.tip(tree_tmp, extract.clade(tree_tmp, 127)$tip.label)
-tree_data <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
+tree <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
+tree$root.age <- max(tree.age(tree)$age)
 
-## Adding root age
-tree_data$root.time <- max(tree.age(tree_data)$age)
+## Clean the data
+cleaned_data <- clean.data(matrix, tree)
+matrix <- cleaned_data$data
+tree <- cleaned_data$tree
 
-Claddis_matrix <- MakeMorphMatrix(matrix)
-
-#######################################
-## Estimating ancestral states
-#######################################
-
-anc_states <- anc.state(tree_data, Nexus_matrix, method='ML-claddis', verbose=TRUE)
-
-#####################################
-## Distance matrix
-#####################################
-
-## Distance matrix using tips only
-matrix_tips <- Nexus_matrix
-dist_tips <- MorphDistMatrix.verbose(matrix_tips, verbose=TRUE)
-
-## Distance matrix using also nodes
-matrix_nodes <- Nexus_matrix
-matrix_nodes$matrix <- anc.unc(anc_states, 0.95, missing=NA)$state
-dist_nodes <- MorphDistMatrix.verbose(matrix_nodes, verbose=TRUE)
-
-#####################################
-## Creating the two pco's (with and without nodes)
-#####################################
-
-ord_data_tips <- cmdscale(dist_tips$gower.dist.matrix, k=nrow(dist_tips$gower.dist.matrix) - 2, add=T)$points
-ord_data_tipsNnodes <- cmdscale(dist_nodes$gower.dist.matrix, k=nrow(dist_nodes$gower.dist.matrix) - 2, add=T)$points
-
-#####################################
-## Loading the FADLAD data
-#####################################
-
-FADLAD_data <- read.csv("Beck2014_FADLAD.csv", row.names=1)
-
-## removing taxa not present in the tree
-FADLAD_data <- FADLAD_data[-which(is.na(match(rownames(FADLAD_data), tree_data$tip.label))),]
-
-test_data <- list("tree_data"=tree_data, "ord_data_tips"=ord_data_tips, "ord_data_tips_nodes"=ord_data_tipsNnodes, "FADLAD_data"=FADLAD_data)
-
-save(test_data, file="../test_data.Rda")
+## Get the FADLADs
+FADLAD <- read.csv("Beck2014_FADLAD.csv")
+FADLAD <- FADLAD[-which(is.na(match(rownames(FADLAD), tree$tip.label))),]
 
 
-#####################################
-## Ecology data
-#####################################
+## Add the ancestral states estimates
+ancestral_states <- multi.ace(matrix, tree, models = "ER", verbose = TRUE)[[1]]
+rownames(ancestral_states) <- tree$node.labels
 
-## Loading the data
-McClean_data <- read.csv("2015-McClean.csv")
+## Combine both
+matrix_tips <- matrix
+matrix_tips_nodes <- rbind(matrix, ancestral_states)
 
-## Generating the matrix
-McClean_matrix <- with(McClean_data,tapply(McClean_data$Abundance,list(McClean_data$Tdepth,McClean_data$Genus),mean))
-McClean_matrix <- as.matrix(cbind(McClean_matrix[,1:93]))
+## Measuring the distance
+distance_matrix_tips_nodes <- char.diff(matrix_tips_nodes, by.col = FALSE)
+distance_matrix_tips <- char.diff(matrix_tips, by.col = FALSE)
 
-## Calculating the distance matrix
-McClean_distance <- as.matrix(dist(McClean_matrix, method="euclidean"))
+## Ordination (just because)
+pco_tips <- cmdscale(distance_matrix_tips, k = nrow(distance_matrix_tips) - 2, add = TRUE)$points
+pco_tips_nodes <- cmdscale(distance_matrix_tips_nodes, k = nrow(distance_matrix_tips_nodes) - 2, add = TRUE)$points
 
-## Ordinating the distance matrix
-McClean_ordination <- cmdscale(McClean_distance, eig = TRUE, k = nrow(McClean_distance)-1)$points
+## Save these data for tests
+test_data <- list("tree_data" = tree, "pco_tips" = pco_tips, "pco_tips_nodes" = pco_tips_nodes, "FADLAD_data" = FADLAD)
 
-## Factors
-treatment <- c("a","a","b","b","a","a","a","b","b","a","a","b","b","b","b","b","b","b","a","b","b","a","b","b","b","b","a","a","a","b","b","a","a","a","a","a","a","a","a","a")
-depth <- c(1,2,1,2,1,1,2,1,2,1,2,1,2,1,2,1,2,2,2,1,2,1,1,2,1,2,1,1,2,1,2,1,2,1,2,1,1,1,1,1)
-
-## Output list
-McClean_data <- list("ordination"=McClean_ordination, "treatment"=treatment, "depth"=depth)
-
+save(test_data, file = "../test_data.Rda")
 
 
 #####################################
