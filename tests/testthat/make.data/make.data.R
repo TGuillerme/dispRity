@@ -6,9 +6,9 @@ source("MorphDistMatrix.verbose.R")
 source("anc.state.R")
 source("anc.state_fun.R")
 source("anc.unc.R")
+source("read.nexus.data.R")
 ## matrix
-Nexus_data <- ReadMorphNexus("2014-Beck-ProcB-matrix-morpho.nex")
-Nexus_matrix <- Nexus_data$matrix
+Nexus_matrix <- do.call(rbind, read.nexus.data("2014-Beck-ProcB-matrix-morpho.nex"))
 ## tree
 tree <- read.nexus("2014-Beck-ProcB-TEM.tre")
 
@@ -21,22 +21,10 @@ tree_tmp <- extract.clade(tree, 133)
 tree_tmp <- drop.tip(tree_tmp, extract.clade(tree_tmp, 127)$tip.label)
 tree_data <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
 
-## Cleaning the tree and the table
-tree_data <- clean.tree(tree_data, Nexus_matrix)
-table <- clean.table(Nexus_matrix, tree_data)
-Nexus_data$matrix <- table
-tree_data <- lapply.root(tree_data)
+## Adding root age
+tree_data$root.time <- max(tree.age(tree_data)$age)
 
-## Removing some characters
-Nexus_data$matrix <- table
-to_remove <- which(apply(Nexus_data$matrix, 2, function(X) length(levels(as.factor(X)))) < 2)
-to_remove <- c(to_remove, which(apply(Nexus_data$matrix, 2, function(X) length(which(is.na(X)))) > 25))
-matrix_tmp <- Nexus_data$matrix[,-c(to_remove)]
-matrix_tmp <- matrix_tmp[,-c(28,59,75,98,135,172,182,186,189,191,204,224,235)]
-matrix_tmp <- matrix_tmp[,-c(57,239)]
-Nexus_matrix <- make.nexus(matrix_tmp)
-Nexus_matrix$min.vals <- as.numeric(Nexus_matrix$min.vals)
-Nexus_matrix$max.vals <- as.numeric(Nexus_matrix$max.vals)
+Claddis_matrix <- MakeMorphMatrix(matrix)
 
 #######################################
 ## Estimating ancestral states
