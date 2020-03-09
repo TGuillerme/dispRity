@@ -29,6 +29,8 @@ dispRity v1.3.5 (2020-02-12)
 
  * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
  * Completely rewritten *char.diff* function. It now uses a way faster bitwise comparison architecture and comes with different distance methods as well as modular optional arguments on how to treat various special tokens ("?", "-", "&", etc.).
+ * All `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
+ * Updated all the package demo data to fit the new `dispRity` object architecture (see above).
 
 ### BUG FIXES
 
