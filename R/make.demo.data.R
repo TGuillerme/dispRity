@@ -1,4 +1,4 @@
-## Developer function for making the disparity data
+# Developer function for making the disparity data
 # make.demo.data_BeckLeeXXX <- function() {
 
 #     file.remove("../data/BeckLee_tree.rda")
@@ -23,7 +23,7 @@
 #     tree_tmp <- drop.tip(tree_tmp, extract.clade(tree_tmp, 127)$tip.label)
 #     tree <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
 #     tree$node.labels <- seq(1:Nnode(tree)) + Ntip(tree)
-#     tree$root.age <- max(tree.age(tree)$age)
+#     tree$root.time <- max(tree.age(tree)$age)
 
 #     ## Clean the data
 #     cleaned_data <- clean.data(matrix, tree)
