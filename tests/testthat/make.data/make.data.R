@@ -4,48 +4,6 @@ library(geiger)
 source("multi.ace.R")
 source("convert.tokens.R")
 source("read.nexus.data.R")
-## matrix
-matrix <- do.call(rbind, read.nexus.data("2014-Beck-ProcB-matrix-morpho.nex"))
-
-## tree
-tree <- read.nexus("2014-Beck-ProcB-TEM.tre")
-tree$node.labels <- seq(1:Nnode(tree)) + Ntip(tree)
-tree_tmp <- extract.clade(tree, 133)
-tree_tmp <- drop.tip(tree_tmp, extract.clade(tree_tmp, 127)$tip.label)
-tree <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
-tree$root.age <- max(tree.age(tree)$age)
-
-## Clean the data
-cleaned_data <- clean.data(matrix, tree)
-matrix <- cleaned_data$data
-tree <- cleaned_data$tree
-
-## Get the FADLADs
-FADLAD <- read.csv("Beck2014_FADLAD.csv")
-FADLAD <- FADLAD[-which(is.na(match(rownames(FADLAD), tree$tip.label))),]
-
-
-## Add the ancestral states estimates
-ancestral_states <- multi.ace(matrix, tree, models = "ER", verbose = TRUE)[[1]]
-rownames(ancestral_states) <- tree$node.labels
-
-## Combine both
-matrix_tips <- matrix
-matrix_tips_nodes <- rbind(matrix, ancestral_states)
-
-## Measuring the distance
-distance_matrix_tips_nodes <- char.diff(matrix_tips_nodes, by.col = FALSE)
-distance_matrix_tips <- char.diff(matrix_tips, by.col = FALSE)
-
-## Ordination (just because)
-pco_tips <- cmdscale(distance_matrix_tips, k = nrow(distance_matrix_tips) - 2, add = TRUE)$points
-pco_tips_nodes <- cmdscale(distance_matrix_tips_nodes, k = nrow(distance_matrix_tips_nodes) - 2, add = TRUE)$points
-
-## Save these data for tests
-test_data <- list("tree_data" = tree, "pco_tips" = pco_tips, "pco_tips_nodes" = pco_tips_nodes, "FADLAD_data" = FADLAD)
-
-save(test_data, file = "../test_data.Rda")
-
 
 #####################################
 ## Model test data

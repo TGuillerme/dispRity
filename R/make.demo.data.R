@@ -43,7 +43,7 @@
 #     matrix_tips <- matrix
 #     matrix_tips_nodes <- rbind(matrix, ancestral_states)
 
-#     ## Measuring the distance
+#     ## Measuring the distance
 #     distance_matrix_tips_nodes <- char.diff(matrix_tips_nodes, by.col = FALSE)
 #     distance_matrix_tips <- char.diff(matrix_tips, by.col = FALSE)
 
@@ -66,7 +66,14 @@
 
 
 
-# ## Developer function for making the disparity data
+
+
+
+
+
+
+
+## Developer function for making the disparity data
 # make.demo.data_disparity <- function() {
 #     file.remove("../data/disparity.rda")
 #     set.seed(1)

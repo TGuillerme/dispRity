@@ -140,7 +140,7 @@ expect_equal_round <- function(x, y, digits) {
 ## Checks whether the data is a matrix or a list
 check.dispRity.data <- function(data) {
     match_call <- match.call()
-    ## Check class
+    ## Check class
     data_class <- check.class(data, c("matrix", "list"))
 
     ## Function for automatically add rownames (used in both branches below)
@@ -150,7 +150,7 @@ check.dispRity.data <- function(data) {
     }
     row_warning <- paste0("Row names have been automatically added to ", as.expression(match_call$data), ".")
 
-    ## Switch between cases
+    ## Switch between cases
     if(data_class == "list") {
         ## Error message
         is_error <- " must be matrix or a list of matrices with the same dimensions and row names."
@@ -166,7 +166,7 @@ check.dispRity.data <- function(data) {
         }
         ## Check the rownames
         if(is.null(unlist(lapply(data, rownames)))) {
-            ## If no rownames, add them
+            ## If no rownames, add them
             data <- lapply(data, add.rownames)
             warning(row_warning)
         } else {
@@ -179,7 +179,7 @@ check.dispRity.data <- function(data) {
             data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
         }
     } else {
-        ## Eventually add rownames
+        ## Eventually add rownames
         if(is.null(rownames(data))) {
             data <- add.rownames(data)
             warning(row_warning)
