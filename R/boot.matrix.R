@@ -86,8 +86,6 @@
 # rarefaction <- TRUE
 
 boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", prob) {
-    
-    parallel <- FALSE
 
     match_call <- match.call()
     ## ----------------------
@@ -97,17 +95,15 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
-        check.class(data, "matrix")
+        data <- check.dispRity.data(data)
 
         ## Check whether it is a distance matrix
-        if(check.dist.matrix(data, just.check = TRUE)) {
+        if(check.dist.matrix(data[[1]], just.check = TRUE)) {
             warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
         }
 
         ## Creating the dispRity object
-        dispRity_object <- make.dispRity(data = data)
-        #dispRity_object$subsets$origin$elements <- seq(1:nrow(data))
-        data <- dispRity_object
+        data <- make.dispRity(data = data)
     } else {
         ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
@@ -249,7 +245,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     } else {
         if(rarefaction) {
-            rarefaction <- seq(from = nrow(data$matrix), to = 3)
+            rarefaction <- seq(from = nrow(data$matrix[[1]]), to = 3)
             rare_out <- "full"
         } else {
             rarefaction <- NULL
@@ -316,13 +312,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
             stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         }
         data$call$dimensions <- dimensions
     } else {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Return object if BS = 0

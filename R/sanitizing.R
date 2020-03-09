@@ -161,7 +161,7 @@ check.dispRity.data <- function(data) {
         } 
         ## Check the dimensions
         all_dim <- unique(unlist(lapply(data, dim)))
-        if(length(all_dim) %in% c(1,2)) {
+        if(!(length(all_dim) %in% c(1,2))) {
             stop.call(match_call$data, is_error)
         }
         ## Check the rownames

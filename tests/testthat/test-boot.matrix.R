@@ -2,6 +2,9 @@
 
 context("boot.dispRity")
 
+data(BeckLee_mat50)
+data <- BeckLee_mat50
+
 ## Internal functions tests
 test_that("internal: bootstrap methods", {
     ## Full bootstrap selects three value
@@ -107,10 +110,10 @@ test_that("No bootstraps", {
         , 3)
     expect_equal(
         as.vector(test$subsets[[1]][[1]])
-        , seq(1:nrow(test$matrix)))
+        , seq(1:nrow(test$matrix[[1]])))
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets[[1]])
         ,1)
@@ -135,7 +138,6 @@ test_that("Remove dimensions", {
 
 ## Bootstraps = 5
 test_that("5 bootstraps", {
-    data <- test_data$ord_data_tips
     test <- boot.matrix(data, bootstraps = 5)
     expect_is(
         test
@@ -145,7 +147,7 @@ test_that("5 bootstraps", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[1]])
         ,c(50,1))
@@ -168,7 +170,7 @@ test_that("5 bootstraps, rarefaction = 5", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[2]])
         ,c(50,5))
@@ -229,7 +231,7 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets)
         ,2)
@@ -250,7 +252,7 @@ test_that("verbose bootstrap works", {
     data(BeckLee_tree)
     data(BeckLee_ages)
     data <- matrix(rnorm(25), 5, 5)
-    out <- capture_messages(boot.matrix(data, verbose = TRUE))
+    expect_warning(out <- capture_messages(boot.matrix(data, verbose = TRUE)))
     expect_equal(out,
         c("Bootstrapping", ".", "Done."))
 
@@ -277,9 +279,9 @@ test_that("verbose bootstrap works", {
 ## Bootstrap works with empty or small (<3 subsets)
 test_that("Boot.matrix works with small, empty/subsets", {
 
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat50
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
 
@@ -477,13 +479,19 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_is(test, "dispRity")
     expect_is(test$matrix, "list")
     expect_is(test$matrix[[1]], "matrix")
-    expect_null(test$matrix[[2]])
     expect_is(test$subsets, "list")
 
     ## Normal bootstrapping with multiple matrices
     data2 <- matrix(2, 5, 10)
     data <- list(data, data2)
     expect_warning(test <- boot.matrix(data, 7))
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_is(test$matrix[[1]], "matrix")
+    expect_is(test$matrix[[2]], "matrix")
+    expect_is(test$subsets, "list")
+
+    expect_warning(test <- boot.matrix(data, rarefaction = TRUE))
     expect_is(test, "dispRity")
     expect_is(test$matrix, "list")
     expect_is(test$matrix[[1]], "matrix")
