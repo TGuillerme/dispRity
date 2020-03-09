@@ -180,7 +180,7 @@ static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int tran
 static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
-    int count = 0, i = 0, k = 0, diff = 0, dist = 0;
+    int count = 0, i = 0;
     double result = 0;
 
     //Isolating the two comparable characters
