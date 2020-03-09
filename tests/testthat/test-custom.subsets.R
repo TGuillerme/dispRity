@@ -79,9 +79,9 @@ test_that("Sanitizing works", {
     tree <- rtree(9)
     tree$tip.label <- letters[1:9]
     data_wrong <- data
-    rownames(data_wrong)[1] <= "AAA"
+    rownames(data_wrong)[1] <- "AAA"
     error <- capture_error(custom.subsets(data_wrong, tree))
-    expect_equal(error[[1]], "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+    expect_equal(error[[1]], "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
 
 })
 
@@ -99,10 +99,10 @@ test_that("custom.subsets works", {
         length(test)
         , 3)
     expect_is(
-        test$matrix
+        test$matrix[[1]]
         , "matrix")
     expect_equal(
-        dim(test$matrix)
+        dim(test$matrix[[1]])
         , c(10,9))
     expect_equal(
         length(test$subsets[[1]]$elements)
