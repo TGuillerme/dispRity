@@ -6,7 +6,7 @@
 #' @usage chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
 #'                     FADLAD, verbose = FALSE, t0 = FALSE)
 #'
-#' @param data A \code{matrix} (see details).
+#' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
@@ -15,6 +15,7 @@
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
+#' @param bind.data.tree If \code{data} is a \code{list} and \code{tree} is \code{"multiPhylo"}, a \code{logical} value whether to bind the data to the tree (\code{TRUE} - the matrices and the trees are matched) or not (\code{FALSE} - default).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -109,7 +110,7 @@
 # t0 = FALSE
 
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data.tree = FALSE) {
     
     match_call <- match.call()
 
@@ -117,8 +118,8 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ##  SANITIZING
     ## ----------------------
     ## DATA
-    ## data must be a matrix
-    check.class(data, "matrix")
+    ## data must be a matrix or a list
+    data <- check.dispRity.data(data)
 
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data, just.check = TRUE)) {
@@ -126,7 +127,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
 
     ## nrow_data variable declaration
-    nrow_data <- nrow(data) #TG: $matrix
+    nrow_data <- nrow(data[[1]]) #TG: $matrix
 
     ## TREE (1)
     ## tree must be a phylo object

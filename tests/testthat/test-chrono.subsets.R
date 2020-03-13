@@ -4,9 +4,15 @@ context("chrono.subsets")
 
 ## Change the loading data to a simplified version of Beck???
 load("test_data.Rda")
-tree <- test_data$tree_data
-data <- test_data$ord_data_tips
-FADLAD <- test_data$FADLAD_data
+
+load(BeckLee_tree)
+load(BeckLee_mat50)
+load(BeckLee_ages)
+load(BeckLee_mat99)
+
+tree <- BeckLee_tree
+data <- BeckLee_mat99
+FADLAD <- BeckLee_ages
 
 # test_that("get.percent.age works", {
 #     set.seed(42)

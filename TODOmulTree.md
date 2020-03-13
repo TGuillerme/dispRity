@@ -50,12 +50,12 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `boot.matrix`
 
- - [ ] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before
+ - [x] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before
  - [ ] bootstraps individual matrices option: picks the row numbers for each matrix (similar as before)
 
 ## `custom.subsets`
 
- - [ ] creates the subsets for each matrices (matches the dimensions names). Use call argument `equal_dimnames` to speed up matching (apply the sub-setting only once).
+ - [x] creates the subsets for each matrices (matches the dimensions names).
 
 ## `chrono.subsets`
 
