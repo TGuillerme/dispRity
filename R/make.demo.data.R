@@ -22,7 +22,7 @@
 #     tree_tmp <- extract.clade(tree, 133)
 #     tree_tmp <- drop.tip(tree_tmp, extract.clade(tree_tmp, 127)$tip.label)
 #     tree <- drop.tip(tree_tmp, c("Erinaceus", "Ptilocercus", "Orycteropus", "Microgale"))
-#     tree$node.labels <- seq(1:Nnode(tree)) + Ntip(tree)
+#     tree$node.labels <- paste0("n", seq(1:Nnode(tree)))
 #     tree$root.time <- max(tree.age(tree)$age)
 
 #     ## Clean the data
