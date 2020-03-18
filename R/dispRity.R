@@ -165,10 +165,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
-            warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))
-            dimensions <- ncol(data$matrix)
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
+            warning(paste0("Dimension number too high: set to ", ncol(data$matrix[[1]]), "."))
+            dimensions <- ncol(data$matrix[[1]])
         }
         data$call$dimensions <- dimensions
     }

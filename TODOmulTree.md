@@ -42,7 +42,7 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `print.dispRity`
 
- - [ ] now also print the number of matrices
+ - [x] now also print the number of matrices
 
 ## `plot.dispRity` 
 
@@ -70,4 +70,5 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 ## `dispRity` data
 
  - [x] update `BeckLee_XXX` data
- - [x] update `disparity` data
+ - [x] update `disparie ty` data
+ - [x] update `BeckLee_disparity` data
