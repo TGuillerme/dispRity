@@ -59,7 +59,9 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `chrono.subsets`
 
+ - [x] `chrono.subsets` works with list of matrices.
  - [ ] apply the time slicing to all matrices by matching each tree to the matrix. If all trees are binary, they can have the same node numbers (names) and if the call argument `equal_dimnames` is the same the time slicing is applied only once (speed up).
+ - [ ] check matrices and trees.
 
 ## `null.test`
 

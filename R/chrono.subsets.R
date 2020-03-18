@@ -129,7 +129,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## nrow_data variable declaration
     nrow_data <- nrow(data[[1]])
 
-    ## Check tree binding method
+    ## Check tree binding method
     check.class(bind.data.tree, "logical")
     if(bind.data.tree) {
         stop("DEBUG: chrono.subsets not working with option bind.data.tree yet.")
