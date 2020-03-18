@@ -31,7 +31,7 @@
 #     tree <- cleaned_data$tree
 
 #     ## Get the FADLADs
-#     FADLAD <- read.csv("../tests/testthat/make.data/Beck2014_FADLAD.csv")
+#     FADLAD <- read.csv("../tests/testthat/make.data/Beck2014_FADLAD.csv", row.names = 1)
 #     FADLAD <- FADLAD[-which(is.na(match(rownames(FADLAD), tree$tip.label))),]
 
 
