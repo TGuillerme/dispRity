@@ -122,12 +122,18 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     data <- check.dispRity.data(data)
 
     ## Check whether it is a distance matrix
-    if(check.dist.matrix(data, just.check = TRUE)) {
+    if(check.dist.matrix(data[[1]], just.check = TRUE)) {
         warning("chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
     }
 
     ## nrow_data variable declaration
-    nrow_data <- nrow(data[[1]]) #TG: $matrix
+    nrow_data <- nrow(data[[1]])
+
+    ## Check tree binding method
+    check.class(bind.data.tree, "logical")
+    if(bind.data.tree) {
+        stop("DEBUG: chrono.subsets not working with option bind.data.tree yet.")
+    }
 
     ## TREE (1)
     ## tree must be a phylo object
@@ -150,6 +156,8 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
                 stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same node labels.")
             }
         }
+
+
 
         ## tree must be dated
         if(is_multiPhylo) {
@@ -207,7 +215,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         tree_was_missing <- TRUE
 
         ## Checking FADLAD disponibilities
-        names_data <- rownames(data)
+        names_data <- rownames(data[[1]])
         ## All names must be present in the data
         if(!all(names_data %in% rownames(FADLAD))) {
             stop.call("", "If no phylogeny is provided, all elements must be present in the FADLAD argument.")
@@ -317,7 +325,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## If inc.nodes is not TRUE
     if(inc.nodes != TRUE) {
         ## Check if at least all the data in the table are present in the tree
-        no_match_rows <- check.list(tree, function(tree, data) is.na(match(tree$tip.label, rownames(data))), data = data, condition = any)
+        no_match_rows <- check.list(tree, function(tree, data) is.na(match(tree$tip.label, rownames(data))), data = data[[1]], condition = any)
         if(any(no_match_rows)) {
             stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
         }
@@ -331,7 +339,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             }
 
         } else {
-            no_match_rows <- check.list(tree, function(tree, data) is.na(match(c(tree$tip.label, tree$node.label), rownames(data))), data = data, condition = any)
+            no_match_rows <- check.list(tree, function(tree, data) is.na(match(c(tree$tip.label, tree$node.label), rownames(data))), data = data[[1]], condition = any)
             if(any(no_match_rows)) {
                 stop.call("", "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
             }
@@ -390,7 +398,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## Toggle the multiPhylo option
     if(!is_multiPhylo) {
-        time_subsets <- chrono.subsets.fun(data, tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose)
+        time_subsets <- chrono.subsets.fun(data[[1]], tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose)
         # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
     } else {
 
@@ -401,7 +409,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Bundle the arguments into a list
-        args_list <- mapply(combine.args, tree, FADLAD, MoreArgs = list(data = data, time = time,  model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
+        args_list <- mapply(combine.args, tree, FADLAD, MoreArgs = list(data = data[[1]], time = time,  model = model, inc.nodes = inc.nodes, verbose = verbose), SIMPLIFY = FALSE)
 
         ## Run all time subsets
         time_subsets <- lapply(args_list, function(arg, fun) do.call(fun, arg), fun = chrono.subsets.fun)
