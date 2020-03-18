@@ -66,3 +66,8 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 ## `null.test`
 
  - [ ] pass the elements for simulating the space from the list of matrices rather than a single matrix.
+
+## `dispRity` data
+
+ - [x] update `BeckLee_XXX` data
+ - [x] update `disparity` data
