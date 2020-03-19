@@ -32,7 +32,7 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
  - [x] apply the disparity calculation to all the matrices
  - [x] return disparity values as observed (length = length(matrices)) and normal bootstraps
  - [ ] test on all disparity tests
- - [ ] update example data
+ - [x] update example data
 
 ## `dispRity.utilities`
 
@@ -46,7 +46,7 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `plot.dispRity` 
 
- - [ ] `type = "preview"` has a matrix selector
+ - [x] `type = "preview"` has a matrix selector
 
 ## `boot.matrix`
 
@@ -65,10 +65,15 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `null.test`
 
- - [ ] pass the elements for simulating the space from the list of matrices rather than a single matrix.
+ - [x] pass the elements for simulating the space from the list of matrices rather than a single matrix.
 
 ## `dispRity` data
 
  - [x] update `BeckLee_XXX` data
  - [x] update `disparie ty` data
  - [x] update `BeckLee_disparity` data
+
+## `dispRity` manual
+
+ - [ ] update guts part
+ - [ ] update examples

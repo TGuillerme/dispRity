@@ -10,7 +10,6 @@ groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      dimnames = list(rownames(BeckLee_mat50))))
 multi_disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, groups), bootstraps = 100), metric = c(sum, variances))
 
-
 #get.from.call
 test_that("get.metric.from.call works", {
     #Errors
@@ -112,8 +111,6 @@ test_that("make.null.model works", {
     test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = centroids, args = 0)
     expect_is(test5, "numeric")
     expect_equal(length(test5), 5)
-
-
 })
 
 #null.test
@@ -165,7 +162,6 @@ test_that("null.test works", {
         , c("randtest", "lightrandtest"))
 })
 
-
 ## null.test plots
 test_that("null.test example works", {
 
@@ -194,7 +190,6 @@ test_that("null.test example works", {
     expect_null(test)
 })
 
-
 ## null.test plots
 test_that("null.test works with inherited arguments to metric", {
 
@@ -218,9 +213,8 @@ test_that("null.test works with inherited arguments to metric", {
 
     expect_equal(
         round(unname(unlist(lapply(results_no_args, function(x) x$obs))), digits = 6)
-        , c(1.206138, 1.262901, 1.339691, 1.367892))
+        , c(1.389345, 1.439699, 1.508287, 1.555493))
     expect_equal(
         round(unname(unlist(lapply(results_args, function(x) x$obs))))
         , c(69282, 69282, 69282, 69282))
-
 })
