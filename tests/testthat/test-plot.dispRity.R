@@ -253,8 +253,8 @@ test_that("plot preview works", {
     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-    expect_null(plot.preview(data_cust, dimensions = c(1,2)))
-    expect_null(plot.preview(data_slice, dimensions = c(1,2)))
+    expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
+    expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
     expect_null(plot(data_cust))
     expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
     expect_error(plot(data_slice, type = "p"))
