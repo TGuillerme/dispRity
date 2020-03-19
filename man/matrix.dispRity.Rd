@@ -5,16 +5,18 @@
 \alias{fetch.matrix}
 \title{Fetching a matrix from a \code{dispRity} object.}
 \usage{
-matrix.dispRity(data, subsets, rarefaction, bootstrap)
+matrix.dispRity(data, subsets, rarefaction, bootstrap, matrix = 1)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsets}{A \code{numeric} value to select subsets (\code{0} is no subsets; default).}
+\item{subsets}{Optional, a \code{numeric} value to select subsets.}
 
-\item{rarefaction}{A \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction; default).}
+\item{rarefaction}{Optional, a \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction).}
 
-\item{bootstrap}{A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).}
+\item{bootstrap}{Optional, a \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap).}
+
+\item{matrix}{A \code{numeric} value of which matrix to select (default is \code{1}).}
 }
 \description{
 Fetching a specific matrix from a \code{dispRity} object.

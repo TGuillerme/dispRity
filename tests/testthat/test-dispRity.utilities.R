@@ -179,9 +179,7 @@ test_that("fill.dispRity", {
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix[[1]]))
-
 })
-
 
 ## matrix.dispRity
 test_that("matrix.dispRity", {
@@ -216,7 +214,6 @@ test_that("matrix.dispRity", {
         rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c("Eoryctes", "Rhynchocyon", "Pezosiren", "Potamogalinae", "Soricidae", "Myrmecophagidae", "Protictis", "Protictis", "unnamed_cimolestid", "Bradypus", "Mimotona", "Todralestes", "Moeritherium", "Dasypodidae", "Bradypus"))
 })
-
 
 ## get.subsets
 test_that("get.subsets", {
@@ -288,8 +285,6 @@ test_that("get.subsets", {
         ,"variances")
 })
 
-
-
 ## extract.dispRity
 test_that("extract.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
@@ -325,7 +320,7 @@ test_that("extract.dispRity", {
         ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
-        ,4.05457)
+        ,8.60986)
 
     test <- extract.dispRity(data, observed = FALSE)
     expect_is(
@@ -372,9 +367,9 @@ test_that("extract.dispRity", {
     test <- extract.dispRity(data, observed = TRUE)
     expect_is(test, "list")
     expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
-
 })
 
+## rescale.dispRity
 test_that("rescale.dispRity", {
     data(BeckLee_mat50)
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
@@ -416,6 +411,7 @@ test_that("rescale.dispRity", {
         ,base[1,3])
 })
 
+## sort.dispRity
 test_that("sort.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
     subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
@@ -447,10 +443,7 @@ test_that("sort.dispRity", {
 
     data2 <- dispRity(BeckLee_mat99, metric = mean)
     expect_error(sort(data2))
-
 })
-
-
 
 ## combine.subsets
 test_that("combine.subsets", {
@@ -487,7 +480,6 @@ test_that("combine.subsets", {
     expect_error(
         combine.subsets(data_test2, c("a", "x"))
         )
-
     expect_warning(
         bs <- combine.subsets(boot.matrix(data_test2), c(1,2))
         )
@@ -503,10 +495,8 @@ test_that("combine.subsets", {
 
     dummy_data1 <- dummy_data2 <- data_test1
     dummy_data1$call$bootstrap <- NULL
-    test1 <- capture_warnings(garbage <-combine.subsets(dummy_data1, c(1,2)))
-
+    test1 <- capture_warnings(garbage <- combine.subsets(dummy_data1, c(1,2)))
     expect_equal(test1, "dummy_data1 contained disparity data that has been discarded in the output.")
-
 
     ## Warnings
     expect_warning(
@@ -542,15 +532,15 @@ test_that("combine.subsets", {
     expect_equal(error[[1]], "subsets argument must not contain duplicates.")
 })
 
-
+## size.subsets
 test_that("size.subsets works", {
     data(disparity)
     expect_equal(
         size.subsets(disparity)
         , c("90"=18, "80"=22, "70"=23, "60"=21, "50"=18, "40"=15, "30"=10))
-
 })
 
+## extinction.subsets
 test_that("extinction.subsets works", {
 
     data(disparity)

@@ -8,7 +8,6 @@ Changing the `dispRity` structure to allow list of matrices
 
 # Individual function changes
 
-
 ## `make.dispRity`
 
  - [x] make a list of one matrix.
@@ -36,9 +35,7 @@ Changing the `dispRity` structure to allow list of matrices
 
 ## `dispRity.utilities`
 
- - [ ] `extract.dispRity` works on list rather than matrices
- - [ ] `rescale.dispRity` works on list rather than matrices
- - [ ] `combine.subsets`  works on list rather than matrices
+ - [x] `matrix.dispRity`  works on list rather than matrices
 
 ## `print.dispRity`
 
@@ -77,3 +74,4 @@ Changing the `dispRity` structure to allow list of matrices
 
  - [ ] update guts part
  - [ ] update examples
+ - [ ] add `extinction.subsets` somewhere?
