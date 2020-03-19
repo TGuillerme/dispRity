@@ -151,8 +151,9 @@ test_that("disparity.bootstraps internal works", {
 
 
 #Loading the data
-load("test_data.Rda")
-data <- test_data$ord_data_tips
+# load("test_data.Rda")
+# data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 
@@ -212,12 +213,11 @@ test_that("Sanitizing works", {
     ## Only dimensions 3!
     error <- capture_error(dispRity(data, metric = var))
     expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
-
-
-
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #Testing metric argument
 test_that("metric argument works", {
@@ -248,7 +248,7 @@ test_that("metric argument works", {
 })
 
 #one matrix
-test <- dispRity(data, metric=c(sum, ranges))
+test <- dispRity(data, metric = c(sum, ranges))
 
 test_that("dispRity works with a single matrix", {
     expect_is(
@@ -266,11 +266,12 @@ test_that("dispRity works with a single matrix", {
 })
 
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped
-data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
+data <- boot.matrix(data, bootstrap = 5, rarefaction = FALSE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped matrix", {
     expect_is(
         test, "dispRity"
@@ -291,13 +292,15 @@ test_that("dispRity works with a bootstrapped matrix", {
         test$disparity[[1]][[2]]
         , test$call$bootstrap[[1]])
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped + rarefied
-data<-test_data$ord_data_tips
-data<-boot.matrix(data, bootstrap=5, rarefaction=TRUE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
+data <- BeckLee_mat50
+data <- boot.matrix(data, bootstrap = 5, rarefaction = TRUE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped and rarefied matrix", {
     expect_is(
         test, "dispRity"
@@ -317,14 +320,14 @@ test_that("dispRity works with a bootstrapped and rarefied matrix", {
             , test$call$bootstrap[[1]])
     }
 })
-#Reset
-test <- NULL ; data<-test_data$ord_data_tips
 
+#Reset
+test <- NULL
+data <- BeckLee_mat50
 
 #one matrix with subsets
-data<-test_data$ord_data_tips
-data<-custom.subsets(data, group)
-test<-dispRity(data, metric=c(sum, ranges))
+data <- custom.subsets(data, group)
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with custom subsets", {
     expect_is(
         test, "dispRity"
@@ -339,8 +342,10 @@ test_that("dispRity works with custom subsets", {
         test$disparity[[1]][[1]]
         , "matrix")
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped + rarefied + subsets
 group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
@@ -366,15 +371,16 @@ test_that("dispRity works with a bootstrapped, rarefied, custom subsets", {
         test$disparity[[1]][[2]]
         , 5)
 })
-#Reset
-test <- NULL ; data<-test_data$ord_data_tips
 
+#Reset
+test <- NULL
+data <- BeckLee_mat50
 
 #testing example
 test_that("Example works", {
     data(BeckLee_mat50)
     sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
-    ex1<-summary(sum_of_ranges)
+    ex1 <- summary(sum_of_ranges)
     expect_is(
         ex1, "data.frame"
         )
@@ -382,13 +388,13 @@ test_that("Example works", {
         dim(ex1), c(1,3)
         )
 
-    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
-    ex2<-dispRity(bootstrapped_data, metric=c(sum, ranges))
+    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
+    ex2 <- dispRity(bootstrapped_data, metric = c(sum, ranges))
     expect_is(
         ex2, "dispRity"
         )
     expect_equal(
-        dim(ex2[[1]]), c(50,48)
+        dim(ex2[[1]][[1]]), c(50,48)
         )
 
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
@@ -406,8 +412,8 @@ test_that("Example works", {
         dim(ex3)
         , c(2,8))
 
-    ranges <- dispRity(BeckLee_mat50, metric = ranges)
-    sum_of_ranges <- dispRity(ranges, metric = sum)
+    all_ranges <- dispRity(BeckLee_mat50, metric = ranges)
+    sum_of_ranges <- dispRity(all_ranges, metric = sum)
     ex1<-summary(sum_of_ranges)
     expect_is(
         ex1, "data.frame"
@@ -415,11 +421,11 @@ test_that("Example works", {
     expect_equal(
         dim(ex1), c(1,3)
         )
-
-    
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 ## dispRity works with empty or small (<3 subsets)
 test_that("dispRity works with small, empty/subsets", {
@@ -463,17 +469,16 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(-0.010, 0.007))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.012, 0.004))
-    expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
-
+    expect_equal(as.vector(summary(test1)$obs), c(0.009, 0.007))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.002, 0.011))
+    expect_equal(as.vector(summary(test3)$obs), c(0.003, 0.007))
 })
 
 
 test_that("dispRity works with function recycling", {
 
     set.seed(1)
-    mat <- matrix(rnorm(25), 5, 5)
+    mat <- matrix(rnorm(25), 5, 5, dimnames = list(c(1:5)))
     level2 <- dispRity(mat, metric = centroids)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
     expect_equal(names(level2$call$disparity$metric), c("name", "fun"))
@@ -546,7 +551,6 @@ test_that("dispRity works with multiple trees from time-slicing", {
     sum_test4 <- summary(test)
     expect_equal(sum_test4$n, c(3, 5, 10))
     expect_equal(sum_test4$obs.median, sum_test2$obs.median)
-
 })
 
 test_that("get.row.col works", {
@@ -571,20 +575,6 @@ test_that("dispRity works with multiple matrices", {
     expect_warning(test <- dispRity(data, metric =  ranges))
     expect_is(test, "dispRity")
     expect_equal(length(test$disparity[[1]]$elements), 30)
-
-    ## Works with probabilities
-
-    ## Works with subsets
-
-    ## Works with bootstrap
-
-    ## Works with multiple trees
-
-    ## Works with bootstrap, subsets and probabilities
-
-    ## Works with bootstrap, subsets, probabilities and multiple trees
-
-
 })
 
 

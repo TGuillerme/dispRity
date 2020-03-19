@@ -8,7 +8,6 @@ Changing the `dispRity` structure to allow list of matrices
 
 # Individual function changes
 
-THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
 
 ## `make.dispRity`
 
@@ -31,8 +30,9 @@ THOMAS: MAKE SURE YOU UPDATE THE TEST BEFORE THE FUNCTION!
  - [x] use check.dispRity
  - [x] apply the disparity calculation to all the matrices
  - [x] return disparity values as observed (length = length(matrices)) and normal bootstraps
- - [ ] test on all disparity tests
+ - [x] test on all disparity tests
  - [x] update example data
+
 
 ## `dispRity.utilities`
 
