@@ -21,7 +21,7 @@ test_that("set.default works", {
     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
     expect_equal(
         round(test[[1]], 3)
-        , round(c(0.968, 2.023), 3))
+        , round(c(1.343, 2.930), 3))
     expect_equal(
         test[[2]]
         , "Subsets")
@@ -72,7 +72,7 @@ test_that("extract.from.summary works", {
         ,as.numeric(rep(NA, 7)))
     expect_equal(
         round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
-        ,c(1.78, 1.81, 1.88, 1.88, 1.90, 1.88, 1.82))
+        ,c(2.66, 2.71, 2.75, 2.73, 2.76, 2.75, 2.63))
 })
 
 test_that("transpose.box works", {
@@ -106,7 +106,6 @@ test_that("transpose.box works", {
     expect_is(test, "list")
     expect_equal(names(test), c("crown", "stem"))
     expect_equal(unlist(lapply(test, length)), subset_length)
-
 })
 
 test_that("split.summary.data works", {
@@ -123,7 +122,6 @@ test_that("split.summary.data works", {
         expect_equal(dim(split), c(length(which(sum_data$subsets == subsets[sub])),8))
     }
 })
-
 
 test_that("plot.dispRity examples work", {
 
@@ -166,10 +164,7 @@ test_that("plot.dispRity examples work", {
     test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
     test <- dispRity(boot.matrix(test), metric = c(sum, variances))
     expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
-
 })
-
-
 
 test_that("plot.dispRity continuous with NAs", {
 
@@ -179,10 +174,8 @@ test_that("plot.dispRity continuous with NAs", {
 
     test_data$subsets$`60`$elements <- matrix(NA)
     expect_warning(test_data <- dispRity(boot.matrix(test_data), c(sum, variances)))
-    expect_null(plot(test_data))
-  
+    expect_null(plot(test_data)) 
 })
-
 
 test_that("plot.dispRity.discrete with ADD", {
 
@@ -191,11 +184,7 @@ test_that("plot.dispRity.discrete with ADD", {
 
     expect_null(plot(result, type = "polygon"))
     expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
-  
 })
-
-
-
 
 test_that("plot.dispRity with model.test data", {
     load("model_test_data.Rda")
@@ -244,7 +233,6 @@ test_that("plot subclasses works", {
     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
     expect_error(plot(dispRity_dtt, cent.tend = var))
-
 })
 
 test_that("plot preview works", {

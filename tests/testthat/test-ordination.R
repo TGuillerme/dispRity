@@ -142,7 +142,6 @@ test_that("read.nexus.data works with polymorphisms", {
     expect_true(file.remove("read.nexus.data_test.nex"))
 })
 
-
 test_that("Claddis.ordination works with new reader", {
     cat(
     "#NEXUS
@@ -172,9 +171,7 @@ test_that("Claddis.ordination works with new reader", {
     expect_equal(Claddis_data$Matrix_1$Matrix, do.call(rbind, read.nexus.poly("morpho_matrix.nex")))
 
     expect_true(file.remove("morpho_matrix.nex"))
-
 })
-
 
 test_that("geomorph.ordination works", {
 
@@ -226,8 +223,8 @@ test_that("geomorph.ordination works", {
     dimnames(dummy_geomorph_df2$coords)[[3]] <- letters[1:10]
 
     test <- geomorph.ordination(dummy_geomorph_df2)
-    expect_equal(dimnames(test$matrix)[[1]], letters[1:10])
-    expect_equal(dimnames(test$matrix)[[2]], paste0("PC", 1:10))
+    expect_equal(dimnames(test$matrix[[1]])[[1]], letters[1:10])
+    expect_equal(dimnames(test$matrix[[1]])[[2]], paste0("PC", 1:10))
 
 
     ## Properly inherits the dimnames
@@ -237,11 +234,10 @@ test_that("geomorph.ordination works", {
     dummy_geomorph_df <- list(coords = array, factor1 = as.factor(sample(LETTERS[1:2], 10, replace = TRUE)), factor2 = as.factor(c(rep(1, 5), rep(2, 5))))
     class(dummy_geomorph_df) <- "geomorph.data.frame"
     test <- geomorph.ordination(dummy_geomorph_df)
-    expect_equal(rownames(test$matrix), letters[1:10])
+    expect_equal(rownames(test$matrix[[1]]), letters[1:10])
 
     ## No factor
     dummy_geomorph_df <- list(coords = array, factor1 = sample(LETTERS[1:2], 10, replace = TRUE), factor2 = c(rep(1, 5), rep(2, 5)))
     class(dummy_geomorph_df) <- "geomorph.data.frame"
     expect_warning(geomorph.ordination(dummy_geomorph_df), "Attempting to coerce variables in dummy_geomorph_df as factor")
-
 })

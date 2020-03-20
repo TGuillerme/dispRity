@@ -113,7 +113,6 @@ test_that("normal printing", {
         "5 elements in 3 matrices with 10 dimensions.",
         "Disparity was calculated as: c(sum)."
         ))
-
 })
 
 test_that("randtest printing", {
@@ -201,7 +200,6 @@ test_that("randtest printing", {
     )
 })
 
-
 test_that("dtt printing", {
     set.seed(1)
     ## Loading geiger's example data set
@@ -257,8 +255,6 @@ test_that("dtt printing", {
         ))
 })
 
-
-
 test_that("print.dispRity with model.test data", {
     load("model_test_data.Rda")
 
@@ -272,9 +268,9 @@ test_that("print.dispRity with model.test data", {
         c("Disparity evolution model fitting:",
          "Call: model.test(data = model_test_data, model = models, time.split = 65, fixed.optima = TRUE, verbose = FALSE) ",
          "",
-         "        aicc delta_aicc weight_aicc",
-         "BM -13.28305   0.000000   0.7856166",
-         "OU -10.68564   2.597406   0.2143834",
+         "         aicc delta_aicc weight_aicc",
+         "BM -10.708521   0.000000   0.7856166",
+         "OU  -8.111115   2.597406   0.2143834",
          "",
          "Use x$full.details for displaying the models details",
          "or summary(x) for summarising them."
@@ -305,10 +301,10 @@ test_that("print.dispRity with model.test data", {
           "",
           "Model simulated (10 times):",
           "    aicc log.lik param ancestral state sigma squared",
-          "BM -13.3   8.914     2           2.612         0.005",
+          "BM -10.7   7.627     2           7.119         0.005",
           "",
           "Rank envelope test",
-          " p-value of the test: 0.3636364 (ties method: midrank)",
-          " p-interval         : (0.09090909, 0.6363636)" 
+          " p-value of the test: 0.4090909 (ties method: midrank)",
+          " p-interval         : (0.09090909, 0.7272727)" 
         ))
 })
