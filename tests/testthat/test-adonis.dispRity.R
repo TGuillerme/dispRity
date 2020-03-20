@@ -28,9 +28,10 @@ test_that("Works with one or more groups", {
     expect_warning(random_disparity <- custom.subsets(distance_matrix, random_groups))
     
     ## Some errors
-    expect_error(adonis.dispRity(make.dispRity(distance_matrix)))
-    expect_error(adonis.dispRity(random_disparity, matrix ~ time))
-
+    error <- capture_error(adonis.dispRity(make.dispRity(distance_matrix)))
+    expect_equal(error[[1]], "make.dispRity(distance_matrix) must have subsets. Use custom.subsets() or chrono.subsets() to create some.")
+    error <- capture_error((adonis.dispRity(random_disparity, matrix ~ time)))
+    expect_equal(error[[1]], "random_disparity has no time subsets.\nImpossible to use the following formula: matrix ~ time")
 
     ## Running a default NPMANOVA
     set.seed(1)
@@ -114,7 +115,6 @@ test_that("Give the same results as adonis", {
         expect_equal(test_vegan$aov.tab[[stat]], test_dispRity$aov.tab[[stat]])
     }
 })
-
 
 test_that("Correct behaviour with palaeo data", {
 

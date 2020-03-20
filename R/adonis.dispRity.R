@@ -7,11 +7,12 @@
 #' @param method The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
 #' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis}}
 #' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
+#' @param matrix \code{numeric}, which matrix to use (default is \code{1}).
 #' 
 #' @details
 #' The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
 #'
-#' If \code{data$matrix} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
+#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
 #' 
 #' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 #' 
@@ -80,7 +81,7 @@
 # method = "euclidean"
 # warn = TRUE
 
-adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean", ..., warn = TRUE) {
+adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean", ..., warn = TRUE, matrix = 1) {
 
     match_call <- match.call()
 
@@ -180,13 +181,17 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## warnings
     check.class(warn, "logical")
+
+    ## matrix
+    check.class(matrix, c("integer", "numeric"))
+    matrix_n <- matrix
     
     ## Checking if the data is a distance matrix or not
-    matrix <- check.dist.matrix(data$matrix, method = method)
+    matrix <- check.dist.matrix(data$matrix[[matrix_n]], method = method)
     was_dist <- matrix[[2]]
     matrix <- matrix[[1]]
     if(warn && !was_dist) {
-        warning("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix)).\nMake sure that this is the desired methodological approach!")
+        warning(paste0("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix[[", matrix_n, "]])).\nMake sure that this is the desired methodological approach!"))
     }
 
     ## Making the predictors table

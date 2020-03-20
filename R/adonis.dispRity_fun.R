@@ -41,7 +41,7 @@ make.factors <- function(data, group_names, group_variables, time_subsets, pool_
         ## Individual time series
         make.time.series <- function(one_time_subset, data) {
             ## Generate the time series
-            time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix), dimnames = list(rownames(data$matrix)))
+            time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix[[1]]), dimnames = list(rownames(data$matrix)))
             time_series[as.vector(one_time_subset), 1] <- TRUE
             return(time_series)
         }

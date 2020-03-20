@@ -30,9 +30,7 @@ test_that("internal functions work", {
     test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
     expect_is(test, "list")
     expect_equal(length(test), 4)
-
 })
-
 
 test_that("simple models work", {
 
@@ -122,7 +120,6 @@ test_that("simple models work", {
     expect_equal(verbose[1], "Evidence of equal variance (Bartlett's test of equal variances p = 0).")
     expect_equal(verbose[2], "Variance is not pooled.")
     expect_equal(verbose[3], "Running multi.OU on 13 shift times...")
-
 })
 
 test_that("multiple.models work", {

@@ -181,14 +181,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Check the names
-            if(!all(prob_names %in% rownames(data$matrix))) {
+            if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
                 stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
             } else {
                 ## Check if they are any names missing
-                missing_rows <- rownames(data$matrix) %in% prob_names
+                missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
                 if(any(missing_rows)) {
                     extra_prob <- rep(1, length(which(!missing_rows)))
-                    names(extra_prob) <- rownames(data$matrix)[!missing_rows]
+                    names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
                     prob <- c(extra_prob, prob)
                 }
             }
@@ -204,7 +204,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Renaming the elements to match the numbers in subsets
-            names(prob) <- match(names(prob), rownames(data$matrix))
+            names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
 
             ## Update the dispRity object
             add.prob <- function(one_subset, prob) {

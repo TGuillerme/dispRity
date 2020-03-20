@@ -3,8 +3,11 @@
 context("summary.dispRity")
  
 # Loading the data
-load("test_data.Rda")
-data <- test_data$ord_data_tips
+data(BeckLee_mat50)
+data(BeckLee_mat99)
+data(BeckLee_tree)
+data(BeckLee_ages)
+data <- BeckLee_mat50
 data(disparity)
 
 #######################
@@ -109,7 +112,7 @@ test_that("Correct error management", {
 })
 
 #Case 1, no bootstrap
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
@@ -135,7 +138,7 @@ test_that("Works without bootstraps", {
 })
 
 #Case 2, bootstraps
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- boot.matrix(data, bootstrap = 5)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
@@ -154,7 +157,7 @@ test_that("Works with bootstraps", {
 })
 
 #Case 3, bootstraps + rarefaction
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,50))
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
@@ -176,7 +179,7 @@ test_that("Works with bootstraps and rarefaction", {
 })
 
 #Case 4, time subsets
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -201,7 +204,7 @@ test_that("Works with subsets", {
 
 #Case 5, time subsets + bootstraps
 set.seed(1)
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -227,7 +230,7 @@ test_that("Works with subsets and bootstraps", {
 
 #Case 5, time subsets + bootstraps + rarefaction
 set.seed(1)
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -300,10 +303,9 @@ test_that("Test with disparity as a distribution", {
 ## summary.dispRity works with empty or small (<3 subsets)
 test_that("summary.dispRity works with small, empty/subsets", {
 
-    load("test_data.Rda")
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat50
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- dispRity(boot.matrix(chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 

@@ -8,9 +8,9 @@ data(BeckLee_ages)
 data(BeckLee_mat99)
 
 # load("test_data.Rda")
-# tree <- test_data$tree_data
-# data <- test_data$ord_data_tips
-# FADLAD <- test_data$FADLAD_data
+tree <- BeckLee_tree
+data <- BeckLee_mat50
+FADLAD <- BeckLee_ages
 
 
 
@@ -94,12 +94,11 @@ test_that("chrono.subsets.discrete works properly without nodes", {
         , subsets_2)
 
     expect_message(chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = TRUE))
-
 })
 
 ## With nodes
 inc.nodes = TRUE
-data <- test_data$ord_data_tips_nodes
+data <- BeckLee_mat99
 
 time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = FALSE)
 
@@ -202,9 +201,9 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     expect_error(
         chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
-    expect_error(
+    expect_warning(expect_error(
         chrono.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
+        ))
     ## tree
     expect_error(
         chrono.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE)
@@ -440,14 +439,15 @@ test_that("chrono.subsets works without tree", {
 })
 
 test_that("t0 works", {
-    data <- test_data$ord_data_tips_nodes
+    data <- BeckLee_mat99
     test <- chrono.subsets(data, tree, method = "continuous", model = "acctran", inc.nodes = TRUE, FADLAD = FADLAD, t0 = 100, time = 11)
     expect_is(test, "dispRity")
     expect_equal(names(test$subsets), as.character(rev(seq(from = 0, to = 100, by = 10))))
 })
 
 test_that("chrono.subsets works for empty subsets", {
-    data <- test_data$ord_data_tips
+    data <- BeckLee_mat50
+    tree <- BeckLee_tree
     time <- c(145, 140, 139, 0)
 
     ## Discrete
@@ -458,7 +458,7 @@ test_that("chrono.subsets works for empty subsets", {
     expect_equal(test$subsets[[3]][[1]][,1], c(5, 4, 6, 7, 8, 9, 1, 43, 2, 3, 10, 11, 42, 12, 13, 14, 15, 44, 17, 18, 36, 37, 38, 41, 32, 39, 40, 33, 34, 35, 49, 50, 24, 25, 26, 27, 28, 48, 16, 21, 22, 23, 47, 45, 19, 20, 46, 29, 30, 31))
 
     ## Continuous
-    data <- test_data$ord_data_tips_nodes
+    data <- BeckLee_mat99
     warnings <- capture_warnings(test <- chrono.subsets(data, tree, model = "acctran", method = "continuous", time = c(145, 140, 139, 0)))
     expect_equal(warnings, c("The slice 145 is empty.", "The slice 140 is empty."))
     expect_equal(test$subsets[[1]][[1]][,1], NA)
@@ -589,9 +589,8 @@ test_that("chrono.subsets works with multiple matrices", {
 
     error <- capture_error(test <- chrono.subsets(data_wrong, tree = BeckLee_tree, method = "discrete", time = 4))
     expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
-    warn <- capture_warning(test <- chrono.subsets(data, tree = BeckLee_tree, method = "discrete", time = 4))
-    expect_equal(warn[[1]], "The interval 133.51104 - 100.13328 is empty.")
-
+    expect_warning(test <- chrono.subsets(data, tree = BeckLee_tree, method = "discrete", time = 4))
+    
     expect_is(test, "dispRity")
     expect_is(test$matrix, "list")
     expect_equal(length(test$matrix), 2)

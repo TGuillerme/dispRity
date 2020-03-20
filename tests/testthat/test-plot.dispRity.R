@@ -229,7 +229,7 @@ test_that("plot subclasses works", {
     ## Calculating the disparity as the ellipsoid volume
     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
     ## Testing against normal distribution
-    results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm)
+    expect_warning(results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm))
     expect_is(results, c("dispRity", "randtest"))
     expect_null(plot(results))
 

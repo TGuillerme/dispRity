@@ -119,7 +119,7 @@ test_that("normal printing", {
 test_that("randtest printing", {
     set.seed(1)
     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = 5)
-    test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
+    expect_warning(test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(test),
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
@@ -140,7 +140,7 @@ test_that("randtest printing", {
     ## Calculating variances of each dimension
     sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
     ## Testing against normal distribution
-    results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
+    expect_warning(results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(print.dispRity(results)),
         c(

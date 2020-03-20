@@ -2,6 +2,8 @@
 
 context("dispRity")
 
+data(BeckLee_mat99)
+data(BeckLee_ages)
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
@@ -151,8 +153,6 @@ test_that("disparity.bootstraps internal works", {
 
 
 #Loading the data
-# load("test_data.Rda")
-# data <- test_data$ord_data_tips
 data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
@@ -430,10 +430,9 @@ data <- BeckLee_mat50
 ## dispRity works with empty or small (<3 subsets)
 test_that("dispRity works with small, empty/subsets", {
 
-    load("test_data.Rda")
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat99
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
     silent <- capture_warnings(data <- boot.matrix(data))

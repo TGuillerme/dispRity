@@ -157,8 +157,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             }
         }
 
-
-
         ## tree must be dated
         if(is_multiPhylo) {
             ## Check the root times
