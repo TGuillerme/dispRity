@@ -577,8 +577,6 @@ test_that("dispRity works with multiple matrices", {
 })
 
 
-
-
 # test_that("dispRity works in parallel", {
 #     library(parallel)
 #     data(BeckLee_mat99)

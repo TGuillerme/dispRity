@@ -15,7 +15,6 @@
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
-#' @param bind.data.tree If \code{data} is a \code{list} and \code{tree} is \code{"multiPhylo"}, a \code{logical} value whether to bind the data to the tree (\code{TRUE} - the matrices and the trees are matched) or not (\code{FALSE} - default).
 #'
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -102,15 +101,15 @@
 # abline(v = 40)
 
 # # DEBUG LOAD FROM TEST
-# method = "continuous"
+# method = "acctran"
 # time = 3
 # model = "proximity"
-# inc.nodes = FALSE
+# inc.nodes = TRUE
 # verbose = FALSE
-# t0 = FALSE
+# t0 = 5
 
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data.tree = FALSE) {
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
     
     match_call <- match.call()
 
@@ -128,12 +127,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## nrow_data variable declaration
     nrow_data <- nrow(data[[1]])
-
-    ## Check tree binding method
-    check.class(bind.data.tree, "logical")
-    if(bind.data.tree) {
-        stop("DEBUG: chrono.subsets not working with option bind.data.tree yet.")
-    }
 
     ## TREE (1)
     ## tree must be a phylo object

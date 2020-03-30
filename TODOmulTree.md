@@ -10,7 +10,7 @@ Changing the `dispRity` structure to allow list of matrices
 
 ## tests
  
- - [ ] update all tests
+ - [x] update all tests
 
 ## `make.dispRity`
 
@@ -35,7 +35,7 @@ Changing the `dispRity` structure to allow list of matrices
  - [x] return disparity values as observed (length = length(matrices)) and normal bootstraps
  - [x] test on all disparity tests
  - [x] update example data
-
+ - [ ] works with subsets with multiple trees and multiple matrices
 
 ## `dispRity.utilities`
 
@@ -52,7 +52,7 @@ Changing the `dispRity` structure to allow list of matrices
 ## `boot.matrix`
 
  - [x] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before
- - [ ] bootstraps individual matrices option: picks the row numbers for each matrix (similar as before)
+ - [ ] works with subsets with multiple trees and multiple matrices
 
 ## `custom.subsets`
 
@@ -61,8 +61,6 @@ Changing the `dispRity` structure to allow list of matrices
 ## `chrono.subsets`
 
  - [x] `chrono.subsets` works with list of matrices.
- - [ ] apply the time slicing to all matrices by matching each tree to the matrix. If all trees are binary, they can have the same node numbers (names) and if the call argument `equal_dimnames` is the same the time slicing is applied only once (speed up).
- - [ ] check matrices and trees.
 
 ## `null.test`
 

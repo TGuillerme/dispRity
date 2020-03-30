@@ -595,4 +595,78 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_is(test$matrix, "list")
     expect_equal(length(test$matrix), 2)
     expect_equal(dim(test$matrix[[1]]), c(50, 48))
+
+
+    set.seed(1)
+    ## Matches the trees and the matrices
+    ## A bunch of trees
+    make.tree <- function(n, fun = rtree) {
+        ## Make the tree
+        tree <- fun(n)
+        tree <- chronos(tree, quiet = TRUE,
+                        calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
+        class(tree) <- "phylo"
+        ## Add the node labels
+        tree$node.label <- paste0("n", 1:Nnode(tree))
+        ## Add the root time
+        tree$root.time <- max(tree.age(tree)$ages)
+        return(tree)
+    }
+    trees <- replicate(3, make.tree(10), simplify = FALSE)
+    class(trees) <- "multiPhylo"
+
+
+    ## A bunch of matrices
+    ## Base matrix
+    matrix_base <- matrix(rnorm(30), 10, 3, dimnames = list(paste0("t", 1:10)))
+    do.ace <- function(tree, matrix) {
+        ## Run one ace
+        fun.ace <- function(character, tree) {
+            results <- ace(character, phy = tree)$ace
+            names(results) <- paste0("n", 1:Nnode(tree))
+            return(results)
+        }
+        ## Run all ace
+        return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
+    }
+
+    ## All matrices
+    matrices <- lapply(trees, do.ace, matrix_base)
+
+    ## Test if it works with multiple trees and with multiple matrices ok
+    test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
+    expect_is(test, "dispRity")
+    test_print <- capture_output(print(test))
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices:\n    5, 2.5, 0.")
+    test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+    expect_is(test, "dispRity")
+    test_print <- capture_output(print(test))
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix:\n    5, 2.5, 0.")
+
+
+    matrices_wrong1 <- matrices_wrong2 <- matrices
+    rownames(matrices_wrong1[[2]])[1] <- "t2000" 
+    rownames(matrices_wrong2[[3]])[11] <- "root" 
+
+    error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+
+    ## Test working fine
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_equal(length(test$matrix), 3)
+    expect_is(test$matrix[[1]], "matrix")
+    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_is(test$subsets, "list")
+    expect_equal(length(test$subsets), 3)
+    expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
+
+
+    ## Calculating disparity works
+    
+
 })
