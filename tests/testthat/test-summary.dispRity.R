@@ -265,10 +265,10 @@ test_that("Example works", {
         dim(summary(sum_of_ranges)), c(2,8)
         )
     expect_is(
-        summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0), "data.frame"
+        summary(sum_of_ranges, quantiles = 75, cent.tend=median, digits=0), "data.frame"
         )
     expect_equal(
-        dim(summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0)), c(2,8)
+        dim(summary(sum_of_ranges, quantiles =75, cent.tend=median, digits=0)), c(2,6)
         )
 })
 
