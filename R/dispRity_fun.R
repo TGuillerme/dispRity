@@ -100,7 +100,7 @@ apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, 
                 bootstrap = na.omit(one_subsets_bootstrap),
                 dimensions = 1:data$call$dimensions,
                 fun,
-                ...), recursive = FALSE))
+                ...), recursive = FALSE))#, use.names = FALSE))
 
                 # return(fun( data$matrix[na.omit(one_subsets_bootstrap), 1:data$call$dimensions], ...))
     }
@@ -130,11 +130,10 @@ apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, 
     }
 }
 
-
 ## Calculating the disparity for a bootstrap matrix 
 disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
-    verbose_place_holder <- FALSE
+    verbose_place_holder <- NULL
     if(matrix_decomposition) {
         ## Find out whether to output an array
         use_array <- !is.null(metrics_list$level3.fun)
