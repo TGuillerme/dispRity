@@ -259,8 +259,8 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
 
     expect_is(continous_shortcut, "dispRity")
     expect_is(discrete_shortcut, "dispRity")
-    expect_equal(continous_shortcut$call$subsets[1], "continuous")
-    expect_equal(discrete_shortcut$call$subsets[1], "discrete")
+    expect_equal(unname(continous_shortcut$call$subsets[1]), "continuous")
+    expect_equal(unname(discrete_shortcut$call$subsets[1]), "discrete")
     
     ## Error when no phy and no/wrong FADLAD
     expect_error(chrono.subsets(BeckLee_mat99, method = "continuous", time = 3, model = "acctran"))

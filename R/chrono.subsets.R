@@ -15,7 +15,9 @@
 #' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
-#'
+#' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
+#' 
+#' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
 #' \item{matrix}{the multidimensional space (a \code{matrix}).}
@@ -101,15 +103,16 @@
 # abline(v = 40)
 
 # # DEBUG LOAD FROM TEST
-# method = "acctran"
+# method = "continuous"
 # time = 3
-# model = "proximity"
+# model = "gradual.split"
 # inc.nodes = TRUE
 # verbose = FALSE
 # t0 = 5
+# bind.data = TRUE
 
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE) {
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
     
     match_call <- match.call()
 
@@ -373,6 +376,16 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         FADLAD <- list(FADLAD)
     }
 
+    ## Check bind data
+    if(is_multiPhylo && length(data) == length(tree)) {
+        check.class(bind.data, "logical")
+    } else {
+        if(bind.data) {
+            stop(paste0("Impossible to bind the data to the trees since the number of matrices (", length(data), ") is not equal to the number of trees (", length(tree), ")."))
+        }
+    }
+
+
     ## VERBOSE
     check.class(verbose, "logical")
 
@@ -413,5 +426,5 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     #time_subsets <- c(make.origin.subsets(data), time_subsets)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsets" = c(method, model)), subsets = time_subsets))
+    return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))
 }
