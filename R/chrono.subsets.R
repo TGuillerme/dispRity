@@ -4,7 +4,7 @@
 #' @description Splits the data into a chronological (time) subsets list.
 #' 
 #' @usage chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
-#'                     FADLAD, verbose = FALSE, t0 = FALSE)
+#'                     FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE)
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.

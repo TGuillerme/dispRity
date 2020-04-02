@@ -7,7 +7,7 @@
 \title{Separating data in chronological subsets.}
 \usage{
 chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
-                    FADLAD, verbose = FALSE, t0 = FALSE)
+                    FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE)
 }
 \arguments{
 \item{data}{A \code{matrix} or a \code{list} of matrices.}
