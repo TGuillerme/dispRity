@@ -271,18 +271,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         warning(paste0("Multiple trees where used in ", as.expression(match_call$data), ". The 'boot.type' option is set to \"full\"."))
     }
 
-    # boot.type_class <- class(boot.type)
-    # if(boot.type_class == "character") {
-    #     boot.type <- tolower(boot.type)
-    #     check.method(boot.type, c("full", "single"), "boot.type")
-    #     check.length(boot.type, 1, " must be \"full\", \"single\" or a matrix.")
-    # } else {
-    #     check.class(boot.type, "matrix")
-    #     if(!all(colnames(boot.type) == colnames(data$matrix))) {
-    #         stop("The personalised boot.type matrix must have the same rownames as the data.")
-    #     }
-    # }
-
     ## Set up the bootstrap type function
     switch(boot.type,
         "full" = {
@@ -329,28 +317,43 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     ## BOOTSRAPPING THE DATA
     if(verbose) message("Bootstrapping", appendLF = FALSE)
-    # if(length(data$call$subsets) == 5 && as.logical(data$call$subsets[["bind"]])) 
-    #     ## Run the bootstraps for each trees
-    #     bootstraps_per_tree <- bootstraps/as.numeric(data$call$subsets[["trees"]])
-    #     ## Warning if the number of bootstraps is incorrect
-    #     if(bootstraps_per_tree != as.integer(bootstraps_per_tree)) {
-    #         bootstraps_per_tree <- ceiling(bootstraps_per_tree)
-    #         bootstraps <- bootstraps_per_tree * as.numeric(data$call$subsets[["trees"]])
-    #         warning(paste0("Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to ", bootstraps, " to distribute them evenly for each tree (", bootstraps_per_tree, " bootstraps * ",  data$call$subsets[["trees"]], " trees)."))
-    #     }
+    if(length(data$call$subsets) == 5 && as.logical(data$call$subsets[["bind"]])) {
+        ## Get the number of trees
+        n_trees <- as.numeric(data$call$subsets[["trees"]])
+        ## Run the bootstraps for each trees
+        bootstraps_per_tree <- bootstraps/n_trees
+        ## Warning if the number of bootstraps is incorrect
+        if(bootstraps_per_tree != as.integer(bootstraps_per_tree)) {
+            bootstraps_per_tree <- ceiling(bootstraps_per_tree)
+            bootstraps <- bootstraps_per_tree * n_trees
+            warning(paste0("Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to ", bootstraps, " to distribute them evenly for each tree (", bootstraps_per_tree, " bootstraps * ",  n_trees, " trees)."))
+        }
 
-    #     ## Split the subsets
-    #     split.subsets <- function(one_subset, n_trees) {
-    #         ## split the whole dataset
-    #         splitted <- lapply(split(subsets$elements, rep(1:n_trees, each = ncol(subsets$elements)/n_trees * nrow(subsets$elements))), matrix, ncol = ncol(subsets$elements)/n_trees)
-    #     }
-    #     splitted_subsets <- lapply(data$subsets, split.subsets, n_trees = 3)
-    #     test <- lapply(splitted_subsets, lapply, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
-
-    # } else {
+        ## Split the subsets
+        split.subsets <- function(one_subset, n_trees) {
+            ## split the whole dataset
+            ncol_out <- ncol(one_subset$elements)/n_trees
+            splitted <- lapply(
+                split(one_subset$elements, rep(1:n_trees, each = ncol_out * nrow(one_subset$elements))), 
+                function(X, ncol) return(list("elements" = matrix(X, ncol = ncol))),
+                ncol = ncol_out)
+            return(splitted)
+        }
+        ## Bootstrapping the subsetted results
+        bootstrap_results <- lapply(lapply( ## Opens 1
+                                lapply( ## Opens 2
+                                    lapply( ## Opens 3
+                                        data$subsets,
+                                        ## Fun 3: Split the data per tree
+                                        split.subsets, n_trees = n_trees),
+                                    ## Fun 2: Apply the bootstraps
+                                    lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
+                             ## Fun 1: Merge into one normal bootstrap table
+                             function(X) do.call(cbind, unlist(X, recursive = FALSE))), list)
+    } else {
         ## Bootstrap the data set 
         bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
-    # }
+    }
     if(verbose) message("Done.", appendLF = FALSE)
 
     ## Combining and storing the results back in the dispRity object
