@@ -128,10 +128,13 @@ Some ideas/functionalities/implementations in this package where implemented fol
 
 Used in
 -------
-<!-- > 19 publications have used `dispRity` since 2018 (12.6 per year). (calculated on the 07/11/2019). -->
+<!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogenomics%2C+biogeography+and+morphometrics+reveal+rapid+phenotypic+evolution+in+pythons+after+crossing+Wallace%27s+line&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+D Esquerré, S Donnellan, IG Brennan, AR Lemmon, EM Lemmon, H Zaher, FG Grazziotin, JS Keogh. (**2020**) Phylogenomics, biogeography and morphometrics reveal rapid phenotypic evolution in pythons after crossing Wallace’s line. *Systematic Biology*. [DOI: 10.1093/sysbio/syaa024](https://doi.org/10.1093/sysbio/syaa024)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shoulder+Muscle+Architecture+in+the+Echidna+%28Monotremata%3A+Tachyglossus+aculeatus%29+Indicates+Conserved+Functional+Properties&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3A2T425Bdh8p4J%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-S Regnault, P Fahn-Lai, RM Norris, SE Pierce. (**2020**) Shoulder Muscle Architecture in the Echidna (Monotremata: Tachyglossus aculeatus) Indicates Conserved Functional Properties. *Journal of Mammalian Evolution*, 14:1-3..[DOI: 10.1007/s10914-020-09498-6](https://link.springer.com/article/10.1007/s10914-020-09498-6)
+S Regnault, P Fahn-Lai, RM Norris, SE Pierce. (**2020**) Shoulder Muscle Architecture in the Echidna (Monotremata: Tachyglossus aculeatus) Indicates Conserved Functional Properties. *Journal of Mammalian Evolution*, 14:1-3. [DOI: 10.1007/s10914-020-09498-6](https://link.springer.com/article/10.1007/s10914-020-09498-6)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Early+high+rates+and+disparity+in+the+evolution+of+ichthyosaurs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 BC Moon, TL Stubbs. (**2020**) Early high rates and disparity in the evolution of ichthyosaurs. *Communications Biology*. 3(1):1-8.[DOI: 10.1038/s42003-020-0779-6](https://www.nature.com/articles/s42003-020-0779-6)
@@ -154,8 +157,8 @@ V Weisbecker, T Guillerme, C Speck, E Sherratt, H Mehari Abraha, AC Sharp, CE Te
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+metrics+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 T Guillerme, MN Puttick, AE Marcy, V Weisbecker. (**2019**) Shifting spaces: which disparity or dissimilarity metrics best summarise occupancy in multidimensional spaces? *biorXiv*. 801571. [DOI: 10.1101/801571 ](https://www.biorxiv.org/content/10.1101/801571v1).
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-RO Gómez, AI Lires. (**2019**) High ecomorphological diversity among Early Cretaceous frogs from a large subtropical wetland of Iberia. *Comptes Rendus Palevol*. 2019 Oct 12. [DOI: 10.1016/j.crpv.2019.07.005](https://www.sciencedirect.com/science/article/pii/S1631068319301320).
+<a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=High+ecomorphological+diversity+among+Early+Cretaceous+frogs+from+a+large+subtropical+wetland+of+Iberia&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+* RO Gómez, AI Lires. (**2019**) High ecomorphological diversity among Early Cretaceous frogs from a large subtropical wetland of Iberia. *Comptes Rendus Palevol*. 2019 Oct 12. [DOI: 10.1016/j.crpv.2019.07.005](https://www.sciencedirect.com/science/article/pii/S1631068319301320).
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 M Taverne, AC Fabre, N King‐Gillies, M Krajnović, D Lisičić, L Martin, L Michal, D Petricioli, A Štambuk, Z Tadić, C Vigliotti. (**2019**) Diet variability among insular populations of Podarcis lizards reveals diverse strategies to face resource‐limited environments. *Ecology and Evolution*. [DOI:10.1002/ece3.5626](https://onlinelibrary.wiley.com/doi/pdf/10.1002/ece3.5626).
@@ -183,6 +186,9 @@ JT Flannery Sutherland, BC Moon, TL Stubbs, MJ Benton. (**2019**) Does exception
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Speciation+Rate+Is+Independent+of+the+Rate+of+Evolution+of+Morphological+Size%2C+Shape%2C+and+Absolute+Morphological+Specialization+in+a+Large+Clade+of+Birds&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 NMA Crouch, RE Ricklefs. (**2019**)Speciation Rate Is Independent of the Rate of Evolution of Morphological Size, Shape, and Absolute Morphological Specialization in a Large Clade of Birds *American Naturalist* [DOI: 10.1086/701630](https://www.journals.uchicago.edu/doi/abs/10.1086/701630)
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+long-term+ecology+and+evolution+of+marine+reptiles+in+a+Jurassic+seaway&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+D Foffa, MT Young, TL Stubbs, KG Dexter, SL Brusatte. (**2018**) The long-term ecology and evolution of marine reptiles in a Jurassic seaway. *Nature ecology & evolution*. 2(10):1548-55. [DOI: 10.1038/s41559-018-0656-6](https://www.nature.com/articles/s41559-018-0656-6)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=Morphology+and+stable+isotope+analysis+demonstrate+different+structuring+of+bat+communities+in+rainforest+and+savannah+habitats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 A Monadjem, A Kane, P Taylor, LR Richards, G Hall, S Woodborne. (**2018**) Morphology and stable isotope analysis demonstrate different structuring of bat communities in rainforest and savannah habitats. *Royal Society Open Science* [DOI: 10.1098/rsos.180849](https://royalsocietypublishing.org/doi/full/10.1098/rsos.180849)
