@@ -8,7 +8,7 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a rownames or names attribute that corresponds to the elements in \code{data}.
+#' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -31,14 +31,15 @@
 #' }
 #' 
 #' \code{prob}: This option allows to attribute specific probability to each element to be drawn.
-#' A probability of 0 will never sample the element, a probability of 1 will sample.
+#' A probability of 0 will never sample the element, a probability of 1 will always allow it to be sampled.
 #' This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
 #' If the argument is a \code{matrix}, it must have rownames attributes corresponding to the element names.
 #' If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
 #'
-#' Multiple trees: If the give \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
+#' Multiple trees: If the given \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
 #' For example, for a slice through two trees resulting in the selection of elements \code{A} and \code{B} in the first tree and \code{A}, \code{B} and \code{C} in the second tree, the \code{"full"} bootstrap algorithm will select three elements (with replacement) between \code{A}, \code{B} and \code{C} with a probability of respectively \eqn{p(A) = 1/3} (\eqn{p(A) = (1/3 + 1/3) / 2}), \eqn{p(B) = 1/3} and \eqn{p(C) = 1/6} (\eqn{p(C) = (0 + 1/3) / 2}).
 #' 
+# Multiple matrices: If the given \code{data} contains multiple matrices, the elements selected for each bootstrap pseudo-replicate are applied to all the matrices. For example if a bootstrap pseudo-replicate selects the elements 2, 3, and 5, they are selected for all matrices. If the given \code{data} is from \code{\link{chrono.subsets}} and contains the same number of matrices and trees (>1) the sampling is distributed for each
 #' 
 #' @seealso \code{\link{cust.subsets}}, \code{\link{chrono.subsets}}, \code{\link{dispRity}}.
 #'
@@ -326,10 +327,30 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         return(data)
     }
 
-    ## BOOTSRAPING THE DATA
+    ## BOOTSRAPPING THE DATA
     if(verbose) message("Bootstrapping", appendLF = FALSE)
-    ## Bootstrap the data set 
-    bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+    # if(length(data$call$subsets) == 5 && as.logical(data$call$subsets[["bind"]])) 
+    #     ## Run the bootstraps for each trees
+    #     bootstraps_per_tree <- bootstraps/as.numeric(data$call$subsets[["trees"]])
+    #     ## Warning if the number of bootstraps is incorrect
+    #     if(bootstraps_per_tree != as.integer(bootstraps_per_tree)) {
+    #         bootstraps_per_tree <- ceiling(bootstraps_per_tree)
+    #         bootstraps <- bootstraps_per_tree * as.numeric(data$call$subsets[["trees"]])
+    #         warning(paste0("Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to ", bootstraps, " to distribute them evenly for each tree (", bootstraps_per_tree, " bootstraps * ",  data$call$subsets[["trees"]], " trees)."))
+    #     }
+
+    #     ## Split the subsets
+    #     split.subsets <- function(one_subset, n_trees) {
+    #         ## split the whole dataset
+    #         splitted <- lapply(split(subsets$elements, rep(1:n_trees, each = ncol(subsets$elements)/n_trees * nrow(subsets$elements))), matrix, ncol = ncol(subsets$elements)/n_trees)
+    #     }
+    #     splitted_subsets <- lapply(data$subsets, split.subsets, n_trees = 3)
+    #     test <- lapply(splitted_subsets, lapply, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+
+    # } else {
+        ## Bootstrap the data set 
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+    # }
     if(verbose) message("Done.", appendLF = FALSE)
 
     ## Combining and storing the results back in the dispRity object
