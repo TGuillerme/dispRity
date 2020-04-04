@@ -35,7 +35,8 @@ Changing the `dispRity` structure to allow list of matrices
  - [x] return disparity values as observed (length = length(matrices)) and normal bootstraps
  - [x] test on all disparity tests
  - [x] update example data
- - [ ] works with subsets with multiple trees and multiple matrices
+ - [x] works with subsets with multiple trees and multiple matrices
+ - [ ] Checks if the data is `dispRity` and has `data$call$subsets$bind == TRUE` and then calculate disparity recursively for each matrix individually. The results are still merged together though.
 
 ## `dispRity.utilities`
 
@@ -51,8 +52,8 @@ Changing the `dispRity` structure to allow list of matrices
 
 ## `boot.matrix`
 
- - [x] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before
- - [ ] works with subsets with multiple trees and multiple matrices
+ - [x] bootstraps all the matrices option (default): picks the row numbers for the matrices regardless of the matrix ID (number). Similar option as before.
+ - [x] Checks if the data is `dispRity` and has `data$call$subsets$bind == TRUE` and then run the bootstraps for each matrix individually recursively (dividing the number of bootstrap by the number of matrices - fire a warning for that).
 
 ## `custom.subsets`
 
@@ -61,6 +62,7 @@ Changing the `dispRity` structure to allow list of matrices
 ## `chrono.subsets`
 
  - [x] `chrono.subsets` works with list of matrices.
+ - [x] combines multiple matrices with multiple trees (if the number is equal)
 
 ## `null.test`
 

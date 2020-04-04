@@ -236,6 +236,15 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
     
 
+    # if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
+    #     is_bound <- as.logical(data$call$subsets[["bind"]])
+    # } else {
+    #     is_bound <- FALSE
+    # }
+
+
+
+
     ## Initialising the cluster
     # if(do_parallel) {
     #     ## Selecting the number of cores

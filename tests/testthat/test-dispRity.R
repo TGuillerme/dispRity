@@ -576,7 +576,7 @@ test_that("dispRity works with multiple matrices", {
     expect_equal(length(test$disparity[[1]]$elements), 30)
 })
 
-test_that("disPRity works with multiple matrices from chrono.subsets", {
+test_that("dispRity works with multiple matrices from chrono.subsets", {
 
     set.seed(1)
     ## Matches the trees and the matrices
@@ -615,7 +615,7 @@ test_that("disPRity works with multiple matrices from chrono.subsets", {
     matrices <- lapply(trees, do.ace, matrix_base)
 
     ## Test working fine
-    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5)
 
     expect_is(test, "dispRity")
     expect_is(test$matrix, "list")
@@ -624,7 +624,7 @@ test_that("disPRity works with multiple matrices from chrono.subsets", {
     expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets), 3)
-    expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
+    expect_equal(dim(test$subsets$`5`$elements), c(7, 9))
 
     ## Calculating disparity works
     level1 <- dispRity(test, metric = mean)
@@ -640,16 +640,16 @@ test_that("disPRity works with multiple matrices from chrono.subsets", {
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
     expect_false(sd(level1$disparity[[3]][[1]]) != 0)
-    expect_equal(summary(level1)$obs.median, c(-0.221, -0.264, -0.164))
+    expect_equal(summary(level1)$obs.median, c(-0.225, -0.165, -0.164))
 
     ## level2 works?
     expect_is(level2, "dispRity")
     ## Results is length elements * matrices * trees
-    expect_equal(dim(level2$disparity[[1]][[1]]), dim(level2$subsets[[1]][[1]]) * c(length(level2$matrix), 1))
-    expect_equal(dim(level2$disparity[[2]][[1]]), dim(level2$subsets[[2]][[1]]) * c(length(level2$matrix), 1))
-    expect_equal(dim(level2$disparity[[3]][[1]]), dim(level2$subsets[[3]][[1]]) * c(length(level2$matrix), 1))
+    expect_equal(dim(level2$disparity[[1]][[1]]), c(21,3))
+    expect_equal(dim(level2$disparity[[2]][[1]]), c(24,3))
+    expect_equal(dim(level2$disparity[[3]][[1]]), c(30,3))
     ## Correct results (should be equal to level12?)
-    expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.952, 1.098, 1.217))
+    expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.597, 0.692, 1.217))
 
     ## level12 works?
     expect_is(level12, "dispRity")
@@ -662,7 +662,15 @@ test_that("disPRity works with multiple matrices from chrono.subsets", {
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
     expect_false(sd(level1$disparity[[3]][[1]]) != 0)
-    expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(1.049, 1.098, 1.217))
+    expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.546, 0.827, 1.217))
+
+
+    ## Works with bootstraps
+    # testboot <- boot.matrix(test)
+
+
+
+
 })
 
 
