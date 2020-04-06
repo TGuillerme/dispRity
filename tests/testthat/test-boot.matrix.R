@@ -97,6 +97,12 @@ test_that("Sanitizing works correctly", {
     expect_error(
         boot.matrix(dutu)
         )
+
+    bootstrap_done <- boot.matrix(data, bootstraps = 3)
+    error <- capture_error(boot.matrix(bootstrap_done))
+    expect_equal(error[[1]], "bootstrap_done was already bootstrapped.")
+
+
 })
 
 ## No bootstrap (is equal to the matrix)
@@ -156,6 +162,8 @@ test_that("5 bootstraps", {
     expect_equal(
         length(test$subsets[[1]])
         ,2)
+
+
 })
 
 ## Bootstraps = 5 + Rarefaction = 5

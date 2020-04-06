@@ -106,6 +106,12 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         ## Creating the dispRity object
         data <- make.dispRity(data = data)
     } else {
+
+        ## Must not already been bootstrapped
+        if(!is.null(data$call$bootstrap)) {
+            stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
+        }
+
         ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         
