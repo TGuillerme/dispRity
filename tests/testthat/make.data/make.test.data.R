@@ -45,8 +45,6 @@ paleotree_data <- list(tree = tree, data = data)
 save(paleotree_data, file="../paleotree_test_data.Rda")
 
 
-
-
 ####################
 ## geiger data
 ####################
@@ -54,3 +52,48 @@ save(paleotree_data, file="../paleotree_test_data.Rda")
 geiger_test_data <- get(data(geospiza))
 
 save(geiger_test_data, file="../geiger_test_data.Rda")
+
+
+####################
+## multiple trees/matrices data
+####################
+
+set.seed(1)
+## Matches the trees and the matrices
+## A bunch of trees
+make.tree <- function(n, fun = rtree) {
+    ## Make the tree
+    tree <- fun(n)
+    tree <- chronos(tree, quiet = TRUE,
+                    calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
+    class(tree) <- "phylo"
+    ## Add the node labels
+    tree$node.label <- paste0("n", 1:Nnode(tree))
+    ## Add the root time
+    tree$root.time <- max(tree.age(tree)$ages)
+    return(tree)
+}
+trees <- replicate(3, make.tree(10), simplify = FALSE)
+class(trees) <- "multiPhylo"
+
+
+## A bunch of matrices
+## Base matrix
+matrix_base <- matrix(rnorm(30), 10, 3, dimnames = list(paste0("t", 1:10)))
+do.ace <- function(tree, matrix) {
+    ## Run one ace
+    fun.ace <- function(character, tree) {
+        results <- ace(character, phy = tree)$ace
+        names(results) <- paste0("n", 1:Nnode(tree))
+        return(results)
+    }
+    ## Run all ace
+    return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
+}
+
+## All matrices
+matrices <- lapply(trees, do.ace, matrix_base)
+
+bound_test_data <- list("matrices" = matrices, "trees" = trees)
+
+save(bound_test_data, file="../bound_test_data.Rda")
