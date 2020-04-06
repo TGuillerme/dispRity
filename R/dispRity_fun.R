@@ -176,6 +176,29 @@ lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, ve
     return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
 
+## Split the lapply_loop for bound tree/matrices
+split.lapply_loop <- function(lapply_loop, n_trees) {
+
+    split.matrix <- function(matrix, n_trees) {
+        ncol_out  <- ncol(matrix)/n_trees
+        return(lapply(split(as.vector(matrix), rep(1:n_trees, each = ncol_out * nrow(matrix)) ), matrix, ncol = ncol_out))
+    }
+
+    ## Combine them in lapply loops
+    return(lapply(as.list(1:n_trees), function(tree, splits) lapply(splits, lapply, `[[`, tree),
+            splits = lapply(lapply_loop, lapply, split.matrix, n_trees)))
+}
+
+## Split the data for bound tree/matrices
+split.data <- function(data) {
+    ## Splitting the different matrices
+    return(lapply(data$matrix, function(X)
+        list("matrix" = list(X),
+             "call" = list("dimensions" = data$call$dimensions))))
+}
+
+
+
 
 # ## Parallel versions
 # parLapply.wrapper <- function(i, cluster) {

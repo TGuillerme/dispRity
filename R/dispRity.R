@@ -235,12 +235,12 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         }
     }
     
-
-    # if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
-    #     is_bound <- as.logical(data$call$subsets[["bind"]])
-    # } else {
-    #     is_bound <- FALSE
-    # }
+    ## Check if the data is bound
+    if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
+        is_bound <- as.logical(data$call$subsets[["bind"]])
+    } else {
+        is_bound <- FALSE
+    }
 
 
 
@@ -266,9 +266,41 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
 
     # if(!do_parallel) {
+
+
         if(verbose) message("Calculating disparity", appendLF = FALSE)
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+
+        if(is_bound) {
+            ## Number of trees
+            n_trees <- as.numeric(data$call$subsets["trees"])
+
+            ## Decompose the lapply_loop and the data per matrices
+            lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
+            matrices_data <- split.data(data)
+            
+            ## Mapply wrapper for disparity wrapper
+            mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
+                return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
+            }
+            disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
+                                MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+                                SIMPLIFY = FALSE)
+
+            # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+
+            ## Combine the results into normal disparity results
+            disparity <- lapply(disparities, merge.to.list)
+
+            ## Add the proper names
+            disparity <- lapply(disparity, function(X) {names(X) <- c("elements", rep("", length(X)-1)) ; return(X)})
+            names(disparity) <- names(disparities[[1]])
+        } else {
+            disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        }
         if(verbose) message("Done.\n", appendLF = FALSE)
+    
+
+
     # } else {
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)
