@@ -236,11 +236,11 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
     
     ## Check if the data is bound
-    if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
-        is_bound <- as.logical(data$call$subsets[["bind"]])
-    } else {
-        is_bound <- FALSE
-    }
+        if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
+            is_bound <- as.logical(data$call$subsets[["bind"]])
+        } else {
+            is_bound <- FALSE
+        }
 
 
 
@@ -287,13 +287,18 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
                                 SIMPLIFY = FALSE)
 
             # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+            recursive.merge <- function(list, bind = rbind) {
+                while(length(list) > 1) {
+                    list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)
+                    list[[2]] <- NULL
+                }
+                return(list)
+            }
 
             ## Combine the results into normal disparity results
-            disparity <- lapply(disparities, merge.to.list)
-
-            ## Add the proper names
-            disparity <- lapply(disparity, function(X) {names(X) <- c("elements", rep("", length(X)-1)) ; return(X)})
+            disparity <- unlist(lapply(as.list(1:n_trees), function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities), recursive = FALSE)
             names(disparity) <- names(disparities[[1]])
+
         } else {
             disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
         }

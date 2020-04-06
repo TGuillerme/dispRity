@@ -637,11 +637,42 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     # testboot <- boot.matrix(test)
 
 
-
-
     ## Works with binding data
-    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
-    test <- boot.matrix(test, bootstraps = 12)
+    set.seed(1)
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+
+
+    # means <- dispRity(test, metric = mean, na.rm = TRUE)
+    # expect_is(means, "dispRity")
+    # expect_equal(as.vector(means$disparity[[1]]$elements),
+    #         c(mean(means$matrix[[1]][means$subsets[[1]]$elements[,1],]),
+    #           mean(means$matrix[[2]][means$subsets[[1]]$elements[,2],]),
+    #           mean(means$matrix[[3]][means$subsets[[1]]$elements[,3],], na.rm = TRUE))
+    # )
+
+# Wrong: 
+# -0.2332062  -0.2231928  -0.1638060
+# Must be
+# -0.23320616 -0.29247462 -0.02541511
+
+
+
+    vars <- dispRity(test, metric = variances)
+    sumvars <- dispRity(test, metric = c(sum, variances))
+    sumvars2 <- dispRity(vars, metric = sum)
+
+
+
+
+
+    test1 <- boot.matrix(test, bootstraps = 12)
+    test2 <- boot.matrix(test, bootstraps = 12, rarefaction = TRUE)
+
+    vars <- dispRity(test1, metric = variances)
+    sumvars <- dispRity(test1, metric = c(sum, variances))
+    sumvars2 <- dispRity(vars, metric = sum)
+
+    test2 <- dispRity(test2, metric = c(sum, variances))
 
 
 
