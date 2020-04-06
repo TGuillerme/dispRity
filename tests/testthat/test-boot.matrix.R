@@ -493,4 +493,38 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_is(test$matrix[[1]], "matrix")
     expect_is(test$matrix[[2]], "matrix")
     expect_is(test$subsets, "list")
+
+    ## Works with bound trees and matrices
+    load("bound_test_data.Rda")
+    matrices <- bound_test_data$matrices
+    trees <- bound_test_data$trees
+
+    no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+    proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
+
+    warn <- capture_warning(test <- boot.matrix(no_proba, bootstraps = 101))
+    expect_equal(warn[[1]], "Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to 102 to distribute them evenly for each tree (34 bootstraps * 3 trees).")
+    
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6)
+    test_no_proba <- boot.matrix(no_proba, bootstraps = 6)
+    
+    expect_is(test_proba, "dispRity")
+    expect_equal(length(test_proba$subsets), 3)
+    expect_equal(length(test_proba$subsets[[1]]), 2)
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
+    ## Element 1 never selected in the third tree
+    expect_false(any(test_proba$subsets[[1]][[2]][,5] == 1))
+    expect_false(any(test_proba$subsets[[1]][[2]][,6] == 1))
+
+    expect_is(test_no_proba, "dispRity")
+    expect_equal(length(test_no_proba$subsets), 3)
+    expect_equal(length(test_no_proba$subsets[[1]]), 2)
+    expect_equal(dim(test_no_proba$subsets[[1]][[1]]), c(7, 3))
+    expect_equal(dim(test_no_proba$subsets[[1]][[2]]), c(7, 6))
+    ## Element 4 never selected in the third tree
+    expect_false(any(test_no_proba$subsets[[1]][[2]][,5] == 4))
+    expect_false(any(test_no_proba$subsets[[1]][[2]][,6] == 4))
+
 })
