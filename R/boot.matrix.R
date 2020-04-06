@@ -286,7 +286,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             } else {
                 boot.type.fun <- boot.single
             }
-        })
+        }
+    )
 
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
@@ -329,18 +330,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             warning(paste0("Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to ", bootstraps, " to distribute them evenly for each tree (", bootstraps_per_tree, " bootstraps * ",  n_trees, " trees)."))
         }
 
-        ## Split the subsets
-        split.subsets <- function(one_subset, n_trees) {
-            ## split the whole dataset
-            ncol_out <- ncol(one_subset$elements)/n_trees
-            splitted <- lapply(
-                split(one_subset$elements, rep(1:n_trees, each = ncol_out * nrow(one_subset$elements))), 
-                function(X, ncol) return(list("elements" = matrix(X, ncol = ncol))),
-                ncol = ncol_out)
-            return(splitted)
-        }
         ## Bootstrapping the subsetted results
-        bootstrap_results <- lapply(lapply( ## Opens 1
+        bootstrap_results <- lapply( ## Opens 1
                                 lapply( ## Opens 2
                                     lapply( ## Opens 3
                                         data$subsets,
@@ -348,8 +339,9 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                                         split.subsets, n_trees = n_trees),
                                     ## Fun 2: Apply the bootstraps
                                     lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
-                             ## Fun 1: Merge into one normal bootstrap table
-                             function(X) do.call(cbind, unlist(X, recursive = FALSE))), list)
+                                ## Fun 1: Merge into one normal bootstrap table
+                                merge.to.list
+                            )
     } else {
         ## Bootstrap the data set 
         bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)

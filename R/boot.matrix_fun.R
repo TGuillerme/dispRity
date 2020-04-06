@@ -99,3 +99,19 @@ select.rarefaction <- function(subsets, rarefaction) {
 combine.bootstraps <- function(one_bs_result, one_subsets) {
     return(c(one_subsets, one_bs_result))
 }
+
+## Split the subsets
+split.subsets <- function(one_subset, n_trees) {
+    ## split the whole dataset
+    ncol_out <- ncol(one_subset$elements)/n_trees
+    splitted <- lapply(
+        split(one_subset$elements, rep(1:n_trees, each = ncol_out * nrow(one_subset$elements))), 
+        function(X, ncol) return(list("elements" = matrix(X, ncol = ncol))),
+        ncol = ncol_out)
+    return(splitted)
+}
+
+## Merge the splitted data back into a list
+merge.to.list <- function(subset_bs) {
+    lapply(as.list(seq_along(subset_bs[[1]])), function(rare, subset_bs) do.call(cbind, lapply(subset_bs, `[[`, rare)), subset_bs)
+}

@@ -527,4 +527,17 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_false(any(test_no_proba$subsets[[1]][[2]][,5] == 4))
     expect_false(any(test_no_proba$subsets[[1]][[2]][,6] == 4))
 
+
+    ## With rarefaction
+    test_rare <- boot.matrix(no_proba, bootstraps = 6, rarefaction = TRUE)
+    expect_is(test_rare, "dispRity")
+    expect_equal(length(test_rare$subsets), 3)
+    expect_equal(length(test_rare$subsets[[1]]), 6)    
+    expect_equal(dim(test_rare$subsets[[1]][[1]]), c(7, 3))
+    expect_equal(dim(test_rare$subsets[[1]][[2]]), c(7, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[3]]), c(6, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[4]]), c(5, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[5]]), c(4, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
+
 })
