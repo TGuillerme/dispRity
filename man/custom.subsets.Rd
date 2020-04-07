@@ -10,7 +10,7 @@
 custom.subsets(data, group)
 }
 \arguments{
-\item{data}{A \code{matrix}.}
+\item{data}{A \code{matrix} or a \code{list} of matrices.}
 
 \item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.}
 }

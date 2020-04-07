@@ -171,3 +171,66 @@ test_that("test_equal_round works", {
     y <- 1.11
     expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
 })
+
+
+## Test check.dispRity.data
+test_that("check.dispRity.data works", {
+
+
+    ## All errors
+    error <- capture_error(check.dispRity.data("a"))
+    expect_equal(error[[1]], "data must be of class matrix or list.")
+    error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a")))
+    expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and row names.")
+    error2 <- list(matrix(c(1,2)), matrix(c(1,2,3)))
+    error <- capture_error(check.dispRity.data(error2))
+    expect_equal(error[[1]], "error2 must be matrix or a list of matrices with the same dimensions and row names.")
+    error3 <- list(matrix(c(1,2), dimnames = list(c(1:2), 1)), matrix(c(1,2), dimnames = list(c(3:4), 1)))
+    error <- capture_error(check.dispRity.data(error3))
+    expect_equal(error[[1]], "error3 must be matrix or a list of matrices with the same dimensions and row names.")
+
+    ## Matrix input
+    bob <- matrix(c(1,2))
+    warn <- capture_warnings(test <- check.dispRity.data(bob))
+    expect_equal(warn[[1]], "Row names have been automatically added to bob.")
+    expect_is(test, "list")
+    expect_is(test[[1]], "matrix")
+    expect_equal(dim(test[[1]]), c(2,1))
+    expect_equal(rownames(test[[1]]), c("1","2"))
+
+    bob <- matrix(c(1,2))
+    rownames(bob) <- c(1,2)
+    test <- check.dispRity.data(bob)
+    expect_is(test, "list")
+    expect_is(test[[1]], "matrix")
+    expect_equal(dim(test[[1]]), c(2,1))
+    expect_equal(rownames(test[[1]]), c("1","2"))
+
+    ## List input
+    bib <- list(matrix(c(1,2)))
+    warn <- capture_warnings(test <- check.dispRity.data(bib))
+    expect_equal(warn[[1]], "Row names have been automatically added to bib.")
+    expect_is(test, "list")
+    expect_is(test[[1]], "matrix")
+    expect_equal(dim(test[[1]]), c(2,1))
+    expect_equal(rownames(test[[1]]), c("1","2"))
+
+    bob <- list(matrix(c(1,2)), matrix(c(1,2)))
+    warn <- capture_warnings(test <- check.dispRity.data(bob))
+    expect_equal(warn[[1]], "Row names have been automatically added to bob.")
+    expect_is(test, "list")
+    expect_is(test[[1]], "matrix")
+    expect_equal(dim(test[[1]]), c(2,1))
+    expect_equal(dim(test[[2]]), c(2,1))
+    expect_equal(rownames(test[[1]]), c("1","2"))
+    expect_equal(rownames(test[[2]]), c("1","2"))
+
+    bub <- list(matrix(c(1,2), dimnames = list(c(1:2), 1)), matrix(c(1,2), dimnames = list(c(2:1), 1)))
+    test <- check.dispRity.data(bub)
+    expect_is(test, "list")
+    expect_is(test[[1]], "matrix")
+    expect_equal(dim(test[[1]]), c(2,1))
+    expect_equal(dim(test[[2]]), c(2,1))
+    expect_equal(rownames(test[[1]]), c("1","2"))
+    expect_equal(rownames(test[[2]]), c("1","2"))
+})

@@ -3,8 +3,11 @@
 context("summary.dispRity")
  
 # Loading the data
-load("test_data.Rda")
-data <- test_data$ord_data_tips
+data(BeckLee_mat50)
+data(BeckLee_mat99)
+data(BeckLee_tree)
+data(BeckLee_ages)
+data <- BeckLee_mat50
 data(disparity)
 
 #######################
@@ -21,18 +24,17 @@ test_that("get.summary", {
     expect_is(test, "list")
     expect_equal(names(test), c("cent_tend", "quantiles"))
     expect_equal(round(test[[1]], digit = 5), round(mean(unlist(disparity$disparity$`30`[[2]])), digit = 5))
-    expect_equal(round(test[[2]], digit = 2), c("25%" = 1.78, "75%" = 1.88))
+    expect_equal(round(test[[2]], digit = 2), c("25%" = 2.60, "75%" = 2.71))
 
     test_no_cent_tend <- get.summary(disparity$disparity$`30`[[2]], quantiles = c(50))
     expect_is(test_no_cent_tend, "list")
     expect_equal(names(test_no_cent_tend), "quantiles")
-    expect_equal(round(test_no_cent_tend[[1]], digit = 2), c("25%" = 1.78, "75%" = 1.88))
+    expect_equal(round(test_no_cent_tend[[1]], digit = 2), c("25%" = 2.60, "75%" = 2.71))
 
     test_no_quant <- get.summary(disparity$disparity$`30`[[2]], cent.tend = mean)
     expect_is(test_no_quant, "list")
     expect_equal(names(test_no_quant), "cent_tend")
     expect_equal(round(test_no_quant[[1]], digit = 5), round(mean(unlist(disparity$disparity$`30`[[2]])), digit = 5))
-
 })
 
 test_that("lapply.summary", {
@@ -41,7 +43,6 @@ test_that("lapply.summary", {
     expect_equal(length(test), 2)
     expect_equal(unique(unlist(lapply(test, names))), c("cent_tend", "quantiles"))
     expect_equal(as.vector(round(unlist(lapply(test, `[[`, 1)), digit = 5)), c(round(mean(unlist(disparity$disparity$`30`[[2]])), digit = 5), round(mean(unlist(disparity$disparity$`30`[[3]])), digit = 5)))
-
 })
 
 test_that("lapply.get.elements", {
@@ -71,7 +72,6 @@ test_that("get.digit", {
     expect_equal(get.digit(123.123456789), 1)
     expect_equal(get.digit(1234.123456789), 0)
 })
-
 
 test_that("round.column", {
     column <- c(12.123, 1.1234)
@@ -105,11 +105,10 @@ test_that("Correct error management", {
     dummy <- disparity
     class(dummy) <- c("dispRity", "bob")
     expect_error(summary(dummy))
-
 })
 
 #Case 1, no bootstrap
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
 
@@ -129,13 +128,12 @@ test_that("Works without bootstraps", {
     out <- capture.output(test <- summary(data, recall = TRUE))
     expect_equal(out,
         c(" ---- dispRity object ---- ",
-          "50 elements with 48 dimensions.",
+          "50 elements in one matrix with 48 dimensions.",
           "Disparity was calculated as: c(sum, ranges)."))
-
 })
 
 #Case 2, bootstraps
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- boot.matrix(data, bootstrap = 5)
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
@@ -154,7 +152,7 @@ test_that("Works with bootstraps", {
 })
 
 #Case 3, bootstraps + rarefaction
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 data <- boot.matrix(data, bootstrap = 5, rarefaction = c(5,50))
 data <- dispRity(data, metric = c(sum, ranges))
 test <- summary(data)
@@ -172,11 +170,11 @@ test_that("Works with bootstraps and rarefaction", {
         )
     expect_equal(
         test$obs
-        , c(45.36, NA))
+        , c(51.88, NA))
 })
 
 #Case 4, time subsets
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -196,12 +194,12 @@ test_that("Works with subsets", {
         )
     expect_equal(
         as.vector(test$obs)
-        ,c(37.00, 37.97))
+        ,c(42.40, 44.12))
 })
 
 #Case 5, time subsets + bootstraps
 set.seed(1)
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -222,12 +220,12 @@ test_that("Works with subsets and bootstraps", {
         )
     expect_equal(
         test$bs.median
-        ,c(32.89, 33.78))
+        ,c(37.64, 38.97))
 })
 
 #Case 5, time subsets + bootstraps + rarefaction
 set.seed(1)
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 data <- custom.subsets(data, group)
@@ -248,10 +246,10 @@ test_that("Works with subsets, bootstraps and rarefaction", {
         )
     expect_equal(
         test$obs
-        , c(37.00, NA, NA, 37.97, NA, NA))
+        , c(42.40, NA, NA, 44.12, NA, NA))
     expect_equal(
         test$bs.median
-        , c(32.89, 20.21, 21.45, 34.34, 21.45, 23.91))
+        , c(37.64, 23.99, 24.21, 39.46, 24.37, 26.87))
 })
 
 #Example
@@ -267,10 +265,10 @@ test_that("Example works", {
         dim(summary(sum_of_ranges)), c(2,8)
         )
     expect_is(
-        summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0), "data.frame"
+        summary(sum_of_ranges, quantiles = 75, cent.tend=median, digits=0), "data.frame"
         )
     expect_equal(
-        dim(summary(sum_of_ranges, quantile=75, cent.tend=median, digits=0)), c(2,8)
+        dim(summary(sum_of_ranges, quantiles =75, cent.tend=median, digits=0)), c(2,6)
         )
 })
 
@@ -300,10 +298,9 @@ test_that("Test with disparity as a distribution", {
 ## summary.dispRity works with empty or small (<3 subsets)
 test_that("summary.dispRity works with small, empty/subsets", {
 
-    load("test_data.Rda")
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat99
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- dispRity(boot.matrix(chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 
@@ -312,9 +309,6 @@ test_that("summary.dispRity works with small, empty/subsets", {
     expect_equal(as.numeric(test[2,]), c(4, 1, rep(NA, 6)))
     expect_false(all(is.na(test[3,])))
 })
-
-
-
 
 test_that("summary.dispRity with model.test data", {
     load("model_test_data.Rda")

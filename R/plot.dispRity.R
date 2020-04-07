@@ -19,6 +19,7 @@
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
 #' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).
 #' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
+#' @param matrix optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -127,7 +128,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -344,7 +345,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
     if(!missing(type) && type == "preview") {
         ## Preview plot
-        plot.preview(data, dimensions = dimensions, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+        plot.preview(data, dimensions = dimensions, matrix = matrix, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
         return(invisible())
     }
 

@@ -10,7 +10,6 @@ groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      dimnames = list(rownames(BeckLee_mat50))))
 multi_disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, groups), bootstraps = 100), metric = c(sum, variances))
 
-
 #get.from.call
 test_that("get.metric.from.call works", {
     #Errors
@@ -44,12 +43,12 @@ test_that("make.null.model works", {
         )
 
     #Right output
-    expect_is(
+    expect_warning(expect_is(
         make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = mean, args = NULL)
-        , "numeric")
-    expect_equal(
+        , "numeric"))
+    expect_warning(expect_equal(
         length(make.null.model(single_disp, replicates = 5, null.distrib = rnorm, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = mean, args = NULL))
-        , 5)
+        , 5))
 
     #Handling args properly
     my_distributions1 <- unlist(replicate(16, list(rnorm, runif, rnorm), simplify = FALSE), recursive = FALSE)
@@ -64,14 +63,14 @@ test_that("make.null.model works", {
 
 
     set.seed(1)
-    test1 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = metric, args = args)
+    expect_warning(test1 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = metric, args = args))
     set.seed(1)
-    test2 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = metric, args = args)
+    expect_warning(test2 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = NULL, scale = FALSE, null.scree = NULL, metric = metric, args = args))
     set.seed(1)
-    test3 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = FALSE, null.scree = NULL, metric = metric, args = args)
+    expect_warning(test3 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = FALSE, null.scree = NULL, metric = metric, args = args))
     set.seed(1)
-    test4 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = metric, args = args)
-    test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = TRUE, null.scree = NULL, metric = metric, args = args)
+    expect_warning(test4 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = metric, args = args))
+    expect_warning(test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions2, null.args = my_args, null.cor = my_cor.matrix, scale = TRUE, null.scree = NULL, metric = metric, args = args))
 
     expect_is(
         test1
@@ -109,11 +108,9 @@ test_that("make.null.model works", {
         , test3)
 
     set.seed(1)
-    test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = centroids, args = 0)
+    expect_warning(test5 <- make.null.model(single_disp, replicates = 5, null.distrib = my_distributions1, null.args = NULL, null.cor = NULL, scale = TRUE, null.scree = NULL, metric = centroids, args = 0))
     expect_is(test5, "numeric")
     expect_equal(length(test5), 5)
-
-
 })
 
 #null.test
@@ -148,23 +145,22 @@ test_that("null.test works", {
 
 
     #Right output
-    expect_is(
+    expect_warning(expect_is(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
-        , "randtest")
-    expect_is(
+        , "randtest"))
+    expect_warning(expect_is(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
-        , "dispRity")
-    expect_is(
+        , "dispRity"))
+    expect_warning(expect_is(
         null.test(multi_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
-        , "randtest")
-    expect_is(
+        , "randtest"))
+    expect_warning(expect_is(
         null.test(single_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE)
-        , "dispRity")
-    expect_equal(
+        , "dispRity"))
+    expect_warning(expect_equal(
         unique(unlist(lapply(null.test(multi_disp, replicates = 10, null.distrib = rnorm, null.args = NULL, alter = "two-sided", scale = FALSE), class)))
-        , c("randtest", "lightrandtest"))
+        , c("randtest", "lightrandtest")))
 })
-
 
 ## null.test plots
 test_that("null.test example works", {
@@ -181,7 +177,7 @@ test_that("null.test example works", {
     sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
     ## Testing against normal distribution
     set.seed(1)
-    results <- null.test(sum_variances, replicates = 10, null.distrib = rnorm)
+    expect_warning(results <- null.test(sum_variances, replicates = 10, null.distrib = rnorm))
 
     expect_is(results, c("dispRity", "randtest"))
 
@@ -193,7 +189,6 @@ test_that("null.test example works", {
     test <- plot(results)
     expect_null(test)
 })
-
 
 ## null.test plots
 test_that("null.test works with inherited arguments to metric", {
@@ -213,14 +208,13 @@ test_that("null.test works with inherited arguments to metric", {
 
     ## Testing against normal distribution
     set.seed(1)
-    results_no_args <- null.test(no_args, replicates = 10, null.distrib = rnorm)
-    results_args <- null.test(with_args, replicates = 10, null.distrib = rnorm)
+    expect_warning(results_no_args <- null.test(no_args, replicates = 10, null.distrib = rnorm))
+    expect_warning(results_args <- null.test(with_args, replicates = 10, null.distrib = rnorm))
 
     expect_equal(
         round(unname(unlist(lapply(results_no_args, function(x) x$obs))), digits = 6)
-        , c(1.206138, 1.262901, 1.339691, 1.367892))
+        , c(1.389345, 1.439699, 1.508287, 1.555493))
     expect_equal(
         round(unname(unlist(lapply(results_args, function(x) x$obs))))
         , c(69282, 69282, 69282, 69282))
-
 })

@@ -3,7 +3,11 @@
 ```
 object
 	|
-	\---$matrix* = class:"matrix" (original ordinated matrix)
+	\---$matrix* = class:"list" (a list containing the orginal matrix/matrices)
+	|	|
+	|	\---[[1]]* = class:"matrix" (the matrix (trait-space))
+	|   |
+	|   \---[[...]] = class:"matrix" (any additional matrices)
 	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|

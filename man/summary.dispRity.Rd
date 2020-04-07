@@ -10,7 +10,7 @@
 \arguments{
 \item{object}{A \code{dispRity} object.}
 
-\item{...}{Additional arguments to be passed to \code{\link{summary}}.}
+\item{...}{Additional arguments to be passed to \code{\link{summary}} or \code{cent.tend}.}
 
 \item{quantiles}{The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).}
 

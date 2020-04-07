@@ -22,12 +22,14 @@
 
 make.dispRity <- function(data, call, subsets) {
     ## Make the empty object
-    dispRity_object <- list("matrix" = NULL , "call" = list(), "subsets" = list())
+    dispRity_object <- list("matrix" = list(NULL) , "call" = list(), "subsets" = list())
 
     ## Add the matrix
     if(!missing(data)) {
-        check.class(data, "matrix")
-        dispRity_object$matrix <- data
+        data_class <- check.class(data, c("matrix", "list"))
+        switch(data_class,
+            matrix = {dispRity_object$matrix <- list(data)},
+            list = {dispRity_object$matrix <- data})
     }
 
     ## Add the call
@@ -66,21 +68,16 @@ make.dispRity <- function(data, call, subsets) {
 fill.dispRity <- function(data) {
 
     ## Data have a matrix
-    if(!is.null(data$matrix)) {
-        check.class(data$matrix, "matrix")
-    } else {
-        stop.call("", "dispRity object contains no matrix. Use:\nmake.dispRity(data = my_matrix)")
-    }
+    data$matrix <- check.dispRity.data(data$matrix)
 
     ## Dimensions
     if(length(data$call$dimensions) == 0) {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Fill empty subsets
     if(length(data$subsets) == 0) {
-        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix)))))
-        #data$subsets[[1]][[1]] <- matrix(1:nrow(data$matrix))
+        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
     } else {
         for(subsets in 2:length(data$subsets)) {
             data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
@@ -97,9 +94,10 @@ fill.dispRity <- function(data) {
 #' @description Fetching a specific matrix from a \code{dispRity} object.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsets A \code{numeric} value to select subsets (\code{0} is no subsets; default).
-#' @param rarefaction A \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction; default).
-#' @param bootstrap A \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap; default).
+#' @param subsets Optional, a \code{numeric} value to select subsets.
+#' @param rarefaction Optional, a \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction).
+#' @param bootstrap Optional, a \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap).
+#' @param matrix A \code{numeric} value of which matrix to select (default is \code{1}).
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -116,23 +114,23 @@ fill.dispRity <- function(data) {
 #' matrix.dispRity(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
 #' 
 #' @author Thomas Guillerme
-matrix.dispRity <- function(data, subsets, rarefaction, bootstrap){
+matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 
     ## Sanitizing
     check.class(data, "dispRity")
 
     ## Add the dimensions if missing
     if(is.null(data$call$dimensions)) {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     if(missing(subsets)) {
-        return(data$matrix)
+        return(data$matrix[[matrix]])
     } else {
         if(missing(rarefaction) || missing(bootstrap)) {
-            return(data$matrix[data$subsets[[subsets]]$elements, 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, 1:data$call$dimensions])
         } else {
-            return(data$matrix[data$subsets[[subsets]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
         }
     }
 }
@@ -529,8 +527,8 @@ combine.subsets <- function(data, subsets) {
     if(length(subsets) == 1 && (subsets_class == "numeric" || subsets_class == "integer")) {
         ## Subsamples is the minimum per subsets
         clean_data <- TRUE
-        if(subsets > nrow(data$matrix)) {
-            stop.call("", paste0("Minimum sample size (", subsets, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix), ")."))
+        if(subsets > nrow(data$matrix[[1]])) {
+            stop.call("", paste0("Minimum sample size (", subsets, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix[[1]]), ")."))
         }
 
     } else {

@@ -110,19 +110,17 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     # warning("DEBUG") ; return(match_call)
 
-    ## Check data class
+    ## Check data input
     if(!is(data, "dispRity")) {
-        check.class(data, "matrix")
-        ## Create the dispRity object
-        data <- fill.dispRity(make.dispRity(data = data))
+        data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
     } else {
         ## Making sure matrix exist
-        if(is.null(data$matrix)) {
-            stop.call(match_call$data, " must contain a matrix.")
+        if(is.null(data$matrix[[1]])) {
+            stop.call(match_call$data, " must contain a matrix or a list of matrices.")
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- ncol(data$matrix)
+            data$call$dimensions <- ncol(data$matrix[[1]])
         }
     }
 
@@ -167,10 +165,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
-            warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))
-            dimensions <- ncol(data$matrix)
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
+            warning(paste0("Dimension number too high: set to ", ncol(data$matrix[[1]]), "."))
+            dimensions <- ncol(data$matrix[[1]])
         }
         data$call$dimensions <- dimensions
     }
@@ -213,7 +211,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
         ## Lapply through the subsets
         lapply_loop <- data$subsets[elements_keep]
-
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
@@ -237,6 +234,15 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         }
     }
     
+    ## Check if the data is bound
+    if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
+        is_bound <- as.logical(data$call$subsets[["bind"]])
+    } else {
+        is_bound <- FALSE
+    }
+
+
+
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -259,9 +265,46 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
 
     # if(!do_parallel) {
+
+
         if(verbose) message("Calculating disparity", appendLF = FALSE)
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+
+        if(is_bound) {
+            ## Number of trees
+            n_trees <- as.numeric(data$call$subsets["trees"])
+
+            ## Decompose the lapply_loop and the data per matrices
+            lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
+            matrices_data <- split.data(data)
+            
+            ## Mapply wrapper for disparity wrapper
+            mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
+                return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
+            }
+            disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
+                                MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+                                SIMPLIFY = FALSE)
+
+            # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+            recursive.merge <- function(list, bind = cbind) {
+                while(length(list) > 1) {
+                    list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)
+                    list[[2]] <- NULL
+                }
+                return(list)
+            }
+
+            ## Combine the results into normal disparity results
+            disparity <- unlist(lapply(as.list(1:n_trees), function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities), recursive = FALSE)
+            names(disparity) <- names(disparities[[1]])
+
+        } else {
+            disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        }
         if(verbose) message("Done.\n", appendLF = FALSE)
+    
+
+
     # } else {
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)

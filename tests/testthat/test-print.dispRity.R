@@ -11,7 +11,7 @@ data("BeckLee_tree")
 
 test_that("normal printing", {
     ## Empty object
-    test <- make.dispRity() 
+    test <- make.dispRity()
     expect_equal(capture.output(test), "Empty dispRity object.")
 
     ## Empty object with a matrix
@@ -22,17 +22,13 @@ test_that("normal printing", {
         "Contains only a matrix 1x1."
     ))
 
-    # list <- capture.output(print.dispRity(test, all = TRUE))
-    # expect_equal(list, c("$matrix","     [,1]", "[1,]    1","","$call","list()","","$subsets","list()",""))
-
-
     ## Time subsets
     test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements:",
+        "2 discrete time subsets for 50 elements in one matrix:",
         "    100 - 90, 90 - 50."
     ))
 
@@ -41,7 +37,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix:",
         "     100, 90, 80, 70, 50 ..."
     ))
 
@@ -51,7 +47,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 customised subsets for 10 elements:",
+        "2 customised subsets for 10 elements in one matrix:",
         "    1, 2."
     ))
 
@@ -61,7 +57,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "50 elements with 48 dimensions.",
+        "50 elements in one matrix with 48 dimensions.",
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
 
@@ -71,7 +67,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements with 48 dimensions:",
+        "2 discrete time subsets for 50 elements in one matrix with 48 dimensions:",
         "    100 - 90, 90 - 50.",
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
@@ -82,7 +78,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "50 elements with 48 dimensions.",
+        "50 elements in one matrix with 48 dimensions.",
         "Disparity was calculated as: mean."
     ))
 
@@ -91,7 +87,7 @@ test_that("normal printing", {
     expect_equal(capture.output(disparity), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements with 97 dimensions:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions:",
         "     90, 80, 70, 60, 50 ...",
         "Data was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
         "Disparity was calculated as: c(median, centroids)."
@@ -101,45 +97,38 @@ test_that("normal printing", {
     expect_equal(capture.output(dispRity(boot.matrix(BeckLee_mat50, rarefaction = TRUE), metric = mean)),
         c(
         " ---- dispRity object ---- ",
-        "50 elements with 48 dimensions.",
+        "50 elements in one matrix with 48 dimensions.",
         "Data was bootstrapped 100 times (method:\"full\") and fully rarefied.",
         "Disparity was calculated as: mean."
     ))
 
+    ## Multiple matrices
+    set.seed(42)
+    one_matrix <- matrix(1, 5, 10, dimnames = list(c(1:5)))
+    data <- list(one_matrix, one_matrix, one_matrix)
+
+    ## Works with level one
+    expect_equal(capture.output(dispRity(data, metric = c(sum))),c(
+        " ---- dispRity object ---- ",
+        "5 elements in 3 matrices with 10 dimensions.",
+        "Disparity was calculated as: c(sum)."
+        ))
 })
 
 test_that("randtest printing", {
     set.seed(1)
     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = 5)
-    test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
+    expect_warning(test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(test),
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
-        "", "Observation: 0.01698412 ", 
+        "", "Observation: 0.02463073 ", 
         "", "Based on 100 replicates", 
         "Simulated p-value: 0.05940594 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "  -2.023035    5.094270    6.298782 "))
+        "  -2.019988    5.094270    6.298782 "))
 
-    # expect_equal(capture.output(print.dispRity(test, all = TRUE)),
-    #     c(
-    #     "[[1]]"                                                                  ,
-    #     "Monte-Carlo test"                                                       ,
-    #     "Call: ade4::as.randtest(sim = null_models_results, obs = summary(data, ",
-    #     "    digits = 10)[, 3], alter = alter)"                                  ,
-    #     ""                                                                       ,
-    #     "Observation: 0.01698412 "                                                ,
-    #     ""                                                                       ,
-    #     "Based on 100 replicates"                                                ,
-    #     "Simulated p-value: 0.05940594 "                                         ,
-    #     "Alternative hypothesis: two-sided "                                     ,
-    #     ""                                                                       ,
-    #     "    Std.Obs Expectation    Variance "                             ,
-    #     "  -2.023035    5.094270    6.298782 "                             ,
-    #     ""
-    #     ))
-
-
+  
     ## Running the test on multiple subsets (may take some time!)
     ## Generating the subsets
     groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12),
@@ -150,7 +139,7 @@ test_that("randtest printing", {
     ## Calculating variances of each dimension
     sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
     ## Testing against normal distribution
-    results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
+    expect_warning(results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(print.dispRity(results)),
         c(
@@ -158,61 +147,58 @@ test_that("randtest printing", {
         "Monte-Carlo test"                    ,
         "Call: [1] \"dispRity::null.test\""   ,
         ""                                    ,
-        "Observation: 1.590785 "              ,
+        "Observation: 2.113905 "              ,
         ""                                    ,
         "Based on 100 replicates"             ,
         "Simulated p-value: 0.00990099 "      ,
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  -32.60748    47.82240     2.01022 ",
+        "  -32.23852    47.82240     2.01022 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
         "Call: [1] \"dispRity::null.test\""   ,
         ""                                    ,
-        "Observation: 1.809122 "              ,
+        "Observation: 2.337814 "              ,
         ""                                    ,
         "Based on 100 replicates"             ,
         "Simulated p-value: 0.00990099 "      ,
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -34.193688   47.929400    1.819248 ",
+        " -33.801715   47.929400    1.819248 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
         "Call: [1] \"dispRity::null.test\""   ,
         ""                                    ,
-        "Observation: 1.969031 "              ,
+        "Observation: 2.492183 "              ,
         ""                                    ,
         "Based on 100 replicates"             ,
         "Simulated p-value: 0.00990099 "      ,
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  -33.94008    48.01460     1.84056 ",
+        "  -33.55446    48.01460     1.84056 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
         "Call: [1] \"dispRity::null.test\""   ,
         ""                                    ,
-        "Observation: 2.020162 "              ,
+        "Observation: 2.576456 "              ,
         ""                                    ,
         "Based on 100 replicates"             ,
         "Simulated p-value: 0.00990099 "      ,
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -30.677384   47.884300    2.235166 ",
+        " -30.305293   47.884300    2.235166 ",
         ""                                    ,
-        "NULL"
+        "NULL" 
         )
     )
-
-
 })
-
 
 test_that("dtt printing", {
     set.seed(1)
@@ -269,8 +255,6 @@ test_that("dtt printing", {
         ))
 })
 
-
-
 test_that("print.dispRity with model.test data", {
     load("model_test_data.Rda")
 
@@ -284,9 +268,9 @@ test_that("print.dispRity with model.test data", {
         c("Disparity evolution model fitting:",
          "Call: model.test(data = model_test_data, model = models, time.split = 65, fixed.optima = TRUE, verbose = FALSE) ",
          "",
-         "        aicc delta_aicc weight_aicc",
-         "BM -13.28305   0.000000   0.7856166",
-         "OU -10.68564   2.597406   0.2143834",
+         "         aicc delta_aicc weight_aicc",
+         "BM -10.708521   0.000000   0.7856166",
+         "OU  -8.111115   2.597406   0.2143834",
          "",
          "Use x$full.details for displaying the models details",
          "or summary(x) for summarising them."
@@ -317,10 +301,10 @@ test_that("print.dispRity with model.test data", {
           "",
           "Model simulated (10 times):",
           "    aicc log.lik param ancestral state sigma squared",
-          "BM -13.3   8.914     2           2.612         0.005",
+          "BM -10.7   7.627     2           7.119         0.005",
           "",
           "Rank envelope test",
-          " p-value of the test: 0.3636364 (ties method: midrank)",
-          " p-interval         : (0.09090909, 0.6363636)" 
+          " p-value of the test: 0.4090909 (ties method: midrank)",
+          " p-interval         : (0.09090909, 0.7272727)" 
         ))
 })

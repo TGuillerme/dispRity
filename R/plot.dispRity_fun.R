@@ -435,7 +435,7 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 }
 
 ## Plotting a space preview
-plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
+plot.preview <- function(data, dimensions, matrix, xlab, ylab, ylim, col, ...) {
 
     ## The "ggplot" colours
     gg.color.hue <- function(n) {
@@ -446,11 +446,11 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
     plot_args <- list(...)
 
     ## Setting the dimensions
-    plot_args$x <- data$matrix[, dimensions[1]]
-    plot_args$y <- data$matrix[, dimensions[2]]
+    plot_args$x <- data$matrix[[matrix]][, dimensions[1]]
+    plot_args$y <- data$matrix[[matrix]][, dimensions[2]]
 
     ## Getting the loadings
-    loading <- apply(data$matrix, 2, var, na.rm = TRUE)
+    loading <- apply(data$matrix[[matrix]], 2, var, na.rm = TRUE)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
@@ -466,7 +466,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
     }
 
     ## Setting plot limits
-    plot_lim <- range(as.vector(c(data$matrix[, dimensions])))
+    plot_lim <- range(as.vector(c(data$matrix[[matrix]][, dimensions])))
     if(is.null(plot_args$xlim)) {
         plot_args$xlim <- plot_lim
     }
@@ -501,7 +501,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
 
     ## Make a colour classifier
     if(n_groups > 1) {
-        classifier <- rep(NA, nrow(data$matrix))
+        classifier <- rep(NA, nrow(data$matrix[[matrix]]))
         for(class in 1:n_groups) {
             classifier[data$subsets[[class]]$elements[,1]] <- class
         }

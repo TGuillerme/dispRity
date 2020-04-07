@@ -2,10 +2,8 @@
 
 context("boot.dispRity")
 
-## Loading the data
-load("test_data.Rda")
-data <- test_data$ord_data_tips
-
+data(BeckLee_mat50)
+data <- BeckLee_mat50
 
 ## Internal functions tests
 test_that("internal: bootstrap methods", {
@@ -99,6 +97,12 @@ test_that("Sanitizing works correctly", {
     expect_error(
         boot.matrix(dutu)
         )
+
+    bootstrap_done <- boot.matrix(data, bootstraps = 3)
+    error <- capture_error(boot.matrix(bootstrap_done))
+    expect_equal(error[[1]], "bootstrap_done was already bootstrapped.")
+
+
 })
 
 ## No bootstrap (is equal to the matrix)
@@ -112,10 +116,10 @@ test_that("No bootstraps", {
         , 3)
     expect_equal(
         as.vector(test$subsets[[1]][[1]])
-        , seq(1:nrow(test$matrix)))
+        , seq(1:nrow(test$matrix[[1]])))
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets[[1]])
         ,1)
@@ -137,10 +141,8 @@ test_that("Remove dimensions", {
         ,24)
 })
 
-
 ## Bootstraps = 5
 test_that("5 bootstraps", {
-    data <- test_data$ord_data_tips
     test <- boot.matrix(data, bootstraps = 5)
     expect_is(
         test
@@ -150,7 +152,7 @@ test_that("5 bootstraps", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[1]])
         ,c(50,1))
@@ -160,6 +162,8 @@ test_that("5 bootstraps", {
     expect_equal(
         length(test$subsets[[1]])
         ,2)
+
+
 })
 
 ## Bootstraps = 5 + Rarefaction = 5
@@ -173,7 +177,7 @@ test_that("5 bootstraps, rarefaction = 5", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[2]])
         ,c(50,5))
@@ -206,8 +210,6 @@ test_that("5 bootstraps, rarefaction = min", {
         , c(nrow(data),5))
 })
 
-
-
 ## Bootstraps = 5 + Rarefaction = c(5,6) + boot.type
 test_that("5 bootstraps, rarefaction = 5,6, boot type", {
     test <- boot.matrix(data, bootstraps = 5, rarefaction = c(5,6), boot.type = "single")
@@ -221,7 +223,6 @@ test_that("5 bootstraps, rarefaction = 5,6, boot type", {
         test$call$bootstrap[[3]]
         , c(5,6))
 })
-
 
 ## Bootstraps = 5 + Rarefaction = c(5,6) + subsets
 test_that("5 bootstraps, rarefaction = 5,6, subsets", {
@@ -237,7 +238,7 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
         , 3)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets)
         ,2)
@@ -252,14 +253,13 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
         ,c(nrow(test$subsets[[2]]$elements), 2))
 })
 
-
 ## Verbose bootstrap
 test_that("verbose bootstrap works", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
     data(BeckLee_ages)
     data <- matrix(rnorm(25), 5, 5)
-    out <- capture_messages(boot.matrix(data, verbose = TRUE))
+    expect_warning(out <- capture_messages(boot.matrix(data, verbose = TRUE)))
     expect_equal(out,
         c("Bootstrapping", ".", "Done."))
 
@@ -283,13 +283,12 @@ test_that("verbose bootstrap works", {
     expect_equal(test_full$subsets$`139`[[2]], matrix(51, ncol = 10, nrow = 1))
 })
 
-
 ## Bootstrap works with empty or small (<3 subsets)
 test_that("Boot.matrix works with small, empty/subsets", {
 
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat99
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
 
@@ -300,7 +299,7 @@ test_that("Boot.matrix works with small, empty/subsets", {
     expect_equal(unique(sort(test$subsets[[2]][[2]])), c(51))
 })
 
-
+## Internal bootstrap fun works with probabilities
 test_that("boot.single.proba works well", {
 
     elements <- matrix(c(1,3,5,2,4,6,0.75, 0.01, 0.99), ncol = 3, byrow = FALSE)
@@ -317,6 +316,7 @@ test_that("boot.single.proba works well", {
     expect_equal(boot.single.proba(elements, rarefaction = 3), c(5,3,5))    
 })
 
+## Bootstrap works with probabilities
 test_that("boot.matrix deals with probabilities subsets", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
@@ -342,7 +342,6 @@ test_that("boot.matrix deals with probabilities subsets", {
 
 test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
-    
     ## Custom subsets
     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10, ncol = 9, dimnames = list(letters[1:10]))
     groups <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
@@ -421,8 +420,6 @@ test_that("boot.matrix works with the prob option (for probabilities sampling)",
 
     ## TODO
     # slice_cont <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
-
-
 })
 
 test_that("boot.matrix detects distance matrices", {
@@ -478,3 +475,77 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     expect_equal(error[[1]], "time_slices_multree_proba was generated using a gradual time-slicing or using multiple trees (gradual.split).\nThe prob option is not yet implemented for this case.")
 })
 
+test_that("boot.matrix works with multiple matrices, multiple trees and multiple probabilities", {
+
+    ## Normal bootstrapping
+    data <- matrix(1, 5, 10)
+    expect_warning(test <- boot.matrix(data, 7))
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_is(test$matrix[[1]], "matrix")
+    expect_is(test$subsets, "list")
+
+    ## Normal bootstrapping with multiple matrices
+    data2 <- matrix(2, 5, 10)
+    data <- list(data, data2)
+    expect_warning(test <- boot.matrix(data, 7))
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_is(test$matrix[[1]], "matrix")
+    expect_is(test$matrix[[2]], "matrix")
+    expect_is(test$subsets, "list")
+
+    expect_warning(test <- boot.matrix(data, rarefaction = TRUE))
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_is(test$matrix[[1]], "matrix")
+    expect_is(test$matrix[[2]], "matrix")
+    expect_is(test$subsets, "list")
+
+    ## Works with bound trees and matrices
+    load("bound_test_data.Rda")
+    matrices <- bound_test_data$matrices
+    trees <- bound_test_data$trees
+
+    no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+    proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
+
+    warn <- capture_warning(test <- boot.matrix(no_proba, bootstraps = 101))
+    expect_equal(warn[[1]], "Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to 102 to distribute them evenly for each tree (34 bootstraps * 3 trees).")
+    
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6)
+    test_no_proba <- boot.matrix(no_proba, bootstraps = 6)
+    
+    expect_is(test_proba, "dispRity")
+    expect_equal(length(test_proba$subsets), 3)
+    expect_equal(length(test_proba$subsets[[1]]), 2)
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
+    ## Element 1 never selected in the third tree
+    expect_false(any(test_proba$subsets[[1]][[2]][,5] == 1))
+    expect_false(any(test_proba$subsets[[1]][[2]][,6] == 1))
+
+    expect_is(test_no_proba, "dispRity")
+    expect_equal(length(test_no_proba$subsets), 3)
+    expect_equal(length(test_no_proba$subsets[[1]]), 2)
+    expect_equal(dim(test_no_proba$subsets[[1]][[1]]), c(7, 3))
+    expect_equal(dim(test_no_proba$subsets[[1]][[2]]), c(7, 6))
+    ## Element 4 never selected in the third tree
+    expect_false(any(test_no_proba$subsets[[1]][[2]][,5] == 4))
+    expect_false(any(test_no_proba$subsets[[1]][[2]][,6] == 4))
+
+
+    ## With rarefaction
+    test_rare <- boot.matrix(no_proba, bootstraps = 6, rarefaction = TRUE)
+    expect_is(test_rare, "dispRity")
+    expect_equal(length(test_rare$subsets), 3)
+    expect_equal(length(test_rare$subsets[[1]]), 6)    
+    expect_equal(dim(test_rare$subsets[[1]][[1]]), c(7, 3))
+    expect_equal(dim(test_rare$subsets[[1]][[2]]), c(7, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[3]]), c(6, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[4]]), c(5, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[5]]), c(4, 6))
+    expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
+
+})

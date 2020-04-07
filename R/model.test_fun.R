@@ -1,7 +1,7 @@
 ###################
 # Input fun
 ###################
-select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefaction) {
+select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefaction, matrix = 1) {
 
     if(observed) {
         ## If observed is required
@@ -13,7 +13,7 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
             variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var, na.rm = TRUE))
         } else {
             ## Extract directly the variance from the data
-            variance <- sapply(data[[3]], function(x) var(data[[1]][x[[1]]], na.rm = TRUE))
+            variance <- sapply(data[[3]], function(x) var(data$matrix[[matrix]][x[[1]]], na.rm = TRUE))
         }
 
     } else {
