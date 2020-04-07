@@ -211,7 +211,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
         ## Lapply through the subsets
         lapply_loop <- data$subsets[elements_keep]
-
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
@@ -236,11 +235,11 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
     
     ## Check if the data is bound
-        if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
-            is_bound <- as.logical(data$call$subsets[["bind"]])
-        } else {
-            is_bound <- FALSE
-        }
+    if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
+        is_bound <- as.logical(data$call$subsets[["bind"]])
+    } else {
+        is_bound <- FALSE
+    }
 
 
 
@@ -287,7 +286,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
                                 SIMPLIFY = FALSE)
 
             # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
-            recursive.merge <- function(list, bind = rbind) {
+            recursive.merge <- function(list, bind = cbind) {
                 while(length(list) > 1) {
                     list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)
                     list[[2]] <- NULL

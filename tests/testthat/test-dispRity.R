@@ -632,50 +632,87 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_false(sd(level1$disparity[[3]][[1]]) != 0)
     expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.475, 0.801, 1.217))
 
-
-    ## Works with bootstraps
-    # testboot <- boot.matrix(test)
-
-
     ## Works with binding data
     set.seed(1)
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
 
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+    expect_equal(as.vector(means$disparity[[1]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[1]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[1]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[1]]$elements[,3],], na.rm = TRUE))
+    )
+    expect_equal(as.vector(means$disparity[[2]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[2]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[2]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[2]]$elements[,3],]))
+    )
+    expect_equal(as.vector(means$disparity[[3]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[3]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[3]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
+    )
 
-    # means <- dispRity(test, metric = mean, na.rm = TRUE)
-    # expect_is(means, "dispRity")
-    # expect_equal(as.vector(means$disparity[[1]]$elements),
-    #         c(mean(means$matrix[[1]][means$subsets[[1]]$elements[,1],]),
-    #           mean(means$matrix[[2]][means$subsets[[1]]$elements[,2],]),
-    #           mean(means$matrix[[3]][means$subsets[[1]]$elements[,3],], na.rm = TRUE))
-    # )
-
-# Wrong: 
-# -0.2332062  -0.2231928  -0.1638060
-# Must be
-# -0.23320616 -0.29247462 -0.02541511
-
-
-
+    ## Works with recycling dispRity objects
     vars <- dispRity(test, metric = variances)
     sumvars <- dispRity(test, metric = c(sum, variances))
-    sumvars2 <- dispRity(vars, metric = sum)
+    sumvars2 <- dispRity(vars, metric = sum)    
+
+    expect_is(vars, "dispRity")
+    expect_is(sumvars, "dispRity")
+    expect_is(sumvars2, "dispRity")
+    expect_equal(
+        as.vector(sumvars$disparity[[1]]$elements),
+        as.vector(sumvars2$disparity[[1]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
 
 
-
-
-
+    ## Works with bootstraps
     test1 <- boot.matrix(test, bootstraps = 12)
-    test2 <- boot.matrix(test, bootstraps = 12, rarefaction = TRUE)
 
     vars <- dispRity(test1, metric = variances)
     sumvars <- dispRity(test1, metric = c(sum, variances))
     sumvars2 <- dispRity(vars, metric = sum)
 
-    test2 <- dispRity(test2, metric = c(sum, variances))
+    expect_equal(
+        as.vector(sumvars$disparity[[1]]$elements),
+        as.vector(sumvars2$disparity[[1]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
 
 
+    ## Predictable values
+    matrices[[1]][,] <- 1
+    matrices[[2]][,] <- 4
+    matrices[[3]][,] <- 10
 
+    ## Bound and unbound data
+    unbou <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "equal.split", t0 = 5, bind.data = FALSE)
+    bound <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "equal.split", t0 = 5, bind.data = TRUE)
+
+    ## Getting the mean
+    bs_unbou <- dispRity(boot.matrix(unbou, 102), metric = mean)
+    bs_bound <- dispRity(boot.matrix(bound, 102), metric = mean)
+
+    expect_equal(
+        summary(bs_bound, cent.tend = mean)$bs.mean,
+        c(5,5,5))
+    expect_equal(
+        summary(bs_unbou, cent.tend = mean)$bs.mean,
+        c(5,5,5))
+
+    expect_equal(dim(bs_unbou$disparity[[1]]$elements), c(3,3))
+    expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
 })
 
 
