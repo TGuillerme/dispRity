@@ -268,7 +268,6 @@ test_that("Test other distances", {
     ## Test maximum
     expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,1)), method = "maximum"), 0)
     expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,3)), method = "maximum"), 1)
-    expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, translate = FALSE), 2)
     expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, order = TRUE, translate = FALSE), 2)
 })
 
