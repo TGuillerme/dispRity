@@ -202,7 +202,14 @@ split.data <- function(data) {
         list("matrix" = list(X),
              "call" = list("dimensions" = data$call$dimensions))))
 }
-
+## Merge the data for bound tree/matrices
+recursive.merge <- function(list, bind = cbind) {
+    while(length(list) > 1) {
+        list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)
+        list[[2]] <- NULL
+    }
+    return(list)
+}
 
 # ## Parallel versions
 # parLapply.wrapper <- function(i, cluster) {

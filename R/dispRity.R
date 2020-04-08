@@ -285,14 +285,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
             # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
 
 
-            recursive.merge <- function(list, bind = cbind) {
-                while(length(list) > 1) {
-                    list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)
-                    list[[2]] <- NULL
-                }
-                return(list)
-            }
-
             ## Combine the results into normal disparity results
             disparity <- unlist(lapply(as.list(1:n_trees), function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities), recursive = FALSE)
             names(disparity) <- names(disparities[[1]])
