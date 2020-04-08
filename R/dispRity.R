@@ -278,14 +278,13 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
             matrices_data <- split.data(data)
             
             ## Mapply wrapper for disparity wrapper
-            mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
-                return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
-            }
             disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
                                 MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
                                 SIMPLIFY = FALSE)
 
             # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+
+
             recursive.merge <- function(list, bind = cbind) {
                 while(length(list) > 1) {
                     list[[1]] <- mapply(bind, list[[1]], list[[2]], SIMPLIFY = FALSE)

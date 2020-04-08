@@ -167,7 +167,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 }
 
 
-# ## Lapply wrapper for disparity.bootstraps function
+## Lapply wrapper for disparity.bootstraps function
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
@@ -175,6 +175,12 @@ lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, ve
     }
     return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
 }
+mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
+    return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
+}
+
+
+
 
 ## Split the lapply_loop for bound tree/matrices
 split.lapply_loop <- function(lapply_loop, n_trees) {
@@ -196,8 +202,6 @@ split.data <- function(data) {
         list("matrix" = list(X),
              "call" = list("dimensions" = data$call$dimensions))))
 }
-
-
 
 
 # ## Parallel versions
