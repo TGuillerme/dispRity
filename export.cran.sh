@@ -100,7 +100,7 @@ rm export.cran.tmp2
 
 ## Compile the package
 cd cran_tmp/
-R CMD build dispRity
+R CMD build --resave-data dispRity
 
 ## Check the package
 R CMD check --as-cran dispRity_*.tar.gz
