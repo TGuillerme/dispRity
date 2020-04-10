@@ -269,9 +269,13 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
     options(warn = 0)
 
-    ## Calculating the character difference
-    #output <- round( 1 - ( abs(output-0.5)/0.5 ), digits = 10)
-    # output <- round(output, digits = 10)
+    ## Remove NAs if comparable character
+    if(method == "comparable") {
+        ## Get comparable characters for the diagonal
+        diag(output) <- apply(matrix, 1, function(x, ncol){return(ncol - sum(is.na(x)))}, ncol = ncol(matrix))
+        ## NAs are 0s
+        output <- ifelse(is.na(output), 0, output)
+    }
 
     if(ncol(output) == 2) {
         ## Return a single numeric value if comparing two characters
