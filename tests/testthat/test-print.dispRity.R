@@ -213,6 +213,7 @@ test_that("dtt printing", {
     dispRity_dtt <- dtt.dispRity(data = data, metric = average.sq,
                                  tree = tree, nsim = 10)
 
+    print_dtt <- capture.output(dispRity_dtt)
     
     set.seed(1)
     dispRity_dtt_raw <- dtt.dispRity(data = data, metric = average.sq,
