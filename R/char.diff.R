@@ -3,8 +3,10 @@
 #' @description Calculates the character difference from a discrete matrix
 #'
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
-#' @param method The method to measure difference: \code{"hamming"} (default), \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
-#' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein XXX) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
+#' @param method The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).
+#' 
+#'  \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
+#' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param order \code{logical}, whether the character should be treated as order (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows or columns in \code{matrix} (depending on \code{by.col}) to specify ordering for each character.
@@ -17,7 +19,7 @@
 #' The different methods are:
 #' 
 #' \itemize{
-#'      \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens).
+#'      \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens; Gower 1966).
 #'          \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])/n}
 #'      \item \code{"manhattan"} The "raw" distance between characters:
 #'          \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
@@ -27,6 +29,8 @@
 #'          \eqn{d(x,y) = sqrt(sum[i,n]((x[i] - y[i])^2))}
 #'      \item \code{"maximum"} The maximum distance between characters:
 #'          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
+#'      \item \code{"mord"} The maximum observable distance between characters (Lloyd 2016):
+#'          \eqn{d(x,y) =  sum[i,n](abs(x[i] - y[i])/sum[i,n]((x[i] - y[i])/(x[i] - y[i])}
 #' }
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
@@ -84,15 +88,11 @@
 #' @author Thomas Guillerme
 #' 
 #' @references
-#' Wills XXX
-#' Hamming XXX
-#' Lloyd XXX
-#' Felsenstein XXX
-#' Gower, J.C. 1966. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
+#' Felsenstein, J. \bold{2004}. Inferring phylogenies vol. 2. Sinauer Associates Sunderland.
+#' Gower, J.C. \bold{1966}. Some distance properties of latent root and vector methods used in multivariate analysis. Biometrika 53:325-338.
+#' Hamming, R.W. \bold{1950}. Error detecting and error correcting codes. The Bell System Technical Journal. DOI: 10.1002/j.1538-7305.1950.tb00463.x.
+#' Lloyd, G.T. \bold{2016}. Estimating morphological diversity and tempo with discrete character-taxon matrices: implementation, challenges, progress, and future directions. Biological Journal of the Linnean Society. DOI: 10.1111/bij.12746. 
 #' 
-
-
-
 
 # TESTING
 # Some character

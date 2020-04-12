@@ -213,7 +213,11 @@ test_that("dtt printing", {
     dispRity_dtt <- dtt.dispRity(data = data, metric = average.sq,
                                  tree = tree, nsim = 10)
 
-    print_dtt <- capture.output(dispRity_dtt)
+    
+    set.seed(1)
+    dispRity_dtt_raw <- dtt.dispRity(data = data, metric = average.sq,
+                                     tree = tree, nsim = 0)
+    print_dtt_raw <- capture.output(dispRity_dtt_raw)
 
     expect_equal(print_dtt,
         c(
@@ -233,12 +237,8 @@ test_that("dtt printing", {
         "Use plot.dispRity() to visualise." 
         ))
 
-    set.seed(1)
-    dispRity_dtt_raw <- dtt.dispRity(data = data, metric = average.sq,
-                                     tree = tree, nsim = 0)
-    print_dtt_raw <- capture.output(dispRity_dtt_raw)
 
-    expect_equal(print_dtt_raw[c(11,12)],
+    expect_equal(print_dtt_raw[c(8,9)],
         c(
         # "$dtt"                                                                                      ,
         # " [1] 1.0000000 0.7108704 0.8137332 1.1194885 1.1752659 1.3945462 2.2877953 1.8151213"      ,
