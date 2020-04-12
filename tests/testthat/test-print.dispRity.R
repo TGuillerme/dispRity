@@ -239,7 +239,7 @@ test_that("dtt printing", {
         ))
 
 
-    expect_equal(print_dtt_raw[c(8,9)],
+    expect_equal(print_dtt_raw[c(length(print_dtt_raw)-1,length(print_dtt_raw))],
         c(
         # "$dtt"                                                                                      ,
         # " [1] 1.0000000 0.7108704 0.8137332 1.1194885 1.1752659 1.3945462 2.2877953 1.8151213"      ,
