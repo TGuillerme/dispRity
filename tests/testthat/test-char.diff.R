@@ -15,74 +15,59 @@ test_that("translate.xyz works", {
 })
 
 test_that("convert.bitwise works", {
-    ## Full characters
-    expect_equal(convert.bitwise(0), 1)
-    expect_equal(convert.bitwise("0"), 1)
-    expect_equal(convert.bitwise(1), 2)
-    expect_equal(convert.bitwise("1"), 2)
-    expect_equal(convert.bitwise(2), 4)
-    expect_equal(convert.bitwise("2"), 4)
-    expect_equal(convert.bitwise(3), 8)
-    expect_equal(convert.bitwise("3"), 8)
-    expect_equal(convert.bitwise(4), 16)
-    expect_equal(convert.bitwise("4"), 16)
-    expect_true(is.na(convert.bitwise(NA)))
-
     ## Special tokens
     special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
     ## Special behaviours
     special.behaviours <- list(
-        missing = function(x,y) return(as.integer(y)),
+        missing = function(x,y) return(y),
         inapplicable = function(x,y) return(NA),
-        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
-        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        polymorphism = function(x,y) return(strsplit(x, split = "\\&")[[1]]),
+        uncertainty = function(x,y) return(strsplit(x, split = "\\/")[[1]])
         )
-    all_states <- c(0,1,2,3)
-    expect_warning(expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours, all_states), 7))
-    expect_warning(expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours, all_states), 3))
-    expect_warning(expect_true(is.na(convert.bitwise("-", special.tokens, special.behaviours, all_states))))
-    expect_warning(expect_equal(convert.bitwise("?", special.tokens, special.behaviours, all_states), 15))
+    expect_equal(convert.bitwise("0/1/2", special.tokens, special.behaviours), 7)
+    expect_equal(convert.bitwise("0&1", special.tokens, special.behaviours), 3)
+    expect_true(is.na(convert.bitwise("-", special.tokens, special.behaviours)))
+    expect_equal(convert.bitwise("?", special.tokens, special.behaviours), 0)
 
     ## Add some weird token
     special.tokens["weird"] <- "\\%"
     special.behaviours$weird <- function(x,y) return(as.integer(1000))
-    expect_warning(expect_equal(convert.bitwise("1%2", special.tokens, special.behaviours, all_states), 2^1000))
-})
+    expect_equal(convert.bitwise("1%2", special.tokens, special.behaviours), 2^1000)
 
 
-test_that("convert.character works", {
+    ## More tests!
 
     special.tokens <- c(missing = "\\?", inapplicable = "\\-", polymorphism = "\\&", uncertainty = "\\/")
     ## Special behaviours
     special.behaviours <- list(
-        missing = function(x,y) return(as.integer(y)),
+        missing = function(x,y) return(y),
         inapplicable = function(x,y) return(NA),
-        polymorphism = function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]])),
-        uncertainty = function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        polymorphism = function(x,y) return(strsplit(x, split = "\\&")[[1]]),
+        uncertainty = function(x,y) return(strsplit(x, split = "\\/")[[1]])
         )
 
     simple_character <- c("0", "0", "1", "0", "0")
     expect_equal(
-        convert.character(c("0", "0", "1", "0", "0"), special.tokens, special.behaviours)
-        ,c("0" = 1, "0" = 1, "1" = 2, "0" = 1, "0" = 1))
+        convert.bitwise(c("0", "0", "1", "0", "0"), special.tokens, special.behaviours)
+        ,c(1, 1,  2,  1,  1))
     expect_equal(
-        unname(convert.character(c("0", "0", "10", "0", "0"), special.tokens, special.behaviours))
+        convert.bitwise(c("0", "0", "10", "0", "0"), special.tokens, special.behaviours)
         ,c(1, 1, 1024, 1, 1))
-    expect_warning(expect_equal(
-        convert.character(c("0", "0", "1", "?", "0"), special.tokens, special.behaviours)
-        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 3, "0" = 1)))
-    expect_warning(expect_equal(
-        convert.character(c("0", "0", "1", "?", "2"), special.tokens, special.behaviours)
-        ,c("0" = 1, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
-    expect_warning(expect_equal(
-        convert.character(c("0/1", "0", "1", "?", "2"), special.tokens, special.behaviours)
-        ,c("0/1" = 3, "0" = 1, "1" = 2, "?" = 7, "2" = 4)))
-    expect_warning(expect_equal(
-        convert.character(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
-        ,c("0/1" = 3, "-" = NA, "1" = 2, "?" = 7, "2" = 4)))
-    expect_warning(expect_equal(
-        convert.character(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
-        ,c("0/1" = 3, "-" = NA, "1&3" = 10, "?" = 11, "3" = 8)))
+    expect_equal(
+        convert.bitwise(c("0", "0", "1", "?", "0"), special.tokens, special.behaviours)
+        ,c(1, 1, 2, 3, 1))
+    expect_equal(
+        convert.bitwise(c("0", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c(1, 1, 2, 7, 4))
+    expect_equal(
+        convert.bitwise(c("0/1", "0", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c(3, 1, 2, 7, 4))
+    expect_equal(
+        convert.bitwise(c("0/1", "-", "1", "?", "2"), special.tokens, special.behaviours)
+        ,c(3, NA, 2, 7, 4))
+    expect_equal(
+        convert.bitwise(c("0/1", "-", "1&3", "?", "3"), special.tokens, special.behaviours)
+        ,c(3, NA, 10, 11, 8))
 
 })
 
@@ -156,7 +141,7 @@ colnames(matrix_simple) <- LETTERS[1:3]
 
 test_that("char.diff matrix", {
     tests <- list()
-    expect_warning(tests[[1]] <- round(char.diff(matrix_simple), digits = 7))
+    tests[[1]] <- round(char.diff(matrix_simple), digits = 7)
     tests[[2]] <- round(char.diff(matrix_multi), digits = 7)
     tests[[3]] <- round(char.diff(matrix_binary), digits = 7)
 
@@ -185,37 +170,37 @@ test_that("char.diff matrix", {
 
 test_that("char.diff NA, translate and order function works", {
 
-matrix_simple <- matrix(data = c(1,NA,3,NA,
-                                 7,7,2,2,
-                                 1,1,1,0), ncol = 3, byrow = FALSE)
-colnames(matrix_simple) <- LETTERS[1:3]
+    matrix_simple <- matrix(data = c(1,NA,3,NA,
+                                     7,7,2,2,
+                                     1,1,1,0), ncol = 3, byrow = FALSE)
+    colnames(matrix_simple) <- LETTERS[1:3]
 
-## Correct NA behaviour
-expect_warning(test_NA1 <- round(char.diff(matrix_simple), 5))
-expect_warning(test_NA2 <- round(char.diff(matrix_simple,
-                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
-                      special.tokens = c(missing = NA)), 5))
+    ## Correct NA behaviour
+    test_NA1 <- round(char.diff(matrix_simple), 5)
+    test_NA2 <- round(char.diff(matrix_simple,
+                          special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                          special.tokens = c(missing = NA)), 5)
 
-expect_equal(as.vector(test_NA1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
-expect_equal(as.vector(test_NA2), c(0.00000, 0.00000, 0.33333, 0.00000, 0.00000, 0.33333, 0.33333, 0.33333, 0.00000))
+    expect_equal(as.vector(test_NA1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
+    expect_equal(as.vector(test_NA2), c(0.00000, 0.00000, 0.33333, 0.00000, 0.00000, 0.33333, 0.33333, 0.33333, 0.00000))
 
-## NA + translate
-expect_warning(test_tr1 <- round(char.diff(matrix_simple, translate = FALSE), 2))
-expect_equal(as.vector(test_tr1), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
-expect_warning(test_tr2 <- char.diff(matrix_simple, translate = FALSE,
-                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
-                      special.tokens = c(missing = NA)))
-expect_equal(as.vector(test_tr2), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
+    ## NA + translate
+    test_tr1 <- round(char.diff(matrix_simple, translate = FALSE), 2)
+    expect_equal(as.vector(test_tr1), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
+    test_tr2 <- char.diff(matrix_simple, translate = FALSE,
+                          special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                          special.tokens = c(missing = NA))
+    expect_equal(as.vector(test_tr2), c(0.0, 1.0, 0.5, 1.0, 0.0, 1.0, 0.5, 1.0, 0.0))
 
-## NA + translate + order
-expect_warning(test_ord1 <- round(char.diff(matrix_simple, translate = TRUE, order = TRUE), 5))
-expect_equal(as.vector(test_ord1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
-expect_warning(test_ord2 <- round(char.diff(matrix_simple, translate = FALSE, order = TRUE), 5))
-expect_equal(as.vector(test_ord2), c(0.00, 3.50, 1.00, 3.50, 0.00, 3.75, 1.00, 3.75, 0.00))
-expect_warning(test_ord3 <- char.diff(matrix_simple, translate = FALSE, order = TRUE,
-                      special.behaviours = list(missing = function(x,y) return(as.integer(y))),
-                      special.tokens = c(missing = NA)))
-expect_equal(as.vector(test_ord3), c(0.00, 3.00, 0.75, 3.00, 0.00, 3.75, 0.75, 3.75, 0.00))
+    ## NA + translate + order
+    test_ord1 <- round(char.diff(matrix_simple, translate = TRUE, order = TRUE), 5)
+    expect_equal(as.vector(test_ord1), c(0.00000, 0.00000, 1.00000, 0.00000, 0.00000, 0.33333, 1.00000, 0.33333, 0.00000))
+    test_ord2 <- round(char.diff(matrix_simple, translate = FALSE, order = TRUE), 5)
+    expect_equal(as.vector(test_ord2), c(0.00, 3.50, 1.00, 3.50, 0.00, 3.75, 1.00, 3.75, 0.00))
+    test_ord3 <- char.diff(matrix_simple, translate = FALSE, order = TRUE,
+                          special.behaviours = list(missing = function(x,y) return(as.integer(y))),
+                          special.tokens = c(missing = NA))
+    expect_equal(as.vector(test_ord3), c(0.00, 3.00, 0.75, 3.00, 0.00, 3.75, 0.75, 3.75, 0.00))
 })
 
 
@@ -255,10 +240,10 @@ test_that("Test other distances", {
     expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), translate = FALSE, method = "manhattan"), 0)
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "manhattan"), 4)
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "manhattan"), 0)
-    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "manhattan"), 0))
+    expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "manhattan"), 0)
     ## Comparable
     expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), method = "comparable"), 4)
-    expect_warning(expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "comparable"), 1))
+    expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "comparable"), 1)
     ## Euclidean
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
@@ -306,139 +291,147 @@ test_that("char.diff plot (graphic)", {
 
 
     ## Plotting a matrix
-    warn <- capture_warnings(test <- plot.char.diff(morpho_matrix))
+    test <- plot.char.diff(morpho_matrix)
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 
     ## Plotting the density profile of a char.diff object
-    warn <- capture_warnings(char.diff_matrix <- char.diff(morpho_matrix))
+    char.diff_matrix <- char.diff(morpho_matrix)
     test <- plot(char.diff_matrix, type = "density")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 
     ## With NA
     morpho_matrix[, 1] <- NA
-    expect_warning(test <- plot.char.diff(morpho_matrix))
+    test <- plot.char.diff(morpho_matrix)
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
-    expect_warning(test <- plot.char.diff(morpho_matrix, type = "density"))
+    test <- plot.char.diff(morpho_matrix, type = "density")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
 })
 
 
 
-# test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
+test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
 
-#     library(Claddis)
+    library(Claddis)
 
-#     ## The distance test wrappers
-#     claddis.test.wrapper <- function(matrix, transform = "none") {
-#         results <- list()
-#         results[[1]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$ComparableCharacterMatrix
-#         results[[2]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$DistanceMatrix
-#         # results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "RED", TransformDistances = transform)$DistanceMatrix
-#         results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "MORD", TransformDistances = transform)$DistanceMatrix
-#         names(results) <- c("comparable", "gower", "mord")
-#         return(results)
-#     }
-#     dispRity.test.wrapper <- function(matrix, transform = "none") {
-#         results <- list()
-#         results[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
-#         class(results[[1]]) <- "matrix"
-#         results[[2]] <- char.diff(matrix, method = "hamming", translate = FALSE, by.col = FALSE)
-#         class(results[[2]]) <- "matrix"
-#         # results[[3]] <- char.diff(matrix, method = "euclidean", translate = FALSE, by.col = FALSE)
-#         # class(results[[3]]) <- "matrix"
-#         results[[3]] <- char.diff(matrix, method = "manhattan", translate = FALSE, by.col = FALSE)
-#         class(results[[3]]) <- "matrix"
-#         ## MORD distance
-#         results[[3]] <- results[[3]]/results[[1]]
+    ## The distance test wrappers
+    claddis.test.wrapper <- function(matrix, transform = "none") {
+        results <- list()
+        results[[1]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$ComparableCharacterMatrix
+        results[[2]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$DistanceMatrix
+        # results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "RED", TransformDistances = transform)$DistanceMatrix
+        results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "MORD", TransformDistances = transform)$DistanceMatrix
+        names(results) <- c("comparable", "gower", "mord")
+        return(results)
+    }
+    dispRity.test.wrapper <- function(matrix, transform = "none") {
+        results <- list()
+        results[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
+        class(results[[1]]) <- "matrix"
+        results[[2]] <- char.diff(matrix, method = "hamming", translate = FALSE, by.col = FALSE)
+        class(results[[2]]) <- "matrix"
+        # results[[3]] <- char.diff(matrix, method = "euclidean", translate = FALSE, by.col = FALSE)
+        # class(results[[3]]) <- "matrix"
+        results[[3]] <- char.diff(matrix, method = "mord", translate = FALSE, by.col = FALSE)
+        class(results[[3]]) <- "matrix"
 
-#         names(results) <- c("comparable", "gower", "mord")
-#         return(results)
-#     }
+        names(results) <- c("comparable", "gower", "mord")
+        return(results)
+    }
 
-#     ## Test wrapper
-#     run.test <- function(matrix, Claddis_data) {
+    ## Test wrapper
+    run.test <- function(matrix, Claddis_data) {
 
-#         if(missing(Claddis_data)) {
-#             if(length(grep("?", matrix)) > 0) {
-#                 tmp_matrix <- ifelse(matrix == "?", NA, matrix)
-#             } else {
-#                 tmp_matrix <- matrix
-#             }
-#             if(length(grep("-", tmp_matrix)) > 0) {
-#                 tmp_matrix <- ifelse(tmp_matrix == "-", NA, tmp_matrix)
-#             } else {
-#                 tmp_matrix <- tmp_matrix
-#             }
-#             Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
-#         }
+        if(missing(Claddis_data)) {
+            if(length(grep("?", matrix)) > 0) {
+                tmp_matrix <- ifelse(matrix == "?", NA, matrix)
+            } else {
+                tmp_matrix <- matrix
+            }
+            if(length(grep("-", tmp_matrix)) > 0) {
+                tmp_matrix <- ifelse(tmp_matrix == "-", NA, tmp_matrix)
+            } else {
+                tmp_matrix <- tmp_matrix
+            }
+            Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
+        }
 
-#         Claddis_start <- Sys.time()
-#         Claddis_results <- claddis.test.wrapper(Claddis_data)
-#         Claddis_end <- Sys.time()
-#         dispRity_start <- Sys.time()
-#         dispRity_results <- dispRity.test.wrapper(matrix)
-#         dispRity_end <- Sys.time()
+        Claddis_start <- Sys.time()
+        Claddis_results <- claddis.test.wrapper(Claddis_data)
+        Claddis_end <- Sys.time()
+        dispRity_start <- Sys.time()
+        dispRity_results <- dispRity.test.wrapper(matrix)
+        dispRity_end <- Sys.time()
 
-#         expect_equal(Claddis_results$comparable, dispRity_results$comparable)
-#         expect_equal(Claddis_results$gower, dispRity_results$gower)
-#         expect_equal(Claddis_results$euclidean, dispRity_results$euclidean)
-#         expect_equal(Claddis_results$mord, dispRity_results$mord)
+        expect_equal(Claddis_results$comparable, dispRity_results$comparable)
+        expect_equal(Claddis_results$gower, dispRity_results$gower)
+        expect_equal(Claddis_results$euclidean, dispRity_results$euclidean)
+        expect_equal(Claddis_results$mord, dispRity_results$mord)
 
-#         cat("time increase factor: ")
-#         cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
-#         cat("\ndispRity run time: ")
-#         cat(dispRity_end-dispRity_start)
-#         cat("\nCladdis run time: ")
-#         cat(Claddis_end-Claddis_start)
-#         cat("\n")
-#     }
+        cat("time increase factor: ")
+        cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
+        cat("\ndispRity run time: ")
+        cat(dispRity_end-dispRity_start)
+        cat("\nCladdis run time: ")
+        cat(Claddis_end-Claddis_start)
+        cat("\n")
+    }
 
-#     run.test(Claddis::Michaux1989$Matrix_1$Matrix)
-#     expect_warning(run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986))
+    run.test(Claddis::Michaux1989$Matrix_1$Matrix)
+    run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
 
-#     ## Import complex matrix from MammalDisparity project
-#     source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
-#     matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
-#     # expect_warning(run.test(matrix))
+    ## Import complex matrix from MammalDisparity project
+    source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
+    matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
+    # expect_warning(run.test(matrix))
 
-# if(length(grep("?", matrix)) > 0) {
-#     tmp_matrix <- ifelse(matrix == "?", NA, matrix)
-# } else {
-#     tmp_matrix <- matrix
-# }
-# if(length(grep("-", tmp_matrix)) > 0) {
-#     tmp_matrix <- ifelse(tmp_matrix == "-", NA, tmp_matrix)
-# } else {
-#     tmp_matrix <- tmp_matrix
-# }
-# Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
+    if(length(grep("?", matrix)) > 0) {
+        tmp_matrix <- ifelse(matrix == "?", NA, matrix)
+    } else {
+        tmp_matrix <- matrix
+    }
+    if(length(grep("-", tmp_matrix)) > 0) {
+        tmp_matrix <- ifelse(tmp_matrix == "-", NA, tmp_matrix)
+    } else {
+        tmp_matrix <- tmp_matrix
+    }
+    Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
 
-# Claddis_start <- Sys.time()
-# results_Claddis <- list()
-# test <- Claddis::MorphDistMatrix(Claddis_data, Distance = "MORD", TransformDistances = "none")
-# results_Claddis[[1]] <- test$ComparableCharacterMatrix
-# results_Claddis[[2]] <- test$DistanceMatrix
-# Claddis_end <- Sys.time()
+    Claddis_start <- Sys.time()
+    results_Claddis <- list()
+    test <- Claddis::MorphDistMatrix(Claddis_data, Distance = "MORD", TransformDistances = "none")
+    results_Claddis[[1]] <- test$ComparableCharacterMatrix
+    results_Claddis[[2]] <- test$DistanceMatrix
+    Claddis_end <- Sys.time()
 
-# dispRity_start <- Sys.time()
-# results_dispRity <- list()
-# results_dispRity[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
-# results_dispRity[[2]] <- char.diff(matrix, method = "manhattan", translate = FALSE, by.col = FALSE)
-# results_dispRity[[2]] <- results_dispRity[[2]]/results_dispRity[[1]]
-# dispRity_end <- Sys.time()
+    dispRity_start <- Sys.time()
+    results_dispRity <- list()
+    # results_dispRity[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
+    Rprof()
+    results_dispRity[[1]] <- char.diff(matrix, method = "mord", translate = FALSE, by.col = FALSE)
+    Rprof(NULL)
+    dispRity_end <- Sys.time()
+    summaryRprof()
+
+    #
+    #
+    #
+    #### TEST: MAKE SURE BEHAVIOUR FOR "?" IS SET TO function(x,y) return(y) !!!!!
+    #
+    #
+    #
 
 
-# cat("time increase factor: ")
-# cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
-# cat("\ndispRity run time: ")
-# cat(dispRity_end-dispRity_start)
-# cat("\nCladdis run time: ")
-# cat(Claddis_end-Claddis_start)
-# cat("\n")
+    cat("time increase factor: ")
+    cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
+    cat("\ndispRity run time: ")
+    cat(dispRity_end-dispRity_start)
+    cat("\nCladdis run time: ")
+    cat(Claddis_end-Claddis_start)
+    cat("\n")
 
 
-# })
+})

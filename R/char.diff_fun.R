@@ -25,50 +25,49 @@ translate.xyz <- function(one_character, special.tokens) {
     return(one_character)
 }
 
-## Binary bit converter for a single character (token)
-convert.bitwise <- function(token, special.tokens = NULL, special.behaviours = NULL, all_states = NULL) {
-
-    ## Getting binary numbers
-    binary <- function(token) {
-        return(sum(2^token))
-    }
-
-    ## If token is NA straight, return NA
-    if(is.na(token)) {
-        return(NA)
-    }
-
-    ## Convert character as bitwise:
-    options(warn = -1)
-    converted_token <- as.integer(token)
-    options(warn = 0)
-    if(!is.na(converted_token)) {
-        ## Convert the token into a bitwise
-        return(binary(converted_token))
+## Get all states
+recursive.sub <- function(patterns, character) {
+    if(length(patterns) == 0) {
+        return(character)
     } else {
-        ## Convert the token according to its behaviour
-        behaviour <- names(special.tokens[sapply(special.tokens, grepl, token)])
-        ## Convert to a bitwise convertible token
-        return(binary(special.behaviours[behaviour][[1]](token, all_states)))
+        character <- gsub(patterns[[1]], "", character)
+        patterns <- patterns[-1]
+        return(recursive.sub(patterns, character))
     }
 }
 
-## Binary bit converter for a whole character
-convert.character <- function(character, special.tokens, special.behaviours) {
-    ## Get all states
-    recursive.sub <- function(patterns, character) {
-        if(length(patterns) == 0) {
-            return(character)
-        } else {
-            character <- gsub(patterns[[1]], "", character)
-            patterns <- patterns[-1]
-            return(recursive.sub(patterns, character))
+## Recursive list conversion
+convert.list <- function(behaviours, special_token, character_list, all_states) {
+    if(length(behaviours) > 0) {
+        ## Convert the characters for the first behaviour
+        if(any(special_token[[1]])) {
+            character_list[special_token[[1]]] <- lapply(character_list[special_token[[1]]], behaviours[[1]], all_states)
         }
+        ## Remove the used behaviour
+        behaviours[[1]] <- NULL
+        special_token[[1]] <- NULL
+    } else {
+        return(character_list)
     }
-    options(warn = -1)
-    all_states <- as.integer(sort(unique(strsplit(paste0(recursive.sub(special.tokens, unique(character)), collapse = ""), split = "")[[1]])))
-    options(warn = 0)
+    return(convert.list(behaviours, special_token, character_list, all_states))
+}
 
-    ## Convert all characters
-    return(sapply(character, convert.bitwise, special.tokens, special.behaviours,all_states))
+## Getting binary numbers
+binary <- function(token) {
+    return(sum(2^token))
+}
+
+## Binary bit converter for a whole character
+convert.bitwise <- function(character, special.tokens, special.behaviours) {
+    ## Get all states
+    all_states <- as.integer(sort(unique(strsplit(paste0(recursive.sub(special.tokens, unique(character)), collapse = ""), split = "")[[1]])))
+
+    ## Get all the special characters
+    special_characters <- lapply(special.tokens, grepl, character)
+
+    ## Convert the list of integers
+    character_list <- lapply(convert.list(special.behaviours, special_characters, as.list(character), all_states), as.integer)
+
+    ## Convert into binary
+    return(unlist(lapply(character_list, binary)))
 }
