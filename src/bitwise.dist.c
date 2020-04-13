@@ -194,12 +194,8 @@ static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int tra
         i2 += nr;
     }
 
-    if(count == 0) {
-        return NA_REAL;
-    } else {
-        result = (double)count;
-        return result;
-    }
+    result = (double)count;
+    return result;
 }
 
 // Calculating the euclidean distance
@@ -282,12 +278,54 @@ static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int transl
     }
 }
 
+// Calculating the manhattan difference
+static double bitwise_mord(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
+
+    // Declaring variables (result is int)    
+    int vector1[nc], vector2[nc], orders[nc];
+    int count = 0, i = 0, k = 0, diff = 0, dist = 0;
+    double result = 0;
+
+    //Isolating the two comparable characters
+    for(i = 0 ; i < nc ; i++) {
+        if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
+            
+            // Create the vectors
+            vector1[count] = x[i1];
+            vector2[count] = x[i2];
+            orders[count] = order[i1];
+
+            //Increment the counter
+            count++;
+        }
+        i1 += nr;
+        i2 += nr;
+    }
+
+    for(k = 0 ; k < count ; k++) {
+        if(order[k] == 0) {
+            diff = bitwise_compare_unordered(vector1[k], vector2[k]);
+        } else {
+            diff = bitwise_compare_ordered(vector1[k], vector2[k]);
+        }
+        dist += diff;
+    }
+
+    if(count == 0) {
+        return NA_REAL;
+    } else {
+        result = (double)dist/count;
+        return result;
+    }
+}
+
 // Available distance methods
 #define HAMMING 1
 #define MANHATTAN 2
 #define COMPARABLE 3
 #define EUCLIDEAN 4
 #define MAXIMUM 5
+#define MORD 6
 
 // dispRity_bitwise_distance function (R::dist())
 void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, int *method, int *translate, int *order)
@@ -327,6 +365,9 @@ void dispRity_bitwise_distance(int *x, int *nr, int *nc, double *d, int *diag, i
         break;
         case MAXIMUM:
             distfun = bitwise_maximum;
+        break;
+        case MORD:
+            distfun = bitwise_mord;
         break;
     }
 
