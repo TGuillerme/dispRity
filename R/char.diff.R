@@ -4,8 +4,6 @@
 #'
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
 #' @param method The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).
-#' 
-#'  \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
@@ -35,21 +33,20 @@
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 #' 
-#' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}.
+#' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns and inapplicable returns \code{NA}, and polymorphisms and uncertainties return all present states.
 #' 
 #' \itemize{
 #'      \item{\code{missing = function(x,y) NA}}
 #'      \item{\code{inapplicable = function(x,y) NA}}
-#'      \item{\code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
-#'      \item{\code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
+#'      \item{\code{polymorphism = function(x,y) strsplit(x, split = "\\\\&")[[1]]}}
+#'      \item{\code{uncertainty = function(x,y) strsplit(x, split = "\\\\/")[[1]]}}
 #' }
 #'
-#' \code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
+#' Functions in the list must be named following the special token of concern (e.g. \code{missing}), have only \code{x, y} as inputs and a single output a single value (that gets coerced to \code{integer} automatically). For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
 #' 
 #' IMPORTANT: Note that for any distance method, \code{NA} values are skipped in the distance calculations (e.g. distance(\code{A = {1, NA, 2}, B = {1, 2, 3}}) is treated as distance(\code{A = {1, 2}, B = {1, 3}})).
-#' If you want to treat \code{NA} values as any possible observed state, you need to define the following behaviour: \code{special.behaviour$missing = function(x,y) as.integer(y)}.
 #' 
-#' IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64).
+#' IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64). If you have more than 64 tokens per characters, you might want to use continuous data.
 #' 
 #' @return
 #' A character difference value or a matrix of class \code{char.diff}
@@ -117,7 +114,6 @@
 char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE) {
 
     match_call <- match.call()
-    options(warn = -1)
 
     ## Sanitizing
     matrix_class <- check.class(matrix, c("matrix", "list"))
@@ -145,7 +141,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean", "maximum")
+    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean", "maximum", "mord")
     check.method(method, avail_methods, msg = "method")
     c_method <- pmatch(method, avail_methods)
 
@@ -200,10 +196,10 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         special.behaviours$inapplicable <- function(x,y) return(NA)
     }
     if(is.null(special.behaviours$polymorphism)) {
-        special.behaviours$polymorphism <- function(x,y) return(as.integer(strsplit(x, split = "\\&")[[1]]))
+        special.behaviours$polymorphism <- function(x,y) return(strsplit(x, split = "\\&")[[1]])
     }
     if(is.null(special.behaviours$uncertainty)) {
-        special.behaviours$uncertainty <- function(x,y) return(as.integer(strsplit(x, split = "\\/")[[1]]))
+        special.behaviours$uncertainty <- function(x,y) return(strsplit(x, split = "\\/")[[1]])
     }
 
     ## by.col
@@ -219,8 +215,11 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Convert as integer for C
     translate <- as.integer(translate)
 
+    ## Start time stamps
+    time_stamp_start <- Sys.time()
+
     ## Convert to bitwise format
-    matrix <- apply(matrix, 2, convert.character, special.tokens, special.behaviours)
+    suppressWarnings(matrix <- apply(matrix, 2, convert.bitwise, special.tokens, special.behaviours))
 
     ## order
     check.class(order, "logical")
@@ -265,28 +264,21 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
                   class = "dist")
 
     ## Calculating the gower distance
-    options(warn = -1) #TG: NA's get introduced. Don't care!
-    output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs))
-    options(warn = 0)
+    suppressWarnings(output <- as.matrix(.Call("C_bitwisedist", matrix, c_method, translate, order, attrs)))
 
-    ## Remove NAs if comparable character
+    ## Remove NAs for diagonal if "comparable"
     if(method == "comparable") {
         ## Get comparable characters for the diagonal
         diag(output) <- apply(matrix, 1, function(x, ncol){return(ncol - sum(is.na(x)))}, ncol = ncol(matrix))
-        ## NAs are 0s
-        output <- ifelse(is.na(output), 0, output)
     }
 
     if(ncol(output) == 2) {
         ## Return a single numeric value if comparing two characters
         output <- as.numeric(output[1,2])
-        options(warn = 0)
         return(output)
     }
 
     class(output) <- c("matrix", "char.diff")
-    
-    options(warn = 0)
 
     return(output)
 }

@@ -10,9 +10,7 @@ char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
 
-\item{method}{The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).
-
- \code{"gower"}, \code{"euclidean"}, \code{"ged"} or \code{"mord"}.}
+\item{method}{The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).}
 
 \item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
 
@@ -51,21 +49,20 @@ The different methods are:
 
 When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
 
-\code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns all states, polymorphisms and uncertainties return all present states and inapplicable returns an \code{NA}.
+\code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns and inapplicable returns \code{NA}, and polymorphisms and uncertainties return all present states.
 
 \itemize{
      \item{\code{missing = function(x,y) NA}}
      \item{\code{inapplicable = function(x,y) NA}}
-     \item{\code{polymorphism = function(x,y) as.integer(strsplit(x, split = "\\\\&")[[1]])}}
-     \item{\code{uncertainty = function(x,y) as.integer(strsplit(x, split = "\\\\/")[[1]])}}
+     \item{\code{polymorphism = function(x,y) strsplit(x, split = "\\\\&")[[1]]}}
+     \item{\code{uncertainty = function(x,y) strsplit(x, split = "\\\\/")[[1]]}}
 }
 
-\code{x, y} as only inputs and should output a single value. Functions in the list should be named following the special token of concern (\code{x}). Elements of the list should be named as in \code{special.tokens}. For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
+Functions in the list must be named following the special token of concern (e.g. \code{missing}), have only \code{x, y} as inputs and a single output a single value (that gets coerced to \code{integer} automatically). For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(y)} to make all comparisons containing the special token containing \code{"?"} return any character state \code{y}.
 
 IMPORTANT: Note that for any distance method, \code{NA} values are skipped in the distance calculations (e.g. distance(\code{A = {1, NA, 2}, B = {1, 2, 3}}) is treated as distance(\code{A = {1, 2}, B = {1, 3}})).
-If you want to treat \code{NA} values as any possible observed state, you need to define the following behaviour: \code{special.behaviour$missing = function(x,y) as.integer(y)}.
 
-IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64).
+IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64). If you have more than 64 tokens per characters, you might want to use continuous data.
 }
 \examples{
 ## Comparing two binary characters
