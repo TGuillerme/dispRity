@@ -322,20 +322,17 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
         results <- list()
         results[[1]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$ComparableCharacterMatrix
         results[[2]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$DistanceMatrix
-        # results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "RED", TransformDistances = transform)$DistanceMatrix
         results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "MORD", TransformDistances = transform)$DistanceMatrix
         names(results) <- c("comparable", "gower", "mord")
         return(results)
     }
     dispRity.test.wrapper <- function(matrix, transform = "none") {
         results <- list()
-        results[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
+        results[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE, special.behaviours = list("missing" = function(x,y) return(y)))
         class(results[[1]]) <- "matrix"
-        results[[2]] <- char.diff(matrix, method = "hamming", translate = FALSE, by.col = FALSE)
+        results[[2]] <- char.diff(matrix, method = "hamming", translate = FALSE, by.col = FALSE, special.behaviours = list("missing" = function(x,y) return(y)))
         class(results[[2]]) <- "matrix"
-        # results[[3]] <- char.diff(matrix, method = "euclidean", translate = FALSE, by.col = FALSE)
-        # class(results[[3]]) <- "matrix"
-        results[[3]] <- char.diff(matrix, method = "mord", translate = FALSE, by.col = FALSE)
+        results[[3]] <- char.diff(matrix, method = "mord", translate = FALSE, by.col = FALSE, special.behaviours = list("missing" = function(x,y) return(y)))
         class(results[[3]]) <- "matrix"
 
         names(results) <- c("comparable", "gower", "mord")
@@ -343,7 +340,7 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
     }
 
     ## Test wrapper
-    run.test <- function(matrix, Claddis_data) {
+    run.test <- function(matrix, Claddis_data, verbose = FALSE) {
 
         if(missing(Claddis_data)) {
             if(length(grep("?", matrix)) > 0) {
@@ -371,67 +368,27 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
         expect_equal(Claddis_results$euclidean, dispRity_results$euclidean)
         expect_equal(Claddis_results$mord, dispRity_results$mord)
 
-        cat("time increase factor: ")
-        cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
-        cat("\ndispRity run time: ")
-        cat(dispRity_end-dispRity_start)
-        cat("\nCladdis run time: ")
-        cat(Claddis_end-Claddis_start)
-        cat("\n")
+        if(verbose) {
+            cat("time increase factor: ")
+            cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
+            cat("\ndispRity run time: ")
+            cat(dispRity_end-dispRity_start)
+            cat("\nCladdis run time: ")
+            cat(Claddis_end-Claddis_start)
+            cat("\n")
+        }
+
+        return(list("Claddis" = Claddis_results, "dispRity" = dispRity_results))
     }
 
-    run.test(Claddis::Michaux1989$Matrix_1$Matrix)
-    run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
+    results <- run.test(Claddis::Michaux1989$Matrix_1$Matrix)
+    results <- run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
 
     ## Import complex matrix from MammalDisparity project
-    source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
-    matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
-    # expect_warning(run.test(matrix))
-
-    if(length(grep("?", matrix)) > 0) {
-        tmp_matrix <- ifelse(matrix == "?", NA, matrix)
-    } else {
-        tmp_matrix <- matrix
-    }
-    if(length(grep("-", tmp_matrix)) > 0) {
-        tmp_matrix <- ifelse(tmp_matrix == "-", NA, tmp_matrix)
-    } else {
-        tmp_matrix <- tmp_matrix
-    }
-    Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
-
-    Claddis_start <- Sys.time()
-    results_Claddis <- list()
-    test <- Claddis::MorphDistMatrix(Claddis_data, Distance = "MORD", TransformDistances = "none")
-    results_Claddis[[1]] <- test$ComparableCharacterMatrix
-    results_Claddis[[2]] <- test$DistanceMatrix
-    Claddis_end <- Sys.time()
-
-    dispRity_start <- Sys.time()
-    results_dispRity <- list()
-    # results_dispRity[[1]] <- char.diff(matrix, method = "comparable", translate = FALSE, by.col = FALSE)
-    Rprof()
-    results_dispRity[[1]] <- char.diff(matrix, method = "mord", translate = FALSE, by.col = FALSE)
-    Rprof(NULL)
-    dispRity_end <- Sys.time()
-    summaryRprof()
-
-    #
-    #
-    #
-    #### TEST: MAKE SURE BEHAVIOUR FOR "?" IS SET TO function(x,y) return(y) !!!!!
-    #
-    #
-    #
-
-
-    cat("time increase factor: ")
-    cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
-    cat("\ndispRity run time: ")
-    cat(dispRity_end-dispRity_start)
-    cat("\nCladdis run time: ")
-    cat(Claddis_end-Claddis_start)
-    cat("\n")
-
-
+    # source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
+    # matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
+    # matrix_2 <- matrix[-1,]
+    # rownames(matrix_2) <- paste0(rownames(matrix_2), "_1")
+    # matrix <- rbind(matrix, matrix_2)
+    # results <- run.test(matrix, verbose = TRUE)
 })
