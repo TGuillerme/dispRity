@@ -3,6 +3,7 @@ import(ape)
 import(stats)
 
 importFrom("ade4", "randtest", "as.randtest")
+importFrom("castor", "get_subtree_with_tips", "get_all_pairwise_distances", "get_all_distances_to_root")
 importFrom("Claddis", "MorphDistMatrix")
 importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 importFrom("geometry", "convhulln")

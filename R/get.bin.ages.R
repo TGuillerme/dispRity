@@ -66,7 +66,7 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     }
 
     ## Getting the number of decimals
-    node_depth <- max(node.depth.edgelength(tree))
+    node_depth <- max(castor::get_all_distances_to_root(tree))
     root_time <- tree$root.time
     digit_node_depth <- num.decimals(node_depth)
     digit_root_time <- num.decimals(root_time)
@@ -81,9 +81,9 @@ get.bin.ages <- function(tree, what = "End", type = "Age", ICS = 2015) {
     if(node_depth < root_time) {
         ## Correct recent if tree contains only fossils
         time_ro_recent <- abs(node_depth - tree$root.time)
-        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree) + time_ro_recent))
+        recent <- which(stratigraphy$End[strats] < min(castor::get_all_distances_to_root(tree) + time_ro_recent))
     } else {
-        recent <- which(stratigraphy$End[strats] < min(node.depth.edgelength(tree)))
+        recent <- which(stratigraphy$End[strats] < min(castor::get_all_distances_to_root(tree)))
     }
 
     if(length(recent) > 0) {

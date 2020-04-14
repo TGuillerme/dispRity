@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.3.6 (2020-04-07)
+dispRity v1.3.6 (2020-04-14)
 =========================
 
 ### NEW FEATURES
@@ -46,6 +46,7 @@ dispRity v1.3.6 (2020-04-07)
   * removed `paleotree` package dependency (though the links to this excellent package are still there!).
   * increased `R` version requirement to `3.5`.
   * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
+  * added some time improvements in several phylo functions based on the `castor` package.
 
 dispRity v1.3 *many metrics* (2019-08-15)
 =========================

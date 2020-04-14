@@ -55,7 +55,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
     ## Adding a root time if missing
     if(is.null(tree$root.time)) {
-        tree$root.time <- max(node.depth.edgelength(tree)[1:Ntip(tree)])
+        tree$root.time <- max(castor::get_all_distances_to_root(tree)[1:Ntip(tree)])
     }
 
     #FAD/LAD

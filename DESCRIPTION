@@ -12,6 +12,7 @@ Depends:
     stats
 Imports:
 	ade4,
+	castor,
 	Claddis,
 	geiger,
 	geometry,
