@@ -363,27 +363,26 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
         dispRity_results <- dispRity.test.wrapper(matrix)
         dispRity_end <- Sys.time()
 
-        # expect_equal(Claddis_results$comparable, dispRity_results$comparable)
-        # expect_equal(Claddis_results$gower, dispRity_results$gower)
-        # expect_equal(Claddis_results$mord, dispRity_results$mord)
+        expect_equal(Claddis_results$comparable, dispRity_results$comparable)
+        expect_equal(Claddis_results$gower, dispRity_results$gower)
+        expect_equal(Claddis_results$mord, dispRity_results$mord)
 
         if(verbose) {
             cat("time increase factor: ")
             cat((Claddis_end-Claddis_start)[[1]]/(dispRity_end-dispRity_start)[[1]])
             cat("\ndispRity run time: ")
-            cat(dispRity_end-dispRity_start)
+            print(dispRity_end-dispRity_start)
             cat("\nCladdis run time: ")
-            cat(Claddis_end-Claddis_start)
+            print(Claddis_end-Claddis_start)
             cat("\n")
         }
-
         return(list("Claddis" = Claddis_results, "dispRity" = dispRity_results))
     }
 
     results <- run.test(Claddis::Michaux1989$Matrix_1$Matrix)
     results <- run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
 
-    ## Import complex matrix from MammalDisparity project
+    # # Import complex matrix from MammalDisparity project
     # source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
     # matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
     # matrix_2 <- matrix[-1,]
