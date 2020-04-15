@@ -787,12 +787,12 @@ test_that("fast.slice.table works", {
     t1_5 <- t6 ; t1_5[, c(2, 4)] <- 0.5
     expect_equal(select.table.tips(t6, "equal.split"), t1_5)
 
-    expect_gradual(select.table.tips(t1, "gradual.split"), t1)
-    expect_gradual(select.table.tips(t2, "gradual.split"), t2)
-    expect_gradual(select.table.tips(t3, "gradual.split"), t3)
-    expect_gradual(select.table.tips(t4, "gradual.split"), t4)
-    expect_gradual(select.table.tips(t5, "gradual.split"), t5)
-    expect_gradual(select.table.tips(t6, "gradual.split"), t6)
+    expect_equal(select.table.tips(t1, "gradual.split"), t1)
+    expect_equal(select.table.tips(t2, "gradual.split"), t2)
+    expect_equal(select.table.tips(t3, "gradual.split"), t3)
+    expect_equal(select.table.tips(t4, "gradual.split"), t4)
+    expect_equal(select.table.tips(t5, "gradual.split"), t5)
+    expect_equal(select.table.tips(t6, "gradual.split"), t6)
 })
 
 
