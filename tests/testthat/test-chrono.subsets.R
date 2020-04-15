@@ -670,3 +670,129 @@ test_that("chrono.subsets works with multiple matrices", {
     
 
 })
+
+
+
+test_that("fast.slice.table works", {
+
+    tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
+    tree$node.label <- as.character(paste0("n",seq(1:5)))
+    tree$root.time <- 6
+    edge_table <- tree$edge
+    rownames(edge_table) <- paste("edge", 1:nrow(edge_table), sep = "")
+    colnames(edge_table) <- c("parent", "child")
+    tree$tip.label <- paste0("t", 1:Ntip(tree))
+    tree$node.label <- paste0("n", (Ntip(tree)+1):(Ntip(tree)+Nnode(tree)))
+    plot(tree)
+    nodelabels(tree$node.label)
+    edgelabels(rownames(edge_table))
+    axisPhylo()
+    slice <- 5.75
+    abline(v = tree$root.time - slice)
+    edge_table
+
+    ## Couple of edge slices
+    t1 <- test <- fast.slice.table(tree, 3.5)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(9, 0.5, 10, 0.5))
+    expect_equal(test[2,], c(9, 0.5, 4, 0.5))
+    expect_equal(test[3,], c(8, 1.5, 5, 3.5))
+    expect_equal(test[4,], c(7, 2.5, 6, 0.5))
+
+    t2 <- test <- fast.slice.table(tree, 1.5)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(3,4))
+    expect_equal(test[1,], c(10, 1.5, 11, 0.5))
+    expect_equal(test[2,], c(10, 1.5, 3, 1.5))
+    expect_equal(test[3,], c(8, 3.5, 5, 1.5))
+
+    t3 <- test <- fast.slice.table(tree, 5.75)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(2,4))
+    expect_equal(test[1,], c(7, 0.25, 8, 0.75))
+    expect_equal(test[2,], c(7, 0.25, 6, 2.75))
+
+    ## Tip slices
+    t4 <- test <- fast.slice.table(tree, 0)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(11, 1, 1, 0))
+    expect_equal(test[2,], c(11, 1, 2, 0))
+    expect_equal(test[3,], c(10, 3, 3, 0))
+    expect_equal(test[4,], c(8, 5, 5, 0))
+
+    ## Node slice
+    t5 <- test <- fast.slice.table(tree, 3)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(9, 1, 10, 0))
+    expect_equal(test[2,], c(9, 1, 4, 0))
+    expect_equal(test[3,], c(8, 2, 5, 3))
+    expect_equal(test[4,], c(7, 3, 6, 0))
+
+    ## Root slice
+    t6 <- test <- fast.slice.table(tree, 6)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(2,4))
+    expect_equal(test[1,], c(7, 0, 8, 1))
+    expect_equal(test[2,], c(7, 0, 6, 3))
+
+    ## Beyond the tips slice
+    old_tree <- tree
+    old_tree$root.time <- 8
+    test <- fast.slice.table(old_tree, 0)
+    expect_null(test)
+
+    ## Selecting the right model works
+    expect_equal(select.table.tips(t1, "acctran"), c(10, 4, 5, 6))
+    expect_equal(select.table.tips(t2, "acctran"), c(11, 3, 5))
+    expect_equal(select.table.tips(t3, "acctran"), c(8, 6))
+    expect_equal(select.table.tips(t4, "acctran"), c(1, 2, 3, 5))
+    expect_equal(select.table.tips(t5, "acctran"), c(10, 4, 5, 6))
+    expect_equal(select.table.tips(t6, "acctran"), c(8, 6))
+    
+    expect_equal(select.table.tips(t1, "deltran"), c(9, 8, 7))
+    expect_equal(select.table.tips(t2, "deltran"), c(10, 8))
+    expect_equal(select.table.tips(t3, "deltran"), c(7))
+    expect_equal(select.table.tips(t4, "deltran"), c(11, 10, 8))
+    expect_equal(select.table.tips(t5, "deltran"), c(9, 8, 7))
+    expect_equal(select.table.tips(t6, "deltran"), c(7))
+    
+    set.seed(1)
+    expect_equal(select.table.tips(t1, "random"), c(9, 4, 8, 7))
+    expect_equal(select.table.tips(t2, "random"), c(11, 10, 8))
+    expect_equal(select.table.tips(t3, "random"), c(7, 6))
+    expect_equal(select.table.tips(t4, "random"), c(1, 11, 10, 8))
+    expect_equal(select.table.tips(t5, "random"), c(9, 5, 6))
+    expect_equal(select.table.tips(t6, "random"), c(8, 6))
+
+    expect_equal(select.table.tips(t1, "proximity"), c(9, 8, 6))
+    expect_equal(select.table.tips(t2, "proximity"), c(11, 10, 5))
+    expect_equal(select.table.tips(t3, "proximity"), c(7))
+    expect_equal(select.table.tips(t4, "proximity"), c(1, 2, 3, 5))
+    expect_equal(select.table.tips(t5, "proximity"), c(10, 4, 8, 6))
+    expect_equal(select.table.tips(t6, "proximity"), c(7))
+    
+    t1_5 <- t1 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t1, "equal.split"), t1_5)
+    t1_5 <- t2 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t2, "equal.split"), t1_5)
+    t1_5 <- t3 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t3, "equal.split"), t1_5)
+    t1_5 <- t4 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t4, "equal.split"), t1_5)
+    t1_5 <- t5 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t5, "equal.split"), t1_5)
+    t1_5 <- t6 ; t1_5[, c(2, 4)] <- 0.5
+    expect_equal(select.table.tips(t6, "equal.split"), t1_5)
+
+    expect_gradual(select.table.tips(t1, "gradual.split"), t1)
+    expect_gradual(select.table.tips(t2, "gradual.split"), t2)
+    expect_gradual(select.table.tips(t3, "gradual.split"), t3)
+    expect_gradual(select.table.tips(t4, "gradual.split"), t4)
+    expect_gradual(select.table.tips(t5, "gradual.split"), t5)
+    expect_gradual(select.table.tips(t6, "gradual.split"), t6)
+})
+
+

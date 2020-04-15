@@ -260,3 +260,51 @@ recursive.combine.list <- function(list) {
     }
 }
 
+## Slice tree table
+fast.slice.table <- function(tree, slice) {
+    ## Get slice time
+    slice_time <- tree$root.time - slice
+
+    ## Root slice
+    if(slice_time == 0) {
+        root_edges <- which(tree$edge[,1] == Ntip(tree)+1)
+        return(cbind(tree$edge[root_edges, 1], c(0, 0), tree$edge[root_edges, 2], tree$edge.length[root_edges]))
+    }
+
+    ## Get nodes and tips ages
+    node_age <- castor::get_all_distances_to_root(tree)
+
+    ## Find the edges that are crossed
+    crossed_edges <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
+
+    ## Beyond tree slice
+    if(length(crossed_edges) == 0) {
+        return(NULL)
+    }
+
+    ## Get the edge lengths length and right
+    get.sliced.edge <- function(crossed_edge, tree, node_age, slice_time) {
+        # return(tree$root.time - node_age[tree$edge[crossed_edge, ]] - slice_time)
+        return(abs(node_age[tree$edge[crossed_edge, ]] - slice_time))
+    }
+    sliced_edge_lengths <- t(sapply(crossed_edges, get.sliced.edge, tree, node_age, slice_time))
+
+    ## Get the edge table
+    # warning("DEBUG fast.slice.table colnames")
+    # slice_table <- cbind(tree$edge[crossed_edges, 1], sliced_edge_lengths[,1], tree$edge[crossed_edges, 2], sliced_edge_lengths[, 2])
+    # colnames(slice_table) <- c("left.point", "left.edge", "right.point", "right.edge")
+
+    return(cbind(tree$edge[crossed_edges, 1], sliced_edge_lengths[,1], tree$edge[crossed_edges, 2], sliced_edge_lengths[, 2]))
+}
+
+## select slice table tips
+select.table.tips <- function(table, model) {
+    switch(model,
+        "acctran"   = return(unique(table[,3])),
+        "deltran"   = return(unique(table[,1])),
+        "random"    = return(unique(apply(table[,c(1,3)], 1, FUN = function(x) x[sample(c(1,2), 1)]))),
+        "proximity" = return(unique(sapply(1:nrow(table), function(x, table, closest) table[,c(1,3)][x, closest[x]], table, apply(table[,c(2,4)], 1, FUN = function(x) which(x == min(x))[1])))),
+        "equal.split"   = {table[, c(2,4)] <- 0.5 ; return(table)},
+        "gradual.split" = return(table)
+        )
+}
