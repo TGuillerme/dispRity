@@ -210,6 +210,50 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
     return(slices_elements)
 }
 
+
+
+
+
+## Continuous time subsets
+# chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+
+#     ## ages of tips/nodes + FAD/LAD
+#     FADLADs <- adjust.FADLAD(FADLAD, tree, data)
+
+#     ## verbose
+#     if(verbose) {
+#         ## Editing the fast.slice.table function
+#         body(fast.slice.table)[[2]] <- substitute(message(".", appendLF = FALSE))
+#         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
+#     }
+
+#     ## Get all time slices
+#     slices_elements <- lapply(as.list(time), get.time.slice, tree, model)
+
+#     ## Adding FADLADs
+#     if(!is.null(FADLAD)) {
+#         slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree))
+#     }
+
+#     ## naming the slices
+#     names(slices_elements) <- time
+
+#     ## verbose
+#     if(verbose) {
+#         message("Done.\n", appendLF = FALSE)
+#     }
+
+#     return(slices_elements)
+# }
+
+
+## Compare outputs of chrono.subsets fast and slow with gradual and normal models.
+
+
+
+
+
+
 ## Making the origin subsets for a disparity_object
 make.origin.subsets <- function(data) {
     origin <- list("elements" = as.matrix(seq(1:nrow(data))))
@@ -261,7 +305,10 @@ recursive.combine.list <- function(list) {
 }
 
 ## Slice tree table
-fast.slice.table <- function(tree, slice) {
+fast.slice.table <- function(slice, tree) {
+
+    verbose_placeholder <- NULL
+
     ## Get slice time
     slice_time <- tree$root.time - slice
 
@@ -289,7 +336,6 @@ fast.slice.table <- function(tree, slice) {
     }
     sliced_edge_lengths <- t(sapply(crossed_edges, get.sliced.edge, tree, node_age, slice_time))
 
-    ## Get the edge table
     # warning("DEBUG fast.slice.table colnames")
     # slice_table <- cbind(tree$edge[crossed_edges, 1], sliced_edge_lengths[,1], tree$edge[crossed_edges, 2], sliced_edge_lengths[, 2])
     # colnames(slice_table) <- c("left.point", "left.edge", "right.point", "right.edge")
@@ -304,7 +350,33 @@ select.table.tips <- function(table, model) {
         "deltran"   = return(unique(table[,1])),
         "random"    = return(unique(apply(table[,c(1,3)], 1, FUN = function(x) x[sample(c(1,2), 1)]))),
         "proximity" = return(unique(sapply(1:nrow(table), function(x, table, closest) table[,c(1,3)][x, closest[x]], table, apply(table[,c(2,4)], 1, FUN = function(x) which(x == min(x))[1])))),
-        "equal.split"   = {table[, c(2,4)] <- 0.5 ; return(table)},
-        "gradual.split" = return(table)
+        ## The split models output a table of two columns (left and right of the split) and the probability for the first column (p(left)). The probability for the second column is simply 1-p(left)
+        "equal.split"   = return(cbind(table[, c(1,3)], 0.5)),
+        "gradual.split" = return(cbind(table[,c(1,3)], 1-(table[,2]/(table[,2]+table[,4]))))
         )
+}
+
+## Wrapper for getting a time slice
+get.time.slice <- function(time, tree, model) {
+    return(list("elements" = matrix(select.table.tips(fast.slice.table(time, tree), model), ncol = ifelse(grepl("split", model), 3, 1))))
+}
+
+## Adding FADLADs to time slices
+add.FADLAD <- function(time_slice, one_time, FADLAD, tree) {
+    ## Find if one_time is within any FAD/LAD interval
+    intervals <- one_time <= FADLAD[,1] & one_time >= FADLAD[,2]
+
+    if(any(intervals)) {
+        ## Try to add the taxa to the interval
+        add_tips <- which(tree$tip.label %in% rownames(FADLAD[intervals,]))
+        if(dim(time_slice$elements)[2] == 1) {
+            ## Add the tips for simple models
+            time_slice$elements <- matrix(unique(c(time_slice$elements, add_tips)))
+        } else {
+            ## Add full probability of being the tip for probabilistic models
+            time_slice$elements <- rbind(time_slice$elements, 
+                                         cbind(matrix(add_tips),matrix(add_tips), 1))
+        }
+    } 
+    return(time_slice)
 }

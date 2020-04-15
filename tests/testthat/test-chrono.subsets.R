@@ -673,7 +673,7 @@ test_that("chrono.subsets works with multiple matrices", {
 
 
 
-test_that("fast.slice.table works", {
+test_that("fast internal functions work", {
 
     tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
     tree$node.label <- as.character(paste0("n",seq(1:5)))
@@ -683,16 +683,16 @@ test_that("fast.slice.table works", {
     colnames(edge_table) <- c("parent", "child")
     tree$tip.label <- paste0("t", 1:Ntip(tree))
     tree$node.label <- paste0("n", (Ntip(tree)+1):(Ntip(tree)+Nnode(tree)))
-    plot(tree)
-    nodelabels(tree$node.label)
-    edgelabels(rownames(edge_table))
-    axisPhylo()
-    slice <- 5.75
-    abline(v = tree$root.time - slice)
-    edge_table
+    # plot(tree)
+    # nodelabels(tree$node.label)
+    # edgelabels(rownames(edge_table))
+    # axisPhylo()
+    # slice <- 2
+    # abline(v = tree$root.time - slice)
+    # edge_table
 
     ## Couple of edge slices
-    t1 <- test <- fast.slice.table(tree, 3.5)
+    t1 <- test <- fast.slice.table(3.5, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4,4))
     expect_equal(test[1,], c(9, 0.5, 10, 0.5))
@@ -700,21 +700,21 @@ test_that("fast.slice.table works", {
     expect_equal(test[3,], c(8, 1.5, 5, 3.5))
     expect_equal(test[4,], c(7, 2.5, 6, 0.5))
 
-    t2 <- test <- fast.slice.table(tree, 1.5)
+    t2 <- test <- fast.slice.table(1.5, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(3,4))
     expect_equal(test[1,], c(10, 1.5, 11, 0.5))
     expect_equal(test[2,], c(10, 1.5, 3, 1.5))
     expect_equal(test[3,], c(8, 3.5, 5, 1.5))
 
-    t3 <- test <- fast.slice.table(tree, 5.75)
+    t3 <- test <- fast.slice.table(5.75, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(2,4))
     expect_equal(test[1,], c(7, 0.25, 8, 0.75))
     expect_equal(test[2,], c(7, 0.25, 6, 2.75))
 
     ## Tip slices
-    t4 <- test <- fast.slice.table(tree, 0)
+    t4 <- test <- fast.slice.table(0, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4,4))
     expect_equal(test[1,], c(11, 1, 1, 0))
@@ -723,7 +723,7 @@ test_that("fast.slice.table works", {
     expect_equal(test[4,], c(8, 5, 5, 0))
 
     ## Node slice
-    t5 <- test <- fast.slice.table(tree, 3)
+    t5 <- test <- fast.slice.table(3, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4,4))
     expect_equal(test[1,], c(9, 1, 10, 0))
@@ -732,7 +732,7 @@ test_that("fast.slice.table works", {
     expect_equal(test[4,], c(7, 3, 6, 0))
 
     ## Root slice
-    t6 <- test <- fast.slice.table(tree, 6)
+    t6 <- test <- fast.slice.table(6, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(2,4))
     expect_equal(test[1,], c(7, 0, 8, 1))
@@ -741,7 +741,7 @@ test_that("fast.slice.table works", {
     ## Beyond the tips slice
     old_tree <- tree
     old_tree$root.time <- 8
-    test <- fast.slice.table(old_tree, 0)
+    test <- fast.slice.table(0, old_tree)
     expect_null(test)
 
     ## Selecting the right model works
@@ -774,25 +774,46 @@ test_that("fast.slice.table works", {
     expect_equal(select.table.tips(t5, "proximity"), c(10, 4, 8, 6))
     expect_equal(select.table.tips(t6, "proximity"), c(7))
     
-    t1_5 <- t1 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t1, "equal.split"), t1_5)
-    t1_5 <- t2 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t2, "equal.split"), t1_5)
-    t1_5 <- t3 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t3, "equal.split"), t1_5)
-    t1_5 <- t4 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t4, "equal.split"), t1_5)
-    t1_5 <- t5 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t5, "equal.split"), t1_5)
-    t1_5 <- t6 ; t1_5[, c(2, 4)] <- 0.5
-    expect_equal(select.table.tips(t6, "equal.split"), t1_5)
+    expect_equal(select.table.tips(t1, "equal.split"), cbind(t1[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t2, "equal.split"), cbind(t2[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t3, "equal.split"), cbind(t3[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t4, "equal.split"), cbind(t4[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t5, "equal.split"), cbind(t5[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t6, "equal.split"), cbind(t6[,c(1,3)], 0.5))
 
-    expect_equal(select.table.tips(t1, "gradual.split"), t1)
-    expect_equal(select.table.tips(t2, "gradual.split"), t2)
-    expect_equal(select.table.tips(t3, "gradual.split"), t3)
-    expect_equal(select.table.tips(t4, "gradual.split"), t4)
-    expect_equal(select.table.tips(t5, "gradual.split"), t5)
-    expect_equal(select.table.tips(t6, "gradual.split"), t6)
+    expect_equal(select.table.tips(t1, "gradual.split"), cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))
+    expect_equal(select.table.tips(t2, "gradual.split"), cbind(t2[,c(1,3)], 1-(t2[,2]/(t2[,2]+t2[,4]))))
+    expect_equal(select.table.tips(t3, "gradual.split"), cbind(t3[,c(1,3)], 1-(t3[,2]/(t3[,2]+t3[,4]))))
+    expect_equal(select.table.tips(t4, "gradual.split"), cbind(t4[,c(1,3)], 1-(t4[,2]/(t4[,2]+t4[,4]))))
+    expect_equal(select.table.tips(t5, "gradual.split"), cbind(t5[,c(1,3)], 1-(t5[,2]/(t5[,2]+t5[,4]))))
+    expect_equal(select.table.tips(t6, "gradual.split"), cbind(t6[,c(1,3)], 1-(t6[,2]/(t6[,2]+t6[,4]))))
+
+    ## get.time.slice works
+    test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
+    expect_is(test1, "list")
+    expect_equal(names(test1), "elements")
+    expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
+    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
+    expect_is(test2, "list")
+    expect_equal(names(test2), "elements")
+    expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))    
+
+    ## add.FADLAD works
+    FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
+    test1 <- get.time.slice(time = 2, tree, model = "proximity")
+    test2 <- get.time.slice(time = 2, tree, model = "equal.split")
+
+    res1 <- add.FADLAD(test1, 2, FADLAD, tree)
+    expect_is(res1, "list")
+    expect_equal(names(res1), "elements")
+    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
+
+    res2 <- add.FADLAD(test2, 2, FADLAD, tree)
+    expect_is(res2, "list")
+    expect_equal(names(res2), "elements")
+    expect_equal(res2[[1]][,1], c(10,10,8,3,4))
+    expect_equal(res2[[1]][,3], c(.5,.5,.5,1,1))
+
 })
 
 

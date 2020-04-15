@@ -82,17 +82,11 @@
 # data(BeckLee_mat99) ; data(BeckLee_ages)
 # data = BeckLee_mat50
 # tree = BeckLee_tree
-# method = "discrete"
+# method = "continuous"
 # model = "acctran"
 # time = 5
-
 # inc.nodes = TRUE
 # FADLAD = BeckLee_ages
-# data = BeckLee_mat99
-# tree = BeckLee_tree
-# method = "continuous"
-# model = "proximity"
-# time <- c(120, 100, 80, 60, 40 , 20, 0)
 # verbose <- TRUE
 # t0 <- FALSE
 
@@ -341,6 +335,11 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     }
 
     ## FADLAD
+
+    cat("DEBUG chrono.subsets")
+    ## If FADLAD is missing, set it to NULL (skipped in the chrono.subsets.fun)
+    ## Remove adjust FADLAD and associated functions from the whole package
+
     if(missing(FADLAD)) {
         ## If missing, create the FADLAD table
         make.fadlad <- function(tree.age_tree, Ntip_tree) {
