@@ -814,6 +814,47 @@ test_that("fast internal functions work", {
     expect_equal(res2[[1]][,1], c(10,10,8,3,4))
     expect_equal(res2[[1]][,3], c(.5,.5,.5,1,1))
 
+
+#     ## Speed benchmarking
+#     library(microbenchmark)
+#     microbenchmark(
+#         chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = TRUE),
+#         chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = FALSE)
+#     )
+
+# test_fast <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = TRUE)
+# test_slow <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = FALSE)
+
+# data = BeckLee_ages
+# tree = BeckLee_tree
+# method = "continuous"
+# time = 5
+# model = "acctran"
+# inc.nodes = FALSE
+# FADLAD = BeckLee_ages
+# verbose = FALSE
+# t0 = FALSE
+# bind.data = FALSE
+# algo.fast = TRUE
+
+# expect_equal(test_fast$subset[[1]], test_slow$subset[[1]])
+# expect_equal(test_fast$subset[[2]], test_slow$subset[[2]])
+# c(tree$tip.label, tree$node.label)[(test_slow$subset[[2]][[1]])]
+# c(tree$tip.label, tree$node.label)[(test_fast$subset[[2]][[1]])] # OK
+
+# expect_equal(test_fast$subset[[3]], test_slow$subset[[3]])
+# c(tree$tip.label, tree$node.label)[(test_slow$subset[[3]][[1]])]
+# c(tree$tip.label, tree$node.label)[(test_fast$subset[[3]][[1]])] # OK
+
+# expect_equal(test_fast$subset[[4]], test_slow$subset[[4]])
+# c(tree$tip.label, tree$node.label)[(test_slow$subset[[4]][[1]])]
+# c(tree$tip.label, tree$node.label)[(test_fast$subset[[4]][[1]])]
+
+# expect_equal(sort(test_fast$subset[[5]][[1]]), sort(test_slow$subset[[5]][[1]]))
+# c(tree$tip.label, tree$node.label)[(test_slow$subset[[4]][[1]])]
+# c(tree$tip.label, tree$node.label)[(test_fast$subset[[4]][[1]])]
+
+
 })
 
 

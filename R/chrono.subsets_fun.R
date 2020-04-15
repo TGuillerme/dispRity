@@ -214,11 +214,8 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
 
 
 
-## Continuous time subsets
+# ## Continuous time subsets
 # chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
-
-#     ## ages of tips/nodes + FAD/LAD
-#     FADLADs <- adjust.FADLAD(FADLAD, tree, data)
 
 #     ## verbose
 #     if(verbose) {
@@ -232,7 +229,7 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
 
 #     ## Adding FADLADs
 #     if(!is.null(FADLAD)) {
-#         slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree))
+#         slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree), SIMPLIFY = FALSE)
 #     }
 
 #     ## naming the slices
@@ -364,7 +361,7 @@ get.time.slice <- function(time, tree, model) {
 ## Adding FADLADs to time slices
 add.FADLAD <- function(time_slice, one_time, FADLAD, tree) {
     ## Find if one_time is within any FAD/LAD interval
-    intervals <- one_time <= FADLAD[,1] & one_time >= FADLAD[,2]
+    intervals <- (one_time >= FADLAD[,2]) & (one_time <= FADLAD[,1])
 
     if(any(intervals)) {
         ## Try to add the taxa to the interval

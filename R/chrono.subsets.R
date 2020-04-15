@@ -336,7 +336,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## FADLAD
 
-    cat("DEBUG chrono.subsets")
+    # cat("DEBUG chrono.subsets")
     ## If FADLAD is missing, set it to NULL (skipped in the chrono.subsets.fun)
     ## Remove adjust FADLAD and associated functions from the whole package
 
