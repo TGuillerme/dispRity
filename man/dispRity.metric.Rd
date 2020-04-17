@@ -141,7 +141,7 @@ centroids(dummy_matrix, centroid = 0)
 ## The deviations from the least square hyperplane
 deviations(dummy_matrix)
 ## The deviations from the plane between the x and y axis
-deviations(dummy_matrix, hyperplane = c(0,1,1,0,0,0,0,0,0,0))
+deviations(dummy_matrix, hyperplane = c(0,1,1,0,0,0,0,0,0,0,0))
 
 ## diagonal
 ## Matrix diagonal
