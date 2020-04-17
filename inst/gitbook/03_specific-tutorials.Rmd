@@ -370,6 +370,8 @@ It is, however, possible to calculate [disparity as a distribution](#disparity-a
 
 ### Metrics implemented in `dispRity`
 
+<!-- TODO: Sort by group of metrics -->
+
 Several disparity metrics are implemented in the `dispRity` package.
 The detailed list can be found in `?dispRity.metric` along with some description of each metric.
 
@@ -380,6 +382,7 @@ Level | Name | Description | Source |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
+2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
@@ -416,6 +419,10 @@ Some of the functions described below are implemented in the `dispRity` package 
 
 \begin{equation}
     diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+\end{equation}
+
+\begin{equation}
+    deviations = \frac{|Ax + By + ... + Nm + Intercept|}{\sqrt{A^2 + B^2 + ... + N^2}}
 \end{equation}
 
 \begin{equation}
@@ -688,6 +695,10 @@ summary(dispRity(dummy_space, metric = angles))
 ## The distribution of slopes deviating from the 1:1 slope:
 summary(dispRity(dummy_space, metric = angles, unit = "slope", base = 1))
 ```
+
+<!-- TODO: add significance -->
+
+
 
 ## Summarising dispRity data (plots)
 
