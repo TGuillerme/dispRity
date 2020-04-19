@@ -94,7 +94,7 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
 }
 
 ## Continuous time subsets
-chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+chrono.subsets.continuous.slow <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
     ## inc.nodes option is useless
     inc.nodes <- NULL
@@ -210,12 +210,8 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
     return(slices_elements)
 }
 
-
-
-
-
 ## Continuous time subsets
-chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
     ## verbose
     if(verbose) {
@@ -227,9 +223,12 @@ chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.
     ## Get all time slices
     slices_elements <- lapply(as.list(time), get.time.slice, tree, model)
 
+    ## Adjust the tree/data names
+    slices_elements <- lapply(slices_elements, match.tree.data, tree, data)
+
     ## Adding FADLADs
     if(!is.null(FADLAD)) {
-        slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree), SIMPLIFY = FALSE)
+        slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, data_rownames = rownames(data)), SIMPLIFY = FALSE)
     }
 
     ## naming the slices
@@ -242,14 +241,6 @@ chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.
 
     return(slices_elements)
 }
-
-
-## Compare outputs of chrono.subsets fast and slow with gradual and normal models.
-
-
-
-
-
 
 ## Making the origin subsets for a disparity_object
 make.origin.subsets <- function(data) {
@@ -359,13 +350,13 @@ get.time.slice <- function(time, tree, model) {
 }
 
 ## Adding FADLADs to time slices
-add.FADLAD <- function(time_slice, one_time, FADLAD, tree) {
+add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
     ## Find if one_time is within any FAD/LAD interval
     intervals <- (one_time >= FADLAD[,2]) & (one_time <= FADLAD[,1])
 
     if(any(intervals)) {
         ## Try to add the taxa to the interval
-        add_tips <- which(tree$tip.label %in% rownames(FADLAD[intervals,]))
+        add_tips <- which(data_rownames %in% rownames(FADLAD)[intervals])
         if(dim(time_slice$elements)[2] == 1) {
             ## Add the tips for simple models
             time_slice$elements <- matrix(unique(c(time_slice$elements, add_tips)))
@@ -373,20 +364,44 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, tree) {
             ## Add full probability of being the tip for probabilistic models
             time_slice$elements <- rbind(time_slice$elements, 
                                          cbind(matrix(add_tips),matrix(add_tips), 1))
-            ## Remove any non full probability with the same elements
-            duplicated_elements <- duplicated(time_slice$elements[,2])
-
-            while(any(duplicated_elements)) {
-                ## Find the rows to replace
-                replace <- which(time_slice$elements[,2] %in% time_slice$elements[duplicated_elements, 2][1])
-                ## Replace the row
-                time_slice$elements[replace[1], ] <- time_slice$elements[replace[2], ]
-                ## Remove the duplicated row
-                time_slice$elements <- time_slice$elements[-replace[2], ]
-                ## Remove the duplicated element
-                duplicated_elements <- duplicated_elements[-replace[2]]
+            ## Remove any non full probability with the same elements for the tips
+            remove.duplicates <- function(duplicated_elements, time_slice, col) {
+                if(any(duplicated_elements)) {
+                    ## Find the rows to replace
+                    replace <- which(time_slice$elements[,col] %in% time_slice$elements[duplicated_elements, col][1])
+                    ## Replace the row
+                    time_slice$elements[replace[1], ] <- time_slice$elements[replace[2], ]
+                    ## Remove the duplicated row
+                    time_slice$elements <- time_slice$elements[-replace[2], ]
+                    ## Remove the duplicated element
+                    duplicated_elements <- duplicated_elements[-replace[2]]
+                    ## Repeat the operation
+                    remove.duplicates(duplicated_elements, time_slice, col)
+                } else {
+                    return(time_slice)
+                }
             }
+
+            ## Remove the duplicates from the first column
+            time_slice <- remove.duplicates(duplicated(time_slice$elements[,2]), time_slice, col = 2)
+            ## Remove the duplicates from the second column
+            time_slice <- remove.duplicates(duplicated(time_slice$elements[,1]), time_slice, col = 1)
         }
     } 
     return(time_slice)
 }
+
+## match tree tips/nodes to data rownames
+## match tree tips/nodes to data rownames
+match.tree.data <- function(elements, tree, data) {
+    matching <- function(x, tree, data) {
+        return(match(c(tree$tip.label, tree$node.label)[x], rownames(data)))
+    }
+    if(dim(elements$elements)[2] == 1) {
+        elements$elements <- matrix(matching(elements$elements, tree, data), ncol = 1)
+    } else {
+        elements$elements[,c(1,2)] <- apply(elements$elements[,c(1,2)], 2, FUN = matching, tree, data)
+    }
+    return(elements)
+}
+

@@ -133,15 +133,6 @@ time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", F
 ## Test
 test_that("chrono.subsets.continuous works properly with deltran model", {
     
-    # Get slice
-    # expect_equal(
-    #     as.vector(na.omit(unlist(get.slice(1, time[2], "ACCTRAN", adjust.FADLAD(FADLAD, tree, data), data, verbose = FALSE))))
-    #     , c(7, 8, 9, 1, 2, 3, 12, 13, 14, 15, 44, 70, 73, 76, 79, 85, 48, 90, 47, 95, 46, 98))
-    # expect_equal(
-    #     unname(unlist(get.slice(slice = 1, time = time[2], model = "proximity", ages_tree = adjust.FADLAD(FADLAD, tree, data), data = data, verbose = FALSE, tree = tree)))
-    #     , c(7, 8, 9, 1, 2, NA, 12, 13, 14, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
-    # )
-
     ## class is list
     expect_is(
         time_subsets
@@ -152,17 +143,20 @@ test_that("chrono.subsets.continuous works properly with deltran model", {
         , 3)
     ## elements per subsets
     subsets_1 <- c("n1","n5","n11", "Zhangolestes")
+    # c(11), sort(c(51, 55, 61))
     subsets_2 <- c("n6","Asioryctes","n7","n8","n10","n15","n17","n19","n22","n25","n34","n39","n44","n47")
+    # c(8), sort(c(56,57,58,60,65,67,69,72,75,84,89,94,97))
     subsets_3 <- c("n17","n23","n27","n28","n29","n31","n32","n39","n42","n44","n48","n49")
+    # sort(c(67,73,77,78,79,81,82,89,92,94,98,99))
     expect_equal(
-        rownames(data[time_subsets[[1]]$elements,])
-        , subsets_1)
+        sort(rownames(data[time_subsets[[1]]$elements,]))
+        , sort(subsets_1))
     expect_equal(
-        rownames(data[time_subsets[[2]]$elements,])
-        , subsets_2)
+        sort(rownames(data[time_subsets[[2]]$elements,]))
+        , sort(subsets_2))
     expect_equal(
-        rownames(data[time_subsets[[3]]$elements,])
-        , subsets_3)
+        sort(rownames(data[time_subsets[[3]]$elements,]))
+        , sort(subsets_3))
 })
 
 ## ACCTRAN
@@ -174,14 +168,14 @@ test_that("chrono.subsets.continuous works properly with acctran model", {
     subsets_2 <- c("Kennalestes","Asioryctes","Ukhaatherium","Cimolestes","Maelestes","Batodon","Zalambdalestes","Barunlestes","Gypsonictops","Leptictis","Oxyclaenus","n20","n23","n26","n29","n35","Cynocephalus","n40","Patriomanis","n45","Icaronycteris","n48")
     subsets_3 <- c("Leptictis","Dasypodidae","n24","Potamogalinae","Dilambdogale","Widanelfarasia","Rhynchocyon","Procavia","Moeritherium","Trichechus","Cynocephalus","Adapis","Patriomanis","Soricidae","Solenodon")
     expect_equal(
-        rownames(data[time_subsets[[1]]$elements,])
-        , subsets_1)
+        sort(rownames(data[time_subsets[[1]]$elements,]))
+        , sort(subsets_1))
     expect_equal(
-        rownames(data[time_subsets[[2]]$elements,])
-        , subsets_2)
+        sort(rownames(data[time_subsets[[2]]$elements,]))
+        , sort(subsets_2))
     expect_equal(
-        rownames(data[time_subsets[[3]]$elements,])
-        , subsets_3)
+        sort(rownames(data[time_subsets[[3]]$elements,]))
+        , sort(subsets_3))
 })
 
 ## chrono.subsets
@@ -683,6 +677,8 @@ test_that("fast internal functions work", {
     colnames(edge_table) <- c("parent", "child")
     tree$tip.label <- paste0("t", 1:Ntip(tree))
     tree$node.label <- paste0("n", (Ntip(tree)+1):(Ntip(tree)+Nnode(tree)))
+    data <- matrix(NA, ncol = 1, nrow = 11)
+    rownames(data) <- c(tree$tip.label, tree$node.label)
     # plot(tree)
     # nodelabels(tree$node.label)
     # edgelabels(rownames(edge_table))
@@ -788,76 +784,46 @@ test_that("fast internal functions work", {
     expect_equal(select.table.tips(t5, "gradual.split"), cbind(t5[,c(1,3)], 1-(t5[,2]/(t5[,2]+t5[,4]))))
     expect_equal(select.table.tips(t6, "gradual.split"), cbind(t6[,c(1,3)], 1-(t6[,2]/(t6[,2]+t6[,4]))))
 
-    # ## get.time.slice works
-    # test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
-    # expect_is(test1, "list")
-    # expect_equal(names(test1), "elements")
-    # expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
-    # test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
-    # expect_is(test2, "list")
-    # expect_equal(names(test2), "elements")
-    # expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))    
+    ## get.time.slice works
+    test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
+    expect_is(test1, "list")
+    expect_equal(names(test1), "elements")
+    expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
+    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
+    expect_is(test2, "list")
+    expect_equal(names(test2), "elements")
+    expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))
 
-    # ## add.FADLAD works
-    # FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
-    # test1 <- get.time.slice(time = 2, tree, model = "proximity")
-    # test2 <- get.time.slice(time = 2, tree, model = "equal.split")
-
-    # res1 <- add.FADLAD(test1, 2, FADLAD, tree)
-    # expect_is(res1, "list")
-    # expect_equal(names(res1), "elements")
-    # expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
-
-    # res2 <- add.FADLAD(test2, 2, FADLAD, tree)
-    # expect_is(res2, "list")
-    # expect_equal(names(res2), "elements")
-    # expect_equal(res2[[1]][,1], c(10,10,8,3,4))
-    # expect_equal(res2[[1]][,3], c(.5,.5,.5,1,1))
+    ## add.FADLAD works
+    FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
+    test1 <- get.time.slice(time = 2, tree, model = "proximity")
+    test2 <- get.time.slice(time = 2, tree, model = "equal.split")
 
 
-#     ## Speed benchmarking
-#     library(microbenchmark)
-#     microbenchmark(
-#         chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = TRUE),
-#         chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = FALSE)
-#     )
+    res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
+    expect_is(res1, "list")
+    expect_equal(names(res1), "elements")
+    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
 
-# test_fast <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = TRUE)
-# test_slow <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, algo.fast = FALSE)
+    res2 <- add.FADLAD(test2, 2, FADLAD, rownames(data))
+    expect_is(res2, "list")
+    expect_equal(names(res2), "elements")
+    expect_equal(res2[[1]][,1], c(10,3,8,4))
+    expect_equal(res2[[1]][,3], c(.5,1,.5,1))
 
-# data = BeckLee_ages
-# tree = BeckLee_tree
-# method = "continuous"
-# time = 5
-# model = "gradual.split"
-# inc.nodes = FALSE
-# FADLAD = BeckLee_ages
-# verbose = FALSE
-# t0 = FALSE
-# bind.data = FALSE
-# algo.fast = TRUE
+    ## FADLAD works with nodes
+    FADLAD <- rbind(FADLAD, "n10" = c(3, 1))
+    res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
+    expect_is(res1, "list")
+    expect_equal(names(res1), "elements")
+    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
 
-## PROBLEM WITH *.SPLIT remove duplicated selected species when probablility of sampling == 1 (e.g. when FADLAD) - test with BeckLee data slice 0.
-
-
-# expect_equal(test_fast$subset[[1]], test_slow$subset[[1]])
-# expect_equal(test_fast$subset[[2]], test_slow$subset[[2]])
-# c(tree$tip.label, tree$node.label)[(test_slow$subset[[2]][[1]])]
-# c(tree$tip.label, tree$node.label)[(test_fast$subset[[2]][[1]])] # OK
-
-# expect_equal(test_fast$subset[[3]], test_slow$subset[[3]])
-# c(tree$tip.label, tree$node.label)[(test_slow$subset[[3]][[1]])]
-# c(tree$tip.label, tree$node.label)[(test_fast$subset[[3]][[1]])] # OK
-
-# expect_equal(test_fast$subset[[4]], test_slow$subset[[4]])
-# c(tree$tip.label, tree$node.label)[(test_slow$subset[[4]][[1]])]
-# c(tree$tip.label, tree$node.label)[(test_fast$subset[[4]][[1]])]
-
-# expect_equal(sort(test_fast$subset[[5]][[1]]), sort(test_slow$subset[[5]][[1]]))
-# c(tree$tip.label, tree$node.label)[(test_slow$subset[[4]][[1]])]
-# c(tree$tip.label, tree$node.label)[(test_fast$subset[[4]][[1]])]
-
-
+    res2 <- add.FADLAD(test2, 2, FADLAD, rownames(data))
+    expect_is(res2, "list")
+    expect_equal(names(res2), "elements")
+    expect_equal(res2[[1]][,1], c(10,3,8,4))
+    expect_equal(res2[[1]][,2], c(10,3,5,4))
+    expect_equal(res2[[1]][,3], c(1,1,.5,1))
 })
 
 

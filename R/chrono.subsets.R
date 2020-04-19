@@ -106,7 +106,9 @@
 # bind.data = TRUE
 
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE, algo.fast = FALSE) {
+
+    cat("*")
     
     match_call <- match.call()
 
@@ -396,7 +398,11 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     if(method == "discrete") {
         chrono.subsets.fun <- chrono.subsets.discrete
     } else {
-        chrono.subsets.fun <- chrono.subsets.continuous
+        if(algo.fast) {
+            chrono.subsets.fun <- chrono.subsets.continuous
+        } else {
+            chrono.subsets.fun <- chrono.subsets.continuous.slow
+        }
     }
 
     ## Toggle the multiPhylo option
