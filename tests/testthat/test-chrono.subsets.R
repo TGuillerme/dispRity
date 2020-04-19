@@ -788,31 +788,31 @@ test_that("fast internal functions work", {
     expect_equal(select.table.tips(t5, "gradual.split"), cbind(t5[,c(1,3)], 1-(t5[,2]/(t5[,2]+t5[,4]))))
     expect_equal(select.table.tips(t6, "gradual.split"), cbind(t6[,c(1,3)], 1-(t6[,2]/(t6[,2]+t6[,4]))))
 
-    ## get.time.slice works
-    test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
-    expect_is(test1, "list")
-    expect_equal(names(test1), "elements")
-    expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
-    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
-    expect_is(test2, "list")
-    expect_equal(names(test2), "elements")
-    expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))    
+    # ## get.time.slice works
+    # test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
+    # expect_is(test1, "list")
+    # expect_equal(names(test1), "elements")
+    # expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
+    # test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
+    # expect_is(test2, "list")
+    # expect_equal(names(test2), "elements")
+    # expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))    
 
-    ## add.FADLAD works
-    FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
-    test1 <- get.time.slice(time = 2, tree, model = "proximity")
-    test2 <- get.time.slice(time = 2, tree, model = "equal.split")
+    # ## add.FADLAD works
+    # FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
+    # test1 <- get.time.slice(time = 2, tree, model = "proximity")
+    # test2 <- get.time.slice(time = 2, tree, model = "equal.split")
 
-    res1 <- add.FADLAD(test1, 2, FADLAD, tree)
-    expect_is(res1, "list")
-    expect_equal(names(res1), "elements")
-    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
+    # res1 <- add.FADLAD(test1, 2, FADLAD, tree)
+    # expect_is(res1, "list")
+    # expect_equal(names(res1), "elements")
+    # expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
 
-    res2 <- add.FADLAD(test2, 2, FADLAD, tree)
-    expect_is(res2, "list")
-    expect_equal(names(res2), "elements")
-    expect_equal(res2[[1]][,1], c(10,10,8,3,4))
-    expect_equal(res2[[1]][,3], c(.5,.5,.5,1,1))
+    # res2 <- add.FADLAD(test2, 2, FADLAD, tree)
+    # expect_is(res2, "list")
+    # expect_equal(names(res2), "elements")
+    # expect_equal(res2[[1]][,1], c(10,10,8,3,4))
+    # expect_equal(res2[[1]][,3], c(.5,.5,.5,1,1))
 
 
 #     ## Speed benchmarking
@@ -829,13 +829,16 @@ test_that("fast internal functions work", {
 # tree = BeckLee_tree
 # method = "continuous"
 # time = 5
-# model = "acctran"
+# model = "gradual.split"
 # inc.nodes = FALSE
 # FADLAD = BeckLee_ages
 # verbose = FALSE
 # t0 = FALSE
 # bind.data = FALSE
 # algo.fast = TRUE
+
+## PROBLEM WITH *.SPLIT remove duplicated selected species when probablility of sampling == 1 (e.g. when FADLAD) - test with BeckLee data slice 0.
+
 
 # expect_equal(test_fast$subset[[1]], test_slow$subset[[1]])
 # expect_equal(test_fast$subset[[2]], test_slow$subset[[2]])

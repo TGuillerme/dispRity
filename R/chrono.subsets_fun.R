@@ -214,34 +214,34 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
 
 
 
-# ## Continuous time subsets
-# chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+## Continuous time subsets
+chrono.subsets.continuous.fast <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
-#     ## verbose
-#     if(verbose) {
-#         ## Editing the fast.slice.table function
-#         body(fast.slice.table)[[2]] <- substitute(message(".", appendLF = FALSE))
-#         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
-#     }
+    ## verbose
+    if(verbose) {
+        ## Editing the fast.slice.table function
+        body(fast.slice.table)[[2]] <- substitute(message(".", appendLF = FALSE))
+        message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
+    }
 
-#     ## Get all time slices
-#     slices_elements <- lapply(as.list(time), get.time.slice, tree, model)
+    ## Get all time slices
+    slices_elements <- lapply(as.list(time), get.time.slice, tree, model)
 
-#     ## Adding FADLADs
-#     if(!is.null(FADLAD)) {
-#         slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree), SIMPLIFY = FALSE)
-#     }
+    ## Adding FADLADs
+    if(!is.null(FADLAD)) {
+        slices_elements <- mapply(add.FADLAD, slices_elements, as.list(time), MoreArgs = list(FADLAD = FADLAD, tree = tree), SIMPLIFY = FALSE)
+    }
 
-#     ## naming the slices
-#     names(slices_elements) <- time
+    ## naming the slices
+    names(slices_elements) <- time
 
-#     ## verbose
-#     if(verbose) {
-#         message("Done.\n", appendLF = FALSE)
-#     }
+    ## verbose
+    if(verbose) {
+        message("Done.\n", appendLF = FALSE)
+    }
 
-#     return(slices_elements)
-# }
+    return(slices_elements)
+}
 
 
 ## Compare outputs of chrono.subsets fast and slow with gradual and normal models.
@@ -373,6 +373,19 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, tree) {
             ## Add full probability of being the tip for probabilistic models
             time_slice$elements <- rbind(time_slice$elements, 
                                          cbind(matrix(add_tips),matrix(add_tips), 1))
+            ## Remove any non full probability with the same elements
+            duplicated_elements <- duplicated(time_slice$elements[,2])
+
+            while(any(duplicated_elements)) {
+                ## Find the rows to replace
+                replace <- which(time_slice$elements[,2] %in% time_slice$elements[duplicated_elements, 2][1])
+                ## Replace the row
+                time_slice$elements[replace[1], ] <- time_slice$elements[replace[2], ]
+                ## Remove the duplicated row
+                time_slice$elements <- time_slice$elements[-replace[2], ]
+                ## Remove the duplicated element
+                duplicated_elements <- duplicated_elements[-replace[2]]
+            }
         }
     } 
     return(time_slice)
