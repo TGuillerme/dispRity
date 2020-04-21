@@ -81,7 +81,6 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
 
     if(verbose) message("Done.\n", appendLF = FALSE)
 
-
     ## If interval is empty, send warning and delete the interval
     for (interval in 1:length(interval_elements)) {
         if(nrow(interval_elements[[interval]]$elements) == 0) {
@@ -93,122 +92,122 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
     return(interval_elements)
 }
 
-## Continuous time subsets
-chrono.subsets.continuous.slow <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+# ## Continuous time subsets
+# chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
-    ## inc.nodes option is useless
-    inc.nodes <- NULL
+#     ## inc.nodes option is useless
+#     inc.nodes <- NULL
 
-    ## lapply function for getting the slices
-    get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
+#     ## lapply function for getting the slices
+#     get.slice <- function(slice, time, model, tree_ages, FADLADs, data, verbose, tree) {
 
-        ## Verbose
-        if(verbose) message(".", appendLF = FALSE)
+#         ## Verbose
+#         if(verbose) message(".", appendLF = FALSE)
 
-        ## Get the age case
-        if(time[slice] > min(tree_ages[,1])) {
-            case <- "older"
-        } else {
-            case <- ifelse(time[slice] == min(tree_ages[,1]), "equal", "younger")
-        }
+#         ## Get the age case
+#         if(time[slice] > min(tree_ages[,1])) {
+#             case <- "older"
+#         } else {
+#             case <- ifelse(time[slice] == min(tree_ages[,1]), "equal", "younger")
+#         }
 
-        ## Slicing the tree
-        switch(case,
-            older   = {
-                sub_tree <- slice.tree(tree, time[slice], model, FAD = FADLADs$FAD, LAD = FADLADs$LAD)
-            },
-            equal   = {
-                sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
-                if(model == "equal.split" || model == "gradual.split") {
-                    ## Transforming the subtree into a probability table
-                    tips_list <- sub_tree$tip.label
-                    nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
-                    sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
-                    rownames(sub_tree) <- colnames(sub_tree) <-  NULL
-                }
-            },
-            younger = {
-                sub_tree <- NA
-            }
-        )
+#         ## Slicing the tree
+#         switch(case,
+#             older   = {
+#                 sub_tree <- slice.tree(tree, time[slice], model, FAD = FADLADs$FAD, LAD = FADLADs$LAD)
+#             },
+#             equal   = {
+#                 sub_tree <- drop.tip(tree, tip = as.character(tree_ages[which(tree_ages[,1] != min(tree_ages[,1])), 2]))
+#                 if(model == "equal.split" || model == "gradual.split") {
+#                     ## Transforming the subtree into a probability table
+#                     tips_list <- sub_tree$tip.label
+#                     nodes_list <- sapply(tips_list, function(tip, tree) slice.tree_parent.node(tree, tip), tree = sub_tree, simplify = FALSE)
+#                     sub_tree <- cbind(nodes_list, tips_list, rep(0, length(tips_list)))
+#                     rownames(sub_tree) <- colnames(sub_tree) <-  NULL
+#                 }
+#             },
+#             younger = {
+#                 sub_tree <- NA
+#             }
+#         )
 
-        ## Empty subset
-        if(all(!is(sub_tree, "phylo") & is.na(sub_tree))) {
-            warning("The slice ", time[slice], " is empty.", call. = FALSE)
-            return(list("elements" = matrix(NA)))
-        }
+#         ## Empty subset
+#         if(all(!is(sub_tree, "phylo") & is.na(sub_tree))) {
+#             warning("The slice ", time[slice], " is empty.", call. = FALSE)
+#             return(list("elements" = matrix(NA)))
+#         }
 
-        ## Output are single trees
-        if(is(sub_tree, "phylo")) {
-            ## Select the tips 
-            tips <- sub_tree$tip.label
+#         ## Output are single trees
+#         if(is(sub_tree, "phylo")) {
+#             ## Select the tips 
+#             tips <- sub_tree$tip.label
 
-            ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
+#             ## Add any missed taxa from the FADLAD
+#             taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
-            ## Getting the list of elements
-            return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
+#             ## Getting the list of elements
+#             return( list( "elements" = as.matrix(match(unique(c(tips, taxa)), rownames(data))) ) )
         
-        } else {
-            ## Add any missed taxa from the FADLAD
-            taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
+#         } else {
+#             ## Add any missed taxa from the FADLAD
+#             taxa <- rownames(data)[which(FADLADs$FAD$ages > time[slice] & FADLADs$LAD$ages < time[slice])]
 
-            if(model == "equal.split" || model == "gradual.split") {
-            ## Return a probability table
-                if(any(length(taxa) > 0)) {
-                    ## Combine the taxa, their ancestor and their probability to the sub_tree table
-                    ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
-                    sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
-                    rownames(sub_tree) <- NULL
-                    ## Convert the tips into row numbers
-                    tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
+#             if(model == "equal.split" || model == "gradual.split") {
+#             ## Return a probability table
+#                 if(any(length(taxa) > 0)) {
+#                     ## Combine the taxa, their ancestor and their probability to the sub_tree table
+#                     ancestors <- sapply(taxa, function(taxa, tree) return(slice.tree_parent.node(tree, taxa)), tree)
+#                     sub_tree <- rbind(sub_tree, matrix(c(ancestors, taxa, rep(0, length(taxa))), ncol = 3, byrow = FALSE))
+#                     rownames(sub_tree) <- NULL
+#                     ## Convert the tips into row numbers
+#                     tips <- t(apply(sub_tree[,1:2], 1, function(X) match(unique(X), rownames(data))))
 
-                } else {
-                    sub_tree <- matrix(sub_tree, ncol = 3)
-                    tips <- matrix(match(sub_tree[,1:2], rownames(data)), ncol = 2)
-                }
+#                 } else {
+#                     sub_tree <- matrix(sub_tree, ncol = 3)
+#                     tips <- matrix(match(sub_tree[,1:2], rownames(data)), ncol = 2)
+#                 }
 
-                ## Returning the tips with the probabilities
-                return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
-            } else {
-            ## Return a matrix
+#                 ## Returning the tips with the probabilities
+#                 return( list( "elements" = cbind(tips, round(as.numeric(sub_tree[,3]), digits = 4)) ) )
+#             } else {
+#             ## Return a matrix
 
-                if(any(length(taxa) > 0)) {
-                    sub_tree <- c(sub_tree, taxa)
-                }
+#                 if(any(length(taxa) > 0)) {
+#                     sub_tree <- c(sub_tree, taxa)
+#                 }
 
-                return( list( "elements" = as.matrix(match(sub_tree, rownames(data))) ) )
-            }
+#                 return( list( "elements" = as.matrix(match(sub_tree, rownames(data))) ) )
+#             }
 
-        }
-    }
+#         }
+#     }
 
-    ## ages of tips/nodes + FAD/LAD
-    FADLADs <- adjust.FADLAD(FADLAD, tree, data)
+#     ## ages of tips/nodes + FAD/LAD
+#     FADLADs <- adjust.FADLAD(FADLAD, tree, data)
 
-    ## Getting the tree ages
-    tree_ages <- tree.age(tree)[1:Ntip(tree), ]
+#     ## Getting the tree ages
+#     tree_ages <- tree.age(tree)[1:Ntip(tree), ]
 
-    ## verbose
-    if(verbose) {
-        message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
-    }
+#     ## verbose
+#     if(verbose) {
+#         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
+#     }
 
-    #get.slice(slice = 20, time, model, FADLADs, data, verbose, tree)
+#     #get.slice(slice = 20, time, model, FADLADs, data, verbose, tree)
 
-    ## Get the slices elements
-    slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, tree_ages, FADLADs, data, verbose, tree)
+#     ## Get the slices elements
+#     slices_elements <- lapply(as.list(seq(1:length(time))), get.slice, time, model, tree_ages, FADLADs, data, verbose, tree)
 
-    ## verbose
-    if(verbose) {
-        message("Done.\n", appendLF = FALSE)
-    }
+#     ## verbose
+#     if(verbose) {
+#         message("Done.\n", appendLF = FALSE)
+#     }
 
-    ## naming the slices
-    names(slices_elements) <- time
+#     ## naming the slices
+#     names(slices_elements) <- time
 
-    return(slices_elements)
-}
+#     return(slices_elements)
+# }
 
 ## Continuous time subsets
 chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
@@ -216,12 +215,11 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
     ## verbose
     if(verbose) {
         ## Editing the fast.slice.table function
-        body(fast.slice.table)[[2]] <- substitute(message(".", appendLF = FALSE))
         message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
     }
 
     ## Get all time slices
-    slices_elements <- lapply(as.list(time), get.time.slice, tree, model)
+    slices_elements <- lapply(as.list(time), get.time.slice, tree, model, verbose)
 
     ## Adjust the tree/data names
     slices_elements <- lapply(slices_elements, match.tree.data, tree, data)
@@ -295,10 +293,8 @@ recursive.combine.list <- function(list) {
 ## Slice tree table
 fast.slice.table <- function(slice, tree) {
 
-    verbose_placeholder <- NULL
-
     ## Get slice time
-    slice_time <- tree$root.time - slice
+    slice_time <- round(tree$root.time - slice, 9)
 
     ## Root slice
     if(slice_time == 0) {
@@ -307,7 +303,7 @@ fast.slice.table <- function(slice, tree) {
     }
 
     ## Get nodes and tips ages
-    node_age <- castor::get_all_distances_to_root(tree)
+    node_age <- round(castor::get_all_distances_to_root(tree), 9)
 
     ## Find the edges that are crossed
     crossed_edges <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
@@ -333,6 +329,10 @@ fast.slice.table <- function(slice, tree) {
 
 ## select slice table tips
 select.table.tips <- function(table, model) {
+    if(is.null(table)) {
+        return(NA)
+    }
+
     switch(model,
         "acctran"   = return(unique(table[,3])),
         "deltran"   = return(unique(table[,1])),
@@ -345,8 +345,18 @@ select.table.tips <- function(table, model) {
 }
 
 ## Wrapper for getting a time slice
-get.time.slice <- function(time, tree, model) {
-    return(list("elements" = matrix(select.table.tips(fast.slice.table(time, tree), model), ncol = ifelse(grepl("split", model), 3, 1))))
+get.time.slice <- function(time, tree, model, verbose) {
+    if(verbose) message(".", appendLF = FALSE)
+
+    ## Get the precision
+    # precision <- ifelse(abs(tree$root.time - round(tree$root.time)) > .Machine$double.eps^0.5, nchar(strsplit(sub('0+$', '', as.character(tree$root.time)), ".", fixed = TRUE)[[1]][[2]]), 0)
+
+    ## Get the slice
+    slice <- select.table.tips(fast.slice.table(time, tree), model)
+    if(is.na(slice[1])) {
+        warning("The slice ", time, " is empty.", call. = FALSE)
+    }
+    return(list("elements" = matrix(slice, ncol = ifelse(grepl("split", model), 3, 1))))
 }
 
 ## Adding FADLADs to time slices
@@ -365,7 +375,10 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
             time_slice$elements <- rbind(time_slice$elements, 
                                          cbind(matrix(add_tips),matrix(add_tips), 1))
             ## Remove any non full probability with the same elements for the tips
-            remove.duplicates <- function(duplicated_elements, time_slice, col) {
+            remove.duplicates <- function(time_slice, col) {
+                ## Find duplicated elements with a probability of 1
+                duplicated_elements <- (duplicated(time_slice$elements[,col]) & time_slice$elements[,3] == 1)
+                ## Remove the duplicates
                 if(any(duplicated_elements)) {
                     ## Find the rows to replace
                     replace <- which(time_slice$elements[,col] %in% time_slice$elements[duplicated_elements, col][1])
@@ -376,22 +389,21 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
                     ## Remove the duplicated element
                     duplicated_elements <- duplicated_elements[-replace[2]]
                     ## Repeat the operation
-                    remove.duplicates(duplicated_elements, time_slice, col)
+                    remove.duplicates(time_slice, col)
                 } else {
                     return(time_slice)
                 }
             }
 
             ## Remove the duplicates from the first column
-            time_slice <- remove.duplicates(duplicated(time_slice$elements[,2]), time_slice, col = 2)
+            time_slice <- remove.duplicates(time_slice, col = 2)
             ## Remove the duplicates from the second column
-            time_slice <- remove.duplicates(duplicated(time_slice$elements[,1]), time_slice, col = 1)
+            time_slice <- remove.duplicates(time_slice, col = 1)
         }
     } 
     return(time_slice)
 }
 
-## match tree tips/nodes to data rownames
 ## match tree tips/nodes to data rownames
 match.tree.data <- function(elements, tree, data) {
     matching <- function(x, tree, data) {

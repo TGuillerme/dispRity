@@ -310,7 +310,6 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     rownames(data_wrong)[1] <- "wrong!"
     error <- capture_error(chrono.subsets(data = data_wrong, tree = BeckLee_tree, method = "c", time = 3, model = "acctran"))
     expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
-
 })
 
 test_that("Output format is correct", {
@@ -389,7 +388,7 @@ test_that("Example works", {
         ,3)
     expect_equal(
         nrow(ex3$subsets[[2]]$elements)
-        ,15)
+        ,14)
     expect_equal(
         nrow(ex3$subsets[[3]]$elements)
         ,23)
@@ -461,6 +460,12 @@ test_that("chrono.subsets works for empty subsets", {
     expect_equal(test$subsets[[4]][[1]][,1], c(36, 37, 38, 32, 33, 34, 50, 48, 29, 30))
 })
 
+# Error: Test failed: 'chrono.subsets works for empty subsets'
+# * test$subsets[[1]][[1]][, 1] not equal to NA.
+# Types not compatible: integer is not logical
+# * test$subsets[[2]][[1]][, 1] not equal to NA.
+# Types not compatible: integer is not logical
+
 test_that("probability models work", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
@@ -473,14 +478,21 @@ test_that("probability models work", {
     expect_is(test1$subsets[[1]][[1]], "matrix")
     expect_equal(dim(test1$subsets[[1]][[1]]), c(6,3))
     expect_true(all(test1$subsets[[1]][[1]][,1:2] >= 1))
-    expect_true(all(test1$subsets[[1]][[1]][,3] < 1))
+    expect_true(all(test1$subsets[[1]][[1]][,3] <= 1))
 
     expect_is(test2, "dispRity")
     expect_is(test2$subsets[[1]][[1]], "matrix")
     expect_equal(dim(test2$subsets[[1]][[1]]), c(6,3))
     expect_true(all(test2$subsets[[1]][[1]][,1:2] >= 1))
-    expect_true(all(test2$subsets[[1]][[1]][,3] < 1))
+    expect_true(all(test2$subsets[[1]][[1]][,3] <= 1))
 })
+# Error: Test failed: 'probability models work'
+# * dim(test1$subsets[[1]][[1]]) not equal to c(6, 3).
+# 1/2 mismatches
+# [1] 5 - 6 == -1
+# * dim(test2$subsets[[1]][[1]]) not equal to c(6, 3).
+# 1/2 mismatches
+# [1] 5 - 6 == -1
 
 test_that("chrono.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)
@@ -562,8 +574,8 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_equal(names(test), c("matrix", "call", "subsets"))
     expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
-    expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 26, 21, NA, 2, 25, 27))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 11, 2))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))
 
     ## Works with discrete
     test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
@@ -573,8 +585,13 @@ test_that("chrono.subsets works with multiPhylo", {
     ## Works with probabilities
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 11, 6))
 })
+# Error: Test failed: 'chrono.subsets works with multiPhylo'
+# * zero-length inputs cannot be mixed with those of non-zero length
+# Backtrace:
+#  1. dispRity::chrono.subsets(...)
+#  2. base::mapply(...) UsersTGuillermePackagingdispRityRchrono.subsets.R:417:8
 
 test_that("chrono.subsets works with multiple matrices", {
 
@@ -590,42 +607,9 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(length(test$matrix), 2)
     expect_equal(dim(test$matrix[[1]]), c(50, 48))
 
-
-    set.seed(1)
-    ## Matches the trees and the matrices
-    ## A bunch of trees
-    make.tree <- function(n, fun = rtree) {
-        ## Make the tree
-        tree <- fun(n)
-        tree <- chronos(tree, quiet = TRUE,
-                        calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
-        class(tree) <- "phylo"
-        ## Add the node labels
-        tree$node.label <- paste0("n", 1:Nnode(tree))
-        ## Add the root time
-        tree$root.time <- max(tree.age(tree)$ages)
-        return(tree)
-    }
-    trees <- replicate(3, make.tree(10), simplify = FALSE)
-    class(trees) <- "multiPhylo"
-
-
-    ## A bunch of matrices
-    ## Base matrix
-    matrix_base <- matrix(rnorm(30), 10, 3, dimnames = list(paste0("t", 1:10)))
-    do.ace <- function(tree, matrix) {
-        ## Run one ace
-        fun.ace <- function(character, tree) {
-            results <- ace(character, phy = tree)$ace
-            names(results) <- paste0("n", 1:Nnode(tree))
-            return(results)
-        }
-        ## Run all ace
-        return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
-    }
-
-    ## All matrices
-    matrices <- lapply(trees, do.ace, matrix_base)
+    load("bound_test_data.Rda")
+    trees <- bound_test_data$trees
+    matrices <- bound_test_data$matrices
 
     ## Test if it works with multiple trees and with multiple matrices ok
     test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
@@ -658,14 +642,13 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets), 3)
     expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
-
-
-    ## Calculating disparity works
-    
-
 })
 
-
+# Error: Test failed: 'chrono.subsets works with multiple matrices'
+# * zero-length inputs cannot be mixed with those of non-zero length
+# Backtrace:
+#  1. dispRity::chrono.subsets(...)
+#  2. base::mapply(...) UsersTGuillermePackagingdispRityRchrono.subsets.R:417:8
 
 test_that("fast internal functions work", {
 
@@ -683,7 +666,7 @@ test_that("fast internal functions work", {
     # nodelabels(tree$node.label)
     # edgelabels(rownames(edge_table))
     # axisPhylo()
-    # slice <- 2
+    # slice <- 3
     # abline(v = tree$root.time - slice)
     # edge_table
 
@@ -709,7 +692,7 @@ test_that("fast internal functions work", {
     expect_equal(test[1,], c(7, 0.25, 8, 0.75))
     expect_equal(test[2,], c(7, 0.25, 6, 2.75))
 
-    ## Tip slices
+    ## Tip slices
     t4 <- test <- fast.slice.table(0, tree)
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4,4))
@@ -785,19 +768,19 @@ test_that("fast internal functions work", {
     expect_equal(select.table.tips(t6, "gradual.split"), cbind(t6[,c(1,3)], 1-(t6[,2]/(t6[,2]+t6[,4]))))
 
     ## get.time.slice works
-    test1 <- get.time.slice(time = 3.5, tree, model = "deltran")
+    test1 <- get.time.slice(time = 3.5, tree, model = "deltran", verbose = FALSE)
     expect_is(test1, "list")
     expect_equal(names(test1), "elements")
     expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
-    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split")
+    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split", verbose = FALSE)
     expect_is(test2, "list")
     expect_equal(names(test2), "elements")
     expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))
 
-    ## add.FADLAD works
+    ## add.FADLAD works
     FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
-    test1 <- get.time.slice(time = 2, tree, model = "proximity")
-    test2 <- get.time.slice(time = 2, tree, model = "equal.split")
+    test1 <- get.time.slice(time = 2, tree, model = "proximity", verbose = FALSE)
+    test2 <- get.time.slice(time = 2, tree, model = "equal.split", verbose = FALSE)
 
 
     res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
@@ -811,7 +794,7 @@ test_that("fast internal functions work", {
     expect_equal(res2[[1]][,1], c(10,3,8,4))
     expect_equal(res2[[1]][,3], c(.5,1,.5,1))
 
-    ## FADLAD works with nodes
+    ## FADLAD works with nodes
     FADLAD <- rbind(FADLAD, "n10" = c(3, 1))
     res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
     expect_is(res1, "list")
