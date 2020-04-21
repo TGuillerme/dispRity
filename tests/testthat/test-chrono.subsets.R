@@ -460,18 +460,12 @@ test_that("chrono.subsets works for empty subsets", {
     expect_equal(test$subsets[[4]][[1]][,1], c(36, 37, 38, 32, 33, 34, 50, 48, 29, 30))
 })
 
-# Error: Test failed: 'chrono.subsets works for empty subsets'
-# * test$subsets[[1]][[1]][, 1] not equal to NA.
-# Types not compatible: integer is not logical
-# * test$subsets[[2]][[1]][, 1] not equal to NA.
-# Types not compatible: integer is not logical
-
 test_that("probability models work", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
     data(BeckLee_tree)
     
-    test1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, t0 = FALSE)
     test2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "equal.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     expect_is(test1, "dispRity")

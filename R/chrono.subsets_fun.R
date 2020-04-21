@@ -93,7 +93,7 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
 }
 
 # ## Continuous time subsets
-# chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
+# chrono.subsets.continuous.slow <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
 #     ## inc.nodes option is useless
 #     inc.nodes <- NULL
@@ -365,6 +365,7 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
     intervals <- (one_time >= FADLAD[,2]) & (one_time <= FADLAD[,1])
 
     if(any(intervals)) {
+        cat("*")
         ## Try to add the taxa to the interval
         add_tips <- which(data_rownames %in% rownames(FADLAD)[intervals])
         if(dim(time_slice$elements)[2] == 1) {
@@ -374,6 +375,7 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
             ## Add full probability of being the tip for probabilistic models
             time_slice$elements <- rbind(time_slice$elements, 
                                          cbind(matrix(add_tips),matrix(add_tips), 1))
+            cat("+")
             ## Remove any non full probability with the same elements for the tips
             remove.duplicates <- function(time_slice, col) {
                 ## Find duplicated elements with a probability of 1
@@ -406,6 +408,11 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
 
 ## match tree tips/nodes to data rownames
 match.tree.data <- function(elements, tree, data) {
+    
+    if(all(is.na(elements$elements))) {
+        return(elements)
+    }
+
     matching <- function(x, tree, data) {
         return(match(c(tree$tip.label, tree$node.label)[x], rownames(data)))
     }
