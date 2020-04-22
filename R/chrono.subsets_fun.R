@@ -365,7 +365,6 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
     intervals <- (one_time >= FADLAD[,2]) & (one_time <= FADLAD[,1])
 
     if(any(intervals)) {
-        cat("*")
         ## Try to add the taxa to the interval
         add_tips <- which(data_rownames %in% rownames(FADLAD)[intervals])
         if(dim(time_slice$elements)[2] == 1) {
@@ -375,7 +374,6 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
             ## Add full probability of being the tip for probabilistic models
             time_slice$elements <- rbind(time_slice$elements, 
                                          cbind(matrix(add_tips),matrix(add_tips), 1))
-            cat("+")
             ## Remove any non full probability with the same elements for the tips
             remove.duplicates <- function(time_slice, col) {
                 ## Find duplicated elements with a probability of 1
@@ -388,8 +386,6 @@ add.FADLAD <- function(time_slice, one_time, FADLAD, data_rownames) {
                     time_slice$elements[replace[1], ] <- time_slice$elements[replace[2], ]
                     ## Remove the duplicated row
                     time_slice$elements <- time_slice$elements[-replace[2], ]
-                    ## Remove the duplicated element
-                    duplicated_elements <- duplicated_elements[-replace[2]]
                     ## Repeat the operation
                     remove.duplicates(time_slice, col)
                 } else {

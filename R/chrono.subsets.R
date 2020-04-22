@@ -347,7 +347,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             }
             FADLAD <- lapply(tree.age_tree, make.fadlad, Ntip_tree)
         } else {
-            FADLAD <- NULL
+            FADLAD <- list(NULL)
         }
     } else {
         ## Check if FADLAD is a table
@@ -363,7 +363,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Check if the FADLAD contains all taxa
-        if(any(tree[[1]]$tip.label %in% as.character(rownames(FADLAD)) == FALSE) && method != "continuous") {
+        if(any(tree[[1]]$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
             ## If not generate the FADLAD for the missing taxa
             missing_FADLAD <- which(is.na(match(tree[[1]]$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD <- data.frame(tree.age_tree[[1]][missing_FADLAD, 1], tree.age_tree[[1]][missing_FADLAD, 1], row.names = tree.age_tree[[1]][missing_FADLAD, 2])

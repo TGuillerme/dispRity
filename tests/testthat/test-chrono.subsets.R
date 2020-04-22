@@ -388,7 +388,7 @@ test_that("Example works", {
         ,3)
     expect_equal(
         nrow(ex3$subsets[[2]]$elements)
-        ,14)
+        ,15)
     expect_equal(
         nrow(ex3$subsets[[3]]$elements)
         ,23)
@@ -480,13 +480,6 @@ test_that("probability models work", {
     expect_true(all(test2$subsets[[1]][[1]][,1:2] >= 1))
     expect_true(all(test2$subsets[[1]][[1]][,3] <= 1))
 })
-# Error: Test failed: 'probability models work'
-# * dim(test1$subsets[[1]][[1]]) not equal to c(6, 3).
-# 1/2 mismatches
-# [1] 5 - 6 == -1
-# * dim(test2$subsets[[1]][[1]]) not equal to c(6, 3).
-# 1/2 mismatches
-# [1] 5 - 6 == -1
 
 test_that("chrono.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)
@@ -568,7 +561,7 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_equal(names(test), c("matrix", "call", "subsets"))
     expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 11, 2))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
     expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))
 
     ## Works with discrete
@@ -579,13 +572,8 @@ test_that("chrono.subsets works with multiPhylo", {
     ## Works with probabilities
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 11, 6))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
 })
-# Error: Test failed: 'chrono.subsets works with multiPhylo'
-# * zero-length inputs cannot be mixed with those of non-zero length
-# Backtrace:
-#  1. dispRity::chrono.subsets(...)
-#  2. base::mapply(...) UsersTGuillermePackagingdispRityRchrono.subsets.R:417:8
 
 test_that("chrono.subsets works with multiple matrices", {
 
@@ -637,12 +625,6 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(length(test$subsets), 3)
     expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
 })
-
-# Error: Test failed: 'chrono.subsets works with multiple matrices'
-# * zero-length inputs cannot be mixed with those of non-zero length
-# Backtrace:
-#  1. dispRity::chrono.subsets(...)
-#  2. base::mapply(...) UsersTGuillermePackagingdispRityRchrono.subsets.R:417:8
 
 test_that("fast internal functions work", {
 
