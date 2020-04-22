@@ -160,18 +160,18 @@ Alternatively, of course, each elements can be accessed manually.
 Here is an explanation on how it works.
 The `dispRity` object is a `list` of two to four elements, each of which are detailed below:
 
- * `$matrix`: an object of class `matrix`, the full multidimensional space.
+ * `$matrix`: an object of class `list` that contains at least one object of class `matrix`: the full multidimensional space.
  * `$call`: an object of class `list` containing information on the `dispRity` object content.
  * `$subsets`: an object of class `list` containing the subsets of the multidimensional space.
  * `$disparity`: an object of class `list` containing the disparity values.
 
 The `dispRity` object is loosely based on `C` structure objects.
 In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via "pointers" to only a certain number of elements and/or dimensions of this matrix.
-This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint:  at any time, only one matrix is present in the `R` environment rather than multiple copies of it for each subset.
+This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix (or list of matrices) is present in the `R` environment rather than multiple copies of it for each subset.
 
 ### `$matrix`
-This is the multidimensional space, stored in the `R` environment as a `matrix` object.
-It requires row names but not column names.
+This is the multidimensional space, stored in the `R` environment as a `list` object containing one or more `matrix` objects.
+Each `matrix` requires row names but not column names (optional).
 By default, if the row names are missing, `dispRity` function will arbitrarily generate them in numeric order (i.e. `rownames(matrix) <- 1:nrow(matrix)`).
 This element of the `dispRity` object is never modified.
 
@@ -179,7 +179,7 @@ This element of the `dispRity` object is never modified.
 This element contains the information on the `dispRity` object content.
 It is a `list` that can contain the following:
 
- * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`) and their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"equal.split"`, `"gradual.split"`). This element generated only once via `chrono.subsets()` and `custom.subsets()`.
+ * `$call$subsets`: a vector of `character` with information on the subsets type (either `"continuous"`, `"discrete"` or `"custom"`), their eventual model (`"acctran"`, `"deltran"`, `"random"`, `"proximity"`, `"equal.split"`, `"gradual.split"`) and eventual information about the trees and matrices used through `chrono.subsets`. This element generated only once via `chrono.subsets()` and `custom.subsets()`.
  * `$call$dimensions`: either a single `numeric` value indicating how many dimensions to use or a vector of `numeric` values indicating which specific dimensions to use. This element is by default the number of columns in `$matrix` but can be modified through `boot.matrix()` or `dispRity()`.
  * `$call$bootstrap`: this is a `list` containing three elements:
     * `[[1]]`: the number of bootstrap replicates (`numeric`)
@@ -222,6 +222,18 @@ This signifies that we have four bootstrap pseudo-replicates pointing each time 
 The next element (`[[3]]`) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have _m_ rows where _m_ is the number of elements for this rarefaction level).
 The next element after that (`[[4]]`) will be the same for with an other rarefaction level and so forth...
 
+When a probabilistic model was used to select the elements (models that have the `"split"` suffix, e.g. `chrono.subsets(..., model = "gradual.split")`), the `$elements` is a matrix containing a pair of elements of the matrix and a probability for sampling the first element in that list:
+
+```
+ disparity$subsets$sub1$elements
+      [,1] [,2]       [,3]
+ [1,]   73   36 0.01871893
+ [2,]   74   37 0.02555876
+ [3,]   33   38 0.85679821
+```
+
+In this example, you can read the table row by row as: "there is a probability of `0.018` for sampling element `73` and a probability of `0.82` (`1-0.018`) of sampling element `36`".
+
 ### `$disparity`
 The `$disparity` element is identical to the `$subsets` element structure (a list of list(s) containing matrices) but the matrices don't contain "pointers" to `$matrix` but the disparity result of the disparity metric applied to the "pointers".
 For example, in our first example (`$elements`) from above, if the disparity metric is of dimensions level 1, we would have:
@@ -250,18 +262,3 @@ For example for the bootstrap without rarefaction (second element of the list):
          [,1]     [,2]     [,3]     [,4]
 [1,] 1.744668 1.777418 1.781624 1.739679 
 ```
-
-
-<!-- ## Modularity
-
-### Making your own metrics
-
-### Making your own tests
-
-## Where is this going?
- -->
-<!-- ## Running `dispRity` in parallel
-
-The computationally intensive function `dispRity` have a `parallel` option to speed up their calculations.
-
-This option requires the package `snow` and takes arguments that are to be passed to  -->

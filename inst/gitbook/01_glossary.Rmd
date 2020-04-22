@@ -31,8 +31,11 @@ output:
 
 In this manual | In `dispRity` | E.g. in palaeobiology | E.g. in ecology
 ---------------|---------------|------------------|-------------
-the multidimensional space | a `matrix` object ($n\times k$) | a morphospace | a function-space
+the multidimensional space | a `matrix` object ($n\times d$) | a morphospace | a function-space
 elements | rows ($n$) | taxa | field experiments
-dimensions | columns ($k$) | morphological characters | communities' compositions
-subsets | a `matrix` ($m \times k$, with $m \leq n$) | time series | experimental treatments
+dimensions | columns ($d$) | morphological characters | communities' compositions
+subsets | a `matrix` ($m \times d$, with $m \leq n$) | time series | experimental treatments
 disparity | a `function` | sum of variances | ellipsoid volume
+
+
+

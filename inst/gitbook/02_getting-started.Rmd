@@ -16,10 +16,16 @@ output:
 Disparity can be estimated from pretty much any matrix as long as rows represent the elements and columns the dimensions.
 These matrices can be observations, pairwise differences between elements, ordinations, etc...
 
+Since version `1.4` it is also possible to include a `"list"` containing matrices.
+These matrices need to have the same dimensions and rownames but can contain different values.
+This is especially useful for modelling uncertainty (see [here](#multi.input) for more details).
+
 ## Ordinated matrices
 
 Classically, when a high number of variables is used, disparity is calculated from ordinated matrices.
 These can be any type of ordinations (PCO, PCA, PCoA, MDS, etc.) as long as elements are the rows (taxa, countries, field experiments) and the dimensions are the columns.
+However, note that this is not required from any of the functions in this package.
+You can also use distance matrices or any other matrix type that suits your question and your analysis!
 
 ### Ordination matrices from `geomorph`
 
@@ -61,14 +67,12 @@ More about these `dispRity` objects below!
 
 ### Ordination matrices from `Claddis` {#Claddis-ordination}
 
-> This functionality is not available on the CRAN version of the package (`r version_CRAN`) due to CRAN compatibility issues see [to CRAN or not to CRAN?](#noCRAN) for more information and on how to install the GitHub (more complete) version of the package (`r version_release`).
-
 ```{r, eval = TRUE, echo = FALSE, message = FALSE}
 ## Checking if Claddis is installed BUILD ONLY
 if(!require(Claddis)) install.packages("Claddis")
 ```
 
-`dispRity` package can easily take data from `Claddis` using the `Claddis.ordination` function.
+`dispRity` package can also easily take data from the `Claddis` package using the `Claddis.ordination` function.
 For this, simply input a matrix in the `Claddis` format to the function and it will automatically calculate and ordinate the distances among taxa:
 
 ```{r}
@@ -163,7 +167,7 @@ axisPhylo(root = 140)
 nodelabels(cex = 0.5)
 ```
 
-Of course you can use your own data as detailed in the [previous chapter](#What-sort-of-data-does-dispRity-work-with).
+Of course you can use your own data as detailed in the [previous section](#What-sort-of-data-does-dispRity-work-with).
 
 ### Disparity through time
 
@@ -222,7 +226,7 @@ For example, you could ask if there is a difference in disparity between two gro
 To perform such an analysis, you will need:
  
  * An matrix with rows as elements and columns as dimensions (always!)
- * A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example `list("a" = c(1,2), "b" = c(3,4))` will create a group _a_ containing elements 1 and 2 from the matrix and a group _b_ containing elements 3 and 4. Note that elements can be present in multiple groups at once.
+ * A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example `list("A" = c(1,2), "B" = c(3,4))` will create a group _A_ containing elements 1 and 2 from the matrix and a group _B_ containing elements 3 and 4. Note that elements can be present in multiple groups at once.
  * Your favourite disparity metric (here the sum of variances)
 
 Using the @beckancient2014 data described [above](#example-data):
