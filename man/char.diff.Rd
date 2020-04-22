@@ -62,7 +62,7 @@ Functions in the list must be named following the special token of concern (e.g.
 
 IMPORTANT: Note that for any distance method, \code{NA} values are skipped in the distance calculations (e.g. distance(\code{A = {1, NA, 2}, B = {1, 2, 3}}) is treated as distance(\code{A = {1, 2}, B = {1, 3}})).
 
-IMPORTANT: Note that the number of symbols (tokens) per character is limited to the number of bytes in your machine (32 or 64). If you have more than 64 tokens per characters, you might want to use continuous data.
+IMPORTANT: Note that the number of symbols (tokens) per character is limited by your machine's word-size (32 or 64 bits). If you have more than 64 tokens per character, you might want to use continuous data.
 }
 \examples{
 ## Comparing two binary characters

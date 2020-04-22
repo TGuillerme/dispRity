@@ -106,8 +106,7 @@
 # bind.data = TRUE
 
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
-    
+chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {    
     match_call <- match.call()
 
     ## ----------------------
@@ -341,11 +340,15 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## Remove adjust FADLAD and associated functions from the whole package
 
     if(missing(FADLAD)) {
-        ## If missing, create the FADLAD table
-        make.fadlad <- function(tree.age_tree, Ntip_tree) {
-            return(data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2]))
+        if(method != "continuous") {
+            ## If missing, create the FADLAD table
+            make.fadlad <- function(tree.age_tree, Ntip_tree) {
+                return(data.frame("FAD" = tree.age_tree[1:Ntip_tree,1], "LAD" = tree.age_tree[1:Ntip_tree,1], row.names = tree.age_tree[1:Ntip_tree,2]))
+            }
+            FADLAD <- lapply(tree.age_tree, make.fadlad, Ntip_tree)
+        } else {
+            FADLAD <- list(NULL)
         }
-        FADLAD <- lapply(tree.age_tree, make.fadlad, Ntip_tree)
     } else {
         ## Check if FADLAD is a table
         check.class(FADLAD, "data.frame")
@@ -361,7 +364,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
         ## Check if the FADLAD contains all taxa
         if(any(tree[[1]]$tip.label %in% as.character(rownames(FADLAD)) == FALSE)) {
-            ##  message("Some tips have no FAD/LAD and are assumed to be single points in time.")
             ## If not generate the FADLAD for the missing taxa
             missing_FADLAD <- which(is.na(match(tree[[1]]$tip.label, as.character(rownames(FADLAD)))))
             add_FADLAD <- data.frame(tree.age_tree[[1]][missing_FADLAD, 1], tree.age_tree[[1]][missing_FADLAD, 1], row.names = tree.age_tree[[1]][missing_FADLAD, 2])

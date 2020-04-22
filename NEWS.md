@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.3.6 *get it done faster* (2020-04-14)
+dispRity v1.3.6 *get it done faster* (2020-04-22)
 =========================
 
 ### NEW FEATURES
@@ -43,6 +43,7 @@ dispRity v1.3.6 *get it done faster* (2020-04-14)
 
 ### MINOR IMPROVEMENTS
 
+  * greatly improved speed of `chrono.subsets` with `method = "continuous` (now > 1000 times faster!).
   * minor warning message fix for `plot.dispRity` with time slices.
   * removed `paleotree` package dependency (though the links to this excellent package are still there!).
   * increased `R` version requirement to `3.5`.
