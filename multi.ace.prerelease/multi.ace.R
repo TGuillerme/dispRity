@@ -66,6 +66,10 @@
 
 
 ##TODO: allow tree to be a multiPhylo object + a sample element that randomly samples a tree everytime and runs ACE on all trees?
+
+##TODO: add node label names
+##TODO: if input is matrix, output is combined matrix (option add = TRUE default)
+
 multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FALSE, use.inapp = FALSE, threshold = TRUE, verbose, parallel = FALSE, special.tokens) {
 
     ## SANITIZING
