@@ -382,11 +382,43 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
     results <- run.test(Claddis::Michaux1989$Matrix_1$Matrix)
     results <- run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
 
-    # # Import complex matrix from MammalDisparity project
+
+    # Import complex matrix from MammalDisparity project
     # source("~/Projects/MammalDisparity/Functions/read.nexus.data.R") ## While waiting for ape 5.4
     # matrix <- do.call(rbind, read.nexus.data("~/Projects/MammalDisparity/Data/Morphology/227t_682c_morphology.nex"))
     # matrix_2 <- matrix[-1,]
     # rownames(matrix_2) <- paste0(rownames(matrix_2), "_1")
     # matrix <- rbind(matrix, matrix_2)
     # results <- run.test(matrix, verbose = TRUE)
+
+
+    # Claddis_start <- Sys.time()
+    # Claddis_results <- claddis.test.wrapper(Claddis_data)
+    # Claddis_end <- Sys.time()
+    # dispRity_start <- Sys.time()
+    # dispRity_results <- dispRity.test.wrapper(matrix)
+    # dispRity_end <- Sys.time()
+
+})
+
+
+test_that("none and binary works", {
+        matrix_multi <- matrix(data = c(1,2,0,0,1,2,1,
+                                    2,3,1,2,2,0,2,
+                                    0,4,2,1,1,2,2,
+                                    0,4,0,0,0,1,0,
+                                    0,4,0,0,0,1,0), ncol = 7, byrow = TRUE)
+
+        test_none <- char.diff(matrix_multi, method = "none")
+        expect_is(test_none, "matrix")
+        expect_equal(dim(test_none), c(5,7))
+        expect_is(test_none[1,1], "character")
+        expect_equal(test_none[1,1], "1")
+        expect_equal(test_none[5,1], "3")
+        test_binary <- char.diff(matrix_multi, method = "binary")
+        expect_is(test_binary, "matrix")
+        expect_equal(dim(test_binary), c(5,7))
+        expect_is(test_binary[1,1], "numeric")
+        expect_equal(test_binary[1,1], 2)
+        expect_equal(test_binary[5,1], 8)
 })

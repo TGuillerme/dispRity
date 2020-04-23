@@ -3,7 +3,7 @@
 #' @description Calculates the character difference from a discrete matrix
 #'
 #' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
-#' @param method The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).
+#' @param method The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"}, \code{"mord"} (Lloyd 2016), \code{"none"} or \code{"binary"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
@@ -29,6 +29,8 @@
 #'          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
 #'      \item \code{"mord"} The maximum observable distance between characters (Lloyd 2016):
 #'          \eqn{d(x,y) =  sum[i,n](abs(x[i] - y[i])/sum[i,n]((x[i] - y[i])/(x[i] - y[i])}
+#'      \item \code{"none"} Returns the matrix with eventual converted and/or translated tokens.
+#'      \item \code{"binary"} Returns the matrix with the binary characters.
 #' }
 #' 
 #' When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
@@ -141,7 +143,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     }
 
     ## Method is hamming by default
-    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean", "maximum", "mord")
+    avail_methods <- c("hamming", "manhattan", "comparable", "euclidean", "maximum", "mord", "none", "binary")
     check.method(method, avail_methods, msg = "method")
     c_method <- pmatch(method, avail_methods)
 
@@ -215,11 +217,18 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Convert as integer for C
     translate <- as.integer(translate)
 
-    ## Start time stamps
-    time_stamp_start <- Sys.time()
+    ## return translated
+    if(method == "none") {
+        return(matrix)
+    }
 
     ## Convert to bitwise format
     suppressWarnings(matrix <- apply(matrix, 2, convert.bitwise, special.tokens, special.behaviours))
+
+    ## return binarised
+    if(method == "binary") {
+        return(matrix)
+    }
 
     ## order
     check.class(order, "logical")

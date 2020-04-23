@@ -10,7 +10,7 @@ char.diff(matrix, method = "hamming", translate = TRUE, special.tokens,
 \arguments{
 \item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
 
-\item{method}{The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"} and \code{"mord"} (Lloyd 2016).}
+\item{method}{The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"}, \code{"mord"} (Lloyd 2016), \code{"none"} or \code{"binary"}.}
 
 \item{translate}{\code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.}
 
@@ -45,6 +45,8 @@ The different methods are:
          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
      \item \code{"mord"} The maximum observable distance between characters (Lloyd 2016):
          \eqn{d(x,y) =  sum[i,n](abs(x[i] - y[i])/sum[i,n]((x[i] - y[i])/(x[i] - y[i])}
+     \item \code{"none"} Returns the matrix with eventual converted and/or translated tokens.
+     \item \code{"binary"} Returns the matrix with the binary characters.
 }
 
 When using \code{translate = TRUE}, the characters are translated following the \emph{xyz} notation where the first token is translated to 1, the second to 2, etc. For example, the character \code{0, 2, 1, 0} is translated to \code{1, 2, 3, 1}. In other words when \code{translate = TRUE}, the character tokens are not interpreted as numeric values. When using \code{translate = TRUE}, scaled metrics (i.e \code{"hamming"} and \code{"gower"}) are divide by \eqn{n-1} rather than \eqn{n} due to the first character always being equal to 1.
