@@ -221,7 +221,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         removed_elements <- FALSE
     }
 
-
     ## Select the elements if probabilities are used
     if(has_probabilities && ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
         ## Sample the elements
@@ -262,10 +261,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## Running the multiple matrix mode
     # if(is_bound || length(data$matrix) > 1) {
-    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition)) {
+    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]))) {
 
         ## Get the number of treesdata
-        n_trees <- ifelse(is_bound, as.numeric(data$call$subsets["trees"]), 1)
+        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
 
         ## Make the lapply loops
         lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
@@ -280,7 +279,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
-        disparity <- unlist(lapply(as.list(1:ifelse(is_bound, n_trees, length(disparities[[1]]))),
+        disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
                                   function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
                             recursive = FALSE)
         names(disparity) <- names(disparities[[1]])

@@ -606,7 +606,8 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
     expect_false(sd(level1$disparity[[3]][[1]]) != 0)
-    expect_equal(summary(level1)$obs.median, c(-0.186, -0.187, -0.164))
+    expect_equal(summary(level1)$obs.median, c(-0.183, -0.236, -0.164))
+        # c(-0.186, -0.187, -0.164))
 
     ## level2 works?
     expect_is(level2, "dispRity")
@@ -615,7 +616,8 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(dim(level2$disparity[[2]][[1]]), c(24,3))
     expect_equal(dim(level2$disparity[[3]][[1]]), c(30,3))
     ## Correct results (should be equal to level12?)
-    expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.467, 0.770, 1.217))
+    expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.473, 0.747, 1.217))
+        # c(0.467, 0.770, 1.217))
 
     ## level12 works?
     expect_is(level12, "dispRity")
@@ -628,7 +630,8 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
     expect_false(sd(level1$disparity[[3]][[1]]) != 0)
-    expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.475, 0.801, 1.217))
+    expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.502, 0.778, 1.217))
+        # c(0.475, 0.801, 1.217))
 
     ## Works with binding data
     set.seed(1)
@@ -688,7 +691,6 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
         as.vector(sumvars$disparity[[2]]$elements),
         as.vector(sumvars2$disparity[[2]]$elements))
 
-
     ## Predictable values
     matrices[[1]][,] <- 1
     matrices[[2]][,] <- 4
@@ -712,7 +714,6 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(dim(bs_unbou$disparity[[1]]$elements), c(3,3))
     expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
 })
-
 
 # test_that("dispRity works in parallel", {
 #     library(parallel)
