@@ -20,7 +20,6 @@ test_that("chrono.subsets + ancestral.dist doesn't work yet", {
     expect_equal(error[[1]], "ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
 })
 
-
 test_that("get.dispRity.metric.handle", {
     match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
     
@@ -45,9 +44,7 @@ test_that("get.dispRity.metric.handle", {
     expect_is(test[[1]], "function")
     expect_null(test[[2]])
     expect_is(test[[3]], "function")
-
 })
-
 
 test_that("get.first.metric", {
     test1 <- get.dispRity.metric.handle(c(sd, var), match_call)
@@ -96,7 +93,6 @@ test_that("apply.decompose.matrix", {
     expect_is(decomp_matrix, "matrix")
     expect_equal(dim(decomp_matrix), c(data$call$dimensions, bs_max))
 })
-
 
 test_that("disparity.bootstraps internal works", {
     data(BeckLee_mat50)
@@ -150,7 +146,6 @@ test_that("disparity.bootstraps internal works", {
         dim(test2)
         , c(1, 11))
 })
-
 
 #Loading the data
 data <- BeckLee_mat50
@@ -348,12 +343,11 @@ test <- NULL
 data <- BeckLee_mat50
 
 #bootstrapped + rarefied + subsets
-group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(group)<-rownames(data)
-data<-custom.subsets(data, group)
-data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
-
+group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(group) <- rownames(data)
+data <- custom.subsets(data, group)
+data <- boot.matrix(data, bootstrap = 5, rarefaction = FALSE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped, rarefied, custom subsets", {
     expect_is(
         test, "dispRity"
@@ -447,7 +441,6 @@ test_that("dispRity works with small, empty/subsets", {
     expect_equal(test$disparity[[2]][[2]][,1], NA)
 })
 
-
 test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
@@ -472,7 +465,6 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(as.vector(summary(test2)$obs), c(-0.002, 0.011))
     expect_equal(as.vector(summary(test3)$obs), c(0.003, 0.007))
 })
-
 
 test_that("dispRity works with function recycling", {
 
@@ -501,7 +493,6 @@ test_that("dispRity works with function recycling", {
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
-
 
 test_that("dispRity works with multiple trees from time-slicing", {
     load("paleotree_test_data.Rda")
@@ -560,20 +551,27 @@ test_that("get.row.col works", {
 
 test_that("dispRity works with multiple matrices", {
 
-    set.seed(42)
-    one_matrix <- matrix(1, 5, 10)
-    data <- list(one_matrix, one_matrix, one_matrix)
+    data <- list(matrix(1, 5, 10), matrix(2, 5, 10), matrix(3, 5, 10))
 
     ## Works with level one
     expect_warning(test <- dispRity(data, metric = c(sum)))
     expect_is(test, "dispRity")
     expect_equal(length(test$disparity[[1]]$elements), 3)
-    expect_equal(sum(test$disparity[[1]]$elements), 150)
+    expect_equal(test$disparity[[1]]$elements, matrix(c(50, 100, 150), nrow = 1))
+
+    means <- function(matrix) apply(matrix, 2, mean)
 
     ## Works with level two
-    expect_warning(test <- dispRity(data, metric =  ranges))
+    expect_warning(test <- dispRity(data, metric = means))
     expect_is(test, "dispRity")
-    expect_equal(length(test$disparity[[1]]$elements), 30)
+    expect_equal(dim(test$disparity[[1]]$elements), c(10, 3))
+    expect_equal(test$disparity[[1]]$elements[1,], c(1,2,3))
+    expect_equal(apply(test$disparity[[1]]$elements,2, sd), c(0,0,0))
+    expect_equal(summary(test)$obs.median, 2)
+
+    ## Works with piling levels
+    test2 <- dispRity(test, metric = sd)
+    expect_equal(c(test2$disparity[[1]]$elements), c(0,0,0))
 })
 
 test_that("dispRity works with multiple matrices from chrono.subsets", {

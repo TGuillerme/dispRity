@@ -235,14 +235,7 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
     
     ## Check if the data is bound
-    if(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous") {
-        is_bound <- as.logical(data$call$subsets[["bind"]])
-    } else {
-        is_bound <- FALSE
-    }
-
-
-
+    is_bound <- ifelse(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous", as.logical(data$call$subsets[["bind"]]), FALSE)
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -263,38 +256,43 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     #     parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
     # }
 
-
     # if(!do_parallel) {
 
+    if(verbose) message("Calculating disparity", appendLF = FALSE)
 
-        if(verbose) message("Calculating disparity", appendLF = FALSE)
+    ## Running the multiple matrix mode
+    # if(is_bound || length(data$matrix) > 1) {
+    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition)) {
 
-        if(is_bound) {
-            ## Number of trees
-            n_trees <- as.numeric(data$call$subsets["trees"])
+        ## Get the number of treesdata
+        n_trees <- ifelse(is_bound, as.numeric(data$call$subsets["trees"]), 1)
 
-            ## Decompose the lapply_loop and the data per matrices
-            lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
-            matrices_data <- split.data(data)
-            
-            ## Mapply wrapper for disparity wrapper
-            disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
-                                MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
-                                SIMPLIFY = FALSE)
+        ## Make the lapply loops
+        lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
 
-            # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        ## Make the matrix list
+        matrices_data <- split.data(data)
+
+        ## mapply this
+        disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+                            SIMPLIFY = FALSE)
+        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        
+        ## Reformat to normal disparity object
+        disparity <- unlist(lapply(as.list(1:ifelse(is_bound, n_trees, length(disparities[[1]]))),
+                                  function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
+                            recursive = FALSE)
+        names(disparity) <- names(disparities[[1]])
 
 
-            ## Combine the results into normal disparity results
-            disparity <- unlist(lapply(as.list(1:n_trees), function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities), recursive = FALSE)
-            names(disparity) <- names(disparities[[1]])
+    } else {
+        ## Normal disparity lapply
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+    }
 
-        } else {
-            disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        }
-        if(verbose) message("Done.\n", appendLF = FALSE)
-    
-
+    # }
+    if(verbose) message("Done.\n", appendLF = FALSE)
 
     # } else {
     #     cat("Enter parlapply\n")
