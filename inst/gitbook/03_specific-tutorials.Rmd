@@ -12,7 +12,7 @@ output:
 # Details of specific functions
 
 The following section contains information specific to some functions.
-If any of your questions are not covered in these sections, please refer to the function help files in R, send me an email (<guillert@tcd.ie>), or raise an issue on GitHub.
+If any of your questions are not covered in these sections, please refer to the function help files in `R`, send me an email (<guillert@tcd.ie>), or raise an issue on [GitHub](https://github.com/TGuillerme/dispRity/issues).
 The several tutorials below describe specific functionalities of certain functions; please always refer to the function help files for the full function documentation!
 
 Before each section, make sure you loaded the @beckancient2014 data (see [example data](#example-data) for more details).
@@ -44,7 +44,9 @@ For both methods, the function takes the `time` argument which can be a vector o
 Otherwise, the `time` argument can be set as a single `numeric` value for automatically generating a given number of equidistant time-bins/slices.
 Additionally, it is also possible to input a dataframe containing the first and last occurrence data (FAD/LAD) for taxa that span over a longer time than the given tips/nodes age, so taxa can appear in more than one time bin/slice.
 
-Here is an example for `method = discrete`:
+### Time-binning
+
+Here is an example for the time binning method (`method = discrete`):
 
 ```{r, eval=TRUE}
 ## Generating three time bins containing the taxa present every 40 Ma
@@ -79,6 +81,10 @@ When using this method, the oldest boundary of the first bin (or the first slice
 The algorithm adds an extra 1\% tree length until reaching the required minimum of three elements.
 It is also possible to include nodes in each bin by using `inc.nodes = TRUE` and providing a matrix that contains the ordinated distance among tips *and* nodes.
 
+If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
+
+### Time-slicing
+
 For the time-slicing method (`method = continuous`), the idea is fairly similar.
 This option, however, requires a matrix that contains the ordinated distance among taxa *and* nodes and an extra argument describing the assumed evolutionary model (via the `model` argument).
 This model argument is used when the time slice occurs along a branch of the tree rather than on a tip or a node, meaning that a decision must be made about what the value for the branch should be.
@@ -99,6 +105,8 @@ In other words, changes along the branches always occur at either ends of it.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants.
 
+More details about the differences between these methods can be found in @time-slice.
+
 ```{r, eval=TRUE}
 ## Generating four time slices every 40 million years under a model of proximity evolution
 chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, 
@@ -109,8 +117,6 @@ chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
     method = "continuous", model = "proximity", time = 4, FADLAD = BeckLee_ages)
 ```
-
-If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
 
 ## Customised subsets {#custom-subsets}
 
@@ -410,15 +416,15 @@ You can find more informations on the vast variety of metrics that you can use i
 Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).
 
 \begin{equation}
-    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}
+    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Ancestor_{n})^2}}
 \end{equation}
 
 \begin{equation}
-    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+    centroids = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{d})^2}}
 \end{equation}
 
 \begin{equation}
-    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+    diagonal = \sqrt{\sum_{i=1}^{d}|max(d_i) - min(k_i)|}
 \end{equation}
 
 \begin{equation}
@@ -426,27 +432,27 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
-    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Reference_{k})^2}}}{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}}
+    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Reference_{d})^2}}}{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{k})^2}}}
 \end{equation}
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+    ellipse.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
 \end{equation}
 
 \begin{equation}
-    n.ball.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R
+    n.ball.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} R
 \end{equation}
 
 \begin{equation}
-    radius = |\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|
+    radius = |\frac{\sum_{i=1}^{n}d_i}{n} - f(\mathbf{v}d)|
 \end{equation}
 
 \begin{equation}
-    ranges = |max(k_i) - min(k_i)|
+    ranges = |max(d_i) - min(d_i)|
 \end{equation}
 
 \begin{equation}
-    variances = \sigma^{2}{k_i}
+    variances = \sigma^{2}{d_i}
 \end{equation}
 
 \begin{equation}
@@ -454,7 +460,7 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 
-Where *k* is the number of dimensions,
+Where *d* is the number of dimensions,
 *n* the number of elements,
 $\Gamma$ is the Gamma distribution,
 $\lambda_i$ is the eigenvalue of each dimensions,
@@ -683,9 +689,9 @@ summary(dispRity(dummy_space, metric = func.eve))
 summary(dispRity(dummy_space, metric = func.eve, method = "manhattan"))
 ```
 
-#### Orientation: angles
+#### Orientation: angles and deviations
 
-The `angle` performs a least square regression (via the `lm` function) and returns slope of the main axis of variation for each dimension. This slope can be converted into different units, `"slope"`, `"degree"` (the default) and `"radian"`. This can be changed through the `unit` argument. 
+The `angles` performs a least square regression (via the `lm` function) and returns slope of the main axis of variation for each dimension. This slope can be converted into different units, `"slope"`, `"degree"` (the default) and `"radian"`. This can be changed through the `unit` argument. 
 By default, the angle is measured from the slope 0 (the horizontal line in a 2D plot) but this can be changed through the `base` argument (using the defined `unit`):
 
 ```{r}
@@ -696,9 +702,25 @@ summary(dispRity(dummy_space, metric = angles))
 summary(dispRity(dummy_space, metric = angles, unit = "slope", base = 1))
 ```
 
-<!-- TODO: add significance -->
+The `deviations` function is based on a similar algorithm as above but measures the deviation from the main axis (or hyperplane) of variation.
+In other words, it finds the least square line (for a 2D dataset), plane (for a 3D dataset) or hyperplane (for a >3D dataset) and measures the shortest distances between every points and the line/plane/hyperplane.
+By default, the hyperplane is fitted using the least square algorithm from `stats::glm`:
 
+```{r}
+## The distribution of the deviation of each point from the least square hyperplane
+summary(dispRity(dummy_space), metric = deviations))
+```
 
+It is also possible to specify the hyperplane equation through the `hyperplane` equation. The equation must contain the intercept first and then all the slopes and is interpreted as $intercept + Ax + By + ... + Nd = 0$. For example, a 2 line defined as beta + intercept (e.g. $y = 2x + 1$) should be defined as `hyperplane = c(1, 2, 1)` ($2x - y + 1 = 0$).
+
+```{r}
+## The distribution of the deviation of each point from a slope (with only the two first dimensions)
+summary(dispRity(dummy_space[, c(1:2)]), metric = deviations, hyperplane = c(1, 2, -1)))
+```
+
+Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
+Note that depending on your dataset, using and `aov` could be completely inappropriate!
+In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
 
 ## Summarising dispRity data (plots)
 
@@ -781,8 +803,9 @@ xtable(summary(disparity_time_slices))
 An alternative (and more fun!) way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
 This function takes the same options as `summary.dispRity` along with various graphical options described in the function help files (see `?plot.dispRity`).
 
-The plots can be of four different types:
- 
+The plots can be of five different types:
+
+ * `preview` for a 2d preview of the trait-space. 
  * `continuous` for displaying continuous disparity curves
  * `box`, `lines`, and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines, and confidence interval polygons.
 
@@ -880,6 +903,8 @@ plot(disparity_crown_stem, rarefaction = TRUE)
 par(op)
 ```
 
+### `type = preview`
+
 Note that all the options above are plotting disparity objects for which a disparity metric *has been calculated*.
 This makes totally sense for `dispRity` objects but sometimes it might be interesting to look at what the trait-space looks like before measuring the disparity.
 This can be done by plotting `dispRity` objects with no calculated disparity!
@@ -892,7 +917,7 @@ For example custom subsets *vs.* time subsets:
 cust_subsets <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
 time_subsets <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-## Note that no disarity has been calculated here:
+## Note that no disparity has been calculated here:
 is.null(cust_subsets$disparity)
 is.null(time_subsets$disparity)
 
@@ -906,6 +931,17 @@ plot(time_subsets, dimensions = c(4,5), main = "Some \"low\" dimensions")
 
 > DISCLAIMER: This functionality can be handy for exploring the data (e.g. to visually check whether the subset attribution worked) but it might be misleading on how the data is *actually* distributed in the multidimensional space!
 Groups that don't overlap on two set dimensions can totally overlap in all other dimensions!
+
+For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
+However you can always force the `preview` option using the following:
+
+```{r}
+par(mfrow = c(2,1))
+## Default plotting
+plot(disparity_time_slices, main = "Disparity through time")
+## Plotting with more arguments
+plot(disparity_time_slices, type = "preview", main = "Two first dimensions of the trait space")
+```
 
 ## Testing disparity hypotheses
 
@@ -1525,3 +1561,125 @@ text(1.5, 1400, paste0("p=",round(euro_ord_diff_rar[[2]][[1]], digit = 5) ))
 
 As expected, the results are pretty similar in pattern but different in terms of scale.
 The median centroids distance is expressed in km in the "Distance differences" plots and in Euclidean units of variation in the "Ordinated differences" plots.
+
+
+## Disparity from multiple matrices (and multiple trees!) {#multi.input}
+
+Since the version `1.4` of this package, it is possible to use multiple trees and multiple matrices in `dispRity` objects.
+To use multiple matrices, this is rather easy: just supply a list of matrices to any of the `dispRity` functions and, as long as they have the same size and the same rownames they will be handled as a distribution of matrices.
+
+```{r}
+set.seed(1)
+## Creating 3 matrices with 4 dimensions and 10 elements each (called t1, t2, t3, etc...)
+matrix_list <- replicate(3, matrix(rnorm(40), 10, 4, dimnames = list(paste0("t", 1:10))),
+                         simplify = FALSE)
+class(matrix_list) # This is a list of matrices
+
+## Measuring some disparity metric on one of the matrices
+summary(dispRity(matrix_list[[1]], metric = c(sum, variances)))
+
+## Measuring the same disparity metric on the three matrices
+summary(dispRity(matrix_list, metric = c(sum, variances)))
+```
+
+As you can see, when measuring the sum of variances on multiple matrices, we now have a distribution of sum of variances rather than a single observed value.
+
+Similarly as running disparity analysis using multiple matrices, you can run the `chrono.subsets` function using multiple trees.
+This can be useful if you want to use a tree posterior distribution rather than a single consensus tree.
+These trees can be passed to `chrono.subsets` as a `"multiPhylo"` object (with the same node and tip labels in each tree).
+First let's define a function to generate multiple trees with the same labels and root ages:
+
+```{r}
+set.seed(1)
+## Matches the trees and the matrices
+## A bunch of trees
+make.tree <- function(n, fun = rtree) {
+    ## Make the tree
+    tree <- fun(n)
+    tree <- chronos(tree, quiet = TRUE,
+                    calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
+    class(tree) <- "phylo"
+    ## Add the node labels
+    tree$node.label <- paste0("n", 1:Nnode(tree))
+    ## Add the root time
+    tree$root.time <- max(tree.age(tree)$ages)
+    return(tree)
+}
+trees <- replicate(3, make.tree(10), simplify = FALSE)
+class(trees) <- "multiPhylo"
+trees
+```
+
+We can now simulate some ancestral states for the matrices in the example above to have multiple matrices associated with the multiple trees.
+
+```{r}
+## A function for running the ancestral states estimations
+do.ace <- function(tree, matrix) {
+    ## Run one ace
+    fun.ace <- function(character, tree) {
+        results <- ace(character, phy = tree)$ace
+        names(results) <- paste0("n", 1:Nnode(tree))
+        return(results)
+    }
+    ## Run all ace
+    return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
+}
+
+## All matrices
+matrices <- mapply(do.ace, trees, matrix_list, SIMPLIFY = FALSE)
+```
+
+Let's first see an example of time-slicing with one matrix and multiple trees.
+This assumes that your tip values (observed) and node values (estimated) are fixed with no error on them.
+It also assumes that the nodes in the matrix always corresponds to the node in the trees (in other words, the tree topologies are fixed):
+
+```{r}
+## Making three "proximity" time slices across one tree
+one_tree <- chrono.subsets(matrices[[1]], trees[[1]],
+                           method = "continuous", model = "proximity", time = 3)
+## Making three "proximity" time slices across the three trees
+three_tree <- chrono.subsets(matrices[[1]], trees,
+                             method = "continuous", model = "proximity", time = 3)
+## Measuring disparity as the sum of variances and summarising it
+summary(dispRity(one_tree, metric = c(sum, variances)))
+summary(dispRity(three_tree, metric = c(sum, variances)))
+```
+
+This results show the effect of considering a tree distribution: in the first case (`one_tree`) the time slice at 3.95 Mya has a sum of variances of 2.9 but this values goes down to 0.256 in the second case (`three_tree`) which is due to the differences in branch lengths distributions:
+
+```{r, print = FALSE}
+par(mfrow = c(3,1))
+slices <- c(7.9, 3.95, 0)
+fun.plot <- function(tree) {
+  plot(tree)
+  nodelabels(tree$node.label, cex = 0.8)
+  axisPhylo()
+  abline(v = tree$root.time - slices)
+}
+silent <- lapply(trees, fun.plot)
+```
+
+Note that in this example, the nodes are actually even different in each tree! The node `n4` for example, is not direct descendent of `t4` and `t6` in all trees!
+To fix that, it is possible to input a list of trees and a list of matrices that correspond to each tree in `chrono.subsets` by using the `bind.data = TRUE` option.
+In this case, the matrices need to all have the same row names and the trees all need the same labels as before:
+
+```{r}
+## Making three "proximity" time slices across three trees and three bound matrices
+bound_data <- chrono.subsets(matrices, trees,
+                             method = "continuous", model = "proximity",
+                             time = 3, bind.data = TRUE)
+## Making three "proximity" time slices across three trees and three matrices
+unbound_data <- chrono.subsets(matrices, trees,
+                               method = "continuous", model = "proximity",
+                               time = 3, bind.data = FALSE)
+
+## Measuring disparity as the sum of variances and summarising it
+summary(dispRity(bound_data, metric = c(sum, variances)))
+summary(dispRity(unbound_data, metric = c(sum, variances)))
+```
+
+Note here that the results are again rather different: with the bound data, the slices are done across the three trees and each of their corresponding matrix (resulting in three observation) which is more accurate than the previous results from `three_trees` above.
+With the unbound data, the slices are done across the three trees and applied to the three matrices (resulting in 9 observations).
+As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
+
+
