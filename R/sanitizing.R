@@ -59,7 +59,6 @@ check.class <- function(object, class, msg, errorif = FALSE) {
     } 
 }
 
-
 ## Checking the class of an object and returning an error message if != class
 check.length <- function(object, length, msg, errorif = FALSE) {
 

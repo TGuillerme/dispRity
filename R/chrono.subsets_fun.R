@@ -219,11 +219,11 @@ select.table.tips <- function(table, model) {
     switch(model,
         "acctran"   = return(unique(table[,3])),
         "deltran"   = return(unique(table[,1])),
-        "random"    = return(unique(apply(table[,c(1,3)], 1, FUN = function(x) x[sample(c(1,2), 1)]))),
-        "proximity" = return(unique(sapply(1:nrow(table), function(x, table, closest) table[,c(1,3)][x, closest[x]], table, apply(table[,c(2,4)], 1, FUN = function(x) which(x == min(x))[1])))),
+        "random"    = return(unique(apply(table[,c(1,3), drop = FALSE], 1, FUN = function(x) x[sample(c(1,2), 1)]))),
+        "proximity" = return(unique(sapply(1:nrow(table), function(x, table, closest) table[,c(1,3), drop = FALSE][x, closest[x]], table, apply(table[,c(2,4), drop = FALSE], 1, FUN = function(x) which(x == min(x))[1])))),
         ## The split models output a table of two columns (left and right of the split) and the probability for the first column (p(left)). The probability for the second column is simply 1-p(left)
         "equal.split"   = return(cbind(table[, c(1,3)], 0.5)),
-        "gradual.split" = return(cbind(table[,c(1,3)], 1-(table[,2]/(table[,2]+table[,4]))))
+        "gradual.split" = return(cbind(table[, c(1,3)], 1-(table[, 2]/(table[, 2] + table[, 4]))))
         )
 }
 
