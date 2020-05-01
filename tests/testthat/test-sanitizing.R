@@ -37,6 +37,7 @@ test_that("check.class works", {
 
     expect_that(
             check.class(class_2, class_list, 'test', errorif = TRUE), equals("class_2"))
+
 })
 
 ## Check class function
@@ -123,6 +124,7 @@ test_that("check.dist.matrix works", {
     expect_true(all(test[[1]] == dist(non_dist)))
 })
 
+
 ## Stop call
 test_that("stop.call works", {
 
@@ -149,6 +151,7 @@ test_that("stop.call works", {
     expect_equal(test[[1]], "look: a works.")
 })
 
+
 ## Check class
 test_that("check.class works", {
     list <- list("a" = "a", "1" = 1, "tree" = rtree(5))
@@ -169,14 +172,15 @@ test_that("test_equal_round works", {
     expect_equal(expect_equal_round(x, y, digits = 2), 1.11)
 })
 
+
 ## Test check.dispRity.data
 test_that("check.dispRity.data works", {
 
 
-    ## All errors
+    ## All errors
     error <- capture_error(check.dispRity.data("a"))
     expect_equal(error[[1]], "data must be of class matrix or list.")
-    expect_warning(error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a"))))
+    error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a")))
     expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and row names.")
     error2 <- list(matrix(c(1,2)), matrix(c(1,2,3)))
     error <- capture_error(check.dispRity.data(error2))

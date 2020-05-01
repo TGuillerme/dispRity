@@ -305,8 +305,8 @@ test_that("summary.dispRity works with small, empty/subsets", {
     silent <- capture_warnings(data <- dispRity(boot.matrix(chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100))), metric = c(sum, variances)))
 
     test <- summary(data)
-    expect_equal(as.numeric(test[1,]), c(140, 0, rep(NA, 6)))
-    expect_equal(as.numeric(test[2,]), c(138, 1, rep(NA, 6)))
+    expect_equal(as.numeric(test[1,]), c(5, 0, rep(NA, 6)))
+    expect_equal(as.numeric(test[2,]), c(4, 1, rep(NA, 6)))
     expect_false(all(is.na(test[3,])))
 })
 

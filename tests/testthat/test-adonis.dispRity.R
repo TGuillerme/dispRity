@@ -43,7 +43,7 @@ test_that("Works with one or more groups", {
     # expect_equal(test1$aov.tab[[6]], c(0.116, NA, NA))
 
     ## Adonis with multiple groups 
-    ## Creating a random matrix
+    ## Creating a random matrix
     random_matrix <- matrix(data = rnorm(90), nrow = 10,
                             dimnames = list(letters[1:10]))
     ## Creating two groups with two states each
@@ -61,7 +61,7 @@ test_that("Works with one or more groups", {
     expect_equal(test2$aov.tab$Df, c(1, 1, 7, 9))
     expect_equal(round(test2$aov.tab[[6]], digit = 5), round(c(0.36364, 0.72727, NA, NA), digit = 5))
 
-    ## Works well on non distance matrices
+    ## Works well on non distance matrices
 
     ## Calculating the distance matrix (PCO)
     distance_matrix <- cmdscale(as.matrix(dist(character_matrix)), k = 19)

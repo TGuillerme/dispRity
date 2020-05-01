@@ -197,7 +197,7 @@ test_that("geomorph.ordination works", {
     dummy_procrustes2$coords <- NULL
     expect_error(geomorph.ordination(dummy_procrustes2))
 
-    ## Procrustes to ordination
+    ## Procrustes to ordination
     test <- geomorph.ordination(dummy_procrustes)
     expect_equal(dim(test), c(10,10))
     expect_equal(colnames(test), paste0("PC", 1:10))
@@ -206,7 +206,7 @@ test_that("geomorph.ordination works", {
     test <- geomorph.ordination(dummy_procrustes, ordinate = FALSE)
     expect_equal(dim(test), c(10,10))
     
-    ## geomorph.data.frame to ordination
+    ## geomorph.data.frame to ordination
     test <- geomorph.ordination(dummy_geomorph_df)
     expect_is(test, "dispRity")
     expect_equal(length(test$subsets), 4)
