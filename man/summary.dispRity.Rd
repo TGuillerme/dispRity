@@ -4,8 +4,14 @@
 \alias{summary.dispRity}
 \title{dispRity object summary}
 \usage{
-\method{summary}{dispRity}(object, ..., quantiles = c(50, 95),
-  cent.tend = median, recall = FALSE, digits)
+\method{summary}{dispRity}(
+  object,
+  ...,
+  quantiles = c(50, 95),
+  cent.tend = median,
+  recall = FALSE,
+  digits
+)
 }
 \arguments{
 \item{object}{A \code{dispRity} object.}

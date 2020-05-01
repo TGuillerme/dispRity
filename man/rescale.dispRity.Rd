@@ -4,8 +4,7 @@
 \alias{rescale.dispRity}
 \title{Rescaling and centering disparity results.}
 \usage{
-\method{rescale}{dispRity}(data, center = FALSE, scale = TRUE,
-  use.all = TRUE, ...)
+\method{rescale}{dispRity}(data, center = FALSE, scale = TRUE, use.all = TRUE, ...)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}

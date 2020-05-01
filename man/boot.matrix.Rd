@@ -4,8 +4,15 @@
 \alias{boot.matrix}
 \title{Bootstraps and rarefies data.}
 \usage{
-boot.matrix(data, bootstraps = 100, rarefaction = FALSE, dimensions,
-  verbose = FALSE, boot.type = "full", prob)
+boot.matrix(
+  data,
+  bootstraps = 100,
+  rarefaction = FALSE,
+  dimensions,
+  verbose = FALSE,
+  boot.type = "full",
+  prob
+)
 }
 \arguments{
 \item{data}{A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).}

@@ -4,8 +4,7 @@
 \alias{reduce.matrix}
 \title{Reduce a matrix}
 \usage{
-reduce.matrix(matrix, distance = "gower", by.row = TRUE,
-  verbose = FALSE)
+reduce.matrix(matrix, distance = "gower", by.row = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{matrix}{A matrix}

@@ -4,8 +4,14 @@
 \alias{space.maker}
 \title{Creating multidimensional spaces}
 \usage{
-space.maker(elements, dimensions, distribution, arguments = NULL,
-  cor.matrix = NULL, scree = NULL)
+space.maker(
+  elements,
+  dimensions,
+  distribution,
+  arguments = NULL,
+  cor.matrix = NULL,
+  scree = NULL
+)
 }
 \arguments{
 \item{elements}{An \code{numeric} value.}

@@ -4,10 +4,18 @@
 \alias{model.test.sim}
 \title{Simulate Model Test}
 \usage{
-model.test.sim(sim = 1, model, model.rank = 1,
-  alternative = "two-sided", time.split = NULL, time.span = 100,
-  variance = 1, sample.size = 100, parameters = list(),
-  fixed.optima = FALSE)
+model.test.sim(
+  sim = 1,
+  model,
+  model.rank = 1,
+  alternative = "two-sided",
+  time.split = NULL,
+  time.span = 100,
+  variance = 1,
+  sample.size = 100,
+  parameters = list(),
+  fixed.optima = FALSE
+)
 }
 \arguments{
 \item{sim}{The number of separate simulations to run.}

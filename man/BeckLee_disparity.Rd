@@ -3,7 +3,9 @@
 \name{BeckLee_disparity}
 \alias{BeckLee_disparity}
 \title{BeckLee_disparity}
-\format{one \code{dispRity} object.}
+\format{
+one \code{dispRity} object.
+}
 \description{
 An example of a \code{dispRity} object.
 }

@@ -4,8 +4,7 @@
 \alias{extinction.subsets}
 \title{Getting the time subsets from at and after an extinction event}
 \usage{
-extinction.subsets(data, extinction, lag = 1, names = FALSE,
-  as.list = FALSE)
+extinction.subsets(data, extinction, lag = 1, names = FALSE, as.list = FALSE)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}

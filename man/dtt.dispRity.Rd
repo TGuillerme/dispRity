@@ -4,8 +4,15 @@
 \alias{dtt.dispRity}
 \title{dtt dispRity (from \code{geiger::dtt})}
 \usage{
-dtt.dispRity(data, metric, tree, nsim = 0, model = "BM",
-  alternative = "two-sided", ...)
+dtt.dispRity(
+  data,
+  metric,
+  tree,
+  nsim = 0,
+  model = "BM",
+  alternative = "two-sided",
+  ...
+)
 }
 \arguments{
 \item{data}{A \code{dispRity} object or a \code{matrix}}

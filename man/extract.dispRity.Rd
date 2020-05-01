@@ -4,8 +4,13 @@
 \alias{extract.dispRity}
 \title{Extracting disparity values.}
 \usage{
-extract.dispRity(data, subsets, observed = TRUE, rarefaction = FALSE,
-  concatenate = TRUE)
+extract.dispRity(
+  data,
+  subsets,
+  observed = TRUE,
+  rarefaction = FALSE,
+  concatenate = TRUE
+)
 }
 \arguments{
 \item{data}{A \code{dispRity} object containing disparity results.}

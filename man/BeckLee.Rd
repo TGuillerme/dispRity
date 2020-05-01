@@ -7,7 +7,9 @@
 \alias{BeckLee_mat99}
 \alias{BeckLee_ages}
 \title{Beck and Lee 2014 datasets}
-\format{three matrices and one phylogenetic tree.}
+\format{
+three matrices and one phylogenetic tree.
+}
 \source{
 \url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
 }

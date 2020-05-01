@@ -4,8 +4,14 @@
 \alias{adonis.dispRity}
 \title{adonis dispRity (from \code{vegan::adonis})}
 \usage{
-adonis.dispRity(data, formula = matrix ~ group, method = "euclidean",
-  ..., warn = TRUE, matrix = 1)
+adonis.dispRity(
+  data,
+  formula = matrix ~ group,
+  method = "euclidean",
+  ...,
+  warn = TRUE,
+  matrix = 1
+)
 }
 \arguments{
 \item{data}{A \code{dispRity} object with subsets}

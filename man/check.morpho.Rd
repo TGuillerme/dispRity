@@ -4,9 +4,16 @@
 \alias{check.morpho}
 \title{Check a morphological matrix consistency levels.}
 \usage{
-check.morpho(matrix, orig.tree, parsimony = "fitch",
+check.morpho(
+  matrix,
+  orig.tree,
+  parsimony = "fitch",
   first.tree = c(phangorn::dist.hamming, phangorn::NJ),
-  distance = phangorn::RF.dist, ..., contrast.matrix, verbose = FALSE)
+  distance = phangorn::RF.dist,
+  ...,
+  contrast.matrix,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{matrix}{A discrete morphological matrix.}

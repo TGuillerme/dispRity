@@ -4,11 +4,28 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(x, ..., type, quantiles = c(50, 95),
-  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim,
-  xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE,
-  add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,
-  2), nclass = 10, coeff = 1, matrix = 1)
+\method{plot}{dispRity}(
+  x,
+  ...,
+  type,
+  quantiles = c(50, 95),
+  cent.tend = median,
+  rarefaction = NULL,
+  elements = FALSE,
+  ylim,
+  xlab,
+  ylab,
+  col,
+  chrono.subsets = TRUE,
+  observed = FALSE,
+  add = FALSE,
+  density = NULL,
+  element.pch = 15,
+  dimensions = c(1, 2),
+  nclass = 10,
+  coeff = 1,
+  matrix = 1
+)
 }
 \arguments{
 \item{x}{A \code{dispRity} object.}
