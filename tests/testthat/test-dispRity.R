@@ -601,7 +601,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_is(level1, "dispRity")
     ## Results in a 3matrix X 3trees matrix
     expect_equal(length(level1$disparity[[1]][[1]]), 9)
-    ## Variance in the two first subsets (nodes are different)
+    ## Variance in the two first subsets (nodes are different)
     expect_true(sd(level1$disparity[[1]][[1]]) != 0)
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
@@ -621,11 +621,11 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 
     ## level12 works?
     expect_is(level12, "dispRity")
-    ## results is length trees?
+    ## results is length trees?
     expect_equal(length(level12$disparity[[1]][[1]]), 3)
     expect_equal(length(level12$disparity[[2]][[1]]), 3)
     expect_equal(length(level12$disparity[[3]][[1]]), 3)
-    ## Variance in the two first subsets (nodes are different)
+    ## Variance in the two first subsets (nodes are different)
     expect_true(is.na(sd(level12$disparity[[1]][[1]])))
     expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
@@ -691,7 +691,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
         as.vector(sumvars$disparity[[2]]$elements),
         as.vector(sumvars2$disparity[[2]]$elements))
 
-    ## Predictable values
+    ## Predictable values
     matrices[[1]][,] <- 1
     matrices[[2]][,] <- 4
     matrices[[3]][,] <- 10

@@ -63,7 +63,7 @@ test_that("extract.from.summary works", {
         , length(extract.from.summary(sum_data, what = "rows", rarefaction = FALSE)))
     expect_equal(
         extract.from.summary(sum_data, what = 1, rarefaction = FALSE)
-        , as.factor(c(90,80,70,60,50,40,30)))
+        , as.character(c(90,80,70,60,50,40,30)))
     expect_equal(
         extract.from.summary(sum_data, what = 2, rarefaction = 10)
         ,rep(10, 7))

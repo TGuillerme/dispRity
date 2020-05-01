@@ -65,7 +65,6 @@ test_that("utilities internal: check.subsets", {
         )
 })
 
-
 ## make.dispRity
 test_that("make.matrix", {
     test1 <- make.dispRity()
@@ -135,7 +134,6 @@ test_that("make.matrix", {
         length(unlist(test4))
         , 24)
 })
-
 
 ## fill.dispRity
 test_that("fill.dispRity", {
@@ -464,7 +462,7 @@ test_that("combine.subsets", {
                               c(20, 4, 6, 10),
                               c(10, 10, 11, 10))
 
-    ## Errors
+    ## Errors
     expect_error(
         combine.subsets("data_test1", c(1,2))
         )

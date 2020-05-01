@@ -101,8 +101,6 @@ test_that("Sanitizing works correctly", {
     bootstrap_done <- boot.matrix(data, bootstraps = 3)
     error <- capture_error(boot.matrix(bootstrap_done))
     expect_equal(error[[1]], "bootstrap_done was already bootstrapped.")
-
-
 })
 
 ## No bootstrap (is equal to the matrix)
@@ -536,7 +534,7 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_false(any(test_no_proba$subsets[[1]][[2]][,6] == 4))
 
 
-    ## With rarefaction
+    ## With rarefaction
     test_rare <- boot.matrix(no_proba, bootstraps = 6, rarefaction = TRUE)
     expect_is(test_rare, "dispRity")
     expect_equal(length(test_rare$subsets), 3)
