@@ -49,11 +49,9 @@ print(disparity, all = TRUE)
 The package also provides some utility functions to facilitate multidimensional analysis.
 
 ### `dispRity` object utilities  <a name="dispRity.utilities"></a>
-
 The first set of utilities are functions for manipulating `dispRity` objects:
 
 #### `make.dispRity`
-
 This function creates empty `dispRity` objects.
 
 ```{r}
@@ -65,7 +63,6 @@ make.dispRity()
 ```
 
 ####  `fill.dispRity`
-
 This function initialises a `dispRity` object and generates its call properties.
 
 ```{r}
@@ -80,7 +77,6 @@ disparity_obj$call
 ```
 
 ####  `matrix.dispRity`
-
 This function extracts a specific matrix from a disparity object.
 The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 
@@ -94,7 +90,6 @@ str(matrix.dispRity(disparity, subsets = 1, bootstrap = 3, rarefaction = 2))
 ```
 
 #### `get.subsets`
-
 This function creates a dispRity object that contains only elements from one specific subsets.
 
 ```{r, eval=FALSE}
@@ -106,8 +101,8 @@ length(crown_mammals$subsets)
 ```
 
 #### `combine.subsets`
-
 This function allows to merge different subsets.
+If the 
 
 ```{r, eval=FALSE}
 ## Combine the two first subsets in the dispRity data example
@@ -117,7 +112,6 @@ combine.subsets(disparity, c(1,2))
 Note that the computed values (bootstrapped data + disparity metric) are not merge.
 
 #### `extract.dispRity`
-
 This function extracts the calculated disparity values of a specific matrix.
 
 ```{r, eval=FALSE}
@@ -130,7 +124,6 @@ extract.dispRity(disparity, observed = FALSE, subsets = 2, rarefaction = 10)
 ```
 
 #### `rescale.dispRity`
-
 This is the modified S3 method for `scale` (scaling and/or centring) that can be applied to the disparity data of a `dispRity` object and can take optional arguments (for example the rescaling by dividing by a maximum value).
 
 ```{r, eval=FALSE}
@@ -148,7 +141,6 @@ head(summary(rescale.dispRity(disparity, max = 10)))
 ```
 
 #### `sort.dispRity`
-
 This is the S3 method of `sort` for sorting the subsets alphabetically (default) or following a specific pattern.
 
 ```{r, eval=FALSE}
@@ -163,7 +155,6 @@ head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
 
 
 ## The `dispRity` object content
-
 The functions above are utilities to easily and safely access different elements in the `dispRity` object.
 Alternatively, of course, each elements can be accessed manually.
 Here is an explanation on how it works.
@@ -179,14 +170,12 @@ In fact, it is composed of one unique instance of a matrix (the multidimensional
 This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix (or list of matrices) is present in the `R` environment rather than multiple copies of it for each subset.
 
 ### `$matrix`
-
 This is the multidimensional space, stored in the `R` environment as a `list` object containing one or more `matrix` objects.
 Each `matrix` requires row names but not column names (optional).
 By default, if the row names are missing, `dispRity` function will arbitrarily generate them in numeric order (i.e. `rownames(matrix) <- 1:nrow(matrix)`).
 This element of the `dispRity` object is never modified.
 
 ### `$call`
-
 This element contains the information on the `dispRity` object content.
 It is a `list` that can contain the following:
 
@@ -199,7 +188,6 @@ It is a `list` that can contain the following:
  * `$call$disparity`: this is a `list` containing one element, `$metric`, that is a `list` containing the different functions passed to the `metric` argument in `dispRity`. These are `call` elements and get modified each time the `dispRity` function is used (the first element is the first metric(s), the second, the second metric(s), etc.).
 
 ### `$subsets`
-
 This element contain the eventual subsets of the multidimensional space.
 It is a `list` of subset names.
 Each subset name is in turn a `list` of at least one element called `elements` which is in turn a `matrix`.
@@ -247,7 +235,6 @@ When a probabilistic model was used to select the elements (models that have the
 In this example, you can read the table row by row as: "there is a probability of `0.018` for sampling element `73` and a probability of `0.82` (`1-0.018`) of sampling element `36`".
 
 ### `$disparity`
-
 The `$disparity` element is identical to the `$subsets` element structure (a list of list(s) containing matrices) but the matrices don't contain "pointers" to `$matrix` but the disparity result of the disparity metric applied to the "pointers".
 For example, in our first example (`$elements`) from above, if the disparity metric is of dimensions level 1, we would have:
 

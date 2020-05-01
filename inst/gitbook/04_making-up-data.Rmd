@@ -17,7 +17,7 @@ All the following functions are based on the same modular architecture of the pa
 
 The function `sim.morpho` allows to simulate discrete morphological data matrices (sometimes referred to as "cladistic" matrices).
 It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states.
-It even allows to include "proper" inapplicable data to make datasets as messy as in real life!
+It even allows to include proper inapplicable data to make datasets as messy as in real life!
 
 In brief, the function `sim.morpho` takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates.
 The package also contains a function for quickly checking the matrix's phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony.
@@ -84,7 +84,7 @@ It quickly calculates the parsimony score, the consistency and retention indices
 
 Once a matrix is generated, it is possible to apply inapplicable characters to it for increasing realism!
 Inapplicable characters are commonly designated as `NA` or simply `-`.
-They differ from missing characters `?` in their nature by being inapplicable rather than unknown[see @brazeau2018 for more details].
+They differ from missing characters `?` in their nature by being inapplicable rather than unknown.
 For example, considering a binary character defined as "colour of the tail" with the following states "blue" and "red"; on a taxa with no tail, the character should be coded as inapplicable ("`-`") since the state of the character "colour of tail" is *known*: it's neither "blue" or "red", it's just not there!
 It contrasts with coding it as missing ("`?`" - also called as ambiguous) where the state is *unknown*, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!
 
@@ -109,6 +109,7 @@ my_matrix_NA <- apply.NA(my_matrix, tree = my_tree,
 ## The first few lines of the resulting matrix
 my_matrix_NA[1:10, 90:100]
 ```
+<!--TG: Add inapplicable paper here -->
 
 ### Parameters for a realistic(ish) matrix
 
@@ -296,6 +297,7 @@ test_norm2 <- null.test(observed_disp, null.distrib = rep(list(rnorm), obs_dim),
 test_norm3 <- null.test(observed_disp, null.distrib = rep(list(rnorm), obs_dim),
                         null.args = obs_mu_sd_axis, null.cor = obs_correlations)
 
+
 ## Graphical options
 op <- par(mfrow = (c(2, 2)), bty = "n")
 ## Plotting the results
@@ -304,6 +306,7 @@ plot(test_norm1, main = "Normal (0,1)")
 plot(test_norm2, main = paste0("Normal (", round(obs_mu_sd_glob[[1]], digit = 3),
                               ",", round(obs_mu_sd_glob[[2]], digit = 3), ")"))
 plot(test_norm3, main = "Normal (variable + correlation)")
+
 ```
 
 If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.
