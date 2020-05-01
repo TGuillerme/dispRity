@@ -91,43 +91,43 @@ get.branch.length <- function(node1, node2, tree, full_tree) {
     ## Check the descendant node IDs (if NAs)
     node2_ID <- ifelse(is.na(node2_ID), get.node.ID.expand(node2, tree, full_tree), node2_ID)
 
-    if(!is.na(node1_ID)) {
+    # if(!is.na(node1_ID)) {
         ## Return branch length
         return(tree$edge.length[which(tree$edge[,1] == node1_ID & tree$edge[,2] == node2_ID)])   
-    } else {
-        ## Calculated branch length from not included nodes
+    # } else {
+    #     ## Calculated branch length from not included nodes
 
-        ## Get it's ID in the full tree
-        no1_fulID <- get.node.ID(node1, full_tree)
+    #     ## Get it's ID in the full tree
+    #     no1_fulID <- get.node.ID(node1, full_tree)
 
-        ## Get it's ancestor
-        ancestor <- slice.tree_parent.node(full_tree, node1)
-        ## Get it's ancestor ID in the subtree
-        anc_subID <- get.node.ID(ancestor[1], tree)
+    #     ## Get it's ancestor
+    #     ancestor <- slice.tree_parent.node(full_tree, node1)
+    #     ## Get it's ancestor ID in the subtree
+    #     anc_subID <- get.node.ID(ancestor[1], tree)
 
-        ## If ancestor still not found in sub_tree, continue looping and record the ancestors
-        while(is.na(anc_subID)) {
-            ancestor <- c(slice.tree_parent.node(full_tree, ancestor[1]), ancestor)
-            anc_subID <- get.node.ID(ancestor[1], tree)
-        }
+    #     ## If ancestor still not found in sub_tree, continue looping and record the ancestors
+    #     while(is.na(anc_subID)) {
+    #         ancestor <- c(slice.tree_parent.node(full_tree, ancestor[1]), ancestor)
+    #         anc_subID <- get.node.ID(ancestor[1], tree)
+    #     }
 
-        ## Get the distance between the slice and the closest ancestor (in the subtree)
-        distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
+    #     ## Get the distance between the slice and the closest ancestor (in the subtree)
+    #     distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
 
-        ## Get it's ID in the full tree
-        anc_fulID <- sapply(ancestor, get.node.ID, full_tree)
-        ## Adding the real ancestor
-        anc_fulID <- as.numeric(c(anc_fulID, no1_fulID))
+    #     ## Get it's ID in the full tree
+    #     anc_fulID <- sapply(ancestor, get.node.ID, full_tree)
+    #     ## Adding the real ancestor
+    #     anc_fulID <- as.numeric(c(anc_fulID, no1_fulID))
 
-        ## Loop through the nodes to calculate distance2 (the distance between the closest ancestor and the real ancestor in the full tree)
-        distance2 <- 0
-        for(node in 1:(length(anc_fulID)-1)) {
-            distance2 <- distance2 + full_tree$edge.length[which(full_tree$edge[,1] == anc_fulID[node] & full_tree$edge[,2] == anc_fulID[node +1])]
-        }
+    #     ## Loop through the nodes to calculate distance2 (the distance between the closest ancestor and the real ancestor in the full tree)
+    #     distance2 <- 0
+    #     for(node in 1:(length(anc_fulID)-1)) {
+    #         distance2 <- distance2 + full_tree$edge.length[which(full_tree$edge[,1] == anc_fulID[node] & full_tree$edge[,2] == anc_fulID[node +1])]
+    #     }
 
-        ## Calculate the real distance from node to slice
-        return(distance1 - distance2)
-    }
+    #     ## Calculate the real distance from node to slice
+    #     return(distance1 - distance2)
+    # }
 }
 
 #Select the parent node of a tip
