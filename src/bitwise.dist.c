@@ -81,7 +81,7 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i1];
+            orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -150,7 +150,7 @@ static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int tran
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i1];
+            orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -213,7 +213,7 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i1];
+            orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -248,12 +248,12 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
 static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)
-    int diff = 0, dist = 0, count = 0, i;
+    int diff = 0, count = 0, i;
 
     for(i = 0 ; i < nc ; i++) {
         if(x[i1] != NA_INTEGER && x[i2] != NA_INTEGER) {
-            
-            if(order[i1] == 0) { 
+
+            if(order[i] == 0) { 
                 diff = bitwise_compare_unordered(x[i1], x[i2]);
             } else {
                 diff = bitwise_compare_ordered(x[i1], x[i2]);
@@ -261,9 +261,9 @@ static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int transl
 
             if(diff != NA_INTEGER) {
                 // If the difference is greater than the distance, increase the distance to that difference
-                if(diff > dist) {
-                    dist = diff;
-                }
+                // if(diff > dist) {
+                //     dist = diff;
+                // }
                 count++;
             }
         }
@@ -274,7 +274,7 @@ static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int transl
     if(count == 0) {
         return NA_REAL;
     } else {
-        return dist;
+        return diff;
     }
 }
 
@@ -293,7 +293,7 @@ static double bitwise_mord(int *x, int nr, int nc, int i1, int i2, int translate
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i1];
+            orders[count] = order[i];
 
             //Increment the counter
             count++;
