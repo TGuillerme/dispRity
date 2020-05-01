@@ -17,7 +17,7 @@ test_that("k.root", {
     ## Right format
     expect_is(test, "matrix")
     expect_equal(dim(test), dim(mat))
-    ## Repeatable
+    ## Repeatable
     expect_true(all(test == k.root(mat, 5)))
     ## Number of dimensions matters
     expect_true(all(mat == k.root(mat, 1)))
@@ -457,7 +457,7 @@ test_that("n.ball.volume", {
 test_that("quantiles", {
     set.seed(1)
     matrix <- matrix(rnorm(50), 5, 10)
-    ## Gives the same results as range if quantile = 100
+    ## Gives the same results as range if quantile = 100
     expect_equal(quantiles(matrix, quantile = 100), ranges(matrix))
     expect_equal(quantiles(matrix, quantile = 100, k.root = TRUE), ranges(matrix, k.root = TRUE))
     ## Default 95%
@@ -609,7 +609,7 @@ test_that("deviation", {
     expect_equal(deviations(test, hyperplane = c(0, 1, 0, 0)), c(5, 0, 0, 0))
     expect_equal(deviations(test, hyperplane = c(5, 1, 0, 0)), c(10, 5, 5, 5))
 
-    ## Works with 3d x=y=z planes
+    ## Works with 3d x=y=z planes
     test <- cbind(1:4, 1:4, 1:4)
     expect_equal(deviations(test, hyperplane = c(0, 1, -1, 0)), c(0, 0, 0, 0))
 
