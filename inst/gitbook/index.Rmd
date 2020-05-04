@@ -1,6 +1,6 @@
 --- 
 title: "dispRity manual"
-author: "Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and  Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+author: "Thomas Guillerme (guillert@tcd.ie),\nMark Puttick (marknputtick@gmail.com) and\nNatalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
