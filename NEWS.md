@@ -49,6 +49,8 @@ dispRity v1.3.9 *getting faster* (2020-05-04) (pre-1.4)
   * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
   * added some time improvements in several phylo functions based on the `castor` package.
   * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
+  * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
+  * metrics passed in `dispRity` are now tested using the input data dimensions.
 
 
 dispRity v1.3 *many metrics* (2019-08-15)

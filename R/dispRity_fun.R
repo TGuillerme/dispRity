@@ -1,4 +1,4 @@
-get.dispRity.metric.handle <- function(metric, match_call, ...) {
+get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
 
     length_metric <- length(metric)
@@ -14,8 +14,8 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE)
+        level <- make.metric(metric, silent = TRUE, data.dim = data.dim, ...)
+        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, data.dim = data.dim)
 
         switch(level,
             level3 = {
@@ -37,7 +37,7 @@ get.dispRity.metric.handle <- function(metric, match_call, ...) {
         }
         ## Sorting the metrics by levels
         ## getting the metric levels
-        levels <- unlist(lapply(metric, make.metric, silent=TRUE))
+        levels <- unlist(lapply(metric, make.metric, silent = TRUE, data.dim = data.dim))
         ## can only unique levels
         if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 

@@ -78,7 +78,7 @@ test_that("dispRity and dtt give the same results", {
     ## two-sided
     set.seed(1)
     dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "two-sided")
-    expect_equal(dispRity_dtt$p_value, 0.84)
+    expect_equal(dispRity_dtt$p_value, 0.81)
     ## lesser
     set.seed(1)
     dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 100, alternative = "lesser")

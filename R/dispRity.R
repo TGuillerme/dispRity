@@ -125,8 +125,8 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
 
     ## Temporary stop if ancestral.dist is used on chrono.subsets
     if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {

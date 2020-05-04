@@ -104,7 +104,8 @@ To apply these sources of inapplicability, simply repeat the number of inapplica
 ```{r}
 ## Generating 5 "character" NAs and 10 "clade" NAs
 my_matrix_NA <- apply.NA(my_matrix, tree = my_tree,
-                         NAs = c(rep("character", 5), rep("clade", 10)))
+                         NAs = c(rep("character", 5),
+                                 rep("clade", 10)))
 
 ## The first few lines of the resulting matrix
 my_matrix_NA[1:10, 90:100]
@@ -120,8 +121,11 @@ set.seed(0)
 ## tree
 my_tree <- rcoal(15)
 ## matrix
-morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
-    rates = c(rgamma, rate = 100, shape = 5), invariant = FALSE)
+morpho_mat <- sim.morpho(my_tree,
+                         characters = 100,
+                         model = "ER",
+                         rates = c(rgamma, rate = 100, shape = 5),
+                         invariant = FALSE)
 check.morpho(morpho_mat, my_tree)
 ```
 
@@ -156,7 +160,8 @@ square_space <- space.maker(100, 2, runif)
 head(square_space)
 
 ## Visualising the space
-plot(square_space, pch = 20, xlab = "", ylab = "", main = "Uniform 2D space")
+plot(square_space, pch = 20, xlab = "", ylab = "",
+     main = "Uniform 2D space")
 ```
 
 Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:
@@ -165,13 +170,15 @@ Of course, more complex spaces can be created by changing the distributions, the
 ```{r}
 ## A plane space: uniform with one dimensions equal to 0
 plane_space <- space.maker(2500, 3, c(runif, runif, runif),
-                           arguments = list(list(min = 0, max = 0), NULL, NULL))
+                           arguments = list(list(min = 0, max = 0),
+                           NULL, NULL))
 
 ## Correlation matrix for a 3D space
 (cor_matrix <- matrix(cbind(1, 0.8, 0.2, 0.8, 1, 0.7, 0.2, 0.7, 1), nrow = 3))
 
 ## An ellipsoid space (normal space with correlation)
-ellipse_space <- space.maker(2500, 3, rnorm, cor.matrix = cor_matrix)
+ellipse_space <- space.maker(2500, 3, rnorm,
+                             cor.matrix = cor_matrix)
 
 ## A cylindrical space with decreasing axes variance
 cylindrical_space <- space.maker(2500, 3, c(rnorm, rnorm, runif),
@@ -199,7 +206,8 @@ plot(circle, xlab = "x", ylab = "y", main = "A normal circle")
 
 ## Creating doughnut space (a spherical space with a hole)
 doughnut_space <- space.maker(5000, 3, c(rnorm, random.circle),
-     arguments = list(list(mean = 0), list(runif, inner = 0.5, outer = 1)))
+     arguments = list(list(mean = 0),
+                      list(runif, inner = 0.5, outer = 1)))
 ```
 
 ### Visualising the space

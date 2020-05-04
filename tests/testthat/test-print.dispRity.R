@@ -124,9 +124,9 @@ test_that("randtest printing", {
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
         "", "Observation: 0.02463073 ", 
         "", "Based on 100 replicates", 
-        "Simulated p-value: 0.05940594 ", "Alternative hypothesis: two-sided ", 
+        "Simulated p-value: 0.07920792 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "  -2.019988    5.094270    6.298782 "))
+        "  -1.842882    5.338100    8.313070 "))
 
   
     ## Running the test on multiple subsets (may take some time!)
@@ -154,7 +154,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  -32.23852    47.82240     2.01022 ",
+        " -34.623901   47.841400    1.744226 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
@@ -167,7 +167,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -33.801715   47.929400    1.819248 ",
+        " -33.531312   48.068600    1.860014 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
@@ -180,7 +180,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  -33.55446    48.01460     1.84056 ",
+        " -35.684854   48.116700    1.634665 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
@@ -193,7 +193,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -30.305293   47.884300    2.235166 ",
+        " -32.322690   48.021700    1.976796 ",
         ""                                    ,
         "NULL" 
         )

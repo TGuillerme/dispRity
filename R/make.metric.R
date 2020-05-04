@@ -5,6 +5,7 @@
 #' @param fun Your very own \code{function}!
 #' @param ... Some arguments to be passed to \code{fun}.
 #' @param silent \code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function's dimension-level.
+#' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #'
 #' @details
 #' This function tests:
@@ -44,7 +45,7 @@
 #' @author Thomas Guillerme
 
 
-make.metric <- function(fun, ..., silent = FALSE) {
+make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     ## Sanitizing
     ## fun
     check.class(fun, "function")
@@ -53,16 +54,22 @@ make.metric <- function(fun, ..., silent = FALSE) {
     ## Getting the function name
     match_call <- match.call()
 
-    ## Testing the metric
-    ## making the testing matrix
-    matrix <- matrix(rnorm(20), 5,4)
+    ## Special case if function is deviations
+    if(!missing(data.dim)) {
+        matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
+        matrix_test <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
+    } else {
+        ## making the testing matrix
+        matrix <- matrix(rnorm(20), 5,4)
+        matrix_text <- "matrix(rnorm(20), 5,4)"        
+    }
 
     ## Testing the metric
     test <- NULL
     op <- options(warn = -1)
 
     ## Skip the dots if the dots has a tree argument
-    if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots)) ) {
+    if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots))) {
         test <- try(test <- fun(matrix), silent = TRUE)    
     } else {
         test <- try(fun(matrix, ...), silent = TRUE)
@@ -71,7 +78,7 @@ make.metric <- function(fun, ..., silent = FALSE) {
 
     if(any("try-error" %in% test) || any(is.na(test))) {
         if(!silent) {
-            stop.call(match_call$fun, paste0("(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
+            stop.call(match_call$fun, paste0("(", matrix_text, ")\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
         }
     } else {
 

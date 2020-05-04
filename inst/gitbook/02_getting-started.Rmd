@@ -44,7 +44,8 @@ require(geomorph)
 data(plethodon)
 
 ## Performing a Procrustes transform on the landmarks
-procrustes <- gpagen(plethodon$land, PrinAxes = FALSE, print.progress = FALSE)
+procrustes <- gpagen(plethodon$land, PrinAxes = FALSE,
+                     print.progress = FALSE)
 
 ## Ordinating this data
 geomorph.ordination(procrustes)[1:5,1:5]
@@ -187,7 +188,8 @@ Using the Beck and Lee (2014) data described [above](#example-data):
 ```{r}
 ## Measuring disparity through time
 disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
-                                        time = 3, metric = c(sum, variances))
+                                        metric = c(sum, variances),
+                                        time = 3)
 ```
 
 This generates a `dispRity` object (see [here](#guts) for technical details).
@@ -211,7 +213,8 @@ summary(disparity_data)
 plot(disparity_data, type = "continuous")
 
 ## Testing for an difference among the time bins
-disp_lm <- test.dispRity(disparity_data, test = lm, comparisons = "all")
+disp_lm <- test.dispRity(disparity_data, test = lm,
+                         comparisons = "all")
 summary(disp_lm)
 ```
 
@@ -236,7 +239,8 @@ Using the @beckancient2014 data described [above](#example-data):
 mammal_groups <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
 
 ## Measuring disparity for each group
-disparity_data <- dispRity.per.group(BeckLee_mat50, group = mammal_groups,
+disparity_data <- dispRity.per.group(BeckLee_mat50,
+                                     group = mammal_groups,
                                      metric = c(sum, variances))
 ```
 
