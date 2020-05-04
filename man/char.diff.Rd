@@ -11,7 +11,8 @@ char.diff(
   special.tokens,
   special.behaviours,
   order = FALSE,
-  by.col = TRUE
+  by.col = TRUE,
+  correction
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ char.diff(
 \item{order}{\code{logical}, whether the character should be treated as order (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows or columns in \code{matrix} (depending on \code{by.col}) to specify ordering for each character.}
 
 \item{by.col}{\code{logical}, whether to measure the distance by columns (\code{TRUE} - default) or by rows (\code{FALSE}).}
+
+\item{correction}{optional, an eventual \code{function} to apply to the matrix after calculating the distance.}
 }
 \value{
 A character difference value or a matrix of class \code{char.diff}

@@ -238,20 +238,27 @@ test_that("Test other distances", {
     expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), translate = FALSE, method = "manhattan"), 0)
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "manhattan"), 4)
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "manhattan"), 0)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, order = TRUE, method = "manhattan"), 0)
     expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "manhattan"), 0)
+    expect_true(is.na(char.diff(list(c(NA,NA,NA,NA),c(1,1,1,1)), method = "manhattan")))
+
     ## Comparable
     expect_equal(char.diff(list(c(1,1,1,1),c(1,1,1,1)), method = "comparable"), 4)
     expect_equal(char.diff(list(c(NA,NA,NA,1),c(1,1,1,1)), method = "comparable"), 1)
     ## Euclidean
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
-    ## Ordered
-    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = FALSE, method = "euclidean"), sqrt(1+1+1+1))
-    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, method = "euclidean"), 0)
+    expect_equal(char.diff(list(c(0,2,0,1),c(0,0,0,1)), translate = FALSE, order = TRUE, method = "euclidean"), 2)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, order = TRUE, method = "euclidean"), 0)
+    expect_true(is.na(char.diff(list(c(NA,NA,NA,NA),c(1,1,1,1)), method = "euclidean")))
     ## Test maximum
     expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,1)), method = "maximum"), 0)
     expect_equal(char.diff(list(c(0,1,1,1), c(0,1,1,3)), method = "maximum"), 1)
     expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, order = TRUE, translate = FALSE), 2)
+    expect_true(is.na(char.diff(list(c(NA,NA,NA,NA),c(1,1,1,1)), method = "maximum")))
+
+    ## Test mord (more tests below)
+    expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, order = TRUE, method = "mord"), 0)
 })
 
 
@@ -307,6 +314,7 @@ test_that("char.diff plot (graphic)", {
     test <- plot.char.diff(morpho_matrix, type = "density")
     expect_equal(names(test), c("rect", "text"))
     expect_equal(unique(unlist(lapply(test, lapply, class))), "numeric")
+
 })
 
 
@@ -420,3 +428,23 @@ test_that("none and binary works", {
         expect_equal(test_binary[1,1], 2)
         expect_equal(test_binary[5,1], 8)
 })
+
+test_that("correction works", {
+    matrix_multi <- matrix(data = c(1,2,0,0,1,2,1,
+                                    2,3,1,2,2,0,2,
+                                    0,4,2,1,1,2,2,
+                                    0,4,0,0,0,1,0,
+                                    0,4,0,0,0,1,0), ncol = 7, byrow = TRUE)
+
+    correct <- function(x) return(x^2)
+    correct.wrong <- function(x) return("a")
+
+    error <- capture_error(char.diff(matrix_multi, correct = "none"))
+    expect_equal(error[[1]], "correction must be of class function.")
+    error <- capture_error(char.diff(matrix_multi, correct = correct.wrong))
+    expect_equal(error[[1]], "Incorrect correction function.")
+
+    test <- char.diff(matrix_multi)
+    expect_equal(char.diff(matrix_multi, correction = correct), test^2)
+})
+

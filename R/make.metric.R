@@ -106,6 +106,8 @@ make.metric <- function(fun, ..., silent = FALSE) {
                 ## Function provides a wrong output
                 if(silent != TRUE) {
                     stop.call(match_call$fun, paste0("(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
+                } else {
+                    fun_type <- "error"
                 }
             }
         }

@@ -9,6 +9,7 @@
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param order \code{logical}, whether the character should be treated as order (\code{TRUE}) or not (\code{FALSE} - default). This argument can be a \code{logical} vector equivalent to the number of rows or columns in \code{matrix} (depending on \code{by.col}) to specify ordering for each character.
 #' @param by.col \code{logical}, whether to measure the distance by columns (\code{TRUE} - default) or by rows (\code{FALSE}).
+#' @param correction optional, an eventual \code{function} to apply to the matrix after calculating the distance.
 #' 
 #' 
 #' @details
@@ -113,7 +114,7 @@
 # order <- FALSE
 
 
-char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE) {
+char.diff <- function(matrix, method = "hamming", translate = TRUE, special.tokens, special.behaviours, order = FALSE, by.col = TRUE, correction) {
 
     match_call <- match.call()
 
@@ -210,6 +211,15 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## translate
     check.class(translate, "logical")
 
+    ## correction
+    if(!missing(correction)) {
+        check.class(correction, "function")
+        test_correction <- make.metric(correction, silent = TRUE)
+        if(test_correction == "error") {
+            stop("Incorrect correction function.")
+        }
+    }
+
     ## Translate characters (by token)
     if(translate) {
         matrix <- apply(matrix, 2, translate.xyz, special.tokens)
@@ -286,6 +296,12 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         output <- as.numeric(output[1,2])
         return(output)
     }
+
+    if(!missing(correction)) {
+        ## Apply the correction
+        output <- correction(output)
+    }
+
 
     class(output) <- c("matrix", "char.diff")
 
