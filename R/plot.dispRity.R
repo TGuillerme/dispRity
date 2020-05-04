@@ -507,14 +507,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## add
     check.class(add, "logical")
 
-    ## density
-    if(any(c("continuous", "polygon") %in% type)) {
-        if(!is.null(density)) {
-            check.class(density, "numeric")
-            check.length(density, 1, " must be a single numeric value.")
-        }
-    }
-
     ## PREPARING THE PLOT
 
     ## summarising the data

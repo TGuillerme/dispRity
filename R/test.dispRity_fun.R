@@ -45,7 +45,7 @@ rep.names <- function(name, subsets) {
 
 
 ## Convert a list into a table (for aov)
-list.to.table <- function(extracted_data, style = "group") {
+list.to.table <- function(extracted_data) {
 
     ## Get the list of names
     names_list <- as.list(names(extracted_data))
@@ -59,9 +59,9 @@ list.to.table <- function(extracted_data, style = "group") {
     output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "subsets" = unlist(mapply(rep.names, names_list, subsets_length, SIMPLIFY = FALSE)))
 
     ## Transform groups to numeric
-    if(style == "binomial") {
-        output$group <- as.numeric(output$group)-1
-    }
+    # if(style == "binomial") {
+    #     output$group <- as.numeric(output$group)-1
+    # }
 
     return(output)
 }

@@ -73,6 +73,9 @@ test_that("extract.from.summary works", {
     expect_equal(
         round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
         ,c(2.66, 2.71, 2.75, 2.73, 2.76, 2.75, 2.63))
+expect_equal(
+        extract.from.summary(sum_data, what = "rows", rarefaction = 10)
+        ,c(3, 8, 13, 18, 22, 25, 27))
 })
 
 test_that("transpose.box works", {
@@ -138,6 +141,7 @@ test_that("plot.dispRity examples work", {
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
+    expect_null(plot(disparity, type = "box", elements = TRUE))
     expect_null(plot(disparity, type = "box", observed = TRUE))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
@@ -156,14 +160,23 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
 
     ## Testing additional behaviours for plot.discrete/continuous
+    expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-    expect_null(plot(disparity,, type = "c", col = c("blue", "orange")))
+    expect_null(plot(disparity, type = "c", col = c("blue", "orange")))
+    expect_null(plot(disparity, density = 50))
 
     ## Auto colouring of quantiles for discrete bins
     data(BeckLee_tree) ; data(BeckLee_mat50)
     test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
     test <- dispRity(boot.matrix(test), metric = c(sum, variances))
     expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
+
+    ## Some other tests
+    error <- capture_error(plot(disparity, ylab = c("blabla", "blu")))
+    expect_equal(error[[1]], "ylab must be a character string.")
+    error <- capture_error(plot(disparity, ylab = c("blabla", "blu", "1"), elements = TRUE))
+    expect_equal(error[[1]], "ylab can have maximum of two elements.")
+
 })
 
 test_that("plot.dispRity continuous with NAs", {

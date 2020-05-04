@@ -35,6 +35,14 @@ test_that("Output is correct", {
         make.metric(fun, silent = FALSE)
         )
 
+    fun2 <- function(x) {
+        return("try-error")
+    }
+    expect_error(
+        make.metric(fun2, silent = FALSE)
+        )
+
+
     ## Verbose
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))

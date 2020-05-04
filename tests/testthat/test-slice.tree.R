@@ -193,14 +193,6 @@ tree$node.label <- as.character(paste0("n",seq(1:5)))
 #Test
 test_that("slice.tree works properly", {
 
-
-
-    print("DEBUG slice.tree") # give test results here
-    slice.edge(tree, 2, model = "random")
-
-
-
-
     #class
     expect_is(
         slice.tree(tree, 0, 'ACCTRAN'), 'phylo'
@@ -231,6 +223,10 @@ test_that("slice.tree works properly", {
     expect_is(
         slice.tree(tree, 0, 'equal.split'), 'matrix'
         )
+    expect_equal(
+        slice.edge(tree, 2, model = "random")
+        ,"n2")
+
 })
 
 test_that("slice.tree proba works", {

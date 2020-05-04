@@ -103,10 +103,6 @@ test_that("list.to.table internal fun", {
         unique(list.to.table(list(rnorm(5),rnorm(5),rnorm(5)))$subsets)
         , c(1,2,3))
 
-    print("debug: test-test.dispRity")
-    # expect_equal(
-    #     list.to.table(list("a"=rnorm(5),"b"=rnorm(5),"c"=rnorm(5))
-    #         , style = "binomial"))
 })
 
 test_that("htest.to.vector internal fun", {

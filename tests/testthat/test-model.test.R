@@ -183,6 +183,9 @@ test_that("model.test.sim example works", {
                      "fixed.optima" = 1,
                      "subsets" = 25))
      
+    expect_is( model.test(data, c("Stasis", "BM"), time.split = c(60, 66), verbose = FALSE), c("dispRity", "model.test"))
+    expect_is( model.test(data, c("Stasis", "BM"), time.split = 66, verbose = FALSE), c("dispRity", "model.test"))
+
     ## simulations using the output from model.test
     expect_error(model.test.sim(sim = 10, model = data))
     expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 5))
