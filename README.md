@@ -3,7 +3,7 @@ Release:
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.3.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.4-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 
@@ -12,7 +12,7 @@ Development (master):
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.3.6-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.4-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
@@ -68,32 +68,27 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 <!-- biorXiv preprint -->
 
 ## Latest patch notes
-* 2018/08/15 v1.3 *many metrics*
+* 2020/05/05 v1.4 *getting faster*
 
-    * *New* metric: `displacements`, a dimension level 2 metric that measures the position of elements in space (i.e. their distance from the centre relative to their distance to their centroid).
-    * *New* metric: `neighbours`, a dimension level 2 metric that measures the distance from an element to its neighbour (e.g. the nearest neighbour, the furthest, the median, etc.).
-    * *New* metric: `quantiles`, a dimension level 2 metric that measures the *n*th quantile range per axis (a good alternative to the `ranges` function!).
-    * *New* metric: `func.eve`, a dimension level 1 metric that measures the functional evenness (i.e. the spread along the minimum spanning tree; from Villéger et al. 2008).
-    * *New* metric: `func.div`, a dimension level 1 metric that measures the functional divergence (i.e. the ratio of deviation from the centroid; from Villéger et al. 2008).
-    * *Updated* metric: `span.tree.length` now outputs the length of each edges (c.f. the sum of the length) and becomes a level 2 metric.
-    * The `chrono.subsets` can now take `multiPhylo` objects for slicing through multiple trees at once!
-    * *New* utility function: `reduce.matrix` for optimising data overlap in a matrix with missing data.
-    * *New* utility function: `slide.nodes` for sliding specific nodes on a tree.
-    * *New* utility function: `remove.zero.brlen` for stochastically removing zero branch lengths on a tree (using the `slide.nodes` function).
-    * **New argument** in `plot.dispRity`: the `type` argument can now be `"preview"` to have a glimpse at two of the dimensions of the trait-space.
-    * The `Claddis.ordination` can now directly take a matrix's path as input (leaving the function to read and transform the matrix into `Claddis` format. The function can thus now also be used to convert matrices into `Claddis` format.
-    * Added a "Other functionalities" section to the manual describing miscellaneous functions.
-    * `centroids` and `ancestral.dist` functions can now take the `method` option for `"euclidean"` or `"manhattan"` distances.
-    * All functions methods selection have now been sped up using `switch`.
-    * Error messages in `dispRity` are more verbose when input the wrong metric(s).
-    * `scree` option in `space.maker` does not require to sum up to one anymore.
-    * `cor.matrix` option in `space.maker` does not require to have a valid Choleski decomposition (an approximation is used instead).
-    * Updated all tests and functions to be compatible with R 3.6.
-    * Fixed bug in `clean.data` that did not output dropped tips correctly when applied on `multiPhylo` objects.
-    * Improved error messages in `chrono.subsets` for funky time slices/bins (e.g. with negative values).
-    * Speed improvements for the `time.slice` function.
-    * Better internal handling of distance matrices for the disparity metrics.
-    * Most functions handles `NA` as `na.rm` or `na.omit`.
+ * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
+ * *New* metric: `deviations`, a dimension level 2 metric that measures the deviation of each element from a hyperplane.
+ * Completely rewritten `char.diff` function. It now uses a way faster bitwise comparison architecture and comes with different distance methods as well as modular optional arguments on how to treat various special tokens (`"?"`, `"-"`, `"&"`, etc.). This also allows many more distance methods (now including `"hamming"`, `"manhattan"`, `"comparable"`, `"euclidean"`, `"maximum"` and `"mord"`).
+ * all `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
+ * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
+ * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
+ * updated `...` argument bug PR#16223.
+ * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
+ * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
+ * greatly improved speed of `chrono.subsets` with `method = "continuous` (now > 1000 times faster!).
+ * minor warning message fix for `plot.dispRity` with time slices.
+ * removed `paleotree` package dependency (though the links to this excellent package are still there!).
+ * increased `R` version requirement to `3.5`.
+ * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
+ * added some time improvements in several phylo functions based on the `castor` package.
+ * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
+ * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
+ * metrics passed in `dispRity` are now tested using the input data dimensions.
+ * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
