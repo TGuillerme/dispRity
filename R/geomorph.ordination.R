@@ -90,7 +90,7 @@ geomorph.ordination <- function(data, ordinate = TRUE, ...) {
     }
 
     ## Class
-    if(class(data) == "geomorph.data.frame") {
+    if(is(data, "geomorph.data.frame")) {
         ## Get the meta data
         factors <- which(unlist(lapply(data, class)) == "factor")
 

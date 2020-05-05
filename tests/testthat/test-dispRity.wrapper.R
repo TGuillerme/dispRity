@@ -19,10 +19,10 @@ test_that("Wrapping works", {
     ## Correct values
     expect_equal(
         summary(result)$obs
-        , c(1.084, 1.348, 1.353))
+        , c(1.269, 1.521, 1.533))
     expect_equal(
         summary(result)$bs.median
-        , c(1.024, 1.333, 1.331))
+        , c(1.157, 1.510, 1.501))
 
     set.seed(1)
     data(BeckLee_mat50) ; data(BeckLee_tree)
@@ -40,8 +40,8 @@ test_that("Wrapping works", {
     ## Correct values
     expect_equal(
         summary(result)$obs
-        , c(1.387, 1.274))
+        , c(1.554, 1.457))
     expect_equal(
         summary(result)$bs.median
-        , c(1.368, 1.244))
+        , c(1.541, 1.427))
 })

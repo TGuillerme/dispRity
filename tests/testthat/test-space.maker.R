@@ -116,7 +116,7 @@ test_that("correlation works", {
 
 
 test_that("scree works", {
-    ## One space
+    ## One space
     set.seed(1)
     space_no_scre <- space.maker(1000, 3, rnorm)
     

@@ -4,7 +4,7 @@ CI.converter <- function(CI) {
 }
 
 # Wrapper function for summarising a single rarefaction
-get.summary <- function(disparity_subsets_rare, cent.tend, quantiles) {
+get.summary <- function(disparity_subsets_rare, cent.tend, quantiles, ...) {
 
     output <- list()
 
@@ -21,7 +21,7 @@ get.summary <- function(disparity_subsets_rare, cent.tend, quantiles) {
 
     ## Summarising normal data
     if(!missing(cent.tend)) {
-        output$cent_tend <- cent.tend(as.vector(disparity_subsets_rare))
+        output$cent_tend <- cent.tend(as.vector(disparity_subsets_rare), ...)
     }
     if(!missing(quantiles)) {
         output$quantiles <- quantile(as.vector(disparity_subsets_rare), probs = CI.converter(quantiles), na.rm = TRUE)
@@ -30,8 +30,8 @@ get.summary <- function(disparity_subsets_rare, cent.tend, quantiles) {
 }
 
 ## lapply wrapper function for summarising a single subset
-lapply.summary <- function(disparity_subsets, cent.tend, quantiles) {
-    return(lapply(disparity_subsets[-1], get.summary, cent.tend, quantiles))
+lapply.summary <- function(disparity_subsets, cent.tend, quantiles, ...) {
+    return(lapply(disparity_subsets[-1], get.summary, cent.tend, quantiles, ...))
 }
 
 ## lapply wrapper for getting elements
@@ -45,11 +45,11 @@ lapply.get.elements <- function(subsets, bootstrapped = TRUE) {
 
 ## lapply wrapper for getting the disparity observed values
 lapply.observed <- function(disparity) {
-    output <- if(any(is.na(disparity$elements))) {
-        return(NA)
-    } else {
+    # output <- if(any(is.na(disparity$elements))) {
+    #     return(NA)
+    # } else {
         return(c(disparity$elements))
-    }
+    # }
 }
 
 ## mapply wrapper for getting the disparity observed values
@@ -71,7 +71,7 @@ round.column <- function(column, digits) {
     ## Get the digits value
     digits <- ifelse(digits != "default", digits, get.digit(as.numeric(column)))
     ## Round the table
-    if(class(column) != "group") {
+    if(!is(column, "group")) {
         return(round(as.numeric(column), digits = digits))
     } else {
         return(round(as.numeric(as.character(column)), digits = digits))

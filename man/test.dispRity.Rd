@@ -4,9 +4,17 @@
 \alias{test.dispRity}
 \title{Testing disparity hypotheses}
 \usage{
-test.dispRity(data, test, comparisons = "pairwise", rarefaction = NULL,
-  correction = "none", concatenate = TRUE, conc.quantiles = c(mean,
-  c(95, 50)), details = FALSE, ...)
+test.dispRity(
+  data,
+  test,
+  comparisons = "pairwise",
+  rarefaction = NULL,
+  correction = "none",
+  concatenate = TRUE,
+  conc.quantiles = c(mean, c(95, 50)),
+  details = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}

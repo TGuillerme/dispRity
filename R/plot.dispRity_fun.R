@@ -60,7 +60,8 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
     ## Internal function for checking true NAs
     check.na <- function(row, extract, summarised_data) {
         if(!extract[row]) {
-            extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+            # extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+            extract[row] <- all(is.na(summarised_data[row,-c(1,2)]))
         }
         return(extract[row])
     }
@@ -210,7 +211,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_di
             plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
             #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+                plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
             #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }
@@ -435,7 +436,7 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 }
 
 ## Plotting a space preview
-plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
+plot.preview <- function(data, dimensions, matrix, xlab, ylab, ylim, col, ...) {
 
     ## The "ggplot" colours
     gg.color.hue <- function(n) {
@@ -446,11 +447,11 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
     plot_args <- list(...)
 
     ## Setting the dimensions
-    plot_args$x <- data$matrix[, dimensions[1]]
-    plot_args$y <- data$matrix[, dimensions[2]]
+    plot_args$x <- data$matrix[[matrix]][, dimensions[1]]
+    plot_args$y <- data$matrix[[matrix]][, dimensions[2]]
 
     ## Getting the loadings
-    loading <- apply(data$matrix, 2, var, na.rm = TRUE)
+    loading <- apply(data$matrix[[matrix]], 2, var, na.rm = TRUE)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
@@ -466,7 +467,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
     }
 
     ## Setting plot limits
-    plot_lim <- range(as.vector(c(data$matrix[, dimensions])))
+    plot_lim <- range(as.vector(c(data$matrix[[matrix]][, dimensions])))
     if(is.null(plot_args$xlim)) {
         plot_args$xlim <- plot_lim
     }
@@ -489,7 +490,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
         if(n_groups == 1) {
             plot_args$col <- "black"
         } else {
-            if(data$call$subsets == "customised") {
+            if(data$call$subsets[[1]] == "customised") {
                 plot_args$col <- gg.color.hue(n_groups)
             } else {
                 plot_args$col <- grDevices::heat.colors(n_groups+2)[1:n_groups]
@@ -501,7 +502,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
 
     ## Make a colour classifier
     if(n_groups > 1) {
-        classifier <- rep(NA, nrow(data$matrix))
+        classifier <- rep(NA, nrow(data$matrix[[matrix]]))
         for(class in 1:n_groups) {
             classifier[data$subsets[[class]]$elements[,1]] <- class
         }
@@ -654,7 +655,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
 
 #Plot sequential.test shortcut
 # if(length(class(data)) == 2) {
-#     if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "seq.test") {
+#     if(is(data, "dispRity") && is(data, "seq.test")) {
 
 #         #lines.args sanitizing
 #         if(!is.null(lines.args)) check.class(lines.args, "list")
@@ -670,7 +671,7 @@ plot.preview <- function(data, dimensions, xlab, ylab, ylim, col, ...) {
 
 #         #significance sanitizing
 #         if(is_distribution == TRUE) {
-#             if(class(significance) == "character") {
+#             if(is(significance, "character")) {
 #                 if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
 #                 significance = 1
 #             } else {

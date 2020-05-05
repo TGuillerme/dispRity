@@ -32,7 +32,7 @@ bhatt.coeff <- function(x, y, bw = bw.nrd0, ...) {
     check.class(y, "numeric")
     
     ## bw (bandwidth)
-    if(class(bw) == "numeric") {
+    if(is(bw, "numeric")) {
         check.length(bw, 1, " must be either a single numeric value or a function.")
         bw <- round(bw)
     } else {
@@ -43,7 +43,7 @@ bhatt.coeff <- function(x, y, bw = bw.nrd0, ...) {
     ## sum(sqrt(x relative counts in bin_i * y relative counts in bin_i))
 
     ## Setting the right number of bins (i)
-    if(class(bw) == 'function') {
+    if(is(bw, "function")) {
         ## Bin width
         band.width <- bw(c(x, y), ...)
         ## Bin breaks

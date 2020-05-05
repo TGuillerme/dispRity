@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>9 Palaeobiology demo: disparity-through-time and within groups | dispRity manual</title>
   <meta name="description" content="dispRity R package vignette" />
-  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="9 Palaeobiology demo: disparity-through-time and within groups | dispRity manual" />
   <meta property="og:type" content="book" />
@@ -24,15 +24,15 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2019-08-15" />
+<meta name="date" content="2020-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ecology-demo.html">
-<link rel="next" href="developing-disprity.html">
+<link rel="prev" href="ecology-demo.html"/>
+<link rel="next" href="references.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -40,6 +40,9 @@
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
 
 
 
@@ -133,11 +136,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#noCRAN"><i class="fa fa-check"></i><b>1.3</b> To CRAN or not to CRAN?</a><ul>
-<li class="chapter" data-level="1.3.1" data-path="index.html"><a href="index.html#version"><i class="fa fa-check"></i><b>1.3.1</b> So which version do I choose?</a></li>
-</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#version"><i class="fa fa-check"></i><b>1.3</b> Which version do I choose?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.5.1</b> Why is it important to cite us?</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a><ul>
 <li class="chapter" data-level="2.1" data-path="glossary.html"><a href="glossary.html#glossary-equivalences-in-palaeobiology-and-ecology"><i class="fa fa-check"></i><b>2.1</b> Glossary equivalences in palaeobiology and ecology</a></li>
@@ -156,7 +159,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
-<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a></li>
+<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-binning"><i class="fa fa-check"></i><b>4.1.1</b> Time-binning</a></li>
+<li class="chapter" data-level="4.1.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1.2</b> Time-slicing</a></li>
+</ul></li>
 <li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
@@ -170,6 +176,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a><ul>
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
+<li class="chapter" data-level="4.5.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#type-preview"><i class="fa fa-check"></i><b>4.5.3</b> <code>type = preview</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
@@ -184,6 +191,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
+<li class="chapter" data-level="4.10" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multi.input"><i class="fa fa-check"></i><b>4.10</b> Disparity from multiple matrices (and multiple trees!)</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -197,18 +205,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="other-functionalities.html"><a href="other-functionalities.html"><i class="fa fa-check"></i><b>6</b> Other functionalities</a><ul>
-<li class="chapter" data-level="6.1" data-path="other-functionalities.html"><a href="other-functionalities.html#clean.data"><i class="fa fa-check"></i><b>6.1</b> <code>clean.data</code></a></li>
-<li class="chapter" data-level="6.2" data-path="other-functionalities.html"><a href="other-functionalities.html#crown.stem"><i class="fa fa-check"></i><b>6.2</b> <code>crown.stem</code></a></li>
-<li class="chapter" data-level="6.3" data-path="other-functionalities.html"><a href="other-functionalities.html#get.bin.ages"><i class="fa fa-check"></i><b>6.3</b> <code>get.bin.ages</code></a></li>
-<li class="chapter" data-level="6.4" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.4</b> <code>pair.plot</code></a></li>
-<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.5</b> <code>reduce.matrix</code></a></li>
-<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.6</b> <code>slice.tree</code></a></li>
-<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.7</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
-<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.8</b> <code>tree.age</code></a></li>
+<li class="chapter" data-level="6.1" data-path="other-functionalities.html"><a href="other-functionalities.html#char.diff"><i class="fa fa-check"></i><b>6.1</b> <code>char.diff</code></a></li>
+<li class="chapter" data-level="6.2" data-path="other-functionalities.html"><a href="other-functionalities.html#clean.data"><i class="fa fa-check"></i><b>6.2</b> <code>clean.data</code></a></li>
+<li class="chapter" data-level="6.3" data-path="other-functionalities.html"><a href="other-functionalities.html#crown.stem"><i class="fa fa-check"></i><b>6.3</b> <code>crown.stem</code></a></li>
+<li class="chapter" data-level="6.4" data-path="other-functionalities.html"><a href="other-functionalities.html#get.bin.ages"><i class="fa fa-check"></i><b>6.4</b> <code>get.bin.ages</code></a></li>
+<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.5</b> <code>pair.plot</code></a></li>
+<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.6</b> <code>reduce.matrix</code></a></li>
+<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.7</b> <code>slice.tree</code></a></li>
+<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.8</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
+<li class="chapter" data-level="6.9" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.9</b> <code>tree.age</code></a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a><ul>
 <li class="chapter" data-level="7.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>7.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
 <li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
 <li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
@@ -240,9 +249,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>9.3</b> Testing differences</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="developing-disprity.html"><a href="developing-disprity.html"><i class="fa fa-check"></i><b>10</b> Developing <code>dispRity</code></a><ul>
-<li class="chapter" data-level="10.1" data-path="developing-disprity.html"><a href="developing-disprity.html#more-functions"><i class="fa fa-check"></i><b>10.1</b> More functions</a></li>
-</ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
@@ -266,7 +272,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="palaeobiology-demo-disparity-through-time-and-within-groups" class="section level1">
 <h1><span class="header-section-number">9</span> Palaeobiology demo: disparity-through-time and within groups</h1>
-<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.3) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
+<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.4) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
 <p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).</p>
 <div id="before-starting" class="section level2">
 <h2><span class="header-section-number">9.1</span> Before starting</h2>
@@ -276,29 +282,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details.
 Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1"><span class="co">## Loading demo and the package data</span></a>
-<a class="sourceLine" id="cb424-2" data-line-number="2"><span class="kw">library</span>(dispRity)</a>
-<a class="sourceLine" id="cb424-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb424-4" data-line-number="4"><span class="co">## Setting the random seed for repeatability</span></a>
-<a class="sourceLine" id="cb424-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb424-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb424-7" data-line-number="7"><span class="co">## Loading the ordinated matrix/morphospace:</span></a>
-<a class="sourceLine" id="cb424-8" data-line-number="8"><span class="kw">data</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb424-9" data-line-number="9"><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
-<pre><code>##                    [,1]          [,2]        [,3]       [,4]      [,5]
-## Cimolestes   -0.5319679  0.1117759259  0.09865194 -0.1933148 0.2035833
-## Maelestes    -0.4087147  0.0139690317  0.26268300  0.2297096 0.1310953
-## Batodon      -0.6923194  0.3308625215 -0.10175223 -0.1899656 0.1003108
-## Bulaklestes  -0.6802291 -0.0134872777  0.11018009 -0.4103588 0.4326298
-## Daulestes    -0.7386111  0.0009001369  0.12006449 -0.4978191 0.4741342
-## Uchkudukodon -0.5105254 -0.2420633915  0.44170317 -0.1172972 0.3602273</code></pre>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="kw">dim</span>(BeckLee_mat50)</a></code></pre></div>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" data-line-number="1"><span class="co">## Loading demo and the package data</span></a>
+<a class="sourceLine" id="cb475-2" data-line-number="2"><span class="kw">library</span>(dispRity)</a>
+<a class="sourceLine" id="cb475-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb475-4" data-line-number="4"><span class="co">## Setting the random seed for repeatability</span></a>
+<a class="sourceLine" id="cb475-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb475-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb475-7" data-line-number="7"><span class="co">## Loading the ordinated matrix/morphospace:</span></a>
+<a class="sourceLine" id="cb475-8" data-line-number="8"><span class="kw">data</span>(BeckLee_mat50)</a>
+<a class="sourceLine" id="cb475-9" data-line-number="9"><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
+<pre><code>##                    [,1]        [,2]        [,3]       [,4]        [,5]
+## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 -0.18825039
+## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 -0.28510479
+## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511 -0.07132646
+## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 -0.39962626
+## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 -0.37385914
+## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 -0.34857351</code></pre>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" data-line-number="1"><span class="kw">dim</span>(BeckLee_mat50)</a></code></pre></div>
 <pre><code>## [1] 50 48</code></pre>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1"><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></a>
-<a class="sourceLine" id="cb428-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb428-3" data-line-number="3"><span class="co">## Showing a list of first and last occurrences data for some fossils</span></a>
-<a class="sourceLine" id="cb428-4" data-line-number="4"><span class="kw">data</span>(BeckLee_ages)</a>
-<a class="sourceLine" id="cb428-5" data-line-number="5"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1"><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></a>
+<a class="sourceLine" id="cb479-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb479-3" data-line-number="3"><span class="co">## Showing a list of first and last occurrences data for some fossils</span></a>
+<a class="sourceLine" id="cb479-4" data-line-number="4"><span class="kw">data</span>(BeckLee_ages)</a>
+<a class="sourceLine" id="cb479-5" data-line-number="5"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -306,17 +312,17 @@ The ordinated matrix will represent our full morphospace, i.e. all the mammalia
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="co">## Plotting a phylogeny</span></a>
-<a class="sourceLine" id="cb430-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
-<a class="sourceLine" id="cb430-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
-<a class="sourceLine" id="cb430-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-141-1.png" width="576" /></p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1"><span class="co">## Plotting a phylogeny</span></a>
+<a class="sourceLine" id="cb481-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
+<a class="sourceLine" id="cb481-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
+<a class="sourceLine" id="cb481-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-160-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
-<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</a>
-<a class="sourceLine" id="cb431-2" data-line-number="2">strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-142-1.png" width="672" /></p>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</a>
+<a class="sourceLine" id="cb482-2" data-line-number="2">strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-161-1.png" width="672" /></p>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
@@ -328,30 +334,32 @@ Basically, the full morphospace represents the total number of morphologies acro
 <p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>).
 In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present.
 We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
-<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="co">## Creating the vector of time bins ages</span></a>
-<a class="sourceLine" id="cb432-2" data-line-number="2">(time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" data-line-number="1"><span class="co">## Creating the vector of time bins ages</span></a>
+<a class="sourceLine" id="cb483-2" data-line-number="2">(time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</a></code></pre></div>
 <pre><code>## [1] 100  80  60  40  20   0</code></pre>
-<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" data-line-number="1"><span class="co">## Splitting the morphospace using the chrono.subsets function</span></a>
-<a class="sourceLine" id="cb434-2" data-line-number="2">(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,</a>
-<a class="sourceLine" id="cb434-3" data-line-number="3">    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb434-4" data-line-number="4">    <span class="dt">FADLAD =</span> BeckLee_ages))</a></code></pre></div>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" data-line-number="1"><span class="co">## Splitting the morphospace using the chrono.subsets function</span></a>
+<a class="sourceLine" id="cb485-2" data-line-number="2">(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat50, <span class="dt">tree =</span> BeckLee_tree,</a>
+<a class="sourceLine" id="cb485-3" data-line-number="3">    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb485-4" data-line-number="4">    <span class="dt">FADLAD =</span> BeckLee_ages))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements:
+## 5 discrete time subsets for 50 elements in one matrix:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
 <p>The output object is a <code>dispRity</code> object (see more about that <a href="#The-guts-of-the-dispRity-package">here</a>.
 In brief, however, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the <code>R</code> console with superfluous output.</p>
-<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1"><span class="co">## Printing the class of the object</span></a>
-<a class="sourceLine" id="cb436-2" data-line-number="2"><span class="kw">class</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" data-line-number="1"><span class="co">## Printing the class of the object</span></a>
+<a class="sourceLine" id="cb487-2" data-line-number="2"><span class="kw">class</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" data-line-number="1"><span class="co">## Printing the content of the object</span></a>
-<a class="sourceLine" id="cb438-2" data-line-number="2"><span class="kw">str</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" data-line-number="1"><span class="co">## Printing the content of the object</span></a>
+<a class="sourceLine" id="cb489-2" data-line-number="2"><span class="kw">str</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## List of 3
-##  $ matrix : num [1:50, 1:48] -0.532 -0.409 -0.692 -0.68 -0.739 ...
-##   ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. ..$ : chr [1:50] &quot;Cimolestes&quot; &quot;Maelestes&quot; &quot;Batodon&quot; &quot;Bulaklestes&quot; ...
-##   .. ..$ : NULL
+##  $ matrix :List of 1
+##   ..$ : num [1:50, 1:48] -0.561 -0.419 -0.834 -0.771 -0.832 ...
+##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. .. ..$ : chr [1:50] &quot;Cimolestes&quot; &quot;Maelestes&quot; &quot;Batodon&quot; &quot;Bulaklestes&quot; ...
+##   .. .. ..$ : NULL
 ##  $ call   :List of 1
-##   ..$ subsets: chr &quot;discrete&quot;
+##   ..$ subsets: Named chr [1:4] &quot;discrete&quot; &quot;1&quot; &quot;1&quot; &quot;FALSE&quot;
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:4] &quot;&quot; &quot;trees&quot; &quot;matrices&quot; &quot;bind&quot;
 ##  $ subsets:List of 5
 ##   ..$ 100 - 80:List of 1
 ##   .. ..$ elements: int [1:8, 1] 5 4 6 8 43 10 11 42
@@ -364,12 +372,12 @@ In brief, however, <code>dispRity</code> objects are lists of different elements
 ##   ..$ 20 - 0  :List of 1
 ##   .. ..$ elements: int [1:10, 1] 36 37 38 32 33 34 50 48 29 30
 ##  - attr(*, &quot;class&quot;)= chr &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1"><span class="kw">names</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="kw">names</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;  &quot;call&quot;    &quot;subsets&quot;</code></pre>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1"><span class="co">## Printing the object as a dispRity class</span></a>
-<a class="sourceLine" id="cb442-2" data-line-number="2">binned_morphospace</a></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" data-line-number="1"><span class="co">## Printing the object as a dispRity class</span></a>
+<a class="sourceLine" id="cb493-2" data-line-number="2">binned_morphospace</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements:
+## 5 discrete time subsets for 50 elements in one matrix:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
 <blockquote>
 <p>These objects will gradual.splitly contain more information when completing the following steps in the disparity-through-time analysis.</p>
@@ -380,20 +388,20 @@ In brief, however, <code>dispRity</code> objects are lists of different elements
 <p>Once we obtain our different time subsets, we can bootstrap and rarefy them (i.e. pseudo-replicating the data).
 The bootstrapping allows us to make each subset more robust to outliers and the rarefaction allows us to compare subsets with the same number of taxa to remove sampling biases (i.e. more taxa in one subset than the others).
 The <code>boot.matrix</code> function bootstraps the <code>dispRity</code> object and the <code>rarefaction</code> option within performs rarefaction.</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times (default)</span></a>
-<a class="sourceLine" id="cb444-2" data-line-number="2">(boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace))</a></code></pre></div>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times (default)</span></a>
+<a class="sourceLine" id="cb495-2" data-line-number="2">(boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
-<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1"><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></a>
-<a class="sourceLine" id="cb446-2" data-line-number="2"><span class="kw">min</span>(<span class="kw">size.subsets</span>(boot_bin_morphospace))</a></code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" data-line-number="1"><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></a>
+<a class="sourceLine" id="cb497-2" data-line-number="2"><span class="kw">min</span>(<span class="kw">size.subsets</span>(boot_bin_morphospace))</a></code></pre></div>
 <pre><code>## [1] 6</code></pre>
-<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></a>
-<a class="sourceLine" id="cb448-2" data-line-number="2">(rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb448-3" data-line-number="3">    <span class="dt">rarefaction =</span> <span class="dv">6</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></a>
+<a class="sourceLine" id="cb499-2" data-line-number="2">(rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb499-3" data-line-number="3">    <span class="dt">rarefaction =</span> <span class="dv">6</span>))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.</code></pre>
 </div>
@@ -406,42 +414,42 @@ For more details, please refer to the <a href="details-of-specific-functions.htm
 Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace).
 Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace.
 We use this here because it is a standard metric used in disparity-through-time analysis <span class="citation">(Wills, Briggs, and Fortey, <a href="#ref-Wills1994">n.d.</a>)</span>.</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" data-line-number="1"><span class="co">## Calculating disparity for the bootstrapped data</span></a>
-<a class="sourceLine" id="cb450-2" data-line-number="2">(boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" data-line-number="1"><span class="co">## Calculating disparity for the bootstrapped data</span></a>
+<a class="sourceLine" id="cb501-2" data-line-number="2">(boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: c(sum, variances).</code></pre>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" data-line-number="1"><span class="co">## Calculating disparity for the rarefied data</span></a>
-<a class="sourceLine" id="cb452-2" data-line-number="2">(rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb503-1" data-line-number="1"><span class="co">## Calculating disparity for the rarefied data</span></a>
+<a class="sourceLine" id="cb503-2" data-line-number="2">(rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements with 48 dimensions:
+## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.
 ## Disparity was calculated as: c(sum, variances).</code></pre>
 <p>The <code>dispRity</code> function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, subsets, metric, etc.).
 To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied to a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).</p>
 <p>As for any <code>R</code> package, you can refer to the help files for each individual function for more details.</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" data-line-number="1"><span class="co">## Summarising the disparity results</span></a>
-<a class="sourceLine" id="cb454-2" data-line-number="2"><span class="kw">summary</span>(boot_disparity)</a></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" data-line-number="1"><span class="co">## Summarising the disparity results</span></a>
+<a class="sourceLine" id="cb505-2" data-line-number="2"><span class="kw">summary</span>(boot_disparity)</a></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.494 1.182 1.409 1.537 1.661
-## 2  80 - 60 15 1.782     1.656 1.517 1.601 1.700 1.776
-## 3  60 - 40 13 1.913     1.783 1.635 1.733 1.803 1.861
-## 4  40 - 20  6 2.022     1.678 1.243 1.589 1.816 1.942
-## 5   20 - 0 10 1.971     1.768 1.573 1.694 1.840 1.912</code></pre>
-<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" data-line-number="1"><span class="kw">summary</span>(rare_disparity)</a></code></pre></div>
+## 1 100 - 80  8 2.207     1.962 1.615 1.876 2.017 2.172
+## 2  80 - 60 15 2.315     2.158 1.975 2.100 2.207 2.297
+## 3  60 - 40 13 2.435     2.257 2.080 2.202 2.297 2.361
+## 4  40 - 20  6 2.604     2.165 1.587 2.032 2.320 2.472
+## 5   20 - 0 10 2.491     2.238 1.992 2.136 2.326 2.408</code></pre>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb507-1" data-line-number="1"><span class="kw">summary</span>(rare_disparity)</a></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 1.675     1.501 1.253 1.442 1.565 1.614
-## 2 100 - 80  6    NA     1.464 1.004 1.377 1.586 1.705
-## 3  80 - 60 15 1.782     1.649 1.504 1.592 1.699 1.778
-## 4  80 - 60  6    NA     1.673 1.394 1.570 1.792 1.929
-## 5  60 - 40 13 1.913     1.790 1.634 1.729 1.818 1.858
-## 6  60 - 40  6    NA     1.764 1.373 1.638 1.861 1.987
-## 7  40 - 20  6 2.022     1.692 1.063 1.591 1.822 1.904
-## 8   20 - 0 10 1.971     1.786 1.541 1.715 1.841 1.917
-## 9   20 - 0  6    NA     1.808 1.361 1.679 1.880 2.011</code></pre>
+## 1 100 - 80  8 2.207     1.975 1.672 1.905 2.059 2.129
+## 2 100 - 80  6    NA     1.933 1.369 1.811 2.082 2.230
+## 3  80 - 60 15 2.315     2.144 1.991 2.084 2.196 2.289
+## 4  80 - 60  6    NA     2.187 1.827 2.061 2.312 2.465
+## 5  60 - 40 13 2.435     2.271 2.103 2.205 2.311 2.370
+## 6  60 - 40  6    NA     2.249 1.733 2.108 2.368 2.507
+## 7  40 - 20  6 2.604     2.191 1.370 2.053 2.329 2.452
+## 8   20 - 0 10 2.491     2.262 1.927 2.166 2.318 2.426
+## 9   20 - 0  6    NA     2.288 1.743 2.130 2.354 2.515</code></pre>
 <blockquote>
 <p>The summary.dispRity function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function’s manual for more details.</p>
 </blockquote>
@@ -450,13 +458,13 @@ To display the actual calculated scores, we need to summarise the disparity obje
 <h3><span class="header-section-number">9.2.4</span> Plotting the results</h3>
 <p>It is sometimes easier to visualise the results in a plot than in a table.
 For that we can use the <code>plot</code> S3 function to plot the <code>dispRity</code> objects (see <code>?plot.dispRity</code> for more details).</p>
-<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb458-1" data-line-number="1"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb458-2" data-line-number="2"><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb458-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb458-4" data-line-number="4"><span class="co">## Plotting the bootstrapped and rarefied results</span></a>
-<a class="sourceLine" id="cb458-5" data-line-number="5"><span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</a>
-<a class="sourceLine" id="cb458-6" data-line-number="6"><span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-148-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb509-1" data-line-number="1"><span class="co">## Graphical options</span></a>
+<a class="sourceLine" id="cb509-2" data-line-number="2"><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb509-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb509-4" data-line-number="4"><span class="co">## Plotting the bootstrapped and rarefied results</span></a>
+<a class="sourceLine" id="cb509-5" data-line-number="5"><span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</a>
+<a class="sourceLine" id="cb509-6" data-line-number="6"><span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-167-1.png" width="1152" /></p>
 </div>
 </div>
 <div id="testing-differences" class="section level2">
@@ -466,38 +474,38 @@ We can test, for example, if mammalian disparity changed significantly through t
 To do so, we can compare the means of each time-bin in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em>, and whether this is in turn equal to the disparity in bin <em>n+2</em>, etc.
 Because our data is temporally autocorrelated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and pseudoreplicated (i.e. each bootstrap draw creates non-independent time subsets because they are all based on the same time subsets), we apply a non-parametric mean comparison: the <code>wilcox.test</code>.
 Also, we need to apply a p-value correction (e.g. Bonferroni correction) to correct for multiple testing (see <code>?p.adjust</code> for more details).</p>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" data-line-number="1"><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></a>
-<a class="sourceLine" id="cb459-2" data-line-number="2"><span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
-<a class="sourceLine" id="cb459-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb510-1" data-line-number="1"><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></a>
+<a class="sourceLine" id="cb510-2" data-line-number="2"><span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb510-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          687
-## 80 - 60 : 60 - 40          1121
-## 60 - 40 : 40 - 20          6566
-## 40 - 20 : 20 - 0           3678
+## 100 - 80 : 80 - 60          791
+## 80 - 60 : 60 - 40          1946
+## 60 - 40 : 40 - 20          6208
+## 40 - 20 : 20 - 0           4225
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 2.330360e-25
-## 80 - 60 : 60 - 40  1.049970e-20
-## 60 - 40 : 40 - 20  5.226732e-04
-## 40 - 20 : 20 - 0   4.968995e-03</code></pre>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" data-line-number="1"><span class="co">## Testing the differences between bins in the rarefied dataset.</span></a>
-<a class="sourceLine" id="cb461-2" data-line-number="2"><span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
-<a class="sourceLine" id="cb461-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+## 100 - 80 : 80 - 60 3.362697e-24
+## 80 - 60 : 60 - 40  3.437652e-13
+## 60 - 40 : 40 - 20  1.269261e-02
+## 40 - 20 : 20 - 0   2.337298e-01</code></pre>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb512-1" data-line-number="1"><span class="co">## Testing the differences between bins in the rarefied dataset.</span></a>
+<a class="sourceLine" id="cb512-2" data-line-number="2"><span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb512-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          857
-## 80 - 60 : 60 - 40          1049
-## 60 - 40 : 40 - 20          6328
-## 40 - 20 : 20 - 0           3732
+## 100 - 80 : 80 - 60          963
+## 80 - 60 : 60 - 40          1553
+## 60 - 40 : 40 - 20          5975
+## 40 - 20 : 20 - 0           4288
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 1.769873e-23
-## 80 - 60 : 60 - 40  1.916852e-21
-## 60 - 40 : 40 - 20  4.720974e-03
-## 40 - 20 : 20 - 0   7.819379e-03</code></pre>
+## 100 - 80 : 80 - 60 2.415081e-22
+## 80 - 60 : 60 - 40  1.491356e-16
+## 60 - 40 : 40 - 20  6.904555e-02
+## 40 - 20 : 20 - 0   3.285062e-01</code></pre>
 <p>Here our results show significant changes in disparity through time between all time bins (all p-values &lt; 0.05).
 However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.</p>
 
@@ -518,16 +526,18 @@ However, when looking at the rarefied results, there is no significant differenc
         </div>
       </div>
 <a href="ecology-demo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="developing-disprity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -535,12 +545,11 @@ gitbook.start({
 "github": false,
 "facebook": true,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -552,6 +561,10 @@ gitbook.start({
 "text": "Edit"
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },
@@ -570,8 +583,9 @@ gitbook.start({
     script.type = "text/javascript";
     var src = "true";
     if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

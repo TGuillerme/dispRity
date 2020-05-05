@@ -8,7 +8,7 @@
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a rownames or names attribute that corresponds to the elements in \code{data}.
+#' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing:
@@ -31,14 +31,15 @@
 #' }
 #' 
 #' \code{prob}: This option allows to attribute specific probability to each element to be drawn.
-#' A probability of 0 will never sample the element, a probability of 1 will sample.
+#' A probability of 0 will never sample the element, a probability of 1 will always allow it to be sampled.
 #' This can also be useful for weighting elements: an element with a weight of 10 will be sampled ten times more.
 #' If the argument is a \code{matrix}, it must have rownames attributes corresponding to the element names.
 #' If the argument is a \code{vector}, it must have names attributes corresponding to the element names.
 #'
-#' Multiple trees: If the give \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
+#' Multiple trees: If the given \code{data} is a \code{\link{chrono.subsets}} based on multiple trees, the sampling is proportional to the presence of each element in each tree: \eqn{\sum (1/n) / T} (with \emph{n} being the maximum number of elements among the trees and \emph{T} being the total numbers of trees).
 #' For example, for a slice through two trees resulting in the selection of elements \code{A} and \code{B} in the first tree and \code{A}, \code{B} and \code{C} in the second tree, the \code{"full"} bootstrap algorithm will select three elements (with replacement) between \code{A}, \code{B} and \code{C} with a probability of respectively \eqn{p(A) = 1/3} (\eqn{p(A) = (1/3 + 1/3) / 2}), \eqn{p(B) = 1/3} and \eqn{p(C) = 1/6} (\eqn{p(C) = (0 + 1/3) / 2}).
 #' 
+# Multiple matrices: If the given \code{data} contains multiple matrices, the elements selected for each bootstrap pseudo-replicate are applied to all the matrices. For example if a bootstrap pseudo-replicate selects the elements 2, 3, and 5, they are selected for all matrices. If the given \code{data} is from \code{\link{chrono.subsets}} and contains the same number of matrices and trees (>1) the sampling is distributed for each
 #' 
 #' @seealso \code{\link{cust.subsets}}, \code{\link{chrono.subsets}}, \code{\link{dispRity}}.
 #'
@@ -86,8 +87,6 @@
 # rarefaction <- TRUE
 
 boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", prob) {
-    
-    parallel <- FALSE
 
     match_call <- match.call()
     ## ----------------------
@@ -95,20 +94,24 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## ----------------------
     ## DATA
     ## If class is dispRity, data is serial
-    if(class(data) != "dispRity") {
+    if(!is(data, "dispRity")) {
         ## Data must be a matrix
-        check.class(data, "matrix")
+        data <- check.dispRity.data(data)
 
         ## Check whether it is a distance matrix
-        if(check.dist.matrix(data, just.check = TRUE)) {
+        if(check.dist.matrix(data[[1]], just.check = TRUE)) {
             warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
         }
 
         ## Creating the dispRity object
-        dispRity_object <- make.dispRity(data = data)
-        #dispRity_object$subsets$origin$elements <- seq(1:nrow(data))
-        data <- dispRity_object
+        data <- make.dispRity(data = data)
     } else {
+
+        ## Must not already been bootstrapped
+        if(!is.null(data$call$bootstrap)) {
+            stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
+        }
+
         ## Must be correct format
         check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         
@@ -139,7 +142,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     } else {
         if(ifelse(all(unique(unlist(lapply(data$subsets, lapply, ncol))) > 1), TRUE, FALSE)) {
             ## Check if the subsets have multiple trees (all are integers)
-            has_multiple_trees <- ifelse(class(unlist(data$subsets)) == "integer", TRUE, FALSE)
+            has_multiple_trees <- ifelse(class(unlist(data$subsets))[1] == "integer", TRUE, FALSE)
             probabilistic_subsets <- FALSE
 
             ## Check if it has multiple trees AND has probabilities
@@ -185,14 +188,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Check the names
-            if(!all(prob_names %in% rownames(data$matrix))) {
+            if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
                 stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
             } else {
                 ## Check if they are any names missing
-                missing_rows <- rownames(data$matrix) %in% prob_names
+                missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
                 if(any(missing_rows)) {
                     extra_prob <- rep(1, length(which(!missing_rows)))
-                    names(extra_prob) <- rownames(data$matrix)[!missing_rows]
+                    names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
                     prob <- c(extra_prob, prob)
                 }
             }
@@ -208,7 +211,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
 
             ## Renaming the elements to match the numbers in subsets
-            names(prob) <- match(names(prob), rownames(data$matrix))
+            names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
 
             ## Update the dispRity object
             add.prob <- function(one_subset, prob) {
@@ -237,7 +240,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     ## RAREFACTION
     ## Is it logical?
-    if(class(rarefaction) != "logical") {
+    if(!is(rarefaction, "logical")) {
         ## Is it numeric?
         rare_class <- check.class(rarefaction, c("numeric", "integer", "character"), " must be either numeric, logical or \"min\".")
         if(rare_class == "character") {
@@ -249,7 +252,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     } else {
         if(rarefaction) {
-            rarefaction <- seq(from = nrow(data$matrix), to = 3)
+            rarefaction <- seq(from = nrow(data$matrix[[1]]), to = 3)
             rare_out <- "full"
         } else {
             rarefaction <- NULL
@@ -274,18 +277,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         warning(paste0("Multiple trees where used in ", as.expression(match_call$data), ". The 'boot.type' option is set to \"full\"."))
     }
 
-    # boot.type_class <- class(boot.type)
-    # if(boot.type_class == "character") {
-    #     boot.type <- tolower(boot.type)
-    #     check.method(boot.type, c("full", "single"), "boot.type")
-    #     check.length(boot.type, 1, " must be \"full\", \"single\" or a matrix.")
-    # } else {
-    #     check.class(boot.type, "matrix")
-    #     if(!all(colnames(boot.type) == colnames(data$matrix))) {
-    #         stop("The personalised boot.type matrix must have the same rownames as the data.")
-    #     }
-    # }
-
     ## Set up the bootstrap type function
     switch(boot.type,
         "full" = {
@@ -301,7 +292,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             } else {
                 boot.type.fun <- boot.single
             }
-        })
+        }
+    )
 
     ##  ~~~
     ##  Add some extra method i.e. proportion of bootstrap shifts?
@@ -316,13 +308,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
             stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         }
         data$call$dimensions <- dimensions
     } else {
-        data$call$dimensions <- ncol(data$matrix)
+        data$call$dimensions <- ncol(data$matrix[[1]])
     }
 
     ## Return object if BS = 0
@@ -330,10 +322,36 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         return(data)
     }
 
-    ## BOOTSRAPING THE DATA
+    ## BOOTSRAPPING THE DATA
     if(verbose) message("Bootstrapping", appendLF = FALSE)
-    ## Bootstrap the data set 
-    bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+    if(length(data$call$subsets) == 5 && as.logical(data$call$subsets[["bind"]])) {
+        ## Get the number of trees
+        n_trees <- as.numeric(data$call$subsets[["trees"]])
+        ## Run the bootstraps for each trees
+        bootstraps_per_tree <- bootstraps/n_trees
+        ## Warning if the number of bootstraps is incorrect
+        if(bootstraps_per_tree != as.integer(bootstraps_per_tree)) {
+            bootstraps_per_tree <- ceiling(bootstraps_per_tree)
+            bootstraps <- bootstraps_per_tree * n_trees
+            warning(paste0("Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to ", bootstraps, " to distribute them evenly for each tree (", bootstraps_per_tree, " bootstraps * ",  n_trees, " trees)."))
+        }
+
+        ## Bootstrapping the subsetted results
+        bootstrap_results <- lapply( ## Opens 1
+                                lapply( ## Opens 2
+                                    lapply( ## Opens 3
+                                        data$subsets,
+                                        ## Fun 3: Split the data per tree
+                                        split.subsets, n_trees = n_trees),
+                                    ## Fun 2: Apply the bootstraps
+                                    lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
+                                ## Fun 1: Merge into one normal bootstrap table
+                                merge.to.list
+                            )
+    } else {
+        ## Bootstrap the data set 
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+    }
     if(verbose) message("Done.", appendLF = FALSE)
 
     ## Combining and storing the results back in the dispRity object

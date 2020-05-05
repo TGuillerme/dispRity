@@ -63,81 +63,78 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
         if(length(class(x)) > 1) {
             ## randtest
-            if(class(x)[2] == "randtest") {
+            switch(class(x)[[2]],
+                randtest = {
+                    ## Remove the call (messy)
+                    remove.call <- function(element) {
+                        element$call <- "dispRity::null.test"
+                        return(element)
+                    }
+                    x <- lapply(x, remove.call)
 
-                ## Remove the call (messy)
-                remove.call <- function(element) {
-                    element$call <- "dispRity::null.test"
-                    return(element)
-                }
-                x <- lapply(x, remove.call)
-
-                if(length(x) == 1) {
-                    print(x[[1]])
-                } else {
-                    tmp <- x
-                    class(tmp) <- "list"
-                    print(tmp) 
-                }
-                return()
-            } 
-            if(class(x)[2] == "model.test") {
-                cat("Disparity evolution model fitting:\n")
-                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
-                
-                print(x$aic.models)
-
-                cat(paste0("\nUse x$full.details for displaying the models details\n"))
-                cat(paste0("or summary(x) for summarising them.\n"))
-
-                return()
-            }
-
-            if(class(x)[2] == "model.sim") {
-
-                cat("Disparity evolution model simulation:\n")
-                cat(paste0("Call: ", as.expression(x$call), " \n\n"))
-                cat(paste0("Model simulated (", x$nsim, " times):\n"))
-
-                print(x$model)
-
-                cat("\n")
-
-                if(!is.null(x$p.value)) {
-                    print(x$p.value)
-                }
-
-                return()
-            }
-
-
-            if(class(x)[2] == "dtt") {
-                if(length(x) != 2){
-                    ## Tested dtt
-                    cat("Disparity-through-time test (modified from geiger:dtt)\n")
-                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
-
-                    cat(paste0("Observation: ", x$MDI , "\n\n"))
-
-                    cat(paste0("Model: ", x$call$model , "\n"))
-                    cat(paste0("Based on ", length(x$sim_MDI) , " replicates\n"))
-                    cat(paste0("Simulated p-value: ", x$p_value , "\n"))
-                    cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
-
-                    print(c("Mean.dtt" = mean(x$dtt, na.rm = TRUE), "Mean.sim_MDI" = mean(x$sim_MDI, na.rm = TRUE), "var.sim_MDI" = var(x$sim_MDI, na.rm = TRUE)))
-
-                    cat(paste0("\nUse plot.dispRity() to visualise."))
+                    if(length(x) == 1) {
+                        print(x[[1]])
+                    } else {
+                        tmp <- x
+                        class(tmp) <- "list"
+                        print(tmp) 
+                    }
                     return()
-                } else {
-                    ## raw dtt
-                    ## Fake an object with no attributes
-                    x_tmp <- x
-                    class(x_tmp) <- "list"
-                    print(x_tmp)
-                    cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
-                    cat(paste0("Use plot.dispRity to visualise."))
+                },
+                model.test = {
+                    cat("Disparity evolution model fitting:\n")
+                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                    
+                    print(x$aic.models)
+
+                    cat(paste0("\nUse x$full.details for displaying the models details\n"))
+                    cat(paste0("or summary(x) for summarising them.\n"))
+
+                    return()
+                },
+                model.sim = {
+                    cat("Disparity evolution model simulation:\n")
+                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+                    cat(paste0("Model simulated (", x$nsim, " times):\n"))
+
+                    print(x$model)
+
+                    cat("\n")
+
+                    if(!is.null(x$p.value)) {
+                        print(x$p.value)
+                    }
+
+                    return()                    
+                },
+                dtt = {
+                    if(length(x) != 2){
+                        ## Tested dtt
+                        cat("Disparity-through-time test (modified from geiger:dtt)\n")
+                        cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+
+                        cat(paste0("Observation: ", x$MDI , "\n\n"))
+
+                        cat(paste0("Model: ", x$call$model , "\n"))
+                        cat(paste0("Based on ", length(x$sim_MDI) , " replicates\n"))
+                        cat(paste0("Simulated p-value: ", x$p_value , "\n"))
+                        cat(paste0("Alternative hypothesis: ", x$call$alternative , "\n\n"))
+
+                        print(c("Mean.dtt" = mean(x$dtt, na.rm = TRUE), "Mean.sim_MDI" = mean(x$sim_MDI, na.rm = TRUE), "var.sim_MDI" = var(x$sim_MDI, na.rm = TRUE)))
+
+                        cat(paste0("\nUse plot.dispRity() to visualise."))
+                        return()
+                    } else {
+                        ## raw dtt
+                        ## Fake an object with no attributes
+                        x_tmp <- x
+                        class(x_tmp) <- "list"
+                        print(x_tmp)
+                        cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
+                        cat(paste0("Use plot.dispRity to visualise."))
+                    }
                 }
-            }
+            )
         }
 
         
@@ -147,10 +144,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
 
         if(length(x$call) == 0) {
-            if(!is.null(x$matrix) && class(x$matrix) == "matrix") {
+            if(!is.null(x$matrix) && is(x$matrix[[1]], "matrix")) {
                 cat(" ---- dispRity object ---- \n")
-                dims <- dim(x$matrix)
-                cat(paste0("Contains only a matrix ", dims[1], "x", dims[2], "."))
+                dims <- dim(x$matrix[[1]])
+                n_matrices <- length(x$matrix)
+                cat(paste0("Contains only ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
             } else {
                 cat("Empty dispRity object.\n")
             }
@@ -169,14 +167,27 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
                 ## Get the method
                 method <- x$call$subsets
-                if(length(method) != 1) {
-                    method <- paste(method[1], " (", method[2],")", sep = "")
-                }
-                if(method == "customised") {
-                    cat(paste(length(subsets), method, "subsets for", nrow(x$matrix), "elements"))    
+
+                switch(method[1],
+                    "discrete" = {cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))},
+                    "continuous" = {cat(paste(length(subsets),  paste(method[1], " (", method[2],")", sep = ""), "time subsets for", nrow(x$matrix[[1]]), "elements"))},
+                    "customised" = {cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))}
+                    )
+
+                # if(method[1] != "discrete") {
+                #     method <- paste(method[1], " (", method[2],")", sep = "")
+                # }
+                # if(method[1] == "customised") {
+                #     cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))    
+                # } else {
+                #     cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))
+                # }
+                if(length(x$matrix) > 1) {
+                    cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
                 } else {
-                    cat(paste(length(subsets), method, "time subsets for", nrow(x$matrix), "elements"))
+                    cat(paste0(" in one matrix"), sep = "")
                 }
+
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
                 cat(":\n")
                 if(length(subsets) > 5) {
@@ -186,7 +197,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
             }
         } else {
-            cat(paste(nrow(x$matrix), "elements"))
+            cat(paste(nrow(x$matrix[[1]]), "elements"))
+            if(length(x$matrix) > 1) {
+                cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+            } else {
+                cat(paste0(" in one matrix"), sep = "")
+            }
             if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
             cat(".\n")
         }
@@ -208,10 +224,6 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
         ## Print the disparity information
         if(any(names(x$call) == "disparity")) {
-            
-            #metrics <- as.character(x$call$disparity$metrics)
-            #strsplit(strsplit(metrics, split = "c(", fixed = TRUE)[[1]], split = ")", fixed = TRUE)[[2]][1]
-
             cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics$name), collapse = ", ")))
             cat(".\n")
         }

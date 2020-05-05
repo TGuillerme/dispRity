@@ -1,4 +1,4 @@
-#TESTING boot.matrix
+#TESTING test.dispRity
 
 context("test.dispRity")
 
@@ -49,6 +49,8 @@ test_that("set.sequence internal fun", {
     expect_equal(
     	max(set.sequence(4))
         , 4)
+    expect_equal(
+        c(set.sequence(2)), c(1,2))
 })
 
 test_that("convert.to.numeric internal fun", {
@@ -96,7 +98,11 @@ test_that("list.to.table internal fun", {
         , c(15,2))
     expect_equal(
     	unique(list.to.table(list("a"=rnorm(5),"b"=rnorm(5),"c"=rnorm(5)))[,2])
-        , as.factor(c("a","b","c")))
+        , c("a","b","c"))
+    expect_equal(
+        unique(list.to.table(list(rnorm(5),rnorm(5),rnorm(5)))$subsets)
+        , c(1,2,3))
+
 })
 
 test_that("htest.to.vector internal fun", {
@@ -126,7 +132,6 @@ test_that("htest.to.vector internal fun", {
     	as.vector(test)
         , c(16.4689565,0.7840382,-0.2785755))
 })
-
 
 test_that("set.comparisons.list internal fun", {
     my_data <- list(list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)), list(rnorm(10), rnorm(10)))
@@ -212,23 +217,22 @@ extracted_data <- extract.dispRity(disparity, observed = FALSE, rarefaction = FA
 comp_subsets <- set.comparisons.list("sequential", extracted_data, "sequential")
 
 test_that("output.numeric.results internal fun", {
-    ## Run test
+    ## Run test
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, bhatt.coeff)
 
-    ## Get results
+    ## Get results
     test_out <- output.numeric.results(details_out, "bhatt.coeff",comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
     expect_equal(colnames(test_out), c("bhatt.coeff", "25%", "75%"))
     expect_equal(rownames(test_out), unlist(lapply(comp_subsets, paste, collapse = ":")))
-
 })
 
 test_that("output.htest.results internal fun", {
     ## Run test
     details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, t.test)
 
-    ## Get results
+    ## Get results
     test_out <- lapply.output.test.elements("statistic", details_out, comp_subsets, conc.quantiles = c(0.25, 0.75), con.cen.tend = mean)
 
     expect_is(test_out, "matrix")
@@ -254,7 +258,7 @@ test_that("null test handling", {
     data(BeckLee_mat50)
     data(BeckLee_tree)
     disp <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))
-    test <- test.dispRity(disp, test = null.test, null.distrib = rnorm)
+    expect_warning(test <- test.dispRity(disp, test = null.test, null.distrib = rnorm))
     expect_is(test, "randtest")
     expect_equal(length(test), 2)
 })
@@ -271,7 +275,7 @@ test_that("null test handling", {
 #     ## Run test
 #     details_out <- lapply(list_of_data, lapply.lm.type, lm)
 
-#     ## Wrapping function
+#     ## Wrapping function
 #     test_out <- output.lm.results(details_out,  conc.quantiles=c(0.25, 0.75), con.cen.tend = mean)
 
 #     expect_is(test_out, "list")
@@ -287,7 +291,6 @@ test_that("null test handling", {
 #     }
 # })
 
-
 test_that("test.dispRity works fine", {
     set.seed(1)
     ## Load the Beck & Lee 2014 data
@@ -301,6 +304,7 @@ test_that("test.dispRity works fine", {
     bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+    just_variances <- dispRity(bootstrapped_data, metric = variances)
 
     ## Errors
     expect_error(test.dispRity(customised_subsets, t.test))
@@ -308,6 +312,7 @@ test_that("test.dispRity works fine", {
     expect_error(test.dispRity(dispRity(customised_subsets, metric = c(sum, ranges)), t.test))
     expect_error(test.dispRity(dispRity(customised_subsets, metric = ranges), t.test, rarefaction = 10))
     expect_error(expect_warning(test.dispRity(sum_of_ranges, t.test, comparisons = "all")))
+
 
     ## Correction
     expect_warning(test <- test.dispRity(sum_of_ranges, t.test, correction = "none"))
@@ -329,9 +334,17 @@ test_that("test.dispRity works fine", {
         test.dispRity(sum_of_ranges, t.test, comparisons = list(c(1,8)))
         )
 
-    data(disparity)
+    ## conc.quantiles error
+    expect_error(
+        test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list("mean"))
+        )
+    expect_error(
+        test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list(mean, c("a", "b")))
+        )
+    expect_warning(test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list(mean, c(0.25, 0.75))))
 
-    ## Rarefaction error management
+    data(disparity)
+    ## Rarefaction error management
     expect_error(
         test.dispRity(disparity, t.test, comparisons = list(c(1,2), c(2,1)), rarefaction = 1)
         )
@@ -351,7 +364,6 @@ test_that("test.dispRity works fine", {
     expect_warning(results <- test.dispRity(data, t.test, "sequential"))
     expect_is(results, "list")
     expect_equal(unlist(lapply(results, dim)), rep(c(2,1), 4))
-
 })
 
 test_that("example works fine", {
@@ -367,6 +379,7 @@ test_that("example works fine", {
     bootstrapped_data <- boot.matrix(customised_subsets, bootstraps=100)
     ## Caculating the sum of ranges
     sum_of_ranges <- dispRity(bootstrapped_data, metric=c(sum, ranges))
+    just_variances <- dispRity(bootstrapped_data, metric=variances)
 
     error <- capture_error(test.dispRity(sum_of_ranges, t.test, concatenate = FALSE))
     expect_equal(error[[1]], "Disparity is not calculated as a distribution, data cannot be concatenated (set concatenate = FALSE).")
@@ -384,7 +397,12 @@ test_that("example works fine", {
         , c(3,1)))
     expect_warning(expect_equal(
     	round(sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")), 5)
-        , round(0.7097568, 5)))
+        , round(0.71086, 5)))
+
+    ## Measuring overlap without concatenating
+    expect_warning(expect_equal(
+        dim(test.dispRity(just_variances, bhatt.coeff, "pairwise", concatenate = FALSE))
+        , c(3, 5)))
 
     ## Measuring differences from a reference_subsets
     expect_warning(expect_is(
@@ -398,10 +416,10 @@ test_that("example works fine", {
         , 2))
     expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[1]][,1])
-        , 1539))
+        , 1403))
     expect_warning(expect_equal(
     	sum(test.dispRity(sum_of_ranges, wilcox.test, "referential")[[2]][,1])
-        , 3.025477e-17))
+        , 1.527145e-18))
 
     ## Measuring disparity as a distribution
     disparity_var <- dispRity(bootstrapped_data, metric = variances)
@@ -430,12 +448,13 @@ test_that("example works fine", {
         ,"list")
     expect_equal(
         unique(unlist(lapply(test2, class)))
-        ,"matrix")
+        ,c("matrix", "array"))
     expect_equal(
         unique(unlist(lapply(test2, dim)))
         ,c(3,5))
 
     ## Testing the effect of the groups
+    expect_warning(test.dispRity(just_variances, lm, "all", concatenate = FALSE))
     expect_is(
         test.dispRity(sum_of_ranges, lm, "all")
         , "lm")
@@ -443,10 +462,18 @@ test_that("example works fine", {
         test.dispRity(sum_of_ranges, lm, "all")$rank
         , 3)
     expect_equal(
-        as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients)
-        , c(23.800668,2.064246,9.903960))
-})
+        round(as.vector(test.dispRity(sum_of_ranges, lm, "all")$coefficients), digit = 6)
+        , c(27.680198,2.477655,11.087950))
 
+
+    ## Returns details for unknown tests
+    weird.test <- function(x, y) {
+        return(rtree(3))
+    }
+    expect_warning(expect_equal(
+        class(test.dispRity(sum_of_ranges, weird.test, "pairwise")[[1]][[1]])
+        , "phylo"))
+})
 
 test_that("adonis and dtt works fine", {
 
@@ -456,7 +483,7 @@ test_that("adonis and dtt works fine", {
     data(BeckLee_tree)
     data(BeckLee_ages)
 
-    groups <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = c(ranges))
+    groups <- dispRity(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE)), metric = c(ranges))
     time <- dispRity(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", FADLAD = BeckLee_ages, time = 10), metric = c(ranges))
     
    expect_warning(test_group_adonis <- test.dispRity(data = groups, test = adonis.dispRity))

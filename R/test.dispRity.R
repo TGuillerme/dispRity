@@ -146,14 +146,14 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         }
         
         ## If character, input must match the subsets
-        if(class(unlist(comparisons)) == "character") {
+        if(is(unlist(comparisons), "character")) {
             if(any(is.na(match(unlist(comparisons), names(data$subsets))))){
                 stop.call("", "comparisons: at least one subset was not found.")
             }
         }
 
         ## If numeric, input must match de subsets numbers
-        if(class(unlist(comparisons)) == "numeric") {
+        if(is(unlist(comparisons), "numeric")) {
             if(any(is.na(match(unlist(comparisons), seq(1:length(data$subsets)))))){
                 stop.call("",  "comparisons : at least one subset was not found.")
             }
@@ -213,7 +213,7 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         
         ## second and more elements must be numeric
         quantiles <- unlist(conc.quantiles[-1])
-        if(class(quantiles) != "numeric") {
+        if(!is(quantiles, "numeric")) {
             stop.call("", "Quantiles provided in conc.quantiles must be stated after the function and must be numeric.")
         }
         if(sum(quantiles) != length(quantiles)) {

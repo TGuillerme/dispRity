@@ -4,9 +4,17 @@
 \alias{null.test}
 \title{Testing a null hypothesis on multidimensional data.}
 \usage{
-null.test(data, replicates = 100, null.distrib, null.args = NULL,
-  null.cor = NULL, null.scree = NULL, alter = "two-sided",
-  scale = FALSE, ...)
+null.test(
+  data,
+  replicates = 100,
+  null.distrib,
+  null.args = NULL,
+  null.cor = NULL,
+  null.scree = NULL,
+  alter = "two-sided",
+  scale = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{a \code{dispRity} object.}

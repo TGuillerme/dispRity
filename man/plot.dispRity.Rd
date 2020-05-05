@@ -4,11 +4,28 @@
 \alias{plot.dispRity}
 \title{dispRity object plotting}
 \usage{
-\method{plot}{dispRity}(x, ..., type, quantiles = c(50, 95),
-  cent.tend = median, rarefaction = NULL, elements = FALSE, ylim,
-  xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE,
-  add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,
-  2), nclass = 10, coeff = 1)
+\method{plot}{dispRity}(
+  x,
+  ...,
+  type,
+  quantiles = c(50, 95),
+  cent.tend = median,
+  rarefaction = NULL,
+  elements = FALSE,
+  ylim,
+  xlab,
+  ylab,
+  col,
+  chrono.subsets = TRUE,
+  observed = FALSE,
+  add = FALSE,
+  density = NULL,
+  element.pch = 15,
+  dimensions = c(1, 2),
+  nclass = 10,
+  coeff = 1,
+  matrix = 1
+)
 }
 \arguments{
 \item{x}{A \code{dispRity} object.}
@@ -48,6 +65,8 @@
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
 \item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
+
+\item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
 }
 \description{
 Plots a \code{dispRity} object.

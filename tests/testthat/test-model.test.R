@@ -30,9 +30,7 @@ test_that("internal functions work", {
     test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
     expect_is(test, "list")
     expect_equal(length(test), 4)
-
 })
-
 
 test_that("simple models work", {
 
@@ -122,7 +120,6 @@ test_that("simple models work", {
     expect_equal(verbose[1], "Evidence of equal variance (Bartlett's test of equal variances p = 0).")
     expect_equal(verbose[2], "Variance is not pooled.")
     expect_equal(verbose[3], "Running multi.OU on 13 shift times...")
-
 })
 
 test_that("multiple.models work", {
@@ -186,6 +183,9 @@ test_that("model.test.sim example works", {
                      "fixed.optima" = 1,
                      "subsets" = 25))
      
+    expect_is( model.test(data, c("Stasis", "BM"), time.split = c(60, 66), verbose = FALSE), c("dispRity", "model.test"))
+    expect_is( model.test(data, c("Stasis", "BM"), time.split = 66, verbose = FALSE), c("dispRity", "model.test"))
+
     ## simulations using the output from model.test
     expect_error(model.test.sim(sim = 10, model = data))
     expect_error(model.test.sim(sim = 10, model = model_test_output, model.rank = 5))
@@ -252,13 +252,13 @@ test_that("model.test.wrapper example works", {
 
     test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = -10, legend = TRUE, cex.p = 0.6)
 
-    ## Check test
+    ## Check test
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4, 13))
     expect_equal(rownames(test), c("Trend", "BM", "multi.OU", "OU"))
     expect_equal(colnames(test), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha", "optima.2", "trend", "median p value", "lower p value",  "upper p value"))
 
-    ## Testing with a single model
+    ## Testing with a single model
     test2 <- model.test.wrapper(data = data, model = "BM", fixed.optima = TRUE, time.split = 66, show.p = FALSE, verbose = FALSE, sim = 10)
     expect_is(test2, "matrix")
     expect_equal(dim(test2), c(1, 10))

@@ -19,6 +19,7 @@
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
 #' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).
 #' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
+#' @param matrix optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
 # ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
 # ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
@@ -127,7 +128,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -139,7 +140,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## Subclass plots
 
         ## randtests plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "randtest") {
+        if(is(data, c("dispRity")) && is(data, c("randtest"))) {
             ## sanitising
             check.class(nclass, "numeric")
             check.class(coeff, "numeric")
@@ -167,8 +168,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "dtt") {
-
+        if(is(data, c("dispRity")) && is(data, c("dtt"))) {
             ## Silence warnings
             options(warn = -1)
 
@@ -245,7 +245,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         } 
 
         ## model.test plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.test") {
+        if(is(data, c("dispRity")) && is(data, c("model.test"))) {
 
             ## Colours
             if(missing(col)) {
@@ -266,7 +266,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
         
         ## model.sim plots
-        if(class(data)[[1]] == "dispRity" && class(data)[[2]] == "model.sim") {
+        if(is(data, c("dispRity")) && is(data, c("model.sim"))) {
             
             ## xlab
             if(missing(xlab)) { 
@@ -345,7 +345,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
     if(!missing(type) && type == "preview") {
         ## Preview plot
-        plot.preview(data, dimensions = dimensions, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+        plot.preview(data, dimensions = dimensions, matrix = matrix, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
         return(invisible())
     }
 
@@ -435,7 +435,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
     ## Check class
     silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
-    if(class(rarefaction) != "logical") {
+    if(!is(rarefaction, "logical")) {
         ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
@@ -507,18 +507,15 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## add
     check.class(add, "logical")
 
-    ## density
-    if(any(c("continuous", "polygon") %in% type)) {
-        if(!is.null(density)) {
-            check.class(density, "numeric")
-            check.length(density, 1, " must be a single numeric value.")
-        }
-    }
-
     ## PREPARING THE PLOT
 
     ## summarising the data
-    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    ## (remove NAs if data has a distribution of trees)
+    if(!is.na(data$call$subsets["trees"]) && as.numeric(data$call$subsets["trees"]) > 1) {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+    } else {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    }
 
     ## Setting the default arguments
     default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
@@ -577,7 +574,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density,...)
-        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
+        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density); warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
             plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)

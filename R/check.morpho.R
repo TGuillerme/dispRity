@@ -56,7 +56,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     check.class(matrix, "matrix")
 
     #parsimony
-    if(class(parsimony) != "function") {
+    if(!is(parsimony, "function")) {
         #model is not a sure function
         implemented_parsimony <- c("fitch", "sankoff")
         if(all(is.na(match(parsimony, implemented_parsimony)))) {
@@ -73,7 +73,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     }
 
     #first.tree
-    if(class(first.tree) != "function") {
+    if(!is(first.tree, "function")) {
         if(any(unlist(lapply(first.tree, class)) != "function")) {
             stop.call("", "first.tree argument must be a list of functions to calculate the first tree.")
         }
@@ -113,7 +113,7 @@ check.morpho <- function(matrix, orig.tree, parsimony = "fitch", first.tree = c(
     matrix_phyDat <- phangorn::phyDat(data = matrix, type = "USER", contrast = contrast.matrix)
 
     #Calcualte the first tree
-    if(class(first.tree) == "function") {
+    if(is(first.tree, "function")) {
         #Calculate the first tree from the phyDat
         first_tree <- first.tree(matrix_phyDat)
     } else {

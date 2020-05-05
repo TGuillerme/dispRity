@@ -8,11 +8,10 @@
 #'
 #' @author Thomas Guillerme <guillert@@tcd.ie>
 #'
-#' @concepts disparity ordination phylogeny cladistic morphometric ecology
+#' @concept disparity ordination phylogeny cladistic morphometric ecology
 #'
 # @import ape
 # @import stats
-# @importFrom paleotree timeSliceTree 
 # @importFrom geometry convhulln 
 # @importFrom ade4 randtest as.randtest 
 # @importFrom grDevices colorRampPalette grey 

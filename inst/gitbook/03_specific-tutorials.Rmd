@@ -1,6 +1,6 @@
 ---
 title: "Details of specific functions"
-author: "Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and  Natalie Cooper (natalie.cooper@nhm.ac.uk)"
+author: "Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)"
 date: "`r Sys.Date()`"
 bibliography: [../References.bib, ../packages.bib]
 output:
@@ -12,7 +12,7 @@ output:
 # Details of specific functions
 
 The following section contains information specific to some functions.
-If any of your questions are not covered in these sections, please refer to the function help files in R, send me an email (<guillert@tcd.ie>), or raise an issue on GitHub.
+If any of your questions are not covered in these sections, please refer to the function help files in `R`, send me an email (<guillert@tcd.ie>), or raise an issue on [GitHub](https://github.com/TGuillerme/dispRity/issues).
 The several tutorials below describe specific functionalities of certain functions; please always refer to the function help files for the full function documentation!
 
 Before each section, make sure you loaded the @beckancient2014 data (see [example data](#example-data) for more details).
@@ -44,20 +44,24 @@ For both methods, the function takes the `time` argument which can be a vector o
 Otherwise, the `time` argument can be set as a single `numeric` value for automatically generating a given number of equidistant time-bins/slices.
 Additionally, it is also possible to input a dataframe containing the first and last occurrence data (FAD/LAD) for taxa that span over a longer time than the given tips/nodes age, so taxa can appear in more than one time bin/slice.
 
-Here is an example for `method = discrete`:
+### Time-binning
+
+Here is an example for the time binning method (`method = discrete`):
 
 ```{r, eval=TRUE}
 ## Generating three time bins containing the taxa present every 40 Ma
-chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
-                time = c(120, 80, 40, 0))
+chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
+               method = "discrete",
+               time = c(120, 80, 40, 0))
 ```
 
 Note that we can also generate equivalent results by just telling the function that we want three time-bins as follow:
 
 ```{r, eval=TRUE}
 ## Automatically generate three equal length bins:
-chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
-                time = 3)
+chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
+               method = "discrete",
+               time = 3)
 ```
 
 In this example, the taxa were split inside each time-bin according to their age.
@@ -67,17 +71,23 @@ In this case, it is possible to include them in more than one bin by providing a
 This table should have the taxa names as row names and two columns for respectively the first and last occurrence age:
 
 ```{r, eval=TRUE}
-## Displaying the table of first and last occurrence dates for each taxa
+## Displaying the table of first and last occurrence dates
+## for each taxa
 head(BeckLee_ages)
 
 ## Generating time bins including taxa that might span between them
-chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete",
-                time = c(120, 80, 40, 0), FADLAD = BeckLee_ages)
+chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
+               method = "discrete",
+               time = c(120, 80, 40, 0), FADLAD = BeckLee_ages)
 ```
 
 When using this method, the oldest boundary of the first bin (or the first slice, see below) is automatically generated as the root age plus 1\% of the tree length, as long as at least three elements/taxa are present at that point in time.
 The algorithm adds an extra 1\% tree length until reaching the required minimum of three elements.
 It is also possible to include nodes in each bin by using `inc.nodes = TRUE` and providing a matrix that contains the ordinated distance among tips *and* nodes.
+
+If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
+
+### Time-slicing
 
 For the time-slicing method (`method = continuous`), the idea is fairly similar.
 This option, however, requires a matrix that contains the ordinated distance among taxa *and* nodes and an extra argument describing the assumed evolutionary model (via the `model` argument).
@@ -99,18 +109,21 @@ In other words, changes along the branches always occur at either ends of it.
 The two last models are a proxy for gradual evolution: the data from both the descendant and the ancestor is used with an associate probability.
 These later models perform better when bootstrapped, effectively approximating the "intermediate" state between and the ancestor and the descendants.
 
+More details about the differences between these methods can be found in @time-slice.
+
 ```{r, eval=TRUE}
-## Generating four time slices every 40 million years under a model of proximity evolution
+## Generating four time slices every 40 million years
+## under a model of proximity evolution
 chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "continuous", model = "proximity", time = c(120, 80, 40, 0),
-    FADLAD = BeckLee_ages)
+               method = "continuous", model = "proximity",
+               time = c(120, 80, 40, 0),
+               FADLAD = BeckLee_ages)
 
 ## Generating four time slices automatically
 chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
-    method = "continuous", model = "proximity", time = 4, FADLAD = BeckLee_ages)
+               method = "continuous", model = "proximity",
+               time = 4, FADLAD = BeckLee_ages)
 ```
-
-If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
 
 ## Customised subsets {#custom-subsets}
 
@@ -177,10 +190,12 @@ It can also be set to one or more `numeric` values to only rarefy to the corresp
 
 ```{r, eval=TRUE}
 ## Bootstrapping with the full rarefaction
-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
+boot.matrix(BeckLee_mat50, bootstraps = 20,
+            rarefaction = TRUE)
 
 ## Or with a set number of rarefaction levels
-boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(6:8, 3))
+boot.matrix(BeckLee_mat50, bootstraps = 20,
+            rarefaction = c(6:8, 3))
 ```
 
 One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
@@ -201,7 +216,8 @@ The elements with no specified probability will be assigned a probability of 1 (
 
 ```{r, eval=TRUE}
 ## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
-boot.matrix(BeckLee_mat50, prob = c("Cimolestes" = 0, "Maelestes" = 10))
+boot.matrix(BeckLee_mat50,
+            prob = c("Cimolestes" = 0, "Maelestes" = 10))
 ```
 
 Of course, one could directly supply the subsets generated above (using `chrono.subsets` or `custom.subsets`) to this function.
@@ -209,29 +225,34 @@ Of course, one could directly supply the subsets generated above (using `chrono.
 ```{r, eval=TRUE}
 ## Creating subsets of crown and stem mammals
 crown_stem <- custom.subsets(BeckLee_mat50,
-                                group = list("crown" = c(16, 19:41, 45:50), 
-                                             "stem" = c(1:15, 17:18, 42:44)))
+                             group = crown.stem(BeckLee_tree,
+                                                inc.nodes = FALSE))
 ## Bootstrapping and rarefying these groups
 boot.matrix(crown_stem, bootstraps = 200, rarefaction = TRUE)
 
 ## Creating time slice subsets
-time_slices <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, 
-                               method = "continuous", model = "proximity", 
-                               time = c(120, 80, 40, 0),
-                               FADLAD = BeckLee_ages)
+time_slices <- chrono.subsets(data = BeckLee_mat99,
+                              tree = BeckLee_tree, 
+                              method = "continuous",
+                              model = "proximity", 
+                              time = c(120, 80, 40, 0),
+                              FADLAD = BeckLee_ages)
 
 ## Bootstrapping the time slice subsets
 boot.matrix(time_slices, bootstraps = 100)
 ```
 
-## Disparity metrics
+## Disparity metrics {#disparity-metrics}
 
 There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue _et al._ 2013), the sum and the product of the ranges and variances (Wills _et al._ 1994) or the median position of the elements relative to their centroid (Wills _et al._ 1994). 
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
+Check out this pre-print on selecting the best metric for your specific question on [biorXiv](https://www.biorxiv.org/content/10.1101/801571v1).
+<!-- biorXiv preprint -->
+You can also use the  [`moms` shiny app](https://tguillerme.shinyapps.io/moms/) to test which metric captures which aspect of traitspace occupancy regarding your specific space and your specific question.
 
-Because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
+Regardless, and because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
 In fact, the core function of the package, `dispRity`, allows the user to define any metric with the `metric` argument.
 However the `metric` argument has to follow certain rules:
 
@@ -303,13 +324,16 @@ This function tests:
 For example, let's see if the functions described above are the right dimension-levels:
 
 ```{r}
-## Which dimension-level is the mean function? And can it be used in dispRity?
+## Which dimension-level is the mean function?
+## And can it be used in dispRity?
 make.metric(mean)
 
-## Which dimension-level is the prod.rows function? And can it be used in dispRity?
+## Which dimension-level is the prod.rows function?
+## And can it be used in dispRity?
 make.metric(prod.rows)
 
-## Which dimension-level is the var function? And can it be used in dispRity?
+## Which dimension-level is the var function?
+## And can it be used in dispRity?
 make.metric(var)
 ```
 
@@ -333,15 +357,18 @@ if(make.metric(var, silent = TRUE) != "level1") {
 Using this metric structure, we can easily use any disparity metric in the `dispRity` function as follows:
 
 ```{r}
-## Measuring disparity as the standard deviation of all the values of the
+## Measuring disparity as the standard deviation
+## of all the values of the
 ## ordinated matrix (dimension-level 1 function).
 summary(dispRity(BeckLee_mat50, metric = sd))
 
-## Measuring disparity as the standard deviation of the variance of each axis of
+## Measuring disparity as the standard deviation
+## of the variance of each axis of
 ## the ordinated matrix (dimension-level 1 and 2 functions).
 summary(dispRity(BeckLee_mat50, metric = c(sd, variances)))
 
-## Measuring disparity as the standard deviation of the variance of each axis of
+## Measuring disparity as the standard deviation
+## of the variance of each axis of
 ## the variance covariance matrix (dimension-level 1, 2 and 3 functions).
 summary(dispRity(BeckLee_mat50, metric = c(sd, variances, var)), round = 10)
 ```
@@ -351,11 +378,13 @@ Note that the order of each function in the metric argument does not matter, the
 ```{r}
 ## Disparity as the standard deviation of the variance of each axis of the
 ## variance covariance matrix:
-disparity1 <- summary(dispRity(BeckLee_mat50, metric = c(sd, variances, var)),
+disparity1 <- summary(dispRity(BeckLee_mat50,
+                               metric = c(sd, variances, var)),
                       round = 10)
 
 ## Same as above but using a different function order for the metric argument
-disparity2 <- summary(dispRity(BeckLee_mat50, metric = c(variances, sd, var)),
+disparity2 <- summary(dispRity(BeckLee_mat50,
+                               metric = c(variances, sd, var)),
                       round = 10)
 
 ## Both ways output the same disparity values:
@@ -368,15 +397,19 @@ It is, however, possible to calculate [disparity as a distribution](#disparity-a
 
 ### Metrics implemented in `dispRity`
 
+<!-- TODO: Sort by group of metrics -->
+
 Several disparity metrics are implemented in the `dispRity` package.
 The detailed list can be found in `?dispRity.metric` along with some description of each metric.
 
 Level | Name | Description | Source | 
 ------|------|---------------------------------------------------|--------|
 2 | `ancestral.dist` | The distance between an element and its ancestor | `dispRity` |
+2 | `angles` | The angle of main variation of each dimensions | `dispRity` |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
+2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
@@ -397,43 +430,50 @@ It can, however, be fixed to a different value by using the `centroid` argument 
 
 2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (*not* PCA).
 
+You can find more informations on the vast variety of metrics that you can use in your analysis in this [preprint](https://www.biorxiv.org/content/10.1101/801571v1).
+<!-- biorXiv preprint -->
+
 ### Equations and implementations
 Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).
 
 \begin{equation}
-    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Ancestor_{n})^2}}
+    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Ancestor_{n})^2}}
 \end{equation}
 
 \begin{equation}
-    centroids = \sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}
+    centroids = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{d})^2}}
 \end{equation}
 
 \begin{equation}
-    diagonal = \sqrt{\sum_{i=1}^{k}|max(k_i) - min(k_i)|}
+    diagonal = \sqrt{\sum_{i=1}^{d}|max(d_i) - min(k_i)|}
 \end{equation}
 
 \begin{equation}
-    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Reference_{k})^2}}}{\sqrt{\sum_{i=1}^{n}{({k}_{n}-Centroid_{k})^2}}}
+    deviations = \frac{|Ax + By + ... + Nm + Intercept|}{\sqrt{A^2 + B^2 + ... + N^2}}
 \end{equation}
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} (\lambda_{i}^{0.5})
+    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Reference_{d})^2}}}{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{k})^2}}}
 \end{equation}
 
 \begin{equation}
-    n.ball.volume = \frac{\pi^{k/2}}{\Gamma(\frac{k}{2}+1)}\displaystyle\prod_{i=1}^{k} R
+    ellipse.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
 \end{equation}
 
 \begin{equation}
-    radius = |\frac{\sum_{i=1}^{n}k_i}{n} - f(\mathbf{v}k)|
+    n.ball.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} R
 \end{equation}
 
 \begin{equation}
-    ranges = |max(k_i) - min(k_i)|
+    radius = |\frac{\sum_{i=1}^{n}d_i}{n} - f(\mathbf{v}d)|
 \end{equation}
 
 \begin{equation}
-    variances = \sigma^{2}{k_i}
+    ranges = |max(d_i) - min(d_i)|
+\end{equation}
+
+\begin{equation}
+    variances = \sigma^{2}{d_i}
 \end{equation}
 
 \begin{equation}
@@ -441,7 +481,7 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 
-Where *k* is the number of dimensions,
+Where *d* is the number of dimensions,
 *n* the number of elements,
 $\Gamma$ is the Gamma distribution,
 $\lambda_i$ is the eigenvalue of each dimensions,
@@ -460,6 +500,7 @@ First, we will create a dummy/simulated ordinated space using the `space.maker` 
 ## Creating a 10*5 normal space
 set.seed(1)
 dummy_space <- space.maker(10, 5, rnorm)
+rownames(dummy_space) <- 1:10
 ```
 
 We will use this simulated space to demonstrate the different metrics.
@@ -508,23 +549,27 @@ summary(dispRity(dummy_space, metric = ranges))
 summary(dispRity(dummy_space, metric = c(sum, ranges)))
 summary(dispRity(dummy_space, metric = c(prod, ranges)))
 
-## Calculating the variances of each dimension in the ordinated space
+## Calculating the variances of each dimension in the
+## ordinated space
 variances(dummy_space)
 
 ## Calculating disparity as the distribution of these variances
 summary(dispRity(dummy_space, metric = variances))
 
-## Calculating disparity as the sum and the product of these variances
+## Calculating disparity as the sum and
+## the product of these variances
 summary(dispRity(dummy_space, metric = c(sum, variances)))
 summary(dispRity(dummy_space, metric = c(prod, variances)))
 
-## Calculating the quantiles of each dimension in the ordinated space
+## Calculating the quantiles of each dimension
+## in the ordinated space
 quantiles(dummy_space)
 
 ## Calculating disparity as the distribution of these variances
 summary(dispRity(dummy_space, metric = quantiles))
 
-## By default, the quantile calculated is the 95% (i.e. 95% of the data on each axis)
+## By default, the quantile calculated is the 95%
+## (i.e. 95% of the data on each axis)
 ## this can be changed using the option quantile:
 summary(dispRity(dummy_space, metric = quantiles, quantile = 50))
 
@@ -537,7 +582,9 @@ radius(dummy_space, type = min)
 radius(dummy_space, type = mean)
 
 ## Calculating disparity as the mean average radius
-summary(dispRity(dummy_space, metric = c(mean, radius), type = mean))
+summary(dispRity(dummy_space,
+                 metric = c(mean, radius),
+                 type = mean))
 ```
 
 The pairwise distances and the neighbours distances uses the function `vegan::vegdist` and can take the normal `vegdist` options:
@@ -547,13 +594,15 @@ The pairwise distances and the neighbours distances uses the function `vegan::ve
 summary(dispRity(dummy_space, metric = c(mean, pairwise.dist)))
 
 ## The distribution of the Manhattan distances
-summary(dispRity(dummy_space, metric = pairwise.dist, method = "manhattan"))
+summary(dispRity(dummy_space, metric = pairwise.dist,
+                 method = "manhattan"))
 
 ## The average nearest neighbour distances
 summary(dispRity(dummy_space, metric = neighbours))
 
 ## The average furthest neighbour manhattan distances
-summary(dispRity(dummy_space, metric = neighbours, which = max, method = "manhattan"))
+summary(dispRity(dummy_space, metric = neighbours,
+                 which = max, method = "manhattan"))
 ```
 
 Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
@@ -588,11 +637,26 @@ summary(dispRity(dummy_space, metric = c(median, centroids)))
 It is however possible to fix the coordinates of the centroid to a specific point in the ordinated space, as long as it has the correct number of dimensions:
 
 ```{r}
-## The distance between each element and the origin of the ordinated space
+## The distance between each element and the origin
+## of the ordinated space
 summary(dispRity(dummy_space, metric = centroids, centroid = 0))
 
-## Disparity as the distance between each element and a specific point in space
-summary(dispRity(dummy_space, metric = centroids, centroid = c(0,1,2,3,4)))
+## Disparity as the distance between each element
+## and a specific point in space
+summary(dispRity(dummy_space, metric = centroids,
+                 centroid = c(0,1,2,3,4)))
+```
+
+If you have subsets in your `dispRity` object, you can also use the `matrix.dispRity` (see [utilities](#utilities)) and `colMeans` to get the centre of a specific subgroup.
+For example
+
+```{r, warning = FALSE}
+## Create a custom subsets object
+dummy_groups <- custom.subsets(dummy_space,
+                               group = list("group1" = 1:5,
+                                            "group2" = 6:10))
+summary(dispRity(dummy_groups, metric = centroids,
+    centroid = colMeans(matrix.dispRity(dummy_groups, "group1"))))
 ```
 
 The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
@@ -604,7 +668,8 @@ It gives indication of the relative displacement of elements in the multidimensi
 summary(dispRity(dummy_space, metric = displacements))
 
 ## The relative displacement of the group to an arbitrary point
-summary(dispRity(dummy_space, metric = displacements, reference = c(0,1,2,3,4)))
+summary(dispRity(dummy_space, metric = displacements,
+                 reference = c(0,1,2,3,4)))
 ```
 
 The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor.
@@ -618,7 +683,8 @@ dummy_space2 <- dummy_space[-1,]
 rownames(dummy_space2) <- c(tree$tip.label, tree$node.label)
 
 ## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(dummy_space2, tree, full = TRUE)
+all_anc_centroids <- nodes.coordinates(dummy_space2, tree,
+                                       full = TRUE)
 
 ## Calculating the distances from the ancestral nodes
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
@@ -657,9 +723,47 @@ summary(dispRity(dummy_space, metric = func.div))
 summary(dispRity(dummy_space, metric = func.eve))
 
 ## The minimal spanning tree manhanttan distances evenness
-summary(dispRity(dummy_space, metric = func.eve, method = "manhattan"))
+summary(dispRity(dummy_space, metric = func.eve,
+                 method = "manhattan"))
 ```
 
+#### Orientation: angles and deviations
+
+The `angles` performs a least square regression (via the `lm` function) and returns slope of the main axis of variation for each dimension. This slope can be converted into different units, `"slope"`, `"degree"` (the default) and `"radian"`. This can be changed through the `unit` argument. 
+By default, the angle is measured from the slope 0 (the horizontal line in a 2D plot) but this can be changed through the `base` argument (using the defined `unit`):
+
+```{r}
+## The distribution of each angles in degrees for each
+## main axis in the matrix
+summary(dispRity(dummy_space, metric = angles))
+
+## The distribution of slopes deviating from the 1:1 slope:
+summary(dispRity(dummy_space, metric = angles, unit = "slope",
+                 base = 1))
+```
+
+The `deviations` function is based on a similar algorithm as above but measures the deviation from the main axis (or hyperplane) of variation.
+In other words, it finds the least square line (for a 2D dataset), plane (for a 3D dataset) or hyperplane (for a >3D dataset) and measures the shortest distances between every points and the line/plane/hyperplane.
+By default, the hyperplane is fitted using the least square algorithm from `stats::glm`:
+
+```{r}
+## The distribution of the deviation of each point
+## from the least square hyperplane
+summary(dispRity(dummy_space, metric = deviations))
+```
+
+It is also possible to specify the hyperplane equation through the `hyperplane` equation. The equation must contain the intercept first and then all the slopes and is interpreted as $intercept + Ax + By + ... + Nd = 0$. For example, a 2 line defined as beta + intercept (e.g. $y = 2x + 1$) should be defined as `hyperplane = c(1, 2, 1)` ($2x - y + 1 = 0$).
+
+```{r}
+## The distribution of the deviation of each point
+## from a slope (with only the two first dimensions)
+summary(dispRity(dummy_space[, c(1:2)], metric = deviations,
+                 hyperplane = c(1, 2, -1)))
+```
+
+Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
+Note that depending on your dataset, using and `aov` could be completely inappropriate!
+In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
 
 ## Summarising dispRity data (plots)
 
@@ -672,30 +776,40 @@ This function is an S3 function (`summary.dispRity`) allowing users to summarise
 ```{r}
 ## Example data from previous sections
 crown_stem <- custom.subsets(BeckLee_mat50,
-                                group = list("crown" = c(16, 19:41, 45:50), 
-                                             "stem" = c(1:15, 17:18, 42:44)))
+                             group = crown.stem(BeckLee_tree,
+                             inc.nodes = FALSE))
 ## Bootstrapping and rarefying these groups
-boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 100, rarefaction = TRUE)
+boot_crown_stem <- boot.matrix(crown_stem, bootstraps = 100,
+                               rarefaction = TRUE)
 ## Calculate disparity
-disparity_crown_stem <- dispRity(boot_crown_stem, metric = c(sum, variances))
+disparity_crown_stem <- dispRity(boot_crown_stem,
+                                 metric = c(sum, variances))
 
 ## Creating time slice subsets
-time_slices <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "continuous", model = "proximity", time = c(120, 80, 40, 0),
-    FADLAD = BeckLee_ages)
+time_slices <- chrono.subsets(data = BeckLee_mat99,
+                              tree = BeckLee_tree,
+                              method = "continuous",
+                              model = "proximity",
+                              time = c(120, 80, 40, 0),
+                              FADLAD = BeckLee_ages)
 ## Bootstrapping the time slice subsets
 boot_time_slices <- boot.matrix(time_slices, bootstraps = 100)
 ## Calculate disparity
-disparity_time_slices <- dispRity(boot_time_slices, metric = c(sum, variances))
+disparity_time_slices <- dispRity(boot_time_slices,
+                                  metric = c(sum, variances))
 
 ## Creating time bin subsets
-time_bins <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, 
-    method = "discrete", time = c(120, 80, 40, 0), FADLAD = BeckLee_ages,
-    inc.nodes = TRUE)
+time_bins <- chrono.subsets(data = BeckLee_mat99,
+                            tree = BeckLee_tree, 
+                            method = "discrete",
+                            time = c(120, 80, 40, 0),
+                            FADLAD = BeckLee_ages,
+                            inc.nodes = TRUE)
 ## Bootstrapping the time bin subsets
 boot_time_bins <- boot.matrix(time_bins, bootstraps = 100)
 ## Calculate disparity
-disparity_time_bins <- dispRity(boot_time_bins, metric = c(sum, variances))
+disparity_time_bins <- dispRity(boot_time_bins,
+                                metric = c(sum, variances))
 ```
 
 These objects are easy to summarise as follows:
@@ -743,8 +857,9 @@ xtable(summary(disparity_time_slices))
 An alternative (and more fun!) way to display the calculated disparity is to plot the results using the S3 method `plot.dispRity`.
 This function takes the same options as `summary.dispRity` along with various graphical options described in the function help files (see `?plot.dispRity`).
 
-The plots can be of four different types:
- 
+The plots can be of five different types:
+
+ * `preview` for a 2d preview of the trait-space. 
  * `continuous` for displaying continuous disparity curves
  * `box`, `lines`, and `polygons` to display discrete disparity results in respectively a boxplot, confidence interval lines, and confidence interval polygons.
 
@@ -787,7 +902,7 @@ plot(disparity_time_slices, col = c("blue", "orange", "green"),
 ## Adding a legend
 legend("topleft", legend = c("Central tendency",
                              "Confidence interval 1",
-                            "Confidence interval 2"),
+                             "Confidence interval 2"),
       col = c("blue", "orange", "green"), pch = 19)
 
 ## Resetting graphical parameters
@@ -801,10 +916,13 @@ In addition to the classic `plot` arguments, the function can also take argument
 op <- par(bty = "n")
 
 ## Plotting the results with some plot.dispRity arguments
-plot(disparity_time_slices, quantiles = c(seq(from = 10, to = 100, by = 10)),
-    cent.tend = sd, type = "c", elements = TRUE, col = c("black", rainbow(10)),
+plot(disparity_time_slices,
+    quantiles = c(seq(from = 10, to = 100, by = 10)),
+    cent.tend = sd, type = "c", elements = TRUE,
+    col = c("black", rainbow(10)),
     ylab = c("Disparity", "Diversity"), chrono.subsets = FALSE,
-    xlab = "Time (in in units from past to present)", observed = TRUE,
+    xlab = "Time (in in units from past to present)",
+    observed = TRUE,
     main = "Many more options...")
 
 ## Resetting graphical parameters
@@ -822,8 +940,8 @@ op <- par(bty = "n")
 ## Plotting the continuous disparity with a fixed y axis
 plot(disparity_time_slices, ylim = c(1, 4))
 ## Adding the discrete data
-plot(disparity_time_bins, type = "line", ylim = c(1, 4), xlab = "", ylab = "",
-    add = TRUE)
+plot(disparity_time_bins, type = "line", ylim = c(1, 4),
+     xlab = "", ylab = "", add = TRUE)
 
 ## Resetting graphical parameters
 par(op)
@@ -842,6 +960,8 @@ plot(disparity_crown_stem, rarefaction = TRUE)
 par(op)
 ```
 
+### `type = preview`
+
 Note that all the options above are plotting disparity objects for which a disparity metric *has been calculated*.
 This makes totally sense for `dispRity` objects but sometimes it might be interesting to look at what the trait-space looks like before measuring the disparity.
 This can be done by plotting `dispRity` objects with no calculated disparity!
@@ -851,10 +971,15 @@ For example custom subsets *vs.* time subsets:
 
 ```{r, fig.width=8, fig.height=4}
 ## Making the different subsets
-cust_subsets <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
-time_subsets <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+cust_subsets <- custom.subsets(BeckLee_mat99,
+                               crown.stem(BeckLee_tree,
+                                          inc.nodes = TRUE))
+time_subsets <- chrono.subsets(BeckLee_mat99,
+                               tree = BeckLee_tree,
+                               method = "discrete",
+                               time = 5)
 
-## Note that no disarity has been calculated here:
+## Note that no disparity has been calculated here:
 is.null(cust_subsets$disparity)
 is.null(time_subsets$disparity)
 
@@ -863,11 +988,24 @@ par(mfrow = c(1,2))
 ## Default plotting
 plot(cust_subsets)
 ## Plotting with more arguments
-plot(time_subsets, dimensions = c(4,5), main = "Some \"low\" dimensions")
+plot(time_subsets, dimensions = c(4,5),
+     main = "Some \"low\" dimensions")
 ```
 
 > DISCLAIMER: This functionality can be handy for exploring the data (e.g. to visually check whether the subset attribution worked) but it might be misleading on how the data is *actually* distributed in the multidimensional space!
 Groups that don't overlap on two set dimensions can totally overlap in all other dimensions!
+
+For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
+However you can always force the `preview` option using the following:
+
+```{r}
+par(mfrow = c(2,1))
+## Default plotting
+plot(disparity_time_slices, main = "Disparity through time")
+## Plotting with more arguments
+plot(disparity_time_slices, type = "preview",
+     main = "Two first dimensions of the trait space")
+```
 
 ## Testing disparity hypotheses
 
@@ -930,7 +1068,8 @@ The `adonis.dispRity` function uses the information from the `dispRity` object t
 ```{r}
 set.seed(1)
 ## Generating a random character matrix
-character_matrix <- sim.morpho(rtree(20), 50, rates = c(rnorm, 1, 0))
+character_matrix <- sim.morpho(rtree(20), 50,
+                               rates = c(rnorm, 1, 0))
 
 ## Calculating the distance matrix
 distance_matrix <- as.matrix(dist(character_matrix))
@@ -950,8 +1089,12 @@ In that case the predictors must correspond to the names of the groups explained
 
 ```{r}
 ## Creating two groups with two states each
-groups <- as.data.frame(matrix(data = c(rep(1,10), rep(2,10), rep(c(1,2), 10)),
-         nrow = 20, ncol = 2, dimnames = list(paste0("t", 1:20), c("g1", "g2"))))
+groups <- as.data.frame(matrix(data = c(rep(1,10),
+                                        rep(2,10),
+                                        rep(c(1,2), 10)),
+                        nrow = 20, ncol = 2,
+                        dimnames = list(paste0("t", 1:20),
+                                        c("g1", "g2"))))
 
 ## Creating the dispRity object
 multi_groups <- custom.subsets(distance_matrix, groups)
@@ -965,9 +1108,11 @@ In this case, `adonis.dispRity` will applied the `matrix ~ time` formula by defa
 
 ```{r}
 ## Creating time series
-time_subsets <- chrono.subsets(BeckLee_mat50, BeckLee_tree, 
-     method = "discrete", inc.nodes = FALSE, time = c(100, 85, 65, 0),
-     FADLAD = BeckLee_ages)
+time_subsets <- chrono.subsets(BeckLee_mat50, BeckLee_tree,
+                               method = "discrete",
+                               inc.nodes = FALSE,
+                               time = c(100, 85, 65, 0),
+                               FADLAD = BeckLee_ages)
 
 ## Running the NPMANOVA with time as a predictor
 adonis.dispRity(time_subsets)
@@ -994,8 +1139,10 @@ require(geiger)
 geiger_data <- get(data(geospiza))
 
 ## Calculate the disparity of the dataset using the sum of variance
-dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = c(sum, variances),
-                             tree = geiger_data$phy, nsim = 100)
+dispRity_dtt <- dtt.dispRity(data = geiger_data$dat,
+                             metric = c(sum, variances),
+                             tree = geiger_data$phy,
+                             nsim = 100)
 
 ## Plotting the results
 plot(dispRity_dtt, fig.width=8, fig.height=8)
@@ -1015,10 +1162,12 @@ set.seed(123)
 normal_space <- matrix(rnorm(1000), ncol = 50)
 
 ## Calculating the disparity as the average pairwise distances
-obs_disparity <- dispRity(normal_space, metric = c(mean, pairwise.dist))
+obs_disparity <- dispRity(normal_space,
+                          metric = c(mean, pairwise.dist))
 
 ## Testing against 100 randomly generated normal spaces
-(results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
+(results <- null.test(obs_disparity, replicates = 100,
+                      null.distrib = rnorm))
 ```
 
 Here the results show that disparity measured in our observed space is not significantly different than the one measured in a normal space.
@@ -1074,13 +1223,17 @@ This is ignored if the argument ```pool.variance``` in ```model.test``` is chang
 For example, to ignore Bartlett's test and pool variances manually we would do the following:
 
 ```{r}
-disp_time_pooled <- model.test(data = BeckLee_disparity, model = "Stasis", pool.variance = TRUE)
+disp_time_pooled <- model.test(data = BeckLee_disparity,
+                               model = "Stasis",
+                               pool.variance = TRUE)
 ```
 
 However, unless you have good reason to choose otherwise it is recommended to use the default of ```pool.variance = NULL```:
 
 ```{r}
-disp_time <- model.test(data = BeckLee_disparity, model = "Stasis", pool.variance = NULL)
+disp_time <- model.test(data = BeckLee_disparity,
+                        model = "Stasis",
+                        pool.variance = NULL)
 disp_time
 ```
 
@@ -1103,7 +1256,8 @@ Brownian motion assumes a constant mean that is equal to the ancestral estimate 
 The easier way to compare these models is to simply add `"BM"` to the ```models``` vector argument:
 
 ```{r}
-disp_time <- model.test(data = BeckLee_disparity, model = c("Stasis", "BM"))
+disp_time <- model.test(data = BeckLee_disparity,
+                        model = c("Stasis", "BM"))
 disp_time
 ```
 
@@ -1130,7 +1284,8 @@ Here we see and overwhelming support for the Brownian motion model.
 Alternatively, we could test all available models single modes: Stasis, Brownian motion, Ornstein-Uhlenbeck (evolution constrained to an optima), Trend (increasing or decreasing mean through time), and Early Burst (exponentially decreasing rate through time)
 
 ```{r}
-disp_time <- model.test(data = BeckLee_disparity, model = c("Stasis", "BM", "OU", "Trend", "EB"))
+disp_time <- model.test(data = BeckLee_disparity,
+                  model = c("Stasis", "BM", "OU", "Trend", "EB"))
 summary(disp_time)
 ```
 
@@ -1162,7 +1317,8 @@ Finally we can plot the empirical data, simulated data, and the Rank Envelope te
 This can all be done using the function ```model.test.wrapper```, and we will set the argument ```show.p = TRUE``` so _p_ values from the Rank Envelope test are printed on the plot:
 
 ```{r plot3, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models", echo = TRUE, fig.height = 18, fig.width = 12}
-disp_time <- model.test.wrapper(data = BeckLee_disparity, model = c("Stasis", "BM", "OU", "Trend", "EB"),
+disp_time <- model.test.wrapper(data = BeckLee_disparity,
+                    model = c("Stasis", "BM", "OU", "Trend", "EB"),
                                 show.p = TRUE)
 disp_time
 ```
@@ -1176,7 +1332,8 @@ This is potentially unrealistic, and one way to alleviate this issue is to set t
 To set the optima to the ancestral value we change the argument ```fixed.optima = TRUE```:
 
 ```{r plot4, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value", echo = TRUE, fig.height = 18, fig.width = 12}
-disp_time <- model.test.wrapper(data = BeckLee_disparity, model = c("Stasis", "BM", "OU", "Trend", "EB"),
+disp_time <- model.test.wrapper(data = BeckLee_disparity,
+                    model = c("Stasis", "BM", "OU", "Trend", "EB"),
                                 show.p = TRUE, fixed.optima = TRUE)
 disp_time
 ```
@@ -1197,8 +1354,11 @@ For example, we could be testing the hypothesis that the extinction of non-avian
 We will constrain the optima of OU model in the first time begin (i.e, pre-66 Mya) to equal the ancestral value:
 
 ```{r plot5, fig.align="center", fig.cap = "Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma", echo = TRUE, fig.height = 12, fig.width = 12}
-disp_time <- model.test.wrapper(data = BeckLee_disparity, model = c("BM", "Trend", "OU", "multi.OU"),
-                                time.split = 66, pool.variance = NULL, show.p = TRUE,
+disp_time <- model.test.wrapper(data = BeckLee_disparity,
+                        model = c("BM", "Trend", "OU", "multi.OU"),
+                                time.split = 66,
+                                pool.variance = NULL,
+                                show.p = TRUE,
                                 fixed.optima = TRUE)
 disp_time
 ```
@@ -1212,7 +1372,8 @@ That's 102 potential time shifts in this example dataset so be warned, the follo
 ```{r, eval = FALSE}
 ## An example of a time split model in which all potential splits are tested
 ## WARNING: this will take between 20 minutes and half and hour to run!
-disp_time <- model.test.wrapper(data = BeckLee_disparity, model = c("BM", "Trend", "OU", "multi.OU"),
+disp_time <- model.test.wrapper(data = BeckLee_disparity,
+                        model = c("BM", "Trend", "OU", "multi.OU"),
                                 show.p = TRUE, fixed.optima = TRUE)
 ```
 
@@ -1232,7 +1393,8 @@ my_models <- list(c("BM", "OU"),
                   c("Stasis", "BM"))
 
 ## Testing the models
-disp_time <- model.test.wrapper(data = BeckLee_disparity, model = my_models, time.split = 66,
+disp_time <- model.test.wrapper(data = BeckLee_disparity,
+                                model = my_models, time.split = 66,
                                 show.p = TRUE, fixed.optima = TRUE)
 disp_time
 ```
@@ -1250,8 +1412,10 @@ For example, it is possible to simulate a simple Brownian motion model (or any o
 
 ```{r}
 ## A simple BM model
-model_simulation <- model.test.sim(sim = 1000, model = "BM", time.span = 50, variance = 0.1,
-                                   sample.size = 100, parameters = list(ancestral.state = 0))
+model_simulation <- model.test.sim(sim = 1000, model = "BM",
+                                   time.span = 50, variance = 0.1,
+                                   sample.size = 100,
+                                   parameters = list(ancestral.state = 0))
 model_simulation
 ```
 
@@ -1276,7 +1440,8 @@ Let's see that using the simple example from the start:
 
 ```{r}
 ## Fitting multiple models on the data set
-disp_time <- model.test(data = BeckLee_disparity, model = c("Stasis", "BM", "OU", "Trend", "EB"))
+disp_time <- model.test(data = BeckLee_disparity,
+                    model = c("Stasis", "BM", "OU", "Trend", "EB"))
 summary(disp_time)
 ```
 
@@ -1293,7 +1458,8 @@ By default, the model simulated is the one with the lowest AICc (`model.rank = 1
 
 ```{r}
 ## Simulating 1000 OU model with the observed parameters
-sim_OU <- model.test.sim(sim = 1000, model = disp_time, model.rank = 2)
+sim_OU <- model.test.sim(sim = 1000, model = disp_time,
+                         model.rank = 2)
 sim_OU
 ```
 
@@ -1335,14 +1501,16 @@ Let's have a look using our [previous example](#summarising-dispRity-data-plots)
 
 ```{r}
 ## Measuring disparity as a whole distribution
-disparity_centroids <- dispRity(boot_time_slices, metric = centroids)
+disparity_centroids <- dispRity(boot_time_slices, 
+                                metric = centroids)
 ```
 
 The resulting disparity object is of dimension-level 2, so it can easily be transformed into a dimension-level 1 object by, for example, measuring the median distance of all these distributions:
 
 ```{r}
 ## Measuring median disparity in each time slice
-disparity_centroids_median <- dispRity(disparity_centroids, metric = median)
+disparity_centroids_median <- dispRity(disparity_centroids,
+                                       metric = median)
 ```
 
 And we can now compare the differences between these methods:
@@ -1366,7 +1534,8 @@ Another, maybe more intuitive way, to compare both approaches for measuring disp
 op <- par(bty = "n", mfrow = c(1, 2))
 
 ## Plotting both disparity measurements
-plot(disparity_centroids, ylab = "Distribution of all the distances")
+plot(disparity_centroids,
+     ylab = "Distribution of all the distances")
 plot(disparity_centroids_median,
      ylab = "Distribution of the medians of all the distances")
 
@@ -1400,7 +1569,8 @@ A second solution is to compare the distributions to each other _for each replic
 
 ```{r}
 ## Boostrapped probability of overlap for the full distributions
-test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE)
+test.dispRity(disparity_centroids, test = bhatt.coeff,
+              concatenate = FALSE)
 ```
 
 These results show the median overlap among pairs of distributions in the first column (`bhatt.coeff`) and then the distribution of these overlaps among each pair of bootstraps.
@@ -1487,3 +1657,131 @@ text(1.5, 1400, paste0("p=",round(euro_ord_diff_rar[[2]][[1]], digit = 5) ))
 
 As expected, the results are pretty similar in pattern but different in terms of scale.
 The median centroids distance is expressed in km in the "Distance differences" plots and in Euclidean units of variation in the "Ordinated differences" plots.
+
+
+## Disparity from multiple matrices (and multiple trees!) {#multi.input}
+
+Since the version `1.4` of this package, it is possible to use multiple trees and multiple matrices in `dispRity` objects.
+To use multiple matrices, this is rather easy: just supply a list of matrices to any of the `dispRity` functions and, as long as they have the same size and the same rownames they will be handled as a distribution of matrices.
+
+```{r}
+set.seed(1)
+## Creating 3 matrices with 4 dimensions and 10 elements each (called t1, t2, t3, etc...)
+matrix_list <- replicate(3, matrix(rnorm(40), 10, 4, dimnames = list(paste0("t", 1:10))),
+                         simplify = FALSE)
+class(matrix_list) # This is a list of matrices
+
+## Measuring some disparity metric on one of the matrices
+summary(dispRity(matrix_list[[1]], metric = c(sum, variances)))
+
+## Measuring the same disparity metric on the three matrices
+summary(dispRity(matrix_list, metric = c(sum, variances)))
+```
+
+As you can see, when measuring the sum of variances on multiple matrices, we now have a distribution of sum of variances rather than a single observed value.
+
+Similarly as running disparity analysis using multiple matrices, you can run the `chrono.subsets` function using multiple trees.
+This can be useful if you want to use a tree posterior distribution rather than a single consensus tree.
+These trees can be passed to `chrono.subsets` as a `"multiPhylo"` object (with the same node and tip labels in each tree).
+First let's define a function to generate multiple trees with the same labels and root ages:
+
+```{r}
+set.seed(1)
+## Matches the trees and the matrices
+## A bunch of trees
+make.tree <- function(n, fun = rtree) {
+    ## Make the tree
+    tree <- fun(n)
+    tree <- chronos(tree, quiet = TRUE,
+                    calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
+    class(tree) <- "phylo"
+    ## Add the node labels
+    tree$node.label <- paste0("n", 1:Nnode(tree))
+    ## Add the root time
+    tree$root.time <- max(tree.age(tree)$ages)
+    return(tree)
+}
+trees <- replicate(3, make.tree(10), simplify = FALSE)
+class(trees) <- "multiPhylo"
+trees
+```
+
+We can now simulate some ancestral states for the matrices in the example above to have multiple matrices associated with the multiple trees.
+
+```{r}
+## A function for running the ancestral states estimations
+do.ace <- function(tree, matrix) {
+    ## Run one ace
+    fun.ace <- function(character, tree) {
+        results <- ace(character, phy = tree)$ace
+        names(results) <- paste0("n", 1:Nnode(tree))
+        return(results)
+    }
+    ## Run all ace
+    return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
+}
+
+## All matrices
+matrices <- mapply(do.ace, trees, matrix_list, SIMPLIFY = FALSE)
+```
+
+Let's first see an example of time-slicing with one matrix and multiple trees.
+This assumes that your tip values (observed) and node values (estimated) are fixed with no error on them.
+It also assumes that the nodes in the matrix always corresponds to the node in the trees (in other words, the tree topologies are fixed):
+
+```{r}
+## Making three "proximity" time slices across one tree
+one_tree <- chrono.subsets(matrices[[1]], trees[[1]],
+                           method = "continuous",
+                           model = "proximity", time = 3)
+## Making three "proximity" time slices across the three trees
+three_tree <- chrono.subsets(matrices[[1]], trees,
+                             method = "continuous",
+                             model = "proximity", time = 3)
+## Measuring disparity as the sum of variances and summarising it
+summary(dispRity(one_tree, metric = c(sum, variances)))
+summary(dispRity(three_tree, metric = c(sum, variances)))
+```
+
+This results show the effect of considering a tree distribution: in the first case (`one_tree`) the time slice at 3.95 Mya has a sum of variances of 2.9 but this values goes down to 0.256 in the second case (`three_tree`) which is due to the differences in branch lengths distributions:
+
+```{r, print = FALSE}
+par(mfrow = c(3,1))
+slices <- c(7.9, 3.95, 0)
+fun.plot <- function(tree) {
+  plot(tree)
+  nodelabels(tree$node.label, cex = 0.8)
+  axisPhylo()
+  abline(v = tree$root.time - slices)
+}
+silent <- lapply(trees, fun.plot)
+```
+
+Note that in this example, the nodes are actually even different in each tree! The node `n4` for example, is not direct descendent of `t4` and `t6` in all trees!
+To fix that, it is possible to input a list of trees and a list of matrices that correspond to each tree in `chrono.subsets` by using the `bind.data = TRUE` option.
+In this case, the matrices need to all have the same row names and the trees all need the same labels as before:
+
+```{r}
+## Making three "proximity" time slices across three trees and three bound matrices
+bound_data <- chrono.subsets(matrices, trees,
+                             method = "continuous",
+                             model = "proximity",
+                             time = 3,
+                             bind.data = TRUE)
+## Making three "proximity" time slices across three trees and three matrices
+unbound_data <- chrono.subsets(matrices, trees,
+                               method = "continuous",
+                               model = "proximity",
+                               time = 3,
+                               bind.data = FALSE)
+
+## Measuring disparity as the sum of variances and summarising it
+summary(dispRity(bound_data, metric = c(sum, variances)))
+summary(dispRity(unbound_data, metric = c(sum, variances)))
+```
+
+Note here that the results are again rather different: with the bound data, the slices are done across the three trees and each of their corresponding matrix (resulting in three observation) which is more accurate than the previous results from `three_trees` above.
+With the unbound data, the slices are done across the three trees and applied to the three matrices (resulting in 9 observations).
+As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
+
+

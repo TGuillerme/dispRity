@@ -9,7 +9,7 @@
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{chrono.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
-#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{chrono.subsets}}.
+#' @seealso \code{paleotree::timeSliceTree}, \code{\link{chrono.subsets}}.
 #'
 #' @examples
 #' set.seed(1)
@@ -55,7 +55,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
 
     ## Adding a root time if missing
     if(is.null(tree$root.time)) {
-        tree$root.time <- max(node.depth.edgelength(tree)[1:Ntip(tree)])
+        tree$root.time <- max(castor::get_all_distances_to_root(tree)[1:Ntip(tree)])
     }
 
     #FAD/LAD

@@ -110,25 +110,29 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     # warning("DEBUG") ; return(match_call)
 
-    ## Check data class
-    if(class(data) != "dispRity") {
-        check.class(data, "matrix")
-        ## Create the dispRity object
-        data <- fill.dispRity(make.dispRity(data = data))
+    ## Check data input
+    if(!is(data, "dispRity")) {
+        data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
     } else {
         ## Making sure matrix exist
-        if(is.null(data$matrix)) {
-            stop.call(match_call$data, " must contain a matrix.")
+        if(is.null(data$matrix[[1]])) {
+            stop.call(match_call$data, " must contain a matrix or a list of matrices.")
         }
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- ncol(data$matrix)
+            data$call$dimensions <- ncol(data$matrix[[1]])
         }
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
+
+    ## Temporary stop if ancestral.dist is used on chrono.subsets
+    if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
+        stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
+    }
+
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
@@ -161,10 +165,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         if(dimensions < 0) {
             stop.call("", "Number of dimensions to remove cannot be less than 0.")
         }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix))
-        if(dimensions > ncol(data$matrix)) {
-            warning(paste0("Dimension number too high: set to ", ncol(data$matrix), "."))
-            dimensions <- ncol(data$matrix)
+        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
+        if(dimensions > ncol(data$matrix[[1]])) {
+            warning(paste0("Dimension number too high: set to ", ncol(data$matrix[[1]]), "."))
+            dimensions <- ncol(data$matrix[[1]])
         }
         data$call$dimensions <- dimensions
     }
@@ -207,7 +211,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
         ## Lapply through the subsets
         lapply_loop <- data$subsets[elements_keep]
-
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
@@ -217,7 +220,6 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         ## No removed elements
         removed_elements <- FALSE
     }
-
 
     ## Select the elements if probabilities are used
     if(has_probabilities && ncol(data$subsets[[1]]$elements) > 1 && matrix_decomposition) {
@@ -231,6 +233,8 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         }
     }
     
+    ## Check if the data is bound
+    is_bound <- ifelse(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous", as.logical(data$call$subsets[["bind"]]), FALSE)
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -251,11 +255,44 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     #     parallel::clusterExport(cluster, c("data", "lapply_loop", "metrics_list", "matrix_decomposition", "parLapply.wrapper", "get.first.metric", "apply.decompose.matrix", "disparity.bootstraps.silent"), envir = current_env) #, "additional_args"
     # }
 
-
     # if(!do_parallel) {
-        if(verbose) message("Calculating disparity", appendLF = FALSE)
+
+    if(verbose) message("Calculating disparity", appendLF = FALSE)
+
+    ## Running the multiple matrix mode
+    # if(is_bound || length(data$matrix) > 1) {
+    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]))) {
+
+        ## Get the number of treesdata
+        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+
+        ## Make the lapply loops
+        lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
+
+        ## Make the matrix list
+        matrices_data <- split.data(data)
+
+        ## mapply this
+        disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+                            SIMPLIFY = FALSE)
+        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        
+        ## Reformat to normal disparity object
+        disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
+                                  function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
+                            recursive = FALSE)
+        names(disparity) <- names(disparities[[1]])
+
+
+    } else {
+        ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
-        if(verbose) message("Done.\n", appendLF = FALSE)
+    }
+
+    # }
+    if(verbose) message("Done.\n", appendLF = FALSE)
+
     # } else {
     #     cat("Enter parlapply\n")
     #     disparity <- lapply(lapply_loop, parLapply.wrapper, cluster)

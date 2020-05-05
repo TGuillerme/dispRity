@@ -17,7 +17,7 @@ All the following functions are based on the same modular architecture of the pa
 
 The function `sim.morpho` allows to simulate discrete morphological data matrices (sometimes referred to as "cladistic" matrices).
 It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states.
-It even allows to include proper inapplicable data to make datasets as messy as in real life!
+It even allows to include "proper" inapplicable data to make datasets as messy as in real life!
 
 In brief, the function `sim.morpho` takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates.
 The package also contains a function for quickly checking the matrix's phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony.
@@ -84,7 +84,7 @@ It quickly calculates the parsimony score, the consistency and retention indices
 
 Once a matrix is generated, it is possible to apply inapplicable characters to it for increasing realism!
 Inapplicable characters are commonly designated as `NA` or simply `-`.
-They differ from missing characters `?` in their nature by being inapplicable rather than unknown.
+They differ from missing characters `?` in their nature by being inapplicable rather than unknown[see @brazeau2018 for more details].
 For example, considering a binary character defined as "colour of the tail" with the following states "blue" and "red"; on a taxa with no tail, the character should be coded as inapplicable ("`-`") since the state of the character "colour of tail" is *known*: it's neither "blue" or "red", it's just not there!
 It contrasts with coding it as missing ("`?`" - also called as ambiguous) where the state is *unknown*, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!
 
@@ -104,12 +104,12 @@ To apply these sources of inapplicability, simply repeat the number of inapplica
 ```{r}
 ## Generating 5 "character" NAs and 10 "clade" NAs
 my_matrix_NA <- apply.NA(my_matrix, tree = my_tree,
-                         NAs = c(rep("character", 5), rep("clade", 10)))
+                         NAs = c(rep("character", 5),
+                                 rep("clade", 10)))
 
 ## The first few lines of the resulting matrix
 my_matrix_NA[1:10, 90:100]
 ```
-<!--TG: Add inapplicable paper here -->
 
 ### Parameters for a realistic(ish) matrix
 
@@ -121,8 +121,11 @@ set.seed(0)
 ## tree
 my_tree <- rcoal(15)
 ## matrix
-morpho_mat <- sim.morpho(my_tree, characters = 100, model = "ER",
-    rates = c(rgamma, rate = 100, shape = 5), invariant = FALSE)
+morpho_mat <- sim.morpho(my_tree,
+                         characters = 100,
+                         model = "ER",
+                         rates = c(rgamma, rate = 100, shape = 5),
+                         invariant = FALSE)
 check.morpho(morpho_mat, my_tree)
 ```
 
@@ -157,7 +160,8 @@ square_space <- space.maker(100, 2, runif)
 head(square_space)
 
 ## Visualising the space
-plot(square_space, pch = 20, xlab = "", ylab = "", main = "Uniform 2D space")
+plot(square_space, pch = 20, xlab = "", ylab = "",
+     main = "Uniform 2D space")
 ```
 
 Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:
@@ -166,13 +170,15 @@ Of course, more complex spaces can be created by changing the distributions, the
 ```{r}
 ## A plane space: uniform with one dimensions equal to 0
 plane_space <- space.maker(2500, 3, c(runif, runif, runif),
-                           arguments = list(list(min = 0, max = 0), NULL, NULL))
+                           arguments = list(list(min = 0, max = 0),
+                           NULL, NULL))
 
 ## Correlation matrix for a 3D space
 (cor_matrix <- matrix(cbind(1, 0.8, 0.2, 0.8, 1, 0.7, 0.2, 0.7, 1), nrow = 3))
 
 ## An ellipsoid space (normal space with correlation)
-ellipse_space <- space.maker(2500, 3, rnorm, cor.matrix = cor_matrix)
+ellipse_space <- space.maker(2500, 3, rnorm,
+                             cor.matrix = cor_matrix)
 
 ## A cylindrical space with decreasing axes variance
 cylindrical_space <- space.maker(2500, 3, c(rnorm, rnorm, runif),
@@ -200,7 +206,8 @@ plot(circle, xlab = "x", ylab = "y", main = "A normal circle")
 
 ## Creating doughnut space (a spherical space with a hole)
 doughnut_space <- space.maker(5000, 3, c(rnorm, random.circle),
-     arguments = list(list(mean = 0), list(runif, inner = 0.5, outer = 1)))
+     arguments = list(list(mean = 0),
+                      list(runif, inner = 0.5, outer = 1)))
 ```
 
 ### Visualising the space
@@ -297,7 +304,6 @@ test_norm2 <- null.test(observed_disp, null.distrib = rep(list(rnorm), obs_dim),
 test_norm3 <- null.test(observed_disp, null.distrib = rep(list(rnorm), obs_dim),
                         null.args = obs_mu_sd_axis, null.cor = obs_correlations)
 
-
 ## Graphical options
 op <- par(mfrow = (c(2, 2)), bty = "n")
 ## Plotting the results
@@ -306,7 +312,6 @@ plot(test_norm1, main = "Normal (0,1)")
 plot(test_norm2, main = paste0("Normal (", round(obs_mu_sd_glob[[1]], digit = 3),
                               ",", round(obs_mu_sd_glob[[2]], digit = 3), ")"))
 plot(test_norm3, main = "Normal (variable + correlation)")
-
 ```
 
 If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.

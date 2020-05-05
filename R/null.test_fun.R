@@ -11,10 +11,12 @@ get.metric.from.call <- function(data, what) {
 ## Generating the null model
 make.null.model <- function(data, replicates, null.distrib, null.args, null.cor, null.scree, scale, metric, args) {
 
+    options(warn = -1)
+
     if(!scale) {
         if(is.null(args)){
                 null_models_result <- replicate(replicates, summary(dispRity(
-                        space.maker(nrow(data$matrix),
+                        space.maker(nrow(data$matrix[[1]]),
                                     dimensions = data$call$dimensions,
                                     distribution = null.distrib,
                                     arguments = null.args,
@@ -24,7 +26,7 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
                     cent.tend = mean, quantiles = 1)$obs)
         } else {
                 null_models_result <- replicate(replicates, summary(dispRity(
-                        space.maker(nrow(data$matrix),
+                        space.maker(nrow(data$matrix[[1]]),
                                     dimensions = data$call$dimensions,
                                     distribution = null.distrib,
                                     arguments = null.args,
@@ -36,7 +38,7 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
         if(is.null(args)) {
             null_models_result <- replicate(replicates, summary(dispRity(
                     scale(
-                        space.maker(nrow(data$matrix),
+                        space.maker(nrow(data$matrix[[1]]),
                                     dimensions = data$call$dimensions,
                                     distribution = null.distrib,
                                     arguments = null.args,
@@ -48,7 +50,7 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
         } else {
             null_models_result <- replicate(replicates, summary(dispRity(
                     scale(
-                        space.maker(nrow(data$matrix),
+                        space.maker(nrow(data$matrix[[1]]),
                                     dimensions = data$call$dimensions,
                                     distribution = null.distrib,
                                     arguments = null.args,
@@ -59,5 +61,6 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
             cent.tend = mean, quantiles = 1)$obs)
         }
     }
+    options(warn = 0)
     return(null_models_result)
 }

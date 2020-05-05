@@ -10,3 +10,4 @@ A modular package for measuring disparity from multidimensional matrices. Dispar
 \author{
 Thomas Guillerme <guillert@tcd.ie>
 }
+\concept{disparity ordination phylogeny cladistic morphometric ecology}

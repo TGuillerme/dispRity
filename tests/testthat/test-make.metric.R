@@ -35,6 +35,14 @@ test_that("Output is correct", {
         make.metric(fun, silent = FALSE)
         )
 
+    fun2 <- function(x) {
+        return("try-error")
+    }
+    expect_error(
+        make.metric(fun2, silent = FALSE)
+        )
+
+
     ## Verbose
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))
@@ -72,6 +80,17 @@ test_that("Output is correct", {
     expect_equal(
     	make.metric(function(x)sd(variances(var(x))), silent=TRUE), "level1"
     	)
+
+    ## Same with data.dim
+    expect_equal(
+        make.metric(function(x)variances(var(x)), silent=TRUE, data.dim = c(3, 2)), "level2"
+        )
+    expect_equal(
+        make.metric(function(x)var(var(x)), silent=TRUE, data.dim = c(33, 5)), "level3"
+        )
+    expect_equal(
+        make.metric(function(x)sd(variances(var(x))), silent=TRUE, data.dim = c(3, 10)), "level1"
+        )
 
     expect_equal(capture.output(make.metric(var)),
         c("var outputs a matrix object.", "var is detected as being a dimension-level 3 function.", "Additional dimension-level 2 and/or 1 function(s) will be needed."))

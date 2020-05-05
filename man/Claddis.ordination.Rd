@@ -4,8 +4,7 @@
 \alias{Claddis.ordination}
 \title{Imports data from Claddis}
 \usage{
-Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE,
-  arg.cmdscale)
+Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE, arg.cmdscale)
 }
 \arguments{
 \item{data}{Data from \code{\link[Claddis]{ReadMorphNexus}} or the path to a file to be read by \code{\link[ape]{read.nexus.data}} (see details).}
@@ -39,7 +38,7 @@ cat(
 "#NEXUS
 BEGIN DATA;
 DIMENSIONS  NTAX=5 NCHAR=5;
-FORMAT SYMBOLS= \\" 0 1 2\\" MISSING=? GAP=- ;
+FORMAT SYMBOLS= \" 0 1 2\" MISSING=? GAP=- ;
 MATRIX
      t1  {01}1010
      t2  02120

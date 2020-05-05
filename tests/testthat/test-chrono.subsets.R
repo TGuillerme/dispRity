@@ -2,11 +2,17 @@
 
 context("chrono.subsets")
 
-## Change the loading data to a simplified version of Beck???
-load("test_data.Rda")
-tree <- test_data$tree_data
-data <- test_data$ord_data_tips
-FADLAD <- test_data$FADLAD_data
+data(BeckLee_tree)
+data(BeckLee_mat50)
+data(BeckLee_ages)
+data(BeckLee_mat99)
+
+# load("test_data.Rda")
+tree <- BeckLee_tree
+data <- BeckLee_mat50
+FADLAD <- BeckLee_ages
+
+
 
 # test_that("get.percent.age works", {
 #     set.seed(42)
@@ -19,6 +25,11 @@ FADLAD <- test_data$FADLAD_data
 
 
 test_that("adjust.FADLAD works", {
+
+    tree <- BeckLee_tree
+    data <- BeckLee_mat50
+    FADLAD <- BeckLee_ages
+
 
     ## Test FADLAD
     expect_equal(adjust.age(1, 1), 1)
@@ -83,12 +94,11 @@ test_that("chrono.subsets.discrete works properly without nodes", {
         , subsets_2)
 
     expect_message(chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = TRUE))
-
 })
 
 ## With nodes
 inc.nodes = TRUE
-data <- test_data$ord_data_tips_nodes
+data <- BeckLee_mat99
 
 time_subsets <- chrono.subsets.discrete(data, tree, time, model = NULL, FADLAD, inc.nodes, verbose = FALSE)
 
@@ -113,7 +123,7 @@ test_that("chrono.subsets.discrete works properly with nodes", {
 
 
 ## chrono.subsets.continuous
-data <- test_data$ord_data_tips_nodes
+data <- BeckLee_mat99
 time = c(120, 80, 40)
 verbose = FALSE
 
@@ -123,15 +133,6 @@ time_subsets <- chrono.subsets.continuous(data, tree, time, model = "deltran", F
 ## Test
 test_that("chrono.subsets.continuous works properly with deltran model", {
     
-    # Get slice
-    # expect_equal(
-    #     as.vector(na.omit(unlist(get.slice(1, time[2], "ACCTRAN", adjust.FADLAD(FADLAD, tree, data), data, verbose = FALSE))))
-    #     , c(7, 8, 9, 1, 2, 3, 12, 13, 14, 15, 44, 70, 73, 76, 79, 85, 48, 90, 47, 95, 46, 98))
-    # expect_equal(
-    #     unname(unlist(get.slice(slice = 1, time = time[2], model = "proximity", ages_tree = adjust.FADLAD(FADLAD, tree, data), data = data, verbose = FALSE, tree = tree)))
-    #     , c(7, 8, 9, 1, 2, NA, 12, 13, 14, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
-    # )
-
     ## class is list
     expect_is(
         time_subsets
@@ -142,17 +143,20 @@ test_that("chrono.subsets.continuous works properly with deltran model", {
         , 3)
     ## elements per subsets
     subsets_1 <- c("n1","n5","n11", "Zhangolestes")
+    # c(11), sort(c(51, 55, 61))
     subsets_2 <- c("n6","Asioryctes","n7","n8","n10","n15","n17","n19","n22","n25","n34","n39","n44","n47")
+    # c(8), sort(c(56,57,58,60,65,67,69,72,75,84,89,94,97))
     subsets_3 <- c("n17","n23","n27","n28","n29","n31","n32","n39","n42","n44","n48","n49")
+    # sort(c(67,73,77,78,79,81,82,89,92,94,98,99))
     expect_equal(
-        rownames(data[time_subsets[[1]]$elements,])
-        , subsets_1)
+        sort(rownames(data[time_subsets[[1]]$elements,]))
+        , sort(subsets_1))
     expect_equal(
-        rownames(data[time_subsets[[2]]$elements,])
-        , subsets_2)
+        sort(rownames(data[time_subsets[[2]]$elements,]))
+        , sort(subsets_2))
     expect_equal(
-        rownames(data[time_subsets[[3]]$elements,])
-        , subsets_3)
+        sort(rownames(data[time_subsets[[3]]$elements,]))
+        , sort(subsets_3))
 })
 
 ## ACCTRAN
@@ -164,26 +168,25 @@ test_that("chrono.subsets.continuous works properly with acctran model", {
     subsets_2 <- c("Kennalestes","Asioryctes","Ukhaatherium","Cimolestes","Maelestes","Batodon","Zalambdalestes","Barunlestes","Gypsonictops","Leptictis","Oxyclaenus","n20","n23","n26","n29","n35","Cynocephalus","n40","Patriomanis","n45","Icaronycteris","n48")
     subsets_3 <- c("Leptictis","Dasypodidae","n24","Potamogalinae","Dilambdogale","Widanelfarasia","Rhynchocyon","Procavia","Moeritherium","Trichechus","Cynocephalus","Adapis","Patriomanis","Soricidae","Solenodon")
     expect_equal(
-        rownames(data[time_subsets[[1]]$elements,])
-        , subsets_1)
+        sort(rownames(data[time_subsets[[1]]$elements,]))
+        , sort(subsets_1))
     expect_equal(
-        rownames(data[time_subsets[[2]]$elements,])
-        , subsets_2)
+        sort(rownames(data[time_subsets[[2]]$elements,]))
+        , sort(subsets_2))
     expect_equal(
-        rownames(data[time_subsets[[3]]$elements,])
-        , subsets_3)
+        sort(rownames(data[time_subsets[[3]]$elements,]))
+        , sort(subsets_3))
 })
 
 ## chrono.subsets
-data = test_data$ord_data_tips_nodes
-tree = test_data$tree_data
+data = BeckLee_mat99
+tree = BeckLee_tree
 method = "continuous"
 model = "acctran"
 inc.nodes = TRUE
-FADLAD = test_data$FADLAD_data
+FADLAD = BeckLee_ages
 verbose = FALSE
 
-## Sanitizing
 test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Data
     expect_error(
@@ -192,9 +195,9 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     expect_error(
         chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
         )
-    expect_error(
+    expect_warning(expect_error(
         chrono.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
+        ))
     ## tree
     expect_error(
         chrono.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE)
@@ -250,8 +253,8 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
 
     expect_is(continous_shortcut, "dispRity")
     expect_is(discrete_shortcut, "dispRity")
-    expect_equal(continous_shortcut$call$subsets[1], "continuous")
-    expect_equal(discrete_shortcut$call$subsets[1], "discrete")
+    expect_equal(unname(continous_shortcut$call$subsets[1]), "continuous")
+    expect_equal(unname(discrete_shortcut$call$subsets[1]), "discrete")
     
     ## Error when no phy and no/wrong FADLAD
     expect_error(chrono.subsets(BeckLee_mat99, method = "continuous", time = 3, model = "acctran"))
@@ -307,10 +310,8 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     rownames(data_wrong)[1] <- "wrong!"
     error <- capture_error(chrono.subsets(data = data_wrong, tree = BeckLee_tree, method = "c", time = 3, model = "acctran"))
     expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
-
 })
 
-## Output
 test_that("Output format is correct", {
     out_test <- chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD)
     ## Class
@@ -328,20 +329,14 @@ test_that("Output format is correct", {
         )
 })
 
-
-## Verbose
 test_that("Output format is correct", {
     output_continuous <- capture_message(test <- chrono.subsets(data, tree, method = "continuous", time, model, inc.nodes, FADLAD, verbose = TRUE))
-    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through one tree:\n")
 
     output_discrete <- capture_message(test <- chrono.subsets(data, tree, method = "discrete", time, model, inc.nodes, FADLAD, verbose = TRUE))
-    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through one tree:\n")
 })
 
-
-
-
-## Example TESTING
 test_that("Example works", {
     data(BeckLee_tree) ; data(BeckLee_mat50) ; data(BeckLee_mat99) ; data(BeckLee_ages)
     ex1 <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
@@ -349,10 +344,10 @@ test_that("Example works", {
         length(ex1)
         , 3)
     expect_is(
-        ex1$matrix
+        ex1$matrix[[1]]
         ,"matrix")
     expect_equal(
-        dim(ex1$matrix)
+        dim(ex1$matrix[[1]])
         ,c(50,48))
     expect_equal(
         nrow(ex1$subsets[[1]]$elements)
@@ -366,10 +361,10 @@ test_that("Example works", {
         length(ex2)
         , 3)
     expect_is(
-        ex2$matrix
+        ex2$matrix[[1]]
         ,"matrix")
     expect_equal(
-        dim(ex2$matrix)
+        dim(ex2$matrix[[1]])
         ,c(99,97))
     expect_equal(
         nrow(ex2$subsets[[1]]$elements)
@@ -383,10 +378,10 @@ test_that("Example works", {
         length(ex3)
         , 3)
     expect_is(
-        ex3$matrix
+        ex3$matrix[[1]]
         ,"matrix")
     expect_equal(
-        dim(ex3$matrix)
+        dim(ex3$matrix[[1]])
         ,c(99,97))
     expect_equal(
         nrow(ex3$subsets[[1]]$elements)
@@ -406,7 +401,6 @@ test_that("make.origin.subsets works (internal fun)", {
     expect_equal(names(test_out[[1]]), "elements")
     expect_equal(dim(test_out[[1]][[1]]), c(5,1))
 })
-
 
 test_that("chrono.subsets works without tree", {
 
@@ -438,14 +432,15 @@ test_that("chrono.subsets works without tree", {
 })
 
 test_that("t0 works", {
-    data <- test_data$ord_data_tips_nodes
+    data <- BeckLee_mat99
     test <- chrono.subsets(data, tree, method = "continuous", model = "acctran", inc.nodes = TRUE, FADLAD = FADLAD, t0 = 100, time = 11)
     expect_is(test, "dispRity")
     expect_equal(names(test$subsets), as.character(rev(seq(from = 0, to = 100, by = 10))))
 })
 
 test_that("chrono.subsets works for empty subsets", {
-    data <- test_data$ord_data_tips
+    data <- BeckLee_mat50
+    tree <- BeckLee_tree
     time <- c(145, 140, 139, 0)
 
     ## Discrete
@@ -456,7 +451,7 @@ test_that("chrono.subsets works for empty subsets", {
     expect_equal(test$subsets[[3]][[1]][,1], c(5, 4, 6, 7, 8, 9, 1, 43, 2, 3, 10, 11, 42, 12, 13, 14, 15, 44, 17, 18, 36, 37, 38, 41, 32, 39, 40, 33, 34, 35, 49, 50, 24, 25, 26, 27, 28, 48, 16, 21, 22, 23, 47, 45, 19, 20, 46, 29, 30, 31))
 
     ## Continuous
-    data <- test_data$ord_data_tips_nodes
+    data <- BeckLee_mat99
     warnings <- capture_warnings(test <- chrono.subsets(data, tree, model = "acctran", method = "continuous", time = c(145, 140, 139, 0)))
     expect_equal(warnings, c("The slice 145 is empty.", "The slice 140 is empty."))
     expect_equal(test$subsets[[1]][[1]][,1], NA)
@@ -465,26 +460,25 @@ test_that("chrono.subsets works for empty subsets", {
     expect_equal(test$subsets[[4]][[1]][,1], c(36, 37, 38, 32, 33, 34, 50, 48, 29, 30))
 })
 
-
 test_that("probability models work", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
     data(BeckLee_tree)
     
-    test1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    test1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, t0 = FALSE)
     test2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "equal.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     expect_is(test1, "dispRity")
     expect_is(test1$subsets[[1]][[1]], "matrix")
     expect_equal(dim(test1$subsets[[1]][[1]]), c(6,3))
     expect_true(all(test1$subsets[[1]][[1]][,1:2] >= 1))
-    expect_true(all(test1$subsets[[1]][[1]][,3] < 1))
+    expect_true(all(test1$subsets[[1]][[1]][,3] <= 1))
 
     expect_is(test2, "dispRity")
     expect_is(test2$subsets[[1]][[1]], "matrix")
     expect_equal(dim(test2$subsets[[1]][[1]]), c(6,3))
     expect_true(all(test2$subsets[[1]][[1]][,1:2] >= 1))
-    expect_true(all(test2$subsets[[1]][[1]][,3] < 1))
+    expect_true(all(test2$subsets[[1]][[1]][,3] <= 1))
 })
 
 test_that("chrono.subsets detects distance matrices", {
@@ -500,8 +494,6 @@ test_that("chrono.subsets detects distance matrices", {
     msg <- capture_warnings(chrono.subsets(is_dist, method = "discrete", time = c(1, 0.5, 0), tree = tree))
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
-
-
 
 test_that("cbind.fill and recursive.combine list works", {
         x  <- matrix(1, nrow = 2, ncol = 1)
@@ -538,22 +530,9 @@ test_that("cbind.fill and recursive.combine list works", {
 
 test_that("chrono.subsets works with multiPhylo", {
     #Simulate some fossil ranges with simFossilRecord
-    set.seed(444)
-    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
-    taxa <- paleotree::fossilRecord2fossilTaxa(record)
-    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
-    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
-    likFun <- paleotree::make_durationFreqCont(rangesCont)
-    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
-    sRate <- srRes[[1]][2]
-    divRate <- srRes[[1]][1]
-    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
-    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
-    ## Scale the trees to have the same most recent root age
-    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
-    ## Make the dummy data
-    set.seed(1)
-    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+    load("paleotree_test_data.Rda")
+    tree <- paleotree_data$tree
+    data <- paleotree_data$data
 
     ## Test if it works normally
     expect_is(chrono.subsets(data, tree[[1]], method = "continuous", time = 3, model = "proximity"), "dispRity")
@@ -573,25 +552,237 @@ test_that("chrono.subsets works with multiPhylo", {
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_label))
     expect_equal(error$message, "The trees in tree_wrong_label must have the same node labels.")
     warning <- capture_warning(test <- chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime, model = "acctran"))
-    expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81.")
+    expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81 by stretching the root edge.")
 
     ## Works with a multiPhylo object
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
 
     expect_is(test, "dispRity")
     expect_equal(names(test), c("matrix", "call", "subsets"))
-    expect_equal(names(test$subsets), c("16.2765357153421", "8.13826785767107", "0"))
+    expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 5, 2, 11, 2))
-    expect_equal(unique(c(test$subsets[[2]]$elements)), c(18, 25, 23, 9, 26, NA))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))
 
     ## Works with discrete
     test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(2, 2, 4, 2, 19, 2))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(6, 2, 5, 2, 14, 2))
 
     ## Works with probabilities
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 5, 6, 11, 6))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
 })
+
+test_that("chrono.subsets works with multiple matrices", {
+
+    data <- list(BeckLee_mat50, BeckLee_mat50)
+    data_wrong <- list(BeckLee_mat50, BeckLee_mat99)
+
+    error <- capture_error(test <- chrono.subsets(data_wrong, tree = BeckLee_tree, method = "discrete", time = 4))
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_warning(test <- chrono.subsets(data, tree = BeckLee_tree, method = "discrete", time = 4))
+    
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_equal(length(test$matrix), 2)
+    expect_equal(dim(test$matrix[[1]]), c(50, 48))
+
+    load("bound_test_data.Rda")
+    trees <- bound_test_data$trees
+    matrices <- bound_test_data$matrices
+
+    ## Test if it works with multiple trees and with multiple matrices ok
+    test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
+    expect_is(test, "dispRity")
+    test_print <- capture_output(print(test))
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices:\n    5, 2.5, 0.")
+    test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+    expect_is(test, "dispRity")
+    test_print <- capture_output(print(test))
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix:\n    5, 2.5, 0.")
+
+
+    matrices_wrong1 <- matrices_wrong2 <- matrices
+    rownames(matrices_wrong1[[2]])[1] <- "t2000" 
+    rownames(matrices_wrong2[[3]])[11] <- "root" 
+
+    error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+
+    ## Test working fine
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_equal(length(test$matrix), 3)
+    expect_is(test$matrix[[1]], "matrix")
+    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_is(test$subsets, "list")
+    expect_equal(length(test$subsets), 3)
+    expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
+})
+
+test_that("fast internal functions work", {
+
+    tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
+    tree$node.label <- as.character(paste0("n",seq(1:5)))
+    tree$root.time <- 6
+    edge_table <- tree$edge
+    rownames(edge_table) <- paste("edge", 1:nrow(edge_table), sep = "")
+    colnames(edge_table) <- c("parent", "child")
+    tree$tip.label <- paste0("t", 1:Ntip(tree))
+    tree$node.label <- paste0("n", (Ntip(tree)+1):(Ntip(tree)+Nnode(tree)))
+    data <- matrix(NA, ncol = 1, nrow = 11)
+    rownames(data) <- c(tree$tip.label, tree$node.label)
+    # plot(tree)
+    # nodelabels(tree$node.label)
+    # edgelabels(rownames(edge_table))
+    # axisPhylo()
+    # slice <- 3
+    # abline(v = tree$root.time - slice)
+    # edge_table
+
+    ## Couple of edge slices
+    t1 <- test <- fast.slice.table(3.5, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(9, 0.5, 10, 0.5))
+    expect_equal(test[2,], c(9, 0.5, 4, 0.5))
+    expect_equal(test[3,], c(8, 1.5, 5, 3.5))
+    expect_equal(test[4,], c(7, 2.5, 6, 0.5))
+
+    t2 <- test <- fast.slice.table(1.5, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(3,4))
+    expect_equal(test[1,], c(10, 1.5, 11, 0.5))
+    expect_equal(test[2,], c(10, 1.5, 3, 1.5))
+    expect_equal(test[3,], c(8, 3.5, 5, 1.5))
+
+    t3 <- test <- fast.slice.table(5.75, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(2,4))
+    expect_equal(test[1,], c(7, 0.25, 8, 0.75))
+    expect_equal(test[2,], c(7, 0.25, 6, 2.75))
+
+    ## Tip slices
+    t4 <- test <- fast.slice.table(0, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(11, 1, 1, 0))
+    expect_equal(test[2,], c(11, 1, 2, 0))
+    expect_equal(test[3,], c(10, 3, 3, 0))
+    expect_equal(test[4,], c(8, 5, 5, 0))
+
+    ## Node slice
+    t5 <- test <- fast.slice.table(3, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(4,4))
+    expect_equal(test[1,], c(9, 1, 10, 0))
+    expect_equal(test[2,], c(9, 1, 4, 0))
+    expect_equal(test[3,], c(8, 2, 5, 3))
+    expect_equal(test[4,], c(7, 3, 6, 0))
+
+    ## Root slice
+    t6 <- test <- fast.slice.table(6, tree)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(2,4))
+    expect_equal(test[1,], c(7, 0, 8, 1))
+    expect_equal(test[2,], c(7, 0, 6, 3))
+
+    ## Beyond the tips slice
+    old_tree <- tree
+    old_tree$root.time <- 8
+    test <- fast.slice.table(0, old_tree)
+    expect_null(test)
+
+    ## Selecting the right model works
+    expect_equal(select.table.tips(t1, "acctran"), c(10, 4, 5, 6))
+    expect_equal(select.table.tips(t2, "acctran"), c(11, 3, 5))
+    expect_equal(select.table.tips(t3, "acctran"), c(8, 6))
+    expect_equal(select.table.tips(t4, "acctran"), c(1, 2, 3, 5))
+    expect_equal(select.table.tips(t5, "acctran"), c(10, 4, 5, 6))
+    expect_equal(select.table.tips(t6, "acctran"), c(8, 6))
+    
+    expect_equal(select.table.tips(t1, "deltran"), c(9, 8, 7))
+    expect_equal(select.table.tips(t2, "deltran"), c(10, 8))
+    expect_equal(select.table.tips(t3, "deltran"), c(7))
+    expect_equal(select.table.tips(t4, "deltran"), c(11, 10, 8))
+    expect_equal(select.table.tips(t5, "deltran"), c(9, 8, 7))
+    expect_equal(select.table.tips(t6, "deltran"), c(7))
+    
+    set.seed(1)
+    expect_equal(select.table.tips(t1, "random"), c(9, 4, 8, 7))
+    expect_equal(select.table.tips(t2, "random"), c(11, 10, 8))
+    expect_equal(select.table.tips(t3, "random"), c(7, 6))
+    expect_equal(select.table.tips(t4, "random"), c(1, 11, 10, 8))
+    expect_equal(select.table.tips(t5, "random"), c(9, 5, 6))
+    expect_equal(select.table.tips(t6, "random"), c(8, 6))
+
+    expect_equal(select.table.tips(t1, "proximity"), c(9, 8, 6))
+    expect_equal(select.table.tips(t2, "proximity"), c(11, 10, 5))
+    expect_equal(select.table.tips(t3, "proximity"), c(7))
+    expect_equal(select.table.tips(t4, "proximity"), c(1, 2, 3, 5))
+    expect_equal(select.table.tips(t5, "proximity"), c(10, 4, 8, 6))
+    expect_equal(select.table.tips(t6, "proximity"), c(7))
+    
+    expect_equal(select.table.tips(t1, "equal.split"), cbind(t1[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t2, "equal.split"), cbind(t2[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t3, "equal.split"), cbind(t3[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t4, "equal.split"), cbind(t4[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t5, "equal.split"), cbind(t5[,c(1,3)], 0.5))
+    expect_equal(select.table.tips(t6, "equal.split"), cbind(t6[,c(1,3)], 0.5))
+
+    expect_equal(select.table.tips(t1, "gradual.split"), cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))
+    expect_equal(select.table.tips(t2, "gradual.split"), cbind(t2[,c(1,3)], 1-(t2[,2]/(t2[,2]+t2[,4]))))
+    expect_equal(select.table.tips(t3, "gradual.split"), cbind(t3[,c(1,3)], 1-(t3[,2]/(t3[,2]+t3[,4]))))
+    expect_equal(select.table.tips(t4, "gradual.split"), cbind(t4[,c(1,3)], 1-(t4[,2]/(t4[,2]+t4[,4]))))
+    expect_equal(select.table.tips(t5, "gradual.split"), cbind(t5[,c(1,3)], 1-(t5[,2]/(t5[,2]+t5[,4]))))
+    expect_equal(select.table.tips(t6, "gradual.split"), cbind(t6[,c(1,3)], 1-(t6[,2]/(t6[,2]+t6[,4]))))
+
+    ## get.time.slice works
+    test1 <- get.time.slice(time = 3.5, tree, model = "deltran", verbose = FALSE)
+    expect_is(test1, "list")
+    expect_equal(names(test1), "elements")
+    expect_equal(test1[[1]], matrix(c(9, 8 ,7)))
+    test2 <- get.time.slice(time = 3.5, tree, model = "gradual.split", verbose = FALSE)
+    expect_is(test2, "list")
+    expect_equal(names(test2), "elements")
+    expect_equal(test2[[1]], cbind(t1[,c(1,3)], 1-(t1[,2]/(t1[,2]+t1[,4]))))
+
+    ## add.FADLAD works
+    FADLAD <- matrix(c(3, 1.5, 2, 0, 5, 4), 3, 2, byrow = TRUE, dimnames = list(c("t4", "t3", "t6"), c("FAD", "LAD")))
+    test1 <- get.time.slice(time = 2, tree, model = "proximity", verbose = FALSE)
+    test2 <- get.time.slice(time = 2, tree, model = "equal.split", verbose = FALSE)
+
+
+    res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
+    expect_is(res1, "list")
+    expect_equal(names(res1), "elements")
+    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
+
+    res2 <- add.FADLAD(test2, 2, FADLAD, rownames(data))
+    expect_is(res2, "list")
+    expect_equal(names(res2), "elements")
+    expect_equal(res2[[1]][,1], c(10,3,8,4))
+    expect_equal(res2[[1]][,3], c(.5,1,.5,1))
+
+    ## FADLAD works with nodes
+    FADLAD <- rbind(FADLAD, "n10" = c(3, 1))
+    res1 <- add.FADLAD(test1, 2, FADLAD, rownames(data))
+    expect_is(res1, "list")
+    expect_equal(names(res1), "elements")
+    expect_equal(res1[[1]], matrix(c(10, 5 , 3, 4)))
+
+    res2 <- add.FADLAD(test2, 2, FADLAD, rownames(data))
+    expect_is(res2, "list")
+    expect_equal(names(res2), "elements")
+    expect_equal(res2[[1]][,1], c(10,3,8,4))
+    expect_equal(res2[[1]][,2], c(10,3,5,4))
+    expect_equal(res2[[1]][,3], c(1,1,.5,1))
+})
+
+

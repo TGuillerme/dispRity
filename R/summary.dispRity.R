@@ -3,7 +3,7 @@
 #' @description Creates a summary of a \code{dispRity} object.
 #'
 #' @param object A \code{dispRity} object.
-#' @param ... Additional arguments to be passed to \code{\link{summary}}.
+#' @param ... Additional arguments to be passed to \code{\link{summary}} or \code{cent.tend}.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param recall \code{logical} value specifying whether to recall the \code{dispRity} parameters input (default = \code{FALSE}).
@@ -106,7 +106,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     if(length(class(data)) > 1) {
 
         ## Model test summary
-        if(class(data)[2] == "model.test") {
+        if(is(data, "model.test")) {
             ## Extracting the AICs and the log likelihoods
             base_results <- cbind(data$aic.models, "log.lik" = sapply(data$full.details, function(x) x$value))
 
@@ -135,7 +135,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         }
         
         # Model sim summary
-        if(class(data)[2] == "model.sim") {
+        if(is(data, "model.sim")) {
 
             # if(recall){
             #     print.dispRity(data)
@@ -144,7 +144,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             simulation_data_matrix <- sapply(data$simulation.data$sim, function(x) x$central_tendency)
 
             ## Get the quantiles
-            simulation_results <- apply(simulation_data_matrix, 1, get.summary, cent.tend = cent.tend, quantiles = quantiles)
+            simulation_results <- apply(simulation_data_matrix, 1, get.summary, cent.tend = cent.tend, quantiles = quantiles, ...)
             simulation_results <- cbind(do.call(rbind, lapply(simulation_results, function(X) rbind(X$cent_tend[[1]]))),
                                         do.call(rbind, lapply(simulation_results, function(X) rbind(X$quantiles))))
             colnames(simulation_results)[1] <- as.character(match_call$cent.tend)
@@ -203,7 +203,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Add the observed values
     if(is_distribution) {
-        summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend), elements))), row.names = NULL)
+        summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend, ...), elements))), row.names = NULL)
         names(summary_results)[3] <- paste("obs", as.expression(match_call$cent.tend), sep = ".")
     } else {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, disparity_values, elements))), row.names = NULL)
@@ -212,7 +212,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     if(!is.null(data$call$bootstrap)) {
         ## Calculate the central tendencies and the quantiles
-        summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
+        summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles, ...)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
         names(summary_results)[4:length(summary_results)] <- c(paste("bs", as.expression(match_call$cent.tend), sep = "."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
     } else {

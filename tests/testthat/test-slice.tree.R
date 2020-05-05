@@ -10,18 +10,18 @@ test_that("slice.tree.sharp works", {
     tree$root.time <- 10
 
     ## Gives the same answers as timeSliceTree
-    for(test_slice in c(9,8,7)) {
-        paletest <- paleotree::timeSliceTree(tree, test_slice, drop.extinct = TRUE, plot = FALSE)
-        disptest <- slice.tree.sharp(tree, test_slice)
-        expect_is(paletest, "phylo")
-        expect_is(disptest, "phylo")
-        expect_equal(paletest$tip.label, disptest$tip.label)
-        expect_equal(dist.nodes(paletest), dist.nodes(disptest))
-    }
-    #microbenchmark(timeSliceTree(tree, 8, drop.extinct = TRUE, plot = FALSE), slicing.tree.sharp(tree, 8))
+    # for(test_slice in c(9,8,7)) {
+    #     paletest <- paleotree::timeSliceTree(tree, test_slice, drop.extinct = TRUE, plot = FALSE)
+    #     disptest <- slice.tree.sharp(tree, test_slice)
+    #     expect_is(paletest, "phylo")
+    #     expect_is(disptest, "phylo")
+    #     expect_equal(paletest$tip.label, disptest$tip.label)
+    #     expect_equal(dist.nodes(paletest), dist.nodes(disptest))
+    # }
+    # #microbenchmark(timeSliceTree(tree, 8, drop.extinct = TRUE, plot = FALSE), slicing.tree.sharp(tree, 8))
 
-    ## Provides error
-    expect_error(paleotree::timeSliceTree(tree, tree$root.time - (0.06 * tree$root.time), drop.extinct = TRUE, plot = FALSE))
+    # ## Provides error
+    # expect_error(paleotree::timeSliceTree(tree, tree$root.time - (0.06 * tree$root.time), drop.extinct = TRUE, plot = FALSE))
 
     ## slice.tree.sharp doest not error
     expect_null(slice.tree.sharp(tree, tree$root.time - (0.06 * tree$root.time)))
@@ -106,7 +106,10 @@ test_that("slice.tree_offspring.node picks up the offspring tip.node", {
 #example
 tree <- read.tree(text = "(((((A:1,B:1):2,C:3):1,D:1):1,E:5):1,F:3);")
 tree$node.label <- as.character(seq(1:5))
-slice_tree <- suppressMessages(tree_slice <- paleotree::timeSliceTree(tree, 3, drop.extinct = TRUE, plot = FALSE))
+# slice_tree <- suppressMessages(tree_slice <- paleotree::timeSliceTree(tree, 3, drop.extinct = TRUE, plot = FALSE))
+tree_slice <- read.tree(text = "(((A, D), E), F);")
+tree_slice$node.label <- as.character(c(1:3))
+tree_slice$edge.length <- c(1, 1, 1, 1, 2, 3)
 test <- slice.tree_DELTRAN(tree, 'A', tree_slice)
 
 #Test
@@ -189,6 +192,7 @@ tree$node.label <- as.character(paste0("n",seq(1:5)))
 
 #Test
 test_that("slice.tree works properly", {
+
     #class
     expect_is(
         slice.tree(tree, 0, 'ACCTRAN'), 'phylo'
@@ -219,6 +223,10 @@ test_that("slice.tree works properly", {
     expect_is(
         slice.tree(tree, 0, 'equal.split'), 'matrix'
         )
+    expect_equal(
+        slice.edge(tree, 2, model = "random")
+        ,"n2")
+
 })
 
 test_that("slice.tree proba works", {

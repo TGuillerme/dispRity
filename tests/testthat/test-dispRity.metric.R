@@ -4,7 +4,7 @@ context("dispRity.metric")
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?centroids\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?mode.val\n?n.ball.volume")
 })
 
@@ -17,7 +17,7 @@ test_that("k.root", {
     ## Right format
     expect_is(test, "matrix")
     expect_equal(dim(test), dim(mat))
-    ## Repeatable
+    ## Repeatable
     expect_true(all(test == k.root(mat, 5)))
     ## Number of dimensions matters
     expect_true(all(mat == k.root(mat, 1)))
@@ -457,7 +457,7 @@ test_that("n.ball.volume", {
 test_that("quantiles", {
     set.seed(1)
     matrix <- matrix(rnorm(50), 5, 10)
-    ## Gives the same results as range if quantile = 100
+    ## Gives the same results as range if quantile = 100
     expect_equal(quantiles(matrix, quantile = 100), ranges(matrix))
     expect_equal(quantiles(matrix, quantile = 100, k.root = TRUE), ranges(matrix, k.root = TRUE))
     ## Default 95%
@@ -555,3 +555,77 @@ test_that("func.div", {
         )
 })
 
+test_that("angles", {
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    matrix[,1] <- 1:9
+    matrix[,2] <- matrix[,1]*2
+    matrix[,3] <- matrix[,1]/2
+
+    ## Angles in degrees
+    test_angles <- angles(matrix)
+    expect_equal(length(test_angles), ncol(matrix))
+    expect_equal(test_angles[1], 45)
+    expect_equal(round(test_angles[2], 1), 26.6)
+    expect_equal(round(test_angles[3], 1), 63.4)
+
+    ## Angles in degrees with base shift (90)
+    test_angles2 <- angles(matrix, base = 90)
+    expect_equal(test_angles2, test_angles + 90)
+
+    ## Angles in radian
+    test_angles2 <- angles(matrix, unit = "radian")
+    expect_equal(test_angles2 * 180/pi, test_angles)
+
+    ## Angles in slopes
+    test_angles2 <- angles(matrix, unit = "slope")
+    expect_equal(test_angles2[1], 1)
+    expect_equal(test_angles2[2], 0.5)
+    expect_equal(test_angles2[3], 2)
+
+    ## Angles only significant
+    expect_warning(test_angles1 <- angles(matrix, significant = TRUE))
+    test_angles2 <- angles(matrix, significant = FALSE)
+    expect_equal(test_angles1[c(1,2,3)], test_angles2[c(1,2,3)])
+    expect_true(all(test_angles1[-c(1,2,3)] == 0))
+    expect_false(all(test_angles2[-c(1,2,3)] == 0))
+})
+
+test_that("deviation", {
+    test <- matrix(0, ncol = 2, nrow = 4)
+    test[1, ] <- c(3, 3)
+
+    ## Input the hyperplane for a 2d matrix (line is the x axis)
+    expect_equal(deviations(test, hyperplane = c(0, 1, 0)), c(3, 0, 0, 0))
+    expect_equal(deviations(test, hyperplane = c(3, 1, 0)), c(6, 3, 3, 3))
+    
+    ## 2d matrix (line is x = y) 
+    test <- cbind(1:4, 1:4)
+    expect_equal(deviations(test, hyperplane = c(0, -1, 1)), c(0, 0, 0, 0))
+
+    ## Works with 3d (compare to surfaces)
+    test <- matrix(0, ncol = 3, nrow = 4)
+    test[1,  ] <- c(5, 5, 5)
+    expect_equal(deviations(test, hyperplane = c(0, 1, 0, 0)), c(5, 0, 0, 0))
+    expect_equal(deviations(test, hyperplane = c(5, 1, 0, 0)), c(10, 5, 5, 5))
+
+    ## Works with 3d x=y=z planes
+    test <- cbind(1:4, 1:4, 1:4)
+    expect_equal(deviations(test, hyperplane = c(0, 1, -1, 0)), c(0, 0, 0, 0))
+
+    ## Works with estimating the plane
+    test <- cbind(1:4, 1:4)
+    expect_equal(deviations(test), c(0, 0, 0, 0))
+    
+    test <- cbind(test, test, test, test)
+    expect_equal(deviations(test), c(0, 0, 0, 0))
+
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    expect_equal(
+        round(deviations(matrix, significant = TRUE)),
+        rep(0, 9))
+    expect_equal(
+        round(deviations(matrix, hyperplane = c(100, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0))),
+        c(71, 72, 72, 69, 69, 72, 70, 70, 71))
+})

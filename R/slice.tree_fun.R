@@ -7,7 +7,7 @@ slice.tree.sharp <- function(tree, slice)  {
     ## Get slice time
     slice_time <- tree$root.time - slice
     ## Get node ages
-    node_age <- node.depth.edgelength(tree)
+    node_age <- castor::get_all_distances_to_root(tree)
     ## Which ancestor nodes/edges cross the slice
     cross_edge <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
     ## If no edge is crossed, return null
@@ -33,14 +33,13 @@ slice.tree.sharp <- function(tree, slice)  {
     ## Get the bipartitions
     bipartitions <- prop.part(tree)
     ## Get the crossings on each edges
-    tips_to_drop <- unlist(sapply(cross_edge, get.crossings, bipartitions, tree, simplify = FALSE))
-    tips_to_drop <- na.omit(tips_to_drop)
+    tips_to_drop <- na.omit(unlist(sapply(cross_edge, get.crossings, bipartitions, tree, simplify = FALSE)))
 
     ## Drop tips from tree
-    tree_sliced <- drop.tip(tree, tips_to_drop)
+    tree_sliced <- castor::get_subtree_with_tips(tree, omit_tips = tips_to_drop)[[1]]
 
     ## Recalculate the tree depth
-    node_age_sliced <- node.depth.edgelength(tree_sliced)
+    node_age_sliced <- castor::get_all_distances_to_root(tree_sliced) 
     ## Find edges crossing the slice
     edges_crossing <- (node_age_sliced[tree_sliced$edge[, 2]] >= slice_time)
     node_sliced_depth <- node_age_sliced[tree_sliced$edge[edges_crossing, 1]]
@@ -48,7 +47,7 @@ slice.tree.sharp <- function(tree, slice)  {
     tree_sliced$root.time <- tree$root.time
     ## Get the node tips depth
     n_tips_sliced <- Ntip(tree_sliced)
-    tips_depth <- dist.nodes(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
+    tips_depth <- castor::get_all_pairwise_distances(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
     ## Find tips that do not have the slice age
     #slice_age <- max(tips_depth)
     tips_at_slice <- (tips_depth == slice_time)
@@ -57,7 +56,7 @@ slice.tree.sharp <- function(tree, slice)  {
         return(NULL)
     } else {
         ## Return the ultrametric tree at the slice
-        return(drop.tip(tree_sliced, tip = which(!tips_at_slice)))
+        return(castor::get_subtree_with_tips(tree_sliced, omit_tips = which(!tips_at_slice))[[1]])
     }
 }
 
@@ -92,43 +91,43 @@ get.branch.length <- function(node1, node2, tree, full_tree) {
     ## Check the descendant node IDs (if NAs)
     node2_ID <- ifelse(is.na(node2_ID), get.node.ID.expand(node2, tree, full_tree), node2_ID)
 
-    if(!is.na(node1_ID)) {
+    # if(!is.na(node1_ID)) {
         ## Return branch length
         return(tree$edge.length[which(tree$edge[,1] == node1_ID & tree$edge[,2] == node2_ID)])   
-    } else {
-        ## Calculated branch length from not included nodes
+    # } else {
+    #     ## Calculated branch length from not included nodes
 
-        ## Get it's ID in the full tree
-        no1_fulID <- get.node.ID(node1, full_tree)
+    #     ## Get it's ID in the full tree
+    #     no1_fulID <- get.node.ID(node1, full_tree)
 
-        ## Get it's ancestor
-        ancestor <- slice.tree_parent.node(full_tree, node1)
-        ## Get it's ancestor ID in the subtree
-        anc_subID <- get.node.ID(ancestor[1], tree)
+    #     ## Get it's ancestor
+    #     ancestor <- slice.tree_parent.node(full_tree, node1)
+    #     ## Get it's ancestor ID in the subtree
+    #     anc_subID <- get.node.ID(ancestor[1], tree)
 
-        ## If ancestor still not found in sub_tree, continue looping and record the ancestors
-        while(is.na(anc_subID)) {
-            ancestor <- c(slice.tree_parent.node(full_tree, ancestor[1]), ancestor)
-            anc_subID <- get.node.ID(ancestor[1], tree)
-        }
+    #     ## If ancestor still not found in sub_tree, continue looping and record the ancestors
+    #     while(is.na(anc_subID)) {
+    #         ancestor <- c(slice.tree_parent.node(full_tree, ancestor[1]), ancestor)
+    #         anc_subID <- get.node.ID(ancestor[1], tree)
+    #     }
 
-        ## Get the distance between the slice and the closest ancestor (in the subtree)
-        distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
+    #     ## Get the distance between the slice and the closest ancestor (in the subtree)
+    #     distance1 <- tree$edge.length[which(tree$edge[,1] == anc_subID & tree$edge[,2] == node2_ID)]
 
-        ## Get it's ID in the full tree
-        anc_fulID <- sapply(ancestor, get.node.ID, full_tree)
-        ## Adding the real ancestor
-        anc_fulID <- as.numeric(c(anc_fulID, no1_fulID))
+    #     ## Get it's ID in the full tree
+    #     anc_fulID <- sapply(ancestor, get.node.ID, full_tree)
+    #     ## Adding the real ancestor
+    #     anc_fulID <- as.numeric(c(anc_fulID, no1_fulID))
 
-        ## Loop through the nodes to calculate distance2 (the distance between the closest ancestor and the real ancestor in the full tree)
-        distance2 <- 0
-        for(node in 1:(length(anc_fulID)-1)) {
-            distance2 <- distance2 + full_tree$edge.length[which(full_tree$edge[,1] == anc_fulID[node] & full_tree$edge[,2] == anc_fulID[node +1])]
-        }
+    #     ## Loop through the nodes to calculate distance2 (the distance between the closest ancestor and the real ancestor in the full tree)
+    #     distance2 <- 0
+    #     for(node in 1:(length(anc_fulID)-1)) {
+    #         distance2 <- distance2 + full_tree$edge.length[which(full_tree$edge[,1] == anc_fulID[node] & full_tree$edge[,2] == anc_fulID[node +1])]
+    #     }
 
-        ## Calculate the real distance from node to slice
-        return(distance1 - distance2)
-    }
+    #     ## Calculate the real distance from node to slice
+    #     return(distance1 - distance2)
+    # }
 }
 
 #Select the parent node of a tip
@@ -279,7 +278,7 @@ slice.tree_PROXIMITY <- function(tree, tip, tree_slice, probability = FALSE) {
 ## Slicing through a single edge
 slice.edge <- function(tree, age, model) {
     ## Get the edges length (depth)
-    edges_depth <- node.depth.edgelength(tree)
+    edges_depth <- castor::get_all_distances_to_root(tree)
 
     ## Correct with the root.age
     edges_depth <- max(edges_depth)-edges_depth

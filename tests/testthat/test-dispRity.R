@@ -2,6 +2,8 @@
 
 context("dispRity")
 
+data(BeckLee_mat99)
+data(BeckLee_ages)
 data(BeckLee_mat50)
 data(BeckLee_tree)
 data_boot <- boot.matrix(BeckLee_mat50, bootstraps = 11, rarefaction = c(5,6))
@@ -12,33 +14,37 @@ verbose = TRUE
 data <- data_subsets_boot
 
 
+test_that("chrono.subsets + ancestral.dist doesn't work yet", {
+
+    expect_warning(error <- capture_error(dispRity(data_subsets_simple, metric = ancestral.dist, tree = BeckLee_tree)))
+    expect_equal(error[[1]], "ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
+})
+
 test_that("get.dispRity.metric.handle", {
     match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
     
     ## Level1
-    test <- get.dispRity.metric.handle(sum, match_call)
+    test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_null(test[[2]])
     expect_is(test[[3]], "function")
 
     ## Level2
-    test <- get.dispRity.metric.handle(ranges, match_call)
+    test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_is(test[[2]], "function")
     expect_null(test[[3]])
 
     ## Level3
-    expect_error(test <- get.dispRity.metric.handle(var, match_call))
-    test <- get.dispRity.metric.handle(c(sd, var), match_call)
+    expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
+    test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
     expect_is(test, "list")
     expect_is(test[[1]], "function")
     expect_null(test[[2]])
     expect_is(test[[3]], "function")
-
 })
-
 
 test_that("get.first.metric", {
     test1 <- get.dispRity.metric.handle(c(sd, var), match_call)
@@ -87,7 +93,6 @@ test_that("apply.decompose.matrix", {
     expect_is(decomp_matrix, "matrix")
     expect_equal(dim(decomp_matrix), c(data$call$dimensions, bs_max))
 })
-
 
 test_that("disparity.bootstraps internal works", {
     data(BeckLee_mat50)
@@ -142,10 +147,8 @@ test_that("disparity.bootstraps internal works", {
         , c(1, 11))
 })
 
-
 #Loading the data
-load("test_data.Rda")
-data <- test_data$ord_data_tips
+data <- BeckLee_mat50
 group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
 rownames(group) <- rownames(data)
 
@@ -205,12 +208,11 @@ test_that("Sanitizing works", {
     ## Only dimensions 3!
     error <- capture_error(dispRity(data, metric = var))
     expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
-
-
-
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #Testing metric argument
 test_that("metric argument works", {
@@ -241,7 +243,7 @@ test_that("metric argument works", {
 })
 
 #one matrix
-test <- dispRity(data, metric=c(sum, ranges))
+test <- dispRity(data, metric = c(sum, ranges))
 
 test_that("dispRity works with a single matrix", {
     expect_is(
@@ -259,11 +261,12 @@ test_that("dispRity works with a single matrix", {
 })
 
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped
-data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
+data <- boot.matrix(data, bootstrap = 5, rarefaction = FALSE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped matrix", {
     expect_is(
         test, "dispRity"
@@ -284,13 +287,15 @@ test_that("dispRity works with a bootstrapped matrix", {
         test$disparity[[1]][[2]]
         , test$call$bootstrap[[1]])
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped + rarefied
-data<-test_data$ord_data_tips
-data<-boot.matrix(data, bootstrap=5, rarefaction=TRUE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
+data <- BeckLee_mat50
+data <- boot.matrix(data, bootstrap = 5, rarefaction = TRUE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped and rarefied matrix", {
     expect_is(
         test, "dispRity"
@@ -310,14 +315,14 @@ test_that("dispRity works with a bootstrapped and rarefied matrix", {
             , test$call$bootstrap[[1]])
     }
 })
-#Reset
-test <- NULL ; data<-test_data$ord_data_tips
 
+#Reset
+test <- NULL
+data <- BeckLee_mat50
 
 #one matrix with subsets
-data<-test_data$ord_data_tips
-data<-custom.subsets(data, group)
-test<-dispRity(data, metric=c(sum, ranges))
+data <- custom.subsets(data, group)
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with custom subsets", {
     expect_is(
         test, "dispRity"
@@ -332,16 +337,17 @@ test_that("dispRity works with custom subsets", {
         test$disparity[[1]][[1]]
         , "matrix")
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 #bootstrapped + rarefied + subsets
-group<-as.data.frame(matrix(data=c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow=nrow(data), ncol=1))
-rownames(group)<-rownames(data)
-data<-custom.subsets(data, group)
-data<-boot.matrix(data, bootstrap=5, rarefaction=FALSE, boot.type="full")
-test<-dispRity(data, metric=c(sum, ranges))
-
+group <- as.data.frame(matrix(data = c(rep(1, nrow(data)/2),rep(2, nrow(data)/2)), nrow = nrow(data), ncol = 1))
+rownames(group) <- rownames(data)
+data <- custom.subsets(data, group)
+data <- boot.matrix(data, bootstrap = 5, rarefaction = FALSE, boot.type = "full")
+test <- dispRity(data, metric = c(sum, ranges))
 test_that("dispRity works with a bootstrapped, rarefied, custom subsets", {
     expect_is(
         test, "dispRity"
@@ -359,15 +365,16 @@ test_that("dispRity works with a bootstrapped, rarefied, custom subsets", {
         test$disparity[[1]][[2]]
         , 5)
 })
-#Reset
-test <- NULL ; data<-test_data$ord_data_tips
 
+#Reset
+test <- NULL
+data <- BeckLee_mat50
 
 #testing example
 test_that("Example works", {
     data(BeckLee_mat50)
     sum_of_ranges <- dispRity(BeckLee_mat50, metric = c(sum, ranges))
-    ex1<-summary(sum_of_ranges)
+    ex1 <- summary(sum_of_ranges)
     expect_is(
         ex1, "data.frame"
         )
@@ -375,13 +382,13 @@ test_that("Example works", {
         dim(ex1), c(1,3)
         )
 
-    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps=100)
-    ex2<-dispRity(bootstrapped_data, metric=c(sum, ranges))
+    bootstrapped_data <- boot.matrix(BeckLee_mat50, bootstraps = 100)
+    ex2 <- dispRity(bootstrapped_data, metric = c(sum, ranges))
     expect_is(
         ex2, "dispRity"
         )
     expect_equal(
-        dim(ex2[[1]]), c(50,48)
+        dim(ex2[[1]][[1]]), c(50,48)
         )
 
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
@@ -399,8 +406,8 @@ test_that("Example works", {
         dim(ex3)
         , c(2,8))
 
-    ranges <- dispRity(BeckLee_mat50, metric = ranges)
-    sum_of_ranges <- dispRity(ranges, metric = sum)
+    all_ranges <- dispRity(BeckLee_mat50, metric = ranges)
+    sum_of_ranges <- dispRity(all_ranges, metric = sum)
     ex1<-summary(sum_of_ranges)
     expect_is(
         ex1, "data.frame"
@@ -408,19 +415,18 @@ test_that("Example works", {
     expect_equal(
         dim(ex1), c(1,3)
         )
-
-    
 })
+
 #Reset
-test <- NULL ; data<-test_data$ord_data_tips
+test <- NULL
+data <- BeckLee_mat50
 
 ## dispRity works with empty or small (<3 subsets)
 test_that("dispRity works with small, empty/subsets", {
 
-    load("test_data.Rda")
-    tree <- test_data$tree_data
-    data <- test_data$ord_data_tips_nodes
-    FADLAD <- test_data$FADLAD_data
+    tree <- BeckLee_tree
+    data <- BeckLee_mat99
+    FADLAD <- BeckLee_ages
 
     silent <- capture_warnings(data <- chrono.subsets(data, tree, model = "deltran", method = "continuous", time = c(140, 138, 130, 120, 100)))
     silent <- capture_warnings(data <- boot.matrix(data))
@@ -434,7 +440,6 @@ test_that("dispRity works with small, empty/subsets", {
     expect_equal(test$disparity[[2]][[1]][,1], NA)
     expect_equal(test$disparity[[2]][[2]][,1], NA)
 })
-
 
 test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_mat99)
@@ -456,17 +461,15 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(-0.010, 0.007))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.012, 0.004))
-    expect_equal(as.vector(summary(test3)$obs), c(-0.006, 0.007))
-
+    expect_equal(as.vector(summary(test1)$obs), c(0.006, 0.001))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.002, 0.011))
+    expect_equal(as.vector(summary(test3)$obs), c(0.007, 0.004))
 })
-
 
 test_that("dispRity works with function recycling", {
 
     set.seed(1)
-    mat <- matrix(rnorm(25), 5, 5)
+    mat <- matrix(rnorm(25), 5, 5, dimnames = list(c(1:5)))
     level2 <- dispRity(mat, metric = centroids)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
     expect_equal(names(level2$call$disparity$metric), c("name", "fun"))
@@ -491,24 +494,10 @@ test_that("dispRity works with function recycling", {
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
 
-
 test_that("dispRity works with multiple trees from time-slicing", {
-    set.seed(444)
-    record <- paleotree::simFossilRecord(p = 0.1, q = 0.1, nruns = 1, nTotalTaxa = c(10,15), nExtant = c(10,15))
-    taxa <- paleotree::fossilRecord2fossilTaxa(record)
-    rangesCont <- paleotree::sampleRanges(taxa, r = 0.5)
-    cladogram <- paleotree::taxa2cladogram(taxa, plot = FALSE)
-    likFun <- paleotree::make_durationFreqCont(rangesCont)
-    srRes <- optim(paleotree::parInit(likFun), likFun, lower = paleotree::parLower(likFun), upper = paleotree::parUpper(likFun), method = "L-BFGS-B", control = list(maxit = 1000000))
-    sRate <- srRes[[1]][2]
-    divRate <- srRes[[1]][1]
-    tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
-    tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
-    ## Scale the trees to have the same most recent root age
-    tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
-    ## Make the dummy data
-    set.seed(1)
-    data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
+    load("paleotree_test_data.Rda")
+    tree <- paleotree_data$tree
+    data <- paleotree_data$data
 
     ## Works with a multiPhylo object
     time_slices_normal <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
@@ -543,16 +532,15 @@ test_that("dispRity works with multiple trees from time-slicing", {
     test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
     expect_is(test, "dispRity")
     sum_test3 <- summary(test)
-    expect_equal(sum_test3$n, c(3, 5, 11))
-    expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
+    expect_equal(sum_test3$n, c(3, 7, 10))
+    # expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
 
     set.seed(1)
     test <- dispRity(boot.matrix(time_slices_normal), metric = variances)
     expect_is(test, "dispRity")
     sum_test4 <- summary(test)
-    expect_equal(sum_test4$n, c(2, 5, 11))
+    expect_equal(sum_test4$n, c(3, 5, 10))
     expect_equal(sum_test4$obs.median, sum_test2$obs.median)
-
 })
 
 test_that("get.row.col works", {
@@ -561,8 +549,171 @@ test_that("get.row.col works", {
     expect_equal(dim(get.row.col(test, 3:1, 4)), c(3, 4))
 })
 
+test_that("dispRity works with multiple matrices", {
+
+    data <- list(matrix(1, 5, 10), matrix(2, 5, 10), matrix(3, 5, 10))
+
+    ## Works with level one
+    expect_warning(test <- dispRity(data, metric = c(sum)))
+    expect_is(test, "dispRity")
+    expect_equal(length(test$disparity[[1]]$elements), 3)
+    expect_equal(test$disparity[[1]]$elements, matrix(c(50, 100, 150), nrow = 1))
+
+    means <- function(matrix) apply(matrix, 2, mean)
+
+    ## Works with level two
+    expect_warning(test <- dispRity(data, metric = means))
+    expect_is(test, "dispRity")
+    expect_equal(dim(test$disparity[[1]]$elements), c(10, 3))
+    expect_equal(test$disparity[[1]]$elements[1,], c(1,2,3))
+    expect_equal(apply(test$disparity[[1]]$elements,2, sd), c(0,0,0))
+    expect_equal(summary(test)$obs.median, 2)
+
+    ## Works with piling levels
+    test2 <- dispRity(test, metric = sd)
+    expect_equal(c(test2$disparity[[1]]$elements), c(0,0,0))
+})
+
+test_that("dispRity works with multiple matrices from chrono.subsets", {
+
+    load("bound_test_data.Rda")
+    matrices <- bound_test_data$matrices
+    trees <- bound_test_data$trees
+    
+    ## Test working fine
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5)
+
+    expect_is(test, "dispRity")
+    expect_is(test$matrix, "list")
+    expect_equal(length(test$matrix), 3)
+    expect_is(test$matrix[[1]], "matrix")
+    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_is(test$subsets, "list")
+    expect_equal(length(test$subsets), 3)
+    expect_equal(dim(test$subsets$`5`$elements), c(7, 9))
+
+    ## Calculating disparity works
+    level1 <- dispRity(test, metric = mean)
+    level2 <- dispRity(test, metric = centroids)
+    level12 <- dispRity(test, metric = c(mean, centroids))
+
+    ## level 1 works?
+    expect_is(level1, "dispRity")
+    ## Results in a 3matrix X 3trees matrix
+    expect_equal(length(level1$disparity[[1]][[1]]), 9)
+    ## Variance in the two first subsets (nodes are different)
+    expect_true(sd(level1$disparity[[1]][[1]]) != 0)
+    expect_true(sd(level1$disparity[[2]][[1]]) != 0)
+    ## No variance in the third (only tips which are the same in this design)
+    expect_false(sd(level1$disparity[[3]][[1]]) != 0)
+    expect_equal(summary(level1)$obs.median, c(-0.171, -0.136, -0.164))
+        # c(-0.186, -0.187, -0.164))
+
+    ## level2 works?
+    expect_is(level2, "dispRity")
+    ## Results is length elements * matrices * trees
+    expect_equal(dim(level2$disparity[[1]][[1]]), c(21,3))
+    expect_equal(dim(level2$disparity[[2]][[1]]), c(24,3))
+    expect_equal(dim(level2$disparity[[3]][[1]]), c(30,3))
+    ## Correct results (should be equal to level12?)
+    expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.491, 0.617, 1.217))
+        # c(0.467, 0.770, 1.217))
+
+    ## level12 works?
+    expect_is(level12, "dispRity")
+    ## results is length trees?
+    expect_equal(length(level12$disparity[[1]][[1]]), 3)
+    expect_equal(length(level12$disparity[[2]][[1]]), 3)
+    expect_equal(length(level12$disparity[[3]][[1]]), 3)
+    ## Variance in the two first subsets (nodes are different)
+    expect_true(is.na(sd(level12$disparity[[1]][[1]])))
+    expect_true(sd(level1$disparity[[2]][[1]]) != 0)
+    ## No variance in the third (only tips which are the same in this design)
+    expect_false(sd(level1$disparity[[3]][[1]]) != 0)
+    expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.461, 0.678, 1.217))
+        # c(0.475, 0.801, 1.217))
+
+    ## Works with binding data
+    set.seed(1)
+    test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+    expect_equal(as.vector(means$disparity[[1]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[1]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[1]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[1]]$elements[,3],], na.rm = TRUE))
+    )
+    expect_equal(as.vector(means$disparity[[2]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[2]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[2]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[2]]$elements[,3],]))
+    )
+    expect_equal(as.vector(means$disparity[[3]]$elements),
+            c(mean(means$matrix[[1]][means$subsets[[3]]$elements[,1],]),
+              mean(means$matrix[[2]][means$subsets[[3]]$elements[,2],]),
+              mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
+    )
+
+    ## Works with recycling dispRity objects
+    vars <- dispRity(test, metric = variances)
+    sumvars <- dispRity(test, metric = c(sum, variances))
+    sumvars2 <- dispRity(vars, metric = sum)    
+
+    expect_is(vars, "dispRity")
+    expect_is(sumvars, "dispRity")
+    expect_is(sumvars2, "dispRity")
+    expect_equal(
+        as.vector(sumvars$disparity[[1]]$elements),
+        as.vector(sumvars2$disparity[[1]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
 
 
+    ## Works with bootstraps
+    test1 <- boot.matrix(test, bootstraps = 12)
+
+    vars <- dispRity(test1, metric = variances)
+    sumvars <- dispRity(test1, metric = c(sum, variances))
+    sumvars2 <- dispRity(vars, metric = sum)
+
+    expect_equal(
+        as.vector(sumvars$disparity[[1]]$elements),
+        as.vector(sumvars2$disparity[[1]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
+    expect_equal(
+        as.vector(sumvars$disparity[[2]]$elements),
+        as.vector(sumvars2$disparity[[2]]$elements))
+
+    ## Predictable values
+    matrices[[1]][,] <- 1
+    matrices[[2]][,] <- 4
+    matrices[[3]][,] <- 10
+
+    ## Bound and unbound data
+    unbou <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "equal.split", t0 = 5, bind.data = FALSE)
+    bound <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "equal.split", t0 = 5, bind.data = TRUE)
+
+    ## Getting the mean
+    bs_unbou <- dispRity(boot.matrix(unbou, 102), metric = mean)
+    bs_bound <- dispRity(boot.matrix(bound, 102), metric = mean)
+
+    expect_equal(
+        summary(bs_bound, cent.tend = mean)$bs.mean,
+        c(5,5,5))
+    expect_equal(
+        summary(bs_unbou, cent.tend = mean)$bs.mean,
+        c(5,5,5))
+
+    expect_equal(dim(bs_unbou$disparity[[1]]$elements), c(3,3))
+    expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
+})
 
 # test_that("dispRity works in parallel", {
 #     library(parallel)

@@ -65,7 +65,6 @@ test_that("utilities internal: check.subsets", {
         )
 })
 
-
 ## make.dispRity
 test_that("make.matrix", {
     test1 <- make.dispRity()
@@ -73,8 +72,11 @@ test_that("make.matrix", {
     expect_is(
         test1
         ,"dispRity")
-    expect_equal(
+    expect_is(
         test1$matrix
+        ,"list")
+    expect_equal(
+        test1$matrix[[1]]
         ,NULL)
     expect_is(
         test1$call
@@ -83,13 +85,18 @@ test_that("make.matrix", {
         test1$subsets
         ,"list")
 
-    test2 <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
+    data_test <- matrix(rnorm(12), ncol = 3)
+
+    test2 <- make.dispRity(data = data_test)
 
     expect_is(
         test2
         ,"dispRity")
     expect_is(
         test2$matrix
+        ,"list")
+    expect_is(
+        test2$matrix[[1]]
         ,"matrix")
     expect_is(
         test2$call
@@ -100,21 +107,50 @@ test_that("make.matrix", {
     expect_equal(
         length(unlist(test2))
         , 12)
-})
 
+    test3 <- make.dispRity(data = list(data_test))
+
+    expect_is(
+        test3
+        ,"dispRity")
+    expect_is(
+        test3$matrix
+        ,"list")
+    expect_is(
+        test3$matrix[[1]]
+        ,"matrix")
+    expect_is(
+        test3$call
+        ,"list")
+    expect_is(
+        test3$subsets
+        ,"list")
+    expect_equal(
+        length(unlist(test3))
+        , 12)
+
+    test4 <- make.dispRity(data = list(data_test, data_test))
+    expect_equal(
+        length(unlist(test4))
+        , 24)
+})
 
 ## fill.dispRity
 test_that("fill.dispRity", {
     expect_error(
         fill.dispRity(make.dispRity())
         )
-    test <- fill.dispRity(make.dispRity(data = matrix(rnorm(12), ncol = 3)))
+    expect_warning(test <- fill.dispRity(make.dispRity(data = matrix(rnorm(12), ncol = 3))))
+    ## Warn is added dimnames
 
     expect_is(
         test
         ,"dispRity")
     expect_is(
         test$matrix
+        ,"list")
+    expect_is(
+        test$matrix[[1]]
         ,"matrix")
     expect_is(
         test$call
@@ -125,25 +161,23 @@ test_that("fill.dispRity", {
 
 
     expect_equal(
-        length(unlist(test$matrix))
+        length(unlist(test$matrix[[1]]))
         , 12)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix))
+        , ncol(test$matrix[[1]]))
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
-        , 1:nrow(test$matrix))
+        , 1:nrow(test$matrix[[1]]))
 
     test <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
     test$subsets <- c(list(), list())
 
-    test <- fill.dispRity(test)
+    expect_warning(test <- fill.dispRity(test))
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
-        , 1:nrow(test$matrix))
-
+        , 1:nrow(test$matrix[[1]]))
 })
-
 
 ## matrix.dispRity
 test_that("matrix.dispRity", {
@@ -178,7 +212,6 @@ test_that("matrix.dispRity", {
         rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c("Eoryctes", "Rhynchocyon", "Pezosiren", "Potamogalinae", "Soricidae", "Myrmecophagidae", "Protictis", "Protictis", "unnamed_cimolestid", "Bradypus", "Mimotona", "Todralestes", "Moeritherium", "Dasypodidae", "Bradypus"))
 })
-
 
 ## get.subsets
 test_that("get.subsets", {
@@ -250,8 +283,6 @@ test_that("get.subsets", {
         ,"variances")
 })
 
-
-
 ## extract.dispRity
 test_that("extract.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
@@ -287,7 +318,7 @@ test_that("extract.dispRity", {
         ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
-        ,4.05457)
+        ,8.60986)
 
     test <- extract.dispRity(data, observed = FALSE)
     expect_is(
@@ -334,9 +365,9 @@ test_that("extract.dispRity", {
     test <- extract.dispRity(data, observed = TRUE)
     expect_is(test, "list")
     expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
-
 })
 
+## rescale.dispRity
 test_that("rescale.dispRity", {
     data(BeckLee_mat50)
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
@@ -378,6 +409,7 @@ test_that("rescale.dispRity", {
         ,base[1,3])
 })
 
+## sort.dispRity
 test_that("sort.dispRity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
     subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
@@ -409,10 +441,7 @@ test_that("sort.dispRity", {
 
     data2 <- dispRity(BeckLee_mat99, metric = mean)
     expect_error(sort(data2))
-
 })
-
-
 
 ## combine.subsets
 test_that("combine.subsets", {
@@ -433,7 +462,7 @@ test_that("combine.subsets", {
                               c(20, 4, 6, 10),
                               c(10, 10, 11, 10))
 
-    ## Errors
+    ## Errors
     expect_error(
         combine.subsets("data_test1", c(1,2))
         )
@@ -449,7 +478,6 @@ test_that("combine.subsets", {
     expect_error(
         combine.subsets(data_test2, c("a", "x"))
         )
-
     expect_warning(
         bs <- combine.subsets(boot.matrix(data_test2), c(1,2))
         )
@@ -465,10 +493,8 @@ test_that("combine.subsets", {
 
     dummy_data1 <- dummy_data2 <- data_test1
     dummy_data1$call$bootstrap <- NULL
-    test1 <- capture_warnings(garbage <-combine.subsets(dummy_data1, c(1,2)))
-
+    test1 <- capture_warnings(garbage <- combine.subsets(dummy_data1, c(1,2)))
     expect_equal(test1, "dummy_data1 contained disparity data that has been discarded in the output.")
-
 
     ## Warnings
     expect_warning(
@@ -504,15 +530,15 @@ test_that("combine.subsets", {
     expect_equal(error[[1]], "subsets argument must not contain duplicates.")
 })
 
-
+## size.subsets
 test_that("size.subsets works", {
     data(disparity)
     expect_equal(
         size.subsets(disparity)
         , c("90"=18, "80"=22, "70"=23, "60"=21, "50"=18, "40"=15, "30"=10))
-
 })
 
+## extinction.subsets
 test_that("extinction.subsets works", {
 
     data(disparity)
