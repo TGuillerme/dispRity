@@ -510,7 +510,12 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## PREPARING THE PLOT
 
     ## summarising the data
-    summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    ## (remove NAs if data has a distribution of trees)
+    if(!is.na(data$call$subsets["trees"]) && as.numeric(data$call$subsets["trees"]) > 1) {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+    } else {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    }
 
     ## Setting the default arguments
     default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
