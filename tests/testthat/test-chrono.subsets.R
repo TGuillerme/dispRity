@@ -331,10 +331,10 @@ test_that("Output format is correct", {
 
 test_that("Output format is correct", {
     output_continuous <- capture_message(test <- chrono.subsets(data, tree, method = "continuous", time, model, inc.nodes, FADLAD, verbose = TRUE))
-    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through one tree:\n")
 
     output_discrete <- capture_message(test <- chrono.subsets(data, tree, method = "discrete", time, model, inc.nodes, FADLAD, verbose = TRUE))
-    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through the tree:\n")
+    expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through one tree:\n")
 })
 
 test_that("Example works", {
@@ -552,7 +552,7 @@ test_that("chrono.subsets works with multiPhylo", {
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_label))
     expect_equal(error$message, "The trees in tree_wrong_label must have the same node labels.")
     warning <- capture_warning(test <- chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime, model = "acctran"))
-    expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81.")
+    expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81 by stretching the root edge.")
 
     ## Works with a multiPhylo object
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")

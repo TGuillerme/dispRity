@@ -158,9 +158,20 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
                 ## Check for different root time
                 if(length(unique(root_time)) != 1) {
                     ## Make all the root times identical
-                    tree <- lapply(tree, function(tree, root) {tree$root.time <- root; return(tree)}, root = max(root_time))
+                    stretch.tree <- function(tree, root) {
+                        ## Find the root edges
+                        root_edges <- which(tree$edge[,1] == Ntip(tree)+1)
+                        ## Stretch the edges
+                        tree$edge.length[root_edges] <- tree$edge.length[root_edges] + (root - tree$root.time)
+                        ## Update the root time
+                        tree$root.time <- root
+                        ## Done
+                        return(tree)
+                    }
+
+                    tree <- lapply(tree, stretch.tree, root = max(root_time))
                     class(tree) <- "multiPhylo"
-                    warning(paste0("Differing root times in ", as.expression(match_call$tree), ". The $root.time for all tree has been set to the maximum (oldest) root time: ", max(root_time), "."))
+                    warning(paste0("Differing root times in ", as.expression(match_call$tree), ". The $root.time for all tree has been set to the maximum (oldest) root time: ", max(root_time), " by stretching the root edge."))
                 }
             }
         } else {
@@ -397,8 +408,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## Toggle the functions
     if(method == "discrete") {
         chrono.subsets.fun <- chrono.subsets.discrete
+        if(verbose) message("Creating ", length(time)-1, " time bins through time:", appendLF = FALSE)
     } else {
         chrono.subsets.fun <- chrono.subsets.continuous
+        if(verbose) message("Creating ", length(time), " time samples through ", ifelse(length(tree) > 1, paste0(length(tree), " trees:"), "one tree:"), appendLF = FALSE)
     }
 
     ## Toggle the multiPhylo option
@@ -422,6 +435,9 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## Combine all the data recursively
         time_subsets <- recursive.combine.list(time_subsets)
     }
+
+    if(verbose) message("Done.\n", appendLF = FALSE)
+
 
     ## Adding the original subsets
     #time_subsets <- c(make.origin.subsets(data), time_subsets)

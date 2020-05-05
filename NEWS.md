@@ -51,6 +51,7 @@ dispRity v1.3.9 *getting faster* (2020-05-04) (pre-1.4)
   * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
   * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
   * metrics passed in `dispRity` are now tested using the input data dimensions.
+  * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
 
 
 dispRity v1.3 *many metrics* (2019-08-15)

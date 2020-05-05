@@ -65,11 +65,6 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
         }
     }
 
-    ## Verbose
-    if(verbose) {
-        message("Creating ", length(time)-1, " time bins through time:", appendLF = FALSE)
-    }
-
     ## ages of tips/nodes + FAD/LAD
     ages_tree <- adjust.FADLAD(FADLAD, tree, data)
 
@@ -78,8 +73,6 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
 
     ## Get the names of the intervals
     names(interval_elements) <- paste(time[-length(time)], time[-1], sep = " - ")
-
-    if(verbose) message("Done.\n", appendLF = FALSE)
 
     ## If interval is empty, send warning and delete the interval
     for (interval in 1:length(interval_elements)) {
@@ -95,12 +88,6 @@ chrono.subsets.discrete <- function(data, tree, time, model = NULL, FADLAD, inc.
 ## Continuous time subsets
 chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes = NULL, verbose) {
 
-    ## verbose
-    if(verbose) {
-        ## Editing the fast.slice.table function
-        message("Creating ", length(time), " time samples through the tree:", appendLF = FALSE)
-    }
-
     ## Get all time slices
     slices_elements <- lapply(as.list(time), get.time.slice, tree, model, verbose)
 
@@ -114,11 +101,6 @@ chrono.subsets.continuous <- function(data, tree, time, model, FADLAD, inc.nodes
 
     ## naming the slices
     names(slices_elements) <- time
-
-    ## verbose
-    if(verbose) {
-        message("Done.\n", appendLF = FALSE)
-    }
 
     return(slices_elements)
 }
