@@ -60,7 +60,8 @@ extract.from.summary <- function(summarised_data, what, rarefaction = FALSE) {
     ## Internal function for checking true NAs
     check.na <- function(row, extract, summarised_data) {
         if(!extract[row]) {
-            extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+            # extract[row] <- ifelse(all(is.na(summarised_data[row,-c(1,2)])), TRUE, FALSE)
+            extract[row] <- all(is.na(summarised_data[row,-c(1,2)]))
         }
         return(extract[row])
     }
@@ -210,7 +211,7 @@ plot.continuous <- function(summarised_data, rarefaction, is_bootstrapped, is_di
             plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
             #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
         } else {
-            plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
+                plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
             #plot((seq(from = 1, to = points_n)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
             axis(1, 1:points_n, time_slicing)
         }

@@ -9,7 +9,7 @@
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{chrono.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
 #' 
-#' @seealso \code{\link[paleotree]{timeSliceTree}}, \code{\link{chrono.subsets}}.
+#' @seealso \code{paleotree::timeSliceTree}, \code{\link{chrono.subsets}}.
 #'
 #' @examples
 #' set.seed(1)

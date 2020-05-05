@@ -91,8 +91,14 @@ get.row.col <- function(x, row, col = NULL) {
 
 ## Apply decompose matrix
 apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, ...) {
+   
     ## Calculates disparity from a bootstrap table
     decompose.matrix <- function(one_subsets_bootstrap, fun, data, ...) {
+
+        ## Return NA if no data
+        if(length(na.omit(one_subsets_bootstrap)) < 2) {
+            return(NA)
+        }
 
         ## Apply the fun, bootstrap and dimension on each matrix
         return(unlist(lapply(data$matrix,
@@ -179,8 +185,15 @@ mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition
     return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
 }
 
+        # test <- mapply.wrapper(lapply_loops[[2]], matrices_data[[2]], metrics_list, matrix_decomposition, verbose)
 
 
+# lapply_loop <- lapply_loops[[2]]
+# data <- matrices_data[[2]]
+# test <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose)
+
+# mapply.wrapper(lapply_loops[[2]], matrices_data[[2]], metrics_list, matrix_decomposition, verbose)
+# test <- lapply.wrapper(lapply_loop[[13]], metrics_list, data, matrix_decomposition, verbose)
 
 ## Split the lapply_loop for bound tree/matrices
 split.lapply_loop <- function(lapply_loop, n_trees) {
