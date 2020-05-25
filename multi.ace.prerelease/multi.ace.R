@@ -113,11 +113,10 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         class(tree) <- "multiPhylo"
     }
 
-
     #check.class(matrix, c("matrix", "list"))
     ## Convert the matrix if not a list
     class_matrix <- class(matrix)
-    if(class_matrix == "list") {
+    if(class_matrix[[1]] == "list") {
         matrix <- do.call(rbind, matrix)
     }
 
@@ -245,21 +244,57 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
 
         ## Estimate the ancestral states
         castor.ace <- function(character, character_states, model, tree) {
+
+            ## Set the number of trials
+            trials <- 1
+
+            ## Run the ace
             est <- castor::asr_mk_model(tree = tree,
                                         tip_states = NULL,
                                         Nstates = length(character_states),
                                         rate_model = model,
-                                        Ntrials = 2,
-                                        tip_priors = character)$ancestral_likelihoods
+                                        Ntrials = trials,
+                                        tip_priors = character)
+
+            ## Increase the number of trials if unsuccesful
+            while(!est$success && trials < 100) {
+                trials <- trials + trials * 2
+                est <- castor::asr_mk_model(tree = tree,
+                                            tip_states = NULL,
+                                            Nstates = length(character_states),
+                                            rate_model = model,
+                                            Ntrials = trials,
+                                            tip_priors = character)
+            }
+
+            ## Get the likelihoods
+            if(!est$success) {
+                est <- matrix(1/length(character_states), ncol = length(character_states), nrow = Nnode(tree))
+                success <- FALSE
+            } else {
+                est <- est$ancestral_likelihoods
+                success <- TRUE
+            }
+
             colnames(est) <- character_states
             verboseplaceholder <- "silent"
-            return(est)
+            return(list(est, success))
         }
 
         if(verbose) body(castor.ace)[[4]] <- substitute(cat("."))
         if(verbose) cat("Running ancestral states estimations:\n")
         ancestral_estimations <- lapply(args_list, function(args) do.call(castor.ace, args))
         if(verbose) cat(" Done.\n")
+
+        ## Separating the estimations
+        success <- unlist(lapply(ancestral_estimations, `[[`, 2))
+        ancestral_estimations <- lapply(ancestral_estimations, `[[`, 1)
+        if(any(!success)) {
+            warning(paste0("Impossible to fit the model for the following character(s): ", paste(which(!success), collapse = ", "), ".\nThe ancestral estimated values are set to uncertain (all states equiprobable)."))
+        }
+
+
+
 
         ##TODO: Improve model
 
@@ -308,7 +343,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         }
 
         ## Return the ancestral state estimated matrix
-        if(class_matrix == "matrix") {
+        if(class_matrix[[1]] == "matrix") {
             return(do.call(cbind, ancestral_states))
         } else {
             return(ancestral_states)
