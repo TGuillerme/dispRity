@@ -70,25 +70,25 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 ## Latest patch notes
 * 2020/05/05 v1.4 *getting faster*
 
- * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
- * *New* metric: `deviations`, a dimension level 2 metric that measures the deviation of each element from a hyperplane.
- * Completely rewritten `char.diff` function. It now uses a way faster bitwise comparison architecture and comes with different distance methods as well as modular optional arguments on how to treat various special tokens (`"?"`, `"-"`, `"&"`, etc.). This also allows many more distance methods (now including `"hamming"`, `"manhattan"`, `"comparable"`, `"euclidean"`, `"maximum"` and `"mord"`).
- * all `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
- * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
- * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
- * updated `...` argument bug PR#16223.
- * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
- * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
- * greatly improved speed of `chrono.subsets` with `method = "continuous` (now > 1000 times faster!).
- * minor warning message fix for `plot.dispRity` with time slices.
- * removed `paleotree` package dependency (though the links to this excellent package are still there!).
- * increased `R` version requirement to `3.5`.
- * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
- * added some time improvements in several phylo functions based on the `castor` package.
- * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
- * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
- * metrics passed in `dispRity` are now tested using the input data dimensions.
- * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
+  * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
+  * *New* metric: `deviations`, a dimension level 2 metric that measures the deviation of each element from a hyperplane.
+  * Completely rewritten `char.diff` function. It now uses a way faster bitwise comparison architecture and comes with different distance methods as well as modular optional arguments on how to treat various special tokens (`"?"`, `"-"`, `"&"`, etc.). This also allows many more distance methods (now including `"hamming"`, `"manhattan"`, `"comparable"`, `"euclidean"`, `"maximum"` and `"mord"`).
+  * all `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
+  * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
+  * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
+  * updated `...` argument bug PR#16223.
+  * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
+  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
+  * greatly improved speed of `chrono.subsets` with `method = "continuous` (now > 1000 times faster!).
+  * minor warning message fix for `plot.dispRity` with time slices.
+  * removed `paleotree` package dependency (though the links to this excellent package are still there!).
+  * increased `R` version requirement to `3.5`.
+  * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
+  * added some time improvements in several phylo functions based on the `castor` package.
+  * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
+  * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
+  * metrics passed in `dispRity` are now tested using the input data dimensions.
+  * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 

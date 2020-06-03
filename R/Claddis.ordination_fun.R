@@ -1,37 +1,3 @@
-## Getting polymorphosim function (internal for read.nexus.data)
-get.polymorphism <- function (x) {
-    ## Detect polymorphism function
-    is.poly.start <- function(x) {return("(" == x || "{" == x)}
-    is.poly.end   <- function(x) {return(")" == x || "}" == x)}
-    ## Position increment
-    position <- 1
-    ## Check which position contains a polymorphism
-    while(position <= length(x)) {
-        ## Check whether the position is polymorphic
-        if(is.poly.start(x[position])){
-            ## Find the polymorphism end
-            poly_end <- position + 1
-            while(!is.poly.end(x[poly_end])) {
-                poly_end <- poly_end + 1
-                if(is.poly.start(x[poly_end]) || poly_end > length(x)) {
-                    stop("missing closing bracket for a polymorphism at position ", position)
-                }
-            }
-            ## Replace the position by what's in the middle of the polymorphism
-            x[position] <- paste0(x[(position+1):(poly_end-1)], collapse = "/")
-            ## Remove the polymorphism
-            x <- x[-c((position+1):poly_end)]
-        }
-        ## Increment the position
-        position <- position + 1
-    }
-    return(x)
-}
-
-## Update read.nexus.data (temporary)
-read.nexus.poly <- ape::read.nexus.data
-body(read.nexus.poly)[[18]][[4]][[11]][[3]][[2]] <- body(read.nexus.poly)[[18]][[4]][[11]][[4]][[3]] <- substitute(tsp <- get.polymorphism(strsplit(Seq, NULL)[[1]]))
-
 ## Converting a list of characters (ape format) into the Claddis format
 convert.to.Claddis <- function(data) {
     output <- list()

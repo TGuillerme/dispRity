@@ -62,8 +62,8 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
 
     ## Convert the data_type into Claddis format
     if(data_type == "character") {
-        ## Reading the data using the modified version of ape::read.nexus.data
-        data <- read.nexus.poly(data)
+        ## Reading the data
+        data <- read.nexus.data(data)
         ## Converting into a "Claddis" object
         data <- convert.to.Claddis(data)
         ## If distance is null, simply return the data
