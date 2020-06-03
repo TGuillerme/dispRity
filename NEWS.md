@@ -22,6 +22,14 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
+
+dispRity v1.4.1 (2020-06-03)
+=========================
+
+### BUG FIXES
+
+  * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
+
 dispRity v1.4.0 *getting faster* (2020-05-05)
 =========================
 
