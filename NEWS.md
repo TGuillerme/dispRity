@@ -26,6 +26,15 @@ dispRity 0.2.0 (2016-04-01)
 dispRity v1.4.1 (2020-06-03)
 =========================
 
+### NEW FEATURES
+
+  * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
+  * `dispRity` that contains data for nodes and tips can now have one separate matrix for the tip data and one or more separated ones for the nodes data (through the output of the new `multi.ace` function).
+
+<!-- ### MINOR IMPROVEMENTS
+
+  * Expanded the `dispRity` manual to now contain a section about ancestral character estimations and an improved palaeobiology tutorial. -->
+
 ### BUG FIXES
 
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
