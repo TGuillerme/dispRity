@@ -17,7 +17,7 @@ importFrom("phyclust", "gen.seq.HKY")
 importFrom("utils", "combn", "data", "capture.output", "tail")
 importFrom("vegan", "adonis", "vegdist")
 importFrom("spptest", "create_curve_set", "rank_envelope")
-# importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
+importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
 # importFrom("geomorph", "gpagen")
 # importFrom("RCurl", "getURL", "url.exists")
 
