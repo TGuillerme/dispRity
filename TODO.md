@@ -7,9 +7,9 @@
 - [x] Update NAMSPACE
 - [x] Update DESCRIPTION
 - [UNTESTED] Add the `brlen.multiplier` option
-- [UNTESTED] Add the `output` option
+- [x] Add the `output` option
 - [UNTESTED] Add the `castor.options` option
-- [ ] Add the `parallel` option
+- [x] Add the `parallel` option
 - [ ] Update the `dispRity` object to allow tips/node matrix format (saving half the size in `dispRity`) objects
 - [ ] Add details section to `multi.ace`
 - [ ] Add example section to `multi.ace`

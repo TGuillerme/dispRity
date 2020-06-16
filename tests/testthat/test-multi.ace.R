@@ -1,31 +1,133 @@
 context("multi.ace")
 
-# ## Test
-# test_that("multi.ace works", {
+## Test
+test_that("multi.ace works", {
+
+    ## Sanitizing works
+    set.seed(1)
+    matrix_test <- sim.morpho(rcoal(6), characters = 10, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    tree_test <- rmtree(2, 6)
+    # matrix_complex <- matrix_test
+    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
+    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
+    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
 
 
-#     ## Loading the data
-#     source("read.nexus.data.R") ## While waiting for ape 5.4
-#     morpho_matrix <- read.nexus.data("../Data/Morphology/227t_682c_morphology.nex")
-#     short_matrix <- lapply(morpho_matrix, function(x, characters) return(x[characters]),
-#                            characters =  c(1, 2, 3, 4, 7, 288, 289, 290, 291))
+    # results <- multi.ace(data = matrix_complex,
+    #                     tree = tree_test, 
+    #                     models = "ER", 
+    #                     threshold = TRUE,
+    #                     special.tokens = c("weird" = "%"),
+    #                     special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+    #                     brlen.multiplier = rnorm(10),
+    #                     verbose = FALSE,
+    #                     parallel = FALSE,
+    #                     output = "list",
+    #                     castor.options = list(optim_rel_tol = 1e-8))
 
-#     load("../Data/Processed/tree_list.Rda")
-#     tree <- tree_list
-#     tree <- tree[[1]]
+# Error in lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x ==  : 
+#   object 'invariant_characters_states' not found
+# In addition: Warning messages:
+# 1: The characters 5, 10 are invariant (using the current special behaviours for special characters) and are simply duplicated for each node. 
+# 2: In FUN(X[[i]], ...) :
+#   Impossible to fit the model for the following character(s): 1, 2, 3, 4, 5, 6, 7, 8.
+# The ancestral estimated values are set to uncertain (all states equiprobable).
+# > 
+ 
 
-    
+
+    ## Outputs work
+    ancestral_states <- multi.ace(matrix_test, tree_test, output = "list")
+    expect_is(ancestral_states, "list")
+    expect_equal(length(ancestral_states), 2)
+    expect_equal(length(ancestral_states[[1]]), 5)
+    expect_equal(length(ancestral_states[[1]][[1]]), 10)
+    ancestral_states <- multi.ace(matrix_test, tree_test, output = "matrix")
+    expect_is(ancestral_states, "list")
+    expect_equal(length(ancestral_states), 2)
+    expect_is(ancestral_states[[1]], "matrix")
+    expect_equal(dim(ancestral_states[[1]]), c(5, 10))
+    ancestral_states <- multi.ace(matrix_test, tree_test, output = "combined.list")
+    expect_is(ancestral_states, "list")
+    expect_equal(length(ancestral_states), 2)
+    expect_equal(length(ancestral_states[[1]]), 11)
+    expect_equal(length(ancestral_states[[1]][[1]]), 10)
+    ancestral_states <- multi.ace(matrix_test, tree_test, output = "combined.matrix")
+    expect_is(ancestral_states, "list")
+    expect_equal(length(ancestral_states), 2)
+    expect_is(ancestral_states[[1]], "matrix")
+    expect_equal(dim(ancestral_states[[1]]), c(11, 10))
+    ancestral_states <- multi.ace(matrix_test, tree_test, output = "dispRity")
+    expect_is(ancestral_states, "list")
+    expect_equal(length(ancestral_states), 2)
+    expect_equal(names(ancestral_states), c("tips", "nodes"))
+    expect_is(ancestral_states[[1]], "matrix")
+    expect_equal(dim(ancestral_states[[1]]), c(6, 10))
+    expect_is(ancestral_states[[2]][[1]], "matrix")
+    expect_equal(dim(ancestral_states[[2]][[1]]), c(5, 10))    
+
+    ## Parallel works
+    expect_is(multi.ace(matrix_test, tree_test, parallel = TRUE), "list")
+    expect_is(multi.ace(matrix_test, tree_test, parallel = 2), "list")
+
+
+#     ## Examples work
+#     set.seed(42)
+#     tree <- rcoal(15)
+#     my_rates = c(rgamma, rate = 10, shape = 5)
+#     matrix_simple <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
+#                                 invariant = FALSE)
+#     multiple_trees <- rmtree(10, 15)
+#     matrix_complex <- matrix_simple
+#     matrix_complex[sample(1:length(matrix_complex), 50)] <- "-"
+#     matrix_complex[sample(1:length(matrix_complex), 50)] <- "0%2"
+#     matrix_complex[sample(1:length(matrix_complex), 50)] <- "?"
+#     matrix_complex[1:5,1:5]
+#     my_spec_tokens <- c("weirdtoken" = "%")
+#     my_spec_behaviours <- list()
+#     my_spec_behaviours$inapplicable <- function(x,y) return(NA)
+#     my_spec_behaviours$missing      <- function(x,y) return(y)
+#     my_spec_behaviours$weirdtoken   <- function(x,y) return(c(1,2))
+#     branch_lengths <- rnorm(28)^2
+#     my_models <- c(rep("ER", 25), rep("SYM", 25))
 
 
 
-#     ## Sanitizing
-#     expect_error(multi.ace())
 
-#     ## Right output
-#     expect_is(
-#         multi.ace()
-#         , "class")
-#     expect_equal(
-#         dim(multi.ace())
-#         , dim)
-# })
+# ## Test1
+# ancestral_states <- multi.ace(matrix_complex, multiple_trees,
+#                               verbose = TRUE,
+#                               models = my_models,
+#                               threshold = 0.95,
+#                               special.tokens = my_spec_tokens,
+#                               special.behaviours = my_spec_behaviours,
+#                               brlen.multiplier = branch_lengths,
+#                               output = "combined.matrix")
+
+# ## The results for the the two first characters for the first tree
+# ancestral_states[[1]][, 1:2]
+
+# ## Additional example:
+
+# matrix <- matrix(sample(c("0", "1", "0&1", NA),
+#   500, replace = TRUE), nrow = 10, dimnames = 
+#   list(paste0("t", 1:10), c()))
+
+# trees <- rmtree(10, 10)
+
+# claddis.wrapper <- function(tree, matrix) {
+#     return(AncStateEstMatrix(matrix, tree,
+#                              EstimateAllNodes = TRUE))
+# }
+
+# # Reformat for use elsewhere in Claddis:
+# Claddis_matrix <- MakeMorphMatrix(matrix)
+
+
+
+# serial_start <- Sys.time()
+# ancestral_states <- multi.ace(data = matrix, tree = trees, special.tokens = c("missing" = NA))
+# serial_end <- Sys.time()
+
+
+})

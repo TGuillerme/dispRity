@@ -408,6 +408,8 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
             cat(paste0("Running the estimation for ", length(tree), " tree", ifelse(length(tree) > 1, "s ", " "), "using ", cores, " core", ifelse(cores == 1, "...", "s...")))
             was_verbose <- TRUE
             verbose <- FALSE
+        } else {
+            was_verbose <- FALSE
         }
 
         ## Set up the cluster
@@ -480,82 +482,41 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
 
 
+# matrix <- matrix(sample(c("0", "1", "0&1", NA),
+#   500, replace = TRUE), nrow = 10, dimnames = 
+#   list(paste0("t", 1:10), c()))
 
-# library(phytools)
-# library(castor)
+# trees <- rmtree(10, 10)
 
-# set.seed(1)
-# tree <- rcoal(20)
-# character_rand <- sample(c(1,2), 20, replace = TRUE)
-# character_evol <- as.numeric(as.vector(sim.morpho(tree, 1, states = 1, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)))+1
-
-
-# convert.table <- function(token) {
-#     if(token == 1) {
-#         return(c(1,0))
-#     } else {
-#         return(c(0,1))
-#     }
+# claddis.wrapper <- function(tree, matrix) {
+#     return(AncStateEstMatrix(matrix, tree,
+#                              EstimateAllNodes = TRUE))
 # }
 
-# character_rand_table <- t(sapply(character_rand, convert.table))
-# character_evol_table <- t(sapply(character_evol, convert.table))
-# colnames(character_rand_table) <- colnames(character_evol_table) <- c(1,2)
-# rownames(character_rand_table) <- rownames(character_evol_table) <- tree$tip.label
-
-
-# phytools_reroot_rand <- rerootingMethod(tree, character_rand_table, model = "ER")$marginal.anc
-# phytools_reroot_evol <- rerootingMethod(tree, character_evol_table, model = "ER")$marginal.anc
-# ape_ace_rand <- ace(character_rand, tree, type = "discrete")$lik.anc
-# ape_ace_evol <- ace(character_evol, tree, type = "discrete")$lik.anc
-# castor_tip_rand <- asr_mk_model(tree, character_rand, rate_model = "ER", Ntrials = 2)$ancestral_likelihoods
-# castor_tip_evol <- asr_mk_model(tree, character_evol, rate_model = "ER", Ntrials = 2)$ancestral_likelihoods
-# castor_table_rand <- asr_mk_model(tree, tip_states = NULL, tip_priors = character_rand_table, rate_model = "ER", Ntrials = 2)$ancestral_likelihoods
-# castor_table_evol <- asr_mk_model(tree, tip_states = NULL, tip_priors = character_evol_table, rate_model = "ER", Ntrials = 2)$ancestral_likelihoods
+# # Reformat for use elsewhere in Claddis:
+# Claddis_matrix <- MakeMorphMatrix(matrix)
 
 
 
-
-# test <- castor::asr_mk_model(tree = tree, tip_states = NULL, Nstates = length(character_states), rate_model = model, Ntrials = 2, tip_priors = character)$ancestral_likelihoods
-
-
-
-
-# Create random 10-by-50 matrix:
-matrix <- matrix(sample(c("0", "1", "0&1", NA, ""),
-  500, replace = TRUE), nrow = 10, dimnames = 
-  list(paste0("t", 1:10), c()))
-
-trees <- rmtree(10, 10)
-
-claddis.wrapper <- function(tree, matrix) {
-    return(AncStateEstMatrix(matrix, tree,
-                             EstimateAllNodes = TRUE))
-}
-
-# Reformat for use elsewhere in Claddis:
-Claddis_matrix <- MakeMorphMatrix(matrix)
-
-
-
-serial_start <- Sys.time()
-ancestral_states <- multi.ace(data = matrix, tree = trees)
-serial_end <- Sys.time()
+# serial_start <- Sys.time()
+# ancestral_states <- multi.ace(data = matrix, tree = trees, special.tokens = c("missing" = NA))
+# serial_end <- Sys.time()
 
 
 
 # ## The same example but running in parallel
 # parallel_start <- Sys.time()
-# ancestral_states <- multi.ace(matrix, trees)
+# ancestral_states <- multi.ace(matrix, trees, special.tokens = c("missing" = NA))
 # parallel_end <- Sys.time()
 
 
 
 # claddis_start <- Sys.time()
-# test <- lapply(trees, claddis.wrapper, matrix)
+# test <- lapply(trees, claddis.wrapper, Claddis_matrix)
 # claddis_end <- Sys.time()
 
 
 # serial_time <- serial_end-serial_start
 # parallel_time <- parallel_end-parallel_start
 # claddis_time <- claddis_end-claddis_start
+
