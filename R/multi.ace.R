@@ -146,6 +146,14 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         tree <- list(tree)
         class(tree) <- "multiPhylo"
     }
+
+    ## Check the tree and data
+    cleaned_data <- clean.data(matrix, tree)
+    if(!is.na(cleaned_data$dropped_tips) || !is.na(cleaned_data$dropped_rows)) {
+        stop(paste0("Some names in the data or the tree(s) are not matching.\nYou can use dispRity::clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ") to find out more."))
+    }
+
+
     ## Find the node labels (and eventually add them to the trees)
     node_labels <- lapply(tree, get.node.labels)
     ## Split the trees and the labels
@@ -424,7 +432,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
 
         ## Call the cluster
-        results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, threshold.type, threshold, verbose)
+        results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, verbose)
 
         ## Stop the cluster
         parallel::stopCluster(cluster)
@@ -436,7 +444,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         }
     } else {
         ## Running the ACE for each tree
-        results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, threshold.type, threshold, verbose)
+        results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, verbose)
     }
 
     ## Output a matrix
@@ -509,3 +517,45 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
 
 # test <- castor::asr_mk_model(tree = tree, tip_states = NULL, Nstates = length(character_states), rate_model = model, Ntrials = 2, tip_priors = character)$ancestral_likelihoods
+
+
+
+
+# Create random 10-by-50 matrix:
+matrix <- matrix(sample(c("0", "1", "0&1", NA, ""),
+  500, replace = TRUE), nrow = 10, dimnames = 
+  list(paste0("t", 1:10), c()))
+
+trees <- rmtree(10, 10)
+
+claddis.wrapper <- function(tree, matrix) {
+    return(AncStateEstMatrix(matrix, tree,
+                             EstimateAllNodes = TRUE))
+}
+
+# Reformat for use elsewhere in Claddis:
+Claddis_matrix <- MakeMorphMatrix(matrix)
+
+
+
+serial_start <- Sys.time()
+ancestral_states <- multi.ace(data = matrix, tree = trees)
+serial_end <- Sys.time()
+
+
+
+# ## The same example but running in parallel
+# parallel_start <- Sys.time()
+# ancestral_states <- multi.ace(matrix, trees)
+# parallel_end <- Sys.time()
+
+
+
+# claddis_start <- Sys.time()
+# test <- lapply(trees, claddis.wrapper, matrix)
+# claddis_end <- Sys.time()
+
+
+# serial_time <- serial_end-serial_start
+# parallel_time <- parallel_end-parallel_start
+# claddis_time <- claddis_end-claddis_start
