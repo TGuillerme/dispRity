@@ -91,7 +91,7 @@ castor.ace <- function(castor_args) {
     estimation <- do.call(castor::asr_mk_model, castor_args)
 
     ## Increase the number of trials if unsuccessful
-    while(!estimation$success && trials < 100) {
+    while(!estimation$success && castor_args$Ntrials < 100) {
         castor_args$Ntrials <- castor_args$Ntrials + castor_args$Ntrials * 2
         estimation <- do.call(castor::asr_mk_model, castor_args)
     }
@@ -150,7 +150,7 @@ translate.likelihood <- function(character, threshold, select.states, special.to
 }
 
 ## Function for running ace on a single tree.
-one.tree.ace <- function(args_list, special.tokens, invariants, threshold.type, threshold, verbose) {
+one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, verbose) {
 
     if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
     if(verbose) cat("Running ancestral states estimations:\n")
