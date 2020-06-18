@@ -17,7 +17,7 @@ reduce.space(
 \arguments{
 \item{space}{the trait space}
 
-\item{type}{how to reduce the space (either \code{"random"}, \code{"limit"}, \code{"displacement"} or \code{"density"})}
+\item{type}{how to reduce the space (either \code{"random"}, \code{"size"}, \code{"density"} or \code{"position"})}
 
 \item{remove}{the proportion of elements to be removed (in probability)}
 
@@ -33,11 +33,11 @@ reduce.space(
 Remove elements from a multidimensional space
 }
 \details{
-- \code{limit.removal parameters}: a list of \code{parameters$centre}, the centre from which to count the radius (if missing, is set to \code{0}); and \code{parameters$radius}, the radius for removal.
-
-- \code{displacement.removal parameters}: a list of \code{parameters$value}, value the threshold value from which to remove elements.
+- \code{size.removal parameters}: a list of \code{parameters$centre}, the centre from which to count the radius (if missing, is set to \code{0}); and \code{parameters$radius}, the radius for removal.
 
 - \code{density.removal parameters}: a list of \code{parameters$what} "close" (default) for close neighbours or "distant" for distant ones; \code{parameters$diameter} the diameter for considering closeness or distance; \code{parameters$output} either "singles" or "pairs" to return the pairs of neighbours or one of them only (the first).
+
+- \code{position.removal parameters}: a list of \code{parameters$value}, value the threshold value from which to remove elements.
 
 See Guillerme et al. 2020 and https://github.com/TGuillerme/moms for details.
 }
@@ -48,25 +48,28 @@ space <- dispRity::space.maker(100, 2, distribution = stats::rnorm)
 
 ## Generating the four types of reductions
 random <- reduce.space(space, "random", remove = 0.5)
-limit <- reduce.space(space, "limit", remove = 0.5)
-displacement <- reduce.space(space, "displacement", remove = 0.5)
+size <- reduce.space(space, "size", remove = 0.5)
 density <- reduce.space(space, "density", remove = 0.5)
+position <- reduce.space(space, "position", remove = 0.5)
 
 ## Plotting the four different results
 par(mfrow = c(2,2))
 plot(space, pch = 19, col = c("grey", "black")[as.factor(random)],
      main = "Random removal") 
-plot(space, pch = 19, col = c("grey", "black")[as.factor(limit)],
-     main = "Limit removal")
-plot(space, pch = 19, col = c("grey", "black")[as.factor(displacement)],
-     main = "Displacement removal")
+plot(space, pch = 19, col = c("grey", "black")[as.factor(size)],
+     main = "Size removal")
 plot(space, pch = 19, col = c("grey", "black")[as.factor(density)],
      main = "Density removal")
+plot(space, pch = 19, col = c("grey", "black")[as.factor(position)],
+     main = "Position removal")
 
 
 }
 \references{
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
+}
+\seealso{
+\code{\link{test.metric}} \code{\link{plot.test.metric}} \code{\link{dispRity}}
 }
 \author{
 Thomas Guillerme

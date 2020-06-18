@@ -52,7 +52,12 @@
 
 reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALSE, return.optim = FALSE) {
 
-    verbose_place_holder <- "silent"
+    ## Add sanitizing
+    type_available <- c("random", "size", "position", "density")
+    
+    ## Switch type names
+    type <- ifelse(type == "size", "limit", type)
+    type <- ifelse(type == "position", "displacement", type)
 
     ## Tolerance
     if(missing(tuning)) {
@@ -73,6 +78,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
         parameters <- list()
     }
 
+
     switch(type,
         random = {
             ## Number of elements
@@ -81,7 +87,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
             to_remove <- sample(1:elements, elements*remove)
             return(1:elements %in% to_remove)
         },
-        size = {
+        limit = {
             ## Type function
             fun <- run.limit.removal
             ## Parameters
@@ -96,7 +102,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
             ## List of arguments
             args <- list("space" = space, "parameters" = parameters)
         },
-        position = {
+        displacement = {
             ## Type function
             fun <- run.limit.removal
             ## Parameters
