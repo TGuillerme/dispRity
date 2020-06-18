@@ -125,6 +125,10 @@ Used in
 -------
 <!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826%2C7753828186872068057&scipsc=&q=3D+Morphometric+Analysis+Reveals+Similar+Ecomorphs+for+Early+Kangaroos+%28Macropodidae%29+and+Fanged+Kangaroos+%28Balbaridae%29+from+the+Riversleigh+World+%E2%80%A6&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Butler K, Travouillon KJ, Evans AR, Murphy L, Price GJ, Archer M, Hand SJ, Weisbecker V. 3D Morphometric Analysis Reveals Similar Ecomorphs for Early Kangaroos (Macropodidae) and Fanged Kangaroos (Balbaridae) from the Riversleigh World Heritage Area, Australia. *Journal of Mammalian Evolution*. **2020** 11:1-21. [DOI: 10.1007/s10914-020-09507-8](https://link.springer.com/article/10.1007/s10914-020-09507-8)
+
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Categorical+versus+geometric+morphometric+approaches+to+characterizing+the+evolution+of+morphological+disparity+in+Osteostraci+%28Vertebrata%2C+stem+Gnathostomata%29&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Ferron HG, Greenwood JM, Deline B, Martinez-Perez C, Botella H, Sansom RS, Ruta M, Donoghue PC. Categorical versus geometric morphometric approaches to characterizing the evolution of morphological disparity in Osteostraci (Vertebrata, stem Gnathostomata). *Palaeontology*. **2020** [DOI: 10.1111/pala.12482](https://sci-hub.se/10.1111/pala.12482)
 
