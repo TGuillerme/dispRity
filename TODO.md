@@ -1,5 +1,5 @@
 
-- [ ] implement test.metric
+- [x] implement test.metric
 - [ ] test test.metric
 - [ ] add "test.metric" dual class
 - [ ] add `plot` behaviour for "dispRity" "test.metric"
