@@ -23,8 +23,13 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.4.1 (2020-06-03)
+dispRity v1.4.2 (2020-06-18)
 =========================
+
+### NEW FEATURES
+
+ * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms).
+ * *New* function: `test.metric` and `plot.test.metric`, two functions to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
 
 ### BUG FIXES
 
