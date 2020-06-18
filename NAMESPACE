@@ -39,7 +39,7 @@ export(plot.dispRity)
 export(print.dispRity)
 export(summary.dispRity)
 export(test.dispRity)
-#                              export(test.metric)
+#            export(test.metric)
 
 ##disparity metrics
 export(ancestral.dist)
