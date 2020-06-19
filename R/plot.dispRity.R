@@ -132,6 +132,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     data <- x
     match_call <- match.call()
+    dots <- list(...)
 
     #SANITIZING
     #DATA
@@ -321,6 +322,53 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the model
             plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
+        }
+
+        if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
+
+            ## Setting up plotting window
+            if((n_plots <- length(data$results)) > 1) {
+                op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+            }
+
+            ## Plot all the results
+            for(one_plot in 1:n_plots) {
+                ## Plot the results
+                plot_data <- data$results[[one_plot]]
+                plot(plot_data[, c(2,1)],
+                    ylim = if(missing(ylim))      {range(plot_data[,1])} else {ylim},
+                    xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[,2]))} else {xlim},
+                    xlab = if(missing(xlab))      {"Reductions (%)"} else {xlab},
+                    ylab = if(missing(ylab))      {data$call$metric} else {ylab},
+                    pch  = if(is.null(dots$pch))  {19} else {dots$pch},
+                    main = if(is.null(dots$main)) {names(data$results)[[one_plot]]} else {dots$main},
+                    col  = if(missing(col))       {"black"} else {col}
+                    )
+
+                ## Plot the model (if exists)
+                if(!is.null(data$models[[one_plot]])) {
+                    ## Get the slope parameters
+                    slope_param <- try.get.from.model(data$models[[one_plot]], "Estimate")
+                    fit_param <- try.get.from.model(data$models[[one_plot]], "r.squared")
+                    if(!any(is.na(slope_param)) || !is.null(slope_param)) {
+                        ## Add the slope
+                        abline(a = slope_param[1],
+                               b = slope_param[2])
+                    }
+                    if(!is.null(fit_param) || length(fit_param) != 0) {
+
+                        if(any(names(fit_param) == "adj.r.squared")) {
+                            fit_param <- fit_param$adj.r.squared
+                            is_adjusted <- TRUE
+                        } else {
+                            is_adjusted <- FALSE
+                        }
+
+                        ## Add the fit
+                        legend("topleft", legend = paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
+                    }
+                }
+            }
         }
         
         ## Exit subclass plots
