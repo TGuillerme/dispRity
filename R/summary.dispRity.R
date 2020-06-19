@@ -165,6 +165,56 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(output_table)
         }
 
+
+        if(is(data, "test.metric")) {
+
+            ## Summary table
+            get.cent.tends <- function(results) {
+                return(aggregate(disparity~reduction, data = results, FUN = cent.tend)[,2])
+            }
+            all_results <- round(do.call(rbind, lapply(data$results, get.cent.tends)), digits = ifelse(digits == "default", 2, digits))
+            colnames(all_results) <- unique(sum_var_test$results[[1]][,2])
+
+            ## Adding the model results
+            if(!is.null(data$models)) {
+                get.model.summary <- function(model) {
+                    ## Model parameters to grab
+                    model_summary <- NULL
+                    adj_r_square <- slope <- p_val <- NA
+                    is_adjusted <- TRUE
+
+                    ## Try summarising the model
+                    try(model_summary <- summary(model), silent = TRUE)
+
+                    ## Grab the parameters
+                    if(!is.null(model_summary)) {
+                        ## Get the coefficients
+                        if(!is.null(model_summary$coefficients)) {
+                            try(slope <- model_summary$coefficients["disparity", "Estimate"], silent = TRUE)
+                            try(p_val <- model_summary$coefficients["disparity", grep("Pr\\(", colnames(model_summary$coefficients))], silent = TRUE)
+                        }
+                        ## Get the r square
+                        try(adj_r_square <- model_summary$adj.r.squared, silent = TRUE)
+                        if(is.na(adj_r_square)) {
+                            try(adj_r_square <- model_summary$r.squared, silent = TRUE)
+                            is_adjusted <- FALSE
+                        }
+                    }
+                    results <- c("slope" = slope, "p_val" =  p_val, "R" = adj_r_square)
+                    names(results) <- c("slope", "p_value", ifelse(is_adjusted, "R^2(adj)", "R^2"))
+
+                    return(results)
+                }
+                ## Get the model summaries
+                model_summaries <- round(do.call(rbind, lapply(data$models, get.model.summary)), digits = ifelse(digits == "default", 2, digits))
+
+                ## Combine both
+                all_results <- cbind(all_results, model_summaries)
+            }
+
+            return(all_results)
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 
