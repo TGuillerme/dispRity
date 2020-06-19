@@ -178,29 +178,23 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             ## Adding the model results
             if(!is.null(data$models)) {
                 get.model.summary <- function(model) {
-                    ## Model parameters to grab
-                    model_summary <- NULL
-                    adj_r_square <- slope <- p_val <- NA
-                    is_adjusted <- TRUE
-
-                    ## Try summarising the model
-                    try(model_summary <- summary(model), silent = TRUE)
-
-                    ## Grab the parameters
-                    if(!is.null(model_summary)) {
-                        ## Get the coefficients
-                        if(!is.null(model_summary$coefficients)) {
-                            try(slope <- model_summary$coefficients["disparity", "Estimate"], silent = TRUE)
-                            try(p_val <- model_summary$coefficients["disparity", grep("Pr\\(", colnames(model_summary$coefficients))], silent = TRUE)
-                        }
-                        ## Get the r square
-                        try(adj_r_square <- model_summary$adj.r.squared, silent = TRUE)
-                        if(is.na(adj_r_square)) {
-                            try(adj_r_square <- model_summary$r.squared, silent = TRUE)
-                            is_adjusted <- FALSE
-                        }
+                    ## Try to get the model parameters
+                    try_slope <- try.get.from.model(model, "Estimate")
+                    try_p_val <- try.get.from.model(model, "Pr\\(")
+                    try_r_squ <- try.get.from.model(model, "r.squared")
+                    if(!is.null(try_r_squ) && any(names(try_r_squ) == "adj.r.squared")) {
+                        try_r_squ <- try_r_squ$adj.r.squared
+                        is_adjusted <- TRUE
+                    } else {
+                        is_adjusted <- FALSE
                     }
-                    results <- c("slope" = slope, "p_val" =  p_val, "R" = adj_r_square)
+
+                    ## Make a results vector
+                    results <- c(
+                        "slope" = ifelse(!is.null(try_slope) && !is.na(try_slope), try_slope["disparity"], NA),
+                        "p_val" = ifelse(!is.null(try_p_val) && !is.na(try_p_val), try_p_val["disparity"], NA),
+                        "r_squ" = ifelse(!is.null(try_r_squ) && !is.na(try_r_squ), try_r_squ, NA))
+                            
                     names(results) <- c("slope", "p_value", ifelse(is_adjusted, "R^2(adj)", "R^2"))
 
                     return(results)
