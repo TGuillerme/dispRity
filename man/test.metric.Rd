@@ -24,42 +24,80 @@ test.metric(
 
 \item{...}{Optional arguments to be passed to the metric.}
 
-\item{shifts}{The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}.}
+\item{shifts}{The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}. See details.}
 
 \item{shift.options}{Optional, a \code{list} of named arguments to be passed to \code{\link{reduce.space}}}
 
 \item{model}{Optional, which model to fit for testing the metric. See details.}
 
-\item{replicates}{A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}.}
+\item{replicates}{A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.}
 
-\item{steps}{The number of steps in the space reduction to output between 1\% and 100\%. By default \code{steps = 10}.}
+\item{steps}{The number of steps in the space reduction to output between 0\% and 100\%. By default \code{steps = 11}.}
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 }
+\value{
+This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).
+}
 \description{
 Test whether a metric captures changes trait space size, density and position.
 }
 \details{
+For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"position"}, the function returns both of shifts as:
+\itemize {
+     \item \code{"size.inner"} and \code{"size.outer"} removing data from the edges or the centre respectively (contracting the size and "hollowing" it respectively).
+     \item \code{"density.higher"} and \code{"density.lower"} removing data to increase or decrease density respectively (increasing/decreasing nearest neighbour distance).
+     \item \code{"position.bottom"} and \code{"position.top"} removing data from one side or the other of the space (the sides are selected from the point with lowest/highest scores on each dimensions respectively).
+}
+See figure 2 in Guillerme et al. 2020 for more details.
+
 The default \code{model} is a linear model using the following function:
     \code{model = function(data) lm(reduction \~ disparity, data)}
 You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
 Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.test.metric}}.
+To not run any model, use \code{model = NULL}.
 }
 \examples{
-## Load a disparity data
-data(disparity)
 
-## Testing the metric used in the disparity data 
-median_centroid_test <- test.metric(disparity, shifts = c("random", "size"))
+## Creating a 2D uniform space
+space <- space.maker(300, 2, runif)
 
-## Summarising the results
+## A simple test with only 1 replicate for two shifts (random and size):
+simple_test <- test.metric(space, metric = c(prod, ranges),
+                           replicates = 1, shifts = c("random", "size")) 
+
+## Summarising the tests
+summary(simple_test)
+
+## Visualising the test
+plot(simple_test)
+
+\dontrun{
+## Note that the tests can take several minutes to run.
+
+## Testing the sum of variance on all shifts
+sum_var_test <- test.metric(space, metric = c(sum, variances),
+                            shifts = c("random", "size", "density", "position"), verbose = TRUE)
+
+## Summarising the tests
 summary(sum_var_test)
 
-## Visualising the results
+## Visualising the test
 plot(sum_var_test)
+
+## Applying the test directly on a disparity object
+data(disparity)
+median_centroid_test <- test.metric(disparity, shifts = "size", verbose = TRUE)
+
+## Summarising the tests
+summary(median_centroid_test)
+
+## Visualising the test
+plot(median_centroid_test)
+}
  
 }
 \references{

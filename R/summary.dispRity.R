@@ -170,15 +170,16 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
             ## Summary table
             get.cent.tends <- function(results) {
-                return(aggregate(disparity~reduction, data = results, FUN = cent.tend)[,2])
+                combined <- aggregate(disparity~reduction, data = results, FUN = function(x, cent.tend) cent.tend(x, na.rm = TRUE), cent.tend, na.action = na.pass)
+                return(combined[order(as.numeric(combined$reduction)),2])
             }
             all_results <- round(do.call(rbind, lapply(data$results, get.cent.tends)), digits = ifelse(digits == "default", 2, digits))
-            colnames(all_results) <- unique(sum_var_test$results[[1]][,2])
+            colnames(all_results) <- paste0(unique(data$results[[1]][,"reduction"]), "%")
 
             ## Adding the model results
             if(!is.null(data$models)) {
                 get.model.summary <- function(model) {
-                    ## Try to get the model parameters
+                    ## Try to get the model parameters
                     try_slope <- try.get.from.model(model, "Estimate")
                     try_p_val <- try.get.from.model(model, "Pr\\(")
                     try_r_squ <- try.get.from.model(model, "r.squared")

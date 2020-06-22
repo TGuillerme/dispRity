@@ -326,28 +326,69 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
         if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
 
-            ## Setting up plotting window
-            if((n_plots <- length(data$results)) > 1) {
-                op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+            ## Getting the number of plot groups
+            group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
+
+            ## Separating the plots in different groups (per plot windows)
+            if((n_plots <- length(unique(group_plot))) > 1) {
+                ## Setting up plotting window
+                op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),floor(sqrt(n_plots))))
+
+                ## Separating the data
+                plot_groups <- list()
+                for(group in 1:length(unique(group_plot))) {
+                    plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
+                }
             }
+
+            ## Get the yaxis scale
+            all_ylim <- if(missing(ylim)) {range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)} else {ylim}
 
             ## Plot all the results
             for(one_plot in 1:n_plots) {
-                ## Plot the results
-                plot_data <- data$results[[one_plot]]
-                plot(plot_data[, c(2,1)],
-                    ylim = if(missing(ylim))      {range(plot_data[,1])} else {ylim},
-                    xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[,2]))} else {xlim},
-                    xlab = if(missing(xlab))      {"Reductions (%)"} else {xlab},
+                ## Get the data to plot
+                plot_data <- plot_groups[[one_plot]]
+
+                ## Get the colours
+                if(missing(col)) {
+                    if(length(plot_data) > 1) {
+                        col <- c("orange", "blue")
+                    } else {
+                        col <- "black"
+                    }
+                } else {
+                    if(length(col) < 2) {
+                        col <- c(col, "grey")
+                    } else {
+                        col <- col[1:2]
+                    }
+                }
+
+                ## First plot
+                plot(plot_data[[1]],
+                    ylim = all_ylim,
+                    xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[[1]][,1]))} else {xlim},
+                    xlab = if(missing(xlab))      {"Amount of data (%)"} else {xlab},
                     ylab = if(missing(ylab))      {data$call$metric} else {ylab},
                     pch  = if(is.null(dots$pch))  {19} else {dots$pch},
-                    main = if(is.null(dots$main)) {names(data$results)[[one_plot]]} else {dots$main},
-                    col  = if(missing(col))       {"black"} else {col}
+                    main = if(is.null(dots$main)) {unique(group_plot)[[one_plot]]} else {dots$main},
+                    col  = col[1]
                     )
+
+                ## Second plot
+                if(length(plot_data) > 1) {
+                    plot_data[[2]][,1] <- as.numeric(plot_data[[2]][,1])
+                    points(plot_data[[2]],
+                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
+                           col = col[2])
+                    legend("bottomright", legend = names(plot_data),
+                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
+                           col = col)
+                }
 
                 ## Plot the model (if exists)
                 if(!is.null(data$models[[one_plot]])) {
-                    ## Get the slope parameters
+                    ## Get the slope parameters
                     slope_param <- try.get.from.model(data$models[[one_plot]], "Estimate")
                     fit_param <- try.get.from.model(data$models[[one_plot]], "r.squared")
                     if(!any(is.na(slope_param)) || !is.null(slope_param)) {

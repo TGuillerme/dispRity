@@ -5,34 +5,71 @@
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details). If \code{data} is a \code{dispRity} object with disparity already calculated, this argument can be left empty (and the one from \code{data} is recycled)
 #' @param ... Optional arguments to be passed to the metric.
-#' @param shifts The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}.
+#' @param shifts The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}. See details.
 #' @param shift.options Optional, a \code{list} of named arguments to be passed to \code{\link{reduce.space}}
 #' @param model Optional, which model to fit for testing the metric. See details.
-#' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}.
-#' @param steps The number of steps in the space reduction to output between 1\% and 100\%. By default \code{steps = 10}.
+#' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.
+#' @param steps The number of steps in the space reduction to output between 0\% and 100\%. By default \code{steps = 11}.
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' 
 #' @details
+#' For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"position"}, the function returns both of shifts as:
+#' \itemize {
+#'      \item \code{"size.inner"} and \code{"size.outer"} removing data from the edges or the centre respectively (contracting the size and "hollowing" it respectively).
+#'      \item \code{"density.higher"} and \code{"density.lower"} removing data to increase or decrease density respectively (increasing/decreasing nearest neighbour distance).
+#'      \item \code{"position.bottom"} and \code{"position.top"} removing data from one side or the other of the space (the sides are selected from the point with lowest/highest scores on each dimensions respectively).
+#' }
+#' See figure 2 in Guillerme et al. 2020 for more details.
+#' 
 #' The default \code{model} is a linear model using the following function:
 #'     \code{model = function(data) lm(reduction \~ disparity, data)}
 #' You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
 #'     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
 #' Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.test.metric}}.
+#' To not run any model, use \code{model = NULL}.
 #' 
+#' @return
+#' This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).  
 #'
 #' @examples
-#' ## Load a disparity data
-#' data(disparity)
 #' 
-#' ## Testing the metric used in the disparity data 
-#' median_centroid_test <- test.metric(disparity, shifts = c("random", "size"))
+#' ## Creating a 2D uniform space
+#' space <- space.maker(300, 2, runif)
 #' 
-#' ## Summarising the results
+#' ## A simple test with only 1 replicate for two shifts (random and size):
+#' simple_test <- test.metric(space, metric = c(prod, ranges),
+#'                            replicates = 1, shifts = c("random", "size")) 
+#' 
+#' ## Summarising the tests
+#' summary(simple_test)
+#' 
+#' ## Visualising the test
+#' plot(simple_test)
+#' 
+#' \dontrun{
+#' ## Note that the tests can take several minutes to run.
+#' 
+#' ## Testing the sum of variance on all shifts
+#' sum_var_test <- test.metric(space, metric = c(sum, variances),
+#'                             shifts = c("random", "size", "density", "position"), verbose = TRUE)
+#' 
+#' ## Summarising the tests
 #' summary(sum_var_test)
 #' 
-#' ## Visualising the results
+#' ## Visualising the test
 #' plot(sum_var_test)
+#' 
+#' ## Applying the test directly on a disparity object
+#' data(disparity)
+#' median_centroid_test <- test.metric(disparity, shifts = "size", verbose = TRUE)
+#' 
+#' ## Summarising the tests
+#' summary(median_centroid_test)
+#' 
+#' ## Visualising the test
+#' plot(median_centroid_test)
+#' }
 #'  
 #' @author Thomas Guillerme
 #' 
@@ -43,6 +80,7 @@
 # source("sanitizing.R")
 # source("dispRity_fun.R")
 # source("test.metric_fun.R")
+# simple_test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE)
 
 test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE) {
 
@@ -55,7 +93,9 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     ## Check data input
     metric_name <- NULL
     if(!is(data, "dispRity")) {
+        options(warn = -1)
         data <- check.dispRity.data(data)
+        options(warn = 0)
     } else {
         ## See if the metric needs to be recycled
         if(missing(metric) && !is.null(data$call$disparity$metrics)) {
@@ -97,11 +137,15 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     ## replicates
     check.class(replicates, c("numeric", "integer"))
     check.length(replicates, 1, " must be a single numeric value.")
+    ## No model if no replicates
+    if(replicates == 1) {
+        model <- NULL
+    }
 
     ## steps
     check.class(steps, c("numeric", "integer"))
     check.length(steps, 1, " must be a single numeric value.")
-    steps <- seq(from = 0, to = 0.9, length.out = round(steps))
+    steps <- seq(from = 0.1, to = 1, length.out = round(steps))
 
     ## Verbose
     check.class(verbose, "logical")
@@ -111,9 +155,14 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     all_reductions <- replicate(replicates, lapply(type, reduce.space.one.type, data, steps, shift.options, verbose), simplify = FALSE)
     if(verbose) message("Done.\n", appendLF = FALSE)
 
+    ## Flatten the list
+    all_reductions <- lapply(all_reductions, unlist, recursive = FALSE)
+
     ## Measure disparity on all the shifts
     if(verbose) message("Calculating disparity:", appendLF = FALSE)
+    options(warn = -1)
     all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, ..., dimensions, verbose)
+    options(warn = 0)
     #all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, dimensions, verbose)
     if(verbose) message("Done.\n", appendLF = FALSE)
 
@@ -121,13 +170,17 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     table_list <- lapply(all_disparity, lapply, make.reduction.tables)
     ## Combine the replicates
     results_list <- list()
-    for(one_shift in 1:length(shifts)) {
+    for(one_shift in 1:(ifelse(any(shifts == "random"), 1, 0) + length(shifts[-which(shifts == "random")])*2)) {
         results_list[[one_shift]] <- do.call(rbind, lapply(table_list, `[[`, one_shift))
     }
-    names(results_list) <- shifts
+    names(results_list) <- names(table_list[[1]])
 
     ## Test the models
-    models <- lapply(results_list, model)
+    if(!is.null(model)) {
+        models <- lapply(results_list, model)
+    } else {
+        models <- NULL
+    }
 
     ## Output the results
     call <- list("shifts" = shifts,
@@ -139,6 +192,4 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     class(output) <- c("dispRity", "test.metric")
 
     return(output)
-
-    #plot(results_list$size[, c(2,1)])
 }
