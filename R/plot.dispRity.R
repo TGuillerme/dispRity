@@ -339,30 +339,38 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 for(group in 1:length(unique(group_plot))) {
                     plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
                 }
+                ## Separating the models
+                if(!is.null(data$models)) {
+                    model_groups <- list()
+                    for(group in 1:length(unique(group_plot))) {
+                        model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
+                    }
+                }
             }
 
             ## Get the yaxis scale
             all_ylim <- if(missing(ylim)) {range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)} else {ylim}
+            #all_ylim <- range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)
+
+            ## Get the colours
+            if(missing(col)) {
+                if(any(unique(group_plot) != "random")) {
+                    col <- c("orange", "blue")
+                } else {
+                    col <- "black"
+                }
+            } else {
+                if(length(col) < 2) {
+                    col <- c(col, "grey")
+                } else {
+                    col <- col[1:2]
+                }
+            }
 
             ## Plot all the results
             for(one_plot in 1:n_plots) {
                 ## Get the data to plot
                 plot_data <- plot_groups[[one_plot]]
-
-                ## Get the colours
-                if(missing(col)) {
-                    if(length(plot_data) > 1) {
-                        col <- c("orange", "blue")
-                    } else {
-                        col <- "black"
-                    }
-                } else {
-                    if(length(col) < 2) {
-                        col <- c(col, "grey")
-                    } else {
-                        col <- col[1:2]
-                    }
-                }
 
                 ## First plot
                 plot(plot_data[[1]],
@@ -387,26 +395,49 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 }
 
                 ## Plot the model (if exists)
-                if(!is.null(data$models[[one_plot]])) {
-                    ## Get the slope parameters
-                    slope_param <- try.get.from.model(data$models[[one_plot]], "Estimate")
-                    fit_param <- try.get.from.model(data$models[[one_plot]], "r.squared")
-                    if(!any(is.na(slope_param)) || !is.null(slope_param)) {
-                        ## Add the slope
-                        abline(a = slope_param[1],
-                               b = slope_param[2])
-                    }
-                    if(!is.null(fit_param) || length(fit_param) != 0) {
+                if(!is.null(data$models)) {
 
-                        if(any(names(fit_param) == "adj.r.squared")) {
-                            fit_param <- fit_param$adj.r.squared
-                            is_adjusted <- TRUE
-                        } else {
-                            is_adjusted <- FALSE
+                    ## Adding slopes and fits
+                    add.slope <- function(model, col) {
+                        ## Get the slope parameters
+                        slope_param <- try.get.from.model(model, "Estimate")
+
+                        ## Plot the model
+                        if(!any(is.na(slope_param)) || !is.null(slope_param)) {
+                            ## Add the slope
+                            abline(a = slope_param[1],
+                                   b = slope_param[2],
+                                   col = col)
                         }
+                    }
+                    add.fit <- function(model) {
+                        fit_param <- try.get.from.model(model, "r.squared")
+                        if(!is.null(fit_param) || length(fit_param) != 0) {
 
-                        ## Add the fit
-                        legend("topleft", legend = paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
+                            if(any(names(fit_param) == "adj.r.squared")) {
+                                fit_param <- fit_param$adj.r.squared
+                                is_adjusted <- TRUE
+                            } else {
+                                is_adjusted <- FALSE
+                            }
+
+                            return(paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
+                        } else {
+                            return(NA)
+                        }
+                    }
+
+                    add.slope(model_groups[[one_plot]][[1]], col = col[1])
+                    fit <- add.fit(model_groups[[one_plot]][[2]])
+                    
+                    if(!is.null(model_groups[[one_plot]][[1]])) {
+                        add.slope(model_groups[[one_plot]][[2]], col = col[2])
+                        fit <- c(fit, add.fit(model_groups[[one_plot]][[2]]))
+                    }
+
+                    ## Add the fits
+                    if(!all(na_fit <- is.na(fit))) {
+                        legend("topright", legend = fit[!na_fit], lty = c(1,1)[!na_fit], col = col[1:2][!na_fit])
                     }
                 }
             }

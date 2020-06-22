@@ -192,16 +192,17 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
                     ## Make a results vector
                     results <- c(
-                        "slope" = ifelse(!is.null(try_slope) && !is.na(try_slope), try_slope["disparity"], NA),
-                        "p_val" = ifelse(!is.null(try_p_val) && !is.na(try_p_val), try_p_val["disparity"], NA),
+                        "slope" = ifelse(!is.null(try_slope) && !is.na(try_slope), try_slope["reduction"], NA),
+                        "p_val" = ifelse(!is.null(try_p_val) && !is.na(try_p_val), try_p_val["reduction"], NA),
                         "r_squ" = ifelse(!is.null(try_r_squ) && !is.na(try_r_squ), try_r_squ, NA))
                             
                     names(results) <- c("slope", "p_value", ifelse(is_adjusted, "R^2(adj)", "R^2"))
 
                     return(results)
                 }
+
                 ## Get the model summaries
-                model_summaries <- round(do.call(rbind, lapply(data$models, get.model.summary)), digits = ifelse(digits == "default", 2, digits))
+                model_summaries <- do.call(rbind, lapply(data$models, get.model.summary))
 
                 ## Combine both
                 all_results <- cbind(all_results, model_summaries)

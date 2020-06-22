@@ -46,7 +46,7 @@ Test whether a metric captures changes trait space size, density and position.
 }
 \details{
 For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"position"}, the function returns both of shifts as:
-\itemize {
+\itemize{
      \item \code{"size.inner"} and \code{"size.outer"} removing data from the edges or the centre respectively (contracting the size and "hollowing" it respectively).
      \item \code{"density.higher"} and \code{"density.lower"} removing data to increase or decrease density respectively (increasing/decreasing nearest neighbour distance).
      \item \code{"position.bottom"} and \code{"position.top"} removing data from one side or the other of the space (the sides are selected from the point with lowest/highest scores on each dimensions respectively).
@@ -54,7 +54,7 @@ For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"posi
 See figure 2 in Guillerme et al. 2020 for more details.
 
 The default \code{model} is a linear model using the following function:
-    \code{model = function(data) lm(reduction \~ disparity, data)}
+    \code{model = function(data) lm(disparity \~ reduction, data)}
 You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
 Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.test.metric}}.

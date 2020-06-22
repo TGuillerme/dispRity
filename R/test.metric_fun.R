@@ -88,6 +88,6 @@ make.reduction.tables <- function(one_type_results) {
     }
 
     ## Make into a dataframe
-    return(data.frame("reduction" = rep(names(disparity_values), result_lengths),
+    return(data.frame("reduction" = as.numeric(rep(names(disparity_values), result_lengths)),
                       "disparity" = unname(unlist(disparity_results))))
 }
