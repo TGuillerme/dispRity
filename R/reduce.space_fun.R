@@ -13,16 +13,17 @@ optimise.parameter <- function(fun, args, criterion, tuning, verbose) {
 
     ## Initialise the optimisation
     counter <- 0
+    bad_loop <- 0 ## Can run in three bad loops in a row (when the optimisation gives the same results as 2 optimisation ago)
     increment <- 1
 
     ## First run
-    difference <- length(which(do.call(fun, args)))-criterion
+    prev_prev_diff <- previous_diff <- difference <- length(which(do.call(fun, args)))-criterion
 
     ## Optimisation loop
     while(difference != 0) {
 
         ## Tolerance
-        if(abs(difference) < tuning$tol*criterion) {
+        if(abs(difference) < round(tuning$tol*criterion)) {
             break
         }
 
@@ -55,12 +56,16 @@ optimise.parameter <- function(fun, args, criterion, tuning, verbose) {
             }
         }
 
-        ## Update the difference
+        ## Update the differences
+        prev_prev_diff <- previous_diff
+        previous_diff <- difference
         difference <- new_difference
 
-        ## Increment the counter
-        if(counter < tuning$max) {
+        if(counter < tuning$max && bad_loop < 2) {
+            ## Increment the counter
             counter <- counter + 1
+            ## Increment the bad loop
+            bad_loop <- ifelse(prev_prev_diff == difference, bad_loop + 1, 0)
             if(verbose) cat(".")
         } else {
             break
@@ -104,8 +109,7 @@ run.limit.removal <- function(space, parameters) {
 #     return(apply(space, 1, select.value, value = parameters$optimise* ))
 # }
 run.density.removal <- function(space, parameters, scree) {
-    close_neigbhours <- get.neigbhours(distance = parameters$distance, diameter = parameters$optimise)
-    return(1:nrow(space) %in% close_neigbhours)
+    return(1:nrow(space) %in% get.neigbhours(distance = parameters$distance, diameter = parameters$optimise))
 }
 
 # ' @description Selecting points within a circle
@@ -114,12 +118,7 @@ run.density.removal <- function(space, parameters, scree) {
 # ' @param radius the radius for removal
 # ' 
 point.in.circle <- function(point, centre, radius) {
-
-    ## Measure the distance from the center
-    distance <- as.numeric(dist(rbind(centre, point)))
-
-    ## Results
-    return(ifelse(distance < radius, TRUE, FALSE))
+    return(sqrt(sum(diff(rbind(centre, point))^2)) < radius)
 }
 
 # ' @description Select only the points above one value

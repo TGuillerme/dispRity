@@ -8,4 +8,4 @@
 - [ ] test `print` behaviour for "dispRity" "test.metric"
 - [x] add `summary` behaviour for "dispRity" "test.metric"
 - [ ] test `summary` behaviour for "dispRity" "test.metric"
-- [ ] improve speed for `reduce.space`!
+- [x] improve speed for `reduce.space`!

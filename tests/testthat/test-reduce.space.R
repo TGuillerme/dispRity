@@ -28,22 +28,21 @@ test_that("reduce.space works", {
     iter <- capture_output(test1 <- reduce.space(space, type = "limit", remove = 0.5, verbose = TRUE))
     expect_is(test1, "logical")
     expect_equal(length(test1), 300)
-    expect_equal(length(which(test1)), 151)
-    expect_equal(iter, "Run parameter optimisation:........Done.")
+    expect_equal(length(which(test1)), 149)
+    expect_equal(iter, "Run parameter optimisation:............Done.")
 
     set.seed(1)
-    test2 <- reduce.space(space, type = "limit", parameters = list("radius" = 1.21875))
+    test2 <- reduce.space(space, type = "limit", parameters = list("radius" = 1.206866))
     expect_is(test2, "logical")
     expect_equal(length(test2), 300)
-    expect_equal(length(which(test2)), 151)
+    expect_equal(length(which(test2)), 149)
 
     expect_equal(test1, test2)
 
     set.seed(1)
     test3 <- reduce.space(space, type = "limit", remove = 0.5, return.optim = TRUE)
-    expect_equal(test3[[2]], 1.21875)
-    expect_equal(length(which(test3[[1]])), 151)
-
+    expect_equal(round(test3[[2]], 6), round(1.206866, 6))
+    expect_equal(length(which(test3[[1]])), 149)
     expect_equal(test1, test3$remove)
 
 
@@ -95,3 +94,43 @@ test_that("reduce.space works", {
     expect_equal(test1, test3$remove)
 
 })
+
+
+
+# ## Optimisation
+# set.seed(1)
+# space <- space.maker(300, 2, runif)
+
+# test <- reduce.space(space, type = "random", remove = 0.3)
+
+
+# time.test <- function(space, type, remove, algo = "dispRity") {
+
+#     if(algo == "dispRity"){
+#         algo <- reduce.space
+#     } else {
+#         algo <- moms::reduce.space
+#     }
+
+#     start <- Sys.time()
+#     test <- algo(space, type, remove, verbose = TRUE)
+#     end <- Sys.time()
+#     print(end-start)
+#     return(test)
+# }
+
+# # Rprof()
+# set.seed(1)
+# test <- time.test(space, "density", remove = 0.8, algo = "dispRity")
+# # Rprof(NULL)
+# # summaryRprof()
+
+
+# set.seed(1)
+# test <- time.test(space, "limit", remove = 0.8, algo = "moms")
+
+
+# test3 <- reduce.space(space, type = "limit", remove = 0.5, return.optim = TRUE)
+# test1 <- reduce.space(space, type = "displacement", remove = 0.3, verbose = TRUE)
+# test1 <- reduce.space(space, type = "density", remove = 0.3, verbose = TRUE)
+# test1 <- reduce.space(space, type = "density", remove = 0.5, verbose = TRUE)
