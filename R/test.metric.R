@@ -170,7 +170,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     table_list <- lapply(all_disparity, lapply, make.reduction.tables)
     ## Combine the replicates
     results_list <- list()
-    for(one_shift in 1:(ifelse(any(shifts == "random"), 1, 0) + length(shifts[-which(shifts == "random")])*2)) {
+    for(one_shift in 1:ifelse(any(shifts == "random"), (length(shifts)*2) - 1, length(shifts)*2)) {
         results_list[[one_shift]] <- do.call(rbind, lapply(table_list, `[[`, one_shift))
     }
     names(results_list) <- names(table_list[[1]])

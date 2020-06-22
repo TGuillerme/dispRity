@@ -1,7 +1,11 @@
 
 - [x] implement test.metric
 - [ ] test test.metric
-- [ ] add "test.metric" dual class
-- [ ] add `plot` behaviour for "dispRity" "test.metric"
-- [ ] add `print` behaviour for "dispRity" "test.metric"
-- [ ] add `summary` behaviour for "dispRity" "test.metric"
+- [x] add "test.metric" dual class
+- [x] add `plot` behaviour for "dispRity" "test.metric"
+- [ ] test `plot` behaviour for "dispRity" "test.metric"
+- [x] add `print` behaviour for "dispRity" "test.metric"
+- [ ] test `print` behaviour for "dispRity" "test.metric"
+- [x] add `summary` behaviour for "dispRity" "test.metric"
+- [ ] test `summary` behaviour for "dispRity" "test.metric"
+- [ ] improve speed for `reduce.space`!

@@ -330,23 +330,26 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
 
             ## Separating the plots in different groups (per plot windows)
-            if((n_plots <- length(unique(group_plot))) > 1) {
+            n_plots <- length(unique(group_plot))
+
+            if(n_plots > 1){
                 ## Setting up plotting window
                 op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),floor(sqrt(n_plots))))
+            }
 
-                ## Separating the data
-                plot_groups <- list()
+            ## Separating the data
+            plot_groups <- list()
+            for(group in 1:length(unique(group_plot))) {
+                plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
+            }
+            ## Separating the models
+            if(!is.null(data$models)) {
+                model_groups <- list()
                 for(group in 1:length(unique(group_plot))) {
-                    plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
-                }
-                ## Separating the models
-                if(!is.null(data$models)) {
-                    model_groups <- list()
-                    for(group in 1:length(unique(group_plot))) {
-                        model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
-                    }
+                    model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
                 }
             }
+
 
             ## Get the yaxis scale
             all_ylim <- if(missing(ylim)) {range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)} else {ylim}
@@ -428,7 +431,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                     }
 
                     add.slope(model_groups[[one_plot]][[1]], col = col[1])
-                    fit <- add.fit(model_groups[[one_plot]][[2]])
+                    fit <- add.fit(model_groups[[one_plot]][[1]])
                     
                     if(!is.null(model_groups[[one_plot]][[1]])) {
                         add.slope(model_groups[[one_plot]][[2]], col = col[2])
