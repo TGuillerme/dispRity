@@ -7,7 +7,7 @@ importFrom("castor", "get_subtree_with_tips", "get_all_pairwise_distances", "get
 importFrom("Claddis", "MorphDistMatrix")
 importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 importFrom("geometry", "convhulln")
-importFrom("graphics", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend", "barplot")
+importFrom("graphics", "abline", "axis", "boxplot", "hist", "image", "lines", "mtext", "par", "plot", "points", "polygon", "text", "legend", "barplot")
 importFrom("grDevices", "colorRampPalette", "grey", "hcl", "heat.colors")
 importFrom("methods", "hasArg")#, "is")
 importFrom("mnormt", "dmnorm", "rmnorm")
@@ -39,7 +39,7 @@ export(plot.dispRity)
 export(print.dispRity)
 export(summary.dispRity)
 export(test.dispRity)
-#            export(test.metric)
+export(test.metric)
 
 ##disparity metrics
 export(ancestral.dist)
