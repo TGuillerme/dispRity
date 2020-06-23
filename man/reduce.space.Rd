@@ -69,7 +69,7 @@ plot(space, pch = 19, col = c("grey", "black")[as.factor(position)],
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 }
 \seealso{
-\code{\link{test.metric}} \code{\link{plot.test.metric}} \code{\link{dispRity}}
+\code{\link{test.metric}} \code{\link{dispRity}}
 }
 \author{
 Thomas Guillerme

@@ -43,7 +43,7 @@
 #'      main = "Position removal")
 #' 
 #' 
-#' @seealso \code{\link{test.metric}} \code{\link{plot.test.metric}} \code{\link{dispRity}}
+#' @seealso \code{\link{test.metric}} \code{\link{dispRity}}
 #' 
 #' @author Thomas Guillerme
 #' @references

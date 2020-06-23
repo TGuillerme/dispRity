@@ -26,14 +26,15 @@
 #'     \code{model = function(data) lm(disparity \~ reduction, data)}
 #' You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
 #'     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
-#' Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.test.metric}}.
+#' Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.dispRity}}.
 #' To not run any model, use \code{model = NULL}.
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).  
 #'
-#' @examples
+#' @seealso \code{\link{reduce.space}} \code{\link{dispRity}}
 #' 
+#' @examples
 #' ## Creating a 2D uniform space
 #' space <- space.maker(300, 2, runif)
 #' 
@@ -47,7 +48,6 @@
 #' ## Visualising the test
 #' plot(simple_test)
 #' 
-#' \dontrun{
 #' ## Note that the tests can take several minutes to run.
 #' 
 #' ## Testing the sum of variance on all shifts
@@ -69,18 +69,12 @@
 #' 
 #' ## Visualising the test
 #' plot(median_centroid_test)
-#' }
 #'  
 #' @author Thomas Guillerme
 #' 
 #' @references
 #' Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 
-
-# source("sanitizing.R")
-# source("dispRity_fun.R")
-# source("test.metric_fun.R")
-# simple_test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE)
 
 test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE) {
 

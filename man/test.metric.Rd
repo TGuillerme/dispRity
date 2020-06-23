@@ -57,11 +57,10 @@ The default \code{model} is a linear model using the following function:
     \code{model = function(data) lm(disparity \~ reduction, data)}
 You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
-Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.test.metric}}.
+Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.dispRity}}.
 To not run any model, use \code{model = NULL}.
 }
 \examples{
-
 ## Creating a 2D uniform space
 space <- space.maker(300, 2, runif)
 
@@ -75,7 +74,6 @@ summary(simple_test)
 ## Visualising the test
 plot(simple_test)
 
-\dontrun{
 ## Note that the tests can take several minutes to run.
 
 ## Testing the sum of variance on all shifts
@@ -97,11 +95,13 @@ summary(median_centroid_test)
 
 ## Visualising the test
 plot(median_centroid_test)
-}
  
 }
 \references{
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
+}
+\seealso{
+\code{\link{reduce.space}} \code{\link{dispRity}}
 }
 \author{
 Thomas Guillerme

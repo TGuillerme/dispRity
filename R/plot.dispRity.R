@@ -444,6 +444,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                     }
                 }
             }
+            if(n_plots > 1) {
+                par(op_tmp)
+            }
         }
         
         ## Exit subclass plots
