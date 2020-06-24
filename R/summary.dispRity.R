@@ -165,6 +165,52 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(output_table)
         }
 
+
+        if(is(data, "test.metric")) {
+
+            ## Summary table
+            get.cent.tends <- function(results) {
+                combined <- aggregate(disparity~reduction, data = results, FUN = function(x, cent.tend) cent.tend(x, na.rm = TRUE), cent.tend, na.action = na.pass)
+                return(combined[order(as.numeric(combined$reduction)),2])
+            }
+            all_results <- round(do.call(rbind, lapply(data$results, get.cent.tends)), digits = ifelse(digits == "default", 2, digits))
+            colnames(all_results) <- paste0(unique(data$results[[1]][,"reduction"]), "%")
+
+            ## Adding the model results
+            if(!is.null(data$models)) {
+                get.model.summary <- function(model) {
+                    ## Try to get the model parameters
+                    try_slope <- try.get.from.model(model, "Estimate")
+                    try_p_val <- try.get.from.model(model, "Pr\\(")
+                    try_r_squ <- try.get.from.model(model, "r.squared")
+                    if(!is.null(try_r_squ) && any(names(try_r_squ) == "adj.r.squared")) {
+                        try_r_squ <- try_r_squ$adj.r.squared
+                        is_adjusted <- TRUE
+                    } else {
+                        is_adjusted <- FALSE
+                    }
+
+                    ## Make a results vector
+                    results <- c(
+                        "slope" = ifelse(any(!is.null(try_slope)) && any(!is.na(try_slope)), try_slope["reduction"], NA),
+                        "p_val" = ifelse(any(!is.null(try_p_val)) && any(!is.na(try_p_val)), try_p_val["reduction"], NA),
+                        "r_squ" = ifelse(any(!is.null(try_r_squ)) && any(!is.na(try_r_squ)), try_r_squ, NA))
+                            
+                    names(results) <- c("slope", "p_value", ifelse(is_adjusted, "R^2(adj)", "R^2"))
+
+                    return(results)
+                }
+
+                ## Get the model summaries
+                model_summaries <- do.call(rbind, lapply(data$models, get.model.summary))
+
+                ## Combine both
+                all_results <- cbind(all_results, model_summaries)
+            }
+
+            return(all_results)
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 

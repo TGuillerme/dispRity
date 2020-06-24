@@ -132,6 +132,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     data <- x
     match_call <- match.call()
+    dots <- list(...)
 
     #SANITIZING
     #DATA
@@ -321,6 +322,131 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the model
             plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
+        }
+
+        if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
+
+            ## Getting the number of plot groups
+            group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
+
+            ## Separating the plots in different groups (per plot windows)
+            n_plots <- length(unique(group_plot))
+
+            if(n_plots > 1){
+                ## Setting up plotting window
+                op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),floor(sqrt(n_plots))))
+            }
+
+            ## Separating the data
+            plot_groups <- list()
+            for(group in 1:length(unique(group_plot))) {
+                plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
+            }
+            ## Separating the models
+            if(!is.null(data$models)) {
+                model_groups <- list()
+                for(group in 1:length(unique(group_plot))) {
+                    model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
+                }
+            }
+
+
+            ## Get the yaxis scale
+            all_ylim <- if(missing(ylim)) {range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)} else {ylim}
+            #all_ylim <- range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)
+
+            ## Get the colours
+            if(missing(col)) {
+                if(any(unique(group_plot) != "random")) {
+                    col <- c("orange", "blue")
+                } else {
+                    col <- "black"
+                }
+            } else {
+                if(length(col) < 2) {
+                    col <- c(col, "grey")
+                } else {
+                    col <- col[1:2]
+                }
+            }
+
+            ## Plot all the results
+            for(one_plot in 1:n_plots) {
+                ## Get the data to plot
+                plot_data <- plot_groups[[one_plot]]
+
+                ## First plot
+                plot(plot_data[[1]],
+                    ylim = all_ylim,
+                    xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[[1]][,1]))} else {xlim},
+                    xlab = if(missing(xlab))      {"Amount of data (%)"} else {xlab},
+                    ylab = if(missing(ylab))      {data$call$metric} else {ylab},
+                    pch  = if(is.null(dots$pch))  {19} else {dots$pch},
+                    main = if(is.null(dots$main)) {unique(group_plot)[[one_plot]]} else {dots$main},
+                    col  = col[1]
+                    )
+
+                ## Second plot
+                if(length(plot_data) > 1) {
+                    plot_data[[2]][,1] <- as.numeric(plot_data[[2]][,1])
+                    points(plot_data[[2]],
+                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
+                           col = col[2])
+                    legend("bottomright", legend = names(plot_data),
+                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
+                           col = col)
+                }
+
+                ## Plot the model (if exists)
+                if(!is.null(data$models)) {
+
+                    ## Adding slopes and fits
+                    add.slope <- function(model, col) {
+                        ## Get the slope parameters
+                        slope_param <- try.get.from.model(model, "Estimate")
+
+                        ## Plot the model
+                        if(!any(is.na(slope_param)) || !is.null(slope_param)) {
+                            ## Add the slope
+                            abline(a = slope_param[1],
+                                   b = slope_param[2],
+                                   col = col)
+                        }
+                    }
+                    add.fit <- function(model) {
+                        fit_param <- try.get.from.model(model, "r.squared")
+                        if(!is.null(fit_param) || length(fit_param) != 0) {
+
+                            if(any(names(fit_param) == "adj.r.squared")) {
+                                fit_param <- fit_param$adj.r.squared
+                                is_adjusted <- TRUE
+                            } else {
+                                is_adjusted <- FALSE
+                            }
+
+                            return(paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
+                        } else {
+                            return(NA)
+                        }
+                    }
+
+                    add.slope(model_groups[[one_plot]][[1]], col = col[1])
+                    fit <- add.fit(model_groups[[one_plot]][[1]])
+                    
+                    if(!is.null(model_groups[[one_plot]][[1]])) {
+                        add.slope(model_groups[[one_plot]][[2]], col = col[2])
+                        fit <- c(fit, add.fit(model_groups[[one_plot]][[2]]))
+                    }
+
+                    ## Add the fits
+                    if(!all(na_fit <- is.na(fit))) {
+                        legend("topright", legend = fit[!na_fit], lty = c(1,1)[!na_fit], col = col[1:2][!na_fit])
+                    }
+                }
+            }
+            if(n_plots > 1) {
+                par(op_tmp)
+            }
         }
         
         ## Exit subclass plots

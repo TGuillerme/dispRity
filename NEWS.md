@@ -23,13 +23,15 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.4.1 (2020-06-03)
+dispRity v1.4.3 (2020-06-24)
 =========================
 
 ### NEW FEATURES
 
   * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
   * `dispRity` that contains data for nodes and tips can now have one separate matrix for the tip data and one or more separated ones for the nodes data (through the output of the new `multi.ace` function).
+  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms).
+  * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
 
 <!-- ### MINOR IMPROVEMENTS
 
