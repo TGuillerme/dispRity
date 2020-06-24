@@ -98,7 +98,7 @@ castor.ace <- function(castor_args) {
 
     ## Get the likelihoods
     if(!estimation$success) {
-        estimation <- matrix(1/castor_args$Nstates, ncol = castor_args$Nstates, nrow = Nnode(tree))
+        estimation <- matrix(1/castor_args$Nstates, ncol = castor_args$Nstates, nrow = Nnode(castor_args$tree))
         success <- FALSE
     } else {
         estimation <- estimation$ancestral_likelihoods
@@ -150,13 +150,14 @@ translate.likelihood <- function(character, threshold, select.states, special.to
 }
 
 ## Function for running ace on a single tree.
-one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, verbose) {
+one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose) {
 
     if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
     if(verbose) cat("Running ancestral states estimations:\n")
     ancestral_estimations <- lapply(args_list, castor.ace)
     ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
     if(verbose) cat(" Done.\n")
+
 
     ## Separating the estimations
     success <- unlist(lapply(ancestral_estimations, function(estimation) return(estimation$success)))
@@ -198,7 +199,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
         invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x == 0), special.tokens["missing"], x), n), args_list[[1]]$tree$Nnode)
 
         ## Combine the final dataset
-        output <- replicate(ncol(matrix), list())
+        output <- replicate(length(args_list), list())
         ## Fill the final dataset
         output[invariants] <- invariant_ancestral
         output[-invariants] <- ancestral_states

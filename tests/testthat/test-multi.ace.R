@@ -7,32 +7,22 @@ test_that("multi.ace works", {
     set.seed(1)
     matrix_test <- sim.morpho(rcoal(6), characters = 10, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
     tree_test <- rmtree(2, 6)
-    # matrix_complex <- matrix_test
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
+    matrix_complex <- matrix_test
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
 
 
-    # results <- multi.ace(data = matrix_complex,
-    #                     tree = tree_test, 
-    #                     models = "ER", 
-    #                     threshold = TRUE,
-    #                     special.tokens = c("weird" = "%"),
-    #                     special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-    #                     brlen.multiplier = rnorm(10),
-    #                     verbose = FALSE,
-    #                     parallel = FALSE,
-    #                     output = "list",
-    #                     castor.options = list(optim_rel_tol = 1e-8))
-
-# Error in lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x ==  : 
-#   object 'invariant_characters_states' not found
-# In addition: Warning messages:
-# 1: The characters 5, 10 are invariant (using the current special behaviours for special characters) and are simply duplicated for each node. 
-# 2: In FUN(X[[i]], ...) :
-#   Impossible to fit the model for the following character(s): 1, 2, 3, 4, 5, 6, 7, 8.
-# The ancestral estimated values are set to uncertain (all states equiprobable).
-# > 
+    results <- multi.ace(data = matrix_complex,
+                        tree = tree_test, 
+                        models = "ER", 
+                        threshold = TRUE,
+                        special.tokens = c("weird" = "%"),
+                        special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                        brlen.multiplier = rnorm(10),
+                        verbose = FALSE,
+                        parallel = FALSE,
+                        output = "list")
  
 
 

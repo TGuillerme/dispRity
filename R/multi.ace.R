@@ -382,6 +382,8 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
         ## Tell the user
         warning(paste0("The character", ifelse(length(invariants > 1), "s", "") , " ", paste0(invariants, collapse = ", "), " are invariant (using the current special behaviours for special characters) and are simply duplicated for each node."), call. = FALSE)
+    } else {
+        invariant_characters_states <- NULL
     }
     if(verbose) cat(".")
 
@@ -424,8 +426,10 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
                                    "threshold.type",
                                    "threshold",
                                    "verbose",
-                                   "characters_states")
-        export_functions_list <- c("castor.ace",
+                                   "characters_states",
+                                   "invariant_characters_states")
+        export_functions_list <- c("one.tree.ace",
+                                   "castor.ace",
                                    "update.tree.data",
                                    "add.state.names",
                                    "translate.likelihood")
@@ -434,7 +438,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
 
         ## Call the cluster
-        results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, verbose)
+        results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
 
         ## Stop the cluster
         parallel::stopCluster(cluster)
@@ -446,7 +450,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         }
     } else {
         ## Running the ACE for each tree
-        results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, verbose)
+        results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
     }
 
     ## Output a matrix
