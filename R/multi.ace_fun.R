@@ -189,7 +189,6 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
                                               }
                                              }})
     
-
     ## Estimate the ancestral states
     ancestral_states <- lapply(ancestral_estimations, translate.likelihood, threshold, select.states, special.tokens)
 

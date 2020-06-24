@@ -236,7 +236,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     if(missing(special.tokens)) {
         special.tokens <- character()
     }
-    check.class(special.tokens, c("character", "logical"))
+    check.class(special.tokens, "character")
     not.exist <- function(special.tokens, token) {
         name_token <- names(special.tokens[token])
         return(is.null(name_token) || is.na(name_token))
