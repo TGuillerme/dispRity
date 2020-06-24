@@ -58,7 +58,7 @@ binary <- function(token) {
 }
 
 ## Binary bit converter for a whole character
-convert.bitwise <- function(character, special.tokens, special.behaviours) {
+convert.bitwise <- function(character, special.tokens, special.behaviours, bitwise = TRUE) {
     ## Get all states
     all_states <- as.integer(sort(unique(strsplit(paste0(recursive.sub(special.tokens, unique(character)), collapse = ""), split = "")[[1]])))
 
@@ -69,5 +69,9 @@ convert.bitwise <- function(character, special.tokens, special.behaviours) {
     character_list <- lapply(convert.list(special.behaviours, special_characters, as.list(character), all_states), as.integer)
 
     ## Convert into binary
-    return(unlist(lapply(character_list, binary)))
+    if(bitwise) {
+        return(unlist(lapply(character_list, binary)))
+    } else {
+        return(character_list)
+    }
 }

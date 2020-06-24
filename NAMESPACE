@@ -3,7 +3,7 @@ import(ape)
 import(stats)
 
 importFrom("ade4", "randtest", "as.randtest")
-importFrom("castor", "get_subtree_with_tips", "get_all_pairwise_distances", "get_all_distances_to_root")
+importFrom("castor", "get_subtree_with_tips", "get_all_pairwise_distances", "get_all_distances_to_root", "asr_mk_model")
 importFrom("Claddis", "MorphDistMatrix")
 importFrom("geiger", "dtt", "ratematrix", "sim.char", "treedata")
 importFrom("geometry", "convhulln")
@@ -17,7 +17,7 @@ importFrom("phyclust", "gen.seq.HKY")
 importFrom("utils", "combn", "data", "capture.output", "tail")
 importFrom("vegan", "adonis", "vegdist")
 importFrom("spptest", "create_curve_set", "rank_envelope")
-# importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
+importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
 # importFrom("geomorph", "gpagen")
 # importFrom("RCurl", "getURL", "url.exists")
 
@@ -112,6 +112,7 @@ export(plot.char.diff)
 export(check.morpho)
 export(get.contrast.matrix)
 export(sim.morpho)
+export(multi.ace)
 
 ##S3 
 

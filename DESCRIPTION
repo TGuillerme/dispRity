@@ -21,11 +21,12 @@ Imports:
 	grDevices,
 	methods,
 	mnormt,
+	parallel,
 	phangorn,
 	phyclust,
 	utils,
 	vegan,
-	spptest
+	spptest,
 License: GPL-3 | file LICENSE
 Remotes:
     github::myllym/spptest@no_fastdepth
