@@ -4,7 +4,8 @@
 #'
 #' @param data A \code{matrix} or \code{list} with the characters for each taxa.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).
-#' @param models A \code{vector} of models to be passed to \code{\link[castor]{asr_mk_model}}. If left empty, the it will use the \code{\link{fit.ace.model}} function to find the best model using the first tree. See details.
+#' @param models A \code{vector} of models to be passed to \code{\link[castor]{asr_mk_model}}.
+#If left empty, the it will use the \code{\link{fit.ace.model}} function to find the best model using the first tree. See details.
 #' @param threshold either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
@@ -118,7 +119,8 @@
 #'                               parallel = TRUE)
 #' }
 #' @seealso
-#' \code{fit.ace.model}, \code{\link[castor]{asr_mk_model}}, \code{char.diff}
+#' \code{\link[castor]{asr_mk_model}}, \code{char.diff}
+# \code{fit.ace.model}, 
 #' 
 #' @author Thomas Guillerme
 #' @export

@@ -23,7 +23,7 @@ multi.ace(
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).}
 
-\item{models}{A \code{vector} of models to be passed to \code{\link[castor]{asr_mk_model}}. If left empty, the it will use the \code{\link{fit.ace.model}} function to find the best model using the first tree. See details.}
+\item{models}{A \code{vector} of models to be passed to \code{\link[castor]{asr_mk_model}}.}
 
 \item{threshold}{either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
 
@@ -147,7 +147,7 @@ ancestral_states <- multi.ace(matrix_complex, multiple_trees,
 }
 }
 \seealso{
-\code{fit.ace.model}, \code{\link[castor]{asr_mk_model}}, \code{char.diff}
+\code{\link[castor]{asr_mk_model}}, \code{char.diff}
 }
 \author{
 Thomas Guillerme
