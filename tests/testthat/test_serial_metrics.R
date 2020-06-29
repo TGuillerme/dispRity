@@ -29,7 +29,7 @@ test_that("serial metrics works", {
     expect_equal_round(serial.test.level1(matrix1, matrix2), 0.5622892, 7)
 
     ## Custom dispRity
-    test_groups <- custom.subsets()
+    test_groups <- custom.subsets(big_matrix, group = list(letters[1:3], letters[4:7], letters[8:12], letters[3:8]))
 
     ## dispRity works with manual series entered
 
@@ -37,7 +37,9 @@ test_that("serial metrics works", {
 
     ## dispRity works with with detecting wrong serial metric
 
-    
+    ## dispRity works serially with non-serial metrics
+
+
 
 })
 

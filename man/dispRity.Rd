@@ -4,7 +4,7 @@
 \alias{dispRity}
 \title{Calculates disparity from a matrix.}
 \usage{
-dispRity(data, metric, dimensions, ..., verbose = FALSE)
+dispRity(data, metric, dimensions, ..., serial = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{data}{A matrix or a \code{dispRity} object (see details).}
@@ -14,6 +14,8 @@ dispRity(data, metric, dimensions, ..., verbose = FALSE)
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
 \item{...}{Optional arguments to be passed to the metric.}
+
+\item{serial}{A \code{logical} value indicating whether to run the calculations in a serial way (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of series to run (see details).}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 }
@@ -42,6 +44,13 @@ Some metric functions are built into the \code{dispRity} package: see \code{\lin
 For user specified metrics, please use \code{\link{make.metric}} to ensure that the metric will work.
 
 \emph{HINT:} if using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows one to use two dimension-level 3 functions - the correlation of the variance-covariance matrix in this case).
+
+The \code{serial} argument runs the disparity in a serial way (i.e. a \code{for} loop) rather than in an applied way (i.e. using \code{lapply}) and is thus much slower and RAM consuming. However, this is sometimes required if running "serial" metrics that depend on two matrices to calculate disparity (rather than one). If \code{serial = TRUE}, the disparity will be calculated in a \code{for} loop using the following inputs:
+\itemize{
+     \item if the input is an output from \code{\link{custom.subsets}}, the series are run in a pairwise manner using \code{metric(matrix, matrix2)}. For example for a \code{custom.subset} contains 3 subsets m1, m2 and m3, the code loops through: \code{metric(m1, m2)}, \code{metric(m2, m3)} and \code{metric(m1, m3)} (looping through \code{list(c(1,2), c(2,3), c(3,1))}).
+     \item if the input is an output from \code{\link{chrono.subsets}}, the series are run in a paired series manner using \code{metric(matrix, matrix2)}. For example for a \code{chrono.subsets} contains 3 subsets m1, m2, m3 and m4, the code loops through: \code{metric(m1, m2)} and \code{metric(m2, m3)} (looping through \code{list(c(1,2), c(2,3), c(3,4))}).
+}
+In both cases it is also possible to specify the input directly by providing the list to loop through. For example using \code{serial = list(c(1,2), c(2,1), c(4,8))} will apply the \code{metric} to the 1st and 2nd subsets, the 2nd and first and the 4th and 8th (in that specific order).
 }
 \examples{
 ## Load the Beck & Lee 2014 data

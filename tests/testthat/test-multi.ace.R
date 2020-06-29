@@ -129,8 +129,10 @@ test_that("multi.ace works", {
     expect_is(results, "list")
     expect_is(results[[1]], "list")
     expect_is(results[[1]][[1]], "character")
-    expect_equal(results[[1]][[1]], c("0/1/2", "0/1/2", "0/1", "0/1", "0/1", "0/1", "0/1", "0/1", "0/1/2", "0/1"))
-    expect_equal(results[[2]][[4]], c("0", "0", "0", "0", "0", "0/1", "1", "0", "0", "1"))
+    # expect_equal(results[[1]][[1]], c("0/1/2", "0/1/2", "0/1", "0/1", "0/1", "0/1", "0/1", "0/1", "0/1/2", "0/1"))
+    expect_equal(results[[1]][[1]], c("0", "0/1/2", "0/1", "0", "0", "0/1", "1", "0", "0", "0/1"))
+    # expect_equal(results[[2]][[4]], c("0", "0", "0", "0", "0", "0/1", "1", "0", "0", "1"))
+    expect_equal(results[[2]][[4]], c("0", "0", "0", "0", "NA", "0/1", "1", "0", "0", "1"))
 
     ## Warnings work
     set.seed(4) 

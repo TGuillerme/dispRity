@@ -20,6 +20,7 @@
 #'   \item "dimension-level 2": for functions that decompose a \code{matrix} into a \code{vector}.
 #'   \item "dimension-level 3": for functions that transform the \code{matrix} into another \code{matrix}.
 #' }
+#' 
 #' For example, the disparity metric \code{\link[base]{sum}} of \code{\link[dispRity]{variances}} is composed of two metric dimension-levels:
 #' \itemize{
 #'   \item The \code{\link[dispRity]{variances}} (dimension-level 2) that calculates the variances for each column in a matrix (aggregates a \code{matrix} into a \code{vector}).
@@ -72,7 +73,7 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     test <- NULL
     op <- options(warn = -1)
 
-    ## Detecting a serial arguments
+    ## Detecting a serial arguments
     is_serial <- FALSE
     arguments <- names(formals(fun))
     if(length(arguments) > 1) {
@@ -146,7 +147,8 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     ##########
 
     if(silent == TRUE) {
-        return(c("type" = fun_type, "serial" = is_serial))
+        return(fun_type)
+        # return(c("type" = fun_type, "serial" = is_serial))
     } else {
         return(invisible())
     }
