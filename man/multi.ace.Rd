@@ -44,7 +44,6 @@ multi.ace(
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
-To output the light version to be passed to \code{dispRity} functions (a list of two elements: 1) the input \code{matrix} and 2) a list of ancestral states matrices) you can use \code{output = "dispRity"}.
 }
 \description{
 Fast ancestral states estimations run on multiple trees using the Mk model from castor::asr_mk_model.

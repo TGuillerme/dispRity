@@ -219,7 +219,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     if(!missing(correction)) {
         check.class(correction, "function")
         test_correction <- make.metric(correction, silent = TRUE)
-        if(test_correction == "error") {
+        if(!is.null(test_correction) && test_correction == "error") {
             stop("Incorrect correction function.")
         }
     }
@@ -305,7 +305,6 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         ## Apply the correction
         output <- correction(output)
     }
-
 
     class(output) <- c("matrix", "char.diff")
 

@@ -50,7 +50,8 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     ## fun
     check.class(fun, "function")
     dots <- list(...)
-
+    fun_type <- NULL
+    
     ## Getting the function name
     match_call <- match.call()
 
@@ -61,7 +62,7 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     } else {
         ## making the testing matrix
         matrix <- matrix(rnorm(20), 5,4)
-        matrix_text <- "matrix(rnorm(20), 5,4)"        
+        matrix_text <- "matrix(rnorm(20), 5,4)"
     }
 
     ## Testing the metric
@@ -70,7 +71,7 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
 
     ## Skip the dots if the dots has a tree argument
     if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots))) {
-        test <- try(test <- fun(matrix), silent = TRUE)    
+        test <- try(test <- fun(matrix), silent = TRUE)
     } else {
         test <- try(fun(matrix, ...), silent = TRUE)
     }
