@@ -125,9 +125,14 @@ Used in
 -------
 <!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
 
+<!-- * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Disparities+in+the+analysis+of+morphological+disparity&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3Ah2aPF6BcVzMJ%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity metrics best summarise occupancy in multidimensional spaces?. *Ecology and Evolution*. **2020** [DOI: 10.1002/ece3.6452](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) -->
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Disparities+in+the+analysis+of+morphological+disparity&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3Ah2aPF6BcVzMJ%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Guillerme T, Cooper N, Brusatte SL, Davis KE, Jackson AL, Gerber S, Goswami A, Healy K, Hopkins MJ, Jones ME, Lloyd GT. O'Reilly JE, Pate A, Puttick MN, Rayfield EJ, Saupe EE, Sherratt E, Slater GJ, Weisbecker V, Thomas GH, Donoghue PCJ. Disparities in the analysis of morphological disparity. *Biology Letters*. **2020** 29;16(7):20200199. [DOI: 10.1098/rsbl.2020.0199](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826%2C7753828186872068057&scipsc=&q=3D+Morphometric+Analysis+Reveals+Similar+Ecomorphs+for+Early+Kangaroos+%28Macropodidae%29+and+Fanged+Kangaroos+%28Balbaridae%29+from+the+Riversleigh+World+%E2%80%A6&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Butler K, Travouillon KJ, Evans AR, Murphy L, Price GJ, Archer M, Hand SJ, Weisbecker V. 3D Morphometric Analysis Reveals Similar Ecomorphs for Early Kangaroos (Macropodidae) and Fanged Kangaroos (Balbaridae) from the Riversleigh World Heritage Area, Australia. *Journal of Mammalian Evolution*. **2020** 11:1-21. [DOI: 10.1007/s10914-020-09507-8](https://link.springer.com/article/10.1007/s10914-020-09507-8)
-
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Categorical+versus+geometric+morphometric+approaches+to+characterizing+the+evolution+of+morphological+disparity+in+Osteostraci+%28Vertebrata%2C+stem+Gnathostomata%29&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Ferron HG, Greenwood JM, Deline B, Martinez-Perez C, Botella H, Sansom RS, Ruta M, Donoghue PC. Categorical versus geometric morphometric approaches to characterizing the evolution of morphological disparity in Osteostraci (Vertebrata, stem Gnathostomata). *Palaeontology*. **2020** [DOI: 10.1111/pala.12482](https://sci-hub.se/10.1111/pala.12482)
