@@ -120,9 +120,9 @@ The time-slicing method implemented in `chrono.subsets` (unfortunately not Open 
 
 ### Why is it important to cite us?
 
-Aside from how science works (if you're using a method from a specific, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
+Aside from how science works (if you're using a method from a specific paper, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
 
-All the people involve in making the `dispRity` package happen do it enthusiastically and freely and most amazingly not asking anything in return!
+All the people involve in making the `dispRity` package happened to do it enthusiastically, freely and most amazingly without asking anything in return!
 I created the package with this idea in mind and I am still sticking to it.
 However, academia (the institutions and people producing science around the globe) is unfortunately not optimal at many level (some might even say "broken"): high impact papers attract big grants that attract high impact papers and big grants again, all this along with livelihood, permanent position and job security.
 Unfortunately however, method development has a hard time to catch up with the current publish or perish system: constantly updating the `dispRity` package and this manual is hugely time consuming (but really fun!) and that is not even taking into account maintenance and helping users.
