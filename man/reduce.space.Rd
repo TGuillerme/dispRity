@@ -17,7 +17,7 @@ reduce.space(
 \arguments{
 \item{space}{the trait space}
 
-\item{type}{how to reduce the space (either \code{"random"}, \code{"size"}, \code{"density"} or \code{"position"})}
+\item{type}{how to reduce the space (either \code{"random"}, \code{"size"}, \code{"density"}, \code{"evenness"} or \code{"position"})}
 
 \item{remove}{the proportion of elements to be removed (in probability)}
 
@@ -29,15 +29,36 @@ reduce.space(
 
 \item{return.optim}{logical, whether to also return the optimal value.}
 }
+\value{
+A vector of \code{logical} values of the rows to remove selected by the function. \code{TRUE} corresponds to the following (and \code{FALSE} to the opposite):
+\itemize{
+     \item{"random"}: the randomly selected points.
+     \item{"size"}: the points closer to the centre of the space.
+     \item{"density"}: the points closer to each other.
+     \item{"position"}: the points on the "positive" side of the space (typically upper right corner in 2D).
+     \item{"evenness"}: the randomly select points from the higher density regions.
+}
+}
 \description{
 Remove elements from a multidimensional space
 }
 \details{
-- \code{size.removal parameters}: a list of \code{parameters$centre}, the centre from which to count the radius (if missing, is set to \code{0}); and \code{parameters$radius}, the radius for removal.
+The type of reductions algorithms select the proportion of elements to remove (from the \code{remove} parameter). The different algorithms are:
 
-- \code{density.removal parameters}: a list of \code{parameters$what} "close" (default) for close neighbours or "distant" for distant ones; \code{parameters$diameter} the diameter for considering closeness or distance; \code{parameters$output} either "singles" or "pairs" to return the pairs of neighbours or one of them only (the first).
+\itemize{
+     \item \code{"random"} for randomly selecting a proportion of data points (using \code{sample(..., replace = FALSE)}).
+     \item \code{"size"} for selecting the proportion of data points closer to the centre.
+     \item \code{"density"} for selecting the proportion of data points with the lower nearest neigbhour distances.
+     \item \code{"evenness"} for randomly selecting the proportion of data points from the regions with most density.
+}
 
-- \code{position.removal parameters}: a list of \code{parameters$value}, value the threshold value from which to remove elements.
+The parameters for each reduction type algorithms are:
+\itemize{
+     \item \code{"size"} parameters: a list of \code{parameters$centre}, the centre from which to count the radius (if missing, is set to \code{0}); and \code{parameters$radius}, the radius for removal.
+     \item \code{"density"} parameters: a list of \code{parameters$what} "close" (default) for close neighbours or "distant" for distant ones; \code{parameters$diameter} the diameter for considering closeness or distance; \code{parameters$output} either "singles" or "pairs" to return the pairs of neighbours or one of them only (the first).
+     \item \code{"position"} parameters: a list of \code{parameters$value}, value the threshold value from which to remove elements.
+     \item \code{"evenness"} parameters: a list of \code{parameters$bw}, a bandwith selector function (\code{\link[stats]{bw.nrd0}} by default).
+}
 
 See Guillerme et al. 2020 and https://github.com/TGuillerme/moms for details.
 }
@@ -51,9 +72,10 @@ random <- reduce.space(space, "random", remove = 0.5)
 size <- reduce.space(space, "size", remove = 0.5)
 density <- reduce.space(space, "density", remove = 0.5)
 position <- reduce.space(space, "position", remove = 0.5)
+evenness <- reduce.space(space, "evenness", remove = 0.5)
 
 ## Plotting the four different results
-par(mfrow = c(2,2))
+par(mfrow = c(3,2))
 plot(space, pch = 19, col = c("grey", "black")[as.factor(random)],
      main = "Random removal") 
 plot(space, pch = 19, col = c("grey", "black")[as.factor(size)],
@@ -62,6 +84,19 @@ plot(space, pch = 19, col = c("grey", "black")[as.factor(density)],
      main = "Density removal")
 plot(space, pch = 19, col = c("grey", "black")[as.factor(position)],
      main = "Position removal")
+plot(space, pch = 19, col = c("grey", "black")[as.factor(evenness)],
+     main = "Evenness removal")
+
+## The space reduction with specific parameters:
+# Using the point with coordinates (2,2) as the centre 
+# Running over a maximum of 300 iterations
+# With a tolerance of 0.05 (5\%)
+reduce.space(space, "size", remove = 0.2,
+             parameters = list("centre" = c(2,2)), 
+             tuning = list("max" = 300, "tol" = 0.05))
+
+## Remove a specific amount to match a specific parameter
+reduce.space(space, type = "size", parameters = list("radius" = 1.206866))
 
 
 }
