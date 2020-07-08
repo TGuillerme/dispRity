@@ -104,7 +104,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data[[1]]))
 
     ## shift
-    available_methods <- c("random", "size", "density", "displacement")
+    available_methods <- c("random", "size", "density", "position", "evenness")
     check.method(shifts, available_methods, "shift method ")
     type <- as.list(shifts)
 

@@ -48,6 +48,7 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
             "size"     = {names(output) <- c("size.inner", "size.outer")},
             "density"  = {names(output) <- c("density.higher", "density.lower")},
             "position" = {names(output) <- c("position.bottom", "position.top")},
+            "evenness" = {names(output) <- c("evenness.flattened", "evenness.compacted")},
             )
 
         ## Make the dispRity objects
