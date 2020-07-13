@@ -140,7 +140,12 @@ expect_equal_round <- function(x, y, digits) {
 check.dispRity.data <- function(data) {
     match_call <- match.call()
     ## Check class
-    data_class <- check.class(data, c("matrix", "list"))
+    data_class <- check.class(data, c("matrix", "data.frame", "list"))
+
+    ## If data.frame, change to matrix
+    if(data_class == "data.frame") {
+        data <- as.matrix(data)
+    }
 
     ## Function for automatically add rownames (used in both branches below)
     add.rownames <- function(x) {

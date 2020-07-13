@@ -383,7 +383,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 plot(plot_data[[1]],
                     ylim = all_ylim,
                     xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[[1]][,1]))} else {xlim},
-                    xlab = if(missing(xlab))      {"Amount of data (%)"} else {xlab},
+                    xlab = if(missing(xlab))      {"Amount of data considered (%)"} else {xlab},
                     ylab = if(missing(ylab))      {data$call$metric} else {ylab},
                     pch  = if(is.null(dots$pch))  {19} else {dots$pch},
                     main = if(is.null(dots$main)) {unique(group_plot)[[one_plot]]} else {dots$main},

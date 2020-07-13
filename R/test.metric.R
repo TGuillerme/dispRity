@@ -9,7 +9,7 @@
 #' @param shift.options Optional, a \code{list} of named arguments to be passed to \code{\link{reduce.space}}
 #' @param model Optional, which model to fit for testing the metric. See details.
 #' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.
-#' @param steps The number of steps in the space reduction to output between 0\% and 100\%. By default \code{steps = 11}.
+#' @param steps The number of steps in the space reduction to output between 10\% and 100\%. By default \code{steps = 10}.
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' 
