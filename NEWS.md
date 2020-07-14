@@ -33,9 +33,9 @@ dispRity v1.4.3 (2020-07-08)
   * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to Gavin Thomas for the suggestion).
   * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
 
-<!-- ### MINOR IMPROVEMENTS
+### MINOR IMPROVEMENTS
 
-  * Expanded the `dispRity` manual to now contain a section about ancestral character estimations and an improved palaeobiology tutorial. -->
+  * Many updates to the `dispRity` manual.
 
 ### BUG FIXES
 
