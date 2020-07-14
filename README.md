@@ -125,8 +125,8 @@ Used in
 -------
 <!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
 
-<!-- * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Disparities+in+the+analysis+of+morphological+disparity&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3Ah2aPF6BcVzMJ%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity metrics best summarise occupancy in multidimensional spaces?. *Ecology and Evolution*. **2020** [DOI: 10.1002/ece3.6452](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) -->
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+measurement+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity measurement best summarise occupancy in multidimensional spaces?. *Ecology and Evolution*. **2020** [DOI: 10.1002/ece3.6452](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452)
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Disparities+in+the+analysis+of+morphological+disparity&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3Ah2aPF6BcVzMJ%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Guillerme T, Cooper N, Brusatte SL, Davis KE, Jackson AL, Gerber S, Goswami A, Healy K, Hopkins MJ, Jones ME, Lloyd GT. O'Reilly JE, Pate A, Puttick MN, Rayfield EJ, Saupe EE, Sherratt E, Slater GJ, Weisbecker V, Thomas GH, Donoghue PCJ. Disparities in the analysis of morphological disparity. *Biology Letters*. **2020** 29;16(7):20200199. [DOI: 10.1098/rsbl.2020.0199](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199)
