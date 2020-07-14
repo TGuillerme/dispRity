@@ -13,16 +13,15 @@ output:
 
 This demo aims to give quick overview of the `dispRity` package (v.`r version_release`) for palaeobiology analyses of disparity, including disparity through time analyses.
 
-This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from Beck and Lee (2014).
+This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from @beckancient2014.
 
 ## Before starting
 
 ### The morphospace
 
-
 In this example, we are going to use a subset of the data from @beckancient2014.
 See the [example data](#example-data) description for more details.
-Briefly, this dataset contains an ordinated matrix of 50 discrete characters from mammals (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
+Briefly, this dataset contains an ordinated matrix of the Gower distance between 50 mammals based (`BeckLee_mat50`), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, `BeckLee_mat99`), a dataframe containing the ages of each taxon in the dataset (`BeckLee_ages`) and finally a phylogenetic tree with the relationships among the 50 mammals (`BeckLee_tree`).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).
 
 ```{r, fig.width=6, fig.height=6}
@@ -34,6 +33,7 @@ set.seed(123)
 
 ## Loading the ordinated matrix/morphospace:
 data(BeckLee_mat50)
+data(BeckLee_mat99)
 head(BeckLee_mat50[,1:5])
 
 dim(BeckLee_mat50)
@@ -56,6 +56,88 @@ if(!require(strap)) install.packages("strap")
 strap::geoscalePhylo(BeckLee_tree, cex.tip = 0.7, cex.ts = 0.6)
 ```
 
+### Setting up your own data
+
+I greatly encourage you to follow along this tutorial with your very own data: it is more exciting and, ultimately, that's probably your objective.
+
+> What data can I use?
+
+You can use any type of morphospace in any dataset form (`"matrix"`, `"data.frame"`). Throughout this tutorial, you we assume you are using the (loose) morphospace definition from @Guillerme2020: any matrix were columns are traits and rows are observations (in a distance matrix, columns are still trait, i.e. "distance to species A", etc.).
+We won't cover it here but you can also use lists of matrices and list of trees.
+
+> How should I format my data for this tutorial?
+
+To go through this tutorial you will need:
+ 
+ * A matrix with tip data
+ * A phylogenetic tree 
+ * A matrix with tip and node data
+ * A table of first and last occurrences data (FADLAD)
+
+If you are missing any of these, fear not, here are a couple of functions to simulate the missing data, it will surely make your results look funky but it'll let you go through the tutorial.
+
+```{r}
+## Functions to get simulate a PCO looking like matrix from a tree
+i.need.a.matrix <- function(tree) {
+    matrix <- space.maker(elements = Ntip(tree), dimensions = Ntip(tree), distribution = rnorm,
+                          scree = rev(cumsum(rep(1/Ntip(tree), Ntip(tree)))))
+    rownames(matrix) <- tree$tip.label
+    return(matrix)
+}
+
+## Function to simulate a tree
+i.need.a.tree <- function(matrix) {
+    tree <- rtree(nrow(matrix))
+    tree$root.time <- max(tree.age(tree)$age)
+    tree$tip.label <- rownames(matrix)
+    tree$node.label <- paste0("n", 1:(nrow(matrix)-1))
+    return(tree)
+}
+
+## Function to simulate some "node" data
+i.need.node.data <- function(matrix, tree) {
+    matrix_node <- space.maker(elements = Nnode(tree), dimensions = ncol(matrix),
+                               distribution = rnorm, scree = apply(matrix, 2, var))
+    if(!is.null(tree$node.label)) {
+        rownames(matrix_node) <- tree$node.label
+    } else {
+        rownames(matrix_node) <- paste0("n", 1:(nrow(matrix)-1))
+    }
+    return(rbind(matrix, matrix_node))
+}
+
+## Function to simulate some "FADLAD" data
+i.need.FADLAD <- function(tree) {
+    tree_ages <- tree.age(tree)[1:Ntip(tree),]
+    return(data.frame(FAD = tree_ages[,1], LAD = tree_ages[,1], row.names = tree_ages[,2]))
+}
+```
+
+You can use these functions for the generating the data you need. For example
+
+```{r, eval = FALSE}
+## Aaaaah I don't have FADLAD data!
+my_FADLAD <- i.need.FADLAD(tree)
+## Sorted.
+```
+
+In the end this is what your data should be named to facilitate the rest of this tutorial (fill in yours here):
+
+```{r}
+## A matrix with tip data
+my_matrix <- BeckLee_mat50
+
+## A phylogenetic tree 
+my_tree <- BeckLee_tree
+
+## A matrix with tip and node data
+my_tip_node_matrix <- BeckLee_mat99
+
+## A table of first and last occurrences data (FADLAD)
+my_fadlad <- BeckLee_ages
+```
+
+
 ## A disparity-through-time analysis
 
 ### Splitting the morphospace through time
@@ -72,13 +154,14 @@ We will also provide to the function a table containing the first and last occur
 (time_bins <- rev(seq(from = 0, to = 100, by = 20)))
 
 ## Splitting the morphospace using the chrono.subsets function
-(binned_morphospace <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree,
+(binned_morphospace <- chrono.subsets(data = my_matrix, tree = my_tree,
     method = "discrete", time = time_bins, inc.nodes = FALSE,
-    FADLAD = BeckLee_ages))
+    FADLAD = my_fadlad))
 ```
 
 The output object is a `dispRity` object (see more about that [here](#The-guts-of-the-dispRity-package).
-In brief, however, `dispRity` objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the `R` console with superfluous output.
+In brief, `dispRity` objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the `R` console with superfluous output.
+It also allows easy plotting/summarising/analysing for repeatability down the line but we will not go into this right now.
 
 ```{r}
 ## Printing the class of the object
@@ -92,7 +175,7 @@ names(binned_morphospace)
 binned_morphospace
 ```
 
-> These objects will gradual.splitly contain more information when completing the following steps in the disparity-through-time analysis.
+> These objects will gradually contain more information when completing the following steps in the disparity-through-time analysis.
 
 ### Bootstrapping the data
 
@@ -112,16 +195,36 @@ min(size.subsets(boot_bin_morphospace))
     rarefaction = 6))
 ```
 
+> Note how information is adding up to the `dispRity` object.
+
 ### Calculating disparity
 
 We can now calculate the disparity within each time subsets along with some confidence intervals generated by the pseudoreplication step above (bootstraps/rarefaction).
 Disparity can be calculated in many ways and this package allows users to come up with their own disparity metrics.
-For more details, please refer to the [`dispRity` metric section](#disparity-metrics).
+For more details, please refer to the [`dispRity` metric section](#disparity-metrics) (or directly use [`moms`](https://tguillerme.shinyapps.io/moms/)).
 
-In this example, we are going to calculate the spread of the data in each time subset by calculating disparity as the sum of the variance of each dimension of the morphospace in each time subset using the `dispRity` function.
-Thus, in this example, disparity is defined by the multi-dimensional variance of each time subset (i.e. the spread of the taxa within the morphospace).
-Note that this metric comes with a caveat (not solved here) since it ignores covariances among the dimensions of the morphospace.
-We use this here because it is a standard metric used in disparity-through-time analysis [@Wills1994].
+In this example, we are going to look at how the spread of the data in the morphospace through time.
+For that we are going to use the sum of the variance from each dimension of the morphospace in the morphospace.
+We highly recommend using a metric that makes sense for your specific analysis and for your specific dataset and not just because everyone uses it [@moms, @Guillerme2020]!
+
+> How can I be sure that the metric is the most appropriate for my morphospace and question?
+
+This is not a straightforward question but you can use the `test.metric` function to check your assumptions (more details [here](#disparity-metrics)): basically what `test.metric` does is modifying your morphospace using a null process of interest (e.g. changes in size) and checks whether your metric does indeed pick up that change.
+For example here, let see if the sum of variances picks up changes in size but not random changes:
+
+```{r}
+my_test <- test.metric(my_matrix, metric = c(sum, variances), shifts = c("random", "size"))
+summary(my_test)
+plot(my_test)
+```
+
+We see that changes in the inner size (see @moms for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!
+
+As you've noted, the sum of variances is defined in `test.metric` as `c(sum, variances)`. This is a core bit of the `dispRity` package were you can define your own metric as a function or a set of functions. 
+You can find more info about this in the [`dispRity` metric section](#disparity-metrics) but in brief, the `dispRity` package considers metrics by their "dimensions" level which corresponds to what they output. For example, the function `sum` is a dimension level 1 function because no matter the input it outputs a single value (the sum), `variances` on the other hand is a dimension level 2 function because it will output the variance of each column in a matrix (an example of a dimensions level 3 would be the function `var` that outputs a matrix).
+The `dispRity` package always automatically sorts the dimensions levels: it will always run dimensions level 3 > dimensions level 2 > and dimensions level 1. In this case both `c(sum, variances)` and `c(variances, sum)` will result in actually running `sum(variances(matrix))`.
+
+Anyways, let's calculate the sum of variances on our bootstrapped and rarefied morphospaces:
 
 ```{r}
 ## Calculating disparity for the bootstrapped data
@@ -131,17 +234,16 @@ We use this here because it is a standard metric used in disparity-through-time 
 (rare_disparity <- dispRity(rare_bin_morphospace, metric = c(sum, variances)))
 ```
 
-The `dispRity` function does not actually display the calculated disparity values but rather only the properties of the disparity object (size, subsets, metric, etc.).
 To display the actual calculated scores, we need to summarise the disparity object using the S3 method `summary` that is applied to a `dispRity` object (see `?summary.dispRity` for more details).
-
-As for any `R` package, you can refer to the help files for each individual function for more details.
+By the way, as for any `R` package, you can refer to the help files for each individual function for more details.
 
 ```{r}
 ## Summarising the disparity results
 summary(boot_disparity)
 summary(rare_disparity)
 ```
-> The summary.dispRity function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function's manual for more details.
+
+> The `summary.dispRity` function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function's manual for more details.
 
 ### Plotting the results
 
@@ -157,8 +259,11 @@ plot(boot_disparity, type = "continuous", main = "bootstrapped results")
 plot(rare_disparity, type = "continuous", main = "rarefied results")
 ```
 
-Testing differences
--------------------
+Nice. The curves look pretty similar.
+
+> Same as for the `summary.dispRity` function, check out the `plot.dispRity` manual for the many, many options available.
+
+### Testing differences
 
 Finally, to draw some valid conclusions from these results, we can apply some statistical tests.
 We can test, for example, if mammalian disparity changed significantly through time over the last 100 million years.
@@ -178,3 +283,15 @@ test.dispRity(rare_disparity, test = wilcox.test, comparison = "sequential",
 
 Here our results show significant changes in disparity through time between all time bins (all p-values < 0.05).
 However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.
+
+## Some more advanced stuff
+
+The previous section detailed some of the basic functionalities in the `dispRity` package but of course, you can do some much more advanced analysis, here is just a list of some specific tutorials from this manual that you might be interested in:
+
+ * [Time slicing](#time-slicing): an alternative method to look at disparity through time that allows you to specify evolutionary models [@time-slice].
+ * [Many more disparity metrics](#disparity-metrics): there are many, many different things you might be interested to measure in your morphospace! This manual has some extended documentation on what to use (or check @moms).
+ * Many more ways to look at disparity: you can for example, [use distributions rather than point estimates](#disparity-distribution) for your disparity metric (e.g. the variances rather than the sum of variances); or calculate [disparity from non ordinated matrices](#other-matrices) or even [from multiple matrices and trees](#multi.input).
+ * And finally there are much more advanced statistical tests you might be interested in using, such as the [NPMANOVA](#adonis), the ["disparity-through-time test"](#dtt), using a [null model approach](#null-test) or some [model fitting](#model-fitting)...
+
+You can even come up with your own ideas, implementations and modifications of the package: the `dispRity` package is a modular and collaborative package and I encourage you to contact me (guillert@tcd.e) for any ideas you have about adding new features to the package (whether you have them already implemented or not)! 
+

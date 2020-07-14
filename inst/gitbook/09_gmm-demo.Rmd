@@ -1,0 +1,144 @@
+---
+title: "Morphometric geometric demo: a between group analysis"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+# Palaeobiology demo: disparity-through-time and within groups
+
+This demo aims to give quick overview of the `dispRity` package (v.`r version_release`) for palaeobiology analyses of disparity, including disparity through time analyses.
+
+This demo showcases a typical between groups geometric morphometric analysis: we are going to test whether the disparity in two species of salamander (plethodons!) are different and in which ways they are different.
+
+## Before starting
+
+Here we are going to use the `geomorph` `plethodon` dataset that is a set of 12 2D landmark coordinates for 40 specimens from two species of salamanders.
+This section will really quickly cover how to make a Procrustes sumperimposition analysis and create a `geomorph` data.frame to have data ready for the `dispRity` package.
+
+
+```{r}
+## Loading geomorph
+library(geomorph)
+
+## Loading the plethodon dataset
+data(plethodon)
+
+## Running a simple Procrustes superimposition
+gpa_plethodon <- gpagen(plethodon$land)
+
+## Making a geomorph data frame object with the species and sites attributes
+gdf_plethodon <- geomorph.data.frame(gpa_plethodon,
+                                     species = plethodon$species,
+                                     site = plethodon$site)
+```
+
+You can of course use your very own landmark coordinates dataset (though you will have to do some modifications in the scripts that will come below - they will be easy though!).
+
+```{r}
+## You can replace the gdf_plethodon by your own geomorph data frame!
+my_geomorph_data <- gdf_plethodon
+```
+
+### The morphospace
+
+The first step of every disparity analysis is to define your morphospace.
+
+> Note that this is actually not true at all and kept as a erroneous sentence: the first step of your disparity analysis should be to define your question!
+
+Our question here will be: is there a difference in disparity between the different species of salamanders and between the different sites (allopatric and sympatric)?
+
+OK, now we can go to the _second_ step of every disparity analysis: defining the morphospace.
+Here we will define it with the ordination of all possible Procrustes superimposed plethodon landmark coordinates.
+You can do this directly in `dispRity` using the `geomorph.ordination` function that can input a geomorph data frame:
+
+```{r}
+## The morphospace
+morphospace <- geomorph.ordination(gdf_plethodon)
+```
+
+This automatically generates a `dispRity` object with the information of each groups. You can find more information about `dispRity` objects [here](#disprity-object) but basically it summarises the content of your object without spamming your R console and is associated with many utility functions like `summary` or `plot`. For example here you can quickly visualise the two first dimensions of your space using the `plot` function:
+
+```{r}
+## The dispRity object
+morphospace
+
+## Plotting the morphospace
+plot(morphospace)
+## Note that this only displays the two last groups (site.Allo and site.Symp) since they overlap!
+```
+
+The `dispRity` package function comes with a lot of documentation of examples so don't hesitate to type `plot.dispRity` to check more plotting options.
+
+
+## Calculating disparity
+
+Now that we have our morphospace, we can think about what we want to measure.
+Two aspects of disparity that would be interesting for our question (is there a difference in disparity between the different species of salamanders and between the different sites?) would be the differences in size in the morphospace (do both groups occupy the same amount of morphospace) and position in the morphospace (do the do groups occupy the same position in the morphospace?).
+
+To choose which metric would cover best these two aspects, please check the @moms paper and associated [app](https://tguillerme.shinyapps.io/moms/). Here we are going to use the procrustes variance (`geomorph::morphol.disparity`) for measuring the size of the trait space and the average displacements [@moms] for the position in the trait space.
+
+```{r}
+## Defining a the procrustes variance metric
+## (as in geomorph::morphol.disparity)
+proc.var <- function(matrix) {sum(matrix^2)/nrow(matrix)}
+## The size metric
+test_size <- test.metric(morphospace, metric = proc.var,
+                         shifts = c("random", "size"))
+plot(test_size)
+summary(test_size)
+
+## The position metric
+test_position <- test.metric(morphospace, metric = c(mean, displacements),
+                         shifts = c("random", "position"))
+plot(test_position)
+summary(test_position)
+```
+
+You can see [here](#test-metric) for more details on the `test.metric` function but basically these graphs are showing that there is a relation between changes in size and in position for each metric.
+Note that there are some caveats here but the selection of the metric is just for the sake of the example!
+
+Note also the format of defining the disparity metrics here using `metric = c(mean, displacements)` or `metric = proc.var`. This is a core bit of the `dispRity` package were you can define your own metric as a function or a set of functions. You can find more info about this in the [`dispRity` metric section](#disparity-metrics) but in brief, the `dispRity` package considers metrics by their "dimensions" level which corresponds to what they output. For example, the function `mean` is a dimension level 1 function because no matter the input it outputs a single value (the mean), `displacements` on the other hand is a dimension level 2 function because it will output the ratio between the distance from the centroid and from the centre of the trait space for each row in a matrix (an example of a dimensions level 3 would be the function `var` that outputs a matrix).
+The `dispRity` package always automatically sorts the dimensions levels: it will always run dimensions level 3 > dimensions level 2 > and dimensions level 1. In this case both `c(mean, displacements)` and `c(mean, displacements)` will result in actually running `mean(displacements(matrix))`.
+Alternatively you can define your metric prior to the disparity analysis like we did for the `proc.var` function.
+
+Anyways, we can measure disparity using these two metrics on all the groups as follows:
+
+```{r}
+## Bootstrapped disparity
+disparity_size <-  dispRity(boot.matrix(morphospace), metric = proc.var)
+disparity_position <- dispRity(boot.matrix(morphospace), metric = c(mean, displacements))
+```
+
+Note that here we use the `boot.matrix` function for quickly bootstrapping the matrix.
+This is not an essential step in this kind of analysis but it allows to "reduce" the effect of outliers and create a distribution of disparity measures (rather than single point estimates).
+
+## Analyse the results
+
+We can visualise the results using the `plot` function on the resulting disparity objects (or summarising them using `summary`):
+
+```{r}
+## Plotting the results
+par(mfrow = c(1,2))
+plot(disparity_size, main = "group sizes", las = 2, xlab = "")
+plot(disparity_position, main = "group positions", las = 2, xlab = "")
+
+## Summarising the results
+summary(disparity_size)
+summary(disparity_position)
+```
+
+Just from looking at the data, we can guess that there is not much difference in terms of morphospace occupancy and position for the species but there is on for the sites (allopatric or sympatric).
+We can test it using a simple non-parametric mean difference test (e.g. `wilcox.test`) using the `dispRity` package.
+
+```{r}
+## Testing the differences
+test.dispRity(disparity_size, test = wilcox.test, correction = "bonferroni")
+test.dispRity(disparity_position, test = wilcox.test, correction = "bonferroni")
+```
+
+So by applying the tests we see a difference in terms of position between each groups and differences in size between groups but between the species.
