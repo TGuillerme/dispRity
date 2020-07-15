@@ -9,7 +9,7 @@ output:
 ---
 
 
-# Palaeobiology demo: disparity-through-time and within groups
+# Morphometric geometric demo: a between group analysis
 
 This demo aims to give quick overview of the `dispRity` package (v.`r version_release`) for palaeobiology analyses of disparity, including disparity through time analyses.
 
