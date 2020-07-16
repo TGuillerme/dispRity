@@ -802,7 +802,7 @@ Finally, the function runs 10 reductions by default from keeping 10% of the data
 This can be changed using the `steps` option.
 A good disparity metric for your dataset will typically have no trend in the `"random"` reduction (the metric is ideally not affected by sample size) but should have a trend for the reduction of interest.
 
-```{r}
+```{r, fig.height = 16, fig.width = 6}
 ## The results as a dispRity object
 example_test
 
@@ -945,7 +945,7 @@ op <- par(bty = "n")
 ## Plotting the results with some classic options from plot
 plot(disparity_time_slices, col = c("blue", "orange", "green"),
     ylab = c("Some measurement"), xlab = "Some other measurement",
-    main = "Many options...", ylim = c(5, 0), xlim = c(4, 0))
+    main = "Many options...", ylim = c(10, 0), xlim = c(4, 0))
 
 ## Adding a legend
 legend("topleft", legend = c("Central tendency",
@@ -986,9 +986,9 @@ For comparing results, it is also possible to add a plot to the existent plot by
 op <- par(bty = "n")
 
 ## Plotting the continuous disparity with a fixed y axis
-plot(disparity_time_slices, ylim = c(1, 4))
+plot(disparity_time_slices, ylim = c(3, 9))
 ## Adding the discrete data
-plot(disparity_time_bins, type = "line", ylim = c(1, 4),
+plot(disparity_time_bins, type = "line", ylim = c(3, 9),
      xlab = "", ylab = "", add = TRUE)
 
 ## Resetting graphical parameters
@@ -1046,7 +1046,7 @@ Groups that don't overlap on two set dimensions can totally overlap in all other
 For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
 However you can always force the `preview` option using the following:
 
-```{r}
+```{r, fig.height = 16, fig.width = 8}
 par(mfrow = c(2,1))
 ## Default plotting
 plot(disparity_time_slices, main = "Disparity through time")
