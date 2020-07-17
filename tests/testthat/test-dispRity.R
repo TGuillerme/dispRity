@@ -25,6 +25,8 @@ test_that("get.dispRity.metric.handle", {
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "serial"))
+    test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_null(test[[2]])
@@ -32,6 +34,8 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "serial"))
+    test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_is(test[[2]], "function")
@@ -40,16 +44,26 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "serial"))
+    test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")
     expect_null(test[[2]])
     expect_is(test[[3]], "function")
+
+    ## Serial
+    test.serial <- function(matrix, matrix2) {return(42)}
+    test.serial.no <- function(matrix, matrix3) {return(42)}
+    test <- get.dispRity.metric.handle(test.serial, match_call, data.dim = c(5,4))
+    expect_true(test$serial)
+    test <- get.dispRity.metric.handle(test.serial.no, match_call, data.dim = c(5,4))
+    expect_false(test$serial)
 })
 
 test_that("get.first.metric", {
-    test1 <- get.dispRity.metric.handle(c(sd, var), match_call)
-    test2 <- get.dispRity.metric.handle(variances, match_call)
-    test3 <- get.dispRity.metric.handle(sd, match_call)
+    test1 <- get.dispRity.metric.handle(c(sd, var), match_call)$levels
+    test2 <- get.dispRity.metric.handle(variances, match_call)$levels
+    test3 <- get.dispRity.metric.handle(sd, match_call)$levels
 
     ## Metrics output is 1: function, 2: list -1 and 3: level
     ## Remove a level 1
@@ -715,6 +729,17 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
 })
 
+
+test_that("dispRity works for serial metrics". {
+
+    serial.simple <- function(matrix, matrix2) return(42)
+    serial.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
+
+
+
+})
+
+
 # test_that("dispRity works in parallel", {
 #     library(parallel)
 #     data(BeckLee_mat99)
@@ -730,3 +755,4 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 #     test_par <- dispRity(test, metric = c(sum, variances), parallel = TRUE)
 
 # })
+

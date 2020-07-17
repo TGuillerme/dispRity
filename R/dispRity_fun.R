@@ -1,5 +1,6 @@
 get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
+    serial <- FALSE
 
     length_metric <- length(metric)
 
@@ -14,8 +15,10 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE, data.dim = data.dim, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, data.dim = data.dim)
+        level <- make.metric(metric, silent = TRUE, check.serial = TRUE, data.dim = data.dim, ...)
+        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, check.serial = TRUE, data.dim = data.dim)
+        serial <- level$serial
+        level <- level$type
 
         switch(level,
             level3 = {
@@ -62,7 +65,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         }
     }
 
-    return(list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun))
+    return(list("levels" = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), "serial" = serial))
 }
 
 ## Getting the first metric

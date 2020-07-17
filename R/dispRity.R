@@ -136,12 +136,13 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
+    metric_is_serial <- metrics_list$serial
+    metrics_list <- metrics_list$levels
 
     ## Temporary stop if ancestral.dist is used on chrono.subsets
     if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
         stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
     }
-
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
@@ -184,6 +185,39 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
 
     ## VERBOSE
     check.class(verbose, "logical")
+
+    ## Serial
+    serial_class <- check.class(serial, c("logical", "list"), " must be logical or a list of pairs of comparisons.")
+    ## Check whether logical class can be applied
+    if(serial_class == "logical") {
+        if(serial) {
+            if(!metric_is_serial) {
+                stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+            }
+            ## Make the series
+            if(is.null(data$call$subsets)) {
+                stop.call(msg.pre = "The provided \"serial\" metric (", match_call$metric, msg = ") cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")                
+            } else {
+                if(data$call$subsets[[1]] == "customised") {
+                    ## Make default pairwise comparisons
+                    list_of_series <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
+                } else {
+                    ## Make default sequential comparisons
+                    list_of_series <- unlist(apply(set.sequence(length(data$subsets)), 2, list), recursive = FALSE)
+                }
+            }
+        } 
+    } else {
+        if(!metric_is_serial) {
+            stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+        }
+        ## Serial is a list, check if it contains the right information (pairs of things that exist)
+        pairs <- unique(unlist(lapply(serial, length))) 
+        if(length(pairs) > 1 || pairs != 2 || max(unlist(serial)) > length(data$subsets)) {
+            stop.call(msg.pre = "The provided list of series (", match_call$serial, msg = ") must be a list of pairs of subsets in the data.")
+        }
+        list_of_series <- serial
+    }
 
     ## Parallel
     # if(missing(parallel)) {
@@ -292,8 +326,6 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
                                   function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
                             recursive = FALSE)
         names(disparity) <- names(disparities[[1]])
-
-
     } else {
         ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
