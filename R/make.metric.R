@@ -5,6 +5,7 @@
 #' @param fun A \code{function}.
 #' @param ... Some arguments to be passed to \code{fun}.
 #' @param silent \code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function's dimension-level.
+#' @param check.serial \code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used serially or not. If \code{FALSE} (default) the function only outputs the metric level.
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #'
 #' @details
@@ -50,7 +51,7 @@
 #' @author Thomas Guillerme
 
 
-make.metric <- function(fun, ..., silent = FALSE, data.dim) {
+make.metric <- function(fun, ..., silent = FALSE, check.serial = FALSE, data.dim) {
     ## Sanitizing
     ## fun
     check.class(fun, "function")
@@ -82,7 +83,6 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
             is_serial <- TRUE
         }
     }
-
 
     ## Skip the dots if the dots has a tree argument
     if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots))) {
@@ -148,8 +148,11 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     ##########
 
     if(silent == TRUE) {
-        return(fun_type)
-        # return(c("type" = fun_type, "serial" = is_serial))
+        if(check.serial) {
+            return(list("type" = fun_type, "serial" = is_serial))
+        } else {
+            return(fun_type)
+        }
     } else {
         return(invisible())
     }

@@ -4,7 +4,7 @@
 \alias{make.metric}
 \title{Creating disparity metrics}
 \usage{
-make.metric(fun, ..., silent = FALSE, data.dim)
+make.metric(fun, ..., silent = FALSE, check.serial = FALSE, data.dim)
 }
 \arguments{
 \item{fun}{A \code{function}.}
@@ -12,6 +12,8 @@ make.metric(fun, ..., silent = FALSE, data.dim)
 \item{...}{Some arguments to be passed to \code{fun}.}
 
 \item{silent}{\code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function's dimension-level.}
+
+\item{check.serial}{\code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used serially or not. If \code{FALSE} (default) the function only outputs the metric level.}
 
 \item{data.dim}{optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.}
 }

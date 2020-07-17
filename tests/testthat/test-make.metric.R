@@ -104,4 +104,13 @@ test_that("Output is correct", {
     error <- capture_error(make.metric(make.metric))
     expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\n    make.metric(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in make.metric.")
 
+    ## With serial
+    serial.metric <- function(matrix, matrix2) return(42)
+    serial.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
+
+    expect_equal(make.metric(serial.metric, silent = TRUE), "level1")
+    expect_equal(make.metric(serial.metric, silent = TRUE, check.serial = TRUE), list("type" = "level1", "serial" = TRUE))
+    expect_equal(make.metric(serial.metric2, option = FALSE, silent = TRUE), "level2")
+    expect_equal(make.metric(serial.metric2, option = "bla", silent = TRUE, check.serial = TRUE), list("type" = "level2", "serial" = TRUE))
+    expect_equal(make.metric(mean, silent = TRUE, check.serial = TRUE), list("type" = "level1", "serial" = FALSE))
 })

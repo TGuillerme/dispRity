@@ -5,10 +5,9 @@ Add a serial mode for calculating disparity were the calculation is slower (`for
 
 TODO:
 
-- [ ] create a new `"serial"` class option for metrics (input `matrix1` and `matrix2`)
-
- - [ ] `make.metric` detects serial metrics
- - [ ] update test for `make.metric` for detecting serials
+ - [ ] create a new `"serial"` class option for metrics (input `matrix1` and `matrix2`)
+ - [x] `make.metric` detects serial metrics
+ - [x] update test for `make.metric` for detecting serials
  - [ ] `dispRity` allows serial metrics
  - [ ] `dispRity` has a `serial` argument:this argument can be logical (default is `FALSE`; `TRUE` = sequential comparison for `chrono.subset` objects/pairwise comparisons for `custom.subset` objects) or a list of pairs of comparisons (like for `test.dispRity`'s `comparisons` argument)
 
