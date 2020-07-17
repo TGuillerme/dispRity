@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>7 The guts of the dispRity package | dispRity manual</title>
+  <title>10 Morphometric geometric demo: a between group analysis | dispRity manual</title>
   <meta name="description" content="dispRity R package vignette" />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="7 The guts of the dispRity package | dispRity manual" />
+  <meta property="og:title" content="10 Morphometric geometric demo: a between group analysis | dispRity manual" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="7 The guts of the dispRity package | dispRity manual" />
+  <meta name="twitter:title" content="10 Morphometric geometric demo: a between group analysis | dispRity manual" />
   
   <meta name="twitter:description" content="dispRity R package vignette" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="other-functionalities.html"/>
-<link rel="next" href="ecology-demo.html"/>
+<link rel="prev" href="palaeobiology-demo-disparity-through-time-and-within-groups.html"/>
+<link rel="next" href="references.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -280,236 +280,179 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="the-guts-of-the-disprity-package" class="section level1">
-<h1><span class="header-section-number">7</span> The guts of the <code>dispRity</code> package</h1>
-<div id="manipulating-disprity-objects" class="section level2">
-<h2><span class="header-section-number">7.1</span> Manipulating <code>dispRity</code> objects</h2>
-<p>Disparity analysis involves a lot of manipulation of many matrices (especially when bootstrapping) which can be impractical to visualise and will quickly overwhelm your <code>R</code> console.
-Even the simple Beck and Lee 2014 example above produces an object with &gt; 72 lines of lists of lists of matrices!</p>
-<p>Therefore <code>dispRity</code> uses a specific class of object called a <code>dispRity</code> object.
-These objects allow users to use S3 method functions such as <code>summary.dispRity</code>, <code>plot.dispRity</code> and <code>print.dispRity</code>.
-<code>dispRity</code> also contains various utility functions that manipulate the <code>dispRity</code> object (e.g. <code>sort.dispRity</code>, <code>extract.dispRity</code> see the full list in the next section).
-These functions modify the <code>dispRity</code> object without having to delve into its complex structure!
-The full structure of a <code>dispRity</code> object is detailed <a href="https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md">here</a>.</p>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="co">## Loading the example data</span></a>
-<a class="sourceLine" id="cb426-2" data-line-number="2"><span class="kw">data</span>(disparity)</a>
-<a class="sourceLine" id="cb426-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb426-4" data-line-number="4"><span class="co">## What is the class of the median_centroids object?</span></a>
-<a class="sourceLine" id="cb426-5" data-line-number="5"><span class="kw">class</span>(disparity)</a></code></pre></div>
-<pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1"><span class="co">## What does the object contain?</span></a>
-<a class="sourceLine" id="cb428-2" data-line-number="2"><span class="kw">names</span>(disparity)</a></code></pre></div>
-<pre><code>## [1] &quot;matrix&quot;    &quot;call&quot;      &quot;subsets&quot;   &quot;disparity&quot;</code></pre>
-<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="co">## Summarising it using the S3 method print.dispRity</span></a>
-<a class="sourceLine" id="cb430-2" data-line-number="2">disparity</a></code></pre></div>
+<div id="morphometric-geometric-demo-a-between-group-analysis" class="section level1">
+<h1><span class="header-section-number">10</span> Morphometric geometric demo: a between group analysis</h1>
+<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.4) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
+<p>This demo showcases a typical between groups geometric morphometric analysis: we are going to test whether the disparity in two species of salamander (plethodons!) are different and in which ways they are different.</p>
+<div id="before-starting-1" class="section level2">
+<h2><span class="header-section-number">10.1</span> Before starting</h2>
+<p>Here we are going to use the <code>geomorph</code> <code>plethodon</code> dataset that is a set of 12 2D landmark coordinates for 40 specimens from two species of salamanders.
+This section will really quickly cover how to make a Procrustes sumperimposition analysis and create a <code>geomorph</code> data.frame to have data ready for the <code>dispRity</code> package.</p>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" data-line-number="1"><span class="co">## Loading geomorph</span></a>
+<a class="sourceLine" id="cb529-2" data-line-number="2"><span class="kw">library</span>(geomorph)</a>
+<a class="sourceLine" id="cb529-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb529-4" data-line-number="4"><span class="co">## Loading the plethodon dataset</span></a>
+<a class="sourceLine" id="cb529-5" data-line-number="5"><span class="kw">data</span>(plethodon)</a>
+<a class="sourceLine" id="cb529-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb529-7" data-line-number="7"><span class="co">## Running a simple Procrustes superimposition</span></a>
+<a class="sourceLine" id="cb529-8" data-line-number="8">gpa_plethodon &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land)</a></code></pre></div>
+<pre><code>## 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |============================                                          |  40%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" data-line-number="1"><span class="co">## Making a geomorph data frame object with the species and sites attributes</span></a>
+<a class="sourceLine" id="cb531-2" data-line-number="2">gdf_plethodon &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(gpa_plethodon,</a>
+<a class="sourceLine" id="cb531-3" data-line-number="3">                                     <span class="dt">species =</span> plethodon<span class="op">$</span>species,</a>
+<a class="sourceLine" id="cb531-4" data-line-number="4">                                     <span class="dt">site =</span> plethodon<span class="op">$</span>site)</a></code></pre></div>
+<p>You can of course use your very own landmark coordinates dataset (though you will have to do some modifications in the scripts that will come below - they will be easy though!).</p>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb532-1" data-line-number="1"><span class="co">## You can replace the gdf_plethodon by your own geomorph data frame!</span></a>
+<a class="sourceLine" id="cb532-2" data-line-number="2">my_geomorph_data &lt;-<span class="st"> </span>gdf_plethodon</a></code></pre></div>
+<div id="the-morphospace-1" class="section level3">
+<h3><span class="header-section-number">10.1.1</span> The morphospace</h3>
+<p>The first step of every disparity analysis is to define your morphospace.</p>
+<blockquote>
+<p>Note that this is actually not true at all and kept as a erroneous sentence: the first step of your disparity analysis should be to define your question!</p>
+</blockquote>
+<p>Our question here will be: is there a difference in disparity between the different species of salamanders and between the different sites (allopatric and sympatric)?</p>
+<p>OK, now we can go to the <em>second</em> step of every disparity analysis: defining the morphospace.
+Here we will define it with the ordination of all possible Procrustes superimposed plethodon landmark coordinates.
+You can do this directly in <code>dispRity</code> using the <code>geomorph.ordination</code> function that can input a geomorph data frame:</p>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" data-line-number="1"><span class="co">## The morphospace</span></a>
+<a class="sourceLine" id="cb533-2" data-line-number="2">morphospace &lt;-<span class="st"> </span><span class="kw">geomorph.ordination</span>(gdf_plethodon)</a></code></pre></div>
+<p>This automatically generates a <code>dispRity</code> object with the information of each groups. You can find more information about <code>dispRity</code> objects <a href="the-guts-of-the-disprity-package.html#disprity-object">here</a> but basically it summarises the content of your object without spamming your R console and is associated with many utility functions like <code>summary</code> or <code>plot</code>. For example here you can quickly visualise the two first dimensions of your space using the <code>plot</code> function:</p>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb534-1" data-line-number="1"><span class="co">## The dispRity object</span></a>
+<a class="sourceLine" id="cb534-2" data-line-number="2">morphospace</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions:
-##      90, 80, 70, 60, 50 ...
-## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 20, 15, 10, 5 elements.
-## Disparity was calculated as: c(median, centroids).</code></pre>
-<p>Note that it is always possible to recall the full object using the argument <code>all = TRUE</code> in <code>print.dispRity</code>:</p>
-<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="co">## Display the full object</span></a>
-<a class="sourceLine" id="cb432-2" data-line-number="2"><span class="kw">print</span>(disparity, <span class="dt">all =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb432-3" data-line-number="3"><span class="co">## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</span></a></code></pre></div>
-</div>
-<div id="utilities" class="section level2">
-<h2><span class="header-section-number">7.2</span> <code>dispRity</code> utilities</h2>
-<p>The package also provides some utility functions to facilitate multidimensional analysis.</p>
-<div id="disprity-object-utilities" class="section level3">
-<h3><span class="header-section-number">7.2.1</span> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></h3>
-<p>The first set of utilities are functions for manipulating <code>dispRity</code> objects:</p>
-<div id="make.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.1</span> <code>make.dispRity</code></h4>
-<p>This function creates empty <code>dispRity</code> objects.</p>
-<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb433-1" data-line-number="1"><span class="co">## Creating an empty dispRity object</span></a>
-<a class="sourceLine" id="cb433-2" data-line-number="2"><span class="kw">make.dispRity</span>()</a></code></pre></div>
-<pre><code>## Empty dispRity object.</code></pre>
-<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb435-1" data-line-number="1"><span class="co">## Creating an &quot;empty&quot; dispRity object with a matrix</span></a>
-<a class="sourceLine" id="cb435-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## Contains only a matrix 5x4.</code></pre>
-</div>
-<div id="fill.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.2</span> <code>fill.dispRity</code></h4>
-<p>This function initialises a <code>dispRity</code> object and generates its call properties.</p>
-<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" data-line-number="1"><span class="co">## The dispRity object&#39;s call is indeed empty</span></a>
-<a class="sourceLine" id="cb437-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
-<pre><code>## list()</code></pre>
-<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb439-1" data-line-number="1"><span class="co">## Filling an empty disparity object (that needs to contain at least a matrix)</span></a>
-<a class="sourceLine" id="cb439-2" data-line-number="2">(disparity_obj &lt;-<span class="st"> </span><span class="kw">fill.dispRity</span>(disparity_obj))</a></code></pre></div>
-<pre><code>## Warning in check.dispRity.data(data$matrix): Row names have been automatically
-## added to data$matrix.</code></pre>
-<pre><code>##  ---- dispRity object ---- 
-## 5 elements in one matrix with 4 dimensions.</code></pre>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1"><span class="co">## The dipRity object has now the correct minimal attributes</span></a>
-<a class="sourceLine" id="cb442-2" data-line-number="2">disparity_obj<span class="op">$</span>call</a></code></pre></div>
-<pre><code>## $dimensions
-## [1] 4</code></pre>
-</div>
-<div id="matrix.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.3</span> <code>matrix.dispRity</code></h4>
-<p>This function extracts a specific matrix from a disparity object.
-The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1"><span class="co">## Extracting the matrix containing the coordinates of the elements at time 50</span></a>
-<a class="sourceLine" id="cb444-2" data-line-number="2"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="st">&quot;50&quot;</span>))</a></code></pre></div>
-<pre><code>##  num [1:18, 1:97] -0.1337 0.553 0.3905 0.0416 0.8823 ...
-##  - attr(*, &quot;dimnames&quot;)=List of 2
-##   ..$ : chr [1:18] &quot;Leptictis&quot; &quot;Dasypodidae&quot; &quot;n24&quot; &quot;Potamogalinae&quot; ...
-##   ..$ : NULL</code></pre>
-<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1"><span class="co">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level</span></a>
-<a class="sourceLine" id="cb446-2" data-line-number="2"><span class="co">## (15 elements) from the second group (80 Mya)</span></a>
-<a class="sourceLine" id="cb446-3" data-line-number="3"><span class="kw">str</span>(<span class="kw">matrix.dispRity</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</a></code></pre></div>
-<pre><code>##  num [1:15, 1:97] -0.14191 -0.74121 0.00351 0.28967 0.28967 ...
-##  - attr(*, &quot;dimnames&quot;)=List of 2
-##   ..$ : chr [1:15] &quot;n15&quot; &quot;Maelestes&quot; &quot;n20&quot; &quot;n34&quot; ...
-##   ..$ : NULL</code></pre>
-</div>
-<div id="get.subsets" class="section level4">
-<h4><span class="header-section-number">7.2.1.4</span> <code>get.subsets</code></h4>
-<p>This function creates a dispRity object that contains only elements from one specific subsets.</p>
-<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" data-line-number="1"><span class="co">## Extracting all the data for the crown mammals</span></a>
-<a class="sourceLine" id="cb448-2" data-line-number="2">(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))</a>
-<a class="sourceLine" id="cb448-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb448-4" data-line-number="4"><span class="co">## The object keeps the properties of the parent object but is composed of only one subsets</span></a>
-<a class="sourceLine" id="cb448-5" data-line-number="5"><span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</a></code></pre></div>
-</div>
-<div id="combine.subsets" class="section level4">
-<h4><span class="header-section-number">7.2.1.5</span> <code>combine.subsets</code></h4>
-<p>This function allows to merge different subsets.</p>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" data-line-number="1"><span class="co">## Combine the two first subsets in the dispRity data example</span></a>
-<a class="sourceLine" id="cb449-2" data-line-number="2"><span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a></code></pre></div>
-<p>Note that the computed values (bootstrapped data + disparity metric) are not merge.</p>
-</div>
-<div id="extract.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.6</span> <code>extract.dispRity</code></h4>
-<p>This function extracts the calculated disparity values of a specific matrix.</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" data-line-number="1"><span class="co">## Extracting the observed disparity (default)</span></a>
-<a class="sourceLine" id="cb450-2" data-line-number="2"><span class="kw">extract.dispRity</span>(disparity)</a>
-<a class="sourceLine" id="cb450-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb450-4" data-line-number="4"><span class="co">## Extracting the disparity from the bootstrapped values from the</span></a>
-<a class="sourceLine" id="cb450-5" data-line-number="5"><span class="co">## 10th rarefaction level from the second subsets (80 Mya)</span></a>
-<a class="sourceLine" id="cb450-6" data-line-number="6"><span class="kw">extract.dispRity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</a></code></pre></div>
-</div>
-<div id="rescale.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.7</span> <code>rescale.dispRity</code></h4>
-<p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" data-line-number="1"><span class="co">## Getting the disparity values of the time subsets</span></a>
-<a class="sourceLine" id="cb451-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(disparity))</a>
-<a class="sourceLine" id="cb451-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb451-4" data-line-number="4"><span class="co">## Scaling the same disparity values</span></a>
-<a class="sourceLine" id="cb451-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb451-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb451-7" data-line-number="7"><span class="co">## Scaling and centering:</span></a>
-<a class="sourceLine" id="cb451-8" data-line-number="8"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb451-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb451-10" data-line-number="10"><span class="co">## Rescaling the value by dividing by a maximum value</span></a>
-<a class="sourceLine" id="cb451-11" data-line-number="11"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</a></code></pre></div>
-</div>
-<div id="sort.disprity" class="section level4">
-<h4><span class="header-section-number">7.2.1.8</span> <code>sort.dispRity</code></h4>
-<p>This is the S3 method of <code>sort</code> for sorting the subsets alphabetically (default) or following a specific pattern.</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" data-line-number="1"><span class="co">## Sorting the disparity subsets in inverse alphabetic order</span></a>
-<a class="sourceLine" id="cb452-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb452-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb452-4" data-line-number="4"><span class="co">## Customised sorting</span></a>
-<a class="sourceLine" id="cb452-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</a></code></pre></div>
+## 4 customised subsets for 40 elements in one matrix:
+##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb536-1" data-line-number="1"><span class="co">## Plotting the morphospace</span></a>
+<a class="sourceLine" id="cb536-2" data-line-number="2"><span class="kw">plot</span>(morphospace)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-179-1.png" width="672" /></p>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb537-1" data-line-number="1"><span class="co">## Note that this only displays the two last groups (site.Allo and site.Symp) since they overlap!</span></a></code></pre></div>
+<p>The <code>dispRity</code> package function comes with a lot of documentation of examples so don’t hesitate to type <code>plot.dispRity</code> to check more plotting options.</p>
 </div>
 </div>
+<div id="calculating-disparity-2" class="section level2">
+<h2><span class="header-section-number">10.2</span> Calculating disparity</h2>
+<p>Now that we have our morphospace, we can think about what we want to measure.
+Two aspects of disparity that would be interesting for our question (is there a difference in disparity between the different species of salamanders and between the different sites?) would be the differences in size in the morphospace (do both groups occupy the same amount of morphospace) and position in the morphospace (do the do groups occupy the same position in the morphospace?).</p>
+<p>To choose which metric would cover best these two aspects, please check the <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms">2020</a>)</span> paper and associated <a href="https://tguillerme.shinyapps.io/moms/">app</a>. Here we are going to use the procrustes variance (<code>geomorph::morphol.disparity</code>) for measuring the size of the trait space and the average displacements <span class="citation">(Thomas Guillerme, Puttick, et al. <a href="#ref-moms">2020</a>)</span> for the position in the trait space.</p>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb538-1" data-line-number="1"><span class="co">## Defining a the procrustes variance metric</span></a>
+<a class="sourceLine" id="cb538-2" data-line-number="2"><span class="co">## (as in geomorph::morphol.disparity)</span></a>
+<a class="sourceLine" id="cb538-3" data-line-number="3">proc.var &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {<span class="kw">sum</span>(matrix<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span><span class="kw">nrow</span>(matrix)}</a>
+<a class="sourceLine" id="cb538-4" data-line-number="4"><span class="co">## The size metric</span></a>
+<a class="sourceLine" id="cb538-5" data-line-number="5">test_size &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> proc.var,</a>
+<a class="sourceLine" id="cb538-6" data-line-number="6">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</a>
+<a class="sourceLine" id="cb538-7" data-line-number="7"><span class="kw">plot</span>(test_size)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-180-1.png" width="672" /></p>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" data-line-number="1"><span class="kw">summary</span>(test_size)</a></code></pre></div>
+<pre><code>##            10%  20%  30%  40%  50%  60%  70% 80%  90% 100%         slope
+## random       0 0.01 0.00 0.01 0.01 0.00 0.01   0 0.01    0  4.157767e-07
+## size.inner  NA   NA 0.00 0.00 0.00 0.00 0.00   0 0.00    0  2.372016e-05
+## size.outer  NA 0.01 0.01 0.01 0.01 0.01 0.01   0 0.00    0 -3.003051e-05
+##                 p_value    R^2(adj)
+## random     8.809019e-01 -0.03486933
+## size.inner 2.275777e-06  0.62938868
+## size.outer 1.385063e-08  0.71980024</code></pre>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb541-1" data-line-number="1"><span class="co">## The position metric</span></a>
+<a class="sourceLine" id="cb541-2" data-line-number="2">test_position &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements),</a>
+<a class="sourceLine" id="cb541-3" data-line-number="3">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;position&quot;</span>))</a>
+<a class="sourceLine" id="cb541-4" data-line-number="4"><span class="kw">plot</span>(test_position)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-180-2.png" width="672" /></p>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb542-1" data-line-number="1"><span class="kw">summary</span>(test_position)</a></code></pre></div>
+<pre><code>##                  10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
+## random          1.24 1.09 1.06 1.00 1.04 1.01 1.01 1.01 1.00    1 -0.001947709
+## position.bottom 1.50 1.37 1.18 1.14 1.00 1.10 1.10 1.07 1.04    1 -0.004863532
+## position.top    2.36 2.02 1.64 1.20 1.00 1.04 1.03 1.01 1.01    1 -0.014565974
+##                      p_value  R^2(adj)
+## random          5.727158e-05 0.4248051
+## position.bottom 6.449682e-08 0.6550392
+## position.top    3.195344e-08 0.7006964</code></pre>
+<p>You can see <a href="details-of-specific-functions.html#test-metric">here</a> for more details on the <code>test.metric</code> function but basically these graphs are showing that there is a relation between changes in size and in position for each metric.
+Note that there are some caveats here but the selection of the metric is just for the sake of the example!</p>
+<p>Note also the format of defining the disparity metrics here using <code>metric = c(mean, displacements)</code> or <code>metric = proc.var</code>. This is a core bit of the <code>dispRity</code> package were you can define your own metric as a function or a set of functions. You can find more info about this in the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a> but in brief, the <code>dispRity</code> package considers metrics by their “dimensions” level which corresponds to what they output. For example, the function <code>mean</code> is a dimension level 1 function because no matter the input it outputs a single value (the mean), <code>displacements</code> on the other hand is a dimension level 2 function because it will output the ratio between the distance from the centroid and from the centre of the trait space for each row in a matrix (an example of a dimensions level 3 would be the function <code>var</code> that outputs a matrix).
+The <code>dispRity</code> package always automatically sorts the dimensions levels: it will always run dimensions level 3 &gt; dimensions level 2 &gt; and dimensions level 1. In this case both <code>c(mean, displacements)</code> and <code>c(mean, displacements)</code> will result in actually running <code>mean(displacements(matrix))</code>.
+Alternatively you can define your metric prior to the disparity analysis like we did for the <code>proc.var</code> function.</p>
+<p>Anyways, we can measure disparity using these two metrics on all the groups as follows:</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb544-1" data-line-number="1"><span class="co">## Bootstrapped disparity</span></a>
+<a class="sourceLine" id="cb544-2" data-line-number="2">disparity_size &lt;-<span class="st">  </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> proc.var)</a>
+<a class="sourceLine" id="cb544-3" data-line-number="3">disparity_position &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements))</a></code></pre></div>
+<p>Note that here we use the <code>boot.matrix</code> function for quickly bootstrapping the matrix.
+This is not an essential step in this kind of analysis but it allows to “reduce” the effect of outliers and create a distribution of disparity measures (rather than single point estimates).</p>
 </div>
-<div id="disprity-object" class="section level2">
-<h2><span class="header-section-number">7.3</span> The <code>dispRity</code> object content</h2>
-<p>The functions above are utilities to easily and safely access different elements in the <code>dispRity</code> object.
-Alternatively, of course, each elements can be accessed manually.
-Here is an explanation on how it works.
-The <code>dispRity</code> object is a <code>list</code> of two to four elements, each of which are detailed below:</p>
-<ul>
-<li><code>$matrix</code>: an object of class <code>list</code> that contains at least one object of class <code>matrix</code>: the full multidimensional space.</li>
-<li><code>$call</code>: an object of class <code>list</code> containing information on the <code>dispRity</code> object content.</li>
-<li><code>$subsets</code>: an object of class <code>list</code> containing the subsets of the multidimensional space.</li>
-<li><code>$disparity</code>: an object of class <code>list</code> containing the disparity values.</li>
-</ul>
-<p>The <code>dispRity</code> object is loosely based on <code>C</code> structure objects.
-In fact, it is composed of one unique instance of a matrix (the multidimensional space) upon which the metric function is called via “pointers” to only a certain number of elements and/or dimensions of this matrix.
-This allows for: (1) faster and easily tractable execution time: the metric functions are called through apply family function and can be parallelised; and (2) a really low memory footprint: at any time, only one matrix (or list of matrices) is present in the <code>R</code> environment rather than multiple copies of it for each subset.</p>
-<div id="matrix" class="section level3">
-<h3><span class="header-section-number">7.3.1</span> <code>$matrix</code></h3>
-<p>This is the multidimensional space, stored in the <code>R</code> environment as a <code>list</code> object containing one or more <code>matrix</code> objects.
-Each <code>matrix</code> requires row names but not column names (optional).
-By default, if the row names are missing, <code>dispRity</code> function will arbitrarily generate them in numeric order (i.e. <code>rownames(matrix) &lt;- 1:nrow(matrix)</code>).
-This element of the <code>dispRity</code> object is never modified.</p>
-</div>
-<div id="call" class="section level3">
-<h3><span class="header-section-number">7.3.2</span> <code>$call</code></h3>
-<p>This element contains the information on the <code>dispRity</code> object content.
-It is a <code>list</code> that can contain the following:</p>
-<ul>
-<li><code>$call$subsets</code>: a vector of <code>character</code> with information on the subsets type (either <code>&quot;continuous&quot;</code>, <code>&quot;discrete&quot;</code> or <code>&quot;custom&quot;</code>), their eventual model (<code>&quot;acctran&quot;</code>, <code>&quot;deltran&quot;</code>, <code>&quot;random&quot;</code>, <code>&quot;proximity&quot;</code>, <code>&quot;equal.split&quot;</code>, <code>&quot;gradual.split&quot;</code>) and eventual information about the trees and matrices used through <code>chrono.subsets</code>. This element generated only once via <code>chrono.subsets()</code> and <code>custom.subsets()</code>.</li>
-<li><code>$call$dimensions</code>: either a single <code>numeric</code> value indicating how many dimensions to use or a vector of <code>numeric</code> values indicating which specific dimensions to use. This element is by default the number of columns in <code>$matrix</code> but can be modified through <code>boot.matrix()</code> or <code>dispRity()</code>.</li>
-<li><code>$call$bootstrap</code>: this is a <code>list</code> containing three elements:
-<ul>
-<li><code>[[1]]</code>: the number of bootstrap replicates (<code>numeric</code>)</li>
-<li><code>[[2]]</code>: the bootstrap method (<code>character</code>)</li>
-<li><code>[[3]]</code>: the rarefaction levels (<code>numeric</code> vector)</li>
-</ul></li>
-<li><code>$call$disparity</code>: this is a <code>list</code> containing one element, <code>$metric</code>, that is a <code>list</code> containing the different functions passed to the <code>metric</code> argument in <code>dispRity</code>. These are <code>call</code> elements and get modified each time the <code>dispRity</code> function is used (the first element is the first metric(s), the second, the second metric(s), etc.).</li>
-</ul>
-</div>
-<div id="subsets" class="section level3">
-<h3><span class="header-section-number">7.3.3</span> <code>$subsets</code></h3>
-<p>This element contain the eventual subsets of the multidimensional space.
-It is a <code>list</code> of subset names.
-Each subset name is in turn a <code>list</code> of at least one element called <code>elements</code> which is in turn a <code>matrix</code>.
-This <code>elements</code> matrix is the raw (observed) elements in the subsets.
-The <code>elements</code> matrix is composed of <code>numeric</code> values in one column and <em>n</em> rows (the number of elements in the subset).
-Each of these values are a “pointer” (<code>C</code> inspired) to the element of the <code>$matrix</code>.
-For example, lets assume a <code>dispRity</code> object called <code>disparity</code>, composed of at least one subsets called <code>sub1</code>:</p>
-<pre><code> disparity$subsets$sub1$elements
-      [,1]
- [1,]    5
- [2,]    4
- [3,]    6
- [4,]    7</code></pre>
-<p>The values in the matrix “point” to the elements in <code>$matrix</code>: here, the multidimensional space with only the 4th, 5th, 6th and 7th elements.
-The following elements in <code>diparity$subsets$sub1</code> will correspond to the same “pointers” but drawn from the bootstrap replicates.
-The columns will correspond to different bootstrap replicates.
-For example:</p>
-<pre><code> disparity$subsets$sub1[[2]]
-      [,1] [,2] [,3] [,4]
- [1,]   57   43   70    4
- [2,]   43   44    4    4
- [3,]   42   84   44    1
- [4,]   84    7    2   10</code></pre>
-<p>This signifies that we have four bootstrap pseudo-replicates pointing each time to four elements in <code>$matrix</code>.
-The next element (<code>[[3]]</code>) will be the same for the eventual first rarefaction level (i.e. the resulting bootstrap matrix will have <em>m</em> rows where <em>m</em> is the number of elements for this rarefaction level).
-The next element after that (<code>[[4]]</code>) will be the same for with an other rarefaction level and so forth…</p>
-<p>When a probabilistic model was used to select the elements (models that have the <code>&quot;split&quot;</code> suffix, e.g. <code>chrono.subsets(..., model = &quot;gradual.split&quot;)</code>), the <code>$elements</code> is a matrix containing a pair of elements of the matrix and a probability for sampling the first element in that list:</p>
-<pre><code> disparity$subsets$sub1$elements
-      [,1] [,2]       [,3]
- [1,]   73   36 0.01871893
- [2,]   74   37 0.02555876
- [3,]   33   38 0.85679821</code></pre>
-<p>In this example, you can read the table row by row as: “there is a probability of <code>0.018</code> for sampling element <code>73</code> and a probability of <code>0.82</code> (<code>1-0.018</code>) of sampling element <code>36</code>”.</p>
-</div>
-<div id="disparity" class="section level3">
-<h3><span class="header-section-number">7.3.4</span> <code>$disparity</code></h3>
-<p>The <code>$disparity</code> element is identical to the <code>$subsets</code> element structure (a list of list(s) containing matrices) but the matrices don’t contain “pointers” to <code>$matrix</code> but the disparity result of the disparity metric applied to the “pointers”.
-For example, in our first example (<code>$elements</code>) from above, if the disparity metric is of dimensions level 1, we would have:</p>
-<pre><code> disparity$disparity$sub1$elements
-      [,1]
- [1,]    1.82</code></pre>
-<p>This is the observed disparity (1.82) for the subset called <code>sub1</code>.
-If the disparity metric is of dimension level 2 (say the function <code>range</code> that outputs two values), we would have:</p>
-<pre><code> disparity$disparity$sub1$elements
-      [,1]
- [1,]    0.82
- [2,]    2.82</code></pre>
-<p>The following elements in the list follow the same logic as before: rows are disparity values (one row for a dimension level 1 metric, multiple for a dimensions level 2 metric) and columns are the bootstrap replicates (the bootstrap with all elements followed by the eventual rarefaction levels).
-For example for the bootstrap without rarefaction (second element of the list):</p>
-<pre><code> disparity$disparity$sub1[[2]]
-         [,1]     [,2]     [,3]     [,4]
-[1,] 1.744668 1.777418 1.781624 1.739679 </code></pre>
+<div id="analyse-the-results" class="section level2">
+<h2><span class="header-section-number">10.3</span> Analyse the results</h2>
+<p>We can visualise the results using the <code>plot</code> function on the resulting disparity objects (or summarising them using <code>summary</code>):</p>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb545-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb545-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb545-3" data-line-number="3"><span class="kw">plot</span>(disparity_size, <span class="dt">main =</span> <span class="st">&quot;group sizes&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb545-4" data-line-number="4"><span class="kw">plot</span>(disparity_position, <span class="dt">main =</span> <span class="st">&quot;group positions&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-182-1.png" width="672" /></p>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb546-1" data-line-number="1"><span class="co">## Summarising the results</span></a>
+<a class="sourceLine" id="cb546-2" data-line-number="2"><span class="kw">summary</span>(disparity_size)</a></code></pre></div>
+<pre><code>##         subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1  species.Jord 20 0.005     0.005 0.004 0.005 0.005 0.006
+## 2 species.Teyah 20 0.005     0.005 0.004 0.005 0.005 0.006
+## 3     site.Allo 20 0.004     0.004 0.003 0.003 0.004 0.004
+## 4     site.Symp 20 0.006     0.006 0.006 0.006 0.006 0.007</code></pre>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb548-1" data-line-number="1"><span class="kw">summary</span>(disparity_position)</a></code></pre></div>
+<pre><code>##         subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1  species.Jord 20 1.096     1.132 1.068 1.101 1.162 1.308
+## 2 species.Teyah 20 1.070     1.106 1.036 1.072 1.179 1.398
+## 3     site.Allo 20 1.377     1.404 1.306 1.366 1.462 1.545
+## 4     site.Symp 20 1.168     1.215 1.149 1.189 1.264 1.414</code></pre>
+<p>Just from looking at the data, we can guess that there is not much difference in terms of morphospace occupancy and position for the species but there is on for the sites (allopatric or sympatric).
+We can test it using a simple non-parametric mean difference test (e.g. <code>wilcox.test</code>) using the <code>dispRity</code> package.</p>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb550-1" data-line-number="1"><span class="co">## Testing the differences</span></a>
+<a class="sourceLine" id="cb550-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_size, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<pre><code>## [[1]]
+##                              statistic: W
+## species.Jord : species.Teyah         4421
+## species.Jord : site.Allo             9805
+## species.Jord : site.Symp               43
+## species.Teyah : site.Allo            9860
+## species.Teyah : site.Symp             294
+## site.Allo : site.Symp                   0
+## 
+## [[2]]
+##                                   p.value
+## species.Jord : species.Teyah 9.450517e-01
+## species.Jord : site.Allo     4.810990e-31
+## species.Jord : site.Symp     5.564894e-33
+## species.Teyah : site.Allo    9.734110e-32
+## species.Teyah : site.Symp    8.160120e-30
+## site.Allo : site.Symp        1.537286e-33</code></pre>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb552-1" data-line-number="1"><span class="kw">test.dispRity</span>(disparity_position, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<pre><code>## [[1]]
+##                              statistic: W
+## species.Jord : species.Teyah         5957
+## species.Jord : site.Allo               88
+## species.Jord : site.Symp             1204
+## species.Teyah : site.Allo             313
+## species.Teyah : site.Symp            1668
+## site.Allo : site.Symp                9497
+## 
+## [[2]]
+##                                   p.value
+## species.Jord : species.Teyah 1.166035e-01
+## species.Jord : site.Allo     2.113709e-32
+## species.Jord : site.Symp     1.076944e-19
+## species.Teyah : site.Allo    1.395623e-29
+## species.Teyah : site.Symp    2.368729e-15
+## site.Allo : site.Symp        2.656987e-27</code></pre>
+<p>So by applying the tests we see a difference in terms of position between each groups and differences in size between groups but between the species.</p>
 
 </div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-moms">
+<p>Guillerme, Thomas, Mark N Puttick, Ariel E Marcy, and Vera Weisbecker. 2020. “Shifting Spaces: Which Disparity or Dissimilarity Measurement Best Summarize Occupancy in Multidimensional Spaces?” <em>Ecology and Evolution</em>. Wiley Online Library.</p>
 </div>
 </div>
             </section>
@@ -517,8 +460,8 @@ For example for the bootstrap without rarefaction (second element of the list):<
           </div>
         </div>
       </div>
-<a href="other-functionalities.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ecology-demo.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -549,7 +492,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/06_guts.Rmd",
+"link": "https://github.com/TGuillerme/dispRity/inst/gitbook/edit/master/09_gmm-demo.Rmd",
 "text": "Edit"
 },
 "history": {

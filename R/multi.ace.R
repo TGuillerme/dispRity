@@ -46,7 +46,7 @@
 #' @return
 #' Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 #' To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
-#' To output the light version to be passed to \code{dispRity} functions (a list of two elements: 1) the input \code{matrix} and 2) a list of ancestral states matrices) you can use \code{output = "dispRity"}.
+# To output the light version to be passed to \code{dispRity} functions (a list of two elements: 1) the input \code{matrix} and 2) a list of ancestral states matrices) you can use \code{output = "dispRity"}.
 #' 
 #' @examples
 #' set.seed(42)
@@ -345,7 +345,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         output <- class(matrix)[1]
     } else {
         check.class(output, "character")
-        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix", "dispRity")
+        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix")#, "dispRity")
         check.method(output, available_methods, "output option")
         ## Combined
         if(output == "combined") {
@@ -481,8 +481,8 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         matrix          = return(output_matrix),
         list            = return(lapply(output_matrix, make.list)),
         combined.matrix = return(lapply(output_matrix, add.tips, matrix)),
-        combined.list   = return(lapply(lapply(output_matrix, add.tips, matrix), make.list)),
-        dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
+        combined.list   = return(lapply(lapply(output_matrix, add.tips, matrix), make.list))#,
+        #dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
         )
 }
 

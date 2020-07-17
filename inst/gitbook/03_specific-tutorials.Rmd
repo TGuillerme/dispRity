@@ -87,7 +87,7 @@ It is also possible to include nodes in each bin by using `inc.nodes = TRUE` and
 
 If you want to generate time subsets based on stratigraphy, the package proposes a useful functions to do it for you: `get.bin.ages` (check out the function's manual in `R`)!
 
-### Time-slicing
+### Time-slicing {#time-slicing}
 
 For the time-slicing method (`method = continuous`), the idea is fairly similar.
 This option, however, requires a matrix that contains the ordinated distance among taxa *and* nodes and an extra argument describing the assumed evolutionary model (via the `model` argument).
@@ -765,6 +765,54 @@ Since both the functions `angles` and `deviations` effectively run a `lm` or `gl
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
 
+### Which disparity metric to choose?
+
+The disparity metric that gives the most consistent results is the following one:
+
+```{r}
+best.metric <- function() return(42)
+```
+Joke aside, this is a legitimate question that has no simple answer: **it depends on the dataset and question at hand**.
+Thoughts on which metric to choose can be find in @moms and @Guillerme2020 but again, will ultimately depend on the question and dataset.
+The question should help figuring out which type of metric is desired: for example, in the question "does the extinction released niches for mammals to evolve", the metric in interest should probably pick up a change in size in the trait space (the release could result in some expansion of the mammalian morphospace); or if the question is "does group X compete with group Y", maybe the metric of interested should pick up changes in position (group X can be displaced by group Y).
+
+In order to visualise what signal different disparity metrics are picking, you can use the [`moms`](https://tguillerme.shinyapps.io/moms/) that come with a detailed [manual](https://rawcdn.githack.com/TGuillerme/moms/master/inst/moms_vignette.html) on how to use it.
+
+Alternatively, you can use the `test.metric` function:
+
+#### `test.metric` {#test-metric}
+
+This function allows to test whether a metric picks different changes in disparity. It intakes the space on which to test the metric, the disparity metric and the type of changes to apply gradually to the space.
+Basically this is a type of biased data rarefaction (or non-biased for `"random"`) to see how the metric reacts to specific changes in trait space.
+
+```{r}
+# Creating a 2D uniform space
+example_space <- space.maker(300, 2, runif)
+
+## Testing the product of ranges metric on the example space
+example_test <- test.metric(example_space, metric = c(prod, ranges),
+                           shifts = c("random", "size")) 
+```
+
+By default, the test runs three replicates of space reduction as described in @moms by gradually removing 10% of the data points following the different algorithms from @moms (here the `"random"` reduction and the `"size"`) reduction, resulting in a `dispRity` object that can be summarised or plotted.
+The number of replicates can be changed using the `replicates` option.
+Still by default, the function then runs a linear model on the simulated data to measure some potential trend in the changes in disparity. 
+The model can be changed using the `model` option.
+Finally, the function runs 10 reductions by default from keeping 10% of the data (removing 90%) and way up to keeping 100% of the data (removing 0%).
+This can be changed using the `steps` option.
+A good disparity metric for your dataset will typically have no trend in the `"random"` reduction (the metric is ideally not affected by sample size) but should have a trend for the reduction of interest.
+
+```{r, fig.height = 16, fig.width = 6}
+## The results as a dispRity object
+example_test
+
+## Summarising these results
+summary(example_test)
+
+## Or visualising them
+plot(example_test)
+```
+
 ## Summarising dispRity data (plots)
 
 Because of its architecture, printing `dispRity` objects only summarises their content but does not print the disparity value measured or associated analysis (more about this [here](#manipulating-dispRity-objects)).
@@ -897,7 +945,7 @@ op <- par(bty = "n")
 ## Plotting the results with some classic options from plot
 plot(disparity_time_slices, col = c("blue", "orange", "green"),
     ylab = c("Some measurement"), xlab = "Some other measurement",
-    main = "Many options...", ylim = c(5, 0), xlim = c(4, 0))
+    main = "Many options...", ylim = c(10, 0), xlim = c(4, 0))
 
 ## Adding a legend
 legend("topleft", legend = c("Central tendency",
@@ -938,9 +986,9 @@ For comparing results, it is also possible to add a plot to the existent plot by
 op <- par(bty = "n")
 
 ## Plotting the continuous disparity with a fixed y axis
-plot(disparity_time_slices, ylim = c(1, 4))
+plot(disparity_time_slices, ylim = c(3, 9))
 ## Adding the discrete data
-plot(disparity_time_bins, type = "line", ylim = c(1, 4),
+plot(disparity_time_bins, type = "line", ylim = c(3, 9),
      xlab = "", ylab = "", add = TRUE)
 
 ## Resetting graphical parameters
@@ -998,7 +1046,7 @@ Groups that don't overlap on two set dimensions can totally overlap in all other
 For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
 However you can always force the `preview` option using the following:
 
-```{r}
+```{r, fig.height = 16, fig.width = 8}
 par(mfrow = c(2,1))
 ## Default plotting
 plot(disparity_time_slices, main = "Disparity through time")
@@ -1055,7 +1103,7 @@ Because of the modular design of the package, tests can always be made by the us
 The only condition is that the test can be applied to at least two distributions.
 In practice, the `test.dispRity` function will pass the calculated disparity data (distributions) to the provided function in either pairs of distributions (if the `comparisons` argument is set to `pairwise`, `referential` or `sequential`) or a table containing all the distributions (`comparisons = all`; this should be in the same format as data passed to `lm`-type functions for example).
 
-### NPMANOVA in `dispRity`
+### NPMANOVA in `dispRity` {#adonis}
 
 One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis`.
 This can be done on `dispRity` objects using the `adonis.dispRity` wrapper function.
@@ -1128,7 +1176,7 @@ To use each time subset as a separate predictor, you can use the `matrix ~ chron
 adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 ```
 
-### `geiger::dtt` model fitting in `dispRity`
+### `geiger::dtt` model fitting in `dispRity` {#dtt}
 
 The `dtt` function from the `geiger` package is also often used to compare a trait's disparity observed in living taxa to the disparity of a simulated trait based on a given phylogeny.
 The `dispRity` package proposes a wrapper function for `geiger::dtt`, `dtt.dispRity` that allows the use of any disparity metric.
@@ -1150,7 +1198,7 @@ plot(dispRity_dtt, fig.width=8, fig.height=8)
 
 Note that, like in the original `dtt` function, it is possible to change the evolutionary model (see `?geiger::sim.char` documentation).
 
-### null morphospace testing with `null.test`
+### null morphospace testing with `null.test` {#null-test}
 
 This test is equivalent to the test performed in @diaz2016global.
 It compares the disparity measured in the observed space to the disparity measured in a set of simulated spaces.
@@ -1194,7 +1242,7 @@ For more details on generating spaces see the [`space.maker`](#Simulating-multid
 
 
 
-## Fitting modes of evolution to disparity data
+## Fitting modes of evolution to disparity data {#model-fitting}
 
 The code used for these models is based on those developed by Gene Hunt [@hunt2006fitting; @hunt2012measuring; @hunt2015simple].
 So we acknowledge and thank Gene Hunt for developing these models and writing the original R code that served as inspiration for these models.
@@ -1488,7 +1536,7 @@ plot(BeckLee_disparity, add = TRUE, col = c("#3E9CBA", "#98D4CF90", "#BFE4E390")
 
 
 
-## Disparity as a distribution
+## Disparity as a distribution {#disparity-distribution}
 
 Disparity is often regarded as a summary value of the position of the all elements in the ordinated space.
 For example, the sum of variances, the product of ranges or the median distance between the elements and their centroid will summarise disparity as a single value.
@@ -1579,7 +1627,7 @@ For example, when comparing the slices 120 and 80, we have a mean probability of
 Note that the quantiles and central tendencies can be modified via the `conc.quantiles` option.
 
 
-## Disparity from other matrices
+## Disparity from other matrices {#other-matrices}
 
 In the example so far, disparity was measured from an ordinated multidimensional space (i.e. a PCO of the distances between taxa based on discrete morphological characters).
 This is a common approach in palaeobiology, morphometrics or ecology but ordinated matrices are not mandatory for the `dispRity` package!

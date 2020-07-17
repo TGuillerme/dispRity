@@ -32,7 +32,7 @@ test.metric(
 
 \item{replicates}{A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.}
 
-\item{steps}{The number of steps in the space reduction to output between 0\% and 100\%. By default \code{steps = 11}.}
+\item{steps}{The number of steps in the space reduction to output between 10\% and 100\%. By default \code{steps = 10}.}
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 

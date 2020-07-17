@@ -102,10 +102,10 @@ optimise.results <- function(to_remove, fun, remove, args, tuning, verbose = FAL
 }
 
 ## The different run functions
-run.limit.removal <- function(space, parameters) {
+run.size.removal <- function(space, parameters) {
     return(apply(space, 1, point.in.circle, centre = parameters$centre, radius = parameters$optimise))
 }
-# run.displacement.removal <- function(space, parameters, scree) {
+# run.position.removal <- function(space, parameters, scree) {
 #     return(apply(space, 1, select.value, value = parameters$optimise* ))
 # }
 run.density.removal <- function(space, parameters, scree) {
@@ -142,4 +142,40 @@ get.neigbhours <- function(distance, diameter = 0.1) {
 
     ## Select the neighbors
     return(unique(neighbors[neighbors[,1] != neighbors[,2]]))
+}
+
+
+# ' @description Selects pairs of nearest neighbours
+# ' @param space the space
+# ' @param bw the bandwidth selector function
+# '
+get.prob.vector <- function(space, bw) {
+    ## Get the scaled variance per axis
+    get.dimension.correction <- function(space) {
+        var_axis <- apply(space, 2, var)
+        return(var_axis/sum(var_axis))
+    }
+
+    ## Get the sampling prob per axis
+    get.prob.axis <- function(axis, bw) {
+        ## Select the breaks
+        band_width <- bw(axis)
+        breaks <- seq(from = min(axis - band_width), to = max(axis + band_width), by = band_width) 
+
+        ## Get the counts
+        counts <- hist(axis, breaks = breaks, plot = FALSE)$counts
+
+        ## Sort each values in each breaks
+        proba_counts <- cut(axis, breaks)
+
+        ## Transform the levels into the probabilities
+        levels(proba_counts) <- counts/sum(counts)
+        return(as.numeric(as.character(proba_counts)))
+    }
+
+    ## Count the probability of sampling per axis
+    probabilities_table <- apply(space, 2, get.prob.axis, bw)
+
+    ## Get the sum probability vector (scaled)
+    return(apply(probabilities_table/get.dimension.correction(space), 1, sum))
 }

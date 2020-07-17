@@ -154,7 +154,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             ## Set up the plotting window
             ## Open the multiple plots
             if(length_data != 1) {
-                op_tmp <- par(mfrow = c(ceiling(sqrt(length_data)), round(sqrt(length_data))))
+                plot_size <- ifelse(length_data == 3, 4, length_data)
+                op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)), round(sqrt(plot_size))))
 
                 ## Rarefaction plots
                 for(model in 1:length_data) {
@@ -333,8 +334,11 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             n_plots <- length(unique(group_plot))
 
             if(n_plots > 1){
+                ## Correct the number of plots if only 3
+                plot_size <- ifelse(n_plots == 3, 4, n_plots)
+
                 ## Setting up plotting window
-                op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),floor(sqrt(n_plots))))
+                op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
             }
 
             ## Separating the data
@@ -379,7 +383,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 plot(plot_data[[1]],
                     ylim = all_ylim,
                     xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[[1]][,1]))} else {xlim},
-                    xlab = if(missing(xlab))      {"Amount of data (%)"} else {xlab},
+                    xlab = if(missing(xlab))      {"Amount of data considered (%)"} else {xlab},
                     ylab = if(missing(ylab))      {data$call$metric} else {ylab},
                     pch  = if(is.null(dots$pch))  {19} else {dots$pch},
                     main = if(is.null(dots$main)) {unique(group_plot)[[one_plot]]} else {dots$main},
@@ -671,7 +675,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         n_plots <- length(data$subsets)
 
         ## Open the multiple plots
-        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+        plot_size <- ifelse(n_plots == 3, 4, n_plots)
+        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
 
         ## Rarefaction plots
 

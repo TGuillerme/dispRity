@@ -175,7 +175,7 @@ test_that("check.dispRity.data works", {
 
     ## All errors
     error <- capture_error(check.dispRity.data("a"))
-    expect_equal(error[[1]], "data must be of class matrix or list.")
+    expect_equal(error[[1]], "data must be of class matrix or data.frame or list.")
     expect_warning(error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a"))))
     expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and row names.")
     error2 <- list(matrix(c(1,2)), matrix(c(1,2,3)))

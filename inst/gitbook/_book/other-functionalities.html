@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-07-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -172,6 +172,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-implemented-in-disprity"><i class="fa fa-check"></i><b>4.4.4</b> Metrics implemented in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#equations-and-implementations"><i class="fa fa-check"></i><b>4.4.5</b> Equations and implementations</a></li>
 <li class="chapter" data-level="4.4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#using-the-different-disparity-metrics"><i class="fa fa-check"></i><b>4.4.6</b> Using the different disparity metrics</a></li>
+<li class="chapter" data-level="4.4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#which-disparity-metric-to-choose"><i class="fa fa-check"></i><b>4.4.7</b> Which disparity metric to choose?</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a><ul>
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
@@ -179,18 +180,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.5.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#type-preview"><i class="fa fa-check"></i><b>4.5.3</b> <code>type = preview</code></a></li>
 </ul></li>
 <li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#npmanova-in-disprity"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
-<li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#geigerdtt-model-fitting-in-disprity"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
-<li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-morphospace-testing-with-null.test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
+<li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#adonis"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
+<li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#dtt"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
+<li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#fitting-modes-of-evolution-to-disparity-data"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model-fitting"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
 <li class="chapter" data-level="4.7.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simple-modes-of-disparity-change-through-time"><i class="fa fa-check"></i><b>4.7.1</b> Simple modes of disparity change through time</a></li>
 <li class="chapter" data-level="4.7.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plot-and-run-simulation-tests-in-a-single-step"><i class="fa fa-check"></i><b>4.7.2</b> Plot and run simulation tests in a single step</a></li>
 <li class="chapter" data-level="4.7.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multiple-modes-of-evolution-time-shifts"><i class="fa fa-check"></i><b>4.7.3</b> Multiple modes of evolution (time shifts)</a></li>
 <li class="chapter" data-level="4.7.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model.test.sim"><i class="fa fa-check"></i><b>4.7.4</b> <code>model.test.sim</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-as-a-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
-<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-from-other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
+<li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
+<li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 <li class="chapter" data-level="4.10" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multi.input"><i class="fa fa-check"></i><b>4.10</b> Disparity from multiple matrices (and multiple trees!)</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
@@ -220,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
 <li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
-<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#the-disprity-object-content"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
 <li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
 <li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
@@ -240,14 +241,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
 <li class="chapter" data-level="9.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>9.1</b> Before starting</a><ul>
 <li class="chapter" data-level="9.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>9.1.1</b> The morphospace</a></li>
+<li class="chapter" data-level="9.1.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#setting-up-your-own-data"><i class="fa fa-check"></i><b>9.1.2</b> Setting up your own data</a></li>
 </ul></li>
 <li class="chapter" data-level="9.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>9.2</b> A disparity-through-time analysis</a><ul>
 <li class="chapter" data-level="9.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>9.2.1</b> Splitting the morphospace through time</a></li>
 <li class="chapter" data-level="9.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>9.2.2</b> Bootstrapping the data</a></li>
 <li class="chapter" data-level="9.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity-1"><i class="fa fa-check"></i><b>9.2.3</b> Calculating disparity</a></li>
 <li class="chapter" data-level="9.2.4" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results"><i class="fa fa-check"></i><b>9.2.4</b> Plotting the results</a></li>
+<li class="chapter" data-level="9.2.5" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>9.2.5</b> Testing differences</a></li>
 </ul></li>
-<li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#testing-differences"><i class="fa fa-check"></i><b>9.3</b> Testing differences</a></li>
+<li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#some-more-advanced-stuff"><i class="fa fa-check"></i><b>9.3</b> Some more advanced stuff</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html"><i class="fa fa-check"></i><b>10</b> Morphometric geometric demo: a between group analysis</a><ul>
+<li class="chapter" data-level="10.1" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#before-starting-1"><i class="fa fa-check"></i><b>10.1</b> Before starting</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#the-morphospace-1"><i class="fa fa-check"></i><b>10.1.1</b> The morphospace</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#calculating-disparity-2"><i class="fa fa-check"></i><b>10.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="10.3" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#analyse-the-results"><i class="fa fa-check"></i><b>10.3</b> Analyse the results</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -286,12 +296,12 @@ This bitwise operations translates the character states into binary values.
 This way, <code>0</code> becomes <code>1</code>, <code>1</code> becomes <code>2</code>, <code>2</code> becomes <code>4</code>, <code>3</code> becomes <code>8</code>, etc…
 Specifically it can handle any rules specific to special tokens (i.e. symbols) for discrete morphological characters. For example, should you treat missing values <code>&quot;?&quot;</code> as <code>NA</code> (ignoring them) or as any possible character state (e.g. <code>c(&quot;0&quot;, &quot;1&quot;)</code>?)? And how to treat characters with a ampersand (<code>&quot;&amp;&quot;</code>)? <code>char.diff</code> can answer to all these questions!</p>
 <p>Let’s start by a basic binary matrix 4*3 with random <code>integer</code>:</p>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1"><span class="co">## A random binary matrix</span></a>
-<a class="sourceLine" id="cb371-2" data-line-number="2">matrix_binary &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dv">12</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ncol =</span> <span class="dv">4</span>,</a>
-<a class="sourceLine" id="cb371-3" data-line-number="3">                        <span class="dt">dimnames =</span> <span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]))</a></code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" data-line-number="1"><span class="co">## A random binary matrix</span></a>
+<a class="sourceLine" id="cb380-2" data-line-number="2">matrix_binary &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dv">12</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ncol =</span> <span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb380-3" data-line-number="3">                        <span class="dt">dimnames =</span> <span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]))</a></code></pre></div>
 <p>By default, <code>char.diff</code> measures the hamming distance between characters:</p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1"><span class="co">## The hamming distance between characters</span></a>
-<a class="sourceLine" id="cb372-2" data-line-number="2">(differences &lt;-<span class="st"> </span><span class="kw">char.diff</span>(matrix_binary))</a></code></pre></div>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1"><span class="co">## The hamming distance between characters</span></a>
+<a class="sourceLine" id="cb381-2" data-line-number="2">(differences &lt;-<span class="st"> </span><span class="kw">char.diff</span>(matrix_binary))</a></code></pre></div>
 <pre><code>##   A B C D
 ## A 0 0 1 1
 ## B 0 0 1 1
@@ -301,13 +311,13 @@ Specifically it can handle any rules specific to special tokens (i.e. symbols) 
 ## [1] &quot;matrix&quot;    &quot;char.diff&quot;</code></pre>
 <p>Note that the results is just a pairwise distance (dissimilarity) matrix with some special dual class <code>matrix</code> and <code>char.diff</code>.
 This means it can easily be plotted via the disparity package:</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="co">## Visualising the matrix</span></a>
-<a class="sourceLine" id="cb374-2" data-line-number="2"><span class="kw">plot</span>(differences)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" data-line-number="1"><span class="co">## Visualising the matrix</span></a>
+<a class="sourceLine" id="cb383-2" data-line-number="2"><span class="kw">plot</span>(differences)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-119-1.png" width="672" /></p>
 <p>You can check all the numerous plotting options in the <code>?plot.char.diff</code> manual (it won’t be developed here).</p>
 <p>The <code>char.diff</code> function has much more options however (see all of them in the <code>?char.diff</code> manual) for example to measure different differences (via <code>method</code>) or making the comparison work per row (for a distance matrix between the rows):</p>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1"><span class="co">## Euclidean distance between rows</span></a>
-<a class="sourceLine" id="cb375-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_binary, <span class="dt">by.col =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" data-line-number="1"><span class="co">## Euclidean distance between rows</span></a>
+<a class="sourceLine" id="cb384-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_binary, <span class="dt">by.col =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;euclidean&quot;</span>)</a></code></pre></div>
 <pre><code>##          a        b        c
 ## a 0.000000 1.414214 1.414214
 ## b 1.414214 0.000000 0.000000
@@ -316,9 +326,9 @@ This means it can easily be plotted via the disparity package:</p>
 ## [1] &quot;matrix&quot;    &quot;char.diff&quot;</code></pre>
 <p>We can however make it more interesting by playing with the different rules to play with different tokens.
 First let’s create a matrix with morphological characters as numeric <code>character</code>s:</p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co">## A random character matrix</span></a>
-<a class="sourceLine" id="cb377-2" data-line-number="2">(matrix_character &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;0&quot;</span>,<span class="st">&quot;1&quot;</span>,<span class="st">&quot;2&quot;</span>), <span class="dv">30</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ncol =</span> <span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb377-3" data-line-number="3">                           <span class="dt">dimnames =</span> <span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>], LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])))</a></code></pre></div>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" data-line-number="1"><span class="co">## A random character matrix</span></a>
+<a class="sourceLine" id="cb386-2" data-line-number="2">(matrix_character &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;0&quot;</span>,<span class="st">&quot;1&quot;</span>,<span class="st">&quot;2&quot;</span>), <span class="dv">30</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ncol =</span> <span class="dv">5</span>,</a>
+<a class="sourceLine" id="cb386-3" data-line-number="3">                           <span class="dt">dimnames =</span> <span class="kw">list</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>], LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])))</a></code></pre></div>
 <pre><code>##   A   B   C   D   E  
 ## a &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;0&quot;
 ## b &quot;0&quot; &quot;2&quot; &quot;0&quot; &quot;2&quot; &quot;0&quot;
@@ -326,8 +336,8 @@ First let’s create a matrix with morphological characters as numeric <code>cha
 ## d &quot;1&quot; &quot;2&quot; &quot;0&quot; &quot;0&quot; &quot;1&quot;
 ## e &quot;2&quot; &quot;2&quot; &quot;1&quot; &quot;1&quot; &quot;2&quot;
 ## f &quot;0&quot; &quot;2&quot; &quot;0&quot; &quot;2&quot; &quot;0&quot;</code></pre>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="co">## The hamming difference between columns</span></a>
-<a class="sourceLine" id="cb379-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_character)</a></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="co">## The hamming difference between columns</span></a>
+<a class="sourceLine" id="cb388-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_character)</a></code></pre></div>
 <pre><code>##     A   B   C   D   E
 ## A 0.0 0.6 0.6 0.6 0.8
 ## B 0.6 0.0 0.4 0.4 0.8
@@ -337,14 +347,14 @@ First let’s create a matrix with morphological characters as numeric <code>cha
 ## attr(,&quot;class&quot;)
 ## [1] &quot;matrix&quot;    &quot;char.diff&quot;</code></pre>
 <p>Here the characters are automatically converted into bitwise integers to be compared efficiently. We can now add some more special tokens like <code>&quot;?&quot;</code> or <code>&quot;0/1&quot;</code> for uncertainties between state <code>&quot;0&quot;</code> and <code>&quot;1&quot;</code> but not <code>&quot;2&quot;</code>:</p>
-<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" data-line-number="1"><span class="co">## Adding uncertain characters</span></a>
-<a class="sourceLine" id="cb381-2" data-line-number="2">matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">8</span>)] &lt;-<span class="st"> &quot;0/1&quot;</span></a>
-<a class="sourceLine" id="cb381-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb381-4" data-line-number="4"><span class="co">## Adding missing data</span></a>
-<a class="sourceLine" id="cb381-5" data-line-number="5">(matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">5</span>)] &lt;-<span class="st"> &quot;?&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="co">## Adding uncertain characters</span></a>
+<a class="sourceLine" id="cb390-2" data-line-number="2">matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">8</span>)] &lt;-<span class="st"> &quot;0/1&quot;</span></a>
+<a class="sourceLine" id="cb390-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb390-4" data-line-number="4"><span class="co">## Adding missing data</span></a>
+<a class="sourceLine" id="cb390-5" data-line-number="5">(matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">5</span>)] &lt;-<span class="st"> &quot;?&quot;</span>)</a></code></pre></div>
 <pre><code>## [1] &quot;?&quot;</code></pre>
-<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" data-line-number="1"><span class="co">## The hamming difference between columns including the special characters</span></a>
-<a class="sourceLine" id="cb383-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_character)</a></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="co">## The hamming difference between columns including the special characters</span></a>
+<a class="sourceLine" id="cb392-2" data-line-number="2"><span class="kw">char.diff</span>(matrix_character)</a></code></pre></div>
 <pre><code>##           A         B    C    D         E
 ## A 0.0000000 0.6666667 1.00 0.50 0.6666667
 ## B 0.6666667 0.0000000 1.00 1.00 0.7500000
@@ -357,29 +367,29 @@ First let’s create a matrix with morphological characters as numeric <code>cha
 We can specify both the special tokens and the special behaviours to consider via <code>special.tokens</code> and <code>special.behaviours</code>.
 The <code>special.tokens</code> are <code>missing = &quot;?&quot;</code>, <code>inapplicable = &quot;-&quot;</code>, <code>uncertainty = &quot;\&quot;</code> and <code>polymorphism = &quot;&amp;&quot;</code> meaning we don’t have to modify them for now.
 However, say we want to change the behaviour for <code>&quot;?&quot;</code> and treat them as all possible characters and treat <code>&quot;/&quot;</code> as only the character <code>&quot;0&quot;</code> (as an integer) we can specify them giving a behaviour function:</p>
-<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="co">## Specifying some special behaviours</span></a>
-<a class="sourceLine" id="cb385-2" data-line-number="2">my_special_behaviours &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">missing =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(y),</a>
-<a class="sourceLine" id="cb385-3" data-line-number="3">                              <span class="dt">uncertainty =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="kw">as.integer</span>(<span class="dv">0</span>)))</a>
-<a class="sourceLine" id="cb385-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb385-5" data-line-number="5"><span class="co">## Passing these special behaviours to the char.diff function</span></a>
-<a class="sourceLine" id="cb385-6" data-line-number="6"><span class="kw">char.diff</span>(matrix_character, <span class="dt">special.behaviour =</span> my_special_behaviours)</a></code></pre></div>
-<pre><code>##     A         B         C D         E
-## A 0.0 0.5000000 0.5000000 0 0.5000000
-## B 0.5 0.0000000 1.0000000 1 0.6666667
-## C 0.5 1.0000000 0.0000000 0 0.3333333
-## D 0.0 1.0000000 0.0000000 0 1.0000000
-## E 0.5 0.6666667 0.3333333 1 0.0000000
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" data-line-number="1"><span class="co">## Specifying some special behaviours</span></a>
+<a class="sourceLine" id="cb394-2" data-line-number="2">my_special_behaviours &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">missing =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(y),</a>
+<a class="sourceLine" id="cb394-3" data-line-number="3">                              <span class="dt">uncertainty =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="kw">as.integer</span>(<span class="dv">0</span>)))</a>
+<a class="sourceLine" id="cb394-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb394-5" data-line-number="5"><span class="co">## Passing these special behaviours to the char.diff function</span></a>
+<a class="sourceLine" id="cb394-6" data-line-number="6"><span class="kw">char.diff</span>(matrix_character, <span class="dt">special.behaviour =</span> my_special_behaviours)</a></code></pre></div>
+<pre><code>##     A   B   C   D   E
+## A 0.0 0.6 0.6 0.6 0.6
+## B 0.6 0.0 0.8 0.8 0.8
+## C 0.6 0.8 0.0 0.4 0.6
+## D 0.6 0.8 0.4 0.0 1.0
+## E 0.6 0.8 0.6 1.0 0.0
 ## attr(,&quot;class&quot;)
 ## [1] &quot;matrix&quot;    &quot;char.diff&quot;</code></pre>
 <p>The results are quiet different as before! Note that you can also specify some really specific behaviours for any type of special token.</p>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" data-line-number="1"><span class="co">## Adding weird tokens to the matrix</span></a>
-<a class="sourceLine" id="cb387-2" data-line-number="2">matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">8</span>)] &lt;-<span class="st"> &quot;%&quot;</span></a>
-<a class="sourceLine" id="cb387-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb387-4" data-line-number="4"><span class="co">## Specify the new token and the new behaviour</span></a>
-<a class="sourceLine" id="cb387-5" data-line-number="5"><span class="kw">char.diff</span>(matrix_character, <span class="dt">special.tokens =</span> <span class="kw">c</span>(<span class="dt">weird_one =</span> <span class="st">&quot;%&quot;</span>),</a>
-<a class="sourceLine" id="cb387-6" data-line-number="6">                            <span class="dt">special.behaviours =</span> <span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb387-7" data-line-number="7">                                <span class="dt">weird_one =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="kw">as.integer</span>(<span class="dv">42</span>)))</a>
-<a class="sourceLine" id="cb387-8" data-line-number="8">                            )</a></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" data-line-number="1"><span class="co">## Adding weird tokens to the matrix</span></a>
+<a class="sourceLine" id="cb396-2" data-line-number="2">matrix_character[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dv">8</span>)] &lt;-<span class="st"> &quot;%&quot;</span></a>
+<a class="sourceLine" id="cb396-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb396-4" data-line-number="4"><span class="co">## Specify the new token and the new behaviour</span></a>
+<a class="sourceLine" id="cb396-5" data-line-number="5"><span class="kw">char.diff</span>(matrix_character, <span class="dt">special.tokens =</span> <span class="kw">c</span>(<span class="dt">weird_one =</span> <span class="st">&quot;%&quot;</span>),</a>
+<a class="sourceLine" id="cb396-6" data-line-number="6">                            <span class="dt">special.behaviours =</span> <span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb396-7" data-line-number="7">                                <span class="dt">weird_one =</span> <span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="kw">as.integer</span>(<span class="dv">42</span>)))</a>
+<a class="sourceLine" id="cb396-8" data-line-number="8">                            )</a></code></pre></div>
 <pre><code>##     A   B C D   E
 ## A   0   1 1 0 NaN
 ## B   1   0 1 1 NaN
@@ -394,14 +404,14 @@ However, say we want to change the behaviour for <code>&quot;?&quot;</code> and 
 <h2><span class="header-section-number">6.2</span> <code>clean.data</code></h2>
 <p>This is a rather useful function that allows matching a <code>matrix</code> or a <code>data.frame</code> to a tree (<code>phylo</code>) or a distribution of trees (<code>multiPhylo</code>).
 This function outputs the cleaned data and trees (if cleaning was needed) and a list of dropped rows and tips.</p>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" data-line-number="1"><span class="co">## Generating a trees with labels from a to e</span></a>
-<a class="sourceLine" id="cb389-2" data-line-number="2">dummy_tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">5</span>, <span class="dt">tip.label =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a>
-<a class="sourceLine" id="cb389-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb389-4" data-line-number="4"><span class="co">## Generating a matrix with rows from b to f</span></a>
-<a class="sourceLine" id="cb389-5" data-line-number="5">dummy_data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(LETTERS[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>], <span class="kw">c</span>(<span class="st">&quot;var1&quot;</span>, <span class="st">&quot;var2&quot;</span>)))</a>
-<a class="sourceLine" id="cb389-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb389-7" data-line-number="7"><span class="co">##Cleaning the trees and the data</span></a>
-<a class="sourceLine" id="cb389-8" data-line-number="8">(cleaned &lt;-<span class="st"> </span><span class="kw">clean.data</span>(<span class="dt">data =</span> dummy_data, <span class="dt">tree =</span> dummy_tree))</a></code></pre></div>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" data-line-number="1"><span class="co">## Generating a trees with labels from a to e</span></a>
+<a class="sourceLine" id="cb398-2" data-line-number="2">dummy_tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">5</span>, <span class="dt">tip.label =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a>
+<a class="sourceLine" id="cb398-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb398-4" data-line-number="4"><span class="co">## Generating a matrix with rows from b to f</span></a>
+<a class="sourceLine" id="cb398-5" data-line-number="5">dummy_data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(LETTERS[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>], <span class="kw">c</span>(<span class="st">&quot;var1&quot;</span>, <span class="st">&quot;var2&quot;</span>)))</a>
+<a class="sourceLine" id="cb398-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb398-7" data-line-number="7"><span class="co">##Cleaning the trees and the data</span></a>
+<a class="sourceLine" id="cb398-8" data-line-number="8">(cleaned &lt;-<span class="st"> </span><span class="kw">clean.data</span>(<span class="dt">data =</span> dummy_data, <span class="dt">tree =</span> dummy_tree))</a></code></pre></div>
 <pre><code>## $tree
 ## 
 ## Phylogenetic tree with 4 tips and 3 internal nodes.
@@ -427,9 +437,9 @@ This function outputs the cleaned data and trees (if cleaning was needed) and a 
 <div id="crown.stem" class="section level2">
 <h2><span class="header-section-number">6.3</span> <code>crown.stem</code></h2>
 <p>This function quiet handily separates tips from a phylogeny between crown members (the living taxa and their descendants) and their stem members (the fossil taxa without any living relatives).</p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" data-line-number="1"><span class="kw">data</span>(BeckLee_tree)</a>
-<a class="sourceLine" id="cb391-2" data-line-number="2"><span class="co">## Diving both crow and stem species</span></a>
-<a class="sourceLine" id="cb391-3" data-line-number="3">(<span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb400-1" data-line-number="1"><span class="kw">data</span>(BeckLee_tree)</a>
+<a class="sourceLine" id="cb400-2" data-line-number="2"><span class="co">## Diving both crow and stem species</span></a>
+<a class="sourceLine" id="cb400-3" data-line-number="3">(<span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>))</a></code></pre></div>
 <pre><code>## $crown
 ##  [1] &quot;Dasypodidae&quot;     &quot;Bradypus&quot;        &quot;Myrmecophagidae&quot; &quot;Todralestes&quot;    
 ##  [5] &quot;Potamogalinae&quot;   &quot;Dilambdogale&quot;    &quot;Widanelfarasia&quot;  &quot;Rhynchocyon&quot;    
@@ -455,7 +465,7 @@ To see a more applied example: this function is used in <a href="details-of-spec
 <h2><span class="header-section-number">6.4</span> <code>get.bin.ages</code></h2>
 <p>This function is similar than the <code>crown.stem</code> one as it is based on a tree but this one outputs the stratigraphic bins ages that the tree is covering.
 This can be useful to generate precise bin ages for the <code>chrono.subsets</code> function:</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="kw">get.bin.ages</span>(BeckLee_tree)</a></code></pre></div>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" data-line-number="1"><span class="kw">get.bin.ages</span>(BeckLee_tree)</a></code></pre></div>
 <pre><code>##  [1] 132.9000 129.4000 125.0000 113.0000 100.5000  93.9000  89.8000  86.3000
 ##  [9]  83.6000  72.1000  66.0000  61.6000  59.2000  56.0000  47.8000  41.2000
 ## [17]  37.8000  33.9000  28.1000  23.0300  20.4400  15.9700  13.8200  11.6300
@@ -469,60 +479,60 @@ To see a more applied example: this function is used in <a href="details-of-spec
 <h2><span class="header-section-number">6.5</span> <code>pair.plot</code></h2>
 <p>This utility function allows to plot a matrix image of pairwise comparisons.
 This can be useful when getting pairwise comparisons and if you’d like to see at a glance which pairs of comparisons have high or low values.</p>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" data-line-number="1"><span class="co">## Random data</span></a>
-<a class="sourceLine" id="cb395-2" data-line-number="2">data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">runif</span>(<span class="dv">42</span>), <span class="dt">ncol =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb395-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb395-4" data-line-number="4"><span class="co">## Plotting the first column as a pairwise comparisons</span></a>
-<a class="sourceLine" id="cb395-5" data-line-number="5"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;blue&quot;</span>), <span class="dt">legend =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="dv">1</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-125-1.png" width="672" /></p>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" data-line-number="1"><span class="co">## Random data</span></a>
+<a class="sourceLine" id="cb404-2" data-line-number="2">data &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">runif</span>(<span class="dv">42</span>), <span class="dt">ncol =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb404-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb404-4" data-line-number="4"><span class="co">## Plotting the first column as a pairwise comparisons</span></a>
+<a class="sourceLine" id="cb404-5" data-line-number="5"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;blue&quot;</span>), <span class="dt">legend =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="dv">1</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-128-1.png" width="672" /></p>
 <p>Here blue squares are ones that have a high value and orange ones the ones that have low values.
 Note that the values plotted correspond the first column of the data as designated by <code>what = 1</code>.</p>
 <p>It is also possible to add some tokens or symbols to quickly highlight to specific cells, for example which elements in the data are below a certain value:</p>
-<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" data-line-number="1"><span class="co">## The same plot as before without the diagonal being the maximal observed value</span></a>
-<a class="sourceLine" id="cb396-2" data-line-number="2"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;blue&quot;</span>), <span class="dt">legend =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="st">&quot;max&quot;</span>)</a>
-<a class="sourceLine" id="cb396-3" data-line-number="3"><span class="co">## Highlighting with an asterisk which squares have a value below 0.2</span></a>
-<a class="sourceLine" id="cb396-4" data-line-number="4"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">binary =</span> <span class="fl">0.2</span>, <span class="dt">add =</span> <span class="st">&quot;*&quot;</span>, <span class="dt">cex =</span> <span class="dv">2</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-126-1.png" width="672" /></p>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="co">## The same plot as before without the diagonal being the maximal observed value</span></a>
+<a class="sourceLine" id="cb405-2" data-line-number="2"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;blue&quot;</span>), <span class="dt">legend =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="st">&quot;max&quot;</span>)</a>
+<a class="sourceLine" id="cb405-3" data-line-number="3"><span class="co">## Highlighting with an asterisk which squares have a value below 0.2</span></a>
+<a class="sourceLine" id="cb405-4" data-line-number="4"><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">binary =</span> <span class="fl">0.2</span>, <span class="dt">add =</span> <span class="st">&quot;*&quot;</span>, <span class="dt">cex =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-129-1.png" width="672" /></p>
 <p>This function can also be used as a binary display when running a series of pairwise t-tests.
 For example, the following script runs a wilcoxon test between the time-slices from the <code>disparity</code> example dataset and displays in black which pairs of slices have a p-value below 0.05:</p>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" data-line-number="1"><span class="co">## Loading disparity data</span></a>
-<a class="sourceLine" id="cb397-2" data-line-number="2"><span class="kw">data</span>(disparity)</a>
-<a class="sourceLine" id="cb397-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb397-4" data-line-number="4"><span class="co">## Testing the pairwise difference between slices</span></a>
-<a class="sourceLine" id="cb397-5" data-line-number="5">tests &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a>
-<a class="sourceLine" id="cb397-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb397-7" data-line-number="7"><span class="co">## Plotting the significance</span></a>
-<a class="sourceLine" id="cb397-8" data-line-number="8"><span class="kw">pair.plot</span>(<span class="kw">as.data.frame</span>(tests), <span class="dt">what =</span> <span class="st">&quot;p.value&quot;</span>, <span class="dt">binary =</span> <span class="fl">0.05</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-127-1.png" width="672" /></p>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" data-line-number="1"><span class="co">## Loading disparity data</span></a>
+<a class="sourceLine" id="cb406-2" data-line-number="2"><span class="kw">data</span>(disparity)</a>
+<a class="sourceLine" id="cb406-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb406-4" data-line-number="4"><span class="co">## Testing the pairwise difference between slices</span></a>
+<a class="sourceLine" id="cb406-5" data-line-number="5">tests &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a>
+<a class="sourceLine" id="cb406-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb406-7" data-line-number="7"><span class="co">## Plotting the significance</span></a>
+<a class="sourceLine" id="cb406-8" data-line-number="8"><span class="kw">pair.plot</span>(<span class="kw">as.data.frame</span>(tests), <span class="dt">what =</span> <span class="st">&quot;p.value&quot;</span>, <span class="dt">binary =</span> <span class="fl">0.05</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-130-1.png" width="672" /></p>
 </div>
 <div id="reduce.matrix" class="section level2">
 <h2><span class="header-section-number">6.6</span> <code>reduce.matrix</code></h2>
 <p>This function allows to reduce columns or rows of a matrix to make sure that there is enough overlap for further analysis.
 This is particularly useful if you are going to use distance matrices since it uses the <code>vegan::vegdist</code> function to test whether distances can be calculated or not.</p>
 <p>For example, if we have a patchy matrix like so (where the black squares represent available data):</p>
-<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb398-2" data-line-number="2"><span class="co">## A 10*5 matrix</span></a>
-<a class="sourceLine" id="cb398-3" data-line-number="3">na_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>), <span class="dv">10</span>, <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb398-4" data-line-number="4"><span class="co">## Making sure some rows don&#39;t overlap</span></a>
-<a class="sourceLine" id="cb398-5" data-line-number="5">na_matrix[<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb398-6" data-line-number="6">na_matrix[<span class="dv">2</span>, <span class="dv">3</span><span class="op">:</span><span class="dv">5</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb398-7" data-line-number="7"><span class="co">## Adding 50% NAs</span></a>
-<a class="sourceLine" id="cb398-8" data-line-number="8">na_matrix[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">25</span>)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb398-9" data-line-number="9"><span class="co">## Illustrating the gappy matrix</span></a>
-<a class="sourceLine" id="cb398-10" data-line-number="10"><span class="kw">image</span>(<span class="kw">t</span>(na_matrix), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-128-1.png" width="672" /></p>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb407-2" data-line-number="2"><span class="co">## A 10*5 matrix</span></a>
+<a class="sourceLine" id="cb407-3" data-line-number="3">na_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>), <span class="dv">10</span>, <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb407-4" data-line-number="4"><span class="co">## Making sure some rows don&#39;t overlap</span></a>
+<a class="sourceLine" id="cb407-5" data-line-number="5">na_matrix[<span class="dv">1</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb407-6" data-line-number="6">na_matrix[<span class="dv">2</span>, <span class="dv">3</span><span class="op">:</span><span class="dv">5</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb407-7" data-line-number="7"><span class="co">## Adding 50% NAs</span></a>
+<a class="sourceLine" id="cb407-8" data-line-number="8">na_matrix[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">25</span>)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb407-9" data-line-number="9"><span class="co">## Illustrating the gappy matrix</span></a>
+<a class="sourceLine" id="cb407-10" data-line-number="10"><span class="kw">image</span>(<span class="kw">t</span>(na_matrix), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
 <p>We can use the <code>reduce.matrix</code> to double check whether any rows cannot be compared.
 The functions needs as an input the type of distance that will be used, say a <code>&quot;gower&quot;</code> distance:</p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" data-line-number="1"><span class="co">## Reducing the matrix by row</span></a>
-<a class="sourceLine" id="cb399-2" data-line-number="2">(reduction &lt;-<span class="st"> </span><span class="kw">reduce.matrix</span>(na_matrix, <span class="dt">distance =</span> <span class="st">&quot;gower&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="co">## Reducing the matrix by row</span></a>
+<a class="sourceLine" id="cb408-2" data-line-number="2">(reduction &lt;-<span class="st"> </span><span class="kw">reduce.matrix</span>(na_matrix, <span class="dt">distance =</span> <span class="st">&quot;gower&quot;</span>))</a></code></pre></div>
 <pre><code>## $rows.to.remove
 ## [1] &quot;9&quot; &quot;1&quot;
 ## 
 ## $cols.to.remove
 ## NULL</code></pre>
 <p>We can not remove the rows 1 and 9 and see if that improved the overlap:</p>
-<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" data-line-number="1"><span class="kw">image</span>(<span class="kw">t</span>(na_matrix[<span class="op">-</span><span class="kw">as.numeric</span>(reduction<span class="op">$</span>rows.to.remove), ]), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-130-1.png" width="672" /></p>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="kw">image</span>(<span class="kw">t</span>(na_matrix[<span class="op">-</span><span class="kw">as.numeric</span>(reduction<span class="op">$</span>rows.to.remove), ]), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-133-1.png" width="672" /></p>
 </div>
 <div id="slice.tree" class="section level2">
 <h2><span class="header-section-number">6.7</span> <code>slice.tree</code></h2>
@@ -530,24 +540,24 @@ The functions needs as an input the type of distance that will be used, say a <c
 Compared to the <code>paleotree::timeSliceTree</code>, this function allows a model to decide which tip or node to use when slicing through a branch (whereas <code>paleotree::timeSliceTree</code> always choose the first available tip alphabetically).
 The models for choosing which tip or node are the same as the ones used in the <code>chrono.subsets</code> and are described in <a href="details-of-specific-functions.html#chrono-subsets">chapter 03: specific tutorials</a>.</p>
 <p>The function works by using at least a tree, a slice age and a model:</p>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb402-2" data-line-number="2"><span class="co">## Generate a random ultrametric tree</span></a>
-<a class="sourceLine" id="cb402-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb402-4" data-line-number="4"><span class="co">## Add some node labels</span></a>
-<a class="sourceLine" id="cb402-5" data-line-number="5">tree<span class="op">$</span>node.label &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">19</span>]</a>
-<a class="sourceLine" id="cb402-6" data-line-number="6"><span class="co">## Add its root time</span></a>
-<a class="sourceLine" id="cb402-7" data-line-number="7">tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages)</a>
-<a class="sourceLine" id="cb402-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb402-9" data-line-number="9"><span class="co">## Slicing the tree at age 0.75</span></a>
-<a class="sourceLine" id="cb402-10" data-line-number="10">tree_<span class="dv">75</span> &lt;-<span class="st"> </span><span class="kw">slice.tree</span>(tree, <span class="dt">age =</span> <span class="fl">0.75</span>, <span class="st">&quot;acctran&quot;</span>)</a>
-<a class="sourceLine" id="cb402-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb402-12" data-line-number="12"><span class="co">## Showing both trees</span></a>
-<a class="sourceLine" id="cb402-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb402-14" data-line-number="14"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>)</a>
-<a class="sourceLine" id="cb402-15" data-line-number="15"><span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>(tree<span class="op">$</span>node.label, <span class="dt">cex =</span> <span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb402-16" data-line-number="16"><span class="kw">abline</span>(<span class="dt">v =</span> (<span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages) <span class="op">-</span><span class="st"> </span><span class="fl">0.75</span>), <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</a>
-<a class="sourceLine" id="cb402-17" data-line-number="17"><span class="kw">plot</span>(tree_<span class="dv">75</span>, <span class="dt">main =</span> <span class="st">&quot;sliced tree&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb411-2" data-line-number="2"><span class="co">## Generate a random ultrametric tree</span></a>
+<a class="sourceLine" id="cb411-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb411-4" data-line-number="4"><span class="co">## Add some node labels</span></a>
+<a class="sourceLine" id="cb411-5" data-line-number="5">tree<span class="op">$</span>node.label &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">19</span>]</a>
+<a class="sourceLine" id="cb411-6" data-line-number="6"><span class="co">## Add its root time</span></a>
+<a class="sourceLine" id="cb411-7" data-line-number="7">tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages)</a>
+<a class="sourceLine" id="cb411-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb411-9" data-line-number="9"><span class="co">## Slicing the tree at age 0.75</span></a>
+<a class="sourceLine" id="cb411-10" data-line-number="10">tree_<span class="dv">75</span> &lt;-<span class="st"> </span><span class="kw">slice.tree</span>(tree, <span class="dt">age =</span> <span class="fl">0.75</span>, <span class="st">&quot;acctran&quot;</span>)</a>
+<a class="sourceLine" id="cb411-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb411-12" data-line-number="12"><span class="co">## Showing both trees</span></a>
+<a class="sourceLine" id="cb411-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb411-14" data-line-number="14"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>)</a>
+<a class="sourceLine" id="cb411-15" data-line-number="15"><span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>(tree<span class="op">$</span>node.label, <span class="dt">cex =</span> <span class="fl">0.8</span>)</a>
+<a class="sourceLine" id="cb411-16" data-line-number="16"><span class="kw">abline</span>(<span class="dt">v =</span> (<span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages) <span class="op">-</span><span class="st"> </span><span class="fl">0.75</span>), <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb411-17" data-line-number="17"><span class="kw">plot</span>(tree_<span class="dv">75</span>, <span class="dt">main =</span> <span class="st">&quot;sliced tree&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-134-1.png" width="672" /></p>
 </div>
 <div id="slide.nodes-and-remove.zero.brlen" class="section level2">
 <h2><span class="header-section-number">6.8</span> <code>slide.nodes</code> and <code>remove.zero.brlen</code></h2>
@@ -557,57 +567,57 @@ This can be useful to add some value to 0 branch lengths for example.</p>
 <p>The function works by taking a node (or a list of nodes), a tree and a sliding value.
 The node will be moved “up” (towards the tips) for the given sliding value.
 You can move the node “down” (towards the roots) using a negative value.</p>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
-<a class="sourceLine" id="cb403-2" data-line-number="2"><span class="co">## Generating simple coalescent tree</span></a>
-<a class="sourceLine" id="cb403-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb403-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb403-5" data-line-number="5"><span class="co">## Sliding node 8 up and down</span></a>
-<a class="sourceLine" id="cb403-6" data-line-number="6">tree_slide_up &lt;-<span class="st"> </span><span class="kw">slide.nodes</span>(<span class="dv">8</span>, tree, <span class="dt">slide =</span> <span class="fl">0.075</span>)</a>
-<a class="sourceLine" id="cb403-7" data-line-number="7">tree_slide_down &lt;-<span class="st"> </span><span class="kw">slide.nodes</span>(<span class="dv">8</span>, tree, <span class="dt">slide =</span> <span class="fl">-0.075</span>)</a>
-<a class="sourceLine" id="cb403-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb403-9" data-line-number="9"><span class="co">## Display the results</span></a>
-<a class="sourceLine" id="cb403-10" data-line-number="10"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb403-11" data-line-number="11"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a>
-<a class="sourceLine" id="cb403-12" data-line-number="12"><span class="kw">plot</span>(tree_slide_up, <span class="dt">main =</span> <span class="st">&quot;slide up!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a>
-<a class="sourceLine" id="cb403-13" data-line-number="13"><span class="kw">plot</span>(tree_slide_down, <span class="dt">main =</span> <span class="st">&quot;slide down!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb412-2" data-line-number="2"><span class="co">## Generating simple coalescent tree</span></a>
+<a class="sourceLine" id="cb412-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb412-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb412-5" data-line-number="5"><span class="co">## Sliding node 8 up and down</span></a>
+<a class="sourceLine" id="cb412-6" data-line-number="6">tree_slide_up &lt;-<span class="st"> </span><span class="kw">slide.nodes</span>(<span class="dv">8</span>, tree, <span class="dt">slide =</span> <span class="fl">0.075</span>)</a>
+<a class="sourceLine" id="cb412-7" data-line-number="7">tree_slide_down &lt;-<span class="st"> </span><span class="kw">slide.nodes</span>(<span class="dv">8</span>, tree, <span class="dt">slide =</span> <span class="fl">-0.075</span>)</a>
+<a class="sourceLine" id="cb412-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb412-9" data-line-number="9"><span class="co">## Display the results</span></a>
+<a class="sourceLine" id="cb412-10" data-line-number="10"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb412-11" data-line-number="11"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a>
+<a class="sourceLine" id="cb412-12" data-line-number="12"><span class="kw">plot</span>(tree_slide_up, <span class="dt">main =</span> <span class="st">&quot;slide up!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a>
+<a class="sourceLine" id="cb412-13" data-line-number="13"><span class="kw">plot</span>(tree_slide_down, <span class="dt">main =</span> <span class="st">&quot;slide down!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-135-1.png" width="672" /></p>
 <p>The <code>remove.zero.brlen</code> is a “clever” wrapping function that uses the <code>slide.nodes</code> function to stochastically remove zero branch lengths across a whole tree.
 This function will slide nodes up or down in successive postorder traversals (i.e. going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
 By default it is trying to slide the nodes using 1% of the minimum branch length to avoid changing the topology too much.</p>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
-<a class="sourceLine" id="cb404-2" data-line-number="2"><span class="co">## Generating a tree</span></a>
-<a class="sourceLine" id="cb404-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb404-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb404-5" data-line-number="5"><span class="co">## Adding some zero branch lengths (5)</span></a>
-<a class="sourceLine" id="cb404-6" data-line-number="6">tree<span class="op">$</span>edge.length[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">Nedge</span>(tree), <span class="dv">5</span>)] &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb404-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb404-8" data-line-number="8"><span class="co">## And now removing these zero branch lengths!</span></a>
-<a class="sourceLine" id="cb404-9" data-line-number="9">tree_no_zero &lt;-<span class="st"> </span><span class="kw">remove.zero.brlen</span>(tree)</a>
-<a class="sourceLine" id="cb404-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb404-11" data-line-number="11"><span class="co">## Exaggerating the removal (to make it visible)</span></a>
-<a class="sourceLine" id="cb404-12" data-line-number="12">tree_exaggerated &lt;-<span class="st"> </span><span class="kw">remove.zero.brlen</span>(tree, <span class="dt">slide =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb404-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb404-14" data-line-number="14"><span class="co">## Check the differences</span></a>
-<a class="sourceLine" id="cb404-15" data-line-number="15"><span class="kw">any</span>(tree<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb413-2" data-line-number="2"><span class="co">## Generating a tree</span></a>
+<a class="sourceLine" id="cb413-3" data-line-number="3">tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb413-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb413-5" data-line-number="5"><span class="co">## Adding some zero branch lengths (5)</span></a>
+<a class="sourceLine" id="cb413-6" data-line-number="6">tree<span class="op">$</span>edge.length[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">Nedge</span>(tree), <span class="dv">5</span>)] &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb413-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb413-8" data-line-number="8"><span class="co">## And now removing these zero branch lengths!</span></a>
+<a class="sourceLine" id="cb413-9" data-line-number="9">tree_no_zero &lt;-<span class="st"> </span><span class="kw">remove.zero.brlen</span>(tree)</a>
+<a class="sourceLine" id="cb413-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb413-11" data-line-number="11"><span class="co">## Exaggerating the removal (to make it visible)</span></a>
+<a class="sourceLine" id="cb413-12" data-line-number="12">tree_exaggerated &lt;-<span class="st"> </span><span class="kw">remove.zero.brlen</span>(tree, <span class="dt">slide =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb413-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb413-14" data-line-number="14"><span class="co">## Check the differences</span></a>
+<a class="sourceLine" id="cb413-15" data-line-number="15"><span class="kw">any</span>(tree<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" data-line-number="1"><span class="kw">any</span>(tree_no_zero<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" data-line-number="1"><span class="kw">any</span>(tree_no_zero<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="kw">any</span>(tree_exaggerated<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" data-line-number="1"><span class="kw">any</span>(tree_exaggerated<span class="op">$</span>edge.length <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="co">## Display the results</span></a>
-<a class="sourceLine" id="cb410-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb410-3" data-line-number="3"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;with zero edges&quot;</span>)</a>
-<a class="sourceLine" id="cb410-4" data-line-number="4"><span class="kw">plot</span>(tree_no_zero, <span class="dt">main =</span> <span class="st">&quot;without zero edges!&quot;</span>)</a>
-<a class="sourceLine" id="cb410-5" data-line-number="5"><span class="kw">plot</span>(tree_exaggerated, <span class="dt">main =</span> <span class="st">&quot;with longer edges&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-133-1.png" width="672" /></p>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" data-line-number="1"><span class="co">## Display the results</span></a>
+<a class="sourceLine" id="cb419-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb419-3" data-line-number="3"><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;with zero edges&quot;</span>)</a>
+<a class="sourceLine" id="cb419-4" data-line-number="4"><span class="kw">plot</span>(tree_no_zero, <span class="dt">main =</span> <span class="st">&quot;without zero edges!&quot;</span>)</a>
+<a class="sourceLine" id="cb419-5" data-line-number="5"><span class="kw">plot</span>(tree_exaggerated, <span class="dt">main =</span> <span class="st">&quot;with longer edges&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-136-1.png" width="672" /></p>
 </div>
 <div id="tree.age" class="section level2">
 <h2><span class="header-section-number">6.9</span> <code>tree.age</code></h2>
 <p>This function allows to quickly calculate the ages of each tips and nodes present in a tree.</p>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb411-2" data-line-number="2">tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb411-3" data-line-number="3"><span class="co">## The tree age from a 10 tip tree</span></a>
-<a class="sourceLine" id="cb411-4" data-line-number="4"><span class="kw">tree.age</span>(tree)</a></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb420-2" data-line-number="2">tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb420-3" data-line-number="3"><span class="co">## The tree age from a 10 tip tree</span></a>
+<a class="sourceLine" id="cb420-4" data-line-number="4"><span class="kw">tree.age</span>(tree)</a></code></pre></div>
 <pre><code>##     ages elements
 ## 1  0.707       t7
 ## 2  0.142       t2
@@ -629,8 +639,8 @@ By default it is trying to slide the nodes using 1% of the minimum branch length
 ## 18 2.136       18
 ## 19 1.642       19</code></pre>
 <p>It also allows to set the age of the root of the tree:</p>
-<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="co">## The ages starting from -100 units</span></a>
-<a class="sourceLine" id="cb413-2" data-line-number="2"><span class="kw">tree.age</span>(tree, <span class="dt">age =</span> <span class="dv">100</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="co">## The ages starting from -100 units</span></a>
+<a class="sourceLine" id="cb422-2" data-line-number="2"><span class="kw">tree.age</span>(tree, <span class="dt">age =</span> <span class="dv">100</span>)</a></code></pre></div>
 <pre><code>##       ages elements
 ## 1   23.472       t7
 ## 2    4.705       t2
@@ -652,8 +662,8 @@ By default it is trying to slide the nodes using 1% of the minimum branch length
 ## 18  70.924       18
 ## 19  54.533       19</code></pre>
 <p>Usually tree age is calculated from the present to the past (e.g. in million years ago) but it is possible to reverse it using the <code>order = present</code> option:</p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" data-line-number="1"><span class="co">## The ages in terms of tip/node height</span></a>
-<a class="sourceLine" id="cb415-2" data-line-number="2"><span class="kw">tree.age</span>(tree, <span class="dt">order =</span> <span class="st">&quot;present&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1"><span class="co">## The ages in terms of tip/node height</span></a>
+<a class="sourceLine" id="cb424-2" data-line-number="2"><span class="kw">tree.age</span>(tree, <span class="dt">order =</span> <span class="st">&quot;present&quot;</span>)</a></code></pre></div>
 <pre><code>##     ages elements
 ## 1  2.304       t7
 ## 2  2.869       t2

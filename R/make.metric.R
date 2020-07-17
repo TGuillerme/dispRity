@@ -55,7 +55,8 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     ## fun
     check.class(fun, "function")
     dots <- list(...)
-
+    fun_type <- NULL
+    
     ## Getting the function name
     match_call <- match.call()
 
@@ -66,7 +67,7 @@ make.metric <- function(fun, ..., silent = FALSE, data.dim) {
     } else {
         ## making the testing matrix
         matrix <- matrix(rnorm(20), 5,4)
-        matrix_text <- "matrix(rnorm(20), 5,4)"        
+        matrix_text <- "matrix(rnorm(20), 5,4)"
     }
 
     ## Testing the metric

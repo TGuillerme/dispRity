@@ -17,7 +17,20 @@ test_that("reduce.space works", {
     set.seed(42)
     space <- dispRity::space.maker(300, 2, distribution = rnorm)
 
-    ## Random removal, super easy
+    ## Sanitizing
+    error <- capture_error(reduce.space(c(1,2), type = "random", remove = 0.3, parameters = list("bw" = bw.nrd0), tuning = list("max" = 100)))
+    expect_equal(error[[1]], "space must be of class matrix or data.frame.")
+    error <- capture_error(reduce.space(space, type = "RANDOM", remove = 0.3, parameters = list("bw" = bw.nrd0), tuning = list("max" = 100)))
+    expect_equal(error[[1]], "Reduction type must be one of the following: random, size, position, evenness, density.")
+    error <- capture_error(reduce.space(space, type = "random", remove = -20, parameters = list("bw" = bw.nrd0), tuning = list("max" = 100)))
+    expect_equal(error[[1]], "remove must be a probability or a percentage.")
+    error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = bw.nrd0, tuning = list("max" = 100)))
+    expect_equal(error[[1]], "parameters must be a named list of parameters.")
+    error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = list("bw" = bw.nrd0), tuning = c("max" = 100)))
+    expect_equal(error[[1]], "tuning must be a named list of tuning parameters.")
+
+
+    ## Random removal, super easy
     test <- reduce.space(space, type = "random", remove = 0.3)
     expect_is(test, "logical")
     expect_equal(length(test), 300)
@@ -25,14 +38,14 @@ test_that("reduce.space works", {
 
     ## Limit removal
     set.seed(1)
-    iter <- capture_output(test1 <- reduce.space(space, type = "limit", remove = 0.5, verbose = TRUE))
+    iter <- capture_output(test1 <- reduce.space(space, type = "size", remove = 0.5, verbose = TRUE))
     expect_is(test1, "logical")
     expect_equal(length(test1), 300)
     expect_equal(length(which(test1)), 149)
     expect_equal(iter, "Run parameter optimisation:............Done.")
 
     set.seed(1)
-    test2 <- reduce.space(space, type = "limit", parameters = list("radius" = 1.206866))
+    test2 <- reduce.space(space, type = "size", parameters = list("radius" = 1.206866))
     expect_is(test2, "logical")
     expect_equal(length(test2), 300)
     expect_equal(length(which(test2)), 149)
@@ -40,24 +53,21 @@ test_that("reduce.space works", {
     expect_equal(test1, test2)
 
     set.seed(1)
-    test3 <- reduce.space(space, type = "limit", remove = 0.5, return.optim = TRUE)
+    test3 <- reduce.space(space, type = "size", remove = 0.5, return.optim = TRUE)
     expect_equal(round(test3[[2]], 6), round(1.206866, 6))
     expect_equal(length(which(test3[[1]])), 149)
     expect_equal(test1, test3$remove)
 
-
-
-
     ## Displacement removal
     set.seed(1)
-    iter <- capture_output(test1 <- reduce.space(space, type = "displacement", remove = 0.5, verbose = TRUE, tuning = list("tol" = 0.1)))
+    iter <- capture_output(test1 <- reduce.space(space, type = "position", remove = 0.5, verbose = TRUE, tuning = list("tol" = 0.1)))
     expect_is(test1, "logical")
     expect_equal(length(test1), 300)
     expect_equal(length(which(test1)), 152)
     expect_equal(iter, "Run parameter optimisation:........Done.")
 
     set.seed(1)
-    test2 <- reduce.space(space, type = "displacement", parameters = list("radius" = 4.390509))
+    test2 <- reduce.space(space, type = "position", parameters = list("radius" = 4.390509))
     expect_is(test2, "logical")
     expect_equal(length(test2), 300)
     expect_equal(length(which(test2)), 152)
@@ -65,7 +75,7 @@ test_that("reduce.space works", {
     expect_equal(test1, test2)
 
     set.seed(1)
-    test3 <- reduce.space(space, type = "displacement", remove = 0.5, return.optim = TRUE, tuning = list("tol" = 0))
+    test3 <- reduce.space(space, type = "position", remove = 0.5, return.optim = TRUE, tuning = list("tol" = 0))
     expect_equal(round(test3[[2]], 6), 4.390509)
     expect_equal(length(which(test3[[1]])), 152)
 
@@ -93,44 +103,56 @@ test_that("reduce.space works", {
 
     expect_equal(test1, test3$remove)
 
+
+    ## Evenness removal
+    set.seed(1)
+    test <- reduce.space(space, type = "evenness", remove = 0.7)
+    expect_is(test, "logical")
+    expect_equal(length(test), 300)
+    expect_equal(length(which(test)), 210)
+
+    # ## Evenness test visual
+    # visualise.evenness <- function(space, remove) {
+
+    #     selected <- reduce.space(space, type = "evenness", remove = remove)
+
+    #     nf <- layout(matrix(c(2,0,1,3),2,2,byrow = TRUE), c(2.5,1.5), c(1.5,2.5), TRUE)
+
+    #     ## Plotting the points
+    #     par(mar = c(3,3,1,1))
+    #     plot(space[!selected,], pch = 19, col = "blue")
+    #     points(space[selected,], pch = 19, col = "orange")
+
+    #     ## Plotting the distributions
+    #     all_range <- range(c(space))
+    #     band_width <- bw.nrd0(c(space))
+    #     bin_breaks <- seq(from = min(c(space)), to = max(c(space) + band_width), by = band_width) 
+    #     x_hist_all <- hist(space[,1], breaks = bin_breaks, plot = FALSE)
+    #     y_hist_all <- hist(space[,2], breaks = bin_breaks, plot = FALSE)
+    #     x_hist_sel <- hist(space[selected,1], breaks = bin_breaks, plot = FALSE)
+    #     x_hist_rem <- hist(space[!selected,1], breaks = bin_breaks, plot = FALSE)
+    #     y_hist_sel <- hist(space[selected,2], breaks = bin_breaks, plot = FALSE)
+    #     y_hist_rem <- hist(space[!selected,2], breaks = bin_breaks, plot = FALSE)
+
+    #     top <- max(c(x_hist_all$counts, y_hist_all$counts))
+
+    #     par(mar = c(0,3,1,1))
+    #     barplot(x_hist_all$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "grey")
+    #     barplot(x_hist_sel$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "orange", add = TRUE)
+    #     barplot(x_hist_rem$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "blue", add = TRUE, density = 75)
+
+    #     par(mar = c(0,3,1,1))
+    #     barplot(y_hist_all$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "grey", horiz = TRUE)
+    #     barplot(y_hist_sel$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "orange", add = TRUE, horiz = TRUE)
+    #     barplot(y_hist_rem$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "blue", add = TRUE, horiz = TRUE, density = 75)
+    # }
+
+    # ## Both distributions are around 50% of the total distribution (in grey)
+    # visualise.evenness(space, remove = 0.5)
+    # ## We've flattened the curve for the orange distribution!
+    # visualise.evenness(space, remove = 0.8)
+    # ## same for the blue one
+    # visualise.evenness(space, remove = 0.2)
+
 })
 
-
-
-# ## Optimisation
-# set.seed(1)
-# space <- space.maker(300, 2, runif)
-
-# test <- reduce.space(space, type = "random", remove = 0.3)
-
-
-# time.test <- function(space, type, remove, algo = "dispRity") {
-
-#     if(algo == "dispRity"){
-#         algo <- reduce.space
-#     } else {
-#         algo <- moms::reduce.space
-#     }
-
-#     start <- Sys.time()
-#     test <- algo(space, type, remove, verbose = TRUE)
-#     end <- Sys.time()
-#     print(end-start)
-#     return(test)
-# }
-
-# # Rprof()
-# set.seed(1)
-# test <- time.test(space, "density", remove = 0.8, algo = "dispRity")
-# # Rprof(NULL)
-# # summaryRprof()
-
-
-# set.seed(1)
-# test <- time.test(space, "limit", remove = 0.8, algo = "moms")
-
-
-# test3 <- reduce.space(space, type = "limit", remove = 0.5, return.optim = TRUE)
-# test1 <- reduce.space(space, type = "displacement", remove = 0.3, verbose = TRUE)
-# test1 <- reduce.space(space, type = "density", remove = 0.3, verbose = TRUE)
-# test1 <- reduce.space(space, type = "density", remove = 0.5, verbose = TRUE)

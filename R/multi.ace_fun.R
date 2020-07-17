@@ -156,8 +156,6 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
     if(verbose) cat("Running ancestral states estimations:\n")
     ancestral_estimations <- lapply(args_list, castor.ace)
     ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
-    if(verbose) cat(" Done.\n")
-
 
     ## Separating the estimations
     success <- unlist(lapply(ancestral_estimations, function(estimation) return(estimation$success)))
@@ -199,11 +197,12 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
         invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x == 0), special.tokens["missing"], x), n), args_list[[1]]$tree$Nnode)
 
         ## Combine the final dataset
-        output <- replicate(length(args_list), list())
+        output <- replicate(length(args_list)+length(invariants), list())
         ## Fill the final dataset
         output[invariants] <- invariant_ancestral
         output[-invariants] <- ancestral_states
         ancestral_states <- output
     }
+    if(verbose) cat(" Done.\n")
     return(ancestral_states)
 }
