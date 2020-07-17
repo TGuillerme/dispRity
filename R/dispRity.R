@@ -214,7 +214,7 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
         pairs <- unique(unlist(lapply(serial, length))) 
         if(length(pairs) > 1 || pairs != 2 || max(unlist(serial)) > length(data$subsets)) {
-            stop.call(msg.pre = "The provided list of series (", match_call$serial, msg = ") must be a list of pairs of subsets in the data.")
+            stop("The provided list of series (serial) must be a list of pairs of subsets in the data.")
         }
         list_of_series <- serial
     }

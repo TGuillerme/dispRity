@@ -730,13 +730,44 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 })
 
 
-test_that("dispRity works for serial metrics". {
+test_that("dispRity works for serial metrics", {
 
+    ## Some test metrics
     serial.simple <- function(matrix, matrix2) return(42)
     serial.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
 
+    ## Testing data
+    matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 5, 5), matrix(3, 5, 5)))
+    rownames(matrix) <- paste0("t", 1:15)
+    test_tree <- stree(15, type = "right")
+    test_tree$edge.length <- rep(1, Nedge(test_tree))
+    test_tree$root.time <- 14
 
+    ## custom subsets
+    custom <- custom.subsets(matrix, group = list(c(1,5), c(6,10), c(11, 15)))
+    chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(14, 9.1, 4.1, 0))
 
+    ## Errors
+
+    ## Serial is logical or list
+    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = "whatever"))
+    expect_equal(error[[1]], "serial must be logical or a list of pairs of comparisons.")
+
+    ## Wrong metric for serial data (mean)
+    error <- capture_error(dispRity(matrix, metric = mean, serial = TRUE))
+    expect_equal(error[[1]], "The provided metric (mean) cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+
+    ## Has no serial dataset
+    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = TRUE))
+    expect_equal(error[[1]], "The provided \"serial\" metric (serial.simple) cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")
+
+    ## Wrong metric for serial data (mean) (input list)
+    error <- capture_error(dispRity(matrix, metric = mean, serial = list(c(1,2), c(2,3))))
+    expect_equal(error[[1]], "The provided metric (mean) cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+
+    ## Serial is logical or list
+    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = list(c(1,2), c(2,3))))
+    expect_equal(error[[1]], "The provided list of series (serial) must be a list of pairs of subsets in the data.")
 })
 
 
