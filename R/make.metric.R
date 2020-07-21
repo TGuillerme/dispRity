@@ -31,7 +31,7 @@
 #' 
 #' \emph{HINT:} it is better practice to name the first argument of \code{fun} \code{matrix} to avoid potential argument conflicts down the line (the \code{\link{dispRity}} function assumes the \code{matrix} argument for the parsing the metrics).
 #' 
-#' The input \code{fun} can be a "normal" metric function (i.e. that takes a matrix as first argument) or a "serial" metric (i.e. that takes two matrix as arguments). If the arguments are named \code{matrix} and \code{matrix2}, the metric will be assumed to be "serial" and be run in a \code{for} loop rather than a \code{apply} loop in \code{\link{dispRity}}}.
+#' The input \code{fun} can be a "normal" metric function (i.e. that takes a matrix as first argument) or a "serial" metric (i.e. that takes two matrix as arguments). If the arguments are named \code{matrix} and \code{matrix2}, the metric will be assumed to be "serial" and be run in a \code{for} loop rather than a \code{apply} loop in \code{\link{dispRity}}.
 #'
 #' @examples
 #' ## A dimension-level 1 function

@@ -5,7 +5,7 @@
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details). If \code{data} is a \code{dispRity} object with disparity already calculated, this argument can be left empty (and the one from \code{data} is recycled)
 #' @param ... Optional arguments to be passed to the metric.
-#' @param shifts The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}. See details.
+#' @param shifts The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}. See details.
 #' @param shift.options Optional, a \code{list} of named arguments to be passed to \code{\link{reduce.space}}
 #' @param model Optional, which model to fit for testing the metric. See details.
 #' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.
@@ -14,10 +14,11 @@
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' 
 #' @details
-#' For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"position"}, the function returns both of shifts as:
+#' For the three non-random shifts: \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}, the function returns both of shifts as:
 #' \itemize{
 #'      \item \code{"size.inner"} and \code{"size.outer"} removing data from the edges or the centre respectively (contracting the size and "hollowing" it respectively).
 #'      \item \code{"density.higher"} and \code{"density.lower"} removing data to increase or decrease density respectively (increasing/decreasing nearest neighbour distance).
+#'      \item \code{"evenness.flattened"} and \code{"evenness.compacted"} removing data to from the centre of the distribution or from the edges to resepectively "flatten" or "condense" the distribution.
 #'      \item \code{"position.bottom"} and \code{"position.top"} removing data from one side or the other of the space (the sides are selected from the point with lowest/highest scores on each dimensions respectively).
 #' }
 #' See figure 2 in Guillerme et al. 2020 for more details.
