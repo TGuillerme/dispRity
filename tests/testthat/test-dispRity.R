@@ -91,7 +91,7 @@ test_that("get.first.metric", {
     expect_equal(res_test3[[3]], 3)
 })
 
-test_that("apply.decompose.matrix", {
+test_that("decompose.matrix.wrapper", {
     data(disparity)
     ## Shortening the matrix for the example
     data <- disparity
@@ -99,8 +99,8 @@ test_that("apply.decompose.matrix", {
     one_bs_matrix <- data$subsets[[1]][[5]]
     bs_max <- 5
 
-    decomp_array <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
-    decomp_matrix <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
+    decomp_array <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
+    decomp_matrix <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
 
     expect_is(decomp_array, "array")
     expect_equal(dim(decomp_array), c(data$call$dimensions, data$call$dimensions, bs_max))
@@ -744,7 +744,7 @@ test_that("dispRity works for serial metrics", {
     test_tree$root.time <- 14
 
     ## custom subsets
-    custom <- custom.subsets(matrix, group = list(c(1,5), c(6,10), c(11, 15)))
+    custom <- boot.matrix(custom.subsets(matrix, group = list(c(1:5), c(6:10), c(11:15))), 3)
     chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(14, 9.1, 4.1, 0))
 
     ## Errors
@@ -768,6 +768,24 @@ test_that("dispRity works for serial metrics", {
     ## Serial is logical or list
     error <- capture_error(dispRity(matrix, metric = serial.simple, serial = list(c(1,2), c(2,3))))
     expect_equal(error[[1]], "The provided list of series (serial) must be a list of pairs of subsets in the data.")
+
+
+    # ## Serial works for level 1
+    # test <- dispRity(custom, metric = serial.simple)
+    # test <- dispRity(custom, metric = serial.complex)
+
+
+    # serial.level2 <- function(matrix, matrix2) return(variances(matrix) - variances(matrix2))
+    # serial.level3 <- function(matrix, matrix2) return(var(matrix) - var(matrix2))
+
+    # ## Serial works for level 2
+    # dispRity(custom, metric = serial.level2)
+
+    # ## Serial works for level 3 + mixing metric types
+    # dispRity(custom, metric = c(mean, serial.level3))
+
+
+
 })
 
 

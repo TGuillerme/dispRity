@@ -187,6 +187,7 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
     check.class(verbose, "logical")
 
     ## Serial
+    is_serial <- FALSE
     serial_class <- check.class(serial, c("logical", "list"), " must be logical or a list of pairs of comparisons.")
     ## Check whether logical class can be applied
     if(serial_class == "logical") {
@@ -205,6 +206,7 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
                     ## Make default sequential comparisons
                     list_of_series <- unlist(apply(set.sequence(length(data$subsets)), 2, list), recursive = FALSE)
                 }
+                is_serial <- TRUE
             }
         } 
     } else {
@@ -217,6 +219,7 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
             stop("The provided list of series (serial) must be a list of pairs of subsets in the data.")
         }
         list_of_series <- serial
+        is_serial <- TRUE
     }
 
     ## Parallel
@@ -279,6 +282,14 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
     ## Check if the data is bound
     is_bound <- ifelse(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous", as.logical(data$call$subsets[["bind"]]), FALSE)
 
+    ## Make the lapply loop into serial loops
+    if(is_serial) {
+        ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
+        combine.pairs <- function(pairs, data) return(lapply(mapply(rbind, data[pairs][[1]], data[pairs][[2]], SIMPLIFY = FALSE), function(data, nrow) return(list("nrow" = nrow, "data" = data)), nrow = nrow(data[pairs][[1]]$elements)))
+        lapply_loop <- lapply(list_of_series, combine.pairs, data = lapply_loop)
+    }
+
+
     ## Initialising the cluster
     # if(do_parallel) {
     #     ## Selecting the number of cores
@@ -328,7 +339,8 @@ dispRity <- function(data, metric, dimensions, ..., serial = FALSE, verbose = FA
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, is_serial, ...)
+
     }
 
     # }
