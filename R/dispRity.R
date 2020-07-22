@@ -201,10 +201,10 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             } else {
                 if(data$call$subsets[[1]] == "customised") {
                     ## Make default pairwise comparisons
-                    list_of_series <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
+                    list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
                 } else {
                     ## Make default sequential comparisons
-                    list_of_series <- unlist(apply(set.sequence(length(data$subsets)), 2, list), recursive = FALSE)
+                    list_of_pairs <- unlist(apply(set.sequence(length(data$subsets)), 2, list), recursive = FALSE)
                 }
                 is_between.groups <- TRUE
             }
@@ -218,7 +218,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
             stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
         }
-        list_of_series <- between.groups
+        list_of_pairs <- between.groups
         is_between.groups <- TRUE
     }
 
@@ -286,7 +286,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     if(is_between.groups) {
         ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
         combine.pairs <- function(pairs, data) return(lapply(mapply(rbind, data[pairs][[1]], data[pairs][[2]], SIMPLIFY = FALSE), function(data, nrow) return(list("nrow" = nrow, "data" = data)), nrow = nrow(data[pairs][[1]]$elements)))
-        lapply_loop <- lapply(list_of_series, combine.pairs, data = lapply_loop)
+        lapply_loop <- lapply(list_of_pairs, combine.pairs, data = lapply_loop)
     }
 
 
@@ -370,6 +370,11 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         warning(paste("Disparity not calculated for", subset, empty_group_names, "(not enough data)."))
     }
 
+    ## Rename the disparity groups
+    if(is_between.groups) {
+        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = names(data$subsets)))
+    }
+
     ## Update the disparity
     data$disparity <- disparity
 
@@ -380,6 +385,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     } else {
         data$call$disparity$metrics$fun <- metric
     }
+
+    ## Adding the between groups
+    data$call$disparity$metrics$between.groups <- ifelse(is_between.groups, TRUE, FALSE)
 
     if(!is.null(data$call$disparity$metrics$args)) {
         if(length(dots) != 0) {

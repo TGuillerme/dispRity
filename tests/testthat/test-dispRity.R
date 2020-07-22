@@ -486,24 +486,24 @@ test_that("dispRity works with function recycling", {
     mat <- matrix(rnorm(25), 5, 5, dimnames = list(c(1:5)))
     level2 <- dispRity(mat, metric = centroids)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
-    expect_equal(names(level2$call$disparity$metric), c("name", "fun"))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
 
     level1 <- dispRity(level2, metric = mean)
     expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat)))
-    expect_equal(names(level1$call$disparity$metric), c("name", "fun"))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
 
     ## With arguments
     level2 <- dispRity(mat, metric = centroids, centroid = 0)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat, centroid = 0))
-    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 
     level1 <- dispRity(level2, metric = mean)
     expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat, centroid = 0)))
-    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
@@ -736,7 +736,7 @@ test_that("dispRity works for between.groups metrics", {
     between.groups.simple <- function(matrix, matrix2) return(42)
     between.groups.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
 
-    ## Testing data
+    ## Testing data
     matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 5, 5), matrix(3, 5, 5)))
     rownames(matrix) <- paste0("t", 1:15)
     test_tree <- stree(15, type = "right")
@@ -770,7 +770,7 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(error[[1]], "The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
 
 
-    # ## Serial works for level 1
+    ## Serial works for level 1
     # test <- dispRity(custom, metric = between.groups.simple)
     # test <- dispRity(custom, metric = between.groups.complex)
 
