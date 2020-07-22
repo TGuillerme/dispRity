@@ -14,14 +14,14 @@ test_that("check.metric works", {
 
 test_that("Output is correct", {
     expect_error(
-    	make.metric("a")
-    	)
+        make.metric("a")
+        )
     expect_error(
-    	make.metric(1)
-    	)
+        make.metric(1)
+        )
     expect_error(
-    	make.metric(function(x)as.character(x))
-    	)
+        make.metric(function(x)as.character(x))
+        )
 
     fun <- function(x, arg) {
         if(arg == TRUE){
@@ -60,26 +60,26 @@ test_that("Output is correct", {
         )
 
     expect_equal(
-    	make.metric(mean, silent=TRUE), "level1"
-    	)
+        make.metric(mean, silent=TRUE), "level1"
+        )
     expect_equal(
-    	make.metric(ranges, silent=TRUE), "level2"
-    	)
+        make.metric(ranges, silent=TRUE), "level2"
+        )
     expect_equal(
-    	make.metric(var, silent=TRUE), "level3"
-    	)
+        make.metric(var, silent=TRUE), "level3"
+        )
     expect_equal(
-    	make.metric(function(x)mean(var(x)), silent=TRUE), "level1"
-    	)
+        make.metric(function(x)mean(var(x)), silent=TRUE), "level1"
+        )
     expect_equal(
-    	make.metric(function(x)variances(var(x)), silent=TRUE), "level2"
-    	)
+        make.metric(function(x)variances(var(x)), silent=TRUE), "level2"
+        )
     expect_equal(
-    	make.metric(function(x)var(var(x)), silent=TRUE), "level3"
-    	)
+        make.metric(function(x)var(var(x)), silent=TRUE), "level3"
+        )
     expect_equal(
-    	make.metric(function(x)sd(variances(var(x))), silent=TRUE), "level1"
-    	)
+        make.metric(function(x)sd(variances(var(x))), silent=TRUE), "level1"
+        )
 
     ## Same with data.dim
     expect_equal(
@@ -104,13 +104,13 @@ test_that("Output is correct", {
     error <- capture_error(make.metric(make.metric))
     expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\n    make.metric(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in make.metric.")
 
-    ## With serial
-    serial.metric <- function(matrix, matrix2) return(42)
-    serial.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
+    ## With between.groups
+    between.groups.metric <- function(matrix, matrix2) return(42)
+    between.groups.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
 
-    expect_equal(make.metric(serial.metric, silent = TRUE), "level1")
-    expect_equal(make.metric(serial.metric, silent = TRUE, check.serial = TRUE), list("type" = "level1", "serial" = TRUE))
-    expect_equal(make.metric(serial.metric2, option = FALSE, silent = TRUE), "level2")
-    expect_equal(make.metric(serial.metric2, option = "bla", silent = TRUE, check.serial = TRUE), list("type" = "level2", "serial" = TRUE))
-    expect_equal(make.metric(mean, silent = TRUE, check.serial = TRUE), list("type" = "level1", "serial" = FALSE))
+    expect_equal(make.metric(between.groups.metric, silent = TRUE), "level1")
+    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE))
+    expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE), "level2")
+    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
+    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE))
 })

@@ -1,6 +1,6 @@
 get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
-    serial <- FALSE
+    between.groups <- FALSE
 
     length_metric <- length(metric)
 
@@ -15,9 +15,9 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE, check.serial = TRUE, data.dim = data.dim, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, check.serial = TRUE, data.dim = data.dim)
-        serial <- level$serial
+        level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, ...)
+        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
+        between.groups <- level$between.groups
         level <- level$type
 
         switch(level,
@@ -65,7 +65,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         }
     }
 
-    return(list("levels" = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), "serial" = serial))
+    return(list("levels" = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), "between.groups" = between.groups))
 }
 
 ## Getting the first metric
@@ -163,7 +163,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 }
 
 ## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, serial, ...){# verbose, ...) {
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, between.groups, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
     if(matrix_decomposition) {
@@ -200,12 +200,12 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 
 ## Lapply wrapper for disparity.bootstraps function
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, serial = FALSE, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, between.groups = FALSE, ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, serial, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, between.groups, ...))
 }
 mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
     return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))

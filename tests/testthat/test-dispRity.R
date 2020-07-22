@@ -25,7 +25,7 @@ test_that("get.dispRity.metric.handle", {
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "serial"))
+    expect_equal(names(test), c("levels", "between.groups"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -34,7 +34,7 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "serial"))
+    expect_equal(names(test), c("levels", "between.groups"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -44,7 +44,7 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "serial"))
+    expect_equal(names(test), c("levels", "between.groups"))
     test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")
@@ -52,12 +52,12 @@ test_that("get.dispRity.metric.handle", {
     expect_is(test[[3]], "function")
 
     ## Serial
-    test.serial <- function(matrix, matrix2) {return(42)}
-    test.serial.no <- function(matrix, matrix3) {return(42)}
-    test <- get.dispRity.metric.handle(test.serial, match_call, data.dim = c(5,4))
-    expect_true(test$serial)
-    test <- get.dispRity.metric.handle(test.serial.no, match_call, data.dim = c(5,4))
-    expect_false(test$serial)
+    test.between.groups <- function(matrix, matrix2) {return(42)}
+    test.between.groups.no <- function(matrix, matrix3) {return(42)}
+    test <- get.dispRity.metric.handle(test.between.groups, match_call, data.dim = c(5,4))
+    expect_true(test$between.groups)
+    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data.dim = c(5,4))
+    expect_false(test$between.groups)
 })
 
 test_that("get.first.metric", {
@@ -730,11 +730,11 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 })
 
 
-test_that("dispRity works for serial metrics", {
+test_that("dispRity works for between.groups metrics", {
 
     ## Some test metrics
-    serial.simple <- function(matrix, matrix2) return(42)
-    serial.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
+    between.groups.simple <- function(matrix, matrix2) return(42)
+    between.groups.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
 
     ## Testing data
     matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 5, 5), matrix(3, 5, 5)))
@@ -750,39 +750,39 @@ test_that("dispRity works for serial metrics", {
     ## Errors
 
     ## Serial is logical or list
-    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = "whatever"))
-    expect_equal(error[[1]], "serial must be logical or a list of pairs of comparisons.")
+    error <- capture_error(dispRity(matrix, metric = between.groups.simple, between.groups = "whatever"))
+    expect_equal(error[[1]], "between.groups must be logical or a list of pairs of comparisons.")
 
-    ## Wrong metric for serial data (mean)
-    error <- capture_error(dispRity(matrix, metric = mean, serial = TRUE))
-    expect_equal(error[[1]], "The provided metric (mean) cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+    ## Wrong metric for between.groups data (mean)
+    error <- capture_error(dispRity(matrix, metric = mean, between.groups = TRUE))
+    expect_equal(error[[1]], "The provided metric (mean) cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
 
-    ## Has no serial dataset
-    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = TRUE))
-    expect_equal(error[[1]], "The provided \"serial\" metric (serial.simple) cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")
+    ## Has no between.groups dataset
+    error <- capture_error(dispRity(matrix, metric = between.groups.simple, between.groups = TRUE))
+    expect_equal(error[[1]], "The provided \"between.groups\" metric (between.groups.simple) cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")
 
-    ## Wrong metric for serial data (mean) (input list)
-    error <- capture_error(dispRity(matrix, metric = mean, serial = list(c(1,2), c(2,3))))
-    expect_equal(error[[1]], "The provided metric (mean) cannot be applied serially. \"Serial\" metric must have at least \"matrix\" and \"matrix2\" as inputs.")
+    ## Wrong metric for between.groups data (mean) (input list)
+    error <- capture_error(dispRity(matrix, metric = mean, between.groups = list(c(1,2), c(2,3))))
+    expect_equal(error[[1]], "The provided metric (mean) cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
 
     ## Serial is logical or list
-    error <- capture_error(dispRity(matrix, metric = serial.simple, serial = list(c(1,2), c(2,3))))
-    expect_equal(error[[1]], "The provided list of series (serial) must be a list of pairs of subsets in the data.")
+    error <- capture_error(dispRity(matrix, metric = between.groups.simple, between.groups = list(c(1,2), c(2,3))))
+    expect_equal(error[[1]], "The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
 
 
     # ## Serial works for level 1
-    # test <- dispRity(custom, metric = serial.simple)
-    # test <- dispRity(custom, metric = serial.complex)
+    # test <- dispRity(custom, metric = between.groups.simple)
+    # test <- dispRity(custom, metric = between.groups.complex)
 
 
-    # serial.level2 <- function(matrix, matrix2) return(variances(matrix) - variances(matrix2))
-    # serial.level3 <- function(matrix, matrix2) return(var(matrix) - var(matrix2))
+    # between.groups.level2 <- function(matrix, matrix2) return(variances(matrix) - variances(matrix2))
+    # between.groups.level3 <- function(matrix, matrix2) return(var(matrix) - var(matrix2))
 
     # ## Serial works for level 2
-    # dispRity(custom, metric = serial.level2)
+    # dispRity(custom, metric = between.groups.level2)
 
     # ## Serial works for level 3 + mixing metric types
-    # dispRity(custom, metric = c(mean, serial.level3))
+    # dispRity(custom, metric = c(mean, between.groups.level3))
 
 
 

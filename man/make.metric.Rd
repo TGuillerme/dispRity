@@ -4,7 +4,7 @@
 \alias{make.metric}
 \title{Creating disparity metrics}
 \usage{
-make.metric(fun, ..., silent = FALSE, check.serial = FALSE, data.dim)
+make.metric(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim)
 }
 \arguments{
 \item{fun}{A \code{function}.}
@@ -13,7 +13,7 @@ make.metric(fun, ..., silent = FALSE, check.serial = FALSE, data.dim)
 
 \item{silent}{\code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function's dimension-level.}
 
-\item{check.serial}{\code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used serially or not. If \code{FALSE} (default) the function only outputs the metric level.}
+\item{check.between.groups}{\code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used between groups or not. If \code{FALSE} (default) the function only outputs the metric level.}
 
 \item{data.dim}{optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.}
 }
@@ -43,7 +43,7 @@ See function example for a concrete illustration (three different dimension-leve
 
 \emph{HINT:} it is better practice to name the first argument of \code{fun} \code{matrix} to avoid potential argument conflicts down the line (the \code{\link{dispRity}} function assumes the \code{matrix} argument for the parsing the metrics).
 
-The input \code{fun} can be a "normal" metric function (i.e. that takes a matrix as first argument) or a "serial" metric (i.e. that takes two matrix as arguments). If the arguments are named \code{matrix} and \code{matrix2}, the metric will be assumed to be "serial" and be run in a \code{for} loop rather than a \code{apply} loop in \code{\link{dispRity}}.
+The input \code{fun} can be a "normal" metric function (i.e. that takes a matrix as first argument) or a "between.groups" metric (i.e. that takes two matrix as arguments). If the arguments are named \code{matrix} and \code{matrix2}, the metric will be assumed to be "between.groups" and be run in a \code{for} loop rather than a \code{apply} loop in \code{\link{dispRity}}.
 }
 \examples{
 ## A dimension-level 1 function
