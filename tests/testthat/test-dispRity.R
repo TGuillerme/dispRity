@@ -737,15 +737,15 @@ test_that("dispRity works for between.groups metrics", {
     between.groups.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
 
     ## Testing data
-    matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 5, 5), matrix(3, 5, 5)))
-    rownames(matrix) <- paste0("t", 1:15)
-    test_tree <- stree(15, type = "right")
+    matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(3, 4, 5)))
+    rownames(matrix) <- paste0("t", 1:12)
+    test_tree <- stree(12, type = "right")
     test_tree$edge.length <- rep(1, Nedge(test_tree))
-    test_tree$root.time <- 14
+    test_tree$root.time <- 12
 
     ## custom subsets
-    custom <- boot.matrix(custom.subsets(matrix, group = list(c(1:5), c(6:10), c(11:15))), 3)
-    chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(14, 9.1, 4.1, 0))
+    custom <- boot.matrix(custom.subsets(matrix, group = list(c(1:5), c(6:8), c(9:12))), 3)
+    chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(12, 8.1, 5.1, 0))
 
     ## Errors
 
@@ -771,8 +771,21 @@ test_that("dispRity works for between.groups metrics", {
 
 
     ## Serial works for level 1
-    # test <- dispRity(custom, metric = between.groups.simple)
-    # test <- dispRity(custom, metric = between.groups.complex)
+    test <- dispRity(custom, metric = between.groups.simple)
+    expect_false(test$call$disparity$metrics$between.groups)
+    test <- dispRity(custom, metric = between.groups.simple, between.groups = TRUE)
+    expect_true(test$call$disparity$metrics$between.groups)
+
+    test <- dispRity(custom, metric = between.groups.complex, between.groups = TRUE)
+    expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
+    summary_results <- summary(test)
+    expect_is(summary_results, "data.frame")
+    expect_equal(dim(summary_results), c(3, 9))
+    expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs", "bs.median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+    expect_equal(summary_results$obs, c(-1, -2, -1))
+    expect_null(plot(test))
+    
 
 
     # between.groups.level2 <- function(matrix, matrix2) return(variances(matrix) - variances(matrix2))
