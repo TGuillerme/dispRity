@@ -744,7 +744,7 @@ test_that("dispRity works for between.groups metrics", {
     test_tree$root.time <- 12
 
     ## custom subsets
-    custom <- boot.matrix(custom.subsets(matrix, group = list(c(1:5), c(6:8), c(9:12))), 3)
+    custom <- custom.subsets(matrix, group = list(c(1:5), c(6:8), c(9:12)))
     chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(12, 8.1, 5.1, 0))
 
     ## Errors
@@ -776,7 +776,19 @@ test_that("dispRity works for between.groups metrics", {
     test <- dispRity(custom, metric = between.groups.simple, between.groups = TRUE)
     expect_true(test$call$disparity$metrics$between.groups)
 
+    ## Custom normal
     test <- dispRity(custom, metric = between.groups.complex, between.groups = TRUE)
+    expect_equal(capture.output(test)[4], "Disparity was calculated as: between.groups.complex between groups.")
+    summary_results <- summary(test)
+    expect_is(summary_results, "data.frame")
+    expect_equal(dim(summary_results), c(3, 9))
+    expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs"))
+    expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+    expect_equal(summary_results$obs, c(-1, -2, -1))
+    expect_null(plot(test))
+
+    ## Custom bootstrapped
+    test <- dispRity(boot.matrix(custom), metric = between.groups.complex, between.groups = TRUE)
     expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
     summary_results <- summary(test)
     expect_is(summary_results, "data.frame")
@@ -785,17 +797,40 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
     expect_equal(summary_results$obs, c(-1, -2, -1))
     expect_null(plot(test))
-    
 
 
-    # between.groups.level2 <- function(matrix, matrix2) return(variances(matrix) - variances(matrix2))
-    # between.groups.level3 <- function(matrix, matrix2) return(var(matrix) - var(matrix2))
+    ## Chrono normal
+    test <- dispRity(chrono, metric = between.groups.complex, between.groups = TRUE)
+    expect_equal(capture.output(test)[4], "Disparity was calculated as: between.groups.complex between groups.")
+    summary_results <- summary(test)
+    expect_is(summary_results, "data.frame")
+    expect_equal(dim(summary_results), c(3, 9))
+    expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs"))
+    expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+    expect_equal(summary_results$obs, c(-1, -2, -1))
+    expect_null(plot(test))
 
-    # ## Serial works for level 2
-    # dispRity(custom, metric = between.groups.level2)
+    ## Custom bootstrapped + rare
+    test <- dispRity(boot.matrix(custom, rarefaction = TRUE), metric = between.groups.complex, between.groups = TRUE)
+    expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
+    summary_results <- summary(test)
+    expect_is(summary_results, "data.frame")
+    expect_equal(dim(summary_results), c(3, 9))
+    expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs", "bs.median", "2.5%", "25%", "75%", "97.5%"))
+    expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+    expect_equal(summary_results$obs, c(-1, -2, -1))
+    expect_null(plot(test))
 
-    # ## Serial works for level 3 + mixing metric types
-    # dispRity(custom, metric = c(mean, between.groups.level3))
+
+    ## Chrono bootstrapped
+
+
+    ## Decompose with between.groups then normal metrics
+
+
+    ## Decompose with normal metrics then between.groups
+
+
 
 
 

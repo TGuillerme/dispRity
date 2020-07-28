@@ -285,8 +285,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Make the lapply loop into between.groups loops
     if(is_between.groups) {
         ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
-        combine.pairs <- function(pairs, data) return(lapply(mapply(rbind, data[pairs][[1]], data[pairs][[2]], SIMPLIFY = FALSE), function(data, nrow) return(list("nrow" = nrow, "data" = data)), nrow = nrow(data[pairs][[1]]$elements)))
-        lapply_loop <- lapply(list_of_pairs, combine.pairs, data = lapply_loop)
+        lapply_loop <- lapply(list_of_pairs, combine.pairs, lapply_data = lapply_loop)
     }
 
 

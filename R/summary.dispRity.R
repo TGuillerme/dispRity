@@ -83,7 +83,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         #Set to default (see below)
         digits <- "default"
     } else {
-        check.class(digits, "numeric")
+        check.class(digits, c("numeric", "integer"))
     }
 
     #DATA

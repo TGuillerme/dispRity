@@ -97,7 +97,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
    
     if(is(one_subsets_bootstrap)[[1]] == "list") {
         ## Isolating the matrix into it's two components if the "matrix" is actually a list
-        nrow <- one_subsets_bootstrap$nrow
+        nrow <- one_subsets_bootstrap$nrow[1]
         one_subsets_bootstrap <- one_subsets_bootstrap$data
     } else {
         nrow <- NULL
@@ -240,6 +240,29 @@ recursive.merge <- function(list, bind = cbind) {
     return(list)
 }
 
+## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
+combine.pairs <- function(pairs, lapply_data) {
+    ## Making the lists the same lengths
+    pair_lengths <- unlist(lapply(lapply_data[pairs], length))
+    if(pair_lengths[1] != pair_lengths[2]) {
+        if(pair_lengths[1] > pair_lengths[2]) {
+            pair_one <- lapply_data[pairs][[1]]
+            pair_two <- c(lapply_data[pairs][[2]], rep(lapply_data[pairs][[2]][pair_lengths[2]], abs(diff(pair_lengths))))
+        } else {
+            pair_two <- lapply_data[pairs][[2]]
+            pair_one <- c(lapply_data[pairs][[1]], rep(lapply_data[pairs][[1]][pair_lengths[1]], abs(diff(pair_lengths))))
+        }
+    } else {
+        pair_one <- lapply_data[pairs][[1]]
+        pair_two <- lapply_data[pairs][[2]]
+    }
+    ## Combine both pairs
+    combined_pairs <- mapply(rbind, pair_one, pair_two, SIMPLIFY = FALSE)
+    nrow_pairs <- mapply(function(x, y) c(nrow(x), nrow(y)), pair_one, pair_two, SIMPLIFY = FALSE)
+    ## Add the row number
+    return(mapply(function(combined, nrow) return(list("nrow" = nrow, "data" = combined)), combined = combined_pairs, nrow = nrow_pairs, SIMPLIFY = FALSE))
+}
+
 # ## Parallel versions
 # parLapply.wrapper <- function(i, cluster) {
 #     ## Running the parallel apply
@@ -249,3 +272,4 @@ recursive.merge <- function(list, bind = cbind) {
 #         }
 #     )
 # }
+
