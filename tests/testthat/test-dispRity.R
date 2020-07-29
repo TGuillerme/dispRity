@@ -781,14 +781,14 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(capture.output(test)[4], "Disparity was calculated as: between.groups.complex between groups.")
     summary_results <- summary(test)
     expect_is(summary_results, "data.frame")
-    expect_equal(dim(summary_results), c(3, 9))
+    expect_equal(dim(summary_results), c(3, 4))
     expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs"))
     expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
     expect_equal(summary_results$obs, c(-1, -2, -1))
     expect_null(plot(test))
 
     ## Custom bootstrapped
-    test <- dispRity(boot.matrix(custom), metric = between.groups.complex, between.groups = TRUE)
+    test <- dispRity(boot.matrix(custom, rarefaction = TRUE), metric = between.groups.complex, between.groups = TRUE)
     expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
     summary_results <- summary(test)
     expect_is(summary_results, "data.frame")
