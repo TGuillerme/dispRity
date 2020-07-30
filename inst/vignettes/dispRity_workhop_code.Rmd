@@ -253,3 +253,8 @@ The package also provides a range of functions for modifying `dispRity` objects 
 
 The package also provides some other functions that I find useful in disparity analysis but are not totally linked to disparity analysis. For example, a function for removing zero branch lengths from trees (`remove.zero.brlen`) or a function to calculate various matrix distance metrics (`char.diff`). [More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/other-functionalities.html).
 
+## What's next?
+
+The `dispRity` package is constantly updated with new functionalities, bug fixes and improved functions. You can follow the development of the package by following me on github ([TGuillerme](https://github.com/TGuillerme) - I also develop other ecology-evolution packages) or twitter ([@TGuillerme](https://twitter.com/TGuillerme) - I also tweet about other work related stuff).
+You can check what will be happening in the next CRAN version of the package by checking the [NEWS.md](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) on the master branch.
+And of course, you are more than welcome to [contact](mailto:guillert@tcd.ie) me if you have suggestions, ideas or wishes for improvements!
