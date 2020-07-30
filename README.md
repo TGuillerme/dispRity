@@ -35,6 +35,7 @@ https://programme.europa-organisation.com/slides/programme_jointCongressEvolBiol
  -->
 
 ## Installing dispRity
+
 ```r
 if(!require(devtools)) install.packages("devtools")
 library(devtools)
@@ -58,6 +59,8 @@ A detailed vignette is available [online](https://tguillerme.github.io/dispRity.
 Otherwise, each functions has a detailed associated manual with examples in `R` (`?which.function`).
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
+
+You can download the workshop follow-along sheet [here](https://raw.githubusercontent.com/TGuillerme/dispRity/master/inst/vignettes/dispRity_workhop_code.Rmd)(use right click > save link as...) or visualise it in html [here](https://raw.githack.com/TGuillerme/dispRity/master/inst/vignettes/dispRity_workhop_code.html).
 
 ### Disparity/dissimilarity metrics/indices?
 
