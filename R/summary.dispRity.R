@@ -250,23 +250,31 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         ## Groups names
         names <- names(data$disparity)
 
-        ## Get the elements for each group
-        match.name.list <- function(name, elements) {
-            return(sapply(unlist(strsplit(name, split = ":")), function(group_name, elements)return(elements[[match(group_name, names(elements))]]), elements = elements))
-        }
-        elements_groups <- sapply(names, match.name.list, elements = elements)
-        elements_1 <- as.list(elements_groups[1,])
-        elements_2 <- as.list(elements_groups[2,]) 
+        ## Remove warning (desired: matching rows with different numbers of elements!)
+        options(warn = -1)
+        ## Get the table of elements for each pair of groups
+        elements_matrix <-lapply(as.list(names),  function(name, elements)
+                                do.call(cbind, lapply(as.list(strsplit(name, split = ":")[[1]]), function(name, elements) return(unname(elements[[match(name, names(elements))]])), elements)),
+                                elements = elements)
+        options(warn = 0)
 
         ## Initialise the results
-        summary_results <- data.frame(row.names = NULL, "subsets" = rep(names, unlist(lapply(elements, length))), "n_1" = unlist(elements_1), "n_2" = unlist(elements_2))
+        summary_results <- data.frame(row.names = NULL,
+                                    "subsets" = rep(names, unlist(lapply(elements_matrix, nrow))),
+                                    "n_1" = do.call(rbind,elements_matrix)[,1],
+                                    "n_2" = do.call(rbind,elements_matrix)[,2])
     } else {
         ## Initialise the results        
         summary_results <- data.frame(row.names = NULL, "subsets" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
     }
 
     ## Set the observed colume
-    obs_col <- ifelse(data$call$disparity$metrics$between.groups, 4, 3)
+    if(data$call$disparity$metrics$between.groups) {
+        obs_col <- 4
+        elements <- lapply(elements_matrix, function(x) seq(1:nrow(x)))
+    } else {
+        obs_col <- 3
+    }
 
     ## Add the observed values
     if(is_distribution) {

@@ -53,8 +53,12 @@ lapply.observed <- function(disparity) {
 }
 
 ## mapply wrapper for getting the disparity observed values
-mapply.observed <- function(disparity, elements) {
-    return(c(disparity, rep(NA, (length(elements)-1))))
+mapply.observed <- function(disparity, elements, between.groups = FALSE) {
+    if(!between.groups) {
+        return(c(disparity, rep(NA, (length(elements)-1))))
+    } else {
+        
+    }
 }
 
 ## Get digits for table (shifts the decimal point to contain a maximum of four characters)
