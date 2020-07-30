@@ -371,7 +371,13 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Rename the disparity groups
     if(is_between.groups) {
-        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = names(data$subsets)))
+        ## Remove ":" for pairs of names (: is reserved for the function)
+        subset_names <- names(data$subsets)
+        if(length(to_correct <- grep(":", subset_names)) > 0) {
+            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
+            subset_names <- paste(gsub(":", ";", subset_names))
+        }
+        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
     }
 
     ## Update the disparity
