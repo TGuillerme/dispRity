@@ -1,11 +1,18 @@
 ## default settings
-set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE, is_bootstrapped) {
+set.default <- function(summarised_data, data, elements, ylim, xlab, ylab, col, rarefaction, type = FALSE, is_bootstrapped, is_between.groups) {
+
+    ## Set the obs column
+    if(missing(is_between.groups)) {
+        obs <- 1
+    } else {
+        obs <- ifelse(is_between.groups, 1, 2)
+    }
 
     ## ylim
     if(ylim[[1]] == "default") {
         ## Setting the ylim to min/max -/+ 5%.
         if(rarefaction != TRUE) {
-            ylim <- c(min(summarised_data[, -c(1:2)], na.rm = TRUE) - min(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(summarised_data[, -c(1:2)], na.rm = TRUE) + max(summarised_data[, -c(1:2)], na.rm = TRUE) * 0.02)
+            ylim <- c(min(summarised_data[, -c(1:obs)], na.rm = TRUE) - min(summarised_data[, -c(1:obs)], na.rm = TRUE) * 0.02 , max(summarised_data[, -c(1:obs)], na.rm = TRUE) + max(summarised_data[, -c(1:obs)], na.rm = TRUE) * 0.02)
         } else {
             ylim <- "rarefaction"
         }

@@ -112,7 +112,7 @@
 # cent.tend=median
 # rarefaction = NULL
 # elements = FALSE
-# chrono.subsets = FALSE
+# chrono.subsets = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -312,7 +312,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             summarised_data[,1] <- subset_names
 
             ## Setting the default arguments
-            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
+            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE, is_between.groups = FALSE)
             ylim <- default_arg[[1]]
             xlab <- default_arg[[2]]
             ylab <- default_arg[[3]]
@@ -578,6 +578,13 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
     }
 
+    ## Check if the data is between groups
+    if(!is.null(data$call$disparity$metrics$between.groups)) {
+        is_between.groups <- data$call$disparity$metrics$between.groups    
+    } else {
+        is_between.groups <- FALSE
+    }
+
     ## observed
     class_observed <- check.class(observed, c("logical", "list"))
     if(class_observed == "list") {
@@ -648,7 +655,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## Setting the default arguments
-    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
+    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped, is_between.groups = is_between.groups)
     ylim <- default_arg[[1]]
     xlab <- default_arg[[2]]
     ylab <- default_arg[[3]]

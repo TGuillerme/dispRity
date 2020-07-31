@@ -13,12 +13,12 @@ data("disparity")
 test_that("set.default works", {
     sum_data <- summary(disparity)
     expect_error(
-        set.default("1", disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
+        set.default("1", disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE, is_between.groups = FALSE)
         )
     expect_error(
-        set.default(sum_data, "1", elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
+        set.default(sum_data, "1", elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE, is_between.groups = FALSE)
         )
-    test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
+    test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE, is_between.groups = FALSE)
     expect_equal(
         round(test[[1]], 3)
         , round(c(1.343, 2.930), 3))
@@ -32,7 +32,7 @@ test_that("set.default works", {
         test[[4]]
         , c("black", "#BEBEBE", "#D3D3D3"))
 
-    test <- set.default(sum_data, disparity, elements = TRUE, ylim = c(1,2), xlab = "Bla", ylab = c("Bli", "Blu"), col = c("pink", "knip"), rarefaction = FALSE, is_bootstrapped = TRUE)
+    test <- set.default(sum_data, disparity, elements = TRUE, ylim = c(1,2), xlab = "Bla", ylab = c("Bli", "Blu"), col = c("pink", "knip"), rarefaction = FALSE, is_bootstrapped = TRUE, is_between.groups = FALSE)
     expect_equal(
         round(test[[1]], 5)
         , round(c(1, 2), 5))
