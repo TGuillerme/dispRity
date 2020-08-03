@@ -11,6 +11,11 @@ data("disparity")
 
 ## Internals
 data(disparity)
+
+print("TEMPORARY update for disparity")
+disparity$disparity$metrics$between.groups <- FALSE
+
+
 test_that("get.data.params works", {
     test <- get.data.params(disparity)
     expect_is(test, "list")
@@ -21,6 +26,8 @@ test_that("get.data.params works", {
 test_that("get.plot.params works", {
     ## All defaults
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50,95),
                                   ylim = NULL,
                                   xlab = NULL,
                                   ylab = NULL,
@@ -47,6 +54,8 @@ test_that("get.plot.params works", {
 
     ## Options handled correctly
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50, 75, 95),
                                   ylim = c(1,2),
                                   xlab = "xlab",
                                   ylab = c("ylab", "ylab2"),
@@ -56,6 +65,7 @@ test_that("get.plot.params works", {
                                   type = "discrete",
                                   main = "main")
     ## The plotting options
+    expect_equal(plot_params$helpers$n_quantiles, 3)
     expect_equal(plot_params$options$xlab, "xlab")
     expect_equal(plot_params$options$ylab, c("ylab", "ylab2"))
     expect_equal_round(plot_params$options$ylim, c(1,2), 6)
