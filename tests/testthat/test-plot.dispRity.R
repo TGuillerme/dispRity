@@ -16,6 +16,11 @@ test_that("get.data.params works", {
 })
 
 test_that("get.plot.params works", {
+
+    ## Add test for observed_data
+
+
+
     ## All defaults
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
@@ -26,7 +31,8 @@ test_that("get.plot.params works", {
                                   col  = NULL,
                                   rarefaction_level = NULL,
                                   elements = FALSE,
-                                  type = "continuous")
+                                  type = "continuous",
+                                  observed_args = list(observed = FALSE))
     expect_is(plot_params, "list")
     expect_equal(names(plot_params), c("disparity", "helpers", "options"))
     ## The data to plot
@@ -56,10 +62,11 @@ test_that("get.plot.params works", {
                                   elements = FALSE,
                                   rarefaction_level = 10,
                                   type = "discrete",
-                                  main = "main")
+                                  main = "main",
+                                  observed_args = list(observed = FALSE))
     ## The plotting options
-    expect_equal(dim(plot_params$disparity$names), c(14, 2))
-    expect_equal(dim(plot_params$disparity$data), c(14, 10))
+    expect_equal(dim(plot_params$disparity$names), c(7, 2))
+    expect_equal(dim(plot_params$disparity$data), c(7, 10))
     expect_equal(plot_params$helpers$n_quantiles, 4)
     expect_equal(plot_params$options$xlab, "xlab")
     expect_equal(plot_params$options$ylab, c("ylab", "ylab2"))
@@ -68,36 +75,6 @@ test_that("get.plot.params works", {
     expect_equal(plot_params$options$main, "main")
 })
 
-test_that("extract.from.summary works", {
-    sum_data <- summary(disparity)
-    expect_error(
-        extract.from.summary("sum_data", what = 4, rarefaction = FALSE)
-        )
-    expect_null(
-        extract.from.summary(sum_data, what = "4", rarefaction = FALSE)
-        )
-    expect_equal(
-        length(extract.from.summary(sum_data, what = 4, rarefaction = 99))
-        , 0)
-    expect_equal(
-        length(extract.from.summary(sum_data, what = 4, rarefaction = FALSE))
-        , length(extract.from.summary(sum_data, what = "rows", rarefaction = FALSE)))
-    expect_equal(
-        extract.from.summary(sum_data, what = 1, rarefaction = FALSE)
-        , as.character(c(90,80,70,60,50,40,30)))
-    expect_equal(
-        extract.from.summary(sum_data, what = 2, rarefaction = 10)
-        ,rep(10, 7))
-    expect_equal(
-        extract.from.summary(sum_data, what = 3, rarefaction = 5)
-        ,as.numeric(rep(NA, 7)))
-    expect_equal(
-        round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
-        ,c(2.66, 2.71, 2.75, 2.73, 2.76, 2.75, 2.63))
-    expect_equal(
-            extract.from.summary(sum_data, what = "rows", rarefaction = 10)
-            ,c(3, 8, 13, 18, 22, 25, 27))
-})
 
 # test_that("transpose.box works", {
 

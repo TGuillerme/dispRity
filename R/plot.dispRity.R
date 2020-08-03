@@ -560,14 +560,15 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## observed
+    observed_args <- list()
     class_observed <- check.class(observed, c("logical", "list"))
     if(class_observed == "list") {
         ## Transforming into logical and handling the list below
-        obs_list_arg <- observed
-        observed <- TRUE
+        observed_args <- observed
+        observed_args$observed <- TRUE
     } else {
         ## Creating and empty list to be handled below
-        obs_list_arg <- list()
+        observed_args$observed <- observed
     }
 
     ## add
@@ -575,26 +576,27 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     ## PREPARING THE PLOT
     plot_params <- get.plot.params(data = data, data_params = data_params,
+                                  cent.tend = cent.tend, quantiles = quantiles,
                                   ylim = ifelse(missing(ylim), NULL, ylim),
                                   xlab = ifelse(missing(xlab), NULL, xlab),
                                   ylab = ifelse(missing(ylab), NULL, ylab),
                                   col  = ifelse(missing(col), NULL, col),
                                   rarefaction_level = rarefaction,
-                                  elements = elements, type = type
-                                  ,...)
+                                  elements = elements, type = type,
+                                  observed_args = observed_args
+                                  , ...)
+    plot_params <- get.plot.params(data = data, data_params = data_params,
+                                  cent.tend = cent.tend,
+                                  quantiles = quantiles,
+                                  ylim = NULL,
+                                  xlab = NULL,
+                                  ylab = NULL,
+                                  col  = NULL,
+                                  rarefaction_level = rarefaction,
+                                  elements = elements,
+                                  type = type,
+                                  observed_args = observed_args) ; warning("DEBUG plot.dispRity")
 
-    ## Adding the default parameters to observed
-    if(observed) {
-        if(is.null(obs_list_arg$col)) {
-            obs_list_arg$col <- plot_param$options$col[[1]]
-        }
-        if(is.null(obs_list_arg$pch)) {
-            obs_list_arg$pch <- 4
-        }
-        if(is.null(obs_list_arg$cex)) {
-            obs_list_arg$cex <- 1
-        }
-    }
 
     ## Set up the plotting task 
     plot_task <- type
@@ -605,21 +607,20 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     return(invisible())
 
 
-
-
-    # switch(plot_task,
-    #     "rarefaction" = {
-    #         return(invisible())
-    #     },
-    #     "continuous" = {
-    #         return(invisible())
-    #     },
-    #     "polygon" = {
-    #         return(invisible())
-    #     },
-    #     "box" = {
-    #         return(invisible())
-    #     })
+    switch(plot_task,
+        "rarefaction" = {
+            return(invisible())
+        },
+        "continuous" = {
+            plot.continuous(plot_params)
+            return(invisible())
+        },
+        "polygon" = {
+            return(invisible())
+        },
+        "box" = {
+            return(invisible())
+        })
 
 
 

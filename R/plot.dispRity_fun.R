@@ -13,7 +13,8 @@ get.data.params <- function(data) {
 # $disparity: summarised_data
 # $helpers: n_quantiles, npoints
 # $options: ylim, ylab, xlab, col, ...
-get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab, ylim, col, rarefaction_level, elements, type, ...) {
+# $observed: data, ylim, ylab, xlab, col, ...
+get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab, ylim, col, rarefaction_level, elements, type, observed_args, ...) {
 
     ## Set up the plotting data
     ## Summarise the data
@@ -49,17 +50,17 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
             rarefaction_match <- which(summarised_data$n == rarefaction_level)
         }
         ## Get both the observed and rarefied data
-        summarised_data <- summarised_data[c(which(observed_data), rarefaction_match),]
+        selected_data <- summarised_data[rarefaction_match ,]
     } else {
         ## Just get the observed data
-        summarised_data <- summarised_data[observed_data,]
+        selected_data <- summarised_data[observed_data,]
     }
 
     ## Separate the data elements
     disparity <- list()
     name_part <- c(1, ifelse(data_params$between.groups, 3, 2))
-    disparity$names <- summarised_data[, name_part]
-    disparity$data  <- summarised_data[, -name_part]
+    disparity$names <- selected_data[, name_part]
+    disparity$data  <- selected_data[, -name_part]
 
     ## Set up the helpers options
     helpers <- list()
@@ -153,50 +154,29 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         options <- c(options, dots)    
     }
     
+    ## Observed data
+    if(observed_args$observed) {
+        ## Adding the observed data
+        selected_data <- summarised_data[observed_data,]
+        observed$names <- selected_data[, name_part]
+        observed$data  <- selected_data[, -name_part]
+
+        ## Default observed arguments
+        if(is.null(observed_args$col)) {
+            observed_args$col <- options$col[[1]]
+        }
+        if(is.null(observed_args$pch)) {
+            observed_args$pch <- 4
+        }
+        if(is.null(observed_args$cex)) {
+            observed_args$cex <- 1
+        }
+    }
+
     ## Output the finalised list
-    return(list("disparity" = disparity, "helpers" = helpers, "options" = options))
+    return(list("disparity" = disparity, "helpers" = helpers, "options" = options, "observed_args" = observed_args))
 }
 
-
-
-## Extract specific summary values
-### plot_param$disparity$data is a summary data table
-### what is the column of the table (or, if "which.rows", for the row numbers were that data is)
-### rarefaction is the rarefaction value (FALSE == none)
-extract.from.summary <- function(plot_params, what, data_params) {
-
-    ## Internal function for checking true NAs
-    check.na <- function(row, extract, data) {
-        if(!extract[row]) {
-            extract[row] <- all(is.na(data[row, ]))
-        }
-        return(extract[row])
-    }
-
-    ## No rarefaction level
-    if(!data_params$rarefaction) {
-        ## Values to extract
-        extract <- !is.na(plot_params$disparity$data$obs)
-        ## Check if any of the values to extract are NAs from rarefaction or from missing data
-        if(any(!extract)) {
-            extract <- sapply(1:nrow(plot_params$disparity$data), check.na, extract, plot_params$disparity$data)
-        }
-        ##
-        return(plot_params$disparity$data[which(extract), what])
-
-    } else {
-        ## Rarefaction level
-        if(data_params$between.groups) {
-            ## Find the matching rarefaction level
-            rarefaction_match <- which(plot_params$disparity$names$n_1 == data_params$rarefaction
-                                        &&
-                                       plot_params$disparity$names$n_2 == data_params$rarefaction)
-        } else {
-            rarefaction_match <- which(plot_params$disparity$names$n == data_params$rarefaction)
-        }
-        return(plot_params$disparity$data[rarefaction_match, what])
-    }
-}
 
 ## discrete plotting
 plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) {
@@ -295,7 +275,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
 }
 
 ## continuous plotting
-plot.continuous <- function(plot_params, time_slicing, observed, obs_list_arg, add, density, ...) {
+plot.continuous <- function(plot_params, add, density, ...) {
     ## Set the shift parameter (for add)
     shift = 0
     if(add) {
@@ -313,27 +293,20 @@ plot.continuous <- function(plot_params, time_slicing, observed, obs_list_arg, a
 
         ## Setting up the current plot parameters
         current_plot <- plot_params$options
+        current_plot$x <- seq(from = 1, to = plot_params$helpers$n_points)-shift
+        current_plot$y <- plot_params$disparity$data[, 2] ; warning("select with is_bootstrapped or is_distribution")
+        current_plot$type <- "l"
+        current_plot$col <- plot_params$options$col[[1]]
+        current_plot$xaxt <- "n"
 
+        ## Plot the thingy
+        do.call(plot, current_plot)
 
-        if(time_slicing[1] == FALSE) {
-            ## Plot with standard xaxis
-            plot((seq(from = 1, to = plot_params$helpers$n_points)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], ...)
+        ## Add the axis labels
+        axis(1, 1:plot_params$helpers$n_points, plot_params$disparity$names$subsets)
 
-            plot((seq(from = 1, to = plot_params$helpers$n_points)-shift))
-
-
-
-
-            do.call(plot, current_plot)
-
-
-            #plot((seq(from = 1, to = plot_params$helpers$n_points)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]]) ; warning("DEBUG: plot")
-        } else {
-                plot((seq(from = 1, to = plot_params$helpers$n_points)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n", ...)
-            #plot((seq(from = 1, to = plot_params$helpers$n_points)-shift), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), type = "l", ylim = ylim, col = col[[1]], xlab = xlab, ylab = ylab[[1]], xaxt = "n") ; warning("DEBUG: plot")
-            axis(1, 1:plot_params$helpers$n_points, time_slicing)
-        }
     } else {
+        ## Change from here
         lines(seq(from = 1, to = plot_params$helpers$n_points), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]])
     }
 
