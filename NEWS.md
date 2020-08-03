@@ -38,10 +38,12 @@ dispRity v1.4.4 (2020-08-03)
 ### MINOR IMPROVEMENTS
 
   * Many updates to the `dispRity` manual.
+  * Simplified syntax for the internal `plot.dispRity` S3 methods (for a potential `ggpRity`?)
 
 ### BUG FIXES
 
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
+  * Fixed a bug in `chrono.subsets` were ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
 
 dispRity v1.4.0 *getting faster* (2020-05-05)
 =========================

@@ -15,3 +15,18 @@ TODO:
  - [ ] implement `min.dist` as a `"serial"` metric
 
 Things can be sped up by directly passing a list of comparisons (pairwise or sequential or user defined) that will be passed as a `lapply_loop` argument (or similar).
+
+Update the `plot.dispRity` structure.
+
+* [x] function for getting the input object param `get.data.params`
+* [x] function for getting what to plot `get.plot.params`
+* [ ] "observed"
+* [ ] "rarefaction"
+* [ ] "continuous"
+* [ ] "polygon" || "line"
+* [ ] "box"
+* [ ] `randtest`
+* [ ] `dtt`
+* [ ] `model.test`
+* [ ] `model.sim`
+* [ ] `test.metric`
