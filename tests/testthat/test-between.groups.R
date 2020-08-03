@@ -101,9 +101,16 @@ test_that("dispRity works for between.groups metrics", {
     expect_null(plot(test))
 
     ## Chrono time.slice
-    # chrono <- chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran", verbose = TRUE)
+    # data(BeckLee_mat99)
+    # data(BeckLee_tree)
+    # chrono <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 11, model = "acctran", verbose = FALSE)
     # test <- dispRity(boot.matrix(chrono, 5), metric = between.groups.complex, between.groups = TRUE)
-    # summary(test)
+    # expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
+    # summary_results <- summary(test)
+    # expect_is(summary_results, "data.frame")
+    # expect_equal(dim(summary_results), c(10, 9))
+    # expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs", "bs.median", "2.5%", "25%", "75%", "97.5%"))
+    # expect_null(plot(test))
 
 
     ## Chrono bootstrapped
