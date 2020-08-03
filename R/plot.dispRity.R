@@ -1,4 +1,4 @@
-# #' @title dispRity object plotting
+#' @title dispRity object plotting
 #'
 #' @description Plots a \code{dispRity} object.
 #'
@@ -13,7 +13,6 @@
 #' @param xlab Optional, a \code{character} string for the caption of the x axis.
 #' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
 #' @param col Optional, some \code{character} string(s) for the colour of the plot.
-#' @param chrono.subsets \code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
@@ -59,11 +58,7 @@
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(disparity, type = "continuous")
-#' 
-#' ## Using different options (with non time.slicing option)
-#' plot(disparity, type = "continuous", chrono.subsets = FALSE,
-#'      elements = TRUE, col = c("red", "orange", "yellow"))
-#' 
+#'  
 #' ## Rarefactions plots
 #' plot(disparity, rarefaction = TRUE)
 #' 
@@ -112,7 +107,6 @@
 # cent.tend=median
 # rarefaction = NULL
 # elements = FALSE
-# chrono.subsets = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -128,7 +122,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -536,31 +530,15 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         type <- ifelse(type == "p", "polygon", type)
     }
 
-    ## If continuous, set time to continuous Ma (default)
-    if(type == "continuous" & chrono.subsets) {
-        ## Check if chrono.subsets was used (saved in call)
-        if(data$call$subsets[1] == "continuous") {
-            time_slices <- names(data$subsets)
-        }
-    }# Else
-    if(!chrono.subsets) {
-        time_slices <- FALSE
-    } else {
-        time_slices <- names(data$subsets)
-    }
-
     ## elements
     ## must be logical
     check.class(elements, "logical")
 
-    ## Rarefaction
-    if(is.null(rarefaction)) {
-        rarefaction <- FALSE
-    }
     ## If data is not bootstrapped, rarefaction is FALSE
     if(!data_params$bootstrap) {
-        rarefaction <- FALSE
+        rarefaction <- NULL
     }
+
     ## Check class
     rarefaction_class <- check.class(rarefaction, c("logical", "integer", "numeric"))
     if(rarefaction_class != "logical") {
@@ -574,6 +552,11 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
             stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
         }
+    } else {
+        if(rarefaction) {
+            type <- "rarefaction"
+        }
+        rarefaction <- NULL
     }
 
     ## observed
@@ -596,9 +579,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                                   xlab = ifelse(missing(xlab), NULL, xlab),
                                   ylab = ifelse(missing(ylab), NULL, ylab),
                                   col  = ifelse(missing(col), NULL, col),
-                                  rarefaction = rarefaction, elements = elements, type = type
+                                  rarefaction_level = rarefaction,
+                                  elements = elements, type = type
                                   ,...)
-    # plot_params <- get.plot.params(data = data, data_params = data_params, ylim = NULL, xlab = NULL, ylab = NULL, col = NULL, rarefaction = rarefaction, elements = elements, type = type) ; warning("plot.dispRity DEBUG")
 
     ## Adding the default parameters to observed
     if(observed) {
@@ -614,13 +597,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## Set up the plotting task 
-    if(rarefaction == TRUE) {
-        plot_task <- "rarefaction"
-    } else {
-        plot_task <- type
-        ## The task line is the same as polygon
-        if(plot_task == "line") plot_task <- "polygon"
-    }
+    plot_task <- type
+    ## The task line is the same as polygon
+    if(plot_task == "line") plot_task <- "polygon"
 
     # Temporary stop
     return(invisible())

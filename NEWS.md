@@ -39,6 +39,7 @@ dispRity v1.4.4 (2020-08-03)
 
   * Many updates to the `dispRity` manual.
   * Simplified syntax for the internal `plot.dispRity` S3 methods (for a potential `ggpRity`?)
+  * **removed** option in `plot.dispRity`: the `chrono.subsets` option (`TRUE`/`FALSE`) has now been removed. The time-slicing-ness is now automatically detected or can be specified by the user normally through `xlab`.
 
 ### BUG FIXES
 

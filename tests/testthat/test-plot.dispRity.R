@@ -15,7 +15,6 @@ test_that("get.data.params works", {
     expect_equal(names(test), c("distribution", "bootstrap", "rarefaction", "between.groups", "elements"))
 })
 
-
 test_that("get.plot.params works", {
     ## All defaults
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
@@ -25,7 +24,7 @@ test_that("get.plot.params works", {
                                   xlab = NULL,
                                   ylab = NULL,
                                   col  = NULL,
-                                  rarefaction = FALSE,
+                                  rarefaction_level = NULL,
                                   elements = FALSE,
                                   type = "continuous")
     expect_is(plot_params, "list")
@@ -34,106 +33,71 @@ test_that("get.plot.params works", {
     expect_equal(names(plot_params$disparity), c("names", "data"))
     expect_is(plot_params$disparity$data, "data.frame")
     expect_is(plot_params$disparity$names, "data.frame")
-    expect_equal(dim(plot_params$disparity$names), c(28, 2))
-    expect_equal(dim(plot_params$disparity$data), c(28, 6))
+    expect_equal(dim(plot_params$disparity$names), c(7, 2))
+    expect_equal(dim(plot_params$disparity$data), c(7, 6))
     ## The plotting helpers
     expect_equal(plot_params$helpers$n_quantiles, 2)
     expect_equal(plot_params$helpers$n_points, 7)
     ## The plotting options
     expect_equal(plot_params$options$xlab, "Time (Mya)")
     expect_equal(plot_params$options$ylab, "c(median, centroids)")
-    expect_equal_round(plot_params$options$ylim, c(1.342845, 2.930480), 6)
+    expect_equal_round(plot_params$options$ylim, c(2.248737, 2.918863), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
 
     ## Options handled correctly
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
-                                  quantiles = c(50, 75, 95),
+                                  quantiles = c(50, 75, 95, 99),
                                   ylim = c(1,2),
                                   xlab = "xlab",
                                   ylab = c("ylab", "ylab2"),
                                   col  = c("orange", "blue"),
                                   rarefaction = FALSE,
                                   elements = FALSE,
+                                  rarefaction_level = 10,
                                   type = "discrete",
                                   main = "main")
     ## The plotting options
-    expect_equal(plot_params$helpers$n_quantiles, 3)
+    expect_equal(dim(plot_params$disparity$names), c(14, 2))
+    expect_equal(dim(plot_params$disparity$data), c(14, 10))
+    expect_equal(plot_params$helpers$n_quantiles, 4)
     expect_equal(plot_params$options$xlab, "xlab")
     expect_equal(plot_params$options$ylab, c("ylab", "ylab2"))
     expect_equal_round(plot_params$options$ylim, c(1,2), 6)
-    expect_equal(plot_params$options$col, c("orange", "blue", "#BEBEBE"))
+    expect_equal(plot_params$options$col, c("orange", "blue", "#BEBEBE", "#C8C8C8", "#D3D3D3"))
     expect_equal(plot_params$options$main, "main")
 })
 
-
-# test_that("set.default works", {
-#     sum_data <- summary(disparity)
-#     expect_error(
-#         set.default("1", disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
-#         )
-#     expect_error(
-#         set.default(sum_data, "1", elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
-#         )
-#     test <- set.default(sum_data, disparity, elements = FALSE, ylim = "default", xlab = "default", ylab = "default", col = "default", rarefaction = FALSE, is_bootstrapped = TRUE)
-#     expect_equal(
-#         round(test[[1]], 3)
-#         , round(c(1.343, 2.930), 3))
-#     expect_equal(
-#         test[[2]]
-#         , "Subsets")
-#     expect_equal(
-#         test[[3]]
-#         , "c(median, centroids)")
-#     expect_equal(
-#         test[[4]]
-#         , c("black", "#BEBEBE", "#D3D3D3"))
-
-#     test <- set.default(sum_data, disparity, elements = TRUE, ylim = c(1,2), xlab = "Bla", ylab = c("Bli", "Blu"), col = c("pink", "knip"), rarefaction = FALSE, is_bootstrapped = TRUE)
-#     expect_equal(
-#         round(test[[1]], 5)
-#         , round(c(1, 2), 5))
-#     expect_equal(
-#         test[[2]]
-#         , "Bla")
-#     expect_equal(
-#         test[[3]]
-#         , c("Bli", "Blu"))
-#     expect_equal(
-#         test[[4]]
-#         , c("pink", "knip", "#BEBEBE"))
-# })
-
-# test_that("extract.from.summary works", {
-#     sum_data <- summary(disparity)
-#     expect_error(
-#         extract.from.summary("sum_data", what = 4, rarefaction = FALSE)
-#         )
-#     expect_null(
-#         extract.from.summary(sum_data, what = "4", rarefaction = FALSE)
-#         )
-#     expect_equal(
-#         length(extract.from.summary(sum_data, what = 4, rarefaction = 99))
-#         , 0)
-#     expect_equal(
-#         length(extract.from.summary(sum_data, what = 4, rarefaction = FALSE))
-#         , length(extract.from.summary(sum_data, what = "rows", rarefaction = FALSE)))
-#     expect_equal(
-#         extract.from.summary(sum_data, what = 1, rarefaction = FALSE)
-#         , as.character(c(90,80,70,60,50,40,30)))
-#     expect_equal(
-#         extract.from.summary(sum_data, what = 2, rarefaction = 10)
-#         ,rep(10, 7))
-#     expect_equal(
-#         extract.from.summary(sum_data, what = 3, rarefaction = 5)
-#         ,as.numeric(rep(NA, 7)))
-#     expect_equal(
-#         round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
-#         ,c(2.66, 2.71, 2.75, 2.73, 2.76, 2.75, 2.63))
-#     expect_equal(
-#             extract.from.summary(sum_data, what = "rows", rarefaction = 10)
-#             ,c(3, 8, 13, 18, 22, 25, 27))
-# })
+test_that("extract.from.summary works", {
+    sum_data <- summary(disparity)
+    expect_error(
+        extract.from.summary("sum_data", what = 4, rarefaction = FALSE)
+        )
+    expect_null(
+        extract.from.summary(sum_data, what = "4", rarefaction = FALSE)
+        )
+    expect_equal(
+        length(extract.from.summary(sum_data, what = 4, rarefaction = 99))
+        , 0)
+    expect_equal(
+        length(extract.from.summary(sum_data, what = 4, rarefaction = FALSE))
+        , length(extract.from.summary(sum_data, what = "rows", rarefaction = FALSE)))
+    expect_equal(
+        extract.from.summary(sum_data, what = 1, rarefaction = FALSE)
+        , as.character(c(90,80,70,60,50,40,30)))
+    expect_equal(
+        extract.from.summary(sum_data, what = 2, rarefaction = 10)
+        ,rep(10, 7))
+    expect_equal(
+        extract.from.summary(sum_data, what = 3, rarefaction = 5)
+        ,as.numeric(rep(NA, 7)))
+    expect_equal(
+        round(extract.from.summary(sum_data, what = 4, rarefaction = FALSE), 2)
+        ,c(2.66, 2.71, 2.75, 2.73, 2.76, 2.75, 2.63))
+    expect_equal(
+            extract.from.summary(sum_data, what = "rows", rarefaction = 10)
+            ,c(3, 8, 13, 18, 22, 25, 27))
+})
 
 # test_that("transpose.box works", {
 
