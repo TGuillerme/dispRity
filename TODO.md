@@ -1,5 +1,14 @@
 Update the `plot.dispRity` structure.
 
-* [ ] function for getting the input object param `get.data.params`
-* [ ] function for getting what to plot `get.plot.params`
-* [ ] updating the `plot.discrete` and `plot.continuous` functions using the two above
+* [x] function for getting the input object param `get.data.params`
+* [x] function for getting what to plot `get.plot.params`
+* [ ] "observed"
+* [ ] "rarefaction"
+* [ ] "continuous"
+* [ ] "polygon" || "line"
+* [ ] "box"
+* [ ] `randtest`
+* [ ] `dtt`
+* [ ] `model.test`
+* [ ] `model.sim`
+* [ ] `test.metric`
