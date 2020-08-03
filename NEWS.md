@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.4.3 (2020-07-30)
+dispRity v1.4.4 (2020-08-03)
 =========================
 
 ### NEW FEATURES
@@ -37,6 +37,7 @@ dispRity v1.4.3 (2020-07-30)
 ### MINOR IMPROVEMENTS
 
   * Many updates to the `dispRity` manual.
+  * Simplified syntax for the internal `plot.dispRity` S3 methods (for a potential `ggpRity`?)
 
 ### BUG FIXES
 
