@@ -88,7 +88,6 @@ test_that("dispRity works for between.groups metrics", {
     expect_null(plot(test))
 
     ## Chrono bootstrapped + rare
-    set.seed(1)
     test <- dispRity(boot.matrix(chrono, rarefaction = TRUE), metric = between.groups.complex, between.groups = TRUE)
     expect_equal(capture.output(test)[5], "Disparity was calculated as: between.groups.complex between groups.")
     summary_results <- summary(test)
