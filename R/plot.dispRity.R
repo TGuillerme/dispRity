@@ -306,23 +306,26 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 subset_names <- rev(data$simulation.data$fix$subsets)
             }
 
-            ## Preparing the data and the arguments
-            summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
-            colnames(summarised_data)[3] <- "obs"
-            summarised_data[,1] <- subset_names
+            ## 
+            stop("Rewrite model.sim.plot")
 
-            ## Setting the default arguments
-            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", data_params$bootstrap = TRUE, data_params$between.groups = FALSE)
-            ylim <- default_arg[[1]]
-            xlab <- default_arg[[2]]
-            ylab <- default_arg[[3]]
-            if(length(ylab) == 0) {
-                ylab <- "disparity (simulated)"
-            }
-            col <- default_arg[[4]]
+            # ## Preparing the data and the arguments
+            # summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
+            # colnames(summarised_data)[3] <- "obs"
+            # summarised_data[,1] <- subset_names
 
-            ## Plotting the model
-            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, data_params$bootstrap = TRUE, data_params$distribution = TRUE, ylim, xlab, ylab, col, time_slices = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
+            # ## Setting the default arguments
+            # default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", data_params$bootstrap = TRUE, data_params$between.groups = FALSE)
+            # ylim <- default_arg[[1]]
+            # xlab <- default_arg[[2]]
+            # ylab <- default_arg[[3]]
+            # if(length(ylab) == 0) {
+            #     ylab <- "disparity (simulated)"
+            # }
+            # col <- default_arg[[4]]
+
+            # ## Plotting the model
+            # plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, data_params$bootstrap = TRUE, data_params$distribution = TRUE, ylim, xlab, ylab, col, time_slices = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
         }
 
         if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
@@ -597,7 +600,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                                   ,...)
     # plot_params <- get.plot.params(data = data, data_params = data_params, ylim = NULL, xlab = NULL, ylab = NULL, col = NULL, rarefaction = rarefaction, elements = elements, type = type) ; warning("plot.dispRity DEBUG")
 
-
     ## Adding the default parameters to observed
     if(observed) {
         if(is.null(obs_list_arg$col)) {
@@ -611,95 +613,133 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
     }
 
-    ## PLOTTING THE RESULTS
-
-    ## Rarefaction plot
+    ## Set up the plotting task 
     if(rarefaction == TRUE) {
-        ## How many rarefaction plots?
-        n_plots <- length(data$subsets)
-
-        ## Open the multiple plots
-        plot_size <- ifelse(n_plots == 3, 4, n_plots)
-        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
-
-        ## Rarefaction plots
-
-        ## Get the list of subsets
-        subsets_levels <- unique(summarised_data$subsets)
-
-        ## Split the summary table
-        sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
-
-        ## Plot the rarefaction curves
-        for(nPlot in 1:n_plots) {
-            plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
-            # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-        }
-
-        ## Done!
-        par(op_tmp)
-
-        return(invisible())
+        plot_task <- "rarefaction"
+    } else {
+        plot_task <- type
+        ## The task line is the same as polygon
+        if(plot_task == "line") plot_task <- "polygon"
     }
 
-    ## Continuous plot
-    if(type == "continuous") {
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density,...)
-        # saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density); warning("DEBUG: plot")
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
-        return(invisible())
-    }
+    # Temporary stop
+    return(invisible())
 
-    ## Polygons or lines
-    if(type == "polygon" | type == "line") {
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        ## Personalised discrete plots
-        saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
-        # saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
-        return(invisible())
-    }
 
-    ## Box plot
-    if(type == "box") {
-        ## Simple case: boxplot
-        plot_data <- transpose.box(data, rarefaction, data_params$bootstrap)
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
-        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
 
-        if(observed == TRUE) {
-            if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
-                ## Add the points observed (if existing)
-                for(point in 1:length(plot_data)) {
-                    x_coord <- point
-                    y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
-                    points(x_coord, y_coord, pch = obs_list_arg$pch, col = obs_list_arg$col, cex = obs_list_arg$cex)
-                }
-            }
-        }
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
 
-        return(invisible())
-    }
+    # switch(plot_task,
+    #     "rarefaction" = {
+    #         return(invisible())
+    #     },
+    #     "continuous" = {
+    #         return(invisible())
+    #     },
+    #     "polygon" = {
+    #         return(invisible())
+    #     },
+    #     "box" = {
+    #         return(invisible())
+    #     })
+
+
+
+
+
+
+
+    # ## PLOTTING THE RESULTS
+
+    # ## Rarefaction plot
+    # if(rarefaction == TRUE) {
+    #     ## How many rarefaction plots?
+    #     n_plots <- length(data$subsets)
+
+    #     ## Open the multiple plots
+    #     plot_size <- ifelse(n_plots == 3, 4, n_plots)
+    #     op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
+
+    #     ## Rarefaction plots
+
+    #     ## Get the list of subsets
+    #     subsets_levels <- unique(summarised_data$subsets)
+
+    #     ## Split the summary table
+    #     sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
+
+    #     ## Plot the rarefaction curves
+    #     for(nPlot in 1:n_plots) {
+    #         plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
+    #         # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+    #     }
+
+    #     ## Done!
+    #     par(op_tmp)
+
+    #     return(invisible())
+    # }
+
+    # ## Continuous plot
+    # if(type == "continuous") {
+    #     ## Bigger plot margins if elements needed
+    #     if(elements) {
+    #         par(mar = c(5, 4, 4, 4) + 0.1)
+    #     }
+    #     saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density,...)
+    #     # saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density); warning("DEBUG: plot")
+
+    #     # saved_par <- plot.continuous(plot_params, data_params, time_slices, observed, obs_list_arg, add, density)
+
+    #     if(elements) {
+    #         par(new = TRUE)
+    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
+    #     }
+    #     return(invisible())
+    # }
+
+    # ## Polygons or lines
+    # if(type == "polygon" | type == "line") {
+    #     ## Bigger plot margins if elements needed
+    #     if(elements) {
+    #         par(mar = c(5, 4, 4, 4) + 0.1)
+    #     }
+    #     ## Personalised discrete plots
+    #     saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
+    #     # saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
+    #     if(elements) {
+    #         par(new = TRUE)
+    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
+    #     }
+    #     return(invisible())
+    # }
+
+    # ## Box plot
+    # if(type == "box") {
+    #     ## Simple case: boxplot
+    #     plot_data <- transpose.box(data, rarefaction, data_params$bootstrap)
+    #     ## Bigger plot margins if elements needed
+    #     if(elements) {
+    #         par(mar = c(5, 4, 4, 4) + 0.1)
+    #     }
+    #     saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
+    #     # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
+
+    #     if(observed == TRUE) {
+    #         if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
+    #             ## Add the points observed (if existing)
+    #             for(point in 1:length(plot_data)) {
+    #                 x_coord <- point
+    #                 y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
+    #                 points(x_coord, y_coord, pch = obs_list_arg$pch, col = obs_list_arg$col, cex = obs_list_arg$cex)
+    #             }
+    #         }
+    #     }
+    #     if(elements) {
+    #         par(new = TRUE)
+    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
+    #     }
+
+    #     return(invisible())
+    # }
 
 }
