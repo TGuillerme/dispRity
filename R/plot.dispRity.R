@@ -1,4 +1,4 @@
-#' @title dispRity object plotting
+# #' @title dispRity object plotting
 #'
 #' @description Plots a \code{dispRity} object.
 #'
@@ -112,7 +112,7 @@
 # cent.tend=median
 # rarefaction = NULL
 # elements = FALSE
-# chrono.subsets = TRUE
+# chrono.subsets = FALSE
 # observed = FALSE
 # add = FALSE
 # density = NULL
@@ -213,7 +213,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 if(any(quantiles < 0) | any(quantiles > 100)) {
                     stop.call("", "quantiles(s) must be any value between 0 and 100.")
                 }
-                n_quantiles <- length(quantiles)
+                quantiles_n <- length(quantiles)
 
                 ## Check the central tendency
                 check.class(cent.tend, "function")
@@ -228,9 +228,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 cent_tend_values <- apply(data$sim, 1, cent.tend)
 
                 ## Plotting the polygons for each quantile
-                for (cis in 1:n_quantiles) {
+                for (cis in 1:quantiles_n) {
                     xx <- c(data$times, rev(data$times))
-                    yy <- c(quantiles_values[(n_quantiles*2) - (cis-1), ], rev(quantiles_values[cis ,]))
+                    yy <- c(quantiles_values[(quantiles_n*2) - (cis-1), ], rev(quantiles_values[cis ,]))
                     polygon(xx, yy, col = col[cis+1],  border = FALSE, density = density)
                 }
 
@@ -312,7 +312,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             summarised_data[,1] <- subset_names
 
             ## Setting the default arguments
-            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", data_params$bootstrap = TRUE, data_params$between.groups = FALSE)
+            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
             ylim <- default_arg[[1]]
             xlab <- default_arg[[2]]
             ylab <- default_arg[[3]]
@@ -322,7 +322,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             col <- default_arg[[4]]
 
             ## Plotting the model
-            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, data_params$bootstrap = TRUE, data_params$distribution = TRUE, ylim, xlab, ylab, col, time_slices = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
+            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
         }
 
         if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
@@ -464,7 +464,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if("disparity" %in% names(data)) {
+    if(is.na(match("disparity", names(data)))) {
         if(!missing(type) && type != "preview") {
             stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
         } else {
@@ -473,20 +473,20 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             }
         }
     }
-
-    ## Plot the matrix preview
     if(!missing(type) && type == "preview") {
         ## Preview plot
         plot.preview(data, dimensions = dimensions, matrix = matrix, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
         return(invisible())
     }
 
-    ## Get the dispRity data characteristics
-    data_params <- get.data.params(data)
+    ## Check if disparity is a value or a distribution
+    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
+    ## Check the bootstraps
+    is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
 
     ## quantiles
-    ## Only check if the data data_params$bootstrap or if it's a distribution
-    if(data_params$bootstrap || data_params$distribution) {
+    ## Only check if the data is_bootstrapped or if it's a distribution
+    if(is_bootstrapped || is_distribution) {
         check.class(quantiles, c("numeric", "integer"), " must be any value between 1 and 100.")
 
         ## Are quantiles probabilities or proportions ?
@@ -509,6 +509,11 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## type
+    # if(length(data$subsets) == 1) {
+    #     type <- "box"
+    #     message("Only one subset of data available: type is set to \"box\".")
+    # }
+
     if(missing(type)) {
         ## Set type to default
         if(any(grep("continuous", data$call$subsets))) {
@@ -535,15 +540,15 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     ## If continuous, set time to continuous Ma (default)
     if(type == "continuous" & chrono.subsets) {
-        ## Check if chrono.subsets was used (saved in call)
+        ## Check if time.slicing was used (saved in call)
         if(data$call$subsets[1] == "continuous") {
-            time_slices <- names(data$subsets)
+            time_slicing <- names(data$subsets)
         }
-    }# Else
+    } 
     if(!chrono.subsets) {
-        time_slices <- FALSE
+        time_slicing <- FALSE
     } else {
-        time_slices <- names(data$subsets)
+        time_slicing <- names(data$subsets)
     }
 
     ## elements
@@ -555,12 +560,12 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         rarefaction <- FALSE
     }
     ## If data is not bootstrapped, rarefaction is FALSE
-    if(!data_params$bootstrap) {
+    if(!is_bootstrapped) {
         rarefaction <- FALSE
     }
     ## Check class
-    rarefaction_class <- check.class(rarefaction, c("logical", "integer", "numeric"))
-    if(rarefaction_class != "logical") {
+    silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
+    if(!is(rarefaction, "logical")) {
         ## Right class
         rarefaction <- as.numeric(rarefaction)
         check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
@@ -584,24 +589,75 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         obs_list_arg <- list()
     }
 
+    ## xlab
+    if(missing(xlab)) { 
+        xlab <- "default"
+        if(!any("customised" %in% data$call$subsets) && chrono.subsets != FALSE && rarefaction != TRUE) {
+            xlab <- "Time (Mya)"
+        }
+    } else {
+        ## length must be 1
+        check.length(xlab, 1, " must be a character string.")
+    }
+
+    ## ylab
+    if(missing(ylab)) {
+        ylab <- "default"
+    } else {
+        ## length must be 
+        if(elements == FALSE) {
+            check.length(ylab, 1, " must be a character string.")
+        } else {
+            if(length(ylab) > 2) {
+                stop.call("", "ylab can have maximum of two elements.")
+            }
+        }
+    }
+
+    ## col
+    ## if default, is ok
+    if(missing(col)) {
+        if(type == "box" & rarefaction != TRUE) {
+            col <- "white"
+        } else {
+            col <- "default"
+        }
+    } else {
+        check.class(col, "character", " must be a character string.")
+    }
+
+    ## ylim
+    if(missing(ylim)) {
+        ylim <- "default"
+    } else {
+        check.class(ylim, "numeric")
+        check.length(ylim, 2, " must be a vector of two elements.")
+    }
+
     ## add
     check.class(add, "logical")
 
     ## PREPARING THE PLOT
-    plot_params <- get.plot.params(data = data, data_params = data_params,
-                                  ylim = ifelse(missing(ylim), NULL, ylim),
-                                  xlab = ifelse(missing(xlab), NULL, xlab),
-                                  ylab = ifelse(missing(ylab), NULL, ylab),
-                                  col  = ifelse(missing(col), NULL, col),
-                                  rarefaction = rarefaction, elements = elements, type = type
-                                  ,...)
-    # plot_params <- get.plot.params(data = data, data_params = data_params, ylim = NULL, xlab = NULL, ylab = NULL, col = NULL, rarefaction = rarefaction, elements = elements, type = type) ; warning("plot.dispRity DEBUG")
 
+    ## summarising the data
+    ## (remove NAs if data has a distribution of trees)
+    if(!is.na(data$call$subsets["trees"]) && as.numeric(data$call$subsets["trees"]) > 1) {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+    } else {
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    }
+
+    ## Setting the default arguments
+    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
+    ylim <- default_arg[[1]]
+    xlab <- default_arg[[2]]
+    ylab <- default_arg[[3]]
+    col <- default_arg[[4]]
 
     ## Adding the default parameters to observed
     if(observed) {
         if(is.null(obs_list_arg$col)) {
-            obs_list_arg$col <- plot_param$options$col[[1]]
+            obs_list_arg$col <- col[[1]]
         }
         if(is.null(obs_list_arg$pch)) {
             obs_list_arg$pch <- 4
@@ -648,8 +704,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
-        saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density,...)
-        # saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density); warning("DEBUG: plot")
+        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density,...)
+        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density); warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
             plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
@@ -664,8 +720,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             par(mar = c(5, 4, 4, 4) + 0.1)
         }
         ## Personalised discrete plots
-        saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
-        # saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
+        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
+        # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
         if(elements) {
             par(new = TRUE)
             plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
@@ -676,7 +732,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## Box plot
     if(type == "box") {
         ## Simple case: boxplot
-        plot_data <- transpose.box(data, rarefaction, data_params$bootstrap)
+        plot_data <- transpose.box(data, rarefaction, is_bootstrapped)
         ## Bigger plot margins if elements needed
         if(elements) {
             par(mar = c(5, 4, 4, 4) + 0.1)
