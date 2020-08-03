@@ -23,7 +23,7 @@ test_that("test.metric works", {
     expect_equal(names(test$results), c("random", "size.inner", "size.outer"))
     expect_is(test$results[[1]], "data.frame")
 
-    ## Print works
+    ## Print works
     print_out <- capture.output(test)
     expect_equal(print_out, 
         c("Metric testing:"                                             ,
@@ -52,7 +52,7 @@ test_that("test.metric works", {
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
 
-    ## Print works
+    ## Print works
     print_out <- capture.output(test)
     expect_equal(print_out, 
         c("Metric testing:",
@@ -82,7 +82,7 @@ test_that("test.metric works", {
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
 
-    ## Print works
+    ## Print works
     print_out <- capture.output(test)
     expect_equal(print_out, 
         c("Metric testing:",

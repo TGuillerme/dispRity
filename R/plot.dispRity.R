@@ -539,7 +539,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(data$call$subsets[1] == "continuous") {
             time_slices <- names(data$subsets)
         }
-    }# Else
+    }# Else
     if(!chrono.subsets) {
         time_slices <- FALSE
     } else {

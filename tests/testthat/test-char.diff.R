@@ -257,7 +257,7 @@ test_that("Test other distances", {
     expect_equal(char.diff(list(c(1,1), c(1,3)), method = "maximum", by.col = FALSE, order = TRUE, translate = FALSE), 2)
     expect_true(is.na(char.diff(list(c(NA,NA,NA,NA),c(1,1,1,1)), method = "maximum")))
 
-    ## Test mord (more tests below)
+    ## Test mord (more tests below)
     expect_equal(char.diff(list(c(0,1,0,1),c(1,0,1,0)), translate = TRUE, order = TRUE, method = "mord"), 0)
 })
 
