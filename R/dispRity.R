@@ -1,11 +1,12 @@
 #' @title Calculates disparity from a matrix.
 #'
-#' @description Calculates disparity on a matrix or subsets of a matrix, where the disparity metric can be user specified.
+#' @description Calculates disparity from a matrix, a list of matrices or subsets of a matrix, where the disparity metric can be user specified.
 #'
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
 #' @param ... Optional arguments to be passed to the metric.
+#' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
@@ -32,6 +33,14 @@
 #' 
 #' \emph{HINT:} if using more than three functions you can always create your own function that uses more than one function (e.g. \code{my_function <- function(matrix) cor(var(matrix))} is perfectly valid and allows one to use two dimension-level 3 functions - the correlation of the variance-covariance matrix in this case).
 #'
+#' The \code{between.groups} argument runs the disparity between groups rather within groups. If \code{between.groups = TRUE}, the disparity will be calculated using the following inputs:
+#' \itemize{
+#'      \item if the input is an output from \code{\link{custom.subsets}}, the series are run in a pairwise manner using \code{metric(matrix, matrix2)}. For example for a \code{custom.subset} contains 3 subsets m1, m2 and m3, the code loops through: \code{metric(m1, m2)}, \code{metric(m2, m3)} and \code{metric(m1, m3)} (looping through \code{list(c(1,2), c(2,3), c(3,1))}).
+#'      \item if the input is an output from \code{\link{chrono.subsets}}, the series are run in a paired series manner using \code{metric(matrix, matrix2)}. For example for a \code{chrono.subsets} contains 3 subsets m1, m2, m3 and m4, the code loops through: \code{metric(m1, m2)} and \code{metric(m2, m3)} (looping through \code{list(c(1,2), c(2,3), c(3,4))}).
+#' }
+#' In both cases it is also possible to specify the input directly by providing the list to loop through. For example using \code{between.groups = list(c(1,2), c(2,1), c(4,8))} will apply the \code{metric} to the 1st and 2nd subsets, the 2nd and first and the 4th and 8th (in that specific order).
+#' 
+#' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
@@ -99,7 +108,7 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
-dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel) {
+dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -127,12 +136,13 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
+    metric_is_between.groups <- metrics_list$between.groups
+    metrics_list <- metrics_list$levels
 
     ## Temporary stop if ancestral.dist is used on chrono.subsets
     if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
         stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
     }
-
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
@@ -175,6 +185,42 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
 
     ## VERBOSE
     check.class(verbose, "logical")
+
+    ## Serial
+    is_between.groups <- FALSE
+    between.groups_class <- check.class(between.groups, c("logical", "list"), " must be logical or a list of pairs of comparisons.")
+    ## Check whether logical class can be applied
+    if(between.groups_class == "logical") {
+        if(between.groups) {
+            if(!metric_is_between.groups) {
+                stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
+            }
+            ## Make the series
+            if(is.null(data$call$subsets)) {
+                stop.call(msg.pre = "The provided \"between.groups\" metric (", match_call$metric, msg = ") cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")                
+            } else {
+                if(data$call$subsets[[1]] == "customised") {
+                    ## Make default pairwise comparisons
+                    list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
+                } else {
+                    ## Make default sequential comparisons
+                    list_of_pairs <- unlist(apply(set.sequence(length(data$subsets)), 2, list), recursive = FALSE)
+                }
+                is_between.groups <- TRUE
+            }
+        } 
+    } else {
+        if(!metric_is_between.groups) {
+            stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
+        }
+        ## Serial is a list, check if it contains the right information (pairs of things that exist)
+        pairs <- unique(unlist(lapply(between.groups, length))) 
+        if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
+            stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
+        }
+        list_of_pairs <- between.groups
+        is_between.groups <- TRUE
+    }
 
     ## Parallel
     # if(missing(parallel)) {
@@ -236,6 +282,13 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     ## Check if the data is bound
     is_bound <- ifelse(!is.null(data$call$subsets) && data$call$subsets[[1]] == "continuous", as.logical(data$call$subsets[["bind"]]), FALSE)
 
+    ## Make the lapply loop into between.groups loops
+    if(is_between.groups) {
+        ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
+        lapply_loop <- lapply(list_of_pairs, combine.pairs, lapply_data = lapply_loop)
+    }
+
+
     ## Initialising the cluster
     # if(do_parallel) {
     #     ## Selecting the number of cores
@@ -283,11 +336,10 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
                                   function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
                             recursive = FALSE)
         names(disparity) <- names(disparities[[1]])
-
-
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, is_between.groups, ...)
+
     }
 
     # }
@@ -317,6 +369,17 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
         warning(paste("Disparity not calculated for", subset, empty_group_names, "(not enough data)."))
     }
 
+    ## Rename the disparity groups
+    if(is_between.groups) {
+        ## Remove ":" for pairs of names (: is reserved for the function)
+        subset_names <- names(data$subsets)
+        if(length(to_correct <- grep(":", subset_names)) > 0) {
+            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
+            subset_names <- paste(gsub(":", ";", subset_names))
+        }
+        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+    }
+
     ## Update the disparity
     data$disparity <- disparity
 
@@ -327,6 +390,9 @@ dispRity <- function(data, metric, dimensions, ..., verbose = FALSE){#, parallel
     } else {
         data$call$disparity$metrics$fun <- metric
     }
+
+    ## Adding the between groups
+    data$call$disparity$metrics$between.groups <- ifelse(is_between.groups, TRUE, FALSE)
 
     if(!is.null(data$call$disparity$metrics$args)) {
         if(length(dots) != 0) {

@@ -1,4 +1,4 @@
-#' @title dispRity object plotting
+# #' @title dispRity object plotting
 #'
 #' @description Plots a \code{dispRity} object.
 #'

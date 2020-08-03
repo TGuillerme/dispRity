@@ -1,5 +1,6 @@
 get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
+    between.groups <- FALSE
 
     length_metric <- length(metric)
 
@@ -14,8 +15,10 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE, data.dim = data.dim, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, data.dim = data.dim)
+        level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, ...)
+        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
+        between.groups <- level$between.groups
+        level <- level$type
 
         switch(level,
             level3 = {
@@ -62,7 +65,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         }
     }
 
-    return(list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun))
+    return(list("levels" = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), "between.groups" = between.groups))
 }
 
 ## Getting the first metric
@@ -90,10 +93,31 @@ get.row.col <- function(x, row, col = NULL) {
 }
 
 ## Apply decompose matrix
-apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, ...) {
+decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, ...) {
    
+    if(is(one_subsets_bootstrap)[[1]] == "list") {
+        ## Isolating the matrix into it's two components if the "matrix" is actually a list
+        nrow <- one_subsets_bootstrap$nrow[1]
+        one_subsets_bootstrap <- one_subsets_bootstrap$data
+    } else {
+        nrow <- NULL
+    }
+
     ## Calculates disparity from a bootstrap table
-    decompose.matrix <- function(one_subsets_bootstrap, fun, data, ...) {
+    decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, ...) {
+        decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
+            if(is.null(nrow)) {
+                ## Normal decompose
+                return(fun(one_matrix[bootstrap, dimensions], ...))
+            } else {
+                ## Serial decompose
+                return(
+                    fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions],
+                        matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions],
+                        ...)
+                    )
+            }
+        }
 
         ## Return NA if no data
         if(length(na.omit(one_subsets_bootstrap)) < 2) {
@@ -102,22 +126,24 @@ apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, 
 
         ## Apply the fun, bootstrap and dimension on each matrix
         return(unlist(lapply(data$matrix,
-            function(X, bootstrap, dimensions, fun, ...) fun(X[bootstrap, dimensions], ...),
-                bootstrap = na.omit(one_subsets_bootstrap),
-                dimensions = 1:data$call$dimensions,
-                fun,
-                ...), recursive = FALSE))#, use.names = FALSE))
-
+                            decompose,
+                            bootstrap = na.omit(one_subsets_bootstrap),
+                            dimensions = 1:data$call$dimensions,
+                            fun,
+                            nrow = nrow,
+                            ...),
+                      recursive = FALSE)
+                )#, use.names = FALSE))
                 # return(fun( data$matrix[na.omit(one_subsets_bootstrap), 1:data$call$dimensions], ...))
     }
 
     ## Decomposing the matrix
     if(use_array) {
-        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
+        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
     } else {
 
-        ## one_subsets_bootstrap is a list (in example)
-        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, ...)
+        ## one_subsets_bootstrap is a list (in example) on a single matrix
+        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, ...)
 
         ## Return the results
         if(is(results_out, "matrix")) {
@@ -137,7 +163,7 @@ apply.decompose.matrix <- function(one_subsets_bootstrap, fun, data, use_array, 
 }
 
 ## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, ...){# verbose, ...) {
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, between.groups, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
     if(matrix_decomposition) {
@@ -149,7 +175,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         metrics_list <- first_metric[[2]]
         first_metric <- first_metric[[1]]
         ## Decompose the metric using the first metric
-        disparity_out <- apply.decompose.matrix(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+        disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
     } else {
         disparity_out <- one_subsets_bootstrap
     }
@@ -174,26 +200,16 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 
 ## Lapply wrapper for disparity.bootstraps function
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, between.groups = FALSE, ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, between.groups, ...))
 }
 mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
     return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
 }
-
-        # test <- mapply.wrapper(lapply_loops[[2]], matrices_data[[2]], metrics_list, matrix_decomposition, verbose)
-
-
-# lapply_loop <- lapply_loops[[2]]
-# data <- matrices_data[[2]]
-# test <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose)
-
-# mapply.wrapper(lapply_loops[[2]], matrices_data[[2]], metrics_list, matrix_decomposition, verbose)
-# test <- lapply.wrapper(lapply_loop[[13]], metrics_list, data, matrix_decomposition, verbose)
 
 ## Split the lapply_loop for bound tree/matrices
 split.lapply_loop <- function(lapply_loop, n_trees) {
@@ -224,6 +240,29 @@ recursive.merge <- function(list, bind = cbind) {
     return(list)
 }
 
+## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
+combine.pairs <- function(pairs, lapply_data) {
+    ## Making the lists the same lengths
+    pair_lengths <- unlist(lapply(lapply_data[pairs], length))
+    if(pair_lengths[1] != pair_lengths[2]) {
+        if(pair_lengths[1] > pair_lengths[2]) {
+            pair_one <- lapply_data[pairs][[1]]
+            pair_two <- c(lapply_data[pairs][[2]], rep(lapply_data[pairs][[2]][pair_lengths[2]], abs(diff(pair_lengths))))
+        } else {
+            pair_two <- lapply_data[pairs][[2]]
+            pair_one <- c(lapply_data[pairs][[1]], rep(lapply_data[pairs][[1]][pair_lengths[1]], abs(diff(pair_lengths))))
+        }
+    } else {
+        pair_one <- lapply_data[pairs][[1]]
+        pair_two <- lapply_data[pairs][[2]]
+    }
+    ## Combine both pairs
+    combined_pairs <- mapply(rbind, pair_one, pair_two, SIMPLIFY = FALSE)
+    nrow_pairs <- mapply(function(x, y) c(nrow(x), nrow(y)), pair_one, pair_two, SIMPLIFY = FALSE)
+    ## Add the row number
+    return(mapply(function(combined, nrow) return(list("nrow" = nrow, "data" = combined)), combined = combined_pairs, nrow = nrow_pairs, SIMPLIFY = FALSE))
+}
+
 # ## Parallel versions
 # parLapply.wrapper <- function(i, cluster) {
 #     ## Running the parallel apply
@@ -233,3 +272,4 @@ recursive.merge <- function(list, bind = cbind) {
 #         }
 #     )
 # }
+

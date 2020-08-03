@@ -9,13 +9,6 @@ data("disparity")
 #Testing
 #######################
 
-## Internals
-data(disparity)
-
-print("TEMPORARY update for disparity")
-disparity$disparity$metrics$between.groups <- FALSE
-
-
 test_that("get.data.params works", {
     test <- get.data.params(disparity)
     expect_is(test, "list")
