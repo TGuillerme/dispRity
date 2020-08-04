@@ -128,6 +128,9 @@ Used in
 -------
 <!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Proximate+and+ultimate+drivers+of+variation+in+bite+force+in+the+insular+lizards+Podarcis+melisellensis+and+Podarcis+sicula&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Taverne M, King-Gillies N, Krajnović M, Lisičić D, Mira Ó, Petricioli D, Sabolić I, Štambuk A, Tadić Z, Vigliotti C, Wehrle B. Proximate and ultimate drivers of variation in bite force in the insular lizards Podarcis melisellensis and Podarcis sicula. Biological Journal of the Linnean Society. **2020** Aug 1.[DOI: 10.1093/biolinnean/blaa091](https://doi.org/10.1093/biolinnean/blaa091)
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+measurement+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity measurement best summarise occupancy in multidimensional spaces?. *Ecology and Evolution*. **2020** [DOI: 10.1002/ece3.6452](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452)
 
