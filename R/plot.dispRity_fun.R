@@ -14,7 +14,7 @@ get.data.params <- function(data) {
 # $helpers: n_quantiles, npoints
 # $options: ylim, ylab, xlab, col, ...
 # $observed: data, ylim, ylab, xlab, col, ...
-get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab, ylim, col, rarefaction_level, elements, type, observed_args, ...) {
+get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction_level, elements, type, observed_args, ...) {
 
     ## Set up the plotting data
     ## Summarise the data
@@ -24,18 +24,13 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
     }
 
-    ## Get the observed data (no rarefaction)
+    ## Find the observed data rows (that are not rarefactions)
     observed_data <- !is.na(summarised_data$obs)
     if(any(!observed_data)) {
-        ## Find true rarefactions
-        check.na.all.row <- function(row, na_to_test, data) {
-            if(!na_to_test[row]) {
-                na_to_test[row] <- all(is.na(data[row, ]))
-            }
-            return(na_to_test[row])
-        }
-        ## Finding the TRUE observed data
-        observed_data <- sapply(1:nrow(summarised_data), check.na.all.row, observed_data, summarised_data)
+        ## Find NAs in the last column
+        last_col_na <- is.na(summarised_data[, ncol(summarised_data)])
+        ## If there are any NA in the last column, the observed NA is a true NA (nor rarefaction)
+        observed_data <- last_col_na | observed_data
     }
 
     ## Get a specific rarefaction level
@@ -73,7 +68,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
     options <- list()
 
     ## Set the xlabel
-    if(is.null(xlab)) {
+    if(is.null(dots$xlab)) {
         ## Default is subsets
         options$xlab <- "Subsets"
         ## Default chrono.subset label
@@ -86,13 +81,14 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         }
     } else {
         ## User input
-        check.class(xlab, "character", " must be a character string.")
-        check.length(xlab, 1, " must be a character string.")
-        options$xlab <- xlab
+        check.class(dots$xlab, "character", " must be a character string.")
+        check.length(dots$xlab, 1, " must be a character string.")
+        options$xlab <- dots$xlab
+        dots$xlab <- NULL
     }
 
     ## Set the ylabel
-    if(is.null(ylab)) {
+    if(is.null(dots$ylab)) {
         ## Default is the metric name
         options$ylab <- as.character(data$call$disparity$metrics$name)
         if(elements) {
@@ -101,13 +97,14 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         }
     } else {
         ## User input        
-        check.class(ylab, "character", " must be a character string.")
-        if(length(ylab) > 2) stop.call("", "ylab can have maximum of two elements.")
-        options$ylab <- ylab
+        check.class(dots$ylab, "character", " must be a character string.")
+        if(length(dots$ylab) > 2) stop.call("", "ylab can have maximum of two elements.")
+        options$ylab <- dots$ylab
+        dots$ylab <- NULL
     }
 
     ## Set the y limits
-    if(is.null(ylim)) {
+    if(is.null(dots$ylim)) {
         if(type != "rarefaction") {
             ## Get the range of the data
             options$ylim <- range(disparity$data, na.rm = TRUE)
@@ -120,13 +117,14 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         }
     } else {
         ## User input
-        check.class(ylim, c("numeric", "integer"))
-        check.length(ylim, 2, " must be a vector of two elements.")
-        options$ylim <- ylim
+        check.class(dots$ylim, c("numeric", "integer"))
+        check.length(dots$ylim, 2, " must be a vector of two elements.")
+        options$ylim <- dots$ylim
+        dots$ylim <- NULL
     }
 
     ## Set the colours
-    if(is.null(col)) {
+    if(is.null(dots$col)) {
         ## For boxplots, the default colour is white
         if(type == "box" && type != "rarefaction") {
             options$col <- "white"
@@ -135,8 +133,9 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         }
     } else {
         ## User input
-        check.class(col, "character", " must be a character string.")
-        options$col <- col
+        check.class(dots$col, "character", " must be a character string.")
+        options$col <- dots$col
+        dots$col <- NULL
     }
     ## Add potential missing colours
     if(helpers$n_quantiles > 0) {

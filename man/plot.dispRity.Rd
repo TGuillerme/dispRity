@@ -12,10 +12,6 @@
   cent.tend = median,
   rarefaction = NULL,
   elements = FALSE,
-  ylim,
-  xlab,
-  ylab,
-  col,
   observed = FALSE,
   add = FALSE,
   density = NULL,
@@ -40,14 +36,6 @@
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
 \item{elements}{\code{logical} whether to plot the number of elements per subsets.}
-
-\item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
-
-\item{xlab}{Optional, a \code{character} string for the caption of the x axis.}
-
-\item{ylab}{Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.}
-
-\item{col}{Optional, some \code{character} string(s) for the colour of the plot.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 

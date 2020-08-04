@@ -9,10 +9,6 @@
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
 #' @param elements \code{logical} whether to plot the number of elements per subsets.
-#' @param ylim Optional, two \code{numeric} values for the range of the y axis.
-#' @param xlab Optional, a \code{character} string for the caption of the x axis.
-#' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
-#' @param col Optional, some \code{character} string(s) for the colour of the plot.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
@@ -122,7 +118,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -461,12 +457,13 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## must be class dispRity
     check.class(data, "dispRity")
     ## must have one element called dispRity
-    if("disparity" %in% names(data)) {
-        if(!missing(type) && type != "preview") {
-            stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+    if(!("disparity" %in% names(data))) {
+        if(missing(type)) {
+            ## Just preview the data
+            type <- "preview"
         } else {
-            if(missing(type)) {
-                type <- "preview"
+            if(type != "preview") {
+                stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))                
             }
         }
     }
@@ -539,24 +536,26 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         rarefaction <- NULL
     }
 
-    ## Check class
-    rarefaction_class <- check.class(rarefaction, c("logical", "integer", "numeric"))
-    if(rarefaction_class != "logical") {
-        ## Right class
-        rarefaction <- as.numeric(rarefaction)
-        check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
-        ## Check if all subsets have the appropriate rarefaction level
-        rarefaction_subsets <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
-        ## Check if subsets have no rarefaction
-        if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
-            wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
-            stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
+    ## Check rarefaction
+    if(!is.null(rarefaction)) {
+        rarefaction_class <- check.class(rarefaction, c("logical", "integer", "numeric"))
+        if(rarefaction_class != "logical") {
+            ## Right class
+            rarefaction <- as.numeric(rarefaction)
+            check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
+            ## Check if all subsets have the appropriate rarefaction level
+            rarefaction_subsets <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
+            ## Check if subsets have no rarefaction
+            if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
+                wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
+                stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
+            }
+        } else {
+            if(rarefaction) {
+                type <- "rarefaction"
+            }
+            rarefaction <- NULL
         }
-    } else {
-        if(rarefaction) {
-            type <- "rarefaction"
-        }
-        rarefaction <- NULL
     }
 
     ## observed
@@ -575,37 +574,19 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     check.class(add, "logical")
 
     ## PREPARING THE PLOT
-    plot_params <- get.plot.params(data = data, data_params = data_params,
-                                  cent.tend = cent.tend, quantiles = quantiles,
-                                  ylim = ifelse(missing(ylim), NULL, ylim),
-                                  xlab = ifelse(missing(xlab), NULL, xlab),
-                                  ylab = ifelse(missing(ylab), NULL, ylab),
-                                  col  = ifelse(missing(col), NULL, col),
-                                  rarefaction_level = rarefaction,
-                                  elements = elements, type = type,
-                                  observed_args = observed_args
-                                  , ...)
-    # plot_params <- get.plot.params(data = data, data_params = data_params,
-    #                               cent.tend = cent.tend,
-    #                               quantiles = quantiles,
-    #                               ylim = NULL,
-    #                               xlab = NULL,
-    #                               ylab = NULL,
-    #                               col  = NULL,
-    #                               rarefaction_level = rarefaction,
-    #                               elements = elements,
-    #                               type = type,
-    #                               observed_args = observed_args) ; warning("DEBUG plot.dispRity")
-
+    plot_params <- get.plot.params(data = data,
+                                   data_params = data_params,
+                                   cent.tend = cent.tend,
+                                   quantiles = quantiles,
+                                   rarefaction_level = rarefaction,
+                                   elements = elements, type = type,
+                                   observed_args = observed_args
+                                   , ...)
 
     ## Set up the plotting task 
     plot_task <- type
     ## The task line is the same as polygon
     if(plot_task == "line") plot_task <- "polygon"
-
-    # Temporary stop
-    return(invisible())
-
 
     switch(plot_task,
         "rarefaction" = {
@@ -621,12 +602,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         "box" = {
             return(invisible())
         })
-
-
-
-
-
-
 
     # ## PLOTTING THE RESULTS
 

@@ -17,22 +17,18 @@ test_that("get.data.params works", {
 
 test_that("get.plot.params works", {
 
-    ## All defaults
+    ## All defaults
     plot_params <- get.plot.params(data = disparity,
                                   data_params = get.data.params(disparity),
                                   cent.tend = median,
                                   quantiles = c(50,95),
-                                  ylim = NULL,
-                                  xlab = NULL,
-                                  ylab = NULL,
-                                  col  = NULL,
                                   rarefaction_level = NULL,
                                   elements = FALSE,
                                   type = "continuous",
                                   observed_args = list(observed = TRUE, col = c("black", "blue")))
     expect_is(plot_params, "list")
     expect_equal(names(plot_params), c("disparity", "helpers", "options", "observed_args"))
-    ## The data to plot
+    ## The data to plot
     expect_equal(names(plot_params$disparity), c("names", "data"))
     expect_is(plot_params$disparity$data, "data.frame")
     expect_is(plot_params$disparity$names, "data.frame")
@@ -47,7 +43,7 @@ test_that("get.plot.params works", {
     expect_equal_round(plot_params$options$ylim, c(2.248737, 2.918863), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
     ## Observed data
-    expect_equal(names(plot_params$observed_args), c("observed", "names", "data", "col", "pch", "cex"))
+    expect_equal(names(plot_params$observed_args), c("observed", "col", "names", "data", "pch", "cex"))
     expect_true(plot_params$observed_args$observed)
     expect_equal(dim(plot_params$observed_args$names), c(7,2))
     expect_equal(dim(plot_params$observed_args$data), c(7,6))
@@ -201,7 +197,7 @@ test_that("plot.dispRity continuous with NAs", {
     test_data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = seq(from = 40, to = 80, by = 10))
 
     test_data$subsets$`60`$elements <- matrix(NA)
-    expect_warning(test_data <- dispRity(boot.matrix(test_data), c(sum, variances)))
+    expect_warning(test_data <- dispRity(boot.matrix(test_data, rarefaction = 3), c(sum, variances)))
     expect_null(plot(test_data)) 
 })
 
