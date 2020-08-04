@@ -585,17 +585,17 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                                   elements = elements, type = type,
                                   observed_args = observed_args
                                   , ...)
-    plot_params <- get.plot.params(data = data, data_params = data_params,
-                                  cent.tend = cent.tend,
-                                  quantiles = quantiles,
-                                  ylim = NULL,
-                                  xlab = NULL,
-                                  ylab = NULL,
-                                  col  = NULL,
-                                  rarefaction_level = rarefaction,
-                                  elements = elements,
-                                  type = type,
-                                  observed_args = observed_args) ; warning("DEBUG plot.dispRity")
+    # plot_params <- get.plot.params(data = data, data_params = data_params,
+    #                               cent.tend = cent.tend,
+    #                               quantiles = quantiles,
+    #                               ylim = NULL,
+    #                               xlab = NULL,
+    #                               ylab = NULL,
+    #                               col  = NULL,
+    #                               rarefaction_level = rarefaction,
+    #                               elements = elements,
+    #                               type = type,
+    #                               observed_args = observed_args) ; warning("DEBUG plot.dispRity")
 
 
     ## Set up the plotting task 
@@ -612,7 +612,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             return(invisible())
         },
         "continuous" = {
-            plot.continuous(plot_params)
+            plot.continuous(plot_params, data_params, add, density)
             return(invisible())
         },
         "polygon" = {

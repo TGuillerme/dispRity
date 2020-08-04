@@ -17,12 +17,9 @@ test_that("get.data.params works", {
 
 test_that("get.plot.params works", {
 
-    ## Add test for observed_data
-
-
-
     ## All defaults
-    plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+    plot_params <- get.plot.params(data = disparity,
+                                  data_params = get.data.params(disparity),
                                   cent.tend = median,
                                   quantiles = c(50,95),
                                   ylim = NULL,
@@ -32,9 +29,9 @@ test_that("get.plot.params works", {
                                   rarefaction_level = NULL,
                                   elements = FALSE,
                                   type = "continuous",
-                                  observed_args = list(observed = FALSE))
+                                  observed_args = list(observed = TRUE, col = c("black", "blue")))
     expect_is(plot_params, "list")
-    expect_equal(names(plot_params), c("disparity", "helpers", "options"))
+    expect_equal(names(plot_params), c("disparity", "helpers", "options", "observed_args"))
     ## The data to plot
     expect_equal(names(plot_params$disparity), c("names", "data"))
     expect_is(plot_params$disparity$data, "data.frame")
@@ -49,6 +46,15 @@ test_that("get.plot.params works", {
     expect_equal(plot_params$options$ylab, "c(median, centroids)")
     expect_equal_round(plot_params$options$ylim, c(2.248737, 2.918863), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
+    ## Observed data
+    expect_equal(names(plot_params$observed_args), c("observed", "names", "data", "col", "pch", "cex"))
+    expect_true(plot_params$observed_args$observed)
+    expect_equal(dim(plot_params$observed_args$names), c(7,2))
+    expect_equal(dim(plot_params$observed_args$data), c(7,6))
+    expect_equal(plot_params$observed_args$col, c("black", "blue"))
+    expect_equal(plot_params$observed_args$pch, 4)
+    expect_equal(plot_params$observed_args$cex, 1)
+
 
     ## Options handled correctly
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
@@ -188,16 +194,16 @@ test_that("get.plot.params works", {
 
 # })
 
-# test_that("plot.dispRity continuous with NAs", {
+test_that("plot.dispRity continuous with NAs", {
 
-#     data(BeckLee_mat99)
-#     data(BeckLee_tree)
-#     test_data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = seq(from = 40, to = 80, by = 10))
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    test_data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = seq(from = 40, to = 80, by = 10))
 
-#     test_data$subsets$`60`$elements <- matrix(NA)
-#     expect_warning(test_data <- dispRity(boot.matrix(test_data), c(sum, variances)))
-#     expect_null(plot(test_data)) 
-# })
+    test_data$subsets$`60`$elements <- matrix(NA)
+    expect_warning(test_data <- dispRity(boot.matrix(test_data), c(sum, variances)))
+    expect_null(plot(test_data)) 
+})
 
 # test_that("plot.dispRity.discrete with ADD", {
 

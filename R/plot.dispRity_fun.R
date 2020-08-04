@@ -49,10 +49,10 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
         } else {
             rarefaction_match <- which(summarised_data$n == rarefaction_level)
         }
-        ## Get both the observed and rarefied data
+        ## Get both the observed and rarefied data
         selected_data <- summarised_data[rarefaction_match ,]
     } else {
-        ## Just get the observed data
+        ## Just get the observed data
         selected_data <- summarised_data[observed_data,]
     }
 
@@ -158,8 +158,8 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, xlab, ylab,
     if(observed_args$observed) {
         ## Adding the observed data
         selected_data <- summarised_data[observed_data,]
-        observed$names <- selected_data[, name_part]
-        observed$data  <- selected_data[, -name_part]
+        observed_args$names <- selected_data[, name_part]
+        observed_args$data  <- selected_data[, -name_part]
 
         ## Default observed arguments
         if(is.null(observed_args$col)) {
@@ -275,7 +275,7 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
 }
 
 ## continuous plotting
-plot.continuous <- function(plot_params, add, density, ...) {
+plot.continuous <- function(plot_params, data_params, add, density) {
     ## Set the shift parameter (for add)
     shift = 0
     if(add) {
@@ -288,61 +288,64 @@ plot.continuous <- function(plot_params, add, density, ...) {
         }
     }
 
+    ## Select the central tendency colum
+    cent_tend_col <- 2 ; warning("select with is_bootstrapped or is_distribution")
+
+    ## Set up the cur plot options
+    plot_args <- plot_params$options
+    plot_args$x <- seq(from = 1, to = plot_params$helpers$n_points)-shift
+    plot_args$y <- plot_params$disparity$data[, cent_tend_col]
+    plot_args$type <- "l"
+    plot_args$col <- plot_params$options$col[[1]]
+    plot_args$xaxt <- "n"
+
     ## Plot the central tendency
     if(!add) {
-
-        ## Setting up the current plot parameters
-        current_plot <- plot_params$options
-        current_plot$x <- seq(from = 1, to = plot_params$helpers$n_points)-shift
-        current_plot$y <- plot_params$disparity$data[, 2] ; warning("select with is_bootstrapped or is_distribution")
-        current_plot$type <- "l"
-        current_plot$col <- plot_params$options$col[[1]]
-        current_plot$xaxt <- "n"
-
         ## Plot the thingy
-        do.call(plot, current_plot)
+        do.call(plot, plot_args)
 
-        ## Add the axis labels
+        ## Add the axis labels
         axis(1, 1:plot_params$helpers$n_points, plot_params$disparity$names$subsets)
-
     } else {
-        ## Change from here
-        lines(seq(from = 1, to = plot_params$helpers$n_points), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]])
+        ## Plot the line
+        do.call(lines, plot_args)
     }
 
     ## Check if bootstrapped
-    if(is_bootstrapped || is_distribution) {
-        ## How many quantiles?
-        n_quantiles <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
+    if(data_params$bootstrap || data_params$distribution) {
 
-        ## Set the colours
-        if(length(col) < (n_quantiles + 1)) {
-            cols_missing <- (n_quantiles + 1) - length(col)
-            colfun <- colorRampPalette(c("grey", "lightgrey"))
-            col_tmp <- c(col, colfun(cols_missing))
-            poly_col <- col_tmp[-1]
-            poly_col <- rev(poly_col)
-        } else {
-            poly_col <- col[-1]
-            poly_col <- rev(poly_col)
-        }
+        ## Setting the plot parameters
+        poly_args <- plot_params$options
+        poly_args$border <- "NA"
+        poly_args$density <- density
+        poly_args$x <- numeric()
+        poly_args$y <- numeric()
 
         ## Add the polygons
-        for (cis in 1:n_quantiles) {
-            x_vals <- c(1:plot_params$helpers$n_points, plot_params$helpers$n_points:1)
-            y_vals <- c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction), rev(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + n_quantiles*2)-(cis-1), rarefaction)))
+        for (cis in 1:plot_params$helpers$n_quantiles) {
+
+            ## Set the x values
+            poly_args$x <- c(1:plot_params$helpers$n_points)
+            poly_args$x <- c(poly_args$x, rev(poly_args$x))
+            ## Select the quantiles columns
+            quantile_low <- cent_tend_col + cis
+            quantile_high <- (cent_tend_col + plot_params$helpers$n_quantiles*2) - (cis-1)
+            ## Set the y values
+            poly_args$y <- plot_params$disparity$data[, quantile_low]
+            poly_args$y <- c(poly_args$y, rev(plot_params$disparity$data[, quantile_high]))
+            ## Set up the colour
+            poly_args$col <- plot_params$options$col[cis+1]
 
             ## Dividing the polygon if NAs
-            if(any(is.na(y_vals))) {
-
-                ## Check where the NAs are
-                is_nas <- is.na(y_vals[1:plot_params$helpers$n_points])
+            if(any(is_nas <- is.na(poly_args$y[1:plot_params$helpers$n_points]))) {
 
                 ## Selecting the groups of applicable data
                 groups <- numeric()
                 group_label <- 1
-                for(point in 1:length(is_nas)) {
-                    if(is.na(y_vals[point])) {
+                ## (attributing a group as soon as it jumps an NA)
+                for(point in seq_along(is_nas)) {
+                    if(is_nas[point]) {
+                        ## Increment the group
                         group_label <- group_label + 1
                         groups[point] <- NA
                     } else {
@@ -351,31 +354,47 @@ plot.continuous <- function(plot_params, add, density, ...) {
                 }
 
                 ## splitting the data into the groups
-                y_vals1 <- split(y_vals[1:plot_params$helpers$n_points], groups)
-                y_vals2 <- split(y_vals[(plot_params$helpers$n_points+1):(plot_params$helpers$n_points*2)], rev(groups))
-                x_vals1 <- split(x_vals[1:plot_params$helpers$n_points], groups)
-                x_vals2 <- split(x_vals[(plot_params$helpers$n_points+1):(plot_params$helpers$n_points*2)], rev(groups))
+                split.combine.data <- function(var, groups, n_points) {
+                    vals_1 <- split(var[1:n_points], groups)
+                    vals_2 <- split(var[-c(1:n_points)], rev(groups))
+                    return(mapply(c, vals_1, vals_2, SIMPLIFY = FALSE))
+                }
+                y_vals <- split.combine.data(poly_args$y, groups, plot_params$helpers$n_points)
+                x_vals <- split.combine.data(poly_args$x, groups, plot_params$helpers$n_points)
 
-                ## Merging the groups
-                y_vals <- mapply(c, y_vals1, y_vals2, SIMPLIFY = FALSE)
-                x_vals <- mapply(c, x_vals1, x_vals2, SIMPLIFY = FALSE)
+                ## Combine args
+                combined.poly.args <- function(x, y, poly_args) {
+                    poly_args$x <- x
+                    poly_args$y <- y
+                    return(poly_args)
+                }
+                list_poly_args <- mapply(combined.poly.args, x_vals, y_vals, SIMPLIFY = FALSE, MoreArgs = list("poly_args" = poly_args))
 
-                ## Plotting the polygons
-                mapply(polygon, x_vals, y_vals, MoreArgs = list(col = poly_col[[cis]], border = "NA", density = density))
-
+                ## Plot all the polygons
+                lapply(list_poly_args, function(args) do.call(polygon, args))
             } else {
-                polygon(x_vals, y_vals, col = poly_col[[cis]], border = "NA", density)
+                ## Plot the polygon
+                do.call(polygon, poly_args)
             }
 
         }
 
-        ## Add the central tendency on top
-        lines(seq(from = 1, to = plot_params$helpers$n_points), extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), lty = 1, col = col[[1]])
+        ## Add the central tendency
+        do.call(lines, plot_args)
 
         ## Add the observed values on top
-        if(observed == TRUE) {
-            ## Add the points observed (if existing)
-            points(1:plot_params$helpers$n_points, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = obs_list_arg$col, pch = obs_list_arg$pch, cex = obs_list_arg$cex)
+        if(plot_params$observed_args$observed) {
+
+            ## Set the observed arguments
+            points_args <- plot_params$observed_args
+            points_args$x <- 1:plot_params$helpers$n_points
+            points_args$y <- points_args$data$obs
+            points_args$observed <- NULL
+            points_args$names <- NULL
+            points_args$data <- NULL
+
+            ## Calling the points
+            do.call(points, points_args)
         }
     }
 
