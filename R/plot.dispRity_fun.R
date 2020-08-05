@@ -288,7 +288,11 @@ plot.continuous <- function(plot_params, data_params, add, density) {
     }
 
     ## Select the central tendency colum
-    cent_tend_col <- 2 ; warning("select with is_bootstrapped or is_distribution")
+    if(data_params$bootstrap) {
+        cent_tend_col <- 2
+    } else {
+        cent_tend_col <- 1
+    }
 
     ## Set up the cur plot options
     plot_args <- plot_params$options

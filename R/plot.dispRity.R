@@ -593,7 +593,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             return(invisible())
         },
         "continuous" = {
-            plot.continuous(plot_params, data_params, add, density)
+            plot.continuous(plot_params, data_params, add = add, density = density)
             return(invisible())
         },
         "polygon" = {

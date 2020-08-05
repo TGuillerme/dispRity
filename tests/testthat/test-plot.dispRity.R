@@ -198,7 +198,7 @@ test_that("plot.dispRity continuous with NAs", {
 
     test_data$subsets$`60`$elements <- matrix(NA)
     expect_warning(test_data <- dispRity(boot.matrix(test_data, rarefaction = 3), c(sum, variances)))
-    expect_null(plot(test_data)) 
+    expect_null(plot(test_data))
 })
 
 # test_that("plot.dispRity.discrete with ADD", {
