@@ -527,7 +527,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         type <- ifelse(type == "p", "polygon", type)
     }
 
-    ## elements
+    ## elements = FALSE
     ## must be logical
     check.class(elements, "logical")
 
@@ -558,7 +558,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
     }
 
-    ## observed
+    ## observed = FALSE
     observed_args <- list()
     class_observed <- check.class(observed, c("logical", "list"))
     if(class_observed == "list") {
@@ -570,7 +570,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         observed_args$observed <- observed
     }
 
-    ## add
+    ## add = FALSE
     check.class(add, "logical")
 
     ## PREPARING THE PLOT

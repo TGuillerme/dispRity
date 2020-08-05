@@ -225,7 +225,7 @@ add.observed <- function(plot_params) {
 plot.discrete <- function(plot_params, data_params, add, density, type) {
 
     ## Get the shifting argument
-    shift <- get.shift(plot_params, add)
+    shift <- get.shift(add, plot_params)
 
     ## Select the central tendency column
     cent_tend_col <- ifelse(data_params$bootstrap, 2, 1)
@@ -245,7 +245,6 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
         box_args$type <- "n"
         ## Plot the boxplot
         do.call(boxplot, box_args)
-
     }
 
     ## Check if bootstrapped
@@ -296,7 +295,7 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
                     ## The the line type
                     plot_args$lty <- plot_params$helpers$n_quantiles - cis + 1
                     plot_args$lwd <- cis * 1.5
-                    plot_args$col <- plot_params$options$col[[1]]
+                    plot_args$col <- plot_params$options$col[[cis+1]]
                     ## Set the x values
                     plot_args$x <- rep(point, 2)
                     ## Select the quantiles columns
@@ -312,16 +311,16 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
         }
     } 
     ## Add the points estimates
-
+    point_args <- list()
     ## Get the points coordinates
     point_args$x <- 1:plot_params$helpers$n_points + shift
     point_args$y <- plot_params$disparity$data[, cent_tend_col]
     ## Get the options
-    point_args$col <- plot_param$options$col[[1]]
+    point_args$col <- plot_params$options$col[[1]]
     if(is.null(plot_params$options$pch)) {
         point_args$pch <- 19
     } else {
-        point_args$pch <- plot_param$options$pch
+        point_args$pch <- plot_params$options$pch
     }
 
     ## Add the points
@@ -337,7 +336,7 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
 ## continuous plotting
 plot.continuous <- function(plot_params, data_params, add, density) {
     ## Get the shifting argument
-    shift <- get.shift(plot_params, add)
+    shift <- get.shift(add, plot_params)
 
     ## Select the central tendency column
     cent_tend_col <- ifelse(data_params$bootstrap, 2, 1)
@@ -439,6 +438,15 @@ plot.continuous <- function(plot_params, data_params, add, density) {
     ##  Save parameters
     return(par())
 }
+
+
+
+
+
+
+
+
+
 
 ## Plotting elements
 plot.elements <- function(summarised_data, rarefaction, type, ylab, col, element.pch, ...) {

@@ -77,7 +77,6 @@ test_that("get.plot.params works", {
     expect_equal(plot_params$options$main, "main")
 })
 
-
 test_that("get.shift works", {
     ## Dummy plot_params
     plot_params <- list(helpers = list(n_points = 8))
@@ -99,7 +98,6 @@ test_that("get.quantile.col works", {
     expect_equal(get.quantile.col(1, 2, 2), c(3, 4))
 })
 
-
 test_that("add.observed works", {
 
     ## Set plot params
@@ -111,7 +109,6 @@ test_that("add.observed works", {
                                   elements = FALSE,
                                   type = "continuous",
                                   observed_args = list(observed = TRUE, col = c("black", "blue")))
-    expect_error(add.observed(plot_params))
     plot(1)
     expect_null(add.observed(plot_params))
 })
@@ -173,60 +170,54 @@ test_that("add.observed works", {
 
 
 
-# ## Function works
+## Function works
 
-# test_that("plot.dispRity examples work", {
+test_that("plot.dispRity examples work", {
 
-#     data(disparity)
+    data(disparity)
 
-#     ## No data
-#     ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
-#     expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
+    ## No data
+    ordinated_matrix <- matrix(data = rnorm(90), nrow = 10)
+    expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
 
-#     ## Rarefaction is ignored if no BS
-#     expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
-#     expect_null(plot(dispRity(data, metric = mean), type = "l"))
-#     expect_null(plot(dispRity(data, metric = mean), type = "c"))
+    ## Rarefaction is ignored if no BS
+    # expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+    # expect_null(plot(dispRity(data, metric = mean), type = "l"))
+    # expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
-#     ## Discrete plotting
-#     expect_null(plot(disparity, type = "box"))
-#     expect_null(plot(disparity, type = "box", elements = TRUE))
-#     expect_null(plot(disparity, type = "box", observed = TRUE))
-#     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
-#     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
-#     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
-#     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
-#     expect_null(plot(disparity, type = "continuous"))
-#     expect_null(plot(disparity, type = "continuous", chrono.subsets = FALSE, elements = TRUE, col = c("red", "orange", "yellow")))
-#     expect_null(plot(disparity, rarefaction = TRUE, col = "blue"))
-#     expect_null(plot(disparity, elements = TRUE))
-#     data(BeckLee_mat50)
-#     data(BeckLee_tree)
-#     expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
-#     expect_error(plot(disparity, rarefaction = 1))
-#     expect_null(plot(disparity, rarefaction = 5))
-#     expect_null(plot(disparity, observed = TRUE))
-#     expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
+    ## Discrete plotting
+    # expect_null(plot(disparity, type = "box"))
+    # expect_null(plot(disparity, type = "box", elements = TRUE))
+    # expect_null(plot(disparity, type = "box", observed = TRUE))
+    expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
+    expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
+    expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
+    expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
+    expect_null(plot(disparity, type = "continuous"))
+    expect_null(plot(disparity, type = "continuous", elements = TRUE, col = c("red", "orange", "yellow")))
+    expect_null(plot(disparity, rarefaction = TRUE, col = "blue"))
+    expect_null(plot(disparity, elements = TRUE))
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    expect_null(plot(dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))), metric = c(sum, variances))))
+    expect_error(plot(disparity, rarefaction = 1))
+    expect_null(plot(disparity, rarefaction = 5))
+    expect_null(plot(disparity, observed = TRUE))
+    expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
 
-#     ## Testing additional behaviours for plot.discrete/continuous
-#     expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
-#     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
-#     expect_null(plot(disparity, type = "c", col = c("blue", "orange")))
-#     expect_null(plot(disparity, density = 50))
+    ## Testing additional behaviours for plot.discrete/continuous
+    warning("TODO: test below")
+    # expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
+    expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
+    expect_null(plot(disparity, type = "c", col = c("blue", "orange")))
+    expect_null(plot(disparity, density = 50))
 
-#     ## Auto colouring of quantiles for discrete bins
-#     data(BeckLee_tree) ; data(BeckLee_mat50)
-#     test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
-#     test <- dispRity(boot.matrix(test), metric = c(sum, variances))
-#     expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
-
-#     ## Some other tests
-#     error <- capture_error(plot(disparity, ylab = c("blabla", "blu")))
-#     expect_equal(error[[1]], "ylab must be a character string.")
-#     error <- capture_error(plot(disparity, ylab = c("blabla", "blu", "1"), elements = TRUE))
-#     expect_equal(error[[1]], "ylab can have maximum of two elements.")
-
-# })
+    ## Auto colouring of quantiles for discrete bins
+    data(BeckLee_tree) ; data(BeckLee_mat50)
+    test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
+    test <- dispRity(boot.matrix(test), metric = c(sum, variances))
+    expect_null(plot(disparity, col = c("blue", "red", "orange"), quantiles = c(10, 20, 30, 40, 50, 60), type = "p"))
+})
 
 test_that("plot.dispRity continuous with NAs", {
 
