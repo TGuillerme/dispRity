@@ -176,24 +176,8 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     return(list("disparity" = disparity, "helpers" = helpers, "options" = options, "observed_args" = observed_args))
 }
 
-
-## discrete plotting
-plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) {
-
-
-    ## How many points?
-    plot_params$helpers$n_points <- length(unique(summarised_disparity$subsets))
-
-    ## dummy matrix (for getting the nice boxplots split + column names)
-    dummy_mat <- matrix(1:plot_params$helpers$n_points, ncol = plot_params$helpers$n_points)
-    colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
-
-    ## Empty plot
-    if(add == FALSE) {
-        boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001,, type = "n", ...)
-        #boxplot(dummy_mat, col = "white", border = "white", ylim = ylim, ylab = ylab[[1]], xlab = xlab, boxwex = 0.001, type = "n") ; warning("DEBUG: plot")
-    }
-
+## Handle the shift argument
+get.shift <- function(add, plot_params) {
     ## Set the shift parameter (for add)
     shift = 0
     if(add) {
@@ -205,69 +189,146 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
             shift = 0.5
         }
     }
+    return(shift)    
+}
+
+## Getting the columns for the right quantiles
+get.quantile.col <- function(cent_tend_col, cis, n_quantiles) {
+    return(c(
+        ## Lower quantile
+        cent_tend_col + cis,
+        ## Higher quantile
+        (cent_tend_col + n_quantiles*2) - (cis-1)
+        ))
+}
+
+## Observed points
+add.observed <- function(plot_params) {
+    if(plot_params$observed_args$observed) {
+
+        ## Set the observed arguments
+        points_args <- plot_params$observed_args
+        points_args$x <- 1:plot_params$helpers$n_points
+        points_args$y <- points_args$data$obs
+        points_args$observed <- NULL
+        points_args$names <- NULL
+        points_args$data <- NULL
+
+        ## Calling the points
+        do.call(points, points_args)
+    } else {
+        return(invisible())
+    }
+}
+
+## discrete plotting
+plot.discrete <- function(plot_params, data_params, add, density, type) {
+
+    ## Get the shifting argument
+    shift <- get.shift(plot_params, add)
+
+    ## Select the central tendency column
+    cent_tend_col <- ifelse(data_params$bootstrap, 2, 1)
+
+    ## Creating the matrix frame (for neat plotting)
+    frame_matrix <- matrix(1:plot_params$helpers$n_points,
+                           ncol = plot_params$helpers$n_point,
+                           dimnames = list(c(), plot_params$disparity$names[,1]))
+
+    if(!add) {
+        ## Set the frame boxplot arguments
+        box_args <- plot_params$options
+        box_args$x <- frame_matrix
+        box_args$col <- box_args$border <- "white"
+        box_args$ylab <- box_args$ylab[[1]]
+        box_args$boxwex <- 0.00001
+        box_args$type <- "n"
+        ## Plot the boxplot
+        do.call(boxplot, box_args)
+
+    }
 
     ## Check if bootstrapped
-    if(is_bootstrapped || is_distribution) {
-        ## How many quantiles?
-        n_quantiles <- (ncol(summarised_data) - ifelse(is_bootstrapped, 4, 3))/2
-
+    if(data_params$bootstrap || data_params$distribution) {
         ## Set the width (default)
-        width <- 0.5 #plot_params$helpers$n_points/(plot_params$helpers$n_points*2)
+        width <- 0.5 
 
-        ## Set the colours
-        if(length(col) < (n_quantiles + 1)) {
-            cols_missing <- (n_quantiles + 1) - length(col)
-            colfun <- colorRampPalette(c("grey", "lightgrey"))
-            col_tmp <- c(col, colfun(cols_missing))
-            poly_col <- col_tmp[-1]
-            poly_col <- rev(poly_col)
-        } else {
-            poly_col <- col[-1]
-            poly_col <- rev(poly_col)
-        }
-
+        ## Initialise the plot arguments
+        plot_args <- plot_params$options
 
         ## Add the quantiles
         if(type == "polygon") {
-            for (point in 1:plot_params$helpers$n_points) {
-                for(cis in 1:n_quantiles) {
-                    ## Setting X
-                    x_vals <- c(point-width/(n_quantiles - cis + 1.5), point+width/(n_quantiles - cis + 1.5), point+width/(n_quantiles - cis + 1.5), point-width/(n_quantiles - cis + 1.5)) + shift
-                    ## Setting Y
-                    y_vals <- c(rep(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point], 2),
-                              rep(extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + n_quantiles*2) - (cis - 1), rarefaction)[point], 2)
-                              )
-                    ## Plotting the box
-                    polygon(x_vals, y_vals, col = poly_col[[cis]], border = col[[1]], density)
 
+            ## Add the polygon options
+            plot_args$border <- plot_params$options$col[[1]]
+            plot_args$density <- density
+
+            ## Loop through each point
+            for(point in 1:plot_params$helpers$n_points) {
+                ## Loop through each quantile
+                for(cis in 1:plot_params$helpers$n_quantiles) {
+                    ## Add the colour option
+                    plot_args$col <- plot_params$options$col[[cis+1]]
+                    ## Set the bars width
+                    point_width <- width/(plot_params$helpers$n_quantiles - cis + 1.5)
+                    ## Set the x coordinates
+                    plot_args$x <- c(point - point_width,
+                                     point + point_width,
+                                     point + point_width,
+                                     point - point_width) + shift
+                    ## Select the quantiles columns
+                    quantiles_col <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
+                    ## Set the y coordinates
+                    plot_args$y <- c(rep(plot_params$disparity$data[point, quantiles_col[1]], 2),
+                                     rep(plot_params$disparity$data[point, quantiles_col[2]], 2))
+
+                    ## Add the polygon
+                    do.call(polygon, plot_args)
                 }
             }
         }
+
         if(type == "line") {
-            for (point in 1:plot_params$helpers$n_points) {
-                for(cis in 1:n_quantiles) {
-                    ## Setting Y
-                    y_vals<-c(extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3) + cis, rarefaction)[point],
-                              extract.from.summary(summarised_data, (ifelse(is_bootstrapped, 4, 3) + n_quantiles*2) - (cis - 1), rarefaction)[point])
-                    ## Plotting the box
-                    lines(x = rep((point + shift), 2), y = y_vals, lty = (n_quantiles - cis + 1), lwd = cis * 1.5, col = col[[1]])
+            ## Loop through each point
+            for(point in 1:plot_params$helpers$n_points) {
+                ## Loop through the quantiles
+                for(cis in 1:plot_params$helpers$n_quantiles) {
+                    ## The the line type
+                    plot_args$lty <- plot_params$helpers$n_quantiles - cis + 1
+                    plot_args$lwd <- cis * 1.5
+                    plot_args$col <- plot_params$options$col[[1]]
+                    ## Set the x values
+                    plot_args$x <- rep(point, 2)
+                    ## Select the quantiles columns
+                    quantiles_col <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
+                    ## Set the y value
+                    plot_args$y <- c(plot_params$disparity$data[point, quantiles_col[1]],
+                                     plot_params$disparity$data[point, quantiles_col[2]])
 
+                    ## Plotting the line
+                    do.call(lines, plot_args)
                 }
             }
         }
-        ## Add the points estimates
-        points(1:plot_params$helpers$n_points + shift, extract.from.summary(summarised_data, ifelse(is_bootstrapped, 4, 3), rarefaction), col = col[[1]], pch = 19)
+    } 
+    ## Add the points estimates
+
+    ## Get the points coordinates
+    point_args$x <- 1:plot_params$helpers$n_points + shift
+    point_args$y <- plot_params$disparity$data[, cent_tend_col]
+    ## Get the options
+    point_args$col <- plot_param$options$col[[1]]
+    if(is.null(plot_params$options$pch)) {
+        point_args$pch <- 19
     } else {
-        
-        ## Add the points estimates
-        points(1:plot_params$helpers$n_points + shift, extract.from.summary(summarised_data, 3, rarefaction), col = col[[1]], pch = 19)
+        point_args$pch <- plot_param$options$pch
     }
 
+    ## Add the points
+    do.call(points, point_args)
 
-    if(observed == TRUE) {
-        ## Add the points observed (if existing)
-        points(1:plot_params$helpers$n_points + shift, extract.from.summary(summarised_data, 3, rarefaction = FALSE), col = obs_list_arg$col, pch = obs_list_arg$pch, cex = obs_list_arg$cex)
-    }
+    ## Add the observed data (optional)
+    add.observed(plot_params)
 
     ## Save parameters
     return(par())
@@ -275,24 +336,11 @@ plot.discrete <- function(summarised_data, rarefaction, is_bootstrapped, is_dist
 
 ## continuous plotting
 plot.continuous <- function(plot_params, data_params, add, density) {
-    ## Set the shift parameter (for add)
-    shift = 0
-    if(add) {
-        ## Is the previous plot the same size?
-        prev_axis <- par("xaxp")
-        if(prev_axis[2] == plot_params$helpers$n_points) {
-            shift = 0
-        } else {
-            shift = 0.5
-        }
-    }
+    ## Get the shifting argument
+    shift <- get.shift(plot_params, add)
 
-    ## Select the central tendency colum
-    if(data_params$bootstrap) {
-        cent_tend_col <- 2
-    } else {
-        cent_tend_col <- 1
-    }
+    ## Select the central tendency column
+    cent_tend_col <- ifelse(data_params$bootstrap, 2, 1)
 
     ## Set up the cur plot options
     plot_args <- plot_params$options
@@ -331,11 +379,10 @@ plot.continuous <- function(plot_params, data_params, add, density) {
             poly_args$x <- c(1:plot_params$helpers$n_points)
             poly_args$x <- c(poly_args$x, rev(poly_args$x))
             ## Select the quantiles columns
-            quantile_low <- cent_tend_col + cis
-            quantile_high <- (cent_tend_col + plot_params$helpers$n_quantiles*2) - (cis-1)
+            quantiles_col <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
             ## Set the y values
-            poly_args$y <- plot_params$disparity$data[, quantile_low]
-            poly_args$y <- c(poly_args$y, rev(plot_params$disparity$data[, quantile_high]))
+            poly_args$y <- plot_params$disparity$data[, quantiles_col[1]]
+            poly_args$y <- c(poly_args$y, rev(plot_params$disparity$data[, quantiles_col[2]]))
             ## Set up the colour
             poly_args$col <- plot_params$options$col[cis+1]
 
@@ -384,22 +431,10 @@ plot.continuous <- function(plot_params, data_params, add, density) {
 
         ## Add the central tendency
         do.call(lines, plot_args)
-
-        ## Add the observed values on top
-        if(plot_params$observed_args$observed) {
-
-            ## Set the observed arguments
-            points_args <- plot_params$observed_args
-            points_args$x <- 1:plot_params$helpers$n_points
-            points_args$y <- points_args$data$obs
-            points_args$observed <- NULL
-            points_args$names <- NULL
-            points_args$data <- NULL
-
-            ## Calling the points
-            do.call(points, points_args)
-        }
     }
+
+    ## Add the observed data (optional)
+    add.observed(plot_params)
 
     ##  Save parameters
     return(par())

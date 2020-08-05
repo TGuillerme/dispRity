@@ -78,6 +78,44 @@ test_that("get.plot.params works", {
 })
 
 
+test_that("get.shift works", {
+    ## Dummy plot_params
+    plot_params <- list(helpers = list(n_points = 8))
+
+    test <- get.shift(add = FALSE, plot_params)
+    expect_equal(test, 0)
+
+    par("xaxp" = c(1, 1, 1))
+    test <- get.shift(add = TRUE, plot_params)
+    expect_equal(test, 0.5)
+})
+
+test_that("get.quantile.col works", {
+    expect_equal(get.quantile.col(1, 1, 1), c(2, 3))
+    expect_equal(get.quantile.col(2, 1, 1), c(3, 4))
+    expect_equal(get.quantile.col(1, 2, 1), c(3, 2))
+    expect_equal(get.quantile.col(2, 2, 1), c(4, 3))
+    expect_equal(get.quantile.col(1, 1, 2), c(2, 5))
+    expect_equal(get.quantile.col(1, 2, 2), c(3, 4))
+})
+
+
+test_that("add.observed works", {
+
+    ## Set plot params
+    plot_params <- get.plot.params(data = disparity,
+                                  data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50,95),
+                                  rarefaction_level = NULL,
+                                  elements = FALSE,
+                                  type = "continuous",
+                                  observed_args = list(observed = TRUE, col = c("black", "blue")))
+    expect_error(add.observed(plot_params))
+    plot(1)
+    expect_null(add.observed(plot_params))
+})
+
 # test_that("transpose.box works", {
 
 #     expect_error(

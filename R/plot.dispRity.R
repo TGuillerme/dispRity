@@ -597,11 +597,17 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             return(invisible())
         },
         "polygon" = {
+            plot.discrete(plot_params, data_params, add = add, density = density, type = type)
             return(invisible())
         },
         "box" = {
             return(invisible())
         })
+
+    ## Add elements
+    if(elements) {
+        stop("DEBUG: add elements")
+    }
 
     # ## PLOTTING THE RESULTS
 
