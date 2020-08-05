@@ -60,7 +60,6 @@ test_that("get.plot.params works", {
                                   xlab = "xlab",
                                   ylab = c("ylab", "ylab2"),
                                   col  = c("orange", "blue"),
-                                  rarefaction = FALSE,
                                   elements = FALSE,
                                   rarefaction_level = 10,
                                   type = "discrete",
@@ -75,6 +74,29 @@ test_that("get.plot.params works", {
     expect_equal_round(plot_params$options$ylim, c(1,2), 6)
     expect_equal(plot_params$options$col, c("orange", "blue", "#BEBEBE", "#C8C8C8", "#D3D3D3"))
     expect_equal(plot_params$options$main, "main")
+
+    ## Boxplot data
+    plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50, 75, 95, 99),
+                                  elements = FALSE,
+                                  rarefaction_level = NULL,
+                                  type = "box",
+                                  main = "main",
+                                  observed_args = list(observed = FALSE))
+    expect_is(plot_params$disparity$data, c("matrix", "array"))
+    expect_equal(dim(plot_params$disparity$data), c(100, 7))
+
+    plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50, 75, 95, 99),
+                                  elements = FALSE,
+                                  rarefaction_level = NULL,
+                                  type = "box",
+                                  main = "main",
+                                  observed_args = list(observed = TRUE))
+    expect_is(plot_params$disparity$data, c("matrix", "array"))
+    expect_equal(dim(plot_params$disparity$data), c(1, 7))
 })
 
 test_that("get.shift works", {
@@ -113,65 +135,7 @@ test_that("add.observed works", {
     expect_null(add.observed(plot_params))
 })
 
-# test_that("transpose.box works", {
-
-#     expect_error(
-#         transpose.box("disparity", rarefaction = FALSE, is_bootstrapped = TRUE)
-#         )
-#     expect_error(
-#         transpose.box(disparity, rarefaction = 99, is_bootstrapped = TRUE)
-#         )
-#     expect_equal(
-#         length(transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE))
-#         ,7)
-#     expect_equal(
-#         length(transpose.box(disparity, rarefaction = 5, is_bootstrapped = TRUE))
-#         ,7)
-
-#     test <- transpose.box(disparity, rarefaction = FALSE, is_bootstrapped = TRUE)
-#     for(subsets in 1:length(disparity$subsets)) {
-#         expect_equal(
-#             as.vector(test[[subsets]])
-#             ,as.vector(disparity$disparity[[subsets]][[2]]))
-#     }
-#     ## Unequal boxes test
-#     data(BeckLee_mat99)
-#     data(BeckLee_tree)
-#     data <- dispRity(custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree)), metric = centroids)
-#     subset_length <- unique(unlist(lapply(data$subsets, function(x) return(length(x[[1]])))))
-#     names(subset_length) <- c("crown", "stem") 
-#     test <- transpose.box(data, rarefaction = FALSE, is_bootstrapped = FALSE)
-#     expect_is(test, "list")
-#     expect_equal(names(test), c("crown", "stem"))
-#     expect_equal(unlist(lapply(test, length)), subset_length)
-# })
-
-# test_that("split.summary.data works", {
-
-#     data(disparity)
-#     sum_data <- summary(disparity)
-#     subsets <- unique(sum_data$subsets)
-
-#     for(sub in 1:length(subsets)) {
-#         ## Create a split
-#         split <- split.summary.data(subsets[sub], sum_data)
-#         ## test
-#         expect_is(split, "data.frame")
-#         expect_equal(dim(split), c(length(which(sum_data$subsets == subsets[sub])),8))
-#     }
-# })
-
-
-
-
-
-
-
-
-
-
 ## Function works
-
 test_that("plot.dispRity examples work", {
 
     data(disparity)
@@ -186,9 +150,9 @@ test_that("plot.dispRity examples work", {
     # expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
     ## Discrete plotting
-    # expect_null(plot(disparity, type = "box"))
+    expect_null(plot(disparity, type = "box"))
     # expect_null(plot(disparity, type = "box", elements = TRUE))
-    # expect_null(plot(disparity, type = "box", observed = TRUE))
+    expect_null(plot(disparity, type = "box", observed = TRUE))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))

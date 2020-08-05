@@ -57,6 +57,25 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     disparity$names <- selected_data[, name_part]
     disparity$data  <- selected_data[, -name_part]
 
+    ## Update the data to be in boxplot format
+    if(type == "box") {
+        ## Extracting boxplot data
+        if(is.null(rarefaction_level)) {
+            ## Getting the observed or bootstrapped data
+            if(data_params$bootstrap && !observed_args$observed) {
+                ## Getting the bootstrapped data
+                box_data <- do.call(cbind, unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE))
+            } else {
+                box_data <- do.call(cbind, extract.dispRity(data, observed = TRUE))
+            }
+        } else {
+            ## Find the correct rarefaction level
+            box_data <- do.call(cbind, unlist(extract.dispRity(data, observed = FALSE, rarefaction = rarefaction_level), recursive = FALSE))
+        }
+        ## Updating the disparity data part
+        disparity$data <- box_data
+    }
+
     ## Set up the helpers options
     helpers <- list()
     ## Detect the number of quantiles
@@ -138,7 +157,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
         dots$col <- NULL
     }
     ## Add potential missing colours
-    if(helpers$n_quantiles > 0) {
+    if(helpers$n_quantiles > 0 && type != "box") {
         ## Count if they are any missing colours
         cols_missing <- (helpers$n_quantiles + 1) - length(options$col)
         ## Adding grey scales if quantiles
@@ -522,39 +541,6 @@ plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     return(par())
 }
 
-## Transposing data for boxploting (taking functions from summary.dispRity)
-transpose.box <- function(data, rarefaction, is_bootstrapped) {
-
-    get.rare <- function(data, rare){
-        return(data[[rare]])
-    }
-
-    if(rarefaction == FALSE) {
-        if(is_bootstrapped) {
-            ## Select the raw data
-            box_data <- lapply(disparity$disparity, function(X) return(X[[2]]))
-        } else {
-            box_data <- lapply(disparity$disparity, function(X) return(X[[1]]))
-        }
-    } else {
-        ## Select the rarefaction data
-        rare_rows <- lapply(lapply(disparity$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction) + 1)
-        box_data <- mapply(get.rare, disparity$disparity, rare_rows, SIMPLIFY = FALSE)
-    }
-
-    ## Get the subset lengths
-    subset_length <- unique(unlist(lapply(disparity$subsets, function(x) return(length(x[[1]])))))
-    if(length(subset_length) == 1){
-        ## All data has the same length
-        output <- t(matrix(unlist(box_data), nrow = length(disparity$subsets), byrow = TRUE))
-        colnames(output) <- names(disparity$subsets)
-    } else {
-        ## Data has different lengths
-        output <- box_data
-    }
-
-    return(output)
-}
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {

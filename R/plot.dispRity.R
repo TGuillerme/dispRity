@@ -590,24 +590,29 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     switch(plot_task,
         "rarefaction" = {
-            return(invisible())
+            stop("TODO")
         },
         "continuous" = {
             plot.continuous(plot_params, data_params, add = add, density = density)
-            return(invisible())
         },
         "polygon" = {
             plot.discrete(plot_params, data_params, add = add, density = density, type = type)
-            return(invisible())
         },
         "box" = {
-            return(invisible())
+            ## Set the box arguments
+            boxplot_args <- plot_params$options
+            boxplot_args$x <- plot_params$disparity$data
+
+            ## Run the box plot
+            do.call(boxplot, boxplot_args)
         })
 
     ## Add elements
     if(elements) {
         stop("DEBUG: add elements")
     }
+
+    return(invisible())
 
     # ## PLOTTING THE RESULTS
 
@@ -640,39 +645,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     #     return(invisible())
     # }
 
-    # ## Continuous plot
-    # if(type == "continuous") {
-    #     ## Bigger plot margins if elements needed
-    #     if(elements) {
-    #         par(mar = c(5, 4, 4, 4) + 0.1)
-    #     }
-    #     saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density,...)
-    #     # saved_par <- plot.continuous(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, ylim, xlab, ylab, col, time_slices, observed, obs_list_arg, add, density); warning("DEBUG: plot")
 
-    #     # saved_par <- plot.continuous(plot_params, data_params, time_slices, observed, obs_list_arg, add, density)
 
-    #     if(elements) {
-    #         par(new = TRUE)
-    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-    #     }
-    #     return(invisible())
-    # }
 
-    # ## Polygons or lines
-    # if(type == "polygon" | type == "line") {
-    #     ## Bigger plot margins if elements needed
-    #     if(elements) {
-    #         par(mar = c(5, 4, 4, 4) + 0.1)
-    #     }
-    #     ## Personalised discrete plots
-    #     saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, data_params$distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
-    #     # saved_par <- plot.discrete(summarised_data, rarefaction, data_params$bootstrap, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
-    #     if(elements) {
-    #         par(new = TRUE)
-    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-    #     }
-    #     return(invisible())
-    # }
 
     # ## Box plot
     # if(type == "box") {
