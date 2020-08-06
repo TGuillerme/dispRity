@@ -26,6 +26,7 @@ Imports:
 	phyclust,
 	utils,
 	vegan,
+	scales,
 	spptest,
 License: GPL-3 | file LICENSE
 Remotes:

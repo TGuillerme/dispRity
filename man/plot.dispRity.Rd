@@ -15,7 +15,6 @@
   observed = FALSE,
   add = FALSE,
   density = NULL,
-  element.pch = 15,
   dimensions = c(1, 2),
   nclass = 10,
   coeff = 1,
@@ -35,15 +34,13 @@
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
-\item{elements}{\code{logical} whether to plot the number of elements per subsets.}
+\item{elements}{\code{logical} whether to plot the number of elements per subsets (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 
 \item{add}{\code{logical} whether to add the new plot an existing one (default is \code{FALSE}).}
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
-
-\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).}
 
 \item{dimensions}{optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).}
 
@@ -52,6 +49,8 @@
 \item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
 
 \item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
+
+\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).}
 }
 \description{
 Plots a \code{dispRity} object.

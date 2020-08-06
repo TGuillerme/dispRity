@@ -14,7 +14,8 @@ get.data.params <- function(data) {
 # $helpers: n_quantiles, npoints
 # $options: ylim, ylab, xlab, col, ...
 # $observed: data, ylim, ylab, xlab, col, ...
-get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction_level, elements, type, observed_args, ...) {
+# $elements: elements, ylim, ylab, xlab, col, ...
+get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction_level, elements_args, type, observed_args, ...) {
 
     ## Set up the plotting data
     ## Summarise the data
@@ -114,10 +115,6 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     if(is.null(dots$ylab)) {
         ## Default is the metric name
         options$ylab <- as.character(data$call$disparity$metrics$name)
-        if(elements) {
-            ## Default for element is "elements"
-            options$ylab <- "Elements"
-        }
     } else {
         ## User input        
         check.class(dots$ylab, "character", " must be a character string.")
@@ -132,9 +129,9 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
             ## Get the range of the data
             options$ylim <- range(disparity$data, na.rm = TRUE)
             ## Add 2% on each side
-            precent_change <- 0.02
-            options$ylim[1] <- options$ylim[1] - options$ylim[1]*precent_change
-            options$ylim[2] <- options$ylim[2] + options$ylim[2]*precent_change
+            percent_change <- 0.02
+            options$ylim[1] <- options$ylim[1] - options$ylim[1]*percent_change
+            options$ylim[2] <- options$ylim[2] + options$ylim[2]*percent_change
         } else {
             options$ylim <- "rarefaction"
         }
@@ -199,8 +196,27 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
         }
     }
 
+    ## Observed data
+    if(elements_args$elements) {
+        ## Default observed arguments
+        if(is.null(elements_args$col)) {
+            if(type == "box" && options$col[[1]] == "white") {
+                elements_args$col <- "black"
+            } else {
+                elements_args$col <- options$col[[1]]
+            }
+        }
+        if(is.null(elements_args$pch)) {
+            elements_args$pch <- 15
+        }
+        if(is.null(elements_args$lty)) {
+            elements_args$lty <- 2
+        }
+    }
+
+
     ## Output the finalised list
-    return(list("disparity" = disparity, "helpers" = helpers, "options" = options, "observed_args" = observed_args))
+    return(list("disparity" = disparity, "helpers" = helpers, "options" = options, "observed_args" = observed_args, "elements_args" = elements_args))
 }
 
 ## Handle the shift argument
@@ -246,6 +262,57 @@ add.observed <- function(plot_params) {
     } else {
         return(invisible())
     }
+}
+
+## Plot elements
+plot.elements <- function(plot_params, type) {
+    ## Elements plots
+    add_args <- plot_params$elements_args
+
+    ## Add the values
+    add_args$x <- 1:plot_params$helpers$n_points
+    add_args$y <- plot_params$disparity$names[,2]
+
+    ## Scale the y values
+    percent_change <- 0.02
+    rescaling <- plot_params$options$ylim
+    rescaling[1] <- rescaling[1] + percent_change * rescaling[1]
+    rescaling[2] <- rescaling[2] - percent_change * rescaling[2]
+    add_args$y <- scales::rescale(add_args$y, to = rescaling)
+
+    ## If between groups, add the values for the other groups
+    if(data_params$between.groups) {
+        add_args$y <- plot_params$disparity$names[,3]
+    }
+
+    ## Check if ylab exists
+    if(is.null(plot_params$elements_args$ylab)) {
+        axis_label <- ifelse(length(plot_params$options$ylab) > 1, plot_params$options$ylab[2], "Elements")
+    } else {
+        axis_label <- plot_params$elements_args$ylab
+    }
+
+    ## Add the different types
+    if(type == "continuous") {
+        add_args$lty <- plot_params$elements_args$lty
+        do.call(lines, add_args)
+    } else {
+        add_args$pch <- plot_params$elements_args$pch
+        do.call(points, add_args)
+    } 
+
+    ## Add the axis label
+    seq.along.range <- function(range, out = 5) {
+        seq(from = range(range)[1],
+            to = range(range)[2],
+            length.out = out)
+    }
+    
+    ## Add the second y axis
+    axis(4, at = seq.along.range(rescaling), labels = seq.along.range(plot_params$disparity$names[,2]),
+        lty = plot_params$elements_args$lty)
+    ## Add the second axis label
+    mtext(axis_label, side = 4, line = 2)    
 }
 
 ## discrete plotting

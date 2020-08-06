@@ -8,7 +8,7 @@
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
-#' @param elements \code{logical} whether to plot the number of elements per subsets.
+#' @param elements \code{logical} whether to plot the number of elements per subsets (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
@@ -118,7 +118,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -527,10 +527,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         type <- ifelse(type == "p", "polygon", type)
     }
 
-    ## elements = FALSE
-    ## must be logical
-    check.class(elements, "logical")
-
     ## If data is not bootstrapped, rarefaction is FALSE
     if(!data_params$bootstrap) {
         rarefaction <- NULL
@@ -558,6 +554,21 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         }
     }
 
+    ## elements = FALSE
+    ## must be logical
+    check.class(elements, "logical")
+    ## observed = FALSE
+    elements_args <- list()
+    class_elements <- check.class(elements, c("logical", "list"))
+    if(class_elements == "list") {
+        ## Transforming into logical and handling the list below
+        elements_args <- elements
+        elements_args$elements <- TRUE
+    } else {
+        ## Creating and empty list to be handled below
+        elements_args$elements <- elements
+    }
+
     ## observed = FALSE
     observed_args <- list()
     class_observed <- check.class(observed, c("logical", "list"))
@@ -579,8 +590,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                                    cent.tend = cent.tend,
                                    quantiles = quantiles,
                                    rarefaction_level = rarefaction,
-                                   elements = elements, type = type,
-                                   observed_args = observed_args
+                                   type = type,
+                                   observed_args = observed_args,
+                                   elements_args = elements_args
                                    , ...)
 
     ## Set up the plotting task 
@@ -609,8 +621,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         })
 
     ## Add elements
-    if(elements) {
-        stop("DEBUG: add elements")
+    if(plot_params$elements_args$elements) {
+        plot.elements(plot_params, type)
     }
 
     return(invisible())

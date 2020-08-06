@@ -16,6 +16,7 @@ importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsi
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("utils", "combn", "data", "capture.output", "tail")
 importFrom("vegan", "adonis", "vegdist")
+importFrom("scales", "rescale")
 importFrom("spptest", "create_curve_set", "rank_envelope")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
 # importFrom("geomorph", "gpagen")

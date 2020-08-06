@@ -23,11 +23,11 @@ test_that("get.plot.params works", {
                                   cent.tend = median,
                                   quantiles = c(50,95),
                                   rarefaction_level = NULL,
-                                  elements = FALSE,
                                   type = "continuous",
-                                  observed_args = list(observed = TRUE, col = c("black", "blue")))
+                                  observed_args = list(observed = TRUE, col = c("black", "blue")),
+                                  elements_args = list(elements = FALSE))
     expect_is(plot_params, "list")
-    expect_equal(names(plot_params), c("disparity", "helpers", "options", "observed_args"))
+    expect_equal(names(plot_params), c("disparity", "helpers", "options", "observed_args", "elements_args"))
     ## The data to plot
     expect_equal(names(plot_params$disparity), c("names", "data"))
     expect_is(plot_params$disparity$data, "data.frame")
@@ -60,11 +60,11 @@ test_that("get.plot.params works", {
                                   xlab = "xlab",
                                   ylab = c("ylab", "ylab2"),
                                   col  = c("orange", "blue"),
-                                  elements = FALSE,
                                   rarefaction_level = 10,
                                   type = "discrete",
                                   main = "main",
-                                  observed_args = list(observed = FALSE))
+                                  observed_args = list(observed = FALSE),
+                                  elements_args = list(elements = TRUE, col = "grey", cex = 22))
     ## The plotting options
     expect_equal(dim(plot_params$disparity$names), c(7, 2))
     expect_equal(dim(plot_params$disparity$data), c(7, 10))
@@ -74,6 +74,11 @@ test_that("get.plot.params works", {
     expect_equal_round(plot_params$options$ylim, c(1,2), 6)
     expect_equal(plot_params$options$col, c("orange", "blue", "#BEBEBE", "#C8C8C8", "#D3D3D3"))
     expect_equal(plot_params$options$main, "main")
+    expect_true(plot_params$elements_args$elements)
+    expect_equal(plot_params$elements_args$lty, 2)
+    expect_equal(plot_params$elements_args$col, "grey")
+    expect_equal(plot_params$elements_args$cex, 22)
+    expect_equal(plot_params$elements_args$pch, 15)
 
     ## Boxplot data
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
@@ -96,7 +101,7 @@ test_that("get.plot.params works", {
                                   main = "main",
                                   observed_args = list(observed = TRUE))
     expect_is(plot_params$disparity$data, c("matrix", "array"))
-    expect_equal(dim(plot_params$disparity$data), c(1, 7))
+    expect_equal(dim(plot_params$disparity$data), c(100, 7))
 })
 
 test_that("get.shift works", {
@@ -145,14 +150,15 @@ test_that("plot.dispRity examples work", {
     expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
 
     ## Rarefaction is ignored if no BS
-    expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+    error <- capture_error(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+    expect_equal(error[[1]], "Only observed values are available. Set observed = TRUE.")
     expect_null(plot(dispRity(data, metric = mean), type = "l"))
     expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
     # expect_null(plot(disparity, type = "box", elements = TRUE))
-    # expect_null(plot(disparity, type = "box", observed = TRUE))
+    expect_null(plot(disparity, type = "box", observed = TRUE))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
