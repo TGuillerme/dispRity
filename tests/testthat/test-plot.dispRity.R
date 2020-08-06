@@ -145,13 +145,13 @@ test_that("plot.dispRity examples work", {
     expect_warning(data <- custom.subsets(ordinated_matrix, list(c(1:4), c(5:10))))
 
     ## Rarefaction is ignored if no BS
-    # expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
-    # expect_null(plot(dispRity(data, metric = mean), type = "l"))
-    # expect_null(plot(dispRity(data, metric = mean), type = "c"))
+    expect_null(plot(dispRity(data, metric = mean), rarefaction = TRUE))
+    expect_null(plot(dispRity(data, metric = mean), type = "l"))
+    expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
-    # expect_null(plot(disparity, type = "box", elements = TRUE))
+    expect_null(plot(disparity, type = "box", elements = TRUE))
     expect_null(plot(disparity, type = "box", observed = TRUE))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
