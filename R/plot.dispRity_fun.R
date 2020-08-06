@@ -66,7 +66,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
                 ## Getting the bootstrapped data
                 box_data <- do.call(cbind, unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE))
             } else {
-                box_data <- do.call(cbind, extract.dispRity(data, observed = TRUE))
+                if(data_params$distribution) {
+                    box_data <- do.call(cbind, extract.dispRity(data, observed = TRUE))
+                } else {
+                    box_data <- do.call(cbind, unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE))
+                }
             }
         } else {
             ## Find the correct rarefaction level
@@ -181,7 +185,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
 
         ## Default observed arguments
         if(is.null(observed_args$col)) {
-            observed_args$col <- options$col[[1]]
+            if(type == "box" && options$col[[1]] == "white") {
+                observed_args$col <- "black"
+            } else {
+                observed_args$col <- options$col[[1]]
+            }
         }
         if(is.null(observed_args$pch)) {
             observed_args$pch <- 4

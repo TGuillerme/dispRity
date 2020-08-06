@@ -605,6 +605,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Run the box plot
             do.call(boxplot, boxplot_args)
+            add.observed(plot_params)
         })
 
     ## Add elements
