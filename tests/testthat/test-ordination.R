@@ -9,15 +9,15 @@ test_that("Claddis.ordination works", {
     
     library(Claddis)
 
-    data <- Claddis::Michaux1989
+    data <- Claddis::michaux_1989
 
     ## Sanitizing
     expect_error(Claddis.ordination(matrix(5), distance = "MORD", k = 2))
     expect_error(Claddis.ordination(data, distance = "bob", k = 2))
     expect_error(Claddis.ordination(data, distance = "MORD", k = 10))
-    expect_error(Claddis.ordination(Claddis::Day2016)) #NA
+    expect_error(Claddis.ordination(Claddis::day_2016)) #NA
     data_bug <- data
-    data_bug$Matrix_1$Matrix <- NULL
+    data_bug$matrix_1$matrix <- NULL
     expect_error(Claddis.ordination(data_bug, distance = "MORD")) #NA
 
     test <- Claddis.ordination(data, add = FALSE, TransformDistances = "none")
@@ -49,8 +49,8 @@ test_that("Claddis.ordination works with new reader", {
     ## Only converting the nexus matrix into a Claddis format
     Claddis_data <- Claddis.ordination("morpho_matrix.nex", distance = NULL)
     expect_is(Claddis_data, "list")
-    expect_equal(names(Claddis_data), c("Topper", "Matrix_1"))
-    expect_is(Claddis_data$Matrix_1$Matrix, "matrix")
+    expect_equal(names(Claddis_data), c("topper", "matrix_1"))
+    expect_is(Claddis_data$matrix_1$matrix, "matrix")
 
     expect_true(file.remove("morpho_matrix.nex"))
 })
