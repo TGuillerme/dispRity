@@ -49,8 +49,6 @@
 \item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
 
 \item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
-
-\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).}
 }
 \description{
 Plots a \code{dispRity} object.

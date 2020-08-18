@@ -84,7 +84,7 @@ test_that("get.plot.params works", {
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
                                   quantiles = c(50, 75, 95, 99),
-                                  elements = FALSE,
+                                  elements_args = list(elements = FALSE),
                                   rarefaction_level = NULL,
                                   type = "box",
                                   main = "main",
@@ -95,7 +95,7 @@ test_that("get.plot.params works", {
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
                                   quantiles = c(50, 75, 95, 99),
-                                  elements = FALSE,
+                                  elements_args = list(elements = FALSE),
                                   rarefaction_level = NULL,
                                   type = "box",
                                   main = "main",
@@ -125,7 +125,7 @@ test_that("get.quantile.col works", {
     expect_equal(get.quantile.col(1, 2, 2), c(3, 4))
 })
 
-test_that("add.observed works", {
+test_that("plot.observed works", {
 
     ## Set plot params
     plot_params <- get.plot.params(data = disparity,
@@ -133,11 +133,11 @@ test_that("add.observed works", {
                                   cent.tend = median,
                                   quantiles = c(50,95),
                                   rarefaction_level = NULL,
-                                  elements = FALSE,
+                                  elements_args = list(elements = FALSE),
                                   type = "continuous",
                                   observed_args = list(observed = TRUE, col = c("black", "blue")))
     plot(1)
-    expect_null(add.observed(plot_params))
+    expect_null(plot.observed(plot_params))
 })
 
 ## Function works
@@ -157,7 +157,7 @@ test_that("plot.dispRity examples work", {
 
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
-    # expect_null(plot(disparity, type = "box", elements = TRUE))
+    expect_null(plot(disparity, type = "box", elements = TRUE))
     expect_null(plot(disparity, type = "box", observed = TRUE))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
@@ -176,8 +176,7 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
 
     ## Testing additional behaviours for plot.discrete/continuous
-    warning("TODO: test below")
-    # expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
+    expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
     expect_null(plot(disparity, type = "c", col = c("blue", "orange")))
     expect_null(plot(disparity, density = 50))

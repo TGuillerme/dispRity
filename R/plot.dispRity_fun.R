@@ -246,7 +246,7 @@ get.quantile.col <- function(cent_tend_col, cis, n_quantiles) {
 }
 
 ## Observed points
-add.observed <- function(plot_params) {
+plot.observed <- function(plot_params) {
     if(plot_params$observed_args$observed) {
 
         ## Set the observed arguments
@@ -268,6 +268,7 @@ add.observed <- function(plot_params) {
 plot.elements <- function(plot_params, type) {
     ## Elements plots
     add_args <- plot_params$elements_args
+    add_args$elements <- NULL
 
     ## Add the values
     add_args$x <- 1:plot_params$helpers$n_points
@@ -420,9 +421,6 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
     ## Add the points
     do.call(points, point_args)
 
-    ## Add the observed data (optional)
-    add.observed(plot_params)
-
     ## Save parameters
     return(par())
 }
@@ -526,48 +524,42 @@ plot.continuous <- function(plot_params, data_params, add, density) {
         do.call(lines, plot_args)
     }
 
-    ## Add the observed data (optional)
-    add.observed(plot_params)
-
     ##  Save parameters
     return(par())
 }
 
+## Plot the rarefaction
+plot.rarefaction <- function(plot_params, data_params, data) {
+
+        ## How many rarefaction plots?
+        n_plots <- length(data$subsets)
+
+        ## Open the multiple plots
+        plot_size <- ifelse(n_plots == 3, 4, n_plots)
+        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
+
+        ## Get the list of subsets
+        subsets_levels <- names(data$subsets)
+
+        ## Get all the rarefaction values
+        if(data_)
+        extract.dispRity(data, observed = FALSE, rarefaction = 29)
 
 
+        sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
 
-
-
-
-
-
-
-## Plotting elements
-plot.elements <- function(summarised_data, rarefaction, type, ylab, col, element.pch, ...) {
-
-    ## Check if ylab2 exists
-    if(length(ylab) == 1) {
-        ylab[[2]] <- "Elements"
-    }
-
-    ## Add the lines
-    if(type == "continuous") {
-        ## Continuous (straightforward)
-        plot(extract.from.summary(summarised_data, 2, rarefaction), type = "l", lty = 2, xaxt = "n", yaxt = "n", xlab = "", ylab = "")
-    } else {
-        ## Creating the dummy data table
-        plot_params$helpers$n_points <- length(unique(summarised_disparity$subsets))
-        dummy_mat <- matrix(extract.from.summary(summarised_data, 2, rarefaction), ncol = plot_params$helpers$n_points)
-        colnames(dummy_mat) <- extract.from.summary(summarised_data, 1)
-        boxplot(dummy_mat, xaxt = "n", yaxt = "n", xlab = "", ylab = "", boxwex = 0.5/plot_params$helpers$n_points, lty = 2, border = "white", type = "n")
-        for(line in 1:plot_params$helpers$n_points) {
-            # lines(c(line-0.25, (line+0.25)), rep(summarised_data[line,2], 2), lty = 2, lwd = 1.5)
-            points(line, summarised_data[line,2], pch = element.pch, col = col)
+        ## Plot the rarefaction curves
+        for(nPlot in 1:n_plots) {
+            plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
+            # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
         }
-    }
-    ## lines(extract.from.summary(summarised_data, 2, rarefaction), lty=2)
-    axis(4, lty = 2)
-    mtext(ylab[[2]], side = 4, line = 2)
+
+        ## Done!
+        par(op_tmp)
+
+    extract.dispRity    
+
+
 }
 
 
@@ -577,7 +569,7 @@ split.summary.data <- function(subsets_levels, summarised_data) {
 }
 
 ## rarefaction plottings
-plot.rarefaction <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
+plot.rarefaction.old <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
     ## Get parameters
     if(ylim[[1]] == "rarefaction") {
         ## ylim?

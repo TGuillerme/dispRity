@@ -12,7 +12,6 @@
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).
 #' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
 #' @param matrix optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).
 # ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
@@ -617,8 +616,10 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Run the box plot
             do.call(boxplot, boxplot_args)
-            add.observed(plot_params)
         })
+    if(plot_params$observed_args$observed) {
+        plot.observed(plot_params)
+    }
 
     ## Add elements
     if(plot_params$elements_args$elements) {
