@@ -495,12 +495,12 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 # trees <- rmtree(10, 10)
 
 # claddis.wrapper <- function(tree, matrix) {
-#     return(AncStateEstMatrix(matrix, tree,
-#                              EstimateAllNodes = TRUE))
+#     return(estimate_ancestral_states(matrix, tree,
+#                              estimate_all_nodes = TRUE))
 # }
 
 # # Reformat for use elsewhere in Claddis:
-# Claddis_matrix <- MakeMorphMatrix(matrix)
+# Claddis_matrix <- build_cladistic_matrix(matrix)
 
 
 

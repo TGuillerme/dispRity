@@ -2,23 +2,23 @@
 #'
 #' @description Takes Claddis data and computes both the distance and the ordination matrix 
 #'
-#' @param data Data from \code{\link[Claddis]{ReadMorphNexus}} or the path to a file to be read by \code{\link[ape]{read.nexus.data}} (see details).
-#' @param distance Distance type to be computed by \code{\link[Claddis]{MorphDistMatrix}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}. \code{distance} can also be set to \code{NULL} to convert a matrix in \code{\link[Claddis]{ReadMorphNexus}} list type (see details).
-#' @param ... Any optional arguments to be passed to \code{\link[Claddis]{MorphDistMatrix}}.
+#' @param data Data from \code{\link[Claddis]{read_nexus_matrix}} or the path to a file to be read by \code{\link[ape]{read.nexus.data}} (see details).
+#' @param distance Distance type to be computed by \code{\link[Claddis]{calculate_morphological_distances}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}. \code{distance} can also be set to \code{NULL} to convert a matrix in \code{\link[Claddis]{read_nexus_matrix}} list type (see details).
+#' @param ... Any optional arguments to be passed to \code{\link[Claddis]{calculate_morphological_distances}}.
 #' @param k The number of dimensions in the ordination. If left empty, the number of dimensions is set to number of rows - 1.
 #' @param add whether to use the Cailliez correction for negative eigen values (\code{add = TRUE}; default - see \code{\link[stats]{cmdscale}}) or not (\code{add = FALSE}).
 #' @param arg.cmdscale Any optional arguments to be passed to \code{\link[stats]{cmdscale}} (as a named list such as \code{list(x.ret = TRUE)}).
 #' 
 #' @details
-#' If \code{data} is a file path, the function will use a modified version of \code{\link[ape]{read.nexus.data}} (that handles polymorphic and ambiguous characters). The file content will then be converted into a \code{\link[Claddis]{ReadMorphNexus}} type list treating all characters as unordered.
-#' If the \code{distance} is set to \code{NULL}, \code{data} will be only converted into a \code{\link[Claddis]{ReadMorphNexus}} type list.
+#' If \code{data} is a file path, the function will use a modified version of \code{\link[ape]{read.nexus.data}} (that handles polymorphic and ambiguous characters). The file content will then be converted into a \code{\link[Claddis]{read_nexus_matrix}} type list treating all characters as unordered.
+#' If the \code{distance} is set to \code{NULL}, \code{data} will be only converted into a \code{\link[Claddis]{read_nexus_matrix}} type list.
 #' 
 #' @examples
 #' \dontrun{
 #' require(Claddis)
 #' 
 #' ## Ordinating the distance matrix of Claddis example data
-#' Claddis.ordination(Claddis::Michaux1989)
+#' Claddis.ordination(Claddis::michaux_1989)
 #' 
 #' ## Creating simple discrete morphological matrix (with polymorphisms)
 #' cat(
@@ -44,7 +44,7 @@
 #' file.remove("morpho_matrix.nex")
 #' }
 #'
-#' @seealso \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[Claddis]{ReadMorphNexus}}, \code{\link[Claddis]{MakeMorphMatrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link[Claddis]{calculate_morphological_distances}}, \code{\link[Claddis]{read_nexus_matrix}}, \code{\link[Claddis]{build_cladistic_matrix}}, \code{\link[stats]{cmdscale}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #' 
 #' @author Thomas Guillerme
 # @export
@@ -57,7 +57,7 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     ## Sanitizing
 
     ## Data
-    error_msg <- paste0("data does not contain a matrix.\nUse Claddis::ReadMorphNexus to generate the proper data format.")
+    error_msg <- paste0("data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
     data_type <- check.class(data, c("list", "character"), msg = error_msg)
 
     ## Convert the data_type into Claddis format
@@ -104,7 +104,7 @@ Claddis.ordination <- function(data, distance = "MORD", ..., k, add = TRUE, arg.
     arg.cmdscale$add <- add
 
     ## Compute the distance
-    distance_mat <- Claddis::MorphDistMatrix(data, Distance = distance, ...)
+    distance_mat <- Claddis::calculate_morphological_distances(data, distance_metric = distance, ...)
 
     ## Check for NAs
     if(any(is.na(distance_mat$DistanceMatrix))) {

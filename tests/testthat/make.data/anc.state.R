@@ -10,7 +10,7 @@
 ##########################
 #SYNTAX :
 #<tree> a 'phylo' object
-#<nexus> a nexus file list containing the matrix and a list of ordering (use Claddis::ReadMorphNexus for proper format)
+#<nexus> a nexus file list containing the matrix and a list of ordering (use Claddis::read_nexus_matrix for proper format)
 #<method> the method to use for ancestral state reconstruction ('ML-ape' or 'ML-claddis')
 #<verbose> whether to be verbose or not
 #<...> any optional arguments to be passed to ape::ace or phytools::rerootingMethod
@@ -38,15 +38,15 @@ anc.state<-function(tree, nexus, method='ML-ape', verbose=TRUE, ...){
     tree<-bin.tree(tree)
 
     #nexus
-    check.class(nexus, 'list', ' must be a nexus list.\n Use Claddis::ReadMorphNexus() for generating the proper formatted object.')
+    check.class(nexus, 'list', ' must be a nexus list.\n Use Claddis::read_nexus_matrix() for generating the proper formatted object.')
     #matrix element present?
     #$matrix
     if(!any(names(nexus) == "matrix")) {
-        stop('nexus must be a nexus list.\n Use Claddis::ReadMorphNexus() for generating the proper formatted object.')
+        stop('nexus must be a nexus list.\n Use Claddis::read_nexus_matrix() for generating the proper formatted object.')
     }
     #$ordering
     if(!any(names(nexus) == "ordering")) {
-        message('There was no character ordering list available in the nexus object:\n characters are now all considered as unordered.\n Use Claddis::ReadMorphNexus() for generating the proper formatted object.')
+        message('There was no character ordering list available in the nexus object:\n characters are now all considered as unordered.\n Use Claddis::read_nexus_matrix() for generating the proper formatted object.')
         #Generate default ordering (none)
         nexus$ordering<-c(rep("unord", ncol(nexus$matrix)))
     }
@@ -62,10 +62,10 @@ anc.state<-function(tree, nexus, method='ML-ape', verbose=TRUE, ...){
     #nexus (again)
     #$max and min values (if method = 'ML-claddis')
     if(method == 'ML-claddis' & !any(names(nexus) == "max.vals")) {
-        stop('Nexus object needs to contain a \'max.vals\' vector if chosen method is \'ML-claddis\'.\n Use Claddis::ReadMorphNexus() for generating the proper formatted object.')
+        stop('Nexus object needs to contain a \'max.vals\' vector if chosen method is \'ML-claddis\'.\n Use Claddis::read_nexus_matrix() for generating the proper formatted object.')
     }
     if(method == 'ML-claddis' & !any(names(nexus) == "min.vals")) {
-        stop('Nexus object needs to contain a \'min.vals\' vector if chosen method is \'ML-claddis\'.\n Use Claddis::ReadMorphNexus() for generating the proper formatted object.')
+        stop('Nexus object needs to contain a \'min.vals\' vector if chosen method is \'ML-claddis\'.\n Use Claddis::read_nexus_matrix() for generating the proper formatted object.')
     }
 
     #verbose

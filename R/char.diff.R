@@ -83,7 +83,7 @@
 #'           translate = FALSE)
 #' # all four character states are different
 #' 
-#' @seealso \code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[cluster]{daisy}}
+#' @seealso \code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{calculate_morphological_distances}}, \code{\link[cluster]{daisy}}
 #' 
 #' @author Thomas Guillerme
 #' 
