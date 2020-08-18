@@ -20,7 +20,7 @@ test_that("Claddis.ordination works", {
     data_bug$matrix_1$matrix <- NULL
     expect_error(Claddis.ordination(data_bug, distance = "MORD")) #NA
 
-    test <- Claddis.ordination(data, add = FALSE, TransformDistances = "none")
+    test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
     expect_equal(dim(test), c(4,3))
     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
 })

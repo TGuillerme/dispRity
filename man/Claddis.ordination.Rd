@@ -4,12 +4,12 @@
 \alias{Claddis.ordination}
 \title{Imports data from Claddis}
 \usage{
-Claddis.ordination(data, distance = "MORD", ..., k, add = TRUE, arg.cmdscale)
+Claddis.ordination(data, distance = "mord", ..., k, add = TRUE, arg.cmdscale)
 }
 \arguments{
 \item{data}{Data from \code{\link[Claddis]{read_nexus_matrix}} or the path to a file to be read by \code{\link[ape]{read.nexus.data}} (see details).}
 
-\item{distance}{Distance type to be computed by \code{\link[Claddis]{calculate_morphological_distances}}. Can be either \code{"GC"}, \code{"GED"}, \code{"RED"}, \code{"MORD"}. \code{distance} can also be set to \code{NULL} to convert a matrix in \code{\link[Claddis]{read_nexus_matrix}} list type (see details).}
+\item{distance}{Distance type to be computed by \code{\link[Claddis]{calculate_morphological_distances}}. Can be either \code{"gc"}, \code{"ged"}, \code{"red"}, \code{"mord"}. \code{distance} can also be set to \code{NULL} to convert a matrix in \code{\link[Claddis]{read_nexus_matrix}} list type (see details).}
 
 \item{...}{Any optional arguments to be passed to \code{\link[Claddis]{calculate_morphological_distances}}.}
 

@@ -327,8 +327,8 @@ test_that("char.diff give the same results as Claddis::calculate_morphological_d
     claddis.test.wrapper <- function(matrix, transform = "none") {
         results <- list()
         results[[1]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "gc", distance_transformation = transform)$comparable_character_matrix
-        results[[2]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "GC", distance_transformation = transform)$distance_matrix
-        results[[3]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "MORD", distance_transformation = transform)$distance_matrix
+        results[[2]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "gc", distance_transformation = transform)$distance_matrix
+        results[[3]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "mord", distance_transformation = transform)$distance_matrix
         names(results) <- c("comparable", "gower", "mord")
         return(results)
     }
