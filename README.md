@@ -12,7 +12,7 @@ Development (master):
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.4.2-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.4.4-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
@@ -124,93 +124,49 @@ Acknowledgments
 Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
 
 
-Used in
+Examples of papers using the `dispRity` package
 -------
-<!-- > 25 publications have used `dispRity` since 04/2018 (12.5 per year). (calculated on the 03/04/2020). -->
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+measurement+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity measurement best summarise occupancy in multidimensional spaces?. *Ecology and Evolution*. **2020** [DOI: 10.1002/ece3.6452](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452)
+The `dispRity` package was cited in [these papers](https://scholar.google.co.uk/scholar?cites=13311379491028410826&as_sdt=2005&sciodt=0,5&hl=en). Below is a list of specific papers using specific functionalities. These papers do not _only_ use the functionalities highlighted here (and the author do much more awesome science!) but this is just a list of references if you want an independent guide on how to use these functions:
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Disparities+in+the+analysis+of+morphological+disparity&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3Ah2aPF6BcVzMJ%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Guillerme T, Cooper N, Brusatte SL, Davis KE, Jackson AL, Gerber S, Goswami A, Healy K, Hopkins MJ, Jones ME, Lloyd GT. O'Reilly JE, Pate A, Puttick MN, Rayfield EJ, Saupe EE, Sherratt E, Slater GJ, Weisbecker V, Thomas GH, Donoghue PCJ. Disparities in the analysis of morphological disparity. *Biology Letters*. **2020** 29;16(7):20200199. [DOI: 10.1098/rsbl.2020.0199](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826%2C7753828186872068057&scipsc=&q=3D+Morphometric+Analysis+Reveals+Similar+Ecomorphs+for+Early+Kangaroos+%28Macropodidae%29+and+Fanged+Kangaroos+%28Balbaridae%29+from+the+Riversleigh+World+%E2%80%A6&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Butler K, Travouillon KJ, Evans AR, Murphy L, Price GJ, Archer M, Hand SJ, Weisbecker V. 3D Morphometric Analysis Reveals Similar Ecomorphs for Early Kangaroos (Macropodidae) and Fanged Kangaroos (Balbaridae) from the Riversleigh World Heritage Area, Australia. *Journal of Mammalian Evolution*. **2020** 11:1-21. [DOI: 10.1007/s10914-020-09507-8](https://link.springer.com/article/10.1007/s10914-020-09507-8)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Categorical+versus+geometric+morphometric+approaches+to+characterizing+the+evolution+of+morphological+disparity+in+Osteostraci+%28Vertebrata%2C+stem+Gnathostomata%29&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Ferron HG, Greenwood JM, Deline B, Martinez-Perez C, Botella H, Sansom RS, Ruta M, Donoghue PC. Categorical versus geometric morphometric approaches to characterizing the evolution of morphological disparity in Osteostraci (Vertebrata, stem Gnathostomata). *Palaeontology*. **2020** [DOI: 10.1111/pala.12482](https://sci-hub.se/10.1111/pala.12482)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Megaevolutionary+dynamics+and+the+timing+of+evolutionary+innovation+in+reptiles&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Simoes TR, Vernygora O, Caldwell MW, Pierce SE. Megaevolutionary dynamics in reptiles and the role of adaptive radiations in evolutionary innovation. *Nature Communication*. **2020** [DOI: 10.1038/s41467-020-17190-9](https://www.nature.com/articles/s41467-020-17190-9)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Intraspecific+variation+in+the+cochleae+of+harbour+porpoises+%28Phocoena+phocoena%29+and+its+implications+for+comparative+studies+across+odontocetes&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Martins MC, Park T, Racicot R, Cooper N. Intraspecific variation in the cochleae of harbour porpoises (Phocoena phocoena) and its implications for comparative studies across odontocetes. *PeerJ*. **2020** [DOI: 10.7717/peerj.8916](https://peerj.com/articles/8916/)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shoulder+Muscle+Architecture+in+the+Echidna+%28Monotremata%3A+Tachyglossus+aculeatus%29+Indicates+Conserved+Functional+Properties&btnG=#d=gs_cit&u=%2Fscholar%3Fq%3Dinfo%3A2T425Bdh8p4J%3Ascholar.google.com%2F%26output%3Dcite%26scirp%3D0%26hl%3Den"><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Regnault S, Fahn-Lai P, Norris RM, Pierce SE. Shoulder Muscle Architecture in the Echidna (Monotremata: Tachyglossus aculeatus) Indicates Conserved Functional Properties. *Journal of Mammalian Evolution*. **2020** [DOI: 10.1007/s10914-020-09498-6](https://link.springer.com/article/10.1007/s10914-020-09498-6)
+#### Measuring disparity with `dispRity`
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Early+high+rates+and+disparity+in+the+evolution+of+ichthyosaurs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Moon BC, Stubbs TL. Early high rates and disparity in the evolution of ichthyosaurs. *Communications biology*. **2020** [DOI: 10.1038/s42003-020-0779-6](https://www.nature.com/articles/s42003-020-0779-6)
 
+#### Using different time binning with `chrono.subsets`
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Crocodylomorph+cranial+shape+evolution+and+its+relationship+with+body+size+and+ecology&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Godoy PL. Crocodylomorph cranial shape evolution and its relationship with body size and ecology. *Journal of Evolutionary Biology*. **2020** [DOI: 10.1111/jeb.13540](https://onlinelibrary.wiley.com/doi/full/10.1111/jeb.13540)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Otolith+morphological+divergences+of+successful+Lessepsian+fishes+on+the+Mediterranean+coastal+waters&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Tuset VM, Lombarte A, Bariche M, Maynou F, Azzurro E. Otolith morphological divergences of successful Lessepsian fishes on the Mediterranean coastal waters. *Estuarine, Coastal and Shelf Science*. **2020** [DOI: 10.1016/j.ecss.2020.106631](https://www.sciencedirect.com/science/article/pii/S0272771419311291)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogenomics%2C+biogeography+and+morphometrics+reveal+rapid+phenotypic+evolution+in+pythons+after+crossing+Wallace%27s+line&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Esquerré D, Donnellan S, Brennan IG, Lemmon AR, Lemmon EM, Zaher H, Grazziotin FG, Keogh JS. Phylogenomics, biogeography and morphometrics reveal rapid phenotypic evolution in pythons after crossing Wallace’s line. *Systematic Biology*. **2019** [DOI: 10.1093/sysbio/syaa024](https://doi.org/10.1093/sysbio/syaa024)
+#### Simulating discrete morphological data with `sim.morpho`:
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Morphological+disparity+in+theropod+jaws%3A+comparing+discrete+characters+and+geometric+morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Schaeffer J, Benton MJ, Rayfield EJ, Stubbs TL. Morphological disparity in theropod jaws: comparing discrete characters and geometric morphometrics. *Palaeontology*. **2019** [DOI: 10.1111/pala.12455](https://onlinelibrary.wiley.com/doi/full/10.1111/pala.12455)
+Schaeffer J, Benton MJ, Rayfield EJ, Stubbs TL. Morphological disparity in theropod jaws: comparing discrete characters and geometric morphometrics. Palaeontology. **2020**. [DOI: 10.1111/pala.12455](https://onlinelibrary.wiley.com/doi/full/10.1111/pala.12455)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Origin+of+horsetails+and+the+role+of+whole-genome+duplication+in+plant+macroevolution&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Clark JW, Puttick MN, Donoghue PC. Origin of horsetails and the role of whole-genome duplication in plant macroevolution. *Proceedings of the Royal Society B*. **2019** [DOI: 10.1098/rspb.2019.1662](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2019.1662)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Individual+variation+of+the+masticatory+system+dominates+3D+skull+shape+in+the+herbivory-adapted+marsupial+wombats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Weisbecker V, Guillerme T, Speck C, Sherratt E, Abraha HM, Sharp AC, Terhune CE, Collins S, Johnston S, Panagiotopoulou O. Individual variation of the masticatory system dominates 3D skull shape in the herbivory-adapted marsupial wombats. *Frontiers in zoology*. **2019** [DOI: 10.1186/s12983-019-0338-5](https://frontiersinzoology.biomedcentral.com/articles/10.1186/s12983-019-0338-5)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+which+disparity+or+dissimilarity+metrics+best+summarise+occupancy+in+multidimensional+spaces%3F&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Guillerme T, Puttick MN, Marcy AE, Weisbecker V. Shifting spaces: which disparity or dissimilarity metrics best summarise occupancy in multidimensional spaces?. *BioRxiv*. **2019** [DOI: 10.1101/801571 ](https://www.biorxiv.org/content/10.1101/801571v1).
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=High+ecomorphological+diversity+among+Early+Cretaceous+frogs+from+a+large+subtropical+wetland+of+Iberia&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Gómez RO, Lires AI. High ecomorphological diversity among Early Cretaceous frogs from a large subtropical wetland of Iberia. *Comptes Rendus Palevol*. **2019** [DOI: 10.1016/j.crpv.2019.07.005](https://www.sciencedirect.com/science/article/pii/S1631068319301320).
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Taverne M, Fabre AC, King‐Gillies N, Krajnović M, Lisičić D, Martin L, Michal L, Petricioli D, Štambuk A, Tadić Z, Vigliotti C. Diet variability among insular populations of Podarcis lizards reveals diverse strategies to face resource‐limited environments. *Ecology and Evolution*. **2019** [DOI:10.1002/ece3.5626](https://onlinelibrary.wiley.com/doi/pdf/10.1002/ece3.5626).
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+Shape+of+Weaver%3A+Investigating+Shape+Disparity+in+Orb-Weaving+Spiders+%28Araneae%2C+Araneidae%29+Using+Geometric+Morphometrics&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Kallal RJ, Moore AJ, Hormiga G. The Shape of Weaver: Investigating Shape Disparity in Orb-Weaving Spiders (Araneae, Araneidae) Using Geometric Morphometrics. *Evolutionary Biology*. **2019** [DOI:10.1007/s11692-019-09482-w](https://link.springer.com/article/10.1007/s11692-019-09482-w)
+#### Calculating the Bhattacharrya Coefficient with `bhatt.coeff`:
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=A+Kuramoto+model+of+self-other+integration+across+interpersonal+synchronization+strategies&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 Heggli OA, Cabral J, Konvalinka I, Vuust P, Kringelbach ML. A Kuramoto model of self-other integration across interpersonal synchronization strategies. *PLoS computational biology*. **2019** [DOI:10.1371/journal.pcbi.1007422](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007422)
 
+##### Comparisons between groups using `custom.subsets` and `test.dispRity`:
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogenomics%2C+biogeography+and+morphometrics+reveal+rapid+phenotypic+evolution+in+pythons+after+crossing+Wallace%27s+line&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Esquerré D, Donnellan S, Brennan IG, Lemmon AR, Lemmon EM, Zaher H, Grazziotin FG, Keogh JS. Phylogenomics, biogeography and morphometrics reveal rapid phenotypic evolution in pythons after crossing Wallace’s line. *Systematic Biology*. **2019** [DOI: 10.1093/sysbio/syaa024](https://doi.org/10.1093/sysbio/syaa024)
+
+#### Bootstrapping data and comparing groups in ecospace using `boot.matrix`:
+
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Morphological+discontinuous+variation+and+disparity+in+Lutzomyia+%28Tricholateralis%29+cruciata+Coquillett%2C+1907+are+not+related+to+contrasting+environmental+%E2%80%A6&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 de Oca-Aguilar AC, De Luna E, Rebollar-Téllez EA, Piermarini PM, Ibáñez-Bernal S. Morphological discontinuous variation and disparity in Lutzomyia (Tricholateralis) cruciata Coquillett, 1907 are not related to contrasting environmental factors in two biogeographical provinces. *Zoomorphology*. **2019** [DOI:10.1007/s00435-019-00450-8](https://link.springer.com/article/10.1007/s00435-019-00450-8)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Fossils+reveal+long-term+continuous+and+parallel+innovation+in+the+sacro-caudo-pelvic+complex+of+the+highly+aquatic+pipid+frogs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Gómez RO, Pérez-Ben CM. Fossils reveal long-term continuous and parallel innovation in the sacro-caudo-pelvic complex of the highly aquatic pipid frogs. *Frontiers in Earth Science*. **2019** [DOI: 10.3389/feart.2019.00056](https://www.frontiersin.org/articles/10.3389/feart.2019.00056/full)
+#### Simulating disparity through time using `dtt.dispRity`:
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diversity+and+Disparity+of+therocephalia%3A+Macroevolutionary+patterns+through+two+Mass+extinctions&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Grunert HR, Brocklehurst N, Fröbisch J. Diversity and Disparity of therocephalia: Macroevolutionary patterns through two Mass extinctions. *Scientific reports*. **2019** [DOI: 10.1038/s41598-019-41628-w](https://www.nature.com/articles/s41598-019-41628-w#ref-CR55)
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=he+Ecological+and+Evolutionary+Drivers+of+Spatial+Biodiversity+Patterns&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Skeels A. The Ecological and Evolutionary Drivers of Spatial Biodiversity Patterns. Doctoral Thesis at the Australian National University **2020** [Open Researcg](https://openresearch-repository.anu.edu.au/bitstream/1885/204921/1/Alexander_Skeels_Thesis_Revisions.pdf)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Does+exceptional+preservation+distort+our+view+of+disparity+in+the+fossil+record%3F+&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Flannery Sutherland JT, Moon BC, Stubbs TL, Benton MJ. Does exceptional preservation distort our view of disparity in the fossil record?. *Proceedings of the Royal Society B*. **2019** [DOI: 10.1098/rspb.2019.0091](https://royalsocietypublishing.org/doi/10.1098/rspb.2019.0091#d164727e1)
+#### Using the wrapper `disparity.per.group` function:
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=13311379491028410826&scipsc=&q=Speciation+Rate+Is+Independent+of+the+Rate+of+Evolution+of+Morphological+Size%2C+Shape%2C+and+Absolute+Morphological+Specialization+in+a+Large+Clade+of+Birds&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Crouch NM, Ricklefs RE. Speciation rate is independent of the rate of evolution of morphological size, shape, and absolute morphological specialization in a large clade of birds. *The American Naturalist*. **2019** [DOI: 10.1086/701630](https://www.journals.uchicago.edu/doi/abs/10.1086/701630)
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Taverne M, Fabre AC, King‐Gillies N, Krajnović M, Lisičić D, Martin L, Michal L, Petricioli D, Štambuk A, Tadić Z, Vigliotti C. Diet variability among insular populations of Podarcis lizards reveals diverse strategies to face resource‐limited environments. *Ecology and Evolution*. **2019** [DOI:10.1002/ece3.5626](https://onlinelibrary.wiley.com/doi/pdf/10.1002/ece3.5626).
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+long-term+ecology+and+evolution+of+marine+reptiles+in+a+Jurassic+seaway&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Foffa D, Young MT, Stubbs TL, Dexter KG, Brusatte SL. The long-term ecology and evolution of marine reptiles in a Jurassic seaway. *Nature ecology & evolution*. **2018** [DOI: 10.1038/s41559-018-0656-6](https://www.nature.com/articles/s41559-018-0656-6)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&cites=693693665572195425&scipsc=&q=Morphology+and+stable+isotope+analysis+demonstrate+different+structuring+of+bat+communities+in+rainforest+and+savannah+habitats&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Monadjem A, Kane A, Taylor P, Richards LR, Hall G, Woodborne S. Morphology and stable isotope analysis demonstrate different structuring of bat communities in rainforest and savannah habitats. *Royal Society open science*. **2018** [DOI: 10.1098/rsos.180849](https://royalsocietypublishing.org/doi/full/10.1098/rsos.180849)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogeny%2C+macroevolutionary+trends+and+historical+biogeography+of+sloths%3A+insights+from+a+Bayesian+morphological+clock+analys&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Varela L, Tambusso PS, McDonald HG, Fariña RA. Phylogeny, macroevolutionary trends and historical biogeography of sloths: insights from a Bayesian morphological clock analysis. *Systematic biology*. **2019** [DOI: 10.1093/sysbio/syy058](https://academic.oup.com/sysbio/advance-article/doi/10.1093/sysbio/syy058/5098296)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Whole-Genome+Duplication+and+Plant+Macroevolution&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Clark JW, Donoghue PC. Whole-genome duplication and plant macroevolution. *Trends in plant science*. **2018** [DOI: 10.1016/j.tplants.2018.07.006](https://www.sciencedirect.com/science/article/pii/S1360138518301596)
-
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Time+for+a+rethink%3A+time+sub%E2%80%90sampling+methods+in+disparity%E2%80%90through%E2%80%90time+analyses&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Guillerme T, Cooper N. Time for a rethink: time sub‐sampling methods in disparity‐through‐time analyses. *Palaeontology*. **2018** [DOI: 10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364)
