@@ -339,7 +339,7 @@ For this, simply input a matrix in the <code>Claddis</code> format to the functi
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">require</span>(Claddis)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">## Ordinating the example data from Claddis</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(Michaux1989) </a></code></pre></div>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(michaux_1989) </a></code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
 ## Ancilla      0.000000e+00  4.154578e-01  0.2534942
 ## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
@@ -347,7 +347,7 @@ For this, simply input a matrix in the <code>Claddis</code> format to the functi
 ## Amalda       1.603581e-16 -4.154578e-01  0.2534942</code></pre>
 <p>Note that several options are available, namely which type of distance should be computed.
 See more info in the function manual (<code>?Claddis.ordination</code>).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::MorphDistMatrix</code> and <code>stats::cmdscale</code>.</p>
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::calculate_morphological_distances</code> and <code>stats::cmdscale</code>.</p>
 </div>
 <div id="other-kinds-of-ordination-matrices" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Other kinds of ordination matrices</h3>

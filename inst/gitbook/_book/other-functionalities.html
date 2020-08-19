@@ -288,7 +288,7 @@ You’ll find a brief description of each of them (alphabetically) here:</p>
 <div id="char.diff" class="section level2">
 <h2><span class="header-section-number">6.1</span> <code>char.diff</code></h2>
 <p>This is yet another function for calculating distance matrices.
-There are many functions for calculating pairwise distance matrices in <code>R</code> (<code>stats::dist</code>, <code>vegan::vegdist</code>, <code>cluster::daisy</code> or <code>Claddis::MorphDistMatrix</code>) but this one is the <code>dispRity</code> one.
+There are many functions for calculating pairwise distance matrices in <code>R</code> (<code>stats::dist</code>, <code>vegan::vegdist</code>, <code>cluster::daisy</code> or <code>Claddis::calculate_morphological_distances</code>) but this one is the <code>dispRity</code> one.
 It is slightly different to the ones mentioned above (though not that dissimilar from <code>Claddis::MorphDistMatrix</code>) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).</p>
 <p>The function intakes a matrix with either <code>numeric</code> or <code>integer</code> (<code>NA</code> included) or matrices with <code>character</code> that are indeed <code>integers</code> (e.g.<code>&quot;0&quot;</code> and <code>&quot;1&quot;</code>).
 It then uses a <a href="https://en.wikipedia.org/wiki/Bitwise_operations_in_C">bitwise operations</a> architecture implemented in <code>C</code> that renders the function pretty fast and pretty modular.

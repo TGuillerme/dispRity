@@ -80,12 +80,12 @@ For this, simply input a matrix in the `Claddis` format to the function and it w
 require(Claddis)
 
 ## Ordinating the example data from Claddis
-Claddis.ordination(Michaux1989) 
+Claddis.ordination(michaux_1989)
 ```
 
 Note that several options are available, namely which type of distance should be computed.
 See more info in the function manual (`?Claddis.ordination`).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::calculate_morphological_distances` and `stats::cmdscale`.
 
 ### Other kinds of ordination matrices
 

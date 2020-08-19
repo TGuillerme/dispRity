@@ -319,16 +319,16 @@ test_that("char.diff plot (graphic)", {
 
 
 
-test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
+test_that("char.diff give the same results as Claddis::calculate_morphological_distances", {
 
     library(Claddis)
 
     ## The distance test wrappers
     claddis.test.wrapper <- function(matrix, transform = "none") {
         results <- list()
-        results[[1]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$ComparableCharacterMatrix
-        results[[2]] <- Claddis::MorphDistMatrix(matrix, Distance = "GC", TransformDistances = transform)$DistanceMatrix
-        results[[3]] <- Claddis::MorphDistMatrix(matrix, Distance = "MORD", TransformDistances = transform)$DistanceMatrix
+        results[[1]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "gc", distance_transformation = transform)$comparable_character_matrix
+        results[[2]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "gc", distance_transformation = transform)$distance_matrix
+        results[[3]] <- Claddis::calculate_morphological_distances(matrix, distance_metric = "mord", distance_transformation = transform)$distance_matrix
         names(results) <- c("comparable", "gower", "mord")
         return(results)
     }
@@ -359,7 +359,7 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
             } else {
                 tmp_matrix <- tmp_matrix
             }
-            Claddis_data <- Claddis::MakeMorphMatrix(CharacterTaxonMatrix = tmp_matrix)
+            Claddis_data <- Claddis::build_cladistic_matrix(character_taxon_matrix = tmp_matrix)
         }
 
         Claddis_start <- Sys.time()
@@ -385,8 +385,8 @@ test_that("char.diff give the same results as Claddis::MorphDistMatrix", {
         return(list("Claddis" = Claddis_results, "dispRity" = dispRity_results))
     }
 
-    results <- run.test(Claddis::Michaux1989$Matrix_1$Matrix)
-    results <- run.test(Claddis::Gauthier1986$Matrix_1$Matrix, Claddis::Gauthier1986)
+    results <- run.test(Claddis::michaux_1989$matrix_1$matrix)
+    results <- run.test(Claddis::gauthier_1986$matrix_1$matrix, Claddis::gauthier_1986)
 
 
     # Import complex matrix from MammalDisparity project
