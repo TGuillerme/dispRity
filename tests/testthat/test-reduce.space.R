@@ -123,7 +123,7 @@ test_that("reduce.space works", {
     #     plot(space[!selected,], pch = 19, col = "blue")
     #     points(space[selected,], pch = 19, col = "orange")
 
-    #     ## Plotting the distributions
+    #     ## Plotting the distributions
     #     all_range <- range(c(space))
     #     band_width <- bw.nrd0(c(space))
     #     bin_breaks <- seq(from = min(c(space)), to = max(c(space) + band_width), by = band_width) 
