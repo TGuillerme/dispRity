@@ -20,11 +20,11 @@ Update the `plot.dispRity` structure.
 
 * [x] function for getting the input object param `get.data.params`
 * [x] function for getting what to plot `get.plot.params`
-* [ ] "observed"
+* [x] "observed"
 * [ ] "rarefaction"
-* [ ] "continuous"
-* [ ] "polygon" || "line"
-* [ ] "box"
+* [x] "continuous"
+* [x] "polygon" || "line"
+* [x] "box"
 * [ ] `randtest`
 * [ ] `dtt`
 * [ ] `model.test`
