@@ -40,6 +40,7 @@ dispRity v1.4.3 (2020-07-30)
 
 ### BUG FIXES
 
+  * Updated all calls to the `Claddis` package to match version 0.6 (thanks to [Graeme Lloyd](http://graemetlloyd.com/) for fixing [this one](https://github.com/TGuillerme/dispRity/pull/104)!)
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
   * Fixed a bug in `chrono.subsets` were ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
 
