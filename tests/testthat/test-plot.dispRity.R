@@ -165,7 +165,6 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
     expect_null(plot(disparity, type = "continuous"))
     expect_null(plot(disparity, type = "continuous", elements = TRUE, col = c("red", "orange", "yellow")))
-    expect_null(plot(disparity, rarefaction = TRUE, col = "blue"))
     expect_null(plot(disparity, elements = TRUE))
     data(BeckLee_mat50)
     data(BeckLee_tree)
@@ -174,6 +173,16 @@ test_that("plot.dispRity examples work", {
     expect_null(plot(disparity, rarefaction = 5))
     expect_null(plot(disparity, observed = TRUE))
     expect_null(plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4)))
+
+
+    ## Rarefaction plotting:
+    test <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
+    test <- dispRity(boot.matrix(test, rarefaction = TRUE), metric = c(sum, variances))
+    test_wrong <- dispRity(boot.matrix(BeckLee_mat50, rarefaction = 5), metric = c(sum, variances))
+    expect_null(plot(test, rarefaction = TRUE))
+    expect_null(plot(disparity, rarefaction = TRUE, col = "blue"))
+    error <- capture_error(plot(test_wrong, rarefaction = TRUE, col = "blue"))
+    expect_equal(error[[1]], "Impossible to plot rarefaction curves with only one level of rarefaction. Try to use plot(..., rarefaction = 5) to just see the rarefied data for that level instead.")
 
     ## Testing additional behaviours for plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))

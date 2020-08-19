@@ -548,6 +548,10 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         } else {
             if(rarefaction) {
                 type <- "rarefaction"
+                ## Check if they are enough rarefaction levels
+                if(length(data_params$rarefaction) == 1 && data_params$rarefaction != "full") {
+                    stop(paste0("Impossible to plot rarefaction curves with only one level of rarefaction. Try to use plot(..., rarefaction = ", data_params$rarefaction[[1]], ") to just see the rarefied data for that level instead."), call. = FALSE)
+                }
             }
             rarefaction <- NULL
         }
@@ -601,7 +605,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     switch(plot_task,
         "rarefaction" = {
-            stop("TODO")
+            plot.rarefaction(plot_params, data_params, data)
         },
         "continuous" = {
             plot.continuous(plot_params, data_params, add = add, density = density)
@@ -617,6 +621,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             ## Run the box plot
             do.call(boxplot, boxplot_args)
         })
+
+    ## Add the observed
     if(plot_params$observed_args$observed) {
         plot.observed(plot_params)
     }

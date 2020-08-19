@@ -517,7 +517,6 @@ plot.continuous <- function(plot_params, data_params, add, density) {
                 ## Plot the polygon
                 do.call(polygon, poly_args)
             }
-
         }
 
         ## Add the central tendency
@@ -542,72 +541,59 @@ plot.rarefaction <- function(plot_params, data_params, data) {
         subsets_levels <- names(data$subsets)
 
         ## Get all the rarefaction values
-        if(data_)
-        extract.dispRity(data, observed = FALSE, rarefaction = 29)
+        rarefied_data <- summary(data)
 
+        ## Get were the central tendency value is
+        cent_tend_col <- ifelse(data_params$between.groups, 5, 4)
 
-        sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
+        ## Setting the plotting arguments
+        all_plot_args <- plot_params$options
+        all_plot_args$ylim <- NULL
+        all_plot_args$lty <- 1
+        all_plot_args$type <- "l"
 
-        ## Plot the rarefaction curves
-        for(nPlot in 1:n_plots) {
-            plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
-            # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
+        ## Plot the different curves
+        for(one_subset in subsets_levels) {
+
+            ## get the subset data
+            subset_data <- rarefied_data[rarefied_data[,1] == one_subset, ]
+
+            ## Setting the plotting args for the specific subset
+            one_plot_args <- all_plot_args
+            one_plot_args$x <- subset_data[,2]
+            one_plot_args$y <- subset_data[,cent_tend_col]
+            one_plot_args$ylim <- range(subset_data[, -c(1:(cent_tend_col-1))])
+            one_plot_args$main <- one_subset
+
+            ## Plot the central tendency
+            do.call(plot, one_plot_args)
+
+            ## Add the quantiles
+            for(cis in 1:plot_params$helpers$n_quantiles) {
+
+                ## Get the quantile columns
+                ci_cols <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
+
+                ## Set the plotting arguments
+                lines_args <- one_plot_args
+                lines_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
+                lines_args$y <- subset_data[,ci_cols[1]]
+
+                ## plot the quantiles
+                do.call(lines, lines_args)
+                lines_args$y <- subset_data[,ci_cols[2]]
+                do.call(lines, lines_args)
+            }
         }
 
         ## Done!
         par(op_tmp)
-
-    extract.dispRity    
-
-
 }
-
 
 ## Splitting the summarised data table by subsets (list)
 split.summary.data <- function(subsets_levels, summarised_data) {
     return(summarised_data[which(summarised_disparity$subsets == subsets_levels),])
 }
-
-## rarefaction plottings
-plot.rarefaction.old <- function(sub_data, ylim, xlab, ylab, col, main, ...) {
-    ## Get parameters
-    if(ylim[[1]] == "rarefaction") {
-        ## ylim?
-        ylim <- c(min(sub_data[, -c(1:2)], na.rm = TRUE) - min(sub_data[, -c(1:2)], na.rm = TRUE) * 0.02 , max(sub_data[, -c(1:2)], na.rm = TRUE) + max(sub_data[, -c(1:2)], na.rm = TRUE) * 0.02)
-    }
-    ## title?
-    if(missing(main)) {
-        main <- unique(as.character(sub_disparity$subsets))
-    }
-    ## how many quantiles?
-    n_quantiles <- (ncol(sub_data) - 4)/2
-
-    ## colors?
-    if(length(col) < n_quantiles) {
-        col <- rep(col[[1]], n_quantiles + 1)
-    }
-
-    ## Plot central tendency curve (continuous)
-    # if(!missing(main)) {
-        plot(rev(sub_data[, 4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, main = main, ...)
-    # } else {
-        # plot(rev(sub_data[,4]), type = "l",  xlab = xlab, ylab = ylab[[1]], col = col[[1]], ylim = ylim, ...)
-    # }
-
-
-    ## Plot the quantiles curves
-    if(n_quantiles != 0) {
-        for (cis in 1:n_quantiles) {
-            ## lower quantile
-            lines(rev(sub_data[, 4 + cis]), lty = (n_quantiles + 2 - cis), col = col[[cis + 1]])
-            ## upper quantile
-            lines(rev(sub_data[, ncol(sub_data) - (cis - 1)]), lty = (n_quantiles + 2- cis), col = col[[cis + 1]])
-        }
-    }
-    ##  Save parameters
-    return(par())
-}
-
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {

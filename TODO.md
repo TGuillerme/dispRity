@@ -22,7 +22,7 @@ Update the `plot.dispRity` structure.
 * [x] function for getting the input object param `get.data.params`
 * [x] function for getting what to plot `get.plot.params`
 * [x] "observed"
-* [ ] "rarefaction"
+* [x] "rarefaction"
 * [x] "continuous"
 * [x] "polygon" || "line"
 * [x] "box"
