@@ -789,16 +789,25 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
     do.call(lines, line_args)
 }
 
-
 ## Plotting model tests results
-plot.model.test.support <- function(data, col, ylab, ylim, ...) {
+plot.model.test <- function(data, ...) {
+
+    plot_args <- list(...)
+
+    ## Set the default plotting arguments
+    if(is.null(plot_args$ylab)) {
+        plot_args$ylab <- "weighted AIC"
+    }
+    if(is.null(plot_args$col)) {
+        plot_args$col <- "grey"
+    }
 
     ## Extracting the weighted aicc
-    plot_aic <- disparity$aic.models[, 3]
+    aic_values <- data$aic.models[, 3]
 
     ## Ordering the weighted aicc
-    ordered_aic <- plot_aic[order(plot_aic, decreasing = TRUE)]
+    plot_args$height <- aic_values[order(aic_values, decreasing = TRUE)]
 
     ## Plot
-    plotcoords <- graphics::barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
+    do.call(barplot, plot_args)
 }

@@ -27,7 +27,6 @@
 #' The different \code{specific.args} arguments for the following options are:
 #' \itemize{
 #'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
-#'      \item if \code{data} is of class \code{"dispRity"} and \code{"dtt"}, the default is \code{specific.args = list(scale = TRUE)} where \code{scale} is a logical of whether to scale the values on the x and y axis or not.
 #' }
 #'
 #' @examples
@@ -178,22 +177,9 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## model.test plots
         if(is(data, c("dispRity")) && is(data, c("model.test"))) {
 
-            ## Colours
-            if(missing(col)) {
-                col <- "grey"
-            }
-            ## Ylab
-            if(missing(ylab)) {
-                ylab <- "weighted AIC"
-            }
-
-            ## Ylim
-            if(missing(ylim)) {
-                ylim <- NULL
-            }
-
             ## Plotting the model support
-            plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
+            plot.model.test(data, ...)
+            return(invisible())
         }
         
         ## model.sim plots

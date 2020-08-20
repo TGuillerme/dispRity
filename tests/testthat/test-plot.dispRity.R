@@ -266,29 +266,28 @@ test_that("plot.dispRity with dtt data", {
     expect_error(plot(dispRity_dtt, cent.tend = var))
 })
 
-# test_that("plot.dispRity with model.test data", {
-#     load("model_test_data.Rda")
-#     ## Run two models (silent)
-#     models <- list("BM", "OU")
-#     set.seed(42)
-#     tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
-#     summary_model.tests <- summary(tested_models)
+test_that("plot.dispRity with model.test data", {
+    load("model_test_data.Rda")
+    ## Run two models (silent)
+    models <- list("BM", "OU")
+    set.seed(42)
+    tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
+    summary_model.tests <- summary(tested_models)
+    expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho"))
 
-#     expect_null(plot(tested_models))
+    # ## Testing normal model
+    # model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
+    # expect_null(plot(model_simulation_empty))
 
-#     ## Testing normal model
-#     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
-#     expect_null(plot(model_simulation_empty))
+    # ## Testing inherited model
+    # set.seed(42)
+    # model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
+    # expect_null(plot(model_simulation_inherit))
 
-#     ## Testing inherited model
-#     set.seed(42)
-#     model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
-#     expect_null(plot(model_simulation_inherit))
-
-#     ## Works with adding the plot
-#     expect_null(plot(model_test_data))
-#     expect_null(plot(model_simulation_inherit, add = TRUE))
-# })
+    # ## Works with adding the plot
+    # expect_null(plot(model_test_data))
+    # expect_null(plot(model_simulation_inherit, add = TRUE))
+})
 
 # test_that("plot.dispRity with test.metric data", {
 #     stop("TODO")
