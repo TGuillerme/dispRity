@@ -26,6 +26,7 @@ test_that("get.plot.params works", {
                                   type = "continuous",
                                   observed_args = list(observed = TRUE, col = c("black", "blue")),
                                   elements_args = list(elements = FALSE))
+    
     expect_is(plot_params, "list")
     expect_equal(names(plot_params), c("disparity", "helpers", "options", "observed_args", "elements_args"))
     ## The data to plot
@@ -275,18 +276,18 @@ test_that("plot.dispRity with model.test data", {
     summary_model.tests <- summary(tested_models)
     expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho"))
 
-    # ## Testing normal model
-    # model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
-    # expect_null(plot(model_simulation_empty))
+    ## Testing normal model
+    model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
+    expect_null(plot(model_simulation_empty))
 
-    # ## Testing inherited model
-    # set.seed(42)
-    # model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
-    # expect_null(plot(model_simulation_inherit))
+    ## Testing inherited model
+    set.seed(42)
+    model_simulation_inherit <- model.test.sim(sim = 10, model = tested_models)
+    expect_null(plot(model_simulation_inherit))
 
-    # ## Works with adding the plot
-    # expect_null(plot(model_test_data))
-    # expect_null(plot(model_simulation_inherit, add = TRUE))
+    ## Works with adding the plot
+    expect_null(plot(model_test_data))
+    expect_null(plot(model_simulation_inherit, add = TRUE))
 })
 
 # test_that("plot.dispRity with test.metric data", {

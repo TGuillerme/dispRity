@@ -19,14 +19,20 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
 
     ## Set up the plotting data
     ## Summarise the data
-    if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+    if(is.null(data_params$model.sim)) {
+        if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+            summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+        } else {
+            summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+        }
     } else {
         summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+        ## Making a fake obs column
+        colnames(summarised_data)[3] <- "obs"
     }
 
     ## Find the observed data rows (that are not rarefactions)
-    observed_data <- !is.na(summarised_data$obs)
+    observed_data <- !is.na(summarised_data[,"obs"])
     if(any(!observed_data)) {
         ## Find NAs in the last column
         last_col_na <- is.na(summarised_data[, ncol(summarised_data)])
@@ -84,8 +90,14 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     ## Set up the helpers options
     helpers <- list()
     ## Detect the number of quantiles
-    helpers$n_quantiles <- (ncol(disparity$data) - ifelse(data_params$bootstrap, 2, 1))/2
-    helpers$n_points <- length(data$disparity)
+    helpers$n_quantiles <- length(quantiles)
+    ## Detect the number of points
+    if(is.null(data_params$model.sim)) {
+        helpers$n_points <- length(data$disparity)
+    } else {
+        ## Selecting helpers for model.sim
+        helpers$n_points <- nrow(disparity$data)
+    }
 
     ## Set up the plotting options
     dots <- list(...)
@@ -447,7 +459,7 @@ plot.continuous <- function(plot_params, data_params, add, density) {
         do.call(plot, plot_args)
 
         ## Add the axis labels
-        axis(1, 1:plot_params$helpers$n_points, plot_params$disparity$names$subsets)
+        axis(1, 1:plot_params$helpers$n_points, plot_params$disparity$names[,"subsets"])
     } else {
         ## Plot the line
         do.call(lines, plot_args)
@@ -810,4 +822,35 @@ plot.model.test <- function(data, ...) {
 
     ## Plot
     do.call(barplot, plot_args)
+}
+
+## Plotting the model simulation results
+plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
+
+    ## Get inherited subsets (if exist)
+    if(!is.null(data$subsets)) {
+        subset_names <- rev(data$subsets)
+    } else {
+        subset_names <- rev(data$simulation.data$fix$subsets)
+    }
+
+    ## Set up the data parameters
+    data_params <- list("distribution"   = TRUE,
+                        "bootstrap"      = TRUE,
+                        "rarefaction"    = NULL,
+                        "between.groups" = FALSE,
+                        "elements"       = subset_names,
+                        "model.sim"      = TRUE)
+    
+    ## Get the plotting parameters
+    plot_params <- get.plot.params(data, data_params, cent.tend, quantiles,
+                                   rarefaction_level = NULL,
+                                   type = "continuous",
+                                   elements_args = list(elements = FALSE),
+                                   observed_args = list(observed = FALSE),
+                                   ylab = paste0("Simulated data (", data$call[[3]], ")"),
+                                   xlab = "Time to the present")
+
+    ## Plot the simulated data
+    plot.continuous(plot_params, data_params, add = add, density = density)
 }

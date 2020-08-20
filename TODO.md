@@ -30,11 +30,12 @@ Update the `plot.dispRity` structure.
 * [x] specific.args
 * [x] `randtest`
 * [x] `dtt`
-* [ ] `model.test`
-* [ ] `model.sim`
+* [x] `model.test`
+* [x] `model.sim`
 * [ ] `test.metric`
 * [ ] retest examples
 
 TODO others:
 
  * [ ] Allow non-scaled dispRity.dtt function
+ * [ ] Allow `model.sim` to include the model name when using a `model.test` object (from previous call) - handle that correctly in the plot as well.
