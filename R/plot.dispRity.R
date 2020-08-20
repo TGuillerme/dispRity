@@ -629,73 +629,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     ## Add elements
     if(plot_params$elements_args$elements) {
-        plot.elements(plot_params, type)
+        plot.elements(plot_params, data_params, type)
     }
 
     return(invisible())
-
-    # ## PLOTTING THE RESULTS
-
-    # ## Rarefaction plot
-    # if(rarefaction == TRUE) {
-    #     ## How many rarefaction plots?
-    #     n_plots <- length(data$subsets)
-
-    #     ## Open the multiple plots
-    #     plot_size <- ifelse(n_plots == 3, 4, n_plots)
-    #     op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
-
-    #     ## Rarefaction plots
-
-    #     ## Get the list of subsets
-    #     subsets_levels <- unique(summarised_data$subsets)
-
-    #     ## Split the summary table
-    #     sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
-
-    #     ## Plot the rarefaction curves
-    #     for(nPlot in 1:n_plots) {
-    #         plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
-    #         # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-    #     }
-
-    #     ## Done!
-    #     par(op_tmp)
-
-    #     return(invisible())
-    # }
-
-
-
-
-
-    # ## Box plot
-    # if(type == "box") {
-    #     ## Simple case: boxplot
-    #     plot_data <- transpose.box(data, rarefaction, data_params$bootstrap)
-    #     ## Bigger plot margins if elements needed
-    #     if(elements) {
-    #         par(mar = c(5, 4, 4, 4) + 0.1)
-    #     }
-    #     saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
-    #     # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
-
-    #     if(observed == TRUE) {
-    #         if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
-    #             ## Add the points observed (if existing)
-    #             for(point in 1:length(plot_data)) {
-    #                 x_coord <- point
-    #                 y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
-    #                 points(x_coord, y_coord, pch = obs_list_arg$pch, col = obs_list_arg$col, cex = obs_list_arg$cex)
-    #             }
-    #         }
-    #     }
-    #     if(elements) {
-    #         par(new = TRUE)
-    #         plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-    #     }
-
-    #     return(invisible())
-    # }
-
 }

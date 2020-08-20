@@ -208,18 +208,58 @@ test_that("plot.dispRity continuous with NAs", {
     expect_null(plot(test_data))
 })
 
-# test_that("plot.dispRity.discrete with ADD", {
+test_that("plot.dispRity.discrete with ADD", {
 
-#     data(BeckLee_mat50) ; data(BeckLee_tree)
-#     result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
+    data(BeckLee_mat50) ; data(BeckLee_tree)
+    result <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 3)
 
-#     expect_null(plot(result, type = "polygon"))
-#     expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
+    expect_null(plot(result, type = "polygon"))
+    expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
+})
+
+# test_that("plot.dispRity with preview", {
+#     ## Preview
+#     data(BeckLee_mat99)
+#     data(BeckLee_tree)
+#     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+#     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+
+#     expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
+#     expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
+#     expect_null(plot(data_cust))
+#     expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
+#     error <- capture_error(plot(data_slice, type = "p"))
+#     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
+# })
+
+# test_that("plot.dispRity with randtest data", {
+#     ## Randtest
+#     data(BeckLee_mat50)
+#     ## Calculating the disparity as the ellipsoid volume
+#     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+#     ## Testing against normal distribution
+#     expect_warning(results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm))
+#     expect_is(results, c("dispRity", "randtest"))
+#     expect_null(plot(results))
+# })
+
+# test_that("plot.dispRity with dtt data", {
+
+#     ## DTT
+#     ## Loading geiger's example data set
+#     require(geiger)
+#     geiger_data <- get(data(geospiza))
+#     average.sq <- function(X) mean(pairwise.dist(X)^2)
+#     expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
+
+#     ## Plotting the results
+#     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
+#     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
+#     expect_error(plot(dispRity_dtt, cent.tend = var))
 # })
 
 # test_that("plot.dispRity with model.test data", {
 #     load("model_test_data.Rda")
-
 #     ## Run two models (silent)
 #     models <- list("BM", "OU")
 #     set.seed(42)
@@ -242,39 +282,8 @@ test_that("plot.dispRity continuous with NAs", {
 #     expect_null(plot(model_simulation_inherit, add = TRUE))
 # })
 
-# test_that("plot subclasses works", {
-  
-#     ## Randtest
-#     data(BeckLee_mat50)
-#     ## Calculating the disparity as the ellipsoid volume
-#     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
-#     ## Testing against normal distribution
-#     expect_warning(results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm))
-#     expect_is(results, c("dispRity", "randtest"))
-#     expect_null(plot(results))
-
-#     ## DTT
-#     ## Loading geiger's example data set
-#     require(geiger)
-#     geiger_data <- get(data(geospiza))
-#     average.sq <- function(X) mean(pairwise.dist(X)^2)
-#     expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
-
-#     ## Plotting the results
-#     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
-#     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
-#     expect_error(plot(dispRity_dtt, cent.tend = var))
+# test_that("plot.dispRity with test.metric data", {
+#     stop("TODO")
 # })
 
-# test_that("plot preview works", {
-#     data(BeckLee_mat99)
-#     data(BeckLee_tree)
-#     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
-#     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-#     expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
-#     expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
-#     expect_null(plot(data_cust))
-#     expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
-#     expect_error(plot(data_slice, type = "p"))
-# })

@@ -265,7 +265,7 @@ plot.observed <- function(plot_params) {
 }
 
 ## Plot elements
-plot.elements <- function(plot_params, type) {
+plot.elements <- function(plot_params, data_params, type) {
     ## Elements plots
     add_args <- plot_params$elements_args
     add_args$elements <- NULL
@@ -588,11 +588,6 @@ plot.rarefaction <- function(plot_params, data_params, data) {
 
         ## Done!
         par(op_tmp)
-}
-
-## Splitting the summarised data table by subsets (list)
-split.summary.data <- function(subsets_levels, summarised_data) {
-    return(summarised_data[which(summarised_disparity$subsets == subsets_levels),])
 }
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
