@@ -233,21 +233,24 @@ test_that("plot.dispRity with preview", {
     expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
 })
 
-# test_that("plot.dispRity with randtest data", {
-#     ## Randtest
-#     data(BeckLee_mat50)
-#     data(BeckLee_tree)
-#     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
-#     ## Calculating the disparity as the ellipsoid volume
-#     one_group <- dispRity(BeckLee_mat50, metric = c(sum, centroids))
-#     two_groups <- dispRity(data_cust, metric = c(sum, centroids))
-#     ## Testing against normal distribution
-#     expect_warning(results_one <- null.test(one_group, replicates = 2, null.distrib = rnorm))
-#     expect_warning(results_two <- null.test(two_groups, replicates = 2, null.distrib = runif))
-#     expect_is(results_one, c("dispRity", "randtest"))
-#     expect_is(results_two, c("dispRity", "randtest"))
-#     expect_null(plot(results_one))
-# })
+test_that("plot.dispRity with randtest data", {
+    ## Randtest
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+    ## Calculating the disparity as the ellipsoid volume
+    one_group <- dispRity(BeckLee_mat50, metric = c(sum, centroids))
+    two_groups <- dispRity(data_cust, metric = c(sum, centroids))
+    ## Testing against normal distribution
+    expect_warning(results_one <- null.test(one_group, replicates = 2, null.distrib = rnorm))
+    expect_warning(results_two <- null.test(two_groups, replicates = 2, null.distrib = runif))
+    expect_is(results_one, c("dispRity", "randtest"))
+    expect_is(results_two, c("dispRity", "randtest"))
+    expect_null(plot(results_one))
+    expect_null(plot(results_one, main = "hahaha", col = "blue"))
+    expect_null(plot(results_two))
+    expect_null(plot(results_two, main = "same"))
+})
 
 # test_that("plot.dispRity with dtt data", {
 

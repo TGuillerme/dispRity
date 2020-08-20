@@ -56,8 +56,7 @@ The different \code{type} arguments are:
 
 The different \code{specific.args} arguments for the following options are:
 \itemize{
-     \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot
-
+     \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
 }
 }
 \examples{

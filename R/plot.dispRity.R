@@ -27,7 +27,7 @@
 #' The different \code{specific.args} arguments for the following options are:
 #' \itemize{
 #'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
-#'      \item if \code{data} is of class \code{"dispRity"} and \code{"randtest"}, the default is \code{specific.args = list(nclass = 10, coeff = 1)} where \code{nclass} is the number of bars in the histogram and \code{coeff} is the magnitude of the graph.
+#      \item if \code{data} is of class \code{"dispRity"} and \code{"randtest"}, the default is \code{specific.args = list(nclass = 10, coeff = 1)} where \code{nclass} is the number of bars in the histogram and \code{coeff} is the magnitude of the graph.
 #' }
 #'
 #' @examples
@@ -133,32 +133,38 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         ## Subclass plots
 
         ## randtests plots
-        if(is(data, c("dispRity", "randtest"))) {
-            ## sanitising
-            check.class(nclass, "numeric")
-            check.class(coeff, "numeric")
-            check.length(nclass, 1, " must be a single numeric value.")
-            check.length(coeff, 1, " must be a single numeric value.")
-            
+        if(is(data, c("dispRity", "randtest"))) {            
             ## length_data variable initialisation
             length_data <- length(data)
-            
-            ## Set up the plotting window
-            ## Open the multiple plots
-            if(length_data != 1) {
+
+            ## Set up the extra arguments
+            dots <- list(...)
+            plot_args <- dots
+
+            ## Single plot
+            if(length_data == 1) {
+                ## Select the right dataset
+                plot_args$data_sub <- data[[1]]
+                ## Run the plot
+                do.call(plot.randtest, plot_args)
+            } else {
+                ## Set up multiple plot windows
                 plot_size <- ifelse(length_data == 3, 4, length_data)
                 op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)), round(sqrt(plot_size))))
-
-                ## Rarefaction plots
+                ## All plots
                 for(model in 1:length_data) {
-                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = ""), ...)
-                    ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                    ## Select the right dataset
+                    plot_args$data_sub <- data[[model]]
+                    ## Add the title (optional)
+                    if(is.null(dots$main)) {
+                        plot_args$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
+                    }
+                    ## Run the plot
+                    do.call(plot.randtest, plot_args)
                 }
                 par(op_tmp)
-            } else {
-                plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
-                ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
+            return(invisible())
         }
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)

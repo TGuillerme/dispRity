@@ -677,22 +677,32 @@ plot.preview <- function(data, specific.args, ...) {
 }
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
-    
-    ## Observed data
-    observed <- data_sub$obs
-    ## Hist info
-    histogram <- data_sub$plot$hist
-    ## Plot info
-    xlim <- data_sub$plot$xlim
-    ylim <- c(0, max(data_sub$plot$hist$count))
+plot.randtest <- function(data_sub, ...) {
+    plot_args <- list(...)
+
+    ## Add the histogram data
+    plot_args$x <- data_sub$plot$hist
+
+    ## Plot arguments
+    if(is.null(plot_args$xlim)) {
+        plot_args$xlim <- data_sub$plot$xlim
+    }
+    if(is.null(plot_args$ylim)) {
+        plot_args$ylim <- c(0, max(data_sub$plot$hist$count))
+    }
+    if(is.null(plot_args$col)) {
+        plot_args$col <- "grey"
+    }
 
     ## Plotting the simulated data
-    plot(data_sub$plot$hist, xlim = xlim, col = grey(0.8), ...)
+    do.call(plot, plot_args)
+
+    ## Observed data
+    observed <- data_sub$obs
 
     ## Adding the observed data
-    lines(c(observed, observed), c(ylim[2]/2, 0))
-    points(observed, ylim[2]/2, pch = 18, cex = 2)
+    lines(c(observed, observed), c(plot_args$ylim[2]/2, 0))
+    points(observed, plot_args$ylim[2]/2, pch = 18, cex = 2)
 
     ## Adding the legend (test results)
     legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)

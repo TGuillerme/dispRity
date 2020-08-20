@@ -26,10 +26,11 @@ Update the `plot.dispRity` structure.
 * [x] "continuous"
 * [x] "polygon" || "line"
 * [x] "box"
-* [ ] "preview"
-* [ ] specific.args
-* [ ] `randtest`
+* [x] "preview"
+* [x] specific.args
+* [x] `randtest`
 * [ ] `dtt`
 * [ ] `model.test`
 * [ ] `model.sim`
 * [ ] `test.metric`
+* [ ] retest examples
