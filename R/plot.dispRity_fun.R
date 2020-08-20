@@ -708,6 +708,88 @@ plot.randtest <- function(data_sub, ...) {
     legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
 }
 
+## The following is a modified version of dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
+plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
+    plot_args <- list(...)
+
+    ## Set the default options
+    if(is.null(plot_args$ylim)) {
+        ## The base y-limit
+        plot_args$ylim <- c(range(pretty(data$dtt)))
+
+        ## Add the simulation (if exist)
+        if(!is.null(data$sim)) {
+            plot_args$ylim <- range(c(plot_args$ylim , range(data$sim)))
+        }
+    }
+    if(is.null(plot_args$xlab)) {
+        plot_args$xlab <- "scaled time"
+    }
+    if(is.null(plot_args$ylab)) {
+        plot_args$ylab <- paste0("scaled ", as.character(data$call[[3]]))
+    }
+    if(is.null(plot_args$col)) {
+        colfun <- grDevices::colorRampPalette(c("lightgrey", "grey"))
+        plot_args$col <- c("black", colfun(length(quantiles)))
+    }
+
+    ## Add the data for the plot args
+    plot_args$x <- data$times
+    plot_args$y <- data$dtt
+    plot_args$type <- "n"
+
+    ## Empty plot
+    do.call(plot, plot_args)
+
+    ## Add the simulated data
+    if(!is.null(data$sim)) {
+
+        ## Check the quantiles
+        check.class(quantiles, "numeric", " must be any value between 1 and 100.")
+        ## Are quantiles probabilities or proportions ?
+        if(any(quantiles < 1)) {
+            ## Transform into proportion
+            quantiles <- quantiles*100
+        }
+        ## Are quantiles proper proportions
+        if(any(quantiles < 0) | any(quantiles > 100)) {
+            stop.call("", "quantiles(s) must be any value between 0 and 100.")
+        }
+        n_quantiles <- length(quantiles)
+
+        ## Check the central tendency
+        check.class(cent.tend, "function")
+        ## The function must work
+        if(make.metric(cent.tend, silent = TRUE) != "level1") {
+            stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
+        }
+
+        ## Summarised data
+        quantiles_values <- apply(data$sim, 1, quantile, probs = CI.converter(quantiles), na.rm = TRUE)
+        cent_tend_values <- apply(data$sim, 1, cent.tend)
+
+        ## Plotting the polygons for each quantile
+        for(cis in 1:n_quantiles) {
+            xx <- c(data$times, rev(data$times))
+            yy <- c(quantiles_values[(n_quantiles*2) - (cis-1), ], rev(quantiles_values[cis ,]))
+            polygon(xx, yy, col = plot_args$col[cis+1], border = FALSE, density = density)
+        }
+
+        ## Add the central tendency
+        lines(data$times, cent_tend_values, col = plot_args$col[1], lty = 2)
+    }
+
+    ## Add the observed disparity
+    line_args <- plot_args
+    line_args$type <- NULL
+    line_args$col <- plot_args$col[1]
+    if(is.null(plot_args$lwd)) {
+        line_args$lwd <- 1.5
+    }
+    do.call(lines, line_args)
+}
+
+
 ## Plotting model tests results
 plot.model.test.support <- function(data, col, ylab, ylim, ...) {
 
@@ -720,201 +802,3 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
     ## Plot
     plotcoords <- graphics::barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
 }
-
-
-
-
-
-# ~~~~~~~~~~
-# sequential.test plots
-# ~~~~~~~~~~
-
-
-## Adding a line
-# add.line <- function(xs, ys, lines.args) {
-#     if(!is.null(lines.args)) {
-#         ## Adding the x,y coordinates
-#         lines.args$x <- xs ; lines.args$y <- ys
-#         do.call(lines, lines.args)
-#     } else {
-#         lines(xs, ys)
-#     }
-# }
-
-## Adding significance tokens
-# significance.token <- function(xs, ys, p.value, token.args) {
-#     if(p.value < 0.1) {
-#         ## Selecting the token
-#         if(p.value < 0.1) token <- "."
-#         if(p.value < 0.05) token <- "*"
-#         if(p.value < 0.01) token <- "**"
-#         if(p.value < 0.001) token <- "***"
-#         ## Default plotting
-#         if(is.null(token.args)) {
-#             text(x = sum(xs)/2, y = max(ys)+max(ys)*0.05, token)
-#         } else {
-#         ## Plotting with arguments
-#             token.args$labels <- token
-#             token.args$x <- sum(xs)/2
-#             if(any(names(token.args) == "float")) {
-#                 token.args$y <- max(ys)+max(ys)*token.args$float
-#                 token.args$float <- NULL
-#             } else {
-#                 token.args$y <- max(ys)+max(ys)*0.05
-#             }
-#             do.call(text, token.args)
-#         }
-#     }
-# }
-
-## Getting the two coordinates of the intercepts (intercept0 and intercept predicted)
-# get.intercept.coords <- function(results_out, model_number, is.distribution, significance) {
-#     if(is.distribution != TRUE) {
-#         ## Get the first y coordinate (first intercept)
-#         y1 <- results_out$Intercept[model_number, 1]
-#         ## Test if intercept0 is significant
-#         if(model_number == 1) {
-#             if(results_out$Intercept[model_number, 4] > 0.05) {
-#                 y1 <- 0
-#             }
-#         }
-
-#         ## Get the second y coordinate (second intercept)
-#         if(model_number < nrow(results_out$Intercept)) {
-#             ## Intercept already estimated
-#             y2 <- results_out$Intercept[model_number+1, 1]
-#         } else {
-# #             ## Estimate the intercept
-# #             if(results_out$Slopes[model_number, 4] < 0.05) {
-# #                 slope <- results_out$Slopes[model_number, 1]
-# #             } else {
-# #                 slope <- 0
-# #             }
-# #             y2 <- intercept.estimate(results_out$Intercepts[model_number,1], slope)
-# #         }
-# #     } else {
-# #         ## Get the first y coordinate
-# #         if(model_number == 1) {
-# #             ## Get the initial (estimated) intercept if significant
-# #             if(results_out$Intercept$Initial[4, significance] < 0.05) {
-# #                 y1 <- unlist(results_out$Intercept$Initial[1, significance])
-# #             } else {
-# #                 y1 <- 0
-# #             }
-# #         } else {
-# #             ## Get the predicted intercept
-# #             y1 <- unlist(results_out$Intercepts$Predicted[model_number-1, significance])
-# #         }
-
-# #         ## Get the second y coordinate (second intercept)
-# #         if(model_number-1 < nrow(results_out$Intercept$Predicted)) {
-# #             ## Intercept already estimated
-# #             y2 <- unlist(results_out$Intercepts$Predicted[model_number, significance])
-# #         } else {
-# #             ## Estimate the intercept
-# #             if(results_out$Slopes$`Pr(>|t|)`[model_number, significance] < 0.05) {
-# #                 slope <- unlist(results_out$Slopes$Estimate[model_number, significance])
-# #             } else {
-# #                 slope <- 0
-# #             }
-# #             y2 <- intercept.estimate(unlist(results_out$Intercepts$Predicted[model_number-1, significance]), slope)
-# #         }        
-# #     }
-
-# #     ## Return the coordinates
-# #     return(c(y1, y2))
-# # }
-
-# ## Plotting the results of sequential tests
-# # plot.seq.test <- function(results_out, is.distribution, significance, lines.args, token.args) {
-# #     ## Get the number of models to plot
-# #     if(is.distribution != TRUE) {
-# #         n_models <- nrow(results_out$Slopes)
-# #     } else {
-# #         n_models <- nrow(results_out$Slopes$Estimate)
-# #     }
-
-# #     ## Loop through each model
-# #     for(model_number in 1:n_models) {
-# #         ## Getting x,y coordinates for one model
-# #         x_coords <- c(model_number, model_number+1)
-# #         y_coords <- get.intercept.coords(results_out, model_number=model_number, is.distribution, significance)
-
-# #         ## Plotting the line
-# #         add.line(x_coords, y_coords, lines.args)
-
-# #         ## Add significance (if necessary)
-# #         if(is.distribution != TRUE) {
-# #             p_value <- results_out$Slope[model_number, 4]
-# #         } else {
-# #             p_value <- results_out$Slope$`Pr(>|t|)`[model_number, significance]
-# #             ## get p_value
-# #         }
-
-# #         significance.token(x_coords, y_coords, p_value, token.args)
-# #     }
-# # }
-
-
-# #Plot sequential.test shortcut
-# # if(length(class(data)) == 2) {
-# #     if(is(data, "dispRity") && is(data, "seq.test")) {
-
-# #         #lines.args sanitizing
-# #         if(!is.null(lines.args)) check.class(lines.args, "list")
-
-# #         #token.args sanitizing
-# #         if(!is.null(token.args)) check.class(token.args, "list")
-
-# #         #Creating the table results
-# #         results_out <- summary.seq.test(data, quantiles, cent.tend, recall, digits = 10, results = "coefficients", match_call = list(cent.tend = NULL))
-
-# #         #Checking if distribution
-# #         is_distribution <- ifelse(length(disparity$models[[1]]) == 1, FALSE, TRUE)
-
-# #         #significance sanitizing
-# #         if(is_distribution == TRUE) {
-# #             if(is(significance, "character")) {
-# #                 if(significance != "cent.tend") {stop("significance argument must be either 'cent.tend' or a single 'numeric' value.")}
-# #                 significance = 1
-# #             } else {
-# #                 check.class(significance, "numeric", " must be either 'cent.tend' or a single 'numeric' value.")
-# #                 check.length(significance, 1, " must be either 'cent.tend' or a single 'numeric' value.")
-# #                 if(is.na(match(significance, seq(from = 1, to = length(quantiles)*2)))) {
-# #                     stop("significance argument must be the number of the quantile (e.g. 1 for the first quantile).")
-# #                 } else {
-# #                     significance = significance + 1
-# #                 }
-# #             }
-# #         }
-
-
-# #         #Plotting the results
-# #         if(add != TRUE) {
-# #             #subsamples
-# #             subsamples <- unique(unlist(strsplit(names(disparity$models), split = " - ")))
-# #             #Get the all the intercepts estimate
-# #             if(is_distribution == TRUE) {
-# #                 all_intercepts <- unlist(c(results_out$Intercepts$Initial[1,significance], results_out$Intercepts$Predicted[,significance], intercept.estimate(unlist(results_out$Intercepts$Predicted[(length(subsamples)-2),significance]), unlist(results_out$Slopes$Estimate[(length(subsamples)-1),significance]))))
-# #             } else {
-# #                 all_intercepts <- c(results_out$Intercepts[,1], intercept.estimate(results_out$Intercepts[(length(subsamples)-1),1], results_out$Slopes[(length(subsamples)-1),1]))
-# #             }
-            
-# #             if(missing(xlab)) {
-# #                 xlab <- "subsamples"
-# #             }
-# #             if(missing(ylab)) {
-# #                 ylab <- "Estimated disparity"
-# #             }
-
-# #             #Empty plot
-# #             subsamples_length <- length(subsamples)
-# #             plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n", ...)
-# #             #plot(seq(from = 1, to = subsamples_length), all_intercepts, col = "white", xlab = xlab, ylab = ylab, xaxt = "n") ; warning("DEBUG in plot.dispRity")
-# #             axis(1, at = 1:subsamples_length, labels = subsamples)
-# #         }
-
-# #         plot.seq.test(results_out, is_distribution, significance, lines.args, token.args)
-
-# #     }
-

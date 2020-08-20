@@ -12,7 +12,7 @@
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param specific.args optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (usually: * [ ] \code{"randtest"}, \code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.
+#' @param specific.args optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (\code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.
 #'
 #' @details
 #' The different \code{type} arguments are:
@@ -27,7 +27,7 @@
 #' The different \code{specific.args} arguments for the following options are:
 #' \itemize{
 #'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
-#      \item if \code{data} is of class \code{"dispRity"} and \code{"randtest"}, the default is \code{specific.args = list(nclass = 10, coeff = 1)} where \code{nclass} is the number of bars in the histogram and \code{coeff} is the magnitude of the graph.
+#'      \item if \code{data} is of class \code{"dispRity"} and \code{"dtt"}, the default is \code{specific.args = list(scale = TRUE)} where \code{scale} is a logical of whether to scale the values on the x and y axis or not.
 #' }
 #'
 #' @examples
@@ -128,12 +128,12 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     #DATA
-    if(length(class(data)) > 1 && !is(data, c("matrix", "array"))) {
+    if(length(class(data)) > 1 && !(is(data, "matrix") && is(data, "array"))) {
 
         ## Subclass plots
 
         ## randtests plots
-        if(is(data, c("dispRity", "randtest"))) {            
+        if(is(data, "dispRity") && is(data, "randtest")) {
             ## length_data variable initialisation
             length_data <- length(data)
 
@@ -169,79 +169,10 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(is(data, c("dispRity")) && is(data, c("dtt"))) {
-            ## Silence warnings
-            options(warn = -1)
-
-            ## Get the ylim
-            if(missing(ylim)) {
-                ylim <- c(range(pretty(data$dtt)))
-
-                if(!is.null(data$sim)) {
-                    ylim_sim <- range(data$sim)
-                    ylim <- range(c(ylim, ylim_sim))
-                }
-            }
-
-            if(missing(xlab)) {
-                xlab <- "relative time"
-            }
-            if(missing(ylab)) {
-                ylab <- "scaled disparity"
-            }
-
-            if(missing(col)) {
-                colfun <- grDevices::colorRampPalette(c("lightgrey", "grey"))
-                col <- c("black", colfun(length(quantiles)))
-            }
-
-            ## Plot the relative disparity curve
-            plot(data$times, data$dtt, xlab = xlab, ylab = ylab, ylim = ylim, type = "n", ...)
-            #plot(data$times, data$dtt, xlab = xlab, ylab = ylab, ylim = ylim, type = "n") ; warning("DEBUG plot")
-
-            if(!is.null(data$sim)) {
-
-                ## Check the quantiles
-                check.class(quantiles, "numeric", " must be any value between 1 and 100.")
-                ## Are quantiles probabilities or proportions ?
-                if(any(quantiles < 1)) {
-                    ## Transform into proportion
-                    quantiles <- quantiles*100
-                }
-                ## Are quantiles proper proportions
-                if(any(quantiles < 0) | any(quantiles > 100)) {
-                    stop.call("", "quantiles(s) must be any value between 0 and 100.")
-                }
-                n_quantiles <- length(quantiles)
-
-                ## Check the central tendency
-                check.class(cent.tend, "function")
-                ## The function must work
-                if(make.metric(cent.tend, silent = TRUE) != "level1") {
-                    stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
-                }
-
-
-                ## Summarised data
-                quantiles_values <- apply(data$sim, 1, quantile, probs = CI.converter(quantiles), na.rm = TRUE)
-                cent_tend_values <- apply(data$sim, 1, cent.tend)
-
-                ## Plotting the polygons for each quantile
-                for (cis in 1:n_quantiles) {
-                    xx <- c(data$times, rev(data$times))
-                    yy <- c(quantiles_values[(n_quantiles*2) - (cis-1), ], rev(quantiles_values[cis ,]))
-                    polygon(xx, yy, col = col[cis+1],  border = FALSE, density = density)
-                }
-
-
-                ## Add the central tendency
-                lines(data$times, cent_tend_values, col = col[1], lty = 2)
-            }
-
-            ## Add the observed disparity
-            lines(data$times, data$dtt, col = col[1], lwd = 1.5)
-
-            ## Re-enable warnings
-            options(warn = 0)
+        
+            ## Dtt style plots
+            plot.dtt(data, quantiles, cent.tend, density, ...)
+            return(invisible())
         } 
 
         ## model.test plots

@@ -39,7 +39,7 @@
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
-\item{specific.args}{optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (usually: * [ ] \code{"randtest"}, \code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.}
+\item{specific.args}{optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (\code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.}
 }
 \description{
 Plots a \code{dispRity} object.
@@ -57,6 +57,7 @@ The different \code{type} arguments are:
 The different \code{specific.args} arguments for the following options are:
 \itemize{
      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
+     \item if \code{data} is of class \code{"dispRity"} and \code{"dtt"}, the default is \code{specific.args = list(scale = TRUE)} where \code{scale} is a logical of whether to scale the values on the x and y axis or not.
 }
 }
 \examples{

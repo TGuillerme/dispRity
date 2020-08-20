@@ -29,8 +29,12 @@ Update the `plot.dispRity` structure.
 * [x] "preview"
 * [x] specific.args
 * [x] `randtest`
-* [ ] `dtt`
+* [x] `dtt`
 * [ ] `model.test`
 * [ ] `model.sim`
 * [ ] `test.metric`
 * [ ] retest examples
+
+TODO others:
+
+ * [ ] Allow non-scaled dispRity.dtt function

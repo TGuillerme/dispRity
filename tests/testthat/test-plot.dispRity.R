@@ -252,20 +252,19 @@ test_that("plot.dispRity with randtest data", {
     expect_null(plot(results_two, main = "same"))
 })
 
-# test_that("plot.dispRity with dtt data", {
+test_that("plot.dispRity with dtt data", {
+    ## DTT
+    ## Loading geiger's example data set
+    require(geiger)
+    geiger_data <- get(data(geospiza))
+    average.sq <- function(X) mean(pairwise.dist(X)^2)
+    expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
 
-#     ## DTT
-#     ## Loading geiger's example data set
-#     require(geiger)
-#     geiger_data <- get(data(geospiza))
-#     average.sq <- function(X) mean(pairwise.dist(X)^2)
-#     expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
-
-#     ## Plotting the results
-#     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
-#     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
-#     expect_error(plot(dispRity_dtt, cent.tend = var))
-# })
+    ## Plotting the results
+    expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
+    expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
+    expect_error(plot(dispRity_dtt, cent.tend = var))
+})
 
 # test_that("plot.dispRity with model.test data", {
 #     load("model_test_data.Rda")
