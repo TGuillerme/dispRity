@@ -16,9 +16,9 @@
   add = FALSE,
   density = NULL,
   dimensions = c(1, 2),
+  matrix = 1,
   nclass = 10,
-  coeff = 1,
-  matrix = 1
+  coeff = 1
 )
 }
 \arguments{
@@ -44,11 +44,11 @@
 
 \item{dimensions}{optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).}
 
+\item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
+
 \item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
 
 \item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
-
-\item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
 }
 \description{
 Plots a \code{dispRity} object.

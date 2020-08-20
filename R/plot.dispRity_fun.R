@@ -590,6 +590,84 @@ plot.rarefaction <- function(plot_params, data_params, data) {
         par(op_tmp)
 }
 
+## Plotting a space preview
+plot.preview <- function(data, dimensions, matrix, ...) {
+
+    ## The "ggplot" colours
+    gg.color.hue <- function(n) {
+        grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
+    }
+
+    ## Capturing the dots options
+    plot_args <- list(...)
+
+    ## Setting the dimensions
+    plot_args$x <- data$matrix[[matrix]][, dimensions[1]]
+    plot_args$y <- data$matrix[[matrix]][, dimensions[2]]
+
+    ## Getting the loadings
+    loading <- apply(data$matrix[[matrix]], 2, var, na.rm = TRUE)
+    loading <- round(loading/sum(loading)*100, 2)
+
+    ## Setting the labels
+    if(is.null(plot_args$xlab)) {
+        plot_args$xlab <- paste0("Dimension ", dimensions[1], " (", loading[dimensions[1]], "%)")
+    }
+    if(is.null(plot_args$ylab)) {
+        plot_args$ylab <- paste0("Dimension ", dimensions[2], " (", loading[dimensions[2]], "%)")
+    }
+
+    ## Setting plot limits
+    plot_lim <- range(as.vector(c(data$matrix[[matrix]][, dimensions])))
+    if(is.null(plot_args$xlim)) {
+        plot_args$xlim <- plot_lim
+    }
+    if(is.null(plot_args$ylim)) {
+        plot_args$ylim <- plot_lim
+    }
+
+    ## Setting the pch
+    if(is.null(plot_args$pch)) {
+        plot_args$pch <- 19
+    }
+
+    ## Get the number of colour groups
+    n_groups <- length(data$subsets)
+    n_groups <- ifelse(n_groups == 0, 1, n_groups)
+
+    ## Setting the colours
+    if(is.null(plot_args$col)) {
+        if(n_groups == 1) {
+            plot_args$col <- "black"
+        } else {
+            if(data$call$subsets[[1]] == "customised") {
+                plot_args$col <- gg.color.hue(n_groups)
+            } else {
+                plot_args$col <- grDevices::heat.colors(n_groups+2)[1:n_groups]
+            }
+        }
+    }
+
+    ## Make a colour classifier
+    col_order <- plot_args$col
+    if(n_groups > 1) {
+        classifier <- rep(NA, nrow(data$matrix[[matrix]]))
+        for(class in 1:n_groups) {
+            classifier[data$subsets[[class]]$elements[,1]] <- class
+        }
+        plot_args$col <- plot_args$col[classifier]
+    }
+
+    ## Plot the results
+    do.call(plot, plot_args)
+    if(n_groups > 1) {
+        legend("topright", legend = names(data$subsets), col = col_order, pch = plot_args$pch, cex = 0.666)
+    }
+
+    ## Return invisible
+    return(invisible())
+}
+
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function (data_sub, nclass = 10, coeff = 1, ...) {
     
@@ -625,90 +703,7 @@ plot.model.test.support <- function(data, col, ylab, ylim, ...) {
     plotcoords <- graphics::barplot(ordered_aic, col = col, ylim = ylim, ylab = ylab, ...)
 }
 
-## Plotting a space preview
-plot.preview <- function(data, dimensions, matrix, xlab, ylab, ylim, col, ...) {
 
-    ## The "ggplot" colours
-    gg.color.hue <- function(n) {
-        grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
-    }
-
-    ## Capturing the dots options
-    plot_args <- list(...)
-
-    ## Setting the dimensions
-    plot_args$x <- disparity$matrix[[matrix]][, dimensions[1]]
-    plot_args$y <- disparity$matrix[[matrix]][, dimensions[2]]
-
-    ## Getting the loadings
-    loading <- apply(disparity$matrix[[matrix]], 2, var, na.rm = TRUE)
-    loading <- round(loading/sum(loading)*100, 2)
-
-    ## Setting the labels
-    if(missing(xlab)) {
-        plot_args$xlab <- paste0("Dimension ", dimensions[1], " (", loading[dimensions[1]], "%)")
-    } else {
-        plot_args$xlab <- xlab
-    }
-    if(missing(ylab)) {
-        plot_args$ylab <- paste0("Dimension ", dimensions[2], " (", loading[dimensions[2]], "%)")
-    } else {
-        plot_args$ylab <- ylab
-    }
-
-    ## Setting plot limits
-    plot_lim <- range(as.vector(c(disparity$matrix[[matrix]][, dimensions])))
-    if(is.null(plot_args$xlim)) {
-        plot_args$xlim <- plot_lim
-    }
-    if(missing(ylim)) {
-        plot_args$ylim <- plot_lim
-    } else {
-        plot_args$ylim <- ylim
-    }
-
-    ## Setting the pch
-    if(is.null(plot_args$pch)) {
-        plot_args$pch <- 19
-    }
-
-    ## Get the number of colour groups
-    n_groups <- length(disparity$subsets)
-
-    ## Setting the colours
-    if(missing(col)) {
-        if(n_groups == 1) {
-            plot_args$col <- "black"
-        } else {
-            if(disparity$call$subsets[[1]] == "customised") {
-                plot_args$col <- gg.color.hue(n_groups)
-            } else {
-                plot_args$col <- grDevices::heat.colors(n_groups+2)[1:n_groups]
-            }
-        }
-    } else {
-        plot_args$col <- col
-    }
-
-    ## Make a colour classifier
-    if(n_groups > 1) {
-        classifier <- rep(NA, nrow(disparity$matrix[[matrix]]))
-        for(class in 1:n_groups) {
-            classifier[disparity$subsets[[class]]$elements[,1]] <- class
-        }
-        col_order <- plot_args$col
-        plot_args$col <- plot_args$col[classifier]
-    }
-
-    ## Plot the results
-    do.call(plot, plot_args)
-    if(n_groups > 1) {
-        legend("topright", legend = names(disparity$subsets), col = col_order, pch = plot_args$pch, cex = 0.666)
-    }
-
-    ## Return invisible
-    return(invisible())
-}
 
 
 

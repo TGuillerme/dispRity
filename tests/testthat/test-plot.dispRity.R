@@ -217,20 +217,21 @@ test_that("plot.dispRity.discrete with ADD", {
     expect_null(plot(result,  type = "line", add = TRUE, col = "blue", quantiles = c(5, 10, 15)))
 })
 
-# test_that("plot.dispRity with preview", {
-#     ## Preview
-#     data(BeckLee_mat99)
-#     data(BeckLee_tree)
-#     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
-#     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
+test_that("plot.dispRity with preview", {
+    ## Preview
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
+    data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-#     expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
-#     expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
-#     expect_null(plot(data_cust))
-#     expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
-#     error <- capture_error(plot(data_slice, type = "p"))
-#     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
-# })
+    expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
+    expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
+    expect_null(plot(data_cust))
+    expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
+    error <- capture_error(plot(data_slice, type = "p"))
+    expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
+    expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
+})
 
 # test_that("plot.dispRity with randtest data", {
 #     ## Randtest

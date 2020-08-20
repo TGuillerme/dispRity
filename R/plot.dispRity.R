@@ -117,7 +117,7 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, dimensions = c(1,2), matrix = 1, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
@@ -125,7 +125,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     #SANITIZING
     #DATA
-    if(length(class(data)) > 1) {
+    if(length(class(data)) > 1 && !is(data, c("matrix", "array"))) {
 
         ## Subclass plots
 
@@ -453,8 +453,17 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## Normal disparity plot
     ## ----
 
+    ## Special case when the data is a matrix (make a dummy disparity data)
+    if(is(data, c("matrix", "array"))) {
+        ## Make a minimal dispRity object
+        data <- make.dispRity(data)
+        ## Set the type to "preview only"
+        type <- "preview"
+    }
+
     ## must be class dispRity
     check.class(data, "dispRity")
+
     ## must have one element called dispRity
     if(!("disparity" %in% names(data))) {
         if(missing(type)) {
@@ -469,8 +478,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     ## Plot the matrix preview
     if(!missing(type) && type == "preview") {
-        ## Preview plot
-        plot.preview(data, dimensions = dimensions, matrix = matrix, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+        ## Plotting the matrix preview
+        plot.preview(data, dimensions = dimensions, matrix = matrix, ...)
         return(invisible())
     }
 
