@@ -591,34 +591,42 @@ plot.rarefaction <- function(plot_params, data_params, data) {
 }
 
 ## Plotting a space preview
-plot.preview <- function(data, dimensions, matrix, ...) {
+plot.preview <- function(data, specific.args, ...) {
 
     ## The "ggplot" colours
     gg.color.hue <- function(n) {
         grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
     }
 
+    ## Set up the specific args
+    if(is.null(specific.args$matrix)) {
+        specific.args$matrix <- 1
+    }
+    if(is.null(specific.args$dimensions)) {
+        specific.args$dimensions <- c(1,2)
+    }
+
     ## Capturing the dots options
     plot_args <- list(...)
 
     ## Setting the dimensions
-    plot_args$x <- data$matrix[[matrix]][, dimensions[1]]
-    plot_args$y <- data$matrix[[matrix]][, dimensions[2]]
+    plot_args$x <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[1]]
+    plot_args$y <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[2]]
 
     ## Getting the loadings
-    loading <- apply(data$matrix[[matrix]], 2, var, na.rm = TRUE)
+    loading <- apply(data$matrix[[specific.args$matrix]], 2, var, na.rm = TRUE)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
     if(is.null(plot_args$xlab)) {
-        plot_args$xlab <- paste0("Dimension ", dimensions[1], " (", loading[dimensions[1]], "%)")
+        plot_args$xlab <- paste0("Dimension ", specific.args$dimensions[1], " (", loading[specific.args$dimensions[1]], "%)")
     }
     if(is.null(plot_args$ylab)) {
-        plot_args$ylab <- paste0("Dimension ", dimensions[2], " (", loading[dimensions[2]], "%)")
+        plot_args$ylab <- paste0("Dimension ", specific.args$dimensions[2], " (", loading[specific.args$dimensions[2]], "%)")
     }
 
     ## Setting plot limits
-    plot_lim <- range(as.vector(c(data$matrix[[matrix]][, dimensions])))
+    plot_lim <- range(as.vector(c(data$matrix[[specific.args$matrix]][, specific.args$dimensions])))
     if(is.null(plot_args$xlim)) {
         plot_args$xlim <- plot_lim
     }
@@ -651,7 +659,7 @@ plot.preview <- function(data, dimensions, matrix, ...) {
     ## Make a colour classifier
     col_order <- plot_args$col
     if(n_groups > 1) {
-        classifier <- rep(NA, nrow(data$matrix[[matrix]]))
+        classifier <- rep(NA, nrow(data$matrix[[specific.args$matrix]]))
         for(class in 1:n_groups) {
             classifier[data$subsets[[class]]$elements[,1]] <- class
         }

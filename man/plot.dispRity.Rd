@@ -15,10 +15,7 @@
   observed = FALSE,
   add = FALSE,
   density = NULL,
-  dimensions = c(1, 2),
-  matrix = 1,
-  nclass = 10,
-  coeff = 1
+  specific.args
 )
 }
 \arguments{
@@ -42,13 +39,7 @@
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
-\item{dimensions}{optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).}
-
-\item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
-
-\item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
-
-\item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
+\item{specific.args}{optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (usually: * [ ] \code{"randtest"}, \code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.}
 }
 \description{
 Plots a \code{dispRity} object.
@@ -61,6 +52,12 @@ The different \code{type} arguments are:
   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
   \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
+}
+
+The different \code{specific.args} arguments for the following options are:
+\itemize{
+     \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot
+
 }
 }
 \examples{

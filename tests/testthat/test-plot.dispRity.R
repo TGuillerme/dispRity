@@ -224,10 +224,10 @@ test_that("plot.dispRity with preview", {
     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-    expect_null(plot.preview(data_cust, dimensions = c(1,2), matrix = 1))
-    expect_null(plot.preview(data_slice, dimensions = c(1,2), matrix = 1))
+    expect_null(plot.preview(data_cust, specific.args = list(dimensions = c(1,2), matrix = 1)))
+    expect_null(plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
     expect_null(plot(data_cust))
-    expect_null(plot(data_slice, type = "preview", dimensions = c(38, 22), main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", specific.args = list(dimensions = c(38, 22)), main = "Ha!"))
     error <- capture_error(plot(data_slice, type = "p"))
     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
     expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
@@ -236,12 +236,17 @@ test_that("plot.dispRity with preview", {
 # test_that("plot.dispRity with randtest data", {
 #     ## Randtest
 #     data(BeckLee_mat50)
+#     data(BeckLee_tree)
+#     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
 #     ## Calculating the disparity as the ellipsoid volume
-#     obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+#     one_group <- dispRity(BeckLee_mat50, metric = c(sum, centroids))
+#     two_groups <- dispRity(data_cust, metric = c(sum, centroids))
 #     ## Testing against normal distribution
-#     expect_warning(results <- null.test(obs_disparity, replicates = 2, null.distrib = rnorm))
-#     expect_is(results, c("dispRity", "randtest"))
-#     expect_null(plot(results))
+#     expect_warning(results_one <- null.test(one_group, replicates = 2, null.distrib = rnorm))
+#     expect_warning(results_two <- null.test(two_groups, replicates = 2, null.distrib = runif))
+#     expect_is(results_one, c("dispRity", "randtest"))
+#     expect_is(results_two, c("dispRity", "randtest"))
+#     expect_null(plot(results_one))
 # })
 
 # test_that("plot.dispRity with dtt data", {

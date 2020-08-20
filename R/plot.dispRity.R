@@ -12,13 +12,7 @@
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
-#' @param matrix optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).
-# ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
-# ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-# ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
-#' @param nclass when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).
-#' @param coeff when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).
+#' @param specific.args optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (usually: * [ ] \code{"randtest"}, \code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.
 #'
 #' @details
 #' The different \code{type} arguments are:
@@ -30,10 +24,11 @@
 #'   \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
 #' }
 #' 
-#TG: The following is from sequential.test (not implemented yet)
-# The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-# \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-# Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
+#' The different \code{specific.args} arguments for the following options are:
+#' \itemize{
+#'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
+#'      \item if \code{data} is of class \code{"dispRity"} and \code{"randtest"}, the default is \code{specific.args = list(nclass = 10, coeff = 1)} where \code{nclass} is the number of bars in the histogram and \code{coeff} is the magnitude of the graph.
+#' }
 #'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -117,20 +112,28 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, dimensions = c(1,2), matrix = 1, nclass = 10, coeff = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, specific.args){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
     dots <- list(...)
 
     #SANITIZING
+
+    ## Checking specific.args
+    if(missing(specific.args)) {
+        specific.args <- list()
+    } else {
+        check.class(specific.args, "list")
+    }
+
     #DATA
     if(length(class(data)) > 1 && !is(data, c("matrix", "array"))) {
 
         ## Subclass plots
 
         ## randtests plots
-        if(is(data, c("dispRity")) && is(data, c("randtest"))) {
+        if(is(data, c("dispRity", "randtest"))) {
             ## sanitising
             check.class(nclass, "numeric")
             check.class(coeff, "numeric")
@@ -479,7 +482,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## Plot the matrix preview
     if(!missing(type) && type == "preview") {
         ## Plotting the matrix preview
-        plot.preview(data, dimensions = dimensions, matrix = matrix, ...)
+        plot.preview(data, specific.args, ...)
         return(invisible())
     }
 

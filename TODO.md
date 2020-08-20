@@ -26,7 +26,8 @@ Update the `plot.dispRity` structure.
 * [x] "continuous"
 * [x] "polygon" || "line"
 * [x] "box"
-* [x] "preview"
+* [ ] "preview"
+* [ ] specific.args
 * [ ] `randtest`
 * [ ] `dtt`
 * [ ] `model.test`
