@@ -12,7 +12,7 @@
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param specific.args optional, a named list of arguments to be passed for plotting \code{"dispRity"} objects with more than two classes (\code{"dtt"}, \code{"model.test"}, \code{"model.sim"}, or \code{"test.metric"}) or if the requested plot type is \code{"preview"}. See details.
+#' @param specific.args optional, a named list of arguments to be passed for some specific plot types. See details.
 #'
 #' @details
 #' The different \code{type} arguments are:
@@ -27,6 +27,7 @@
 #' The different \code{specific.args} arguments for the following options are:
 #' \itemize{
 #'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
+#'      \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.
 #' }
 #'
 #' @examples
@@ -138,6 +139,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             ## Set up the extra arguments
             dots <- list(...)
             plot_args <- dots
+            plot_args$specific.args <- specific.args
 
             ## Single plot
             if(length_data == 1) {
@@ -197,136 +199,15 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             return(invisible())
         }
 
+        ## test.metric plots
         if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
 
-            ## Getting the number of plot groups
-            group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
-
-            ## Separating the plots in different groups (per plot windows)
-            n_plots <- length(unique(group_plot))
-
-            if(n_plots > 1){
-                ## Correct the number of plots if only 3
-                plot_size <- ifelse(n_plots == 3, 4, n_plots)
-
-                ## Setting up plotting window
-                op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
-            }
-
-            ## Separating the data
-            plot_groups <- list()
-            for(group in 1:length(unique(group_plot))) {
-                plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
-            }
-            ## Separating the models
-            if(!is.null(data$models)) {
-                model_groups <- list()
-                for(group in 1:length(unique(group_plot))) {
-                    model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
-                }
-            }
-
-
-            ## Get the yaxis scale
-            all_ylim <- if(missing(ylim)) {range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)} else {ylim}
-            #all_ylim <- range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)
-
-            ## Get the colours
-            if(missing(col)) {
-                if(any(unique(group_plot) != "random")) {
-                    col <- c("orange", "blue")
-                } else {
-                    col <- "black"
-                }
-            } else {
-                if(length(col) < 2) {
-                    col <- c(col, "grey")
-                } else {
-                    col <- col[1:2]
-                }
-            }
-
-            ## Plot all the results
-            for(one_plot in 1:n_plots) {
-                ## Get the data to plot
-                plot_data <- plot_groups[[one_plot]]
-
-                ## First plot
-                plot(plot_data[[1]],
-                    ylim = all_ylim,
-                    xlim = if(is.null(dots$xlim)) {range(as.numeric(plot_data[[1]][,1]))} else {xlim},
-                    xlab = if(missing(xlab))      {"Amount of data considered (%)"} else {xlab},
-                    ylab = if(missing(ylab))      {data$call$metric} else {ylab},
-                    pch  = if(is.null(dots$pch))  {19} else {dots$pch},
-                    main = if(is.null(dots$main)) {unique(group_plot)[[one_plot]]} else {dots$main},
-                    col  = col[1]
-                    )
-
-                ## Second plot
-                if(length(plot_data) > 1) {
-                    plot_data[[2]][,1] <- as.numeric(plot_data[[2]][,1])
-                    points(plot_data[[2]],
-                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
-                           col = col[2])
-                    legend("bottomright", legend = names(plot_data),
-                           pch = if(is.null(dots$pch))  {19} else {dots$pch},
-                           col = col)
-                }
-
-                ## Plot the model (if exists)
-                if(!is.null(data$models)) {
-
-                    ## Adding slopes and fits
-                    add.slope <- function(model, col) {
-                        ## Get the slope parameters
-                        slope_param <- try.get.from.model(model, "Estimate")
-
-                        ## Plot the model
-                        if(!any(is.na(slope_param)) || !is.null(slope_param)) {
-                            ## Add the slope
-                            abline(a = slope_param[1],
-                                   b = slope_param[2],
-                                   col = col)
-                        }
-                    }
-                    add.fit <- function(model) {
-                        fit_param <- try.get.from.model(model, "r.squared")
-                        if(!is.null(fit_param) || length(fit_param) != 0) {
-
-                            if(any(names(fit_param) == "adj.r.squared")) {
-                                fit_param <- fit_param$adj.r.squared
-                                is_adjusted <- TRUE
-                            } else {
-                                is_adjusted <- FALSE
-                            }
-
-                            return(paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
-                        } else {
-                            return(NA)
-                        }
-                    }
-
-                    add.slope(model_groups[[one_plot]][[1]], col = col[1])
-                    fit <- add.fit(model_groups[[one_plot]][[1]])
-                    
-                    if(!is.null(model_groups[[one_plot]][[1]])) {
-                        add.slope(model_groups[[one_plot]][[2]], col = col[2])
-                        fit <- c(fit, add.fit(model_groups[[one_plot]][[2]]))
-                    }
-
-                    ## Add the fits
-                    if(!all(na_fit <- is.na(fit))) {
-                        legend("topright", legend = fit[!na_fit], lty = c(1,1)[!na_fit], col = col[1:2][!na_fit])
-                    }
-                }
-            }
-            if(n_plots > 1) {
-                par(op_tmp)
-            }
+            ## Plotting the test.metric results
+            plot.test.metric(data, specific.args, ...)
+                
+            ## Exit subclass plots
+            return(invisible())
         }
-        
-        ## Exit subclass plots
-        return(invisible())
     }
 
     ## ----

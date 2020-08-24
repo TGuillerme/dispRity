@@ -617,6 +617,18 @@ plot.preview <- function(data, specific.args, ...) {
     if(is.null(specific.args$dimensions)) {
         specific.args$dimensions <- c(1,2)
     }
+    if(is.null(specific.args$legend)) {
+        plot_legend <- TRUE
+        legend_args <- list()
+    } else {
+        if(is(specific.args$legend, "logical")) {
+            plot_legend <- specific.args$legend
+            legend_args <- list()
+        } else {
+            plot_legend <- TRUE
+            legend_args <- specific.args$legend
+        }
+    }
 
     ## Capturing the dots options
     plot_args <- list(...)
@@ -680,8 +692,26 @@ plot.preview <- function(data, specific.args, ...) {
 
     ## Plot the results
     do.call(plot, plot_args)
-    if(n_groups > 1) {
-        legend("topright", legend = names(data$subsets), col = col_order, pch = plot_args$pch, cex = 0.666)
+    if(n_groups > 1 && plot_legend) {
+
+        ## Set the legend arguments
+        if(is.null(legend_args$x)) {
+            legend_args$x <- "topright"
+        }
+        if(is.null(legend_args$legend)) {
+            legend_args$legend <- names(data$subsets)
+        }
+        if(is.null(legend_args$col)) {
+            legend_args$col <- col_order
+        }
+        if(is.null(legend_args$pch)) {
+            legend_args$pch <- plot_args$pch
+        }
+        if(is.null(legend_args$cex)) {
+            legend_args$cex <- 0.666
+        }
+        ## Add the legend
+        do.call(legend, legend_args)
     }
 
     ## Return invisible
@@ -691,6 +721,10 @@ plot.preview <- function(data, specific.args, ...) {
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
 plot.randtest <- function(data_sub, ...) {
     plot_args <- list(...)
+
+    ## Extracting the specific args
+    specific_args <- plot_args$specific.args
+    plot_args$specific.args <- NULL
 
     ## Add the histogram data
     plot_args$x <- data_sub$plot$hist
@@ -716,8 +750,44 @@ plot.randtest <- function(data_sub, ...) {
     lines(c(observed, observed), c(plot_args$ylim[2]/2, 0))
     points(observed, plot_args$ylim[2]/2, pch = 18, cex = 2)
 
+    ## Setting the specific args for the legend
+    if(is.null(specific_args$legend)) {
+        plot_legend <- TRUE
+    } else {
+        if(is(specific_args$legend, "logical")) {
+            plot_legend <- specific_args$legend
+        } else {
+            plot_legend <- TRUE
+        }
+    }
+
     ## Adding the legend (test results)
-    legend("topleft", bty = "n", legend = c("p-value", round(data_sub$pvalue, 5)), cex = 0.7, adj = 0.2)
+    if(plot_legend) {
+        ## Initialise the legend arguments
+        if(is.null(specific_args)) {
+            legend_args <- list()    
+        } else {
+            legend_args <- specific_args$legend
+        }
+        
+        ## Set the default legend arguments
+        if(is.null(legend_args$x)) {
+            legend_args$x <- "topleft"
+        }
+        if(is.null(legend_args$bty)) {
+            legend_args$bty <- "n"
+        }
+        if(is.null(legend_args$legend)) {
+            legend_args$legend <- c("p-value", round(data_sub$pvalue, 5))
+        }
+        if(is.null(legend_args$cex)) {
+            legend_args$cex <- 0.7
+        }
+        if(is.null(legend_args$adj)) {
+            legend_args$adj <- 0.2
+        }
+        do.call(legend, legend_args)
+    }
 }
 
 ## The following is a modified version of dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
@@ -853,4 +923,224 @@ plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
 
     ## Plot the simulated data
     plot.continuous(plot_params, data_params, add = add, density = density)
+}
+
+plot.test.metric <- function(data, specific.args, ...) {
+
+    ## Adding slopes
+    add.slope <- function(model, col) {
+        ## Get the slope parameters
+        slope_param <- try.get.from.model(model, "Estimate")
+
+        ## Plot the model
+        if(!any(is.na(slope_param)) || !is.null(slope_param)) {
+            ## Add the slope
+            abline(a = slope_param[1],
+                   b = slope_param[2],
+                   col = col)
+        }
+    }
+    ## Adding fits
+    add.fit <- function(model) {
+        fit_param <- try.get.from.model(model, "r.squared")
+        if(!is.null(fit_param) || length(fit_param) != 0) {
+
+            if(any(names(fit_param) == "adj.r.squared")) {
+                fit_param <- fit_param$adj.r.squared
+                is_adjusted <- TRUE
+            } else {
+                is_adjusted <- FALSE
+            }
+
+            return(paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
+        } else {
+            return(NA)
+        }
+    }
+
+    ## Setting plot window size
+    group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
+
+    ## Separating the plots in different groups (per plot windows)
+    n_plots <- length(unique(group_plot))
+    if(n_plots > 1){
+        ## Correct the number of plots if only 3
+        plot_size <- ifelse(n_plots == 3, 4, n_plots)
+
+        ## Setting up plotting window
+        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
+    }
+
+    ## Get the plotting arguments
+    plot_args <- list(...)
+
+    ## Get the ylim
+    if(is.null(plot_args$ylim)) {
+        plot_args$ylim <- range(unlist(lapply(data$results, function(x) x[,2])), na.rm = TRUE)
+    }
+    ## Get the colours
+    if(is.null(plot_args$col)) {
+        plot_args$col <- c("black", "orange", "blue")
+    } else {
+        if((missing_cols <- length(plot_args$col) - 3) > 0) {
+            plot_args$col <- c(plot_args$col, rep(plot_args$col, missing_cols))
+        }
+    }
+    ## get the title
+    if(is.null(plot_args$xlab)) {
+        plot_args$xlab <- "Amount of data considered (%)"
+    }
+    if(is.null(plot_args$ylab)) {
+        plot_args$ylab <- as.character(as.expression(data$call$metric))
+    }             
+    ## get the point size
+    if(is.null(plot_args$pch)) {
+        plot_args$pch <- 19
+    } 
+
+    ## Figuring out the legend
+    if(is.null(specific.args$legend)) {
+        plot_legend <- TRUE
+        legend_args <- list()
+    } else {
+        if(is(specific.args$legend, "logical")) {
+            plot_legend <- specific.args$legend
+            legend_args <- list()
+        } else {
+            plot_legend <- TRUE
+            legend_args <- specific.args$legend
+        }
+    }
+    ## Checking out if it's two lists
+    if(length(legend_args == 2) && !is.null(names(legend_args[[1]])) && !is.null(names(legend_args[[2]]))) {
+        if(names(legend_args[[1]]) == names(legend_args[[2]])) {
+            legend_args_1 <- legend_args[[1]]
+            legend_args_2 <- legend_args[[2]]
+        }
+    } else {
+        legend_args_1 <- legend_args_2 <- legend_args
+    }
+
+
+    ## Separating the data
+    plot_groups <- list()
+    for(group in 1:length(unique(group_plot))) {
+        plot_groups[[group]] <- data$results[grep(unique(group_plot)[[group]], names(data$results))]
+    }
+
+    ## Separating the models
+    if(!is.null(data$models)) {
+        model_groups <- list()
+        for(group in 1:length(unique(group_plot))) {
+            model_groups[[group]] <- data$models[grep(unique(group_plot)[[group]], names(data$models))]
+        }
+    }
+
+    ## Plot all the results
+    for(one_plot in 1:n_plots) {
+
+        ## Get the data to plot
+        plot_data <- plot_groups[[one_plot]]
+
+        ## Setting the specific plot arguments
+        one_plot_args <- plot_args
+
+        ## get the xlim
+        if(is.null(plot_args$xlim)) {
+            one_plot_args$xlim <- range(as.numeric(plot_data[[1]][,1]))
+        }
+        ## Get the title
+        if(is.null(plot_args$main)) {
+            one_plot_args$main <- unique(group_plot)[[one_plot]]
+        }                   
+
+        ## Data to plot
+        one_plot_args$x <- plot_data[[1]][,1]
+        one_plot_args$y <- plot_data[[1]][,2]
+
+        ## Which kind of plot
+        if(length(plot_data) == 1) {
+            ## Set the colours
+            col_vector <- plot_args$col[1]
+            one_plot_args$col <- col_vector
+            do.call(plot, one_plot_args)
+        } else {
+            ## Set the coulours
+            col_vector <- plot_args$col[-1]
+
+            ## First part
+            one_plot_args$col <- col_vector[1]
+            do.call(plot, one_plot_args)
+            ## Second part
+            one_plot_args$x <- plot_data[[2]][,1]
+            ## Add a small shift
+            step <- abs(mode.val(diff(one_plot_args$x)))
+            one_plot_args$x <- one_plot_args$x + (step*0.05)
+            one_plot_args$y <- plot_data[[2]][,2]
+            one_plot_args$col <- col_vector[2]
+            do.call(points, one_plot_args)
+                        
+            ## Set up the legend arguments
+            if(plot_legend) {
+                if(is.null(legend_args_1$x)) {
+                    legend_args_1$x <- "bottomright"
+                }
+                if(is.null(legend_args_1$legend)) {
+                    legend_args_1$legend <- names(plot_data)
+                }
+                if(is.null(legend_args_1$pch)) {
+                    legend_args_1$pch <- plot_args$pch
+                }
+                if(is.null(legend_args_1$col)) {
+                    legend_args_1$col <- col_vector
+                }
+                ## Plot the legend
+                do.call(legend, legend_args_1)
+            }
+        }
+
+        ## Adding the fit and models
+        if(!is.null(data$models)) {
+
+            ## Get the fit of the first model
+            fit <- add.fit(model_groups[[one_plot]][[1]])
+            ## Slope for the first model
+            add.slope(model_groups[[one_plot]][[1]], col = col_vector[1])
+            
+            ## Get the eventual second fit
+            if(!is.null(model_groups[[one_plot]][[1]])) {
+                ## Fit for the second model
+                fit <- c(fit, add.fit(model_groups[[one_plot]][[2]]))
+                ## Slope for the second model
+                add.slope(model_groups[[one_plot]][[2]], col = col_vector[2])
+            }
+
+            ## Add the fits as a legend
+            if(!all(na_fit <- is.na(fit))) {
+
+                ## Set up the legend arguments
+                if(plot_legend) {
+                    if(is.null(legend_args_2$x)) {
+                        legend_args_2$x <- "topright"
+                    }
+                    if(is.null(legend_args_2$legend)) {
+                        legend_args_2$legend <- fit[!na_fit]
+                    }
+                    if(is.null(legend_args_2$lty)) {
+                        legend_args_2$lty <- c(1,1)[!na_fit]
+                    }
+                    if(is.null(legend_args_2$col)) {
+                        legend_args_2$col <- col_vector[!na_fit]
+                    }
+                    ## Plot the legend
+                    do.call(legend, legend_args_2)
+                }
+            }
+        }
+    }
+
+    ## Restoring the parameters
+    if(n_plots > 1) {
+        par(op_tmp)
+    }
 }

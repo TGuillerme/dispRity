@@ -33,7 +33,6 @@ test_that("test.metric works", {
           "Use summary(item) or plot(item) for more details. "          ,
           "Use summary(value) or plot(value) for more details."  ))
 
-
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(3, 10))
     expect_is(summary(test), "matrix")
@@ -73,7 +72,6 @@ test_that("test.metric works", {
     ## Plot works
     expect_null(plot(test))
 
-
     ## Applying the test directly on a disparity object
     test <- test.metric(disparity, shifts = "size", verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
@@ -93,15 +91,12 @@ test_that("test.metric works", {
           "Use summary(item) or plot(item) for more details. " ,
           "Use summary(value) or plot(value) for more details."))
 
-
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(2, 13))
     expect_is(summary(test), "matrix")
     expect_equal(rownames(summary(test)), names(test$results))
     expect_equal(colnames(summary(test)), c(paste0(seq(from = 10, to = 100, by = 10), "%"), "slope", "p_value", "R^2(adj)"))
-    
 
     ## Plot works
     expect_null(plot(test))
-
 })

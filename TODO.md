@@ -32,8 +32,10 @@ Update the `plot.dispRity` structure.
 * [x] `dtt`
 * [x] `model.test`
 * [x] `model.sim`
-* [ ] `test.metric`
+* [x] `test.metric`
 * [ ] retest examples
+* [ ] `specific.args` for legend in `plot.preview`, `plot.randtest` and `plot.test.metric`.
+* [ ] `specific.args` for legend in manual.
 
 TODO others:
 

@@ -289,9 +289,3 @@ test_that("plot.dispRity with model.test data", {
     expect_null(plot(model_test_data))
     expect_null(plot(model_simulation_inherit, add = TRUE))
 })
-
-# test_that("plot.dispRity with test.metric data", {
-#     stop("TODO")
-# })
-
-
