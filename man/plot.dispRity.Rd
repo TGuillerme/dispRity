@@ -73,7 +73,7 @@ plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mean)
 
 ## Using different options
-plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
+plot(disparity, type = "line", elements = TRUE, ylim = c(0, 3),
      xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)
@@ -88,31 +88,9 @@ plot(disparity, observed = TRUE)
 ## Observed data with graphical details
 plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 
-\dontrun{
-## Geoscale plots
-require(geoscale)
-
-## Converting the data into a list
-data_obs <- extract.dispRity(disparity, observed = TRUE)
-data_distribution <- extract.dispRity(disparity, observed = FALSE)
-## Removing one list level
-data_distribution <- unlist(data_distribution, recursive = FALSE)
-data_obs <- as.vector(data_obs)
-
-## Getting the ages
-ages <- as.numeric(names(disparity$subsets))
-
-## Plotting the results median
-geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
-
-## Plotting the results distribution
-geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
-}
-
-
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
+\code{\link{dispRity}}, \code{\link{summary.dispRity}}.
 }
 \author{
 Thomas Guillerme

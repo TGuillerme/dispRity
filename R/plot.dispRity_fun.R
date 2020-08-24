@@ -401,7 +401,7 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
                 for(cis in 1:plot_params$helpers$n_quantiles) {
                     ## The the line type
                     plot_args$lty <- plot_params$helpers$n_quantiles - cis + 1
-                    plot_args$lwd <- cis * 1.5
+                    plot_args$lwd <- 1 + cis * 1.5
                     plot_args$col <- plot_params$options$col[[cis+1]]
                     ## Set the x values
                     plot_args$x <- rep(point, 2)
