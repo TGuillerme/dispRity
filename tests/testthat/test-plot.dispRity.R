@@ -76,10 +76,10 @@ test_that("get.plot.params works", {
     expect_equal(plot_params$options$col, c("orange", "blue", "#BEBEBE", "#C8C8C8", "#D3D3D3"))
     expect_equal(plot_params$options$main, "main")
     expect_true(plot_params$elements_args$elements)
-    expect_equal(plot_params$elements_args$lty, 2)
-    expect_equal(plot_params$elements_args$col, "grey")
+    expect_equal(plot_params$elements_args$lty, c(2, 2))
+    expect_equal(plot_params$elements_args$col, c("grey", "grey"))
     expect_equal(plot_params$elements_args$cex, 22)
-    expect_equal(plot_params$elements_args$pch, 15)
+    expect_equal(plot_params$elements_args$pch, c(15, 15))
 
     ## Boxplot data
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),

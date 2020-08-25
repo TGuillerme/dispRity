@@ -1,19 +1,19 @@
-# TODO list for `serial`
+# TODO list for `between.groups`
 
 
-Add a serial mode for calculating disparity were the calculation is slower (`for` loop) but can be depending on previously calculated values (e.g. for `ancestral.dist`) or can be applied between subsets (e.g. for measuring the distance between groups).
+Add a between.groups mode for calculating disparity were the calculation is slower (`for` loop) but can be depending on previously calculated values (e.g. for `ancestral.dist`) or can be applied between subsets (e.g. for measuring the distance between groups).
 
 TODO:
 
- - [ ] create a new `"serial"` class option for metrics (input `matrix1` and `matrix2`)
- - [x] `make.metric` detects serial metrics
- - [x] update test for `make.metric` for detecting serials
- - [ ] `dispRity` allows serial metrics
- - [ ] `dispRity` has a `serial` argument:this argument can be logical (default is `FALSE`; `TRUE` = sequential comparison for `chrono.subset` objects/pairwise comparisons for `custom.subset` objects) or a list of pairs of comparisons (like for `test.dispRity`'s `comparisons` argument)
+ - [x] create a new `"between.groups"` class option for metrics (input `matrix1` and `matrix2`)
+ - [x] `make.metric` detects between.groups metrics
+ - [x] update test for `make.metric` for detecting between.groupss
+ - [x] `dispRity` allows between.groups metrics
+ - [x] `dispRity` has a `between.groups` argument:this argument can be logical (default is `FALSE`; `TRUE` = sequential comparison for `chrono.subset` objects/pairwise comparisons for `custom.subset` objects) or a list of pairs of comparisons (like for `test.dispRity`'s `comparisons` argument)
  - [ ] improve speed for the `dispRity` function: the `decompose` function in `decompose.matrix` should be isolated and switch between two versions (between groups or not).
 
- - [ ] implement `ancestral.dist` as a `"serial"` metric
- - [ ] implement `min.dist` as a `"serial"` metric
+ - [ ] implement `ancestral.dist` as a `"between.groups"` metric
+ - [ ] implement `min.dist` as a `"between.groups"` metric
 
 Things can be sped up by directly passing a list of comparisons (pairwise or sequential or user defined) that will be passed as a `lapply_loop` argument (or similar).
 

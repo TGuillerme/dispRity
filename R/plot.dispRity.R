@@ -74,7 +74,7 @@
 # quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
-# elements = FALSE
+# elements = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL

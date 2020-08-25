@@ -73,7 +73,11 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs", "bs.median", "2.5%", "25%", "75%", "97.5%"))
     expect_equal(summary_results$subsets, c("1:2", "1:2", "1:2", "1:3", "1:3", "1:3", "2:3", "2:3"))
     expect_equal(summary_results$obs, c(-1, NA, NA, -2, NA, NA, -1, NA))
+    
+    ## Plots
     expect_null(plot(test, rarefaction = 3))
+    expect_null(plot(test))
+    expect_null(plot(test, observed = TRUE))
 
 
     ## Chrono normal
@@ -98,7 +102,10 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(summary_results$subsets, c("12 - 8.1:8.1 - 5.1", "8.1 - 5.1:5.1 - 0", "8.1 - 5.1:5.1 - 0", "8.1 - 5.1:5.1 - 0", "8.1 - 5.1:5.1 - 0"))
     expect_equal(summary_results$obs, c(0.667, 1.167, NA, NA, NA))
     expect_equal(summary_results$bs.median, c(0.667, 1.167, 1.133, 1.083, 1.000))
+
+    ## plots
     expect_null(plot(test))
+    expect_null(plot(test, elements = TRUE))
 
     ## Chrono time.slice
     # chrono <- chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran", verbose = TRUE)
