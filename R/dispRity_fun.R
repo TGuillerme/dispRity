@@ -92,6 +92,43 @@ get.row.col <- function(x, row, col = NULL) {
     `[`(x, row, 1:`if`(is.null(col), ncol(x), col))
 }
 
+
+## Applying the function to one matrix (or two if nrow is not null)
+decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
+    if(is.null(nrow)) {
+        ## Normal decompose
+        return(fun(one_matrix[bootstrap, dimensions], ...))
+    } else {
+        ## Serial decompose
+        return(
+            fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions],
+                matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions],
+                ...)
+            )
+    }
+}
+
+## Calculates disparity from a bootstrap table
+decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, ...) {
+
+    ## Return NA if no data
+    if(length(na.omit(one_subsets_bootstrap)) < 2) {
+        return(NA)
+    }
+
+    ## Apply the fun, bootstrap and dimension on each matrix
+    return(unlist(lapply(data$matrix,
+                        decompose,
+                        bootstrap = na.omit(one_subsets_bootstrap),
+                        dimensions = 1:data$call$dimensions,
+                        fun,
+                        nrow = nrow,
+                        ...),
+                  recursive = FALSE)
+            )#, use.names = FALSE))
+            # return(fun( data$matrix[na.omit(one_subsets_bootstrap), 1:data$call$dimensions], ...))
+}
+
 ## Apply decompose matrix
 decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, ...) {
    
@@ -101,40 +138,6 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
         one_subsets_bootstrap <- one_subsets_bootstrap$data
     } else {
         nrow <- NULL
-    }
-
-    ## Calculates disparity from a bootstrap table
-    decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, ...) {
-        decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
-            if(is.null(nrow)) {
-                ## Normal decompose
-                return(fun(one_matrix[bootstrap, dimensions], ...))
-            } else {
-                ## Serial decompose
-                return(
-                    fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions],
-                        matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions],
-                        ...)
-                    )
-            }
-        }
-
-        ## Return NA if no data
-        if(length(na.omit(one_subsets_bootstrap)) < 2) {
-            return(NA)
-        }
-
-        ## Apply the fun, bootstrap and dimension on each matrix
-        return(unlist(lapply(data$matrix,
-                            decompose,
-                            bootstrap = na.omit(one_subsets_bootstrap),
-                            dimensions = 1:data$call$dimensions,
-                            fun,
-                            nrow = nrow,
-                            ...),
-                      recursive = FALSE)
-                )#, use.names = FALSE))
-                # return(fun( data$matrix[na.omit(one_subsets_bootstrap), 1:data$call$dimensions], ...))
     }
 
     ## Decomposing the matrix
