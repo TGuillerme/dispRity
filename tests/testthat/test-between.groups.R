@@ -10,8 +10,12 @@ test_that("dispRity works for between.groups metrics", {
 
     ## Testing data
     matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(3, 4, 5)))
+    matrix_node <- do.call(rbind, list(matrix(3, 4, 5), matrix(2, 3, 5), matrix(1, 4, 5)))
     rownames(matrix) <- paste0("t", 1:12)
+    rownames(matrix_node) <- paste0("n", 1:Nnode(test_tree))
+    matrix_node <- rbind(matrix, matrix_node)
     test_tree <- stree(12, type = "right")
+    test_tree$node.label <- paste0("n", 1:Nnode(test_tree))
     test_tree$edge.length <- rep(1, Nedge(test_tree))
     test_tree$root.time <- 12
 
@@ -108,21 +112,61 @@ test_that("dispRity works for between.groups metrics", {
     expect_null(plot(test, elements = TRUE))
 
     ## Chrono time.slice
-    # chrono <- chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran", verbose = TRUE)
-    # test <- dispRity(boot.matrix(chrono, 5), metric = between.groups.complex, between.groups = TRUE)
-    # summary(test)
-
+    chrono <- chrono.subsets(matrix_node, test_tree, method = "continuous", time = c(1,2,3,4,5), model = "acctran", verbose = FALSE)
+    expect_warning(test <- dispRity(boot.matrix(chrono, 5), metric = between.groups.complex, between.groups = TRUE)) # Warning is just because bootstrapping < 3 elements
+    results <- summary(test)
+    expect_equal(dim(results), c(4, 9))
+    expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    expect_equal(results[,1], c("5:4", "4:3", "3:2","2:1"))
+    expect_null(plot(test, elements = TRUE))
 
     ## Chrono bootstrapped
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    chrono <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "gradual.split", time = 6)
+    test <- dispRity(boot.matrix(chrono, 10), metric = between.groups.complex, between.groups = TRUE)
+    results <- summary(test, quantiles = 2)
+    expect_equal(dim(results), c(5, 7))
+    expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    expect_equal(results[,1], c("133.51104:106.808832", "106.808832:80.106624", "80.106624:53.404416", "53.404416:26.702208", "26.702208:0" ))
+    expect_null(plot(test, elements = list(col = c("red", "blue"))))
 
 
-    ## Decompose with between.groups then normal metrics
+    ## Mixing metric types
+    level1_between.groups <- between.groups.complex
+    level2_between.groups <- function(matrix, matrix2) {
+        return(variances(matrix) - variances(matrix2))
+    }
 
+    ## Done in two steps
+    test1 <- dispRity(custom, metric = level2_between.groups, between.groups = TRUE)
+    # test2 <- dispRity(test1, metric = mean, between.groups = FALSE)
+    # ## Needs to inherit between.groups
+    # results <- summary(test2)
+    # expect_equal(dim(results), c(3,4))
+    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
 
-    ## Decompose with normal metrics then between.groups
+    # test1 <- dispRity(custom, metric = variances, between.groups = FALSE)
+    # test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE)
+    # ## Needs to apply between.groups correctly
+    # results <- summary(test2)
+    # expect_equal(dim(results), c(3,4))
+    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
 
+    # ## Decompose with between.groups then normal metrics
+    # test2 <- dispRity(custom, metric = c(level2_between.groups, mean), between.groups = TRUE)
+    # results <- summary(test2)
+    # expect_equal(dim(results), c(3,4))
+    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
 
-
-
+    # ## Decompose with normal metrics then between.groups
+    # test2 <- dispRity(custom, metric = c(level1_between.groups, variances), between.groups = TRUE)
+    # results <- summary(test2)
+    # expect_equal(dim(results), c(3,4))
+    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
+    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
 
 })

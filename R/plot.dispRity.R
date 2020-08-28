@@ -306,9 +306,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## elements = FALSE
-    ## must be logical
-    check.class(elements, "logical")
-    ## observed = FALSE
     elements_args <- list()
     class_elements <- check.class(elements, c("logical", "list"))
     if(class_elements == "list") {
