@@ -12,9 +12,9 @@ test_that("dispRity works for between.groups metrics", {
     matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(3, 4, 5)))
     matrix_node <- do.call(rbind, list(matrix(3, 4, 5), matrix(2, 3, 5), matrix(1, 4, 5)))
     rownames(matrix) <- paste0("t", 1:12)
+    test_tree <- stree(12, type = "right")
     rownames(matrix_node) <- paste0("n", 1:Nnode(test_tree))
     matrix_node <- rbind(matrix, matrix_node)
-    test_tree <- stree(12, type = "right")
     test_tree$node.label <- paste0("n", 1:Nnode(test_tree))
     test_tree$edge.length <- rep(1, Nedge(test_tree))
     test_tree$root.time <- 12
@@ -138,35 +138,16 @@ test_that("dispRity works for between.groups metrics", {
         return(variances(matrix) - variances(matrix2))
     }
 
-    ## Done in two steps
+    ## Correctly handeling mixed metrics (and mixed options)
     test1 <- dispRity(custom, metric = level2_between.groups, between.groups = TRUE)
-    # test2 <- dispRity(test1, metric = mean, between.groups = FALSE)
-    # ## Needs to inherit between.groups
-    # results <- summary(test2)
-    # expect_equal(dim(results), c(3,4))
-    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
-    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
+    the_warning <- capture_warning(test2 <- dispRity(test1, metric = mean, between.groups = FALSE))
+    expect_warning(test2 <- dispRity(test1, metric = mean, between.groups = FALSE))
+    expect_equal(the_warning[[1]], "The disparity calculation (metric = mean) is not calculated between groups (between.groups = FALSE) but the input data (test1) contained a between groups calculation. The metric is thus only applied to the groups (not between them). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = TRUE)")
+    expect_equal(unlist(extract.dispRity(test2)), unlist(extract.dispRity(dispRity(custom, metric = mean))))
 
-    # test1 <- dispRity(custom, metric = variances, between.groups = FALSE)
-    # test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE)
-    # ## Needs to apply between.groups correctly
-    # results <- summary(test2)
-    # expect_equal(dim(results), c(3,4))
-    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
-    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
-
-    # ## Decompose with between.groups then normal metrics
-    # test2 <- dispRity(custom, metric = c(level2_between.groups, mean), between.groups = TRUE)
-    # results <- summary(test2)
-    # expect_equal(dim(results), c(3,4))
-    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
-    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
-
-    # ## Decompose with normal metrics then between.groups
-    # test2 <- dispRity(custom, metric = c(level1_between.groups, variances), between.groups = TRUE)
-    # results <- summary(test2)
-    # expect_equal(dim(results), c(3,4))
-    # expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
-    # expect_equal(results[,1], c("1:2", "1:3", "2:3"))
-
+    test1 <- dispRity(custom, metric = mean, between.groups = FALSE)
+    the_warning <- capture_warning(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
+    expect_warning(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
+    expect_equal(the_warning[[1]], "The disparity calculation (metric = level1_between.groups) is calculated between groups (between.groups = TRUE) but the input data (test1) contained no between groups calculation. The metric is thus only applied between the groups (not to the previously calculated disparity). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = FALSE)")
+    expect_equal(unlist(extract.dispRity(test2)), unlist(extract.dispRity(dispRity(custom, metric = level1_between.groups, between.groups = TRUE))))
 })

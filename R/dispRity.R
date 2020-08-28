@@ -139,11 +139,6 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     metric_is_between.groups <- metrics_list$between.groups
     metrics_list <- metrics_list$levels
 
-    ## Temporary stop if ancestral.dist is used on chrono.subsets
-    if("subsets" %in% names(data$call) && match_call$metric == "ancestral.dist") {
-        stop("ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
-    }
-
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
         stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
@@ -156,11 +151,25 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             applied_levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)
         } else {
             applied_levels <- unlist(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE))
-        }   
+        }
 
         ## Can maybe not take a level 2 or 3 metric
         if(any(applied_levels == "level1") && (!is.null(metrics_list$level3.fun) || !is.null(metrics_list$level2.fun))) {
             stop.call(msg.pre = "At least one metric dimension level 1 was already calculated for ", call = match_call$data, msg = ".\nImpossible to apply a metric higher than dimension level 1.")
+        }
+        ## Check if the metric is not between groups but the previous was.
+        if(between.groups == FALSE && data$call$disparity$metrics$between.groups) {
+            warning("The disparity calculation (metric = ", as.expression(match_call$metric), ") is not calculated between groups (between.groups = FALSE) but the input data (", as.expression(match_call$data), ") contained a between groups calculation. The metric is thus only applied to the groups (not between them). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = TRUE)" )
+            ## Change the between groups behaviour
+            data$call$disparity <- NULL
+            data$disparity <- NULL
+        }
+        ## Check the opposite
+        if(between.groups == TRUE && !data$call$disparity$metrics$between.groups) {
+            warning("The disparity calculation (metric = ", as.expression(match_call$metric), ") is calculated between groups (between.groups = TRUE) but the input data (", as.expression(match_call$data), ") contained no between groups calculation. The metric is thus only applied between the groups (not to the previously calculated disparity). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = FALSE)" )
+            ## Change the between groups behaviour
+            data$call$disparity <- NULL
+            data$disparity <- NULL
         }
     }
 
@@ -260,7 +269,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     } else {
         ## Data has already been decomposed
         matrix_decomposition <- FALSE
-        ## Lapply through the disparity scores (serried)
+        ## Lapply through the disparity scores (serialed)
         lapply_loop <- data$disparity
 
         ## No removed elements
