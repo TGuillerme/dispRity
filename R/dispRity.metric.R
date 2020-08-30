@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids min.distance mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -7,22 +7,24 @@
 #' @usage dimension.level3.fun(matrix, ...)
 #' dimension.level2.fun(matrix, ...)
 #' dimension.level1.fun(matrix, ...)
+#' between.groups.fun(matrix, matrix2, ...)
 #'  
 #' @param matrix A matrix.
+#' @param matrix2 Optional, a second matrix for metrics between groups.
 #' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the eqn{kth} root. See details below for available optional arguments for each function.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun} and \code{dimension.level1.fun}.
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}.
 #' 
 #' The currently implemented dimension-level 1 metrics are:
 #' \itemize{
-#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
+#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$vol}).
 #'      \itemize{
 #'          \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive above 10 dimensions!
 #'      }
 #'
-#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
+#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$area}).
 #'
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
@@ -34,15 +36,14 @@
 #'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
 #'      }
 #' 
-#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD$FDiv}).
+#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{\link[FD]{dbFD}$FDiv}).
 #' 
-#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{\link[FD]{dbFD}$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
 #' 
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
-#'
-#'
+#' 
 #' }
 #' 
 #'  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
@@ -73,6 +74,14 @@
 #'   \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 #'
 #' }
+#' 
+#' The currently implemented between.groups metrics are:
+#' \itemize{
+#'    \item \code{min.distance}: calculates the minimum distance between two groups. This function must intake two matrice (\code{matrix} and \code{matrix2}) and the quantiles to consider (default is \code{probs = c(0,1)}, the whole dataset). The distance measured is on the axis where the two groups are the closest (and expressed in units of that axis). This function is a faster estimation of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#' } 
+#' 
+#'
+#'
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
 #'     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}
@@ -622,6 +631,41 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
     return(apply(matrix, 1, FUN = distance, hyperplane, dimensions))
 }
 
+## Minimal distance between two groups
+min.distance <- function(matrix, matrix2, probs = c(0,1)) {
+  ## Internals
+  col.means.group <- function(group, matrix) colMeans(matrix[group, ])
+  quantile.group <- function(group, matrix, probs) quantile(matrix[group, 1], probs = probs)
+
+  ## Set the groups
+  groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+  ## Combine the matrix
+  matrix <- as.matrix(rbind(matrix, matrix2))
+
+  ## Get the centroids
+  centroids <- lapply(groups, col.means.group, matrix)
+
+  ## Rotate the matrix
+  rotate_matrix <- matrix %*% svd(do.call(rbind, centroids))$v
+
+  ## Recalculate the centroids
+  rotate_centroids <- lapply(groups, col.means.group, rotate_matrix)
+
+  ## Get the group
+  quantiles <- lapply(groups, quantile.group, rotate_matrix, probs)
+
+  ## Get the edge
+  if(rotate_centroids[[1]][1] < rotate_centroids[[2]][1]) {
+    ## max(group1) - min(group2)
+    edge <- c(quantiles[[1]][2], quantiles[[2]][1])
+  } else {
+    ## max(group2) - min(group1)
+    edge <- c(quantiles[[2]][2], quantiles[[1]][1])
+  }
+
+  ## Return the minimum distance
+  return(unname(ifelse(diff(edge) < 0, 0, diff(edge))))
+}
 
 #' @title Nodes coordinates
 #'

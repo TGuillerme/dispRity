@@ -629,3 +629,28 @@ test_that("deviation", {
         round(deviations(matrix, hyperplane = c(100, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0))),
         c(71, 72, 72, 69, 69, 72, 70, 70, 71))
 })
+
+test_that("min.distance", {
+
+    matrix <- matrix(1, 15, 10)
+    matrix2 <- matrix(2, 10, 10)
+
+    ## Working simple
+    expect_equal_round(min.distance(matrix, matrix2), 3.1623, 4)
+
+    ## Creating the two matrices
+    group1 <- subset(iris, Species=="setosa")[,1:3]
+    group2 <- subset(iris, Species=="virginica")[,1:3]
+
+    # ## Creating the hypervolume objects
+    # set.seed(1)
+    # hv1 = hypervolume::hypervolume_gaussian(group1, verbose = FALSE)
+    # hv2 = hypervolume::hypervolume_gaussian(group2, verbose = FALSE)
+
+    # ## Giving similar results than hypervolume?
+    # distance_est <- hypervolume_distance(hv1, hv2, type = "minimum", num.points.max = 1000, check.memory = FALSE)
+    # distance_est # is 2.298591 with this seed
+
+    min.distance(group1, group2)
+
+})
