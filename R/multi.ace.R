@@ -470,19 +470,22 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
     ## Make the basic output matrix
     output_matrix <- make.matrix(results_out)
-
-    if(length(tree) == 1) {
-        output_matrix <- output_matrix[[1]]
-    }
-
+    
     ## Handle output
-    switch(output,
-        matrix          = return(output_matrix),
-        list            = return(lapply(output_matrix, make.list)),
-        combined.matrix = return(lapply(output_matrix, add.tips, matrix = matrix)),
-        combined.list   = return(lapply(lapply(output_matrix, add.tips, matrix = matrix), make.list))#
+    output_return <- switch(output,
+        matrix          = output_matrix,
+        list            = lapply(output_matrix, make.list),
+        combined.matrix = lapply(output_matrix, add.tips, matrix = matrix),
+        combined.list   = lapply(lapply(output_matrix, add.tips, matrix = matrix), make.list)#
         #dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
         )
+
+    if(length(tree) == 1) {
+        return(output_return[[1]])
+    } else {
+        return(output_return)
+    }
+
 }
 
 
