@@ -633,6 +633,31 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
 
 ## Minimal distance between two groups
 min.distance <- function(matrix, matrix2, probs = c(0,1)) {
+
+    ## Check this: https://www.khanacademy.org/math/linear-algebra/matrix-transformations/linear-transformations/v/a-more-formal-understanding-of-functions
+
+    stop("DEBUG: min.difference")
+
+    ## Algorithm in english + pseudocode
+        ## 1- Combine both matrices into big_matrix and attribute each elements of each matrix into group_1 and group_2
+            ## Make the combined matrix
+            big_matrix <- as.matrix(rbind(matrix, matrix2))
+            ## Get the groups IDs
+            groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+        ## 2- find the centroid_vector between the two centroids group_1 and group_2
+            ## Calculate the groups centroids
+            centroids <- lapply(groups, col.means.group, matrix)
+        ## 3- project all the points in big_matrix onto the centroid_vector
+            ## Do the projection of all the points
+            projected_points <- project.points(big_matrix, vector = centroids)
+        ## 4- get the quantiles of these projections
+            projected_quantiles <- quantiles.per.groups(projected_points, groups, probs)
+        ## 5- calculate the minimum difference between the quantiles
+            differences <- diff(projected_quantiles)
+        ## 6- if difference < 0, return 0 else return the difference
+            unname(ifelse(diff(edge) < 0, 0, diff(edge)))
+
+
   ## Internals
   col.means.group <- function(group, matrix) colMeans(matrix[group, ])
   quantile.group <- function(group, matrix, probs) quantile(matrix[group, 1], probs = probs)
