@@ -405,7 +405,6 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
     if(verbose) cat("Done.\n")
 
-
     if(do_parallel) {
         ## Remove verbose
         if(verbose) {
@@ -480,8 +479,8 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     switch(output,
         matrix          = return(output_matrix),
         list            = return(lapply(output_matrix, make.list)),
-        combined.matrix = return(lapply(output_matrix, add.tips, matrix)),
-        combined.list   = return(lapply(lapply(output_matrix, add.tips, matrix), make.list))#,
+        combined.matrix = return(lapply(output_matrix, add.tips, matrix = matrix)),
+        combined.list   = return(lapply(lapply(output_matrix, add.tips, matrix = matrix), make.list))#
         #dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
         )
 }
