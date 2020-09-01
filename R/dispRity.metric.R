@@ -14,7 +14,7 @@
 #' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the eqn{kth} root. See details below for available optional arguments for each function.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}.
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}. The dimensions levels (1, 2 and 3) can be seen as similar to ranks in linear algebra.
 #' 
 #' The currently implemented dimension-level 1 metrics are:
 #' \itemize{
@@ -635,27 +635,55 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
 min.distance <- function(matrix, matrix2, probs = c(0,1)) {
 
     ## Check this: https://www.khanacademy.org/math/linear-algebra/matrix-transformations/linear-transformations/v/a-more-formal-understanding-of-functions
+    ## Check this too: https://www.math.uh.edu/~jmorgan/Math6397/day13/LinearAlgebraR-Handout.pdf
 
     stop("DEBUG: min.difference")
+    matrix <- matrix(rnorm(25), 5, 5)
+    matrix2 <- matrix(runif(20), 4, 5)
+
 
     ## Algorithm in english + pseudocode
         ## 1- Combine both matrices into big_matrix and attribute each elements of each matrix into group_1 and group_2
-            ## Make the combined matrix
-            big_matrix <- as.matrix(rbind(matrix, matrix2))
-            ## Get the groups IDs
-            groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
-        ## 2- find the centroid_vector between the two centroids group_1 and group_2
-            ## Calculate the groups centroids
-            centroids <- lapply(groups, col.means.group, matrix)
-        ## 3- project all the points in big_matrix onto the centroid_vector
-            ## Do the projection of all the points
-            projected_points <- project.points(big_matrix, vector = centroids)
-        ## 4- get the quantiles of these projections
+        ## Make the combined matrix
+        combined_matrix <- as.matrix(rbind(matrix, matrix2))
+        ## Get the groups IDs
+        groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+
+        ## 2 - centre that matrix onto the centroid of group 1
+        centred_matrix <- combined_matrix - colMeans(combined_matrix[groups[[1]],])
+
+        ## Function for getting the projected lengths
+        get.proj.length <- function(point, centroid, length) {
+            return(geometry::dot(centroid, point)/length)
+        }
+            # Re-watch this: https://www.youtube.com/watch?v=LyGKycYT2v0&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=9
+
+        ## 3 - Get the centroid vector in the centred matrix (the centroid of group 2)
+        centroid <- colMeans(centred_matrix[groups[[2]],])
+
+        ## 4 - Get the length of each projected points on the centroid vector
+        projected_lengths <- apply(big_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
+
+        ## Projecting (dot product) and calculating length
+        warning("DEBUG min.distance, add geometry::dot to NAMESPACE.")
+        warning("DEBUG min.distance, check if centering + dot.prod works.")
+        warning("DEBUG min.distance, change to be any distance (centroid as well). Probably doable via just changing the quantiles.")
+
+    
+        ## 5- get the quantiles of these projections
             projected_quantiles <- quantiles.per.groups(projected_points, groups, probs)
-        ## 5- calculate the minimum difference between the quantiles
+        ## 6- calculate the minimum difference between the quantiles
             differences <- diff(projected_quantiles)
-        ## 6- if difference < 0, return 0 else return the difference
+        ## 4- if difference < 0, return 0 else return the difference
             unname(ifelse(diff(edge) < 0, 0, diff(edge)))
+
+
+
+
+
+
+
+
 
 
   ## Internals
