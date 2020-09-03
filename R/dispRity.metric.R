@@ -646,7 +646,7 @@ min.distance <- function(matrix, matrix2, probs = c(0,1)) {
         ## 1- Combine both matrices into big_matrix and attribute each elements of each matrix into group_1 and group_2
         ## Make the combined matrix
         combined_matrix <- as.matrix(rbind(matrix, matrix2))
-        ## Get the groups IDs
+        ## Get the groups IDs
         groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
 
         ## 2 - centre that matrix onto the centroid of group 1
@@ -690,12 +690,12 @@ min.distance <- function(matrix, matrix2, probs = c(0,1)) {
   col.means.group <- function(group, matrix) colMeans(matrix[group, ])
   quantile.group <- function(group, matrix, probs) quantile(matrix[group, 1], probs = probs)
 
-  ## Set the groups
+  ## Set the groups
   groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
-  ## Combine the matrix
+  ## Combine the matrix
   matrix <- as.matrix(rbind(matrix, matrix2))
 
-  ## Get the centroids
+  ## Get the centroids
   centroids <- lapply(groups, col.means.group, matrix)
 
   ## Rotate the matrix
