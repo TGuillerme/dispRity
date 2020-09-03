@@ -41,3 +41,4 @@ TODO others:
 
  * [ ] Allow non-scaled `dispRity.dtt` function
  * [ ] Allow `model.sim` to include the model name when using a `model.test` object (from previous call) - handle that correctly in the plot as well.
+ * [ ] Fix `Claddis.ordination` tests
