@@ -48,7 +48,7 @@ test_that("Claddis.ordination works with new reader", {
 
     ## Only converting the nexus matrix into a Claddis format
     Claddis_data <- Claddis.ordination("morpho_matrix.nex", distance = NULL)
-    expect_is(Claddis_data, "list")
+    expect_is(Claddis_data, "cladisticMatrix")
     expect_equal(names(Claddis_data), c("topper", "matrix_1"))
     expect_is(Claddis_data$matrix_1$matrix, "matrix")
 
