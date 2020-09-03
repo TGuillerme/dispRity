@@ -123,5 +123,3 @@ test_that("geomorph.ordination works", {
     class(dummy_geomorph_df) <- "geomorph.data.frame"
     expect_warning(geomorph.ordination(dummy_geomorph_df), "Attempting to coerce variables in dummy_geomorph_df as factor")
 })
-)
-})
