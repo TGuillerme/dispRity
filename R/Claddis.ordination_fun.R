@@ -25,5 +25,7 @@ convert.to.Claddis <- function(data) {
     ## Transform the inapplicables in ""
     output$matrix_1$matrix <- ifelse(output$matrix_1$matrix == "-", "", output$matrix_1$matrix)
 
+    class(output) <- "cladisticMatrix"
+
     return(output)
 }

@@ -58,10 +58,10 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
 
     ## Data
     error_msg <- paste0("data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
-    data_type <- check.class(data, c("list", "character"), msg = error_msg)
 
-    ## Convert the data_type into Claddis format
-    if(data_type == "character") {
+    if(!is(data, "cladisticMatrix")) {
+        ## Loading the matrix
+        check.class(data, "character", msg = error_msg)
         ## Reading the data
         data <- read.nexus.data(data)
         ## Converting into a "Claddis" object
@@ -74,7 +74,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
 
     ## Must have at least one matrix
     # if(!any(names(data) %in% "Matrix")) {
-    if(length(grep("matrix", names(data))) == 0) {
+    if(length(grep("matrix_1", names(data))) == 0) {
         stop.call("", error_msg)
     }
     ## Matrix must be a matrix
@@ -116,6 +116,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
 
     ## Ordinate the matrix
     ordination <- do.call(stats::cmdscale, arg.cmdscale)
+    # ordination <- stats::cmdscale(distance, k = k, add = add, ...)
 
     if(!is(ordination, "matrix")) {
         ordination <- ordination$points
