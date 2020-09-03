@@ -23,7 +23,7 @@
 # @importFrom vegan adonis vegdist
 # @importFrom geiger dtt ratematrix sim.char
 # @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
-# @importFrom Claddis MorphDistMatrixFast
+# @importFrom Claddis calculate_morphological_distances
 
 
 NULL

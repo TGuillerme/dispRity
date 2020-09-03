@@ -21,8 +21,8 @@ You'll find a brief description of each of them (alphabetically) here:
 ## `char.diff`
 
 This is yet another function for calculating distance matrices.
-There are many functions for calculating pairwise distance matrices in `R` (`stats::dist`, `vegan::vegdist`, `cluster::daisy` or `Claddis::MorphDistMatrix`) but this one is the `dispRity` one.
-It is slightly different to the ones mentioned above (though not that dissimilar from `Claddis::MorphDistMatrix`) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).
+There are many functions for calculating pairwise distance matrices in `R` (`stats::dist`, `vegan::vegdist`, `cluster::daisy` or `Claddis::calculate_morphological_distances`) but this one is the `dispRity` one.
+It is slightly different to the ones mentioned above (though not that dissimilar from `Claddis::calculate_morphological_distances`) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).
 
 The function intakes a matrix with either `numeric` or `integer` (`NA` included) or matrices with `character` that are indeed `integers` (e.g.`"0"` and `"1"`).
 It then uses a [bitwise operations](https://en.wikipedia.org/wiki/Bitwise_operations_in_C) architecture implemented in `C` that renders the function pretty fast and pretty modular.

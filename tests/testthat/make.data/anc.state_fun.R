@@ -4,7 +4,7 @@
 anc.state_ace<-function(tree, nexus, method, verbose, ...) {
 
     set.model<-function(nexus, character) {
-        #from claddis:AncStateEstMatrix.
+        #from claddis:estimate_ancestral_states.
         if(nexus$ordering[character] == "unord") {
             model<-"ER"
         } else {
@@ -66,7 +66,7 @@ anc.state_ace<-function(tree, nexus, method, verbose, ...) {
 
     if(method == 'ML-claddis') {
         for (character in 1:ncol(nexus$matrix)) {
-            #The following code is modified from claddis::AncStateEstMatrix.
+            #The following code is modified from claddis::estimate_ancestral_states.
             #Get minimum value for character:
             minval<-nexus$min.vals[character]
             #Get maximum value for character:

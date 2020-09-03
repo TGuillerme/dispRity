@@ -80,12 +80,12 @@ For this, simply input a matrix in the `Claddis` format to the function and it w
 require(Claddis)
 
 ## Ordinating the example data from Claddis
-Claddis.ordination(Michaux1989) 
+Claddis.ordination(michaux1989) 
 ```
 
 Note that several options are available, namely which type of distance should be computed.
 See more info in the function manual (`?Claddis.ordination`).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::MorphDistMatrix` and `stats::cmdscale`.
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions `Claddis::calculate_morphological_distances` and `stats::cmdscale`.
 
 ### Other kinds of ordination matrices
 
@@ -186,7 +186,7 @@ For a disparity through time analysis, you will need:
 Using the Beck and Lee (2014) data described [above](#example-data):
 
 ```{r}
-## Measuring disparity through time
+## Measuring disparity through time
 disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
                                         metric = c(sum, variances),
                                         time = 3)

@@ -113,7 +113,7 @@ Hamming, R.W. \bold{1950}. Error detecting and error correcting codes. The Bell 
 Lloyd, G.T. \bold{2016}. Estimating morphological diversity and tempo with discrete character-taxon matrices: implementation, challenges, progress, and future directions. Biological Journal of the Linnean Society. DOI: 10.1111/bij.12746.
 }
 \seealso{
-\code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{MorphDistMatrix}}, \code{\link[cluster]{daisy}}
+\code{\link{plot.char.diff}}, \code{\link[vegan]{vegdist}}, \code{\link[stats]{dist}}, \code{\link[Claddis]{calculate_morphological_distances}}, \code{\link[cluster]{daisy}}
 }
 \author{
 Thomas Guillerme
