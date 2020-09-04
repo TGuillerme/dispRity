@@ -9,7 +9,6 @@
 \alias{variances}
 \alias{ranges}
 \alias{centroids}
-\alias{min.distance}
 \alias{mode.val}
 \alias{ellipse.volume}
 \alias{convhull.surface}
@@ -27,6 +26,7 @@
 \alias{func.div}
 \alias{angles}
 \alias{deviations}
+\alias{group.dist}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -108,11 +108,8 @@ The currently implemented dimension-level 2 metrics are:
 
 The currently implemented between.groups metrics are:
 \itemize{
-   \item \code{min.distance}: calculates the minimum distance between two groups. This function must intake two matrice (\code{matrix} and \code{matrix2}) and the quantiles to consider (default is \code{probs = c(0,1)}, the whole dataset). The distance measured is on the axis where the two groups are the closest (and expressed in units of that axis). This function is a faster estimation of the \code{\link[hypervolume]{hypervolume_distance}} function.
-} 
-
-
-
+   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+}
 
 When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}

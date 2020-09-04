@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids min.distance mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -77,11 +77,8 @@
 #' 
 #' The currently implemented between.groups metrics are:
 #' \itemize{
-#'    \item \code{min.distance}: calculates the minimum distance between two groups. This function must intake two matrice (\code{matrix} and \code{matrix2}) and the quantiles to consider (default is \code{probs = c(0,1)}, the whole dataset). The distance measured is on the axis where the two groups are the closest (and expressed in units of that axis). This function is a faster estimation of the \code{\link[hypervolume]{hypervolume_distance}} function.
-#' } 
-#' 
-#'
-#'
+#'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
 #'     \code{dispRity(data, metric = centroids, centroid = 0, method = "manhattan")}
@@ -631,93 +628,51 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
     return(apply(matrix, 1, FUN = distance, hyperplane, dimensions))
 }
 
-## Minimal distance between two groups
-min.distance <- function(matrix, matrix2, probs = c(0,1)) {
-
-    ## Check this: https://www.khanacademy.org/math/linear-algebra/matrix-transformations/linear-transformations/v/a-more-formal-understanding-of-functions
-    ## Check this too: https://www.math.uh.edu/~jmorgan/Math6397/day13/LinearAlgebraR-Handout.pdf
-
-    stop("DEBUG: min.difference")
-    matrix <- matrix(rnorm(25), 5, 5)
-    matrix2 <- matrix(runif(20), 4, 5)
 
 
-    ## Algorithm in english + pseudocode
-        ## 1- Combine both matrices into big_matrix and attribute each elements of each matrix into group_1 and group_2
-        ## Make the combined matrix
-        combined_matrix <- as.matrix(rbind(matrix, matrix2))
-        ## Get the groups IDs
-        groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+## Functions for the group.distance function
+## Function for centreing a matrix on one specific centroid
+centre.matrix <- function(matrix, group) {
+    centre <- colMeans(matrix[group,])
+    matrix - rep(centre, rep.int(nrow(matrix), ncol(matrix)))
+}
+## Function for getting the projected lengths
+get.proj.length <- function(point, centroid, length) {
+    return(geometry::dot(centroid, point)/length)
+}
+## Function for getting the quantiles per groups
+quantiles.per.groups <- function(group, lengths, probs) {
+    return(quantile(lengths[group], probs = probs))
+}
 
-        ## 2 - centre that matrix onto the centroid of group 1
-        centred_matrix <- combined_matrix - colMeans(combined_matrix[groups[[1]],])
+## Euclidean distance between two groups
+group.dist <- function(matrix, matrix2, probs = c(0,1)) {
+    ## Make the combined matrix
+    combined_matrix <- as.matrix(rbind(matrix, matrix2))
+    ## Get the groups IDs
+    groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+    ## Centre that matrix onto the centroid of group 1
+    centred_matrix <- centre.matrix(combined_matrix, groups[[1]])
+    ## Get the centroid vector in the centred matrix (the centroid of group 2)
+    centroid <- colMeans(centred_matrix[groups[[2]],])
+    ## Get the length of each projected points on the centroid vector
+    projected_lengths <- apply(centred_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
+    ## Get the quantile of the projections for each group
+    group_quantiles <- lapply(groups, quantiles.per.groups, projected_lengths, probs)
 
-        ## Function for getting the projected lengths
-        get.proj.length <- function(point, centroid, length) {
-            return(geometry::dot(centroid, point)/length)
-        }
-            # Re-watch this: https://www.youtube.com/watch?v=LyGKycYT2v0&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=9
-
-        ## 3 - Get the centroid vector in the centred matrix (the centroid of group 2)
-        centroid <- colMeans(centred_matrix[groups[[2]],])
-
-        ## 4 - Get the length of each projected points on the centroid vector
-        projected_lengths <- apply(big_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
-
-        ## Projecting (dot product) and calculating length
-        warning("DEBUG min.distance, add geometry::dot to NAMESPACE.")
-        warning("DEBUG min.distance, check if centering + dot.prod works.")
-        warning("DEBUG min.distance, change to be any distance (centroid as well). Probably doable via just changing the quantiles.")
-
-    
-        ## 5- get the quantiles of these projections
-            projected_quantiles <- quantiles.per.groups(projected_points, groups, probs)
-        ## 6- calculate the minimum difference between the quantiles
-            differences <- diff(projected_quantiles)
-        ## 4- if difference < 0, return 0 else return the difference
-            unname(ifelse(diff(edge) < 0, 0, diff(edge)))
-
-
-
-
-
-
-
-
-
-
-  ## Internals
-  col.means.group <- function(group, matrix) colMeans(matrix[group, ])
-  quantile.group <- function(group, matrix, probs) quantile(matrix[group, 1], probs = probs)
-
-  ## Set the groups
-  groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
-  ## Combine the matrix
-  matrix <- as.matrix(rbind(matrix, matrix2))
-
-  ## Get the centroids
-  centroids <- lapply(groups, col.means.group, matrix)
-
-  ## Rotate the matrix
-  rotate_matrix <- matrix %*% svd(do.call(rbind, centroids))$v
-
-  ## Recalculate the centroids
-  rotate_centroids <- lapply(groups, col.means.group, rotate_matrix)
-
-  ## Get the group
-  quantiles <- lapply(groups, quantile.group, rotate_matrix, probs)
-
-  ## Get the edge
-  if(rotate_centroids[[1]][1] < rotate_centroids[[2]][1]) {
-    ## max(group1) - min(group2)
-    edge <- c(quantiles[[1]][2], quantiles[[2]][1])
-  } else {
-    ## max(group2) - min(group1)
-    edge <- c(quantiles[[2]][2], quantiles[[1]][1])
-  }
-
-  ## Return the minimum distance
-  return(unname(ifelse(diff(edge) < 0, 0, diff(edge))))
+    ## Get the difference from group1 to group2 (depending on orientation along the difference axis)
+    if(mean(projected_lengths[groups[[1]]]) < mean(projected_lengths[groups[[2]]])) {
+        ## Group 1 is on the "left"
+        distance <- ifelse(length(probs) == 1, 
+                    group_quantiles[[2]] - group_quantiles[[1]],
+                    group_quantiles[[2]][1] - group_quantiles[[1]][2])
+    } else {
+        ## Group 1 is on the "right"
+        distance <- ifelse(length(probs) == 1, 
+                    group_quantiles[[1]] - group_quantiles[[2]],
+                    group_quantiles[[1]][2] - group_quantiles[[2]][1])
+    }
+    return(unname(ifelse(distance < 0, 0, distance)))
 }
 
 #' @title Nodes coordinates

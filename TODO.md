@@ -13,7 +13,9 @@ TODO:
  - [x] improve speed for the `dispRity` function: the `decompose` function in `decompose.matrix` should be isolated and switch between two versions (between groups or not).
 
  - [ ] implement `ancestral.dist` as a `"between.groups"` metric
- - [ ] implement `min.dist` as a `"between.groups"` metric
+ - [x] implement `group.dist` as a `"between.groups"` metric
+
+ - [ ] add metrics to the manual + the between.groups explanation
 
 Things can be sped up by directly passing a list of comparisons (pairwise or sequential or user defined) that will be passed as a `lapply_loop` argument (or similar).
 
