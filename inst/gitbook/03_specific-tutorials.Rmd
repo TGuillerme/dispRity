@@ -415,6 +415,7 @@ Level | Name | Description | Source |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
 1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
+1 | `group.dist` | The distance between two groups | `dispRity` |
 1 | `mode.val` | The modal value | `dispRity` |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
@@ -764,6 +765,34 @@ summary(dispRity(dummy_space[, c(1:2)], metric = deviations,
 Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
+
+#### Between group metrics
+
+The `group.dist` metric allows to measure the distance between two groups in the multidimensional space.
+This function needs to intake several groups and use the option `between.groups = TRUE` in the `dispRity` function.
+It calculates the vector normal distance (euclidean) between two groups and returns 0 if that distance is negative.
+Note that it is possible to set up which quantiles to consider for calculating the distances between groups.
+For example, one might be interested in only considering the 95% CI for each group.
+This can be done through the option `probs = c(0.025, 0.975)` that is passed to the `quantile` function.
+It is also possible to use this function to measure the distance between the groups centroids by calculating the 50% quantile (`probs = c(0.5)`).
+
+```{r}
+## Creating a dispRity object with two groups
+grouped_space <- custom.subsets(dummy_space,
+                      group = list(c(1:5), c(6:10)))
+
+## Measuring the minimum distance between both groups
+summary(dispRity(grouped_space, metric = group.dist,
+                 between.groups = TRUE))
+
+## Measuring the centroid distance between both groups
+summary(dispRity(grouped_space, metric = group.dist,
+                 between.groups = TRUE, probs = 0.5))
+
+## Measuring the distance between both group's 75% CI
+summary(dispRity(grouped_space, metric = group.dist,
+                 between.groups = TRUE, probs = c(0.25, 0.75)))
+```
 
 ### Which disparity metric to choose?
 

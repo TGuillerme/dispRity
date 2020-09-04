@@ -127,6 +127,16 @@
 #' centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9,10))
 #' ## Distances between each row and the origin
 #' centroids(dummy_matrix, centroid = 0)
+#'
+#' ## convhull.surface
+#' ## Making a matrix with more elements than dimensions (for convhull)
+#' thinner_matrix <- matrix(rnorm(90), 18, 5)
+#' ## Convex hull hypersurface of a matrix
+#' convhull.surface(thinner_matrix)
+#' 
+#' ## convhull.volume
+#' ## Convex hull volume of a matrix
+#' convhull.volume(thinner_matrix)
 #' 
 #' ## deviations
 #' ## The deviations from the least square hyperplane
@@ -146,16 +156,6 @@
 #' ## displacement ratios from the centre (manhattan distance)
 #' displacements(dummy_matrix, method = "manhattan")
 #' 
-#' ## convhull.surface
-#' ## Making a matrix with more elements than dimensions (for convhull)
-#' thinner_matrix <- matrix(rnorm(90), 18, 5)
-#' ## Convex hull hypersurface of a matrix
-#' convhull.surface(thinner_matrix)
-#' 
-#' ## convhull.volume
-#' ## Convex hull volume of a matrix
-#' convhull.volume(thinner_matrix)
-#' 
 #' ## ellipse.volume
 #' ## Ellipsoid volume of a matrix
 #' ellipse.volume(dummy_matrix)
@@ -174,15 +174,25 @@
 #' ## Functional evenness (based on manhattan distances)
 #' func.eve(dummy_matrix, method = "manhattan")
 #'
+#' ## group.dist
+#' ## The distance between groups
+#' dummy_matrix2 <- matrix(runif(40, min = 2, max = 4), 4, 10)
+#' ## The minimum distance between both groups
+#' group.dist(dummy_matrix, dummy_matrix2)
+#' ## The distance between both groups' centroids
+#' group.dist(dummy_matrix, dummy_matrix2, probs = 0.5)
+#' ## The minimum distance between the 50% CI of each group
+#' group.dist(dummy_matrix, dummy_matrix2, probs = c(0.25, 0.75))
+#' 
+#' ## mode.val
+#' ## Modal value of a vector
+#' mode.val(dummy_matrix)
+#' 
 #' ## neighbours
 #' ## The nearest neighbour euclidean distances
 #' neighbours(dummy_matrix)
 #' ## The furthest neighbour manhattan distances
 #' neighbours(dummy_matrix, which = max, method = "manhattan")
-#'
-#' ## mode.val
-#' ## Modal value of a vector
-#' mode.val(dummy_matrix)
 #'
 #' ## pairwise.dist
 #' ## The pairwise distance
@@ -256,6 +266,7 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("?ellipse.volume\n")
     cat("?func.div\n")
     cat("?func.eve\n")
+    cat("?group.dist\n")
     cat("?mode.val\n")
     cat("?n.ball.volume\n")
 }
