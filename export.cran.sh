@@ -108,12 +108,18 @@ R CMD check --as-cran dispRity_*.tar.gz
 #--as-cran 
 
 ## Check compile
-if grep -e 'ERROR' -e 'WARNING' -e 'NOTE' dispRity.Rcheck/00check.log 
+if grep -e 'ERROR' -e 'WARNING' dispRity.Rcheck/00check.log 
 then
     echo "You broke it again! Bordel!"
     cd ..
 else
-    echo "Nice one: it compiles smoothly!"
+
+    if grep -e 'NOTE'  dispRity.Rcheck/00check.log 
+    then
+        echo "Check out the NOTE(s) before submitting!"
+    else
+        echo "Nice one: it compiles smoothly!"
+    fi    
     echo "The tar ball has been moved to ~/Packaging/CRAN/"
     mv dispRity_*.tar.gz ~/Packaging/CRAN/
     cd ..
