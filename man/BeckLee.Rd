@@ -11,7 +11,7 @@
 three matrices and one phylogenetic tree.
 }
 \source{
-\url{http://rspb.royalsocietypublishing.org/content/281/1793/20141278.short}
+\url{ https://www.royalsocietypublishing.org/doi/abs/10.1098/rspb.2014.1278}
 }
 \description{
 Example datasets from Beck and Lee 2014.
