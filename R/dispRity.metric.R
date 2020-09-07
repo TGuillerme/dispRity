@@ -78,6 +78,11 @@
 #' The currently implemented between.groups metrics are:
 #' \itemize{
 #'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#' 
+#' \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#' 
+#' 
+#' 
 #' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -252,6 +257,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?displacements\n")
     cat("?neighbours\n")
     cat("?pairwise.dist\n")
+    cat("?point.dist\n")
     cat("?ranges\n")
     cat("?radius\n")
     cat("?variances\n")
@@ -311,15 +317,25 @@ fun.dist.euclidean <- function(row, centroid) {
 fun.dist.manhattan <- function(row, centroid) {
     return(sum(abs(row-centroid)))
 }
-
+## Select either method
+select.method <- function(method) {
+    ## Switch methods
+    fun.dist <- switch(method,
+        euclidean = fun.dist.euclidean,
+        manhattan = fun.dist.manhattan
+    )
+    ## Returns non-null
+    if(is.null(fun.dist)) {
+        stop.call(msg = "can only be \"euclidean\" or \"manhattan\".", call = "method argument ")
+    } else {
+        return(fun.dist)
+    }
+}
 ## Calculating the distance from centroid
 centroids <- function(matrix, centroid, method = "euclidean") {
 
     ## Select the fun distance
-    switch(method,
-        euclidean = {fun.dist <- fun.dist.euclidean},
-        manhattan = {fun.dist <- fun.dist.manhattan}
-    )
+    fun.dist <- select.method(method)
 
     ## Initialise values
     cent.dist <- numeric(nrow(matrix))
@@ -417,10 +433,7 @@ diagonal <- function(matrix) {
 ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean", ...) {
 
     ## Select the fun distance
-    switch(method,
-        euclidean = {fun.dist <- fun.dist.euclidean},
-        manhattan = {fun.dist <- fun.dist.manhattan}
-    )
+    fun.dist <- select.method(method)
 
     ## Checking if the nodes.coords is available
     if(missing(nodes.coords)) {
@@ -444,7 +457,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
         },
         list = {
             ## Wrapper function
-            mapply.fun.dist <- function(nodes.coords, matrix) {
+            mapply.fun.dist <- function(nodes.coords, matrix, fun.dist) {
                 ## Converting the matrix into a list
                 nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
                 ## Calculate nodes.coords distance with multiple nodes.coords
@@ -456,7 +469,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
             matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
 
             ## Calculate nodes.coords distance with multiple centroids
-            cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix)
+            cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix, fun.dist)
             cent.dist <- do.call(rbind, cent.dist)
             
             ## Calculate the cumulative distances
@@ -684,6 +697,18 @@ group.dist <- function(matrix, matrix2, probs = c(0,1)) {
                     group_quantiles[[1]][2] - group_quantiles[[2]][1])
     }
     return(unname(ifelse(distance < 0, 0, distance)))
+}
+
+## Distance between two groups
+point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", ...) {
+    ## Select the fun distance
+    fun.dist <- select.method(method)
+
+    ## Calculating the centroid point
+    centroid <- point(matrix2)
+
+    ## Calculate centroid distance with a single centroid
+    return(apply(matrix, 1, fun.dist, centroid = centroid))
 }
 
 #' @title Nodes coordinates

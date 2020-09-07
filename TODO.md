@@ -11,11 +11,11 @@ TODO:
  - [x] `dispRity` allows between.groups metrics
  - [x] `dispRity` has a `between.groups` argument:this argument can be logical (default is `FALSE`; `TRUE` = sequential comparison for `chrono.subset` objects/pairwise comparisons for `custom.subset` objects) or a list of pairs of comparisons (like for `test.dispRity`'s `comparisons` argument)
  - [x] improve speed for the `dispRity` function: the `decompose` function in `decompose.matrix` should be isolated and switch between two versions (between groups or not).
- - [ ] implement `ancestral.dist` as a `"between.groups"` metric
- - [ ] add `ancestral.dist` manual + example
+ - [x] implement `point.dist` as a `"between.groups"` metric (add to NAMESPACE, + list of metrics in dispRity.metric (dimlevel3))
+ - [ ] add `point.dist` manual + example + test
  - [x] implement `group.dist` as a `"between.groups"` metric
  - [x] add `group.dist` manual + example
- - [ ] add the between.groups explanation to the manual
+ - [x] add the between.groups explanation to the manual
 
 Things can be sped up by directly passing a list of comparisons (pairwise or sequential or user defined) that will be passed as a `lapply_loop` argument (or similar).
 
