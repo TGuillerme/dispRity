@@ -1,10 +1,5 @@
 # TODO list for `between.groups`
 
-
-Add a between.groups mode for calculating disparity were the calculation is slower (`for` loop) but can be depending on previously calculated values (e.g. for `ancestral.dist`) or can be applied between subsets (e.g. for measuring the distance between groups).
-
-TODO:
-
  - [x] create a new `"between.groups"` class option for metrics (input `matrix1` and `matrix2`)
  - [x] `make.metric` detects between.groups metrics
  - [x] update test for `make.metric` for detecting between.groupss
@@ -16,8 +11,7 @@ TODO:
  - [x] implement `group.dist` as a `"between.groups"` metric
  - [x] add `group.dist` manual + example
  - [x] add the between.groups explanation to the manual
-
-Things can be sped up by directly passing a list of comparisons (pairwise or sequential or user defined) that will be passed as a `lapply_loop` argument (or similar).
+ - [ ] fix plot bug in line 82 from `test-between.groups`
 
 Update the `plot.dispRity` structure.
 
