@@ -79,7 +79,7 @@ plot(simple_test)
 
 ## Testing the sum of variance on all shifts
 sum_var_test <- test.metric(space, metric = c(sum, variances),
-                            shifts = c("random", "size", "density", "position"), verbose = TRUE)
+                            shifts = c("random", "size", "density", "position"))
 
 ## Summarising the tests
 summary(sum_var_test)
@@ -89,7 +89,7 @@ plot(sum_var_test)
 
 ## Applying the test directly on a disparity object
 data(disparity)
-median_centroid_test <- test.metric(disparity, shifts = "size", verbose = TRUE)
+median_centroid_test <- test.metric(disparity, shifts = "size")
 
 ## Summarising the tests
 summary(median_centroid_test)

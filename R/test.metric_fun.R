@@ -62,7 +62,7 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 get.reduced.dispRity <- function(reduction, metric, dimensions, verbose, ...) {
     
     ## Duplicate function for verbose
-    dispRity.verbose <- dispRity
+    dispRity.verbose <- dispRity::dispRity
     if(verbose) {
         ## Remake the function verbose
         body(dispRity.verbose)[[16]] <- substitute(silent <- "silent")
@@ -71,8 +71,8 @@ get.reduced.dispRity <- function(reduction, metric, dimensions, verbose, ...) {
 
     ## Run the disparity
     options(warn = -1)
-    return(dispRity.verbose(data = reduction, metric = metric, ..., dimensions = dimensions, verbose = verbose)$disparity)
-    # return(dispRity.verbose(data = reduction, metric = metric, dimensions = dimensions, verbose = verbose)$disparity)
+    return(dispRity.verbose(data = reduction, metric = metric, ..., dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
+    # return(dispRity.verbose(data = reduction, metric = metric, dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
 }
 
 ## Transforming the tables

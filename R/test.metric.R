@@ -53,7 +53,7 @@
 #' 
 #' ## Testing the sum of variance on all shifts
 #' sum_var_test <- test.metric(space, metric = c(sum, variances),
-#'                             shifts = c("random", "size", "density", "position"), verbose = TRUE)
+#'                             shifts = c("random", "size", "density", "position"))
 #' 
 #' ## Summarising the tests
 #' summary(sum_var_test)
@@ -63,7 +63,7 @@
 #' 
 #' ## Applying the test directly on a disparity object
 #' data(disparity)
-#' median_centroid_test <- test.metric(disparity, shifts = "size", verbose = TRUE)
+#' median_centroid_test <- test.metric(disparity, shifts = "size")
 #' 
 #' ## Summarising the tests
 #' summary(median_centroid_test)
@@ -103,6 +103,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data[[1]]), ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data[[1]]))
+    metrics_list <- metrics_list$levels
 
     ## shift
     available_methods <- c("random", "size", "density", "position", "evenness")
