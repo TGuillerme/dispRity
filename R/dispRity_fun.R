@@ -1,6 +1,6 @@
 get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
-    between.groups <- FALSE
+    between.groups <- rep(FALSE, 3)
 
     length_metric <- length(metric)
 
@@ -15,10 +15,10 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, ...)
-        # warning("DEBUG dispRity_fun") ; level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
-        between.groups <- level$between.groups
-        level <- level$type
+        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, ...)
+        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
+        level <- test_level$type
+        between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
 
         switch(level,
             level3 = {
@@ -40,7 +40,10 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         }
         ## Sorting the metrics by levels
         ## getting the metric levels
-        levels <- unlist(lapply(metric, make.metric, silent = TRUE, data.dim = data.dim))
+        test_level <- lapply(metric, make.metric, silent = TRUE, data.dim = data.dim, check.between.groups = TRUE)
+        levels <- unlist(lapply(test_level, `[[` , 1))
+        btw_groups <- unlist(lapply(test_level, `[[` , 2))
+
         ## can only unique levels
         if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
 
@@ -52,16 +55,19 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         ## Get the level 1 metric
         if(!is.na(match("level1", levels))) {
             level1.fun <- metric[[match("level1", levels)]]
+            between.groups[1] <- btw_groups[match("level1", levels)]
         }
 
         ## Get the level 2 metric
         if(!is.na(match("level2", levels))) {
             level2.fun <- metric[[match("level2", levels)]]
+            between.groups[2] <- btw_groups[match("level2", levels)]
         }
 
         ## Get the level 3 metric
         if(!is.na(match("level3", levels))) {
             level3.fun <- metric[[match("level3", levels)]]
+            between.groups[3] <- btw_groups[match("level3", levels)]
         }
     }
 
@@ -166,7 +172,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 }
 
 ## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, between.groups, ...){# verbose, ...) {
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_is_between.groups, ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
     if(matrix_decomposition) {
@@ -174,7 +180,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         use_array <- !is.null(metrics_list$level3.fun)
         ## Getting the first metric
         first_metric <- get.first.metric(metrics_list)
-        level <- first_metric[[3]]
+        # level <- first_metric[[3]] 
         metrics_list <- first_metric[[2]]
         first_metric <- first_metric[[1]]
         ## Decompose the metric using the first metric
@@ -203,12 +209,12 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 
 ## Lapply wrapper for disparity.bootstraps function
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, between.groups = FALSE, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups = FALSE, ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, between.groups, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_is_between.groups, ...))
 }
 mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
     return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))

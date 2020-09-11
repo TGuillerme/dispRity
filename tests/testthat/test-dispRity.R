@@ -48,9 +48,9 @@ test_that("get.dispRity.metric.handle", {
     test.between.groups <- function(matrix, matrix2) {return(42)}
     test.between.groups.no <- function(matrix, matrix3) {return(42)}
     test <- get.dispRity.metric.handle(test.between.groups, match_call, data.dim = c(5,4))
-    expect_true(test$between.groups)
+    expect_equal(test$between.groups, c(TRUE, FALSE, FALSE))
     test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data.dim = c(5,4))
-    expect_false(test$between.groups)
+    expect_equal(test$between.groups, c(FALSE, FALSE, FALSE))
 })
 
 test_that("get.first.metric", {

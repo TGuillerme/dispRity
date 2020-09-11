@@ -150,4 +150,27 @@ test_that("dispRity works for between.groups metrics", {
     expect_warning(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
     expect_equal(the_warning[[1]], "The disparity calculation (metric = level1_between.groups) is calculated between groups (between.groups = TRUE) but the input data (test1) contained no between groups calculation. The metric is thus only applied between the groups (not to the previously calculated disparity). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = FALSE)")
     expect_equal(unlist(extract.dispRity(test2)), unlist(extract.dispRity(dispRity(custom, metric = level1_between.groups, between.groups = TRUE))))
+
+
+    ## Handling multiple level metrics
+    matrix1 <- matrix(1, 5, 4)
+    matrix2 <- matrix(2, 10, 4)
+    expect_warning(data <- custom.subsets(rbind(matrix1, matrix2), group = list(1:5, 6:15)))
+
+    ## Works normally
+    test <- dispRity(data, metric = point.dist, between.groups = TRUE)
+    expect_equal(summary(test)$obs.median, 2)
+
+    ## Works with additional level1
+    test <- dispRity(data, metric = c(mean, point.dist), between.groups = TRUE)
+    expect_equal(summary(test)$obs, 2)
+    ## Works in any order
+    test2 <- dispRity(data, metric = c(point.dist, mean), between.groups = TRUE)
+    expect_equal(summary(test)$obs, summary(test2)$obs)
+
+    ## Error if level 3 is not between.metric
+    error <- capture_error(dispRity(data, metric = c(point.dist, var), between.groups = TRUE))
+    expect_equal(error[[1]], "Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics.")
+    error <- capture_error(dispRity(data, metric = c(var, point.dist), between.groups = TRUE))
+    expect_equal(error[[1]], "Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics.")
 })

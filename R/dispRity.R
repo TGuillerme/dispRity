@@ -136,7 +136,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
-    metric_is_between.groups <- metrics_list$between.groups
+    metric_is_between.groups <- unlist(metrics_list$between.groups)
     metrics_list <- metrics_list$levels
 
     ## Stop if data already contains disparity and metric is not level1
@@ -201,7 +201,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Check whether logical class can be applied
     if(between.groups_class == "logical") {
         if(between.groups) {
-            if(!metric_is_between.groups) {
+            if(!any(metric_is_between.groups)) {
                 stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
             }
             ## Make the series
@@ -219,7 +219,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             }
         } 
     } else {
-        if(!metric_is_between.groups) {
+        if(!any(metric_is_between.groups)) {
             stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
         }
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
@@ -230,6 +230,13 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         list_of_pairs <- between.groups
         is_between.groups <- TRUE
     }
+
+    ## Not implemented level 3 + level 2/1 metric
+    if(is_between.groups && any(metric_is_between.groups) && !is.null(metrics_list$level3.fun) && !metric_is_between.groups[1]) {
+        ## Stop.call
+        stop(paste0("Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics."), call. = FALSE)
+    }
+
 
     ## Parallel
     # if(missing(parallel)) {
@@ -347,7 +354,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, is_between.groups, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups, ...)
 
     }
 
