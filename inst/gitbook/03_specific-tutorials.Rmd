@@ -501,6 +501,7 @@ Level | Name | Description | Source |
 1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
+2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
@@ -850,6 +851,9 @@ In doubt, it's probably better to enter your `base` (for `angles`) or your `hype
 #### Between group metrics {#betweengroupmetricslist}
 
 You can find detailed explanation on how between group metrics work [here](#betweengroupmetricsexplain).
+
+##### `group.dist`
+
 The `group.dist` metric allows to measure the distance between two groups in the multidimensional space.
 This function needs to intake several groups and use the option `between.groups = TRUE` in the `dispRity` function.
 It calculates the vector normal distance (euclidean) between two groups and returns 0 if that distance is negative.
@@ -876,6 +880,35 @@ summary(dispRity(grouped_space, metric = group.dist,
                  between.groups = TRUE, probs = c(0.25, 0.75)))
 ```
 
+##### `point.dist`
+
+The metric measures the distance between the elements in one group (`matrix`) and a point calculated from a second group (`matrix2`).
+By default this point is the centroid but can be any point defined by a function passed to the `point` argument.
+For example, the centroid of `matrix2` is the mean of each column of that matrix so `point = colMeans` (default).
+This function also takes the `method` argument like previous one described above to measure either the `"euclidean"` (default) or the `"manhattan"` distances:
+
+
+```{r}
+## Measuring the distance between the elements of the first group
+## and the centroid of the second group
+summary(dispRity(grouped_space, metric = point.dist,
+                 between.groups = TRUE))
+
+## Measuring the distance between the elements of the second group
+## and the centroid of the first group
+summary(dispRity(grouped_space, metric = point.dist,
+                 between.groups = list(c(2,1)))))
+
+## Measuring the distance between the elements of the first group
+## a point defined as the standard deviation of each column
+## in the second group
+sd.point <- function(matrix2) {apply(matrix2, 2, sd)}
+summary(dispRity(grouped_space, metric = point.dist,
+                 point = sd.point, method = "manhattan",
+                 between.groups = TRUE))
+```
+
+
 ### Which disparity metric to choose?
 
 The disparity metric that gives the most consistent results is the following one:
@@ -883,6 +916,7 @@ The disparity metric that gives the most consistent results is the following one
 ```{r}
 best.metric <- function() return(42)
 ```
+
 Joke aside, this is a legitimate question that has no simple answer: **it depends on the dataset and question at hand**.
 Thoughts on which metric to choose can be find in @moms and @Guillerme2020 but again, will ultimately depend on the question and dataset.
 The question should help figuring out which type of metric is desired: for example, in the question "does the extinction released niches for mammals to evolve", the metric in interest should probably pick up a change in size in the trait space (the release could result in some expansion of the mammalian morphospace); or if the question is "does group X compete with group Y", maybe the metric of interested should pick up changes in position (group X can be displaced by group Y).

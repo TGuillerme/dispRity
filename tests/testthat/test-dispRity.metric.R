@@ -751,5 +751,31 @@ test_that("min.distance", {
     expect_equal_round(group.dist(matrix, matrix2), 2.444375, digits = 5)
     expect_equal_round(group.dist(matrix, matrix2, probs = 0.5), 4.311056, digits = 5)
     ## Pretty close!
+})
 
+test_that("point.dist", {
+    ## Simple tests
+    matrix1 <- matrix(1, 5, 4)
+    matrix2 <- matrix(2, 10, 4)
+    expect_equal(point.dist(matrix1, matrix1), rep(0, 5))
+    expect_equal(point.dist(matrix2, matrix2), rep(0, 10))
+    expect_equal(point.dist(matrix1, matrix2), rep(2, 5))
+    expect_equal(point.dist(matrix2, matrix1), rep(2, 10))
+    expect_equal(point.dist(matrix2, matrix1, point = sd), rep(4, 10))
+    expect_equal(point.dist(matrix1, matrix2, point = sd), rep(2, 5))
+    expect_equal(point.dist(matrix2, matrix1, point = sd, method = "manhattan"), rep(8, 10))
+    expect_equal(point.dist(matrix1, matrix2, point = sd, method = "manhattan"), rep(4, 5))
+
+    expect_warning(test <- custom.subsets(rbind(matrix1, matrix2), group = list(1:5, 6:15)))
+    test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
+    expect_equal(summary(test2)$obs.median, 2)
+    test3 <- dispRity(test, metric = c(mean, point.dist), between.groups = TRUE)
+    expect_equal(summary(test3)$obs, 2)
+
+    set.seed(1)
+    data(BeckLee_tree)
+    data(BeckLee_mat99)
+    test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
+    test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
+    expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
 })

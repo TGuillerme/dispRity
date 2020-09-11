@@ -206,6 +206,17 @@
 #' mean(pairwise.dist(dummy_matrix)^2)
 #' ## equal to:
 #' geiger::disparity(data = dummy_matrix)
+#' 
+#' ## point.dist
+#' ## The distances from the rows dummy_matrix
+#' ## to the centroids of dummy_matrix2
+#' point.dist(dummy_matrix, dummy_matrix2)
+#' ## The average distances from dummy_matrix
+#' ## to the centroids of dummy_matrix2
+#' mean(point.dist(dummy_matrix, dummy_matrix2))
+#' ## The manhattan distance from the rows dummy_matrix
+#' ## to the standard deviation of dummy_matrix2
+#' point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
 #'
 #' ## quantiles
 #' ## The 95 quantiles
