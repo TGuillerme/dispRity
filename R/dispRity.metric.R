@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -286,6 +286,12 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("?group.dist\n")
     cat("?mode.val\n")
     cat("?n.ball.volume\n")
+}
+
+between.groups.fun <- function(matrix, matrix2, ...) {
+    cat("Between groups functions implemented in dispRity:\n")
+    cat("?group.dist # level 1\n")
+    cat("?point.dist # level 2\n")
 }
 
 ## kth root scaling

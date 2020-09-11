@@ -27,6 +27,7 @@
 \alias{angles}
 \alias{deviations}
 \alias{group.dist}
+\alias{point.dist}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
