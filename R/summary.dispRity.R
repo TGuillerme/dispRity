@@ -83,7 +83,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         #Set to default (see below)
         digits <- "default"
     } else {
-        check.class(digits, "numeric")
+        check.class(digits, c("numeric", "integer"))
     }
 
     #DATA
@@ -233,7 +233,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             elements[[null_elem]] <- nrow(data$subsets[[null_elem]]$elements)
         }
     }
-    
+
     ## Get the names of the subsets
     names <- names(data$subsets)
     if(is.null(names)) {
@@ -244,29 +244,58 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     disparity_values <- lapply(data$disparity, lapply.observed)
     names(disparity_values) <- NULL
 
-    ## Initialise the results
-    summary_results <- data.frame(row.names = NULL, "subsets" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
+
+    ## Change the names and subsets if between groups
+    if(data$call$disparity$metrics$between.groups) {
+        ## Groups names
+        names <- names(data$disparity)
+
+        ## Remove warning (desired: matching rows with different numbers of elements!)
+        options(warn = -1)
+        ## Get the table of elements for each pair of groups
+        elements_matrix <-lapply(as.list(names),  function(name, elements)
+                                do.call(cbind, lapply(as.list(strsplit(name, split = ":")[[1]]), function(name, elements) return(unname(elements[[match(name, names(elements))]])), elements)),
+                                elements = elements)
+        options(warn = 0)
+
+        ## Initialise the results
+        summary_results <- data.frame(row.names = NULL,
+                                    "subsets" = rep(names, unlist(lapply(elements_matrix, nrow))),
+                                    "n_1" = do.call(rbind,elements_matrix)[,1],
+                                    "n_2" = do.call(rbind,elements_matrix)[,2])
+    } else {
+        ## Initialise the results        
+        summary_results <- data.frame(row.names = NULL, "subsets" = rep(names, unlist(lapply(elements, length))), "n" = unlist(elements))
+    }
+
+    ## Set the observed colume
+    if(data$call$disparity$metrics$between.groups) {
+        obs_col <- 4
+        elements <- lapply(elements_matrix, function(x) seq(1:nrow(x)))
+    } else {
+        obs_col <- 3
+    }
 
     ## Add the observed values
     if(is_distribution) {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, lapply(disparity_values, cent.tend, ...), elements))), row.names = NULL)
-        names(summary_results)[3] <- paste("obs", as.expression(match_call$cent.tend), sep = ".")
+        names(summary_results)[obs_col] <- paste("obs", as.expression(match_call$cent.tend), sep = ".")
     } else {
         summary_results <- cbind(summary_results, as.vector(unlist(mapply(mapply.observed, disparity_values, elements))), row.names = NULL)
-        names(summary_results)[3] <- "obs"
+        names(summary_results)[obs_col] <- "obs"
     }
 
     if(!is.null(data$call$bootstrap)) {
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles, ...)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
-        names(summary_results)[4:length(summary_results)] <- c(paste("bs", as.expression(match_call$cent.tend), sep = "."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+        names(summary_results)[(obs_col+1):length(summary_results)] <- c(paste("bs", as.expression(match_call$cent.tend), sep = "."), names(quantile(rnorm(5), probs = CI.converter(quantiles))))
     } else {
         if(is_distribution) {
             ## Calculate the quantiles
             summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply, get.summary, quantiles = quantiles)), byrow = TRUE, ncol = (length(quantiles)*2)))
             ## Adding the labels
-            names(summary_results)[4:length(summary_results)] <- c(names(quantile(rnorm(5), probs = CI.converter(quantiles))))
+            names(summary_results)[(obs_col+1):length(summary_results)] <- c(names(quantile(rnorm(5), probs = CI.converter(quantiles))))
         }
     }
 
@@ -274,9 +303,15 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     summary_results <- digits.fun(summary_results, digits)
 
     ## If any elements is equal to one, check if not NA
-    if(any(summary_results$n == 1)) {
+    if(data$call$disparity$metrics$between.groups) {
+        col_n <- c(2,3)
+    } else {
+        col_n <- 2
+    }
+
+    if(any(summary_results[, col_n] == 1)) {
         ## Select the values to check
-        to_check <- which(summary_results$n == 1)
+        to_check <- which(summary_results[, col_n] == 1)
         ## Get their replacement values
 
         check.elements.NA <- function(row, summary_results, data) {
@@ -286,7 +321,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
         replace_vals <- sapply(to_check, check.elements.NA, summary_results, data)
         ## Replace them in the results
-        summary_results[to_check, 2] <- replace_vals
+        summary_results[to_check, col_n] <- replace_vals
     }
 
     #----------------------

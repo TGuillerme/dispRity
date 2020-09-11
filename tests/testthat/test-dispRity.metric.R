@@ -4,8 +4,9 @@ context("dispRity.metric")
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
-    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?mode.val\n?n.ball.volume")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
+    expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2")
 })
 
 
@@ -628,4 +629,154 @@ test_that("deviation", {
     expect_equal(
         round(deviations(matrix, hyperplane = c(100, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0))),
         c(71, 72, 72, 69, 69, 72, 70, 70, 71))
+})
+
+test_that("min.distance", {
+
+    ## Predictable matrix
+    set.seed(1)
+    matrix <- matrix(NA, 5, 2)
+    matrix2 <- matrix(runif(8), 4, 2)
+    matrix2[,1] <- scale(matrix2[,1])
+    matrix2[,2] <- scale(matrix2[,2])
+    matrix[1,] <- c(-2, 1)
+    matrix[2,] <- c(-1.5, -1)
+    matrix[3,] <- c(1, 0)
+    matrix[4,] <- c(0.5, 1)
+    matrix[5,] <- c(0.25, -1)  ## Recentring with a shift of -0.35 on the x axis
+
+    #projected_distances should be matrix[,1]+0.35
+    ## Make the combined matrix
+    combined_matrix <- as.matrix(rbind(matrix, matrix2))
+    ## Get the groups IDs
+    groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+    ## Centre that matrix onto the centroid of group 1
+    centred_matrix <- centre.matrix(combined_matrix, groups[[1]])
+    expect_equal_round(colMeans(centred_matrix[1:5, ]), c(0,0))
+    ## Get the centroid vector in the centred matrix (the centroid of group 2)
+    centroid <- colMeans(centred_matrix[groups[[2]],])
+    ## Get the length of each projected points on the centroid vector
+    projected_lengths <- apply(centred_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
+    expect_equal_round(projected_lengths[1:5], matrix[,1]+0.35, 3)
+
+    ## Super simple example (works both directions)
+    matrix1 <- matrix2 <- matrix(c(1,2,3), 3, 2)
+    matrix1[, 1] <- 1
+    matrix2[, 1] <- 2
+    expect_equal(group.dist(matrix1, matrix2), 1)
+    expect_equal(group.dist(matrix2, matrix1), 1)
+    matrix1[, 1] <- 8.5
+    expect_equal(group.dist(matrix1, matrix2), 6.5)
+    expect_equal(group.dist(matrix2, matrix1), 6.5)
+
+    ## Function works with 2D data
+    ## Overlap version
+    set.seed(1)
+    matrix <- matrix(rnorm(20), 10, 2)
+    matrix2 <- matrix(rnorm(30), 15, 2)
+    expect_equal(group.dist(matrix, matrix2), 0)
+    expect_equal(group.dist(matrix2, matrix), 0)
+    ## Working with probabilities
+    expect_equal(group.dist(matrix, matrix2, probs = c(0.1, 0.9)), 0)
+    expect_equal_round(group.dist(matrix, matrix2, probs = c(0.5)), 0.339, digits = 3)
+
+    ## No overlap version
+    set.seed(1)
+    matrix <- matrix(rnorm(20, mean = 3), 10, 2)
+    matrix2 <- matrix(rnorm(30), 15, 2)  
+    expect_equal_round(group.dist(matrix, matrix2), 2.233, digits = 3) 
+    expect_equal_round(group.dist(matrix2, matrix), 2.233, digits = 3)
+    ## Distance gets bigger when lowering the quantiles
+    expect_equal_round(group.dist(matrix2, matrix, probs = c(.025, .975)), 2.383, digits = 3)
+    expect_equal_round(group.dist(matrix2, matrix, probs = c(.1, .9)), 2.897, digits = 3)
+    expect_equal_round(group.dist(matrix2, matrix, probs = c(.3, .7)), 3.993, digits = 3)
+
+    ## Function works with 3D data
+    ## Non-overlap version
+    set.seed(1)
+    disc1 <- space.maker(100, 3, c(runif, rnorm, rnorm), arguments =  list(list(min = 0, max = 0), NULL, NULL))
+    disc2 <- space.maker(100, 3, c(runif, rnorm, rnorm), arguments =  list(list(min = 1, max = 1), NULL, NULL))
+    ## Visualise
+    # plot3d <- scatterplot3d(rbind(disc1, disc2), color = c(rep("orange", 100), rep("blue", 100)), pch = 20)
+    # plot3d$points3d(rbind(colMeans(disc1), colMeans(disc2)),
+    #   col= c("orange", "blue"), pch=13, cex = 2)
+    # plot3d$points3d(rbind(colMeans(disc1), colMeans(disc2)), type = "l", col = "darkgreen")
+
+    ## Close to 1
+    expect_equal_round(group.dist(disc1, disc2, probs = 0.5), 1.018, digits = 3)
+    expect_equal_round(group.dist(disc1, disc2), 0.46, digits = 3)
+
+    ## Overlap version
+    set.seed(1)
+    disc <- space.maker(100, 3, c(runif, rnorm, rnorm), arguments =  list(list(min = -2, max = -2), NULL, NULL))
+    sphere <- space.maker(100, 3, c(rnorm, rnorm, rnorm))
+    ## Visualise
+    # plot3d <- scatterplot3d(rbind(disc, sphere), color = c(rep("orange", 100), rep("blue", 100)), pch = 20)
+    # plot3d$points3d(rbind(colMeans(disc), colMeans(sphere)),
+    #   col= c("orange", "blue"), pch=13, cex = 2)
+    # plot3d$points3d(rbind(colMeans(disc), colMeans(sphere)), type = "l", col = "darkgreen")
+
+    expect_equal_round(group.dist(disc, sphere, probs = 0.5), 2.015, digits = 3)
+    expect_equal_round(group.dist(disc, sphere), 0)
+
+    ## Function works with nD data
+    ## non-Overlap
+    set.seed(1)
+    matrix <- matrix(rnorm(150), 15, 10)
+    matrix2 <- matrix(rnorm(100, mean = 6), 10, 10)
+    expect_equal_round(group.dist(matrix, matrix2, probs = 0.5), 18.803, digits = 3)
+    expect_equal_round(group.dist(matrix, matrix2), 16.35804, digits = 5)
+
+    ## Overlap
+    set.seed(1)
+    matrix <- matrix(rnorm(150), 15, 10)
+    matrix2 <- matrix(rnorm(100), 10, 10)
+    expect_equal_round(group.dist(matrix, matrix2), 0)
+    expect_equal_round(group.dist(matrix, matrix2, probs = 0.5), 1.472447, digits = 3)
+
+    ## Function gives the same results as hypervolume?
+    matrix <- subset(iris, Species=="setosa")[,1:3]
+    matrix2 <- subset(iris, Species=="virginica")[,1:3]
+
+    ## Creating the hypervolume objects
+    # set.seed(1)
+    # hv1 = hypervolume::hypervolume_gaussian(matrix, verbose = FALSE)
+    # hv2 = hypervolume::hypervolume_gaussian(matrix2, verbose = FALSE)
+
+    # ## Giving similar results than hypervolume?
+    # min_distance_est <- hypervolume::hypervolume_distance(hv1, hv2, type = "minimum", num.points.max = 1000, check.memory = FALSE)
+    # cent_distance_est <- hypervolume::hypervolume_distance(hv1, hv2, type = "centroid", num.points.max = 1000, check.memory = FALSE)
+    # expect_equal_round(min_distance_est, 2.298591, digits = 5)
+    # expect_equal_round(cent_distance_est, 4.527476, digits = 5)
+
+    expect_equal_round(group.dist(matrix, matrix2), 2.444375, digits = 5)
+    expect_equal_round(group.dist(matrix, matrix2, probs = 0.5), 4.311056, digits = 5)
+    ## Pretty close!
+})
+
+test_that("point.dist", {
+    ## Simple tests
+    matrix1 <- matrix(1, 5, 4)
+    matrix2 <- matrix(2, 10, 4)
+    expect_equal(point.dist(matrix1, matrix1), rep(0, 5))
+    expect_equal(point.dist(matrix2, matrix2), rep(0, 10))
+    expect_equal(point.dist(matrix1, matrix2), rep(2, 5))
+    expect_equal(point.dist(matrix2, matrix1), rep(2, 10))
+    expect_equal(point.dist(matrix2, matrix1, point = sd), rep(4, 10))
+    expect_equal(point.dist(matrix1, matrix2, point = sd), rep(2, 5))
+    expect_equal(point.dist(matrix2, matrix1, point = sd, method = "manhattan"), rep(8, 10))
+    expect_equal(point.dist(matrix1, matrix2, point = sd, method = "manhattan"), rep(4, 5))
+
+    expect_warning(test <- custom.subsets(rbind(matrix1, matrix2), group = list(1:5, 6:15)))
+    test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
+    expect_equal(summary(test2)$obs.median, 2)
+    test3 <- dispRity(test, metric = c(mean, point.dist), between.groups = TRUE)
+    expect_equal(summary(test3)$obs, 2)
+
+    set.seed(1)
+    data(BeckLee_tree)
+    data(BeckLee_mat99)
+    test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
+    test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
+    expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
 })

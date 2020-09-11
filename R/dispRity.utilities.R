@@ -19,7 +19,6 @@
 #'
 #' 
 #' @author Thomas Guillerme
-
 make.dispRity <- function(data, call, subsets) {
     ## Make the empty object
     dispRity_object <- list("matrix" = list(NULL) , "call" = list(), "subsets" = list())
@@ -64,7 +63,6 @@ make.dispRity <- function(data, call, subsets) {
 #' 
 #' @author Thomas Guillerme
 #' 
-
 fill.dispRity <- function(data) {
 
     ## Data have a matrix
@@ -169,7 +167,6 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 # get.subsets(bootstrapped_data, subsets = "66.75552") # 1 subsets for 23 elements
 # get.subsets(subsets_full, subsets = 1) # 1 subsets for 3 elements
 # get.subsets(disparity_data, subsets = c(1,5)) # 2 subsets for 13 elements
-
 get.subsets <- function(data, subsets) {
     ## data
     check.class(data, "dispRity")
@@ -224,7 +221,6 @@ get.subsets <- function(data, subsets) {
 # bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
 # data <- dispRity(bootstrapped_data, c(sum,variances))
 # extract.dispRity(data, observed = FALSE, rarefaction = 5,subsets = 2)
-
 extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE, concatenate = TRUE) {
     #----------------------
     # SANITIZING
@@ -247,13 +243,17 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 
     ## subsets
     if(missing(subsets)) {
-        subsets <- seq(1:length(data$subsets))
+        if(data$call$disparity$metrics$between.groups) {
+            subsets <- seq(1:length(data$disparity))
+        } else {
+            subsets <- seq(1:length(data$subsets))    
+        }
     } else {
         check.subsets(subsets, data)
     }
 
     ## Rarefaction
-    if(rarefaction != FALSE) {
+    if(rarefaction) {
         check.class(rarefaction, c("numeric", "integer"))
         check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
         if(data$call$bootstrap[[3]][1] != "full" & any(is.na(match(rarefaction, data$call$bootstrap[[3]])))) {

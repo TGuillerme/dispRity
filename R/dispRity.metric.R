@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -7,22 +7,24 @@
 #' @usage dimension.level3.fun(matrix, ...)
 #' dimension.level2.fun(matrix, ...)
 #' dimension.level1.fun(matrix, ...)
+#' between.groups.fun(matrix, matrix2, ...)
 #'  
 #' @param matrix A matrix.
+#' @param matrix2 Optional, a second matrix for metrics between groups.
 #' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the eqn{kth} root. See details below for available optional arguments for each function.
 #'
 #' @details
-#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun} and \code{dimension.level1.fun}.
+#' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}. The dimensions levels (1, 2 and 3) can be seen as similar to ranks in linear algebra.
 #' 
 #' The currently implemented dimension-level 1 metrics are:
 #' \itemize{
-#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{convhulln(x, options = "FA")$vol}).
+#'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$vol}).
 #'      \itemize{
 #'          \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
 #'          \item WARNING: both \code{convhull} functions can be computationally intensive above 10 dimensions!
 #'      }
 #'
-#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{convhulln(x, options = "FA")$area}).
+#'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$area}).
 #'
 #'   \item \code{diagonal}: calculates the longest distance in the ordinated space.
 #'      \itemize{
@@ -34,15 +36,14 @@
 #'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
 #'      }
 #' 
-#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD$FDiv}).
+#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{\link[FD]{dbFD}$FDiv}).
 #' 
-#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{\link[FD]{dbFD}$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
 #' 
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
-#'
-#'
+#' 
 #' }
 #' 
 #'  See also \code{\link[base]{mean}}, \code{\link[stats]{median}}, \code{\link[base]{sum}} or \code{\link[base]{prod}} for commonly used summary metrics.
@@ -72,6 +73,16 @@
 #' 
 #'   \item \code{span.tree.length}: calculates the length of the minimum spanning tree (see \code{\link[vegan]{spantree}}). This function can get slow with big matrices. To speed it up, one can directly use distance matrices as the multidimensional space.
 #'
+#' }
+#' 
+#' The currently implemented between.groups metrics are:
+#' \itemize{
+#'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#' 
+#' \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#' 
+#' 
+#' 
 #' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -121,6 +132,16 @@
 #' centroids(dummy_matrix, centroid = c(1,2,3,4,5,6,7,8,9,10))
 #' ## Distances between each row and the origin
 #' centroids(dummy_matrix, centroid = 0)
+#'
+#' ## convhull.surface
+#' ## Making a matrix with more elements than dimensions (for convhull)
+#' thinner_matrix <- matrix(rnorm(90), 18, 5)
+#' ## Convex hull hypersurface of a matrix
+#' convhull.surface(thinner_matrix)
+#' 
+#' ## convhull.volume
+#' ## Convex hull volume of a matrix
+#' convhull.volume(thinner_matrix)
 #' 
 #' ## deviations
 #' ## The deviations from the least square hyperplane
@@ -140,16 +161,6 @@
 #' ## displacement ratios from the centre (manhattan distance)
 #' displacements(dummy_matrix, method = "manhattan")
 #' 
-#' ## convhull.surface
-#' ## Making a matrix with more elements than dimensions (for convhull)
-#' thinner_matrix <- matrix(rnorm(90), 18, 5)
-#' ## Convex hull hypersurface of a matrix
-#' convhull.surface(thinner_matrix)
-#' 
-#' ## convhull.volume
-#' ## Convex hull volume of a matrix
-#' convhull.volume(thinner_matrix)
-#' 
 #' ## ellipse.volume
 #' ## Ellipsoid volume of a matrix
 #' ellipse.volume(dummy_matrix)
@@ -168,15 +179,25 @@
 #' ## Functional evenness (based on manhattan distances)
 #' func.eve(dummy_matrix, method = "manhattan")
 #'
+#' ## group.dist
+#' ## The distance between groups
+#' dummy_matrix2 <- matrix(runif(40, min = 2, max = 4), 4, 10)
+#' ## The minimum distance between both groups
+#' group.dist(dummy_matrix, dummy_matrix2)
+#' ## The distance between both groups' centroids
+#' group.dist(dummy_matrix, dummy_matrix2, probs = 0.5)
+#' ## The minimum distance between the 50% CI of each group
+#' group.dist(dummy_matrix, dummy_matrix2, probs = c(0.25, 0.75))
+#' 
+#' ## mode.val
+#' ## Modal value of a vector
+#' mode.val(dummy_matrix)
+#' 
 #' ## neighbours
 #' ## The nearest neighbour euclidean distances
 #' neighbours(dummy_matrix)
 #' ## The furthest neighbour manhattan distances
 #' neighbours(dummy_matrix, which = max, method = "manhattan")
-#'
-#' ## mode.val
-#' ## Modal value of a vector
-#' mode.val(dummy_matrix)
 #'
 #' ## pairwise.dist
 #' ## The pairwise distance
@@ -185,6 +206,17 @@
 #' mean(pairwise.dist(dummy_matrix)^2)
 #' ## equal to:
 #' geiger::disparity(data = dummy_matrix)
+#' 
+#' ## point.dist
+#' ## The distances from the rows dummy_matrix
+#' ## to the centroids of dummy_matrix2
+#' point.dist(dummy_matrix, dummy_matrix2)
+#' ## The average distances from dummy_matrix
+#' ## to the centroids of dummy_matrix2
+#' mean(point.dist(dummy_matrix, dummy_matrix2))
+#' ## The manhattan distance from the rows dummy_matrix
+#' ## to the standard deviation of dummy_matrix2
+#' point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
 #'
 #' ## quantiles
 #' ## The 95 quantiles
@@ -236,6 +268,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?displacements\n")
     cat("?neighbours\n")
     cat("?pairwise.dist\n")
+    cat("?point.dist\n")
     cat("?ranges\n")
     cat("?radius\n")
     cat("?variances\n")
@@ -250,8 +283,15 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("?ellipse.volume\n")
     cat("?func.div\n")
     cat("?func.eve\n")
+    cat("?group.dist\n")
     cat("?mode.val\n")
     cat("?n.ball.volume\n")
+}
+
+between.groups.fun <- function(matrix, matrix2, ...) {
+    cat("Between groups functions implemented in dispRity:\n")
+    cat("?group.dist # level 1\n")
+    cat("?point.dist # level 2\n")
 }
 
 ## kth root scaling
@@ -294,15 +334,25 @@ fun.dist.euclidean <- function(row, centroid) {
 fun.dist.manhattan <- function(row, centroid) {
     return(sum(abs(row-centroid)))
 }
-
+## Select either method
+select.method <- function(method) {
+    ## Switch methods
+    fun.dist <- switch(method,
+        euclidean = fun.dist.euclidean,
+        manhattan = fun.dist.manhattan
+    )
+    ## Returns non-null
+    if(is.null(fun.dist)) {
+        stop.call(msg = "can only be \"euclidean\" or \"manhattan\".", call = "method argument ")
+    } else {
+        return(fun.dist)
+    }
+}
 ## Calculating the distance from centroid
 centroids <- function(matrix, centroid, method = "euclidean") {
 
     ## Select the fun distance
-    switch(method,
-        euclidean = {fun.dist <- fun.dist.euclidean},
-        manhattan = {fun.dist <- fun.dist.manhattan}
-    )
+    fun.dist <- select.method(method)
 
     ## Initialise values
     cent.dist <- numeric(nrow(matrix))
@@ -400,10 +450,7 @@ diagonal <- function(matrix) {
 ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean", ...) {
 
     ## Select the fun distance
-    switch(method,
-        euclidean = {fun.dist <- fun.dist.euclidean},
-        manhattan = {fun.dist <- fun.dist.manhattan}
-    )
+    fun.dist <- select.method(method)
 
     ## Checking if the nodes.coords is available
     if(missing(nodes.coords)) {
@@ -427,7 +474,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
         },
         list = {
             ## Wrapper function
-            mapply.fun.dist <- function(nodes.coords, matrix) {
+            mapply.fun.dist <- function(nodes.coords, matrix, fun.dist) {
                 ## Converting the matrix into a list
                 nodes.coords <- unlist(apply(nodes.coords, 1, list), recursive = FALSE)
                 ## Calculate nodes.coords distance with multiple nodes.coords
@@ -439,7 +486,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
             matrix <- unlist(apply(matrix, 1, list), recursive = FALSE)
 
             ## Calculate nodes.coords distance with multiple centroids
-            cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix)
+            cent.dist <- lapply(nodes.coords, mapply.fun.dist, matrix, fun.dist)
             cent.dist <- do.call(rbind, cent.dist)
             
             ## Calculate the cumulative distances
@@ -622,6 +669,64 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
     return(apply(matrix, 1, FUN = distance, hyperplane, dimensions))
 }
 
+
+
+## Functions for the group.distance function
+## Function for centreing a matrix on one specific centroid
+centre.matrix <- function(matrix, group) {
+    centre <- colMeans(matrix[group,])
+    matrix - rep(centre, rep.int(nrow(matrix), ncol(matrix)))
+}
+## Function for getting the projected lengths
+get.proj.length <- function(point, centroid, length) {
+    return(geometry::dot(centroid, point)/length)
+}
+## Function for getting the quantiles per groups
+quantiles.per.groups <- function(group, lengths, probs) {
+    return(quantile(lengths[group], probs = probs))
+}
+
+## Euclidean distance between two groups
+group.dist <- function(matrix, matrix2, probs = c(0,1)) {
+    ## Make the combined matrix
+    combined_matrix <- as.matrix(rbind(matrix, matrix2))
+    ## Get the groups IDs
+    groups <- list(1:nrow(matrix), (1:nrow(matrix2)+nrow(matrix)))
+    ## Centre that matrix onto the centroid of group 1
+    centred_matrix <- centre.matrix(combined_matrix, groups[[1]])
+    ## Get the centroid vector in the centred matrix (the centroid of group 2)
+    centroid <- colMeans(centred_matrix[groups[[2]],])
+    ## Get the length of each projected points on the centroid vector
+    projected_lengths <- apply(centred_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
+    ## Get the quantile of the projections for each group
+    group_quantiles <- lapply(groups, quantiles.per.groups, projected_lengths, probs)
+
+    ## Get the difference from group1 to group2 (depending on orientation along the difference axis)
+    if(mean(projected_lengths[groups[[1]]]) < mean(projected_lengths[groups[[2]]])) {
+        ## Group 1 is on the "left"
+        distance <- ifelse(length(probs) == 1, 
+                    group_quantiles[[2]] - group_quantiles[[1]],
+                    group_quantiles[[2]][1] - group_quantiles[[1]][2])
+    } else {
+        ## Group 1 is on the "right"
+        distance <- ifelse(length(probs) == 1, 
+                    group_quantiles[[1]] - group_quantiles[[2]],
+                    group_quantiles[[1]][2] - group_quantiles[[2]][1])
+    }
+    return(unname(ifelse(distance < 0, 0, distance)))
+}
+
+## Distance between two groups
+point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", ...) {
+    ## Select the fun distance
+    fun.dist <- select.method(method)
+
+    ## Calculating the centroid point
+    centroid <- point(matrix2)
+
+    ## Calculate centroid distance with a single centroid
+    return(apply(matrix, 1, fun.dist, centroid = centroid))
+}
 
 #' @title Nodes coordinates
 #'

@@ -245,6 +245,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
         ## Print the disparity information
         if(any(names(x$call) == "disparity")) {
             cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics$name), collapse = ", ")))
+            if(x$call$disparity$metrics$between.groups) {
+                cat(" between groups")
+            }
             cat(".\n")
         }
     }

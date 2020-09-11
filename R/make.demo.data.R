@@ -63,7 +63,7 @@
 #     save(BeckLee_mat99, file = "../data/BeckLee_mat99.rda")
 # }
 
-## Developer function for making the disparity data
+# # Developer function for making the disparity data
 # make.demo.data_disparity <- function() {
 #     file.remove("../data/disparity.rda")
 #     set.seed(1)
@@ -83,7 +83,7 @@
 #     save(disparity, file = "../data/disparity.rda")
 # }
 
-## Developer function for making the disparity data
+# # Developer function for making the disparity data
 # make.demo.data_BeckLee_disparity <- function() {
 #     file.remove("../data/BeckLee_disparity.rda")
 #     set.seed(1)

@@ -12,19 +12,10 @@
   cent.tend = median,
   rarefaction = NULL,
   elements = FALSE,
-  ylim,
-  xlab,
-  ylab,
-  col,
-  chrono.subsets = TRUE,
   observed = FALSE,
   add = FALSE,
   density = NULL,
-  element.pch = 15,
-  dimensions = c(1, 2),
-  nclass = 10,
-  coeff = 1,
-  matrix = 1
+  specific.args
 )
 }
 \arguments{
@@ -40,17 +31,7 @@
 
 \item{rarefaction}{Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.}
 
-\item{elements}{\code{logical} whether to plot the number of elements per subsets.}
-
-\item{ylim}{Optional, two \code{numeric} values for the range of the y axis.}
-
-\item{xlab}{Optional, a \code{character} string for the caption of the x axis.}
-
-\item{ylab}{Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.}
-
-\item{col}{Optional, some \code{character} string(s) for the colour of the plot.}
-
-\item{chrono.subsets}{\code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.}
+\item{elements}{\code{logical} whether to plot the number of elements per subsets (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 
 \item{observed}{\code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.}
 
@@ -58,15 +39,7 @@
 
 \item{density}{the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.}
 
-\item{element.pch}{optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).}
-
-\item{dimensions}{optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).}
-
-\item{nclass}{when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).}
-
-\item{coeff}{when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).}
-
-\item{matrix}{optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).}
+\item{specific.args}{optional, a named list of arguments to be passed for some specific plot types. See details.}
 }
 \description{
 Plots a \code{dispRity} object.
@@ -79,6 +52,12 @@ The different \code{type} arguments are:
   \item \code{"line"}: plots the results as discrete vertical lines with the user's set quantiles and central tendency.
   \item \code{"polygon"}: identical as \code{"line"} but using polygons rather than vertical lines.
   \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
+}
+
+The different \code{specific.args} arguments for the following options are:
+\itemize{
+     \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
+     \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.
 }
 }
 \examples{
@@ -94,16 +73,12 @@ plot(disparity, type = "polygon", quantiles = c(10, 50, 95),
      cent.tend = mean)
 
 ## Using different options
-plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
+plot(disparity, type = "line", elements = TRUE, ylim = c(0, 3),
      xlab = ("Time (Ma)"), ylab = "disparity")
 
 ## Continuous plotting (all default options)
 plot(disparity, type = "continuous")
-
-## Using different options (with non time.slicing option)
-plot(disparity, type = "continuous", chrono.subsets = FALSE,
-     elements = TRUE, col = c("red", "orange", "yellow"))
-
+ 
 ## Rarefactions plots
 plot(disparity, rarefaction = TRUE)
 
@@ -113,31 +88,9 @@ plot(disparity, observed = TRUE)
 ## Observed data with graphical details
 plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 
-\dontrun{
-## Geoscale plots
-require(geoscale)
-
-## Converting the data into a list
-data_obs <- extract.dispRity(disparity, observed = TRUE)
-data_distribution <- extract.dispRity(disparity, observed = FALSE)
-## Removing one list level
-data_distribution <- unlist(data_distribution, recursive = FALSE)
-data_obs <- as.vector(data_obs)
-
-## Getting the ages
-ages <- as.numeric(names(disparity$subsets))
-
-## Plotting the results median
-geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
-
-## Plotting the results distribution
-geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
-}
-
-
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
+\code{\link{dispRity}}, \code{\link{summary.dispRity}}.
 }
 \author{
 Thomas Guillerme

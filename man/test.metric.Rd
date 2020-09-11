@@ -24,7 +24,7 @@ test.metric(
 
 \item{...}{Optional arguments to be passed to the metric.}
 
-\item{shifts}{The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"} and \code{"position"}. See details.}
+\item{shifts}{The types of shits to test, can be \code{"random"}, \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}. See details.}
 
 \item{shift.options}{Optional, a \code{list} of named arguments to be passed to \code{\link{reduce.space}}}
 
@@ -45,10 +45,11 @@ This function outputs a \code{dispRity} object containing a list of simulated re
 Test whether a metric captures changes trait space size, density and position.
 }
 \details{
-For the three non-random shifts: \code{"size"}, \code{"density"} and \code{"position"}, the function returns both of shifts as:
+For the three non-random shifts: \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}, the function returns both of shifts as:
 \itemize{
      \item \code{"size.inner"} and \code{"size.outer"} removing data from the edges or the centre respectively (contracting the size and "hollowing" it respectively).
      \item \code{"density.higher"} and \code{"density.lower"} removing data to increase or decrease density respectively (increasing/decreasing nearest neighbour distance).
+     \item \code{"evenness.flattened"} and \code{"evenness.compacted"} removing data to from the centre of the distribution or from the edges to resepectively "flatten" or "condense" the distribution.
      \item \code{"position.bottom"} and \code{"position.top"} removing data from one side or the other of the space (the sides are selected from the point with lowest/highest scores on each dimensions respectively).
 }
 See figure 2 in Guillerme et al. 2020 for more details.
@@ -78,7 +79,7 @@ plot(simple_test)
 
 ## Testing the sum of variance on all shifts
 sum_var_test <- test.metric(space, metric = c(sum, variances),
-                            shifts = c("random", "size", "density", "position"), verbose = TRUE)
+                            shifts = c("random", "size", "density", "position"))
 
 ## Summarising the tests
 summary(sum_var_test)
@@ -88,7 +89,7 @@ plot(sum_var_test)
 
 ## Applying the test directly on a disparity object
 data(disparity)
-median_centroid_test <- test.metric(disparity, shifts = "size", verbose = TRUE)
+median_centroid_test <- test.metric(disparity, shifts = "size")
 
 ## Summarising the tests
 summary(median_centroid_test)
