@@ -219,13 +219,20 @@ get.time.slice <- function(time, tree, model, verbose) {
 
     ## Get the precision
     # precision <- ifelse(abs(tree$root.time - round(tree$root.time)) > .Machine$double.eps^0.5, nchar(strsplit(sub('0+$', '', as.character(tree$root.time)), ".", fixed = TRUE)[[1]][[2]]), 0)
+    is_split <- ifelse(grepl("split", model), TRUE, FALSE)
 
     ## Get the slice
     slice <- select.table.tips(fast.slice.table(time, tree), model)
     if(is.na(slice[1])) {
         warning("The slice ", time, " is empty.", call. = FALSE)
     }
-    return(list("elements" = matrix(slice, ncol = ifelse(grepl("split", model), 3, 1))))
+
+    ## Correct slices with only one taxa
+    if(is_split && ncol(slice) == 2) {
+        slice <- matrix(c(slice[,1], slice[1,2]), nrow = 1)
+    }
+
+    return(list("elements" = matrix(slice, ncol = ifelse(is_split, 3, 1))))
 }
 
 ## Adding FADLADs to time slices

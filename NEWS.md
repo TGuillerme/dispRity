@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.4.4 (2020-09-07)
+dispRity v1.4.4 (2020-09-17)
 =========================
 
 ### NEW FEATURES
@@ -51,7 +51,8 @@ dispRity v1.4.4 (2020-09-07)
 
   * Updated all calls to the `Claddis` package to match version 0.6 (thanks to [Graeme Lloyd](http://graemetlloyd.com/) for fixing [this one](https://github.com/TGuillerme/dispRity/pull/104)!)
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
-  * Fixed a bug in `chrono.subsets` were ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
+  * Fixed a bug in `chrono.subsets` where ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
+  * Fixed a bug in `chrono.subsets` where the `"*.split"` methods would bug if the last slice is through a single edge.
 
 dispRity v1.4.0 *getting faster* (2020-05-05)
 =========================
