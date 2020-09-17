@@ -117,6 +117,14 @@ The time-slicing method implemented in `chrono.subsets` (unfortunately not Open 
 
 > Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364).
 
+Furthermore, don't forget to cite `R`:
+
+> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Bonus: you can also cite `ape` since the `dispRity` package heavily relies on it:
+
+> Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.
+
 
 ### Why is it important to cite us?
 
