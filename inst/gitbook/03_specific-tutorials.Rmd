@@ -1430,7 +1430,7 @@ disp_time <- model.test(data = BeckLee_disparity,
 disp_time
 ```
 
-The remaining output gives us the log-likelihood of the Stasis model of -59.501 (you may notice this change when we pooled variances above).
+The remaining output gives us the log-likelihood of the Stasis model of `r summary(disp_time)[,"log.lik"]` (you may notice this change when we pooled variances above).
 The output also gives us the small sample Akaike Information Criterion (AICc), the delta AICc (the distance from the best fitting model), and the AICc weights (~the relative support of this model compared to all models, scaled to one). 
 
 These are all metrics of relative fit, so when we test a single model they are not useful.
@@ -1441,7 +1441,7 @@ summary(disp_time)
 ```
 
 So we again see the AICc, delta AICc, AICc weight, and the log-likelihood we saw previously.
-We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = 0.01) and the mean (theta.1 = 3.4).
+We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = `r summary(disp_time)[,"omega"]`) and the mean (theta.1 = `r summary(disp_time)[,"theta.1"]`).
 
 The ```model.test``` function is designed to test relative model fit, so we need to test more than one model to make relative comparisons.
 So let's compare to the fit of the Stasis model to another model with two parameters: the Brownian motion.
@@ -1455,7 +1455,7 @@ disp_time
 ```
 
 Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and AICc weight Brownian motion has a much better relative fit to these data than the Stasis model.
-Brownian motion has a relative AICc fit 366 units better than Stasis, and virtually has a AICc weight of 1. 
+Brownian motion has a relative AICc fit`r summary(disp_time)[,"delta_aicc"][[1]]` units better than Stasis, and has a AICc weight of 1. 
 
 We can also all the information about the relative fit of models alongside the maximum likelihood estimates of model parameters using the summary function
 
@@ -1497,7 +1497,7 @@ Is this a trend of increasing or decreasing disparity through time? One way to f
 summary(disp_time)["Trend",]
 ```
 
-This show a positive trend (0.01) of increasing disparity through time.
+This show a positive trend (`r unname(summary(disp_time)["Trend",]["trend"])`) of increasing disparity through time.
 
 ### Plot and run simulation tests in a single step
 
@@ -1520,7 +1520,7 @@ From this plot we can see the empirical estimates of disparity through time (pin
 There is no significant differences between the empirical data and simulated data, except for the Early Burst model.
 
 Trend is the best-fitting model but the plot suggests the OU model also follows a trend-like pattern.
-This is because the optima for the OU model (5.7) is different to the ancestral state 2.835 and outside the observed value.
+This is because the optima for the OU model (`r disp_time["OU", "optima.1"]`) is different to the ancestral state (`r disp_time["OU", "ancestral state"]`) and outside the observed value.
 This is potentially unrealistic, and one way to alleviate this issue is to set the optima of the OU model to equal the ancestral estimate - this is the normal practice for OU models in comparative phylogenetics.
 To set the optima to the ancestral value we change the argument ```fixed.optima = TRUE```:
 
@@ -1639,7 +1639,7 @@ summary(disp_time)
 ```
 
 As seen before, the Trend model fitted this dataset the best.
-To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with `model.test` (here the ancestral state being 2.839, the sigma squared beeing 0.002 and the trend of 0.01), we can simply pass this model to `model.test.sim`:
+To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with `model.test` (here the ancestral state being `r summary(disp_time)["Trend", "ancestral state"]`, the sigma squared being `r summary(disp_time)["Trend", "sigma squared"]` and the trend of `r summary(disp_time)["Trend", "trend"]`), we can simply pass this model to `model.test.sim`:
 
 ```{r}
 ## Simulating 1000 Trend model with the observed parameters
