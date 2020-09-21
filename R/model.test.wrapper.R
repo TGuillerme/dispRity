@@ -22,6 +22,9 @@
 #' @param legend Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param ... Any additional arguments to be passed to \code{\link{plot.dispRity}} or \code{\link{summary.dispRity}}.
 #'
+#' 
+#' @details DISCLAIMER: this function is working properly (i.e. it does what it is supposed to do), however, the interpretation of the results has not yet been thought through, discussed and peer-reviewed (what does a Brownian motion like disparity curve means biologically?). 
+#' 
 #' @return A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model, and a plot of simulated data from each model alongside observed data for each model if plot.sim is \code{TRUE} 
 #'
 #' @examples

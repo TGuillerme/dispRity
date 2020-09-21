@@ -12,7 +12,9 @@
 #' @param control.list A \code{list} of fine-tune control inputs for the \code{\link[stats]{optim}} function.
 #' @param verbose \code{logical}, whether to display the model results while they are computed (\code{TRUE} - default).
 #' 
-#' @details The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, \code{c("BM", "OU")} would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of \code{"multi.OU"}) can be fit to the data:
+#' @details DISCLAIMER: this function is working properly (i.e. it does what it is supposed to do), however, the interpretation of the results has not yet been thought through, discussed and peer-reviewed (what does a Brownian motion like disparity curve means biologically?).
+#' 
+#' The models are fit using maximum likelihood optimisation using the function optim. Fine-tuning of the search algorithms can be applied using the \code{control.list} argument. Models can be fit using a homogenous model with the same process applied to the entire sequence or models with time splits that represent a change in parameters or a shift in mode. When a heterogeneous and/or a time-shift model is specified with a specified \code{time.split} then the shift is tested at that value only. If no time shift is supplied then multiple shift times are tested, with all bins that allow for at least 10 bins either side of the split. If the entire sample is fewer than 30 samples long then no time splits are searched for (unless a time split is supplied by the user). Parameters are shared across different modes. For example, \code{c("BM", "OU")} would fit a model in which the process starts with a BM model and shifts to an OU process. The ancestral value at the start of the sequence and sigma squared value are shared across the models. Any combination of the following homogenous models (with the exception of \code{"multi.OU"}) can be fit to the data:
 #' 
 #' \itemize{
 #'         \item{BM}{ Fits a unbiased random walk model of Brownian motion evolution (Felsenstein 1973; 1985; Hunt 2006). The model optimises the ancestral state and the 'step-variance' (sigma-squared)}
@@ -39,7 +41,6 @@
 #' }
 #' 
 #' @examples
-#' 
 #' \dontrun{
 #' ## Mammal disparity through time
 #' data(BeckLee_disparity)

@@ -11,6 +11,7 @@ dtt.dispRity(
   nsim = 0,
   model = "BM",
   alternative = "two-sided",
+  scale.time = TRUE,
   ...
 )
 }
@@ -26,6 +27,8 @@ dtt.dispRity(
 \item{model}{A evolutionary model for the simulations (see \code{\link[geiger]{sim.char}} - default is \code{"BM"}).}
 
 \item{alternative}{The H1 alternative (for calculating the p-value). Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}; see details.}
+
+\item{scale.time}{Optional, whether to scale the time (between 0 and 1; \code{TRUE}, default) or not (\code{FALSE}).}
 
 \item{...}{Any other arguments to be passed to \code{\link[geiger]{dtt}}.}
 }

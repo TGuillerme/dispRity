@@ -584,64 +584,64 @@ plot.continuous <- function(plot_params, data_params, add, density) {
 ## Plot the rarefaction
 plot.rarefaction <- function(plot_params, data_params, data) {
 
-        ## How many rarefaction plots?
-        n_plots <- length(data$subsets)
+    ## How many rarefaction plots?
+    n_plots <- length(data$subsets)
 
-        ## Open the multiple plots
-        plot_size <- ifelse(n_plots == 3, 4, n_plots)
-        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
+    ## Open the multiple plots
+    plot_size <- ifelse(n_plots == 3, 4, n_plots)
+    op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),round(sqrt(plot_size))))
 
-        ## Get the list of subsets
-        subsets_levels <- names(data$subsets)
+    ## Get the list of subsets
+    subsets_levels <- names(data$subsets)
 
-        ## Get all the rarefaction values
-        rarefied_data <- summary(data)
+    ## Get all the rarefaction values
+    rarefied_data <- summary(data)
 
-        ## Get were the central tendency value is
-        cent_tend_col <- ifelse(data_params$between.groups, 5, 4)
+    ## Get were the central tendency value is
+    cent_tend_col <- ifelse(data_params$between.groups, 5, 4)
 
-        ## Setting the plotting arguments
-        all_plot_args <- plot_params$options
-        all_plot_args$ylim <- NULL
-        all_plot_args$lty <- 1
-        all_plot_args$type <- "l"
+    ## Setting the plotting arguments
+    all_plot_args <- plot_params$options
+    all_plot_args$ylim <- NULL
+    all_plot_args$lty <- 1
+    all_plot_args$type <- "l"
 
-        ## Plot the different curves
-        for(one_subset in subsets_levels) {
+    ## Plot the different curves
+    for(one_subset in subsets_levels) {
 
-            ## get the subset data
-            subset_data <- rarefied_data[rarefied_data[,1] == one_subset, ]
+        ## get the subset data
+        subset_data <- rarefied_data[rarefied_data[,1] == one_subset, ]
 
-            ## Setting the plotting args for the specific subset
-            one_plot_args <- all_plot_args
-            one_plot_args$x <- subset_data[,2]
-            one_plot_args$y <- subset_data[,cent_tend_col]
-            one_plot_args$ylim <- range(subset_data[, -c(1:(cent_tend_col-1))])
-            one_plot_args$main <- one_subset
+        ## Setting the plotting args for the specific subset
+        one_plot_args <- all_plot_args
+        one_plot_args$x <- subset_data[,2]
+        one_plot_args$y <- subset_data[,cent_tend_col]
+        one_plot_args$ylim <- range(subset_data[, -c(1:(cent_tend_col-1))])
+        one_plot_args$main <- one_subset
 
-            ## Plot the central tendency
-            do.call(plot, one_plot_args)
+        ## Plot the central tendency
+        do.call(plot, one_plot_args)
 
-            ## Add the quantiles
-            for(cis in 1:plot_params$helpers$n_quantiles) {
+        ## Add the quantiles
+        for(cis in 1:plot_params$helpers$n_quantiles) {
 
-                ## Get the quantile columns
-                ci_cols <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
+            ## Get the quantile columns
+            ci_cols <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
 
-                ## Set the plotting arguments
-                lines_args <- one_plot_args
-                lines_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
-                lines_args$y <- subset_data[,ci_cols[1]]
+            ## Set the plotting arguments
+            lines_args <- one_plot_args
+            lines_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
+            lines_args$y <- subset_data[,ci_cols[1]]
 
-                ## plot the quantiles
-                do.call(lines, lines_args)
-                lines_args$y <- subset_data[,ci_cols[2]]
-                do.call(lines, lines_args)
-            }
+            ## plot the quantiles
+            do.call(lines, lines_args)
+            lines_args$y <- subset_data[,ci_cols[2]]
+            do.call(lines, lines_args)
         }
+    }
 
-        ## Done!
-        par(op_tmp)
+    ## Done!
+    par(op_tmp)
 }
 
 ## Plotting a space preview

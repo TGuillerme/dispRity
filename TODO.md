@@ -11,7 +11,7 @@
  - [x] implement `group.dist` as a `"between.groups"` metric
  - [x] add `group.dist` manual + example
  - [x] add the between.groups explanation to the manual
- - [ ] fix plot bug in line 82 from `test-between.groups`
+ - [x] fix plot bug in line 82 from `test-between.groups`
 
 Update the `plot.dispRity` structure.
 
@@ -35,10 +35,10 @@ Update the `plot.dispRity` structure.
 
 TODO others:
 
- * [ ] between groups for `test.metric`
  * [ ] Fix multiple states estimations in `multi.ace` for polymorphic or unknown states. The likelihood for a four possible state character should be `c(1,1,1,1)` when unknown not `c(1/4, 1/4, 1/4, 1/4)`.
- * [ ] Allow non-scaled `dispRity.dtt` function
+ * [x] Allow non-scaled `dispRity.dtt` function
  * [ ] Allow `model.sim` to include the model name when using a `model.test` object (from previous call) - handle that correctly in the plot as well.
- * [ ] Fix `Claddis.ordination` tests
+ * [x] Fix `Claddis.ordination` tests
  * [ ] Increase test coverage
  * [ ] Fix minor bugs in `model.test.wrapper` (see 03-model-fitting in disparity_model_fit project)
+ * [x] Add disclaimer in code and manual for `model.test`.

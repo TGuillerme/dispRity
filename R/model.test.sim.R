@@ -17,7 +17,8 @@
 #' 
 #' @return A list of class \code{dispRity} and \code{model.sim}. Each list element contains the simulated central tendency, as well as the variance, sample size, and subsets used to simulate the data.
 #' 
-#' @details
+#' @details DISCLAIMER: this function is working properly (i.e. it does what it is supposed to do), however, the interpretation of the results has not yet been thought through, discussed and peer-reviewed (what does a Brownian motion like disparity curve means biologically?).
+#' 
 #' The \code{parameters} is a list of arguments to be passed to the models.
 #' These arguments can be:
 #' \itemize{

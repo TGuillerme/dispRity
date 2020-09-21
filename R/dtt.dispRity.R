@@ -8,6 +8,7 @@
 #' @param nsim The number of simulations to calculate null disparity-through-time.
 #' @param model A evolutionary model for the simulations (see \code{\link[geiger]{sim.char}} - default is \code{"BM"}).
 #' @param alternative The H1 alternative (for calculating the p-value). Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}; see details.
+#' @param scale.time Optional, whether to scale the time (between 0 and 1; \code{TRUE}, default) or not (\code{FALSE}).
 #' @param ... Any other arguments to be passed to \code{\link[geiger]{dtt}}.
 #' 
 #' @details
@@ -69,7 +70,7 @@
 
 
 # Modified version of the geiger::dtt function (https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
-dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative = "two-sided", ...) {
+dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative = "two-sided", scale.time = TRUE, ...) {
 
     match_call <- match.call()
     dots <- list(...)
@@ -141,7 +142,9 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
     
     ## Get the lineages through time
     lineage_through_time <- sort(branching.times(tree), decreasing = TRUE)
-    lineage_through_time <- c(0, (max(lineage_through_time)-lineage_through_time)/max(lineage_through_time))
+    if(scale.time) {
+        lineage_through_time <- c(0, (max(lineage_through_time)-lineage_through_time)/max(lineage_through_time))
+    }
 
     ## Simulating the null disparity through time
     if(is.numeric(nsim) && nsim > 0){
@@ -182,9 +185,6 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
         if(is.null(output$call$alternative)) {
             output$call$alternative <- alternative
         }
-        
-        ## Calculate the p_value
-        p_value <- get.p.value(sim_MDI, MDI)
 
     } else {
 
