@@ -75,10 +75,12 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
     ## Must have at least one matrix
     # if(!any(names(data) %in% "Matrix")) {
     if(length(grep("matrix_1", names(data))) == 0) {
-        stop(paste0("data ", error_msg), call. = FALSE)
+        stop(paste0("data", error_msg), call. = FALSE)
     }
     ## Matrix must be a matrix
-    check.class(data$matrix_1$matrix, "matrix", msg = error_msg)
+    if(!is(data$matrix_1$matrix, "matrix")) {
+        stop(paste0("data", error_msg), call. = FALSE)
+    }
 
     ## Distance
     distances_available <- c("gc", "ged", "red", "mord")
