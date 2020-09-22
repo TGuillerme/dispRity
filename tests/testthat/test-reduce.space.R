@@ -31,7 +31,9 @@ test_that("reduce.space works", {
 
 
     ## Random removal, super easy
-    test <- reduce.space(space, type = "random", remove = 0.3)
+    error <- capture_error(test <- reduce.space(space, type = "random", remove = 101))
+    expect_equal(error[[1]], "remove must be a probability or a percentage.")
+    test <- reduce.space(space, type = "random", remove = 30)
     expect_is(test, "logical")
     expect_equal(length(test), 300)
     expect_equal(length(which(test)), 90)

@@ -1,18 +1,36 @@
 
 context("adonis.dispRity")
 
-# test_that("make.time.factor picks up time", {
+test_that("make.time.factor picks up time", {
 
-#     data(BeckLee_disparity)
-#     group_names <- "time"
-#     group_variables <- names(data$subsets)
-#     time_subsets <- TRUE
-#     pool_time <- TRUE
+    data(BeckLee_disparity)
+    group_names <- "time"
+    group_variables <- names(BeckLee_disparity$subsets)
+    time_subsets <- TRUE
+    pool_time <- TRUE
 
-#     predictors <- make.factors(BeckLee_disparity, group_names , group_variables, time_subsets, pool_time)
+    predictors <- make.factors(BeckLee_disparity, group_names, group_variables, time_subsets, pool_time)
+    expect_is(predictors, "data.frame")
+    expect_equal(dim(predictors), c(99, 1))
+    expect_true(any(is.na(predictors)))
+
+    predictors <- make.factors(BeckLee_disparity, group_names, group_variables, time_subsets = FALSE, pool_time)
+    expect_is(predictors, "data.frame")
+    expect_equal(dim(predictors), c(1572, 1))
+    expect_false(any(is.na(predictors)))
 
 
-# })
+    predictors <- make.factors(BeckLee_disparity, group_names, group_variables, time_subsets = FALSE, pool_time = FALSE)
+    expect_is(predictors, "data.frame")
+    expect_equal(dim(predictors), c(1572, 1))
+    expect_false(any(is.na(predictors)))
+
+
+    predictors <- make.factors(BeckLee_disparity, group_names, group_variables, time_subsets = TRUE, pool_time = FALSE)
+    expect_is(predictors, "data.frame")
+    expect_equal(dim(predictors), c(99, 121))
+    expect_false(any(is.na(predictors)))
+})
 
 
 test_that("Works with one or more groups", {

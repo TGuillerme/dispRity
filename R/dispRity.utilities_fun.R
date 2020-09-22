@@ -61,7 +61,7 @@ check.subsets <- function(subsets, data) {
                 ## Check if the searched ones exist
                 if(any(na_subsets <- is.na(match(subset_search, subset_available)))) {
                     ## Subsets not found
-                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets", "Subset"), paste0(subsets[which(na_subsets)], collapse = ", "), "not found."))
+                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
                 }
             } else {
                 stop("subsets argument must be of class \"numeric\" or \"character\".")
@@ -85,7 +85,7 @@ check.subsets <- function(subsets, data) {
 
                         subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
                         orthograph <- ifelse(length(subsets) == 1, "Subset", "Subsets")
-                        stop(paste(orthograph, paste(subsets, collapse = ", "), "not found."))
+                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), "not found."))
 
                     }
                 } else {

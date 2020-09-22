@@ -41,6 +41,10 @@ test_that("test.metric works", {
 
     ## Plot works
     expect_null(plot(test))
+    expect_null(plot(test, col = "pink"))
+    expect_null(plot(test, specific.args = list(legend = FALSE)))
+    expect_warning(expect_null(plot(test, specific.args = list(legend = list("bottomright")))))
+
 
     # More complex example
     test <- test.metric(space, metric = c(sum, variances), steps = 5,
@@ -71,6 +75,7 @@ test_that("test.metric works", {
 
     ## Plot works
     expect_null(plot(test))
+    expect_null(plot(test, specific.args = list(legend = list(list(pch = 2), list(pch = 19)))))
 
     ## Applying the test directly on a disparity object
     test <- test.metric(disparity, shifts = "size", verbose = FALSE)

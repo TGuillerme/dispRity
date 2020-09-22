@@ -1022,7 +1022,7 @@ plot.test.metric <- function(data, specific.args, ...) {
     if(is.null(plot_args$col)) {
         plot_args$col <- c("black", "orange", "blue")
     } else {
-        if((missing_cols <- length(plot_args$col) - 3) > 0) {
+        if((missing_cols <- (3 - length(plot_args$col))) > 0) {
             plot_args$col <- c(plot_args$col, rep(plot_args$col, missing_cols))
         }
     }

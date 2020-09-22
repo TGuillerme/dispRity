@@ -81,6 +81,25 @@ test_that("get.plot.params works", {
     expect_equal(plot_params$elements_args$cex, 22)
     expect_equal(plot_params$elements_args$pch, c(15, 15))
 
+    plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50, 75, 95, 99),
+                                  ylim = c(1,2),
+                                  xlab = "xlab",
+                                  ylab = c("ylab", "ylab2"),
+                                  col  = c("orange", "blue"),
+                                  rarefaction_level = 10,
+                                  type = "discrete",
+                                  main = "main",
+                                  observed_args = list(observed = FALSE),
+                                  elements_args = list(elements = TRUE, col = "grey", cex = 22, pch = 16, lty = 3))
+    expect_true(plot_params$elements_args$elements)
+    expect_equal(plot_params$elements_args$lty, c(3, 3))
+    expect_equal(plot_params$elements_args$col, c("grey", "grey"))
+    expect_equal(plot_params$elements_args$cex, 22)
+    expect_equal(plot_params$elements_args$pch, c(16, 16))
+
+
     ## Boxplot data
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
@@ -103,6 +122,20 @@ test_that("get.plot.params works", {
                                   observed_args = list(observed = TRUE))
     expect_is(plot_params$disparity$data, c("matrix", "array"))
     expect_equal(dim(plot_params$disparity$data), c(100, 7))
+
+error <- capture_error(get.plot.params(data = disparity, data_params = get.data.params(disparity),
+                                  cent.tend = median,
+                                  quantiles = c(50, 75, 95, 99),
+                                  elements_args = list(elements = FALSE),
+                                  rarefaction_level = NULL,
+                                  type = "box",
+                                  main = "main",
+                                  observed_args = list(observed = TRUE),
+                                  ylab = c("1","2", "3")))
+    expect_equal(error[[1]], "ylab can have maximum of two elements.")
+
+
+
 })
 
 test_that("get.shift works", {
@@ -139,6 +172,11 @@ test_that("plot.observed works", {
                                   observed_args = list(observed = TRUE, col = c("black", "blue")))
     plot(1)
     expect_null(plot.observed(plot_params))
+
+    plot(1)
+    plot_params <- list(observed_args = list(observed = FALSE))
+    expect_null(plot.observed(plot_params))
+
 })
 
 ## Function works
@@ -159,8 +197,11 @@ test_that("plot.dispRity examples work", {
     ## Discrete plotting
     expect_null(plot(disparity, type = "box"))
     expect_null(plot(disparity, type = "box", elements = TRUE))
+    expect_null(plot(disparity, type = "box", elements = list(ylab = "not elements")))
     expect_null(plot(disparity, type = "box", observed = TRUE))
+    expect_null(plot(disparity, type = "box", rarefaction = 5))
     expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val))
+    expect_null(plot(disparity, type = "polygon", quantiles = c(0.1, 0.5, 0.95), cent.tend = mode.val, pch = 2))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50, 110), cent.tend = mode.val))
     expect_error(plot(disparity, type = "polygon", quantiles = c(10, 50), cent.tend = var))
     expect_null(plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),xlab = ("Time (Ma)"), ylab = "disparity"))
@@ -229,6 +270,8 @@ test_that("plot.dispRity with preview", {
     expect_null(plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
     expect_null(plot(data_cust))
     expect_null(plot(data_slice, type = "preview", specific.args = list(dimensions = c(38, 22)), main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = FALSE), main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = list(x = 0, y = 0)), main = "Ha!"))
     error <- capture_error(plot(data_slice, type = "p"))
     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
     expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
@@ -251,6 +294,8 @@ test_that("plot.dispRity with randtest data", {
     expect_null(plot(results_one, main = "hahaha", col = "blue"))
     expect_null(plot(results_two))
     expect_null(plot(results_two, main = "same"))
+    expect_null(plot(results_two, specific.args = list(legend = FALSE)))
+    expect_null(plot(results_two, specific.args = list(legend = list(title = "legend"))))
 })
 
 test_that("plot.dispRity with dtt data", {

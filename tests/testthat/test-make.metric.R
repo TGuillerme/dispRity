@@ -10,6 +10,8 @@ test_that("check.metric works", {
     # expect_error(check.metric(1))
     expect_equal(check.metric(sum), "summary.metric")
     expect_equal(check.metric(var), "class.metric")
+    error <- capture_error(check.metric(check.metric))
+    expect_equal(error[[1]], "Invalid metric.")
 })
 
 test_that("Output is correct", {
@@ -113,4 +115,14 @@ test_that("Output is correct", {
     expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE), "level2")
     expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
     expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE))
+
+    ## Metrics with tree or phy argument
+    between.groups.metric <- function(matrix, matrix2, tree = TRUE) return(c(1,2,3,4))
+    between.groups.metric2 <- function(matrix, matrix2, phy = TRUE) return(c(1,2,3,4))
+    normal.metric <- function(matrix, tree) return(42)
+    normal.metric2 <- function(matrix, phy) return(42)
+    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), "level1")
+    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), "level1")
+    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
+    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
 })
