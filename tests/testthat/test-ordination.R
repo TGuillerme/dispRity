@@ -32,8 +32,6 @@ test_that("Claddis.ordination works", {
     ## Sanitizing
     error <- capture_error(Claddis.ordination(matrix(5), distance = "mord", k = 2))
     expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
-    test <- capture_output(print(data))
-    expect_equal(test[[1]], "Cladistic matrix containing 4 taxa and 11 standard type characters, of which:\n  11 are unordered,\n   0 are ordered,\n   0 are continuous, and\n   0 are step-matrix characters\nAll non-continuous characters are weighted 1.")
     error <- capture_error(Claddis.ordination(data, distance = "bob", k = 2))
     expect_equal(error[[1]], "distance argument must be one of the following: gc, ged, red, mord.")
     error <- capture_error(Claddis.ordination(data, distance = "mord", k = 10))
@@ -47,7 +45,7 @@ test_that("Claddis.ordination works", {
     error <- capture_error(Claddis.ordination(data_bug, distance = "mord"))
     expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
 
-    test <- Claddis.ordination(Claddis::michaux_1989, add = FALSE, distance_transformation = "none")
+    test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
     expect_equal(dim(test), c(4,3))
     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
 # Error: Claddis.ordination works (@test-ordination.R#23)  ─────────────────
