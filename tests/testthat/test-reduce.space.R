@@ -26,9 +26,12 @@ test_that("reduce.space works", {
     expect_equal(error[[1]], "remove must be a probability or a percentage.")
     error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = bw.nrd0, tuning = list("max" = 100)))
     expect_equal(error[[1]], "parameters must be a named list of parameters.")
+    error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = list(bw.nrd0), tuning = list("max" = 100)))
+    expect_equal(error[[1]], "list(bw.nrd0) must be a named list of parameters.")
     error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = list("bw" = bw.nrd0), tuning = c("max" = 100)))
     expect_equal(error[[1]], "tuning must be a named list of tuning parameters.")
-
+    error <- capture_error(reduce.space(space, type = "random", remove = 0.3, parameters = list("bw" = bw.nrd0), tuning = list(100)))
+    expect_equal(error[[1]], "list(100) must be a named list of tuning parameters.")
 
     ## Random removal, super easy
     error <- capture_error(test <- reduce.space(space, type = "random", remove = 101))

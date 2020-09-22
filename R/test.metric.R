@@ -118,7 +118,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     }
 
     ## model options
-    if(missing(model) || !is.null(model)) {
+    if(missing(model) || is.null(model)) {
         ## Linear model
         model <- function(data) lm(disparity ~ reduction, data = data)
     } else {

@@ -11,10 +11,18 @@ test_that("test.metric works", {
     # (data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE)
     expect_error(test.metric("space", metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = 2, verbose = FALSE))
     expect_error(test.metric(space, metric = "c(prod, ranges)", replicates = 1, steps = 10, dimensions = 2, verbose = FALSE))
-    expect_error(test.metric(space, metric = c(prod, ranges), replicates = "1", steps = 10, dimensions = 2, verbose = FALSE))
-    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = list(10), dimensions = 2, verbose = FALSE))
-    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = mean, verbose = FALSE))
-    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = 2, verbose = "FALSE"))
+    expect_error(test.metric(space, metric = c(prod, ranges), replicates = "1", steps = 10, dimensions = 2, verbose = FALSE, shifts = c("random", "evenness")))
+    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = list(10), dimensions = 2, verbose = FALSE, shifts = c("random", "evenness")))
+    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = mean, verbose = FALSE, shifts = c("random", "evenness")))
+    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = 2, verbose = "FALSE", shifts = c("random", "evenness")))
+
+    error <- capture_error(test.metric(space, metric = c(prod, ranges), shifts = c("random", "evenness"), shift.options = 8))
+    expect_equal(error[[1]], "shift.options must be of class list.")
+    error <- capture_error(test.metric(space, metric = c(prod, ranges), shifts = c("random", "evenness"),replicates = 10, model = 8))
+    expect_equal(error[[1]], "model must be of class function.")
+    error <- capture_error(test.metric(space, metric = c(prod, ranges), shifts = c("random", "evenness"),replicates = 10, model = mean))
+    expect_equal(error[[1]], "model function argument can only take \"data\" as an argument.")
+
 
     ## A simple test with only 1 replicate for two shifts (random and size):
     test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size")) 
@@ -32,6 +40,12 @@ test_that("test.metric works", {
           "Use summary($) or plot($) for more details. "                ,
           "Use summary(item) or plot(item) for more details. "          ,
           "Use summary(value) or plot(value) for more details."  ))
+
+    ## Verbose works
+    output <- capture_messages(test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE))
+    expect_equal(output, c("Running the space reductions:", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "Done.\n"                      , "Calculating disparity:", ".", ".", ".", "Done.\n"))
+
+
 
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(3, 10))
@@ -78,10 +92,10 @@ test_that("test.metric works", {
     expect_null(plot(test, specific.args = list(legend = list(list(pch = 2), list(pch = 19)))))
 
     ## Applying the test directly on a disparity object
-    test <- test.metric(disparity, shifts = "size", verbose = FALSE)
+    test <- test.metric(disparity, shifts = "evenness", verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
     expect_equal(names(test), c("call", "results", "models"))
-    expect_equal(names(test$results), c("size.inner", "size.outer"))
+    expect_equal(names(test$results), c("evenness.flattened", "evenness.compacted"))
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
 
@@ -90,7 +104,7 @@ test_that("test.metric works", {
     expect_equal(print_out, 
         c("Metric testing:",
           "The following metric was tested: c(median, centroids).",
-          "The test was run on the size shift for 3 replicates using the following model:",
+          "The test was run on the evenness shift for 3 replicates using the following model:",
           "lm(disparity ~ reduction, data = data)",
           "Use summary($) or plot($) for more details. ",
           "Use summary(item) or plot(item) for more details. " ,

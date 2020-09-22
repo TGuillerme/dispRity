@@ -60,18 +60,12 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 
 ## Getting the disparity
 get.reduced.dispRity <- function(reduction, metric, dimensions, verbose, ...) {
-    
-    ## Duplicate function for verbose
-    dispRity.verbose <- dispRity::dispRity
-    if(verbose) {
-        ## Remake the function verbose
-        body(dispRity.verbose)[[16]] <- substitute(silent <- "silent")
-        body(dispRity.verbose)[[18]] <- substitute(silent <- "silent")
-    }
 
     ## Run the disparity
     options(warn = -1)
-    return(dispRity.verbose(data = reduction, metric = metric, ..., dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
+    output <- dispRity(data = reduction, metric = metric, ..., dimensions = dimensions, verbose = FALSE, between.groups = FALSE)$disparity
+    if(verbose) message(".", appendLF = FALSE)
+    return(output)
     # return(dispRity.verbose(data = reduction, metric = metric, dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
 }
 
