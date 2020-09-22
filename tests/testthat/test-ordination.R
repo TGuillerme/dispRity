@@ -48,17 +48,6 @@ test_that("Claddis.ordination works", {
     test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
     expect_equal(dim(test), c(4,3))
     expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
-# Error: Claddis.ordination works (@test-ordination.R#23)  ─────────────────
-
-# datadata does not contain a matrix.
-
-# Use Claddis::read_nexus_matrix to generate the proper data format.
-
-# Backtrace:
-
-#  1. dispRity::Claddis.ordination(data, add = FALSE, distance_transformation = "none")
-
-#  2. dispRity:::check.class(data, "character", msg = error_msg)
 })
 
 test_that("Claddis.ordination works with new reader", {

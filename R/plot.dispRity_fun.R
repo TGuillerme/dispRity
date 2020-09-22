@@ -45,9 +45,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
         ## Rarefaction level
         if(data_params$between.groups) {
             ## Find the matching rarefaction level
-            rarefaction_match <- which(summarised_data$n_1 == rarefaction_level
-                                        &&
-                                       summarised_data$n_2 == rarefaction_level)
+            rarefaction_match <- which(summarised_data$n_1 == rarefaction_level & summarised_data$n_2 == rarefaction_level)
         } else {
             rarefaction_match <- which(summarised_data$n == rarefaction_level)
         }

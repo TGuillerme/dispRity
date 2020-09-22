@@ -11,7 +11,7 @@
  - [x] implement `group.dist` as a `"between.groups"` metric
  - [x] add `group.dist` manual + example
  - [x] add the between.groups explanation to the manual
- - [ ] fix plot bug in line 82 from `test-between.groups`
+ - [x] fix plot bug in line 82 from `test-between.groups`
 
 Update the `plot.dispRity` structure.
 
