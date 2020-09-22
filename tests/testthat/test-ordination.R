@@ -8,21 +8,25 @@ context("ordinations")
 test_that("Claddis.ordination works", {
     
     library(Claddis)
-
     data <- Claddis::michaux_1989
 
     ## Sanitizing
-    expect_error(Claddis.ordination(matrix(5), distance = "mord", k = 2))
-    expect_error(Claddis.ordination(data, distance = "bob", k = 2))
-    expect_error(Claddis.ordination(data, distance = "mord", k = 10))
-    expect_error(Claddis.ordination(Claddis::day_2016)) #NA
+    error <- capture_error(Claddis.ordination(matrix(5), distance = "mord", k = 2))
+    expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
+    error <- capture_error(Claddis.ordination(data, distance = "bob", k = 2))
+    expect_equal(error[[1]], "distance argument must be one of the following: gc, ged, red, mord.")
+    error <- capture_error(Claddis.ordination(data, distance = "mord", k = 10))
+    expect_equal(error[[1]], "k cannot be greater than the number of rows in data - 1 (data has 3 rows).")
+    error <- capture_error(Claddis.ordination(Claddis::day_2016))
+    expect_equal(error[[1]], "The generate distance matrix using \"mord\" distance from Claddis::day_2016 contains NA and cannot be ordinated.")
     data_bug <- data
     data_bug$matrix_1$matrix <- NULL
-    expect_error(Claddis.ordination(data_bug, distance = "mord")) #NA
+    error <- capture_error(Claddis.ordination(data_bug, distance = "mord"))
+    expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
 
-    # test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
-    # expect_equal(dim(test), c(4,3))
-    # expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
+    test <- Claddis.ordination(Claddis::michaux_1989, add = FALSE, distance_transformation = "none")
+    expect_equal(dim(test), c(4,3))
+    expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
 # Error: Claddis.ordination works (@test-ordination.R#23)  ─────────────────
 
 # datadata does not contain a matrix.

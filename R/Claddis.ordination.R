@@ -57,7 +57,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
     ## Sanitizing
 
     ## Data
-    error_msg <- paste0("data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
+    error_msg <- paste0(" does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
 
     if(!is(data, "cladisticMatrix")) {
         ## Loading the matrix
@@ -75,7 +75,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
     ## Must have at least one matrix
     # if(!any(names(data) %in% "Matrix")) {
     if(length(grep("matrix_1", names(data))) == 0) {
-        stop.call("", error_msg)
+        stop(paste0("data ", error_msg), call. = FALSE)
     }
     ## Matrix must be a matrix
     check.class(data$matrix_1$matrix, "matrix", msg = error_msg)
@@ -88,6 +88,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
     if(missing(arg.cmdscale)) {
         arg.cmdscale <- list()
     }
+
     ## k
     max_k <- (nrow(data$matrix_1$matrix) -1)
     if(missing(k)) {
@@ -99,6 +100,7 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
             stop.call("", paste0("k cannot be greater than the number of rows in data - 1 (data has ", max_k, " rows)."))
         }
     }
+
     ## add
     check.class(add, "logical")
     arg.cmdscale$add <- add
@@ -116,7 +118,6 @@ Claddis.ordination <- function(data, distance = "mord", ..., k, add = TRUE, arg.
 
     ## Ordinate the matrix
     ordination <- do.call(stats::cmdscale, arg.cmdscale)
-    # ordination <- stats::cmdscale(distance, k = k, add = add, ...)
 
     if(!is(ordination, "matrix")) {
         ordination <- ordination$points
