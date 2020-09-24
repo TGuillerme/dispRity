@@ -1392,6 +1392,11 @@ For more details on generating spaces see the [`space.maker`](#Simulating-multid
 The code used for these models is based on those developed by Gene Hunt [@hunt2006fitting; @hunt2012measuring; @hunt2015simple].
 So we acknowledge and thank Gene Hunt for developing these models and writing the original R code that served as inspiration for these models.
 
+> DISCLAIMER: this method of analysing disparity has not been published yet and has not been peer reviewed. Caution should be used in interpreting these results: it is unclear what "a disparity curve fitting a Brownian motion" actually means biologically.
+
+As Malcolm said in Jurassic Park: "although the examples within this chapter all work and produce solid tested results (from an algorithm point of view), that doesn't mean you should use it" (or something along those lines).
+
+
 ### Simple modes of disparity change through time
 
 #### `model.test`
