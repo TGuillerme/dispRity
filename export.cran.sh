@@ -117,6 +117,8 @@ else
     if grep -e 'NOTE'  dispRity.Rcheck/00check.log 
     then
         echo "Check out the NOTE(s) before submitting!"
+        echo "/Users/TGuillerme/Packaging/dispRity/00check.log"
+        mv /Users/TGuillerme/Packaging/dispRity/cran_tmp/dispRity.Rcheck/00check.log /Users/TGuillerme/Packaging/dispRity/00check.log
     else
         echo "Nice one: it compiles smoothly!"
     fi    
