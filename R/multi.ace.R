@@ -17,8 +17,8 @@
 #' 
 #' @details
 #' 
-#' The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of builtin model(s) (see below) or a list of both matrices and builtin models:
-#' The available builtin models in \code{\link[castor]{asr_mk_model}} are:
+#' The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of built-in model(s) (see below) or a list of both matrices and built-in models:
+#' The available built-in models in \code{\link[castor]{asr_mk_model}} are:
 #' \itemize{
 #'  \item \code{"ER"} for all equal rates
 #'  \item \code{"SYM"} for symmetric rates
@@ -215,7 +215,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         ## must be list with names
         check.class(castor.options, "list")
         if(is.null(names(castor.options))) {
-            stop.call(match_call$castor.options, " must be a named list of options for castor::asr_mk_model().")
+            stop("castor.options must be a named list of options for castor::asr_mk_model().", call. = FALSE)
         }
     }
 
@@ -326,6 +326,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     check.class(verbose, "logical")
 
     ## Set up parallel arguments
+    check.class(parallel, c("logical", "numeric", "integer"))
     if(is.logical(parallel)) {
         do_parallel <- ifelse(parallel, TRUE, FALSE)
         ## Get the number of cores
@@ -335,6 +336,8 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
             cores <- 1
         }
     } else {
+        check.class(parallel, "numeric")
+        check.length(parallel, 1, " must be logical or the number of cores to use.")
         do_parallel <- TRUE
         ## Get the number of cores
         cores <- parallel
@@ -364,13 +367,15 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     characters_states <- lapply(characters, function(char) sort(unique(na.omit(unlist(char)))))
     if(verbose) cat(".")
 
+
+
     # Find invariant characters
     invariants <- which(lengths(characters_states) < 2)
     if(length(invariants) > 0) {
 
         ## Stop if they are only invariant characters
         if(length(invariants) == n_characters) {
-            stop.call(match.call$data, " contains only invariant characters.")
+            stop.call(match_call$data, " contains only invariant characters.")
         }
 
         ## Remove the characters

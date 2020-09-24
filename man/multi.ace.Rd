@@ -49,8 +49,8 @@ To output the combined ancestral states and input, you can use \code{"combined"}
 Fast ancestral states estimations run on multiple trees using the Mk model from castor::asr_mk_model.
 }
 \details{
-The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of builtin model(s) (see below) or a list of both matrices and builtin models:
-The available builtin models in \code{\link[castor]{asr_mk_model}} are:
+The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of built-in model(s) (see below) or a list of both matrices and built-in models:
+The available built-in models in \code{\link[castor]{asr_mk_model}} are:
 \itemize{
  \item \code{"ER"} for all equal rates
  \item \code{"SYM"} for symmetric rates

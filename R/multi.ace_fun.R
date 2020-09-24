@@ -32,6 +32,10 @@ convert.char.table <- function(character, character_states) {
             if(any(active_states <- character_states %in% taxon)) {
                 ## Fill in the character states
                 table[active_states] <- 1/length(which(active_states))
+                ## Scale to be probabilities
+                if((state_sum <- sum(table)) > 1) {
+                    table <- table/state_sum
+                }
             } else {
                 ## Return only NAs (should normally never get ticked)
                 return(rep(NA, n_states))
@@ -58,7 +62,6 @@ make.args <- function(character, character_states, model, castor.options, cores)
     }
     return(castor_args)
 }
-
 
 ## Update the tree and data
 update.tree.data <- function(castor_args) {
@@ -89,6 +92,18 @@ castor.ace <- function(castor_args) {
 
     ## Run the ace
     estimation <- do.call(castor::asr_mk_model, castor_args)
+
+#     stop("DEBUG multi.ace_fun::castor.ace")
+
+# asr_mk_model( tree = castor_args$tree, 
+#               tip_states = castor_args$tip_states, 
+#               Nstates = castor_args$Nstates, 
+#               tip_priors = castor_args$tip_priors, 
+#               rate_model = castor_args$rate_model, 
+#               Ntrials = castor_args$Ntrials, 
+#               check_input =castor_args$check_input, 
+#               Nthreads = castor_args$Nthreads)
+
 
     ## Increase the number of trials if unsuccessful
     while(!estimation$success && castor_args$Ntrials < 100) {
@@ -203,6 +218,13 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
         output[-invariants] <- ancestral_states
         ancestral_states <- output
     }
+
+    ## Replace NAs
+    replace.NA <- function(character, characters_states, special.tokens) {
+        return(unname(sapply(character, function(x) ifelse(x == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))))
+    }
+    ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
+
     if(verbose) cat(" Done.\n")
     return(ancestral_states)
 }
