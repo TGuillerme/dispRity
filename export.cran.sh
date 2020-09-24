@@ -69,7 +69,7 @@ rm src/*.rds
 version_number=$(grep "Version:" DESCRIPTION | sed 's/Version: //g')
 
 ## CHANGE THE WARNING zzz.R
-sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version ('"$version_number"') of the package.\\nFor more functionalities, news, vignettes and releases,\\nvisit https:\/\/github.com\/TGuillerme\/dispRity/g' > ${TMPPATH}/R/zzz.R
+sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version ('"$version_number"') of the package.\\nFor news, vignettes and future releases,\\nvisit https:\/\/github.com\/TGuillerme\/dispRity/g' > ${TMPPATH}/R/zzz.R
 
 ## Add ssptest.support and remove dependencies 
 cp ~/Packaging/CRAN/Support/ssptest.support.R ${TMPPATH}/R/
@@ -84,7 +84,7 @@ sed ''"${line_remove}"'d' ${TMPPATH}/DESCRIPTION > export.cran.tmp
 line_remove=$(grep -n "github::myllym/spptest@no_fastdepth" export.cran.tmp | sed -e 's/:    github::myllym\/spptest@no_fastdepth//g')
 sed ''"${line_remove}"'d' export.cran.tmp > export.cran.tmp2
 ## Remove imports
-line_remove=$(grep -n "spptest" export.cran.tmp2 | sed -e 's/:[[:space:]]spptest//g')
+line_remove=$(grep -n "spptest" export.cran.tmp2 | sed -e 's/:[[:space:]]spptest//g' | sed -e  's/,//g')
 sed ''"${line_remove}"'d' export.cran.tmp2 > export.cran.tmp
 ## Remove coma to last import
 let "line_remove -= 1"
