@@ -8,23 +8,11 @@
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
 #' @param rarefaction Either \code{NULL} (default) or \code{FALSE} for not using the rarefaction scores; a \code{numeric} value of the level of rarefaction to plot; or \code{TRUE} for plotting the rarefaction curves.
-#' @param elements \code{logical} whether to plot the number of elements per subsets.
-#' @param ylim Optional, two \code{numeric} values for the range of the y axis.
-#' @param xlab Optional, a \code{character} string for the caption of the x axis.
-#' @param ylab Optional, one or two (if \code{elements = TRUE}) \code{character} string(s) for the caption of the y axis.
-#' @param col Optional, some \code{character} string(s) for the colour of the plot.
-#' @param chrono.subsets \code{logical} whether to handle continuous data from the \code{chrono.subsets} function as time (in Ma). When this option is set to TRUE for other \code{type} options, the names of the subsets are used for the x axis labels.
+#' @param elements \code{logical} whether to plot the number of elements per subsets (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param observed \code{logical} whether to add the observed values on the plot as crosses (default is \code{FALSE}) or a \code{list} of any of the graphical arguments \code{"col"}, \code{"pch"} and/or \code{"cex"}.
 #' @param add \code{logical} whether to add the new plot an existing one (default is \code{FALSE}).
 #' @param density the density of shading lines to be passed to \code{\link[graphics]{polygon}}. Is ignored if \code{type = "box"} or \code{type = "line"}.
-#' @param element.pch optional, if \code{elements = TRUE}, the point type to represent them (default are squares: \code{element.pch = 15}).
-#' @param dimensions optional, if \code{type = "preview"}, a pair of \code{"numeric"} values of which dimensions to display (default is \code{c(1,2)}).
-#' @param matrix optional, if \code{type = "preview"}, the \code{"numeric"} value of which matrix to display (default is \code{1}).
-# ' @param significance when plotting a \code{\link{sequential.test}} from a distribution, which data to use for considering slope significance. Can be either \code{"cent.tend"} for using the central tendency or a \code{numeric} value corresponding to which quantile to use (e.g. \code{significance = 4} will use the 4th quantile for the level of significance ; default = \code{"cent.tend"}).
-# ' @param lines.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{lines}} (default = \code{NULL}).
-# ' @param token.args when plotting a \code{\link{sequential.test}}, a list of arguments to pass to \code{\link[graphics]{text}} for plotting tokens (see details; default = \code{NULL}).
-#' @param nclass when plotting a \code{\link{null.test}} the number of \code{nclass} argument to be passed to \code{\link[graphics]{hist}} (default = \code{10}).
-#' @param coeff when plotting a \code{\link{null.test}} the coefficient for the magnitude of the graph (see \code{\link[ade4]{randtest}}; default = \code{1}).
+#' @param specific.args optional, a named list of arguments to be passed for some specific plot types. See details.
 #'
 #' @details
 #' The different \code{type} arguments are:
@@ -36,10 +24,11 @@
 #'   \item \code{"preview"}: plots two dimensional preview of the space (default is \code{c(1,2)}). WARNING: the plotted dimensions might not be representative of the full multi-dimensional space!
 #' }
 #' 
-#TG: The following is from sequential.test (not implemented yet)
-# The \code{token.args} argument intakes a list of arguments to be passed to \code{\link[graphics]{text}} for plotting the significance tokens. The plotted tokens are the standard p-value significance tokens from R:
-# \code{0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
-# Additionally, the \code{float} argument can be used for setting the height of the tokens compared to the slopes. For example one can use \code{token.args = list(float = 0.3, col = "blue", cex = 0.5))} for plotting blue tokens 50% smaller than normal and 30% higher than the slope.
+#' The different \code{specific.args} arguments for the following options are:
+#' \itemize{
+#'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
+#'      \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.
+#' }
 #'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -54,16 +43,12 @@
 #'      cent.tend = mean)
 #' 
 #' ## Using different options
-#' plot(disparity, type = "line", elements = TRUE, ylim = c(0, 5),
+#' plot(disparity, type = "line", elements = TRUE, ylim = c(0, 3),
 #'      xlab = ("Time (Ma)"), ylab = "disparity")
 #' 
 #' ## Continuous plotting (all default options)
 #' plot(disparity, type = "continuous")
-#' 
-#' ## Using different options (with non time.slicing option)
-#' plot(disparity, type = "continuous", chrono.subsets = FALSE,
-#'      elements = TRUE, col = c("red", "orange", "yellow"))
-#' 
+#'  
 #' ## Rarefactions plots
 #' plot(disparity, rarefaction = TRUE)
 #' 
@@ -73,29 +58,7 @@
 #' ## Observed data with graphical details
 #' plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 #' 
-#' \dontrun{
-#' ## Geoscale plots
-#' require(geoscale)
-#' 
-#' ## Converting the data into a list
-#' data_obs <- extract.dispRity(disparity, observed = TRUE)
-#' data_distribution <- extract.dispRity(disparity, observed = FALSE)
-#' ## Removing one list level
-#' data_distribution <- unlist(data_distribution, recursive = FALSE)
-#' data_obs <- as.vector(data_obs)
-#' 
-#' ## Getting the ages
-#' ages <- as.numeric(names(disparity$subsets))
-#' 
-#' ## Plotting the results median
-#' geoscalePlot(ages, data_obs, boxes = "Age", data.lim = c(1.5, 2), type = "l")
-#'
-#' ## Plotting the results distribution
-#' geoscaleBox(data_distribution, ages, boxes = "Age", data.lim = c(1.5, 2))
-#' }
-#' 
-#' 
-#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{pair.plot}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}.
 #'
 #' @author Thomas Guillerme
 
@@ -111,13 +74,11 @@
 # quantiles=c(50, 95)
 # cent.tend=median
 # rarefaction = NULL
-# elements = FALSE
-# chrono.subsets = FALSE
+# elements = TRUE
 # observed = FALSE
 # add = FALSE
 # density = NULL
-# nclass = 10
-# coeff = 1
+
 
 
 # data(disparity)
@@ -128,165 +89,80 @@
 # xlab = ("Time (Ma)")
 # ylab = "disparity"
 
-plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, ylim, xlab, ylab, col, chrono.subsets = TRUE, observed = FALSE, add = FALSE, density = NULL, element.pch = 15, dimensions = c(1,2), nclass = 10, coeff = 1, matrix = 1){ #significance="cent.tend", lines.args=NULL, token.args=NULL
+plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, specific.args){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
     match_call <- match.call()
+    dots <- list(...)
 
     #SANITIZING
+
+    ## Checking specific.args
+    if(missing(specific.args)) {
+        specific.args <- list()
+    } else {
+        check.class(specific.args, "list")
+    }
+
     #DATA
-    if(length(class(data)) > 1) {
+    if(length(class(data)) > 1 && !(is(data, "matrix") && is(data, "array"))) {
 
         ## Subclass plots
 
         ## randtests plots
-        if(is(data, c("dispRity")) && is(data, c("randtest"))) {
-            ## sanitising
-            check.class(nclass, "numeric")
-            check.class(coeff, "numeric")
-            check.length(nclass, 1, " must be a single numeric value.")
-            check.length(coeff, 1, " must be a single numeric value.")
-            
+        if(is(data, "dispRity") && is(data, "randtest")) {
             ## length_data variable initialisation
             length_data <- length(data)
-            
-            ## Set up the plotting window
-            ## Open the multiple plots
-            if(length_data != 1) {
-                op_tmp <- par(mfrow = c(ceiling(sqrt(length_data)), round(sqrt(length_data))))
 
-                ## Rarefaction plots
+            ## Set up the extra arguments
+            dots <- list(...)
+            plot_args <- dots
+            plot_args$specific.args <- specific.args
+
+            ## Single plot
+            if(length_data == 1) {
+                ## Select the right dataset
+                plot_args$data_sub <- data[[1]]
+                ## Run the plot
+                do.call(plot.randtest, plot_args)
+            } else {
+                ## Set up multiple plot windows
+                plot_size <- ifelse(length_data == 3, 4, length_data)
+                op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)), round(sqrt(plot_size))))
+                ## All plots
                 for(model in 1:length_data) {
-                    plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = ""), ...)
-                    ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff, main = paste("MC test for subsets ", names(data)[[model]], sep = "")) ; warning("DEBUG: plot")
+                    ## Select the right dataset
+                    plot_args$data_sub <- data[[model]]
+                    ## Add the title (optional)
+                    if(is.null(dots$main)) {
+                        plot_args$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
+                    }
+                    ## Run the plot
+                    do.call(plot.randtest, plot_args)
                 }
                 par(op_tmp)
-            } else {
-                plot.randtest(data[[1]], nclass = nclass, coeff = coeff, ...)
-                ## plot.randtest(data[[model]], nclass = nclass, coeff = coeff) ; warning("DEBUG: plot")
             }
+            return(invisible())
         }
 
         ## dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
         if(is(data, c("dispRity")) && is(data, c("dtt"))) {
-            ## Silence warnings
-            options(warn = -1)
-
-            ## Get the ylim
-            if(missing(ylim)) {
-                ylim <- c(range(pretty(data$dtt)))
-
-                if(!is.null(data$sim)) {
-                    ylim_sim <- range(data$sim)
-                    ylim <- range(c(ylim, ylim_sim))
-                }
-            }
-
-            if(missing(xlab)) {
-                xlab <- "relative time"
-            }
-            if(missing(ylab)) {
-                ylab <- "scaled disparity"
-            }
-
-            if(missing(col)) {
-                colfun <- grDevices::colorRampPalette(c("lightgrey", "grey"))
-                col <- c("black", colfun(length(quantiles)))
-            }
-
-            ## Plot the relative disparity curve
-            plot(data$times, data$dtt, xlab = xlab, ylab = ylab, ylim = ylim, type = "n", ...)
-            #plot(data$times, data$dtt, xlab = xlab, ylab = ylab, ylim = ylim, type = "n") ; warning("DEBUG plot")
-
-            if(!is.null(data$sim)) {
-
-                ## Check the quantiles
-                check.class(quantiles, "numeric", " must be any value between 1 and 100.")
-                ## Are quantiles probabilities or proportions ?
-                if(any(quantiles < 1)) {
-                    ## Transform into proportion
-                    quantiles <- quantiles*100
-                }
-                ## Are quantiles proper proportions
-                if(any(quantiles < 0) | any(quantiles > 100)) {
-                    stop.call("", "quantiles(s) must be any value between 0 and 100.")
-                }
-                quantiles_n <- length(quantiles)
-
-                ## Check the central tendency
-                check.class(cent.tend, "function")
-                ## The function must work
-                if(make.metric(cent.tend, silent = TRUE) != "level1") {
-                    stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
-                }
-
-
-                ## Summarised data
-                quantiles_values <- apply(data$sim, 1, quantile, probs = CI.converter(quantiles), na.rm = TRUE)
-                cent_tend_values <- apply(data$sim, 1, cent.tend)
-
-                ## Plotting the polygons for each quantile
-                for (cis in 1:quantiles_n) {
-                    xx <- c(data$times, rev(data$times))
-                    yy <- c(quantiles_values[(quantiles_n*2) - (cis-1), ], rev(quantiles_values[cis ,]))
-                    polygon(xx, yy, col = col[cis+1],  border = FALSE, density = density)
-                }
-
-
-                ## Add the central tendency
-                lines(data$times, cent_tend_values, col = col[1], lty = 2)
-            }
-
-            ## Add the observed disparity
-            lines(data$times, data$dtt, col = col[1], lwd = 1.5)
-
-            ## Re-enable warnings
-            options(warn = 0)
+        
+            ## Dtt style plots
+            plot.dtt(data, quantiles, cent.tend, density, ...)
+            return(invisible())
         } 
 
         ## model.test plots
         if(is(data, c("dispRity")) && is(data, c("model.test"))) {
 
-            ## Colours
-            if(missing(col)) {
-                col <- "grey"
-            }
-            ## Ylab
-            if(missing(ylab)) {
-                ylab <- "weighted AIC"
-            }
-
-            ## Ylim
-            if(missing(ylim)) {
-                ylim <- NULL
-            }
-
             ## Plotting the model support
-            plot.model.test.support(data = data, col = col, ylab = ylab, ylim = ylim, ...)
+            plot.model.test(data, ...)
+            return(invisible())
         }
         
         ## model.sim plots
         if(is(data, c("dispRity")) && is(data, c("model.sim"))) {
-            
-            ## xlab
-            if(missing(xlab)) { 
-                xlab <- "default"
-            } 
-
-            ## ylab
-            if(missing(ylab)) {
-                ylab <- "default"
-            }
-
-            ## col
-            if(missing(col)) {
-                col <- "default"
-            }
-    
-            ## ylim
-            if(missing(ylim)) {
-                ylim <- "default"
-            }
 
             ## add
             check.class(add, "logical")
@@ -297,66 +173,61 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.length(density, 1, " must be a single numeric value.")
             }
 
-            ## Get inherited subsets (if exist)
-            if(!is.null(data$subsets)) {
-                subset_names <- rev(data$subsets)
-            } else {
-                subset_names <- rev(data$simulation.data$fix$subsets)
-            }
-
-            ## Preparing the data and the arguments
-            summarised_data <- data.frame(summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5))
-            colnames(summarised_data)[3] <- "obs"
-            summarised_data[,1] <- subset_names
-
-            ## Setting the default arguments
-            default_arg <- set.default(summarised_data, data, elements = FALSE, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = FALSE, type = "continuous", is_bootstrapped = TRUE)
-            ylim <- default_arg[[1]]
-            xlab <- default_arg[[2]]
-            ylab <- default_arg[[3]]
-            if(length(ylab) == 0) {
-                ylab <- "disparity (simulated)"
-            }
-            col <- default_arg[[4]]
-
-            ## Plotting the model
-            plot_details <- plot.continuous(summarised_data, rarefaction = FALSE, is_bootstrapped = TRUE, is_distribution = TRUE, ylim, xlab, ylab, col, time_slicing = summarised_data$subsets, observed = FALSE, obs_list_arg = NULL, add, density, ...)
+            plot.model.sim(data, add, density, quantiles, cent.tend, ...)
+            return(invisible())
         }
-        
-        ## Exit subclass plots
-        return(invisible())
+
+        ## test.metric plots
+        if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
+
+            ## Plotting the test.metric results
+            plot.test.metric(data, specific.args, ...)
+                
+            ## Exit subclass plots
+            return(invisible())
+        }
     }
 
     ## ----
     ## Normal disparity plot
     ## ----
 
+    ## Special case when the data is a matrix (make a dummy disparity data)
+    if(is(data, c("matrix", "array"))) {
+        ## Make a minimal dispRity object
+        data <- make.dispRity(data)
+        ## Set the type to "preview only"
+        type <- "preview"
+    }
+
     ## must be class dispRity
     check.class(data, "dispRity")
+
     ## must have one element called dispRity
-    if(is.na(match("disparity", names(data)))) {
-        if(!missing(type) && type != "preview") {
-            stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
+    if(!("disparity" %in% names(data))) {
+        if(missing(type)) {
+            ## Just preview the data
+            type <- "preview"
         } else {
-            if(missing(type)) {
-                type <- "preview"
+            if(type != "preview") {
+                stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))                
             }
         }
     }
+
+    ## Plot the matrix preview
     if(!missing(type) && type == "preview") {
-        ## Preview plot
-        plot.preview(data, dimensions = dimensions, matrix = matrix, ylim = ylim, xlab = xlab, ylab = ylab, col = col, ...)
+        ## Plotting the matrix preview
+        plot.preview(data, specific.args, ...)
         return(invisible())
     }
 
-    ## Check if disparity is a value or a distribution
-    is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
-    ## Check the bootstraps
-    is_bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    ## Get the dispRity data characteristics
+    data_params <- get.data.params(data)
 
     ## quantiles
-    ## Only check if the data is_bootstrapped or if it's a distribution
-    if(is_bootstrapped || is_distribution) {
+    ## Only check if the data data_params$bootstrap or if it's a distribution
+    if(data_params$bootstrap || data_params$distribution) {
         check.class(quantiles, c("numeric", "integer"), " must be any value between 1 and 100.")
 
         ## Are quantiles probabilities or proportions ?
@@ -379,11 +250,6 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     ## type
-    # if(length(data$subsets) == 1) {
-    #     type <- "box"
-    #     message("Only one subset of data available: type is set to \"box\".")
-    # }
-
     if(missing(type)) {
         ## Set type to default
         if(any(grep("continuous", data$call$subsets))) {
@@ -408,223 +274,108 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         type <- ifelse(type == "p", "polygon", type)
     }
 
-    ## If continuous, set time to continuous Ma (default)
-    if(type == "continuous" & chrono.subsets) {
-        ## Check if time.slicing was used (saved in call)
-        if(data$call$subsets[1] == "continuous") {
-            time_slicing <- names(data$subsets)
-        }
-    } 
-    if(!chrono.subsets) {
-        time_slicing <- FALSE
-    } else {
-        time_slicing <- names(data$subsets)
-    }
-
-    ## elements
-    ## must be logical
-    check.class(elements, "logical")
-
-    ## Rarefaction
-    if(is.null(rarefaction)) {
-        rarefaction <- FALSE
-    }
     ## If data is not bootstrapped, rarefaction is FALSE
-    if(!is_bootstrapped) {
-        rarefaction <- FALSE
+    if(!data_params$bootstrap) {
+        rarefaction <- NULL
     }
-    ## Check class
-    silent <- check.class(rarefaction, c("logical", "integer", "numeric"))
-    if(!is(rarefaction, "logical")) {
-        ## Right class
-        rarefaction <- as.numeric(rarefaction)
-        check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
-        ## Check if all subsets have the appropriate rarefaction level
-        rarefaction_subsets <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
-        ## Check if subsets have no rarefaction
-        if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
-            wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
-            stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
+
+    ## Check rarefaction
+    if(!is.null(rarefaction)) {
+        rarefaction_class <- check.class(rarefaction, c("logical", "integer", "numeric"))
+        if(rarefaction_class != "logical") {
+            ## Right class
+            rarefaction <- as.numeric(rarefaction)
+            check.length(rarefaction, 1, errorif = FALSE, msg = "Rarefaction must a single numeric value.")
+            ## Check if all subsets have the appropriate rarefaction level
+            rarefaction_subsets <- lapply(lapply(data$subsets, lapply, nrow), function(X) which(X[-1] == rarefaction)+1)
+            ## Check if subsets have no rarefaction
+            if(length(unlist(rarefaction_subsets)) != length(data$subsets)) {
+                wrong_rarefaction <- lapply(rarefaction_subsets, function(X) ifelse(length(X) == 0, TRUE, FALSE))
+                stop.call("", paste0("The following subsets do not contain ", rarefaction, " elements: ", paste(names(data$subsets)[unlist(wrong_rarefaction)], collapse = ", "), "."))
+            }
+        } else {
+            if(rarefaction) {
+                type <- "rarefaction"
+                ## Check if they are enough rarefaction levels
+                if(length(data_params$rarefaction) == 1 && data_params$rarefaction != "full") {
+                    stop(paste0("Impossible to plot rarefaction curves with only one level of rarefaction. Try to use plot(..., rarefaction = ", data_params$rarefaction[[1]], ") to just see the rarefied data for that level instead."), call. = FALSE)
+                }
+            }
+            rarefaction <- NULL
         }
     }
 
-    ## observed
+    ## elements = FALSE
+    elements_args <- list()
+    class_elements <- check.class(elements, c("logical", "list"))
+    if(class_elements == "list") {
+        ## Transforming into logical and handling the list below
+        elements_args <- elements
+        elements_args$elements <- TRUE
+    } else {
+        ## Creating and empty list to be handled below
+        elements_args$elements <- elements
+    }
+
+    ## observed = FALSE
+    observed_args <- list()
     class_observed <- check.class(observed, c("logical", "list"))
     if(class_observed == "list") {
         ## Transforming into logical and handling the list below
-        obs_list_arg <- observed
-        observed <- TRUE
+        observed_args <- observed
+        observed_args$observed <- TRUE
     } else {
         ## Creating and empty list to be handled below
-        obs_list_arg <- list()
+        observed_args$observed <- observed
     }
 
-    ## xlab
-    if(missing(xlab)) { 
-        xlab <- "default"
-        if(!any("customised" %in% data$call$subsets) && chrono.subsets != FALSE && rarefaction != TRUE) {
-            xlab <- "Time (Mya)"
-        }
-    } else {
-        ## length must be 1
-        check.length(xlab, 1, " must be a character string.")
-    }
-
-    ## ylab
-    if(missing(ylab)) {
-        ylab <- "default"
-    } else {
-        ## length must be 
-        if(elements == FALSE) {
-            check.length(ylab, 1, " must be a character string.")
-        } else {
-            if(length(ylab) > 2) {
-                stop.call("", "ylab can have maximum of two elements.")
-            }
-        }
-    }
-
-    ## col
-    ## if default, is ok
-    if(missing(col)) {
-        if(type == "box" & rarefaction != TRUE) {
-            col <- "white"
-        } else {
-            col <- "default"
-        }
-    } else {
-        check.class(col, "character", " must be a character string.")
-    }
-
-    ## ylim
-    if(missing(ylim)) {
-        ylim <- "default"
-    } else {
-        check.class(ylim, "numeric")
-        check.length(ylim, 2, " must be a vector of two elements.")
-    }
-
-    ## add
+    ## add = FALSE
     check.class(add, "logical")
 
     ## PREPARING THE PLOT
+    plot_params <- get.plot.params(data = data,
+                                   data_params = data_params,
+                                   cent.tend = cent.tend,
+                                   quantiles = quantiles,
+                                   rarefaction_level = rarefaction,
+                                   type = type,
+                                   observed_args = observed_args,
+                                   elements_args = elements_args
+                                   , ...)
 
-    ## summarising the data
-    ## (remove NAs if data has a distribution of trees)
-    if(!is.na(data$call$subsets["trees"]) && as.numeric(data$call$subsets["trees"]) > 1) {
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
-    } else {
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+    ## Set up the plotting task 
+    plot_task <- type
+    ## The task line is the same as polygon
+    if(plot_task == "line") plot_task <- "polygon"
+
+    switch(plot_task,
+        "rarefaction" = {
+            plot.rarefaction(plot_params, data_params, data)
+        },
+        "continuous" = {
+            plot.continuous(plot_params, data_params, add = add, density = density)
+        },
+        "polygon" = {
+            plot.discrete(plot_params, data_params, add = add, density = density, type = type)
+        },
+        "box" = {
+            ## Set the box arguments
+            boxplot_args <- plot_params$options
+            boxplot_args$x <- plot_params$disparity$data
+
+            ## Run the box plot
+            do.call(boxplot, boxplot_args)
+        })
+
+    ## Add the observed
+    if(plot_params$observed_args$observed) {
+        plot.observed(plot_params)
     }
 
-    ## Setting the default arguments
-    default_arg <- set.default(summarised_data, data, elements = elements, ylim = ylim, xlab = xlab, ylab = ylab, col = col, rarefaction = rarefaction, type = type, is_bootstrapped = is_bootstrapped)
-    ylim <- default_arg[[1]]
-    xlab <- default_arg[[2]]
-    ylab <- default_arg[[3]]
-    col <- default_arg[[4]]
-
-    ## Adding the default parameters to observed
-    if(observed) {
-        if(is.null(obs_list_arg$col)) {
-            obs_list_arg$col <- col[[1]]
-        }
-        if(is.null(obs_list_arg$pch)) {
-            obs_list_arg$pch <- 4
-        }
-        if(is.null(obs_list_arg$cex)) {
-            obs_list_arg$cex <- 1
-        }
+    ## Add elements
+    if(plot_params$elements_args$elements) {
+        plot.elements(plot_params, data_params, type)
     }
 
-    ## PLOTTING THE RESULTS
-
-    ## Rarefaction plot
-    if(rarefaction == TRUE) {
-        ## How many rarefaction plots?
-        n_plots <- length(data$subsets)
-
-        ## Open the multiple plots
-        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
-
-        ## Rarefaction plots
-
-        ## Get the list of subsets
-        subsets_levels <- unique(summarised_data$subsets)
-
-        ## Split the summary table
-        sub_summarised_data <- lapply(as.list(subsets_levels), split.summary.data, summarised_data)
-
-        ## Plot the rarefaction curves
-        for(nPlot in 1:n_plots) {
-            plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col, ...)
-            # plot.rarefaction(sub_summarised_data[[nPlot]], ylim, xlab, ylab, col) ; warning("DEBUG: plot")
-        }
-
-        ## Done!
-        par(op_tmp)
-
-        return(invisible())
-    }
-
-    ## Continuous plot
-    if(type == "continuous") {
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density,...)
-        # saved_par <- plot.continuous(summarised_data, rarefaction, is_bootstrapped, is_distribution, ylim, xlab, ylab, col, time_slicing, observed, obs_list_arg, add, density); warning("DEBUG: plot")
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "continuous", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
-        return(invisible())
-    }
-
-    ## Polygons or lines
-    if(type == "polygon" | type == "line") {
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        ## Personalised discrete plots
-        saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, is_distribution, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density, ...) 
-        # saved_par <- plot.discrete(summarised_data, rarefaction, is_bootstrapped, type, ylim, xlab, ylab, col, observed, obs_list_arg, add, density) ; warning("DEBUG: plot")
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
-        return(invisible())
-    }
-
-    ## Box plot
-    if(type == "box") {
-        ## Simple case: boxplot
-        plot_data <- transpose.box(data, rarefaction, is_bootstrapped)
-        ## Bigger plot margins if elements needed
-        if(elements) {
-            par(mar = c(5, 4, 4, 4) + 0.1)
-        }
-        saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add, ...)
-        # saved_par <- boxplot(plot_data, ylim = ylim, xlab = xlab, ylab = ylab[[1]], col = col, add = add) ; warning("DEBUG: plot")
-
-        if(observed == TRUE) {
-            if(any(!is.na(extract.from.summary(summarised_data, 3, rarefaction)))){
-                ## Add the points observed (if existing)
-                for(point in 1:length(plot_data)) {
-                    x_coord <- point
-                    y_coord <- extract.from.summary(summarised_data, 3, rarefaction)[point]
-                    points(x_coord, y_coord, pch = obs_list_arg$pch, col = obs_list_arg$col, cex = obs_list_arg$cex)
-                }
-            }
-        }
-        if(elements) {
-            par(new = TRUE)
-            plot.elements(summarised_data, rarefaction, ylab = ylab, col = col[[1]], type = "discrete", cex.lab = saved_par$cex.lab, element.pch = element.pch)
-        }
-
-        return(invisible())
-    }
-
+    return(invisible())
 }

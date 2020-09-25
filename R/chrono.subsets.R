@@ -192,7 +192,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     all_methods <- c("discrete", "d", "continuous", "c")
     ## method must be a character string
     check.class(method, "character")
-    method <- tolower(method)
     ## method must have only one element
     check.length(method, 1, paste(" argument must be one of the following: ", paste(all_methods, collapse = ", "), ".", sep = ""))
     ## method must be either "discrete", "d", "continuous", or "c"
@@ -306,7 +305,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Set up time
-        time <- seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0))
+        time <- round(seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0)), 2)
     }
 
     ## time vector must go from past to present

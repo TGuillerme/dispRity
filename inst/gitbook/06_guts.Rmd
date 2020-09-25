@@ -162,7 +162,7 @@ head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
 
 
 
-## The `dispRity` object content
+## The `dispRity` object content {#disprity-object}
 
 The functions above are utilities to easily and safely access different elements in the `dispRity` object.
 Alternatively, of course, each elements can be accessed manually.

@@ -53,8 +53,12 @@ lapply.observed <- function(disparity) {
 }
 
 ## mapply wrapper for getting the disparity observed values
-mapply.observed <- function(disparity, elements) {
-    return(c(disparity, rep(NA, (length(elements)-1))))
+mapply.observed <- function(disparity, elements, between.groups = FALSE) {
+    if(!between.groups) {
+        return(c(disparity, rep(NA, (length(elements)-1))))
+    } else {
+        
+    }
 }
 
 ## Get digits for table (shifts the decimal point to contain a maximum of four characters)
@@ -109,8 +113,27 @@ match.parameters <- function(one_param, full_param) {
     }
 }
 
-
-
+## Try get stuff from a model: returns NULL if it can't summarise the model, NA if it can't find "what" or the asked value
+try.get.from.model <- function(model, what) {
+    model_summary <- results <- NULL
+    
+    ## Try summarising
+    try(model_summary <- summary(model), silent = TRUE)
+    if(is.null(model_summary)) {
+        return(NULL)
+    }
+    ## Try getting what from the summary names
+    try(results <- model_summary[grep(what, names(model_summary))], silent = TRUE)
+    if(!is.null(results) && length(results) != 0) {
+        return(results)
+    }
+    ## Try getting what from the coefficients
+    try(results <- model_summary$coefficients[, grep(what, colnames(model_summary$coefficients))], silent = TRUE)
+    if(!is.null(results)) {
+        return(results)
+    }
+    return(NA)
+}
 
 
 

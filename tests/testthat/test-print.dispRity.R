@@ -194,8 +194,7 @@ test_that("randtest printing", {
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
         " -32.322690   48.021700    1.976796 ",
-        ""                                    ,
-        "NULL" 
+        ""
         )
     )
 })
@@ -252,7 +251,7 @@ test_that("dtt printing", {
         # "2.3279070 "                                                                                ,
         # ""                                                                                          ,
         "- attr(*, \"class\") = \"dispRity\" \"dtt\""                                               ,
-        "Use plot.dispRity to visualise.Empty dispRity object." 
+        "Use plot.dispRity to visualise." 
         ))
 })
 

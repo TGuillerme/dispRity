@@ -14,7 +14,7 @@ test_that("Wrapping works", {
     ## Correct subsets    
     expect_equal(
         names(result$subsets)
-        , c("133.51104 - 89.00736", "89.00736 - 44.50368", "44.50368 - 0"))
+        , c("133.51 - 89.01", "89.01 - 44.5", "44.5 - 0"))
     
     ## Correct values
     expect_equal(

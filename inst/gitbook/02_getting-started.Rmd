@@ -80,7 +80,7 @@ For this, simply input a matrix in the `Claddis` format to the function and it w
 require(Claddis)
 
 ## Ordinating the example data from Claddis
-Claddis.ordination(michaux1989) 
+Claddis.ordination(michaux_1989)
 ```
 
 Note that several options are available, namely which type of distance should be computed.

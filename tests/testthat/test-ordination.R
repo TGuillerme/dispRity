@@ -7,22 +7,47 @@ context("ordinations")
 
 test_that("Claddis.ordination works", {
     
-    library(Claddis)
-
-    data <- Claddis::michaux_1989
+    ## Making michaux's dataset
+    data <- list()
+    data$topper <- list(NULL)
+    names(data$topper) <- "step_matrices"
+    data$topper$header <- "!File downloaded from graemetlloyd.com"
+    data$matrix_1$block_name <- NA
+    data$matrix_1$datatype <- "STANDARD"
+    data$matrix_1$matrix <- matrix(as.character(c(rep(0,11),
+                                                c(0,0,1,1,1,0,0,0,1,1,0),
+                                                c(1,1,0,1,0,1,0,0,0,0,1),
+                                                c(1,1,1,1,0,0,1,1,1,0,0))
+                                                ), ncol = 11, byrow = TRUE)
+    rownames(data$matrix_1$matrix) <- c("Ancilla", "Turrancilla", "Ancillista", "Amalda")
+    data$matrix_1$ordering <- rep("unord", 11)
+    data$matrix_1$character_weights <- rep(1, 11)
+    data$matrix_1$minimum_values <- rep(0, 11)
+    data$matrix_1$maximum_values <- rep(1, 11)
+    data$matrix_1$characters$symbols <- c("0", "1")
+    data$matrix_1$characters$missing <- c("?")
+    data$matrix_1$characters$gap <- c("-")
+    class(data) <- "cladisticMatrix"
 
     ## Sanitizing
-    expect_error(Claddis.ordination(matrix(5), distance = "mord", k = 2))
-    expect_error(Claddis.ordination(data, distance = "bob", k = 2))
-    expect_error(Claddis.ordination(data, distance = "mord", k = 10))
-    expect_error(Claddis.ordination(Claddis::day_2016)) #NA
+    error <- capture_error(Claddis.ordination(matrix(5), distance = "mord", k = 2))
+    expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
+    error <- capture_error(Claddis.ordination(data, distance = "bob", k = 2))
+    expect_equal(error[[1]], "distance argument must be one of the following: gc, ged, red, mord.")
+    error <- capture_error(Claddis.ordination(data, distance = "mord", k = 10))
+    expect_equal(error[[1]], "k cannot be greater than the number of rows in data - 1 (data has 3 rows).")
+    data_na <- data
+    data_na$matrix_1$matrix[1,] <- NA
+    error <- capture_error(Claddis.ordination(data_na))
+    expect_equal(error[[1]], "The generate distance matrix using \"mord\" distance from data_na contains NA and cannot be ordinated.")
     data_bug <- data
     data_bug$matrix_1$matrix <- NULL
-    expect_error(Claddis.ordination(data_bug, distance = "mord")) #NA
+    error <- capture_error(Claddis.ordination(data_bug, distance = "mord"))
+    expect_equal(error[[1]], "data does not contain a matrix.\nUse Claddis::read_nexus_matrix to generate the proper data format.")
 
-    #test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
-    #expect_equal(dim(test), c(4,3))
-    #expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
+    test <- Claddis.ordination(data, add = FALSE, distance_transformation = "none")
+    expect_equal(dim(test), c(4,3))
+    expect_equal(rownames(test), c("Ancilla", "Turrancilla", "Ancillista", "Amalda"))
 })
 
 test_that("Claddis.ordination works with new reader", {

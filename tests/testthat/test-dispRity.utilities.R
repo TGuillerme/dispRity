@@ -63,6 +63,26 @@ test_that("utilities internal: check.subsets", {
     expect_error(
         check.subsets(matrix(NA), data)
         )
+
+    ## Between.groups check.subsets
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    group <- crown.stem(BeckLee_tree, inc.nodes = FALSE)
+    group$all <- rownames(BeckLee_mat50)
+    ## Get the disparity between groups
+    disparity <- dispRity(boot.matrix(custom.subsets(BeckLee_mat50, group = group)), metric = group.dist, between.groups = TRUE)
+    expect_null(check.subsets(names(disparity$subsets), disparity))
+    expect_null(check.subsets(c("all", "crown"), disparity))
+    expect_null(check.subsets(c(1,2), disparity))
+    expect_null(check.subsets(c("all:crown"), disparity))
+    expect_null(check.subsets(c("crown:all"), disparity))
+
+    error <- capture_error(check.subsets(c(1,2,3,4), disparity))
+    expect_equal(error[[1]], "Subset 4 not found.")
+
+    error <- capture_error(check.subsets(c("ally", "crown"), disparity))
+    expect_equal(error[[1]], "Subset ally not found.")
+
 })
 
 ## make.dispRity
@@ -251,7 +271,7 @@ test_that("get.subsets", {
         names(test$subsets)
         ,names(subsets_full$subsets)[1:2])
 
-    test <- get.subsets(bootstrapped_data, subsets = "66.75552")
+    test <- get.subsets(bootstrapped_data, subsets = "66.76")
     expect_is(
         test
         ,"dispRity")

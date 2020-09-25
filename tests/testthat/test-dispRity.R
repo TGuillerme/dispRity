@@ -13,18 +13,13 @@ metric = c(sum, variances)
 verbose = TRUE
 data <- data_subsets_boot
 
-
-test_that("chrono.subsets + ancestral.dist doesn't work yet", {
-
-    expect_warning(error <- capture_error(dispRity(data_subsets_simple, metric = ancestral.dist, tree = BeckLee_tree)))
-    expect_equal(error[[1]], "ancestral.dist cannot be calculated on dispRity objects with chrono.subsets yet.\nThis will be available in the next dispRity version.\nYou can contact me (guillert@tcd.ie) for more info.")
-})
-
 test_that("get.dispRity.metric.handle", {
     match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "between.groups"))
+    test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_null(test[[2]])
@@ -32,6 +27,8 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "between.groups"))
+    test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
     expect_is(test[[2]], "function")
@@ -40,16 +37,26 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
+    expect_equal(names(test), c("levels", "between.groups"))
+    test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")
     expect_null(test[[2]])
     expect_is(test[[3]], "function")
+
+    ## Serial
+    test.between.groups <- function(matrix, matrix2) {return(42)}
+    test.between.groups.no <- function(matrix, matrix3) {return(42)}
+    test <- get.dispRity.metric.handle(test.between.groups, match_call, data.dim = c(5,4))
+    expect_equal(test$between.groups, c(TRUE, FALSE, FALSE))
+    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data.dim = c(5,4))
+    expect_equal(test$between.groups, c(FALSE, FALSE, FALSE))
 })
 
 test_that("get.first.metric", {
-    test1 <- get.dispRity.metric.handle(c(sd, var), match_call)
-    test2 <- get.dispRity.metric.handle(variances, match_call)
-    test3 <- get.dispRity.metric.handle(sd, match_call)
+    test1 <- get.dispRity.metric.handle(c(sd, var), match_call)$levels
+    test2 <- get.dispRity.metric.handle(variances, match_call)$levels
+    test3 <- get.dispRity.metric.handle(sd, match_call)$levels
 
     ## Metrics output is 1: function, 2: list -1 and 3: level
     ## Remove a level 1
@@ -77,7 +84,7 @@ test_that("get.first.metric", {
     expect_equal(res_test3[[3]], 3)
 })
 
-test_that("apply.decompose.matrix", {
+test_that("decompose.matrix.wrapper", {
     data(disparity)
     ## Shortening the matrix for the example
     data <- disparity
@@ -85,8 +92,8 @@ test_that("apply.decompose.matrix", {
     one_bs_matrix <- data$subsets[[1]][[5]]
     bs_max <- 5
 
-    decomp_array <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
-    decomp_matrix <- apply.decompose.matrix(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
+    decomp_array <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
+    decomp_matrix <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
 
     expect_is(decomp_array, "array")
     expect_equal(dim(decomp_array), c(data$call$dimensions, data$call$dimensions, bs_max))
@@ -472,24 +479,24 @@ test_that("dispRity works with function recycling", {
     mat <- matrix(rnorm(25), 5, 5, dimnames = list(c(1:5)))
     level2 <- dispRity(mat, metric = centroids)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
-    expect_equal(names(level2$call$disparity$metric), c("name", "fun"))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
 
     level1 <- dispRity(level2, metric = mean)
     expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat)))
-    expect_equal(names(level1$call$disparity$metric), c("name", "fun"))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
 
     ## With arguments
     level2 <- dispRity(mat, metric = centroids, centroid = 0)
     expect_equal(extract.dispRity(level2)[[1]], centroids(mat, centroid = 0))
-    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 
     level1 <- dispRity(level2, metric = mean)
     expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat, centroid = 0)))
-    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "args"))
+    expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
@@ -715,6 +722,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
 })
 
+
 # test_that("dispRity works in parallel", {
 #     library(parallel)
 #     data(BeckLee_mat99)
@@ -730,3 +738,4 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 #     test_par <- dispRity(test, metric = c(sum, variances), parallel = TRUE)
 
 # })
+

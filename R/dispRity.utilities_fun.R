@@ -43,28 +43,54 @@ merge.two.subsets <- function(subs1, subs2, data) {
 
 ## Check subset availability
 check.subsets <- function(subsets, data) {
-    if(length(subsets) > length(data$subsets)) {
-        stop("Not enough subsets in the original data.")
-    } else {
+
+    if(!is.null(data$call$disparity) && data$call$disparity$metrics$between.groups) {
+
+        ## Numeric subsets
         if(is(subsets, "numeric") || is(subsets, "integer")) {
-            if(any(is.na(match(subsets, 1:length(data$subsets))))) {
-
-                subsets <- subsets[which(is.na(match(subsets, 1:length(data$subsets))))]
-                orthograph <- ifelse(length(subsets) == 1, "Subsample", "Subsamples")
-                stop(paste(orthograph, paste(subsets, collapse = ", "), "not found."))
-
+            if(any(na_subsets <- is.na(match(subsets, 1:length(data$disparity))))) {
+                ## Subsets not found
+                stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
             }
         } else {
             if(is(subsets, "character")) {
-                if(any(is.na(match(subsets, names(data$subsets))))) {
+                ## Get the subset names (searched and available)
+                subset_search <- unique(unlist(strsplit(subsets, split = ":")))
+                subset_available <- unique(unlist(strsplit(names(data$disparity), split = ":")))
 
-                    subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
-                    orthograph <- ifelse(length(subsets) == 1, "Subsample", "Subsamples")
-                    stop(paste(orthograph, paste(subsets, collapse = ", "), "not found."))
-
+                ## Check if the searched ones exist
+                if(any(na_subsets <- is.na(match(subset_search, subset_available)))) {
+                    ## Subsets not found
+                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
                 }
             } else {
                 stop("subsets argument must be of class \"numeric\" or \"character\".")
+            }
+        }
+
+    } else {
+        
+
+        if(length(subsets) > length(data$subsets)) {
+            stop("Not enough subsets in the original data.")
+        } else {
+            if(is(subsets, "numeric") || is(subsets, "integer")) {
+                if(any(na_subsets <- is.na(match(subsets, 1:length(data$subsets))))) {
+                    ## Subsets not found
+                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
+                }
+            } else {
+                if(is(subsets, "character")) {
+                    if(any(is.na(match(subsets, names(data$subsets))))) {
+
+                        subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
+                        orthograph <- ifelse(length(subsets) == 1, "Subset ", "Subsets ")
+                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), " not found."))
+
+                    }
+                } else {
+                    stop("subsets argument must be of class \"numeric\" or \"character\".")
+                }
             }
         }
     }

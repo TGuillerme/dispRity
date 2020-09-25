@@ -183,8 +183,8 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
 
     ## If any special token is NA, convert them as "N.A" temporarily
     if(any(is.na(special.tokens))) {
-        matrix <- ifelse(is.na(matrix), "N.A", matrix)
-        special.tokens[is.na(special.tokens)] <- "N.A"
+        matrix <- ifelse(is.na(matrix), "na", matrix)
+        special.tokens[is.na(special.tokens)] <- "na"
     }
 
     ## Special behaviours
@@ -205,6 +205,10 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         special.behaviours$uncertainty <- function(x,y) return(strsplit(x, split = "\\/")[[1]])
     }
 
+    ## Match the behaviours and tokens in the same order
+    special.behaviours <- special.behaviours[sort(names(special.behaviours))]
+    special.tokens <- special.tokens[sort(names(special.tokens))]
+
     ## by.col
     check.class(by.col, "logical")
 
@@ -215,7 +219,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     if(!missing(correction)) {
         check.class(correction, "function")
         test_correction <- make.metric(correction, silent = TRUE)
-        if(test_correction == "error") {
+        if(!is.null(test_correction) && test_correction == "error") {
             stop("Incorrect correction function.")
         }
     }
@@ -301,7 +305,6 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         ## Apply the correction
         output <- correction(output)
     }
-
 
     class(output) <- c("matrix", "char.diff")
 

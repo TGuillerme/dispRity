@@ -27,7 +27,8 @@ test_that("internal functions work", {
     data(BeckLee_mat50)
     data(BeckLee_tree)
     expect_warning(disparity <- dispRity.through.time(BeckLee_mat50, BeckLee_tree, 15))
-    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    warning <- capture_warning(test <- select.model.list(disparity, observed = TRUE, cent.tend = median))
+    expect_equal(warning[[1]], "The following subsets contains NA and are removed: 15, 14, 13, 12, 3, 2.")
     expect_is(test, "list")
     expect_equal(length(test), 4)
 })
@@ -109,6 +110,8 @@ test_that("simple models work", {
     set.seed(1)
     expect_error(model.test(data, model = "multi.OU", time.split = NULL, verbose = FALSE))
     ## Running the multi OU on a 32 split dataset
+    data(BeckLee_mat99)
+    data(BeckLee_tree)    
     data_tmp <- dispRity(boot.matrix(chrono.subsets(BeckLee_mat99, BeckLee_tree, time = 32, model = "acctran", method = "continuous")), metric = mean)
     verbose <- capture.output(test <- model.test(data_tmp, model = "multi.OU", time.split = NULL, verbose = TRUE))
     expect_equal(class(test), c("dispRity", "model.test"))

@@ -22,6 +22,9 @@
 #' @param legend Logical, when \code{plot.sim = TRUE}, whether to display the legend in the first panel (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param ... Any additional arguments to be passed to \code{\link{plot.dispRity}} or \code{\link{summary.dispRity}}.
 #'
+#' 
+#' @details DISCLAIMER: this function is working properly (i.e. it does what it is supposed to do), however, the interpretation of the results has not yet been thought through, discussed and peer-reviewed (what does a Brownian motion like disparity curve means biologically?). 
+#' 
 #' @return A matrix with the relative fit, parameter values, and Rank Envelope test p values for each model, and a plot of simulated data from each model alongside observed data for each model if plot.sim is \code{TRUE} 
 #'
 #' @examples
@@ -141,13 +144,13 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
         }
 
 	    obs.data <- cbind(models.out$model.data$subsets, models.out$model.data$central_tendency)
-	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim)))), obs.data[,2])
+	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim))), obs.data[,2]))
 	    op <- par(mfrow = c(ceiling(sqrt(n.models)), round(sqrt(n.models))))
 	    
 	    for(one_model in 1:n.models) {
 
             ## Plot the simualted model
-	    	plot(outputs[[one_model]], ylim = max.range, col = dots$col, xlab = dots$xlab, ylab = dots$ylab, main = paste0(rownames(results)[one_model], " (Delta aicc = ", round(results[one_model,2], digits = 2) ,")"))
+	    	plot(outputs[[one_model]], ylim = max.range, col = dots$col, ...)
 
             ## Plot the observed data
 	    	lines(obs.data[,2], col = col.obs, lwd = lwd.obs)

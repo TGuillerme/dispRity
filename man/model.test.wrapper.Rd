@@ -64,6 +64,8 @@ A wrapper function for \code{\link{model.test}} to perform a model fitting analy
 }
 \details{
 This function gives the relative fit of \code{model.test} output using log-likelihood and AICc values, as well as the Rank Envelope Test significance to elucidate if empirical data is significantly different to simulated data modelled using the estimated model parameters from \code{\link{model.test.sim}}. This is equivalent to running \code{test <- model.test.sim(sim = 1000, model = model.test(data, model)); summary(test) ; plot(test) ; plot(data, add = TRUE)}.
+
+DISCLAIMER: this function is working properly (i.e. it does what it is supposed to do), however, the interpretation of the results has not yet been thought through, discussed and peer-reviewed (what does a Brownian motion like disparity curve means biologically?).
 }
 \examples{
 

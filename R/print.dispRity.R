@@ -79,18 +79,25 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         class(tmp) <- "list"
                         print(tmp) 
                     }
-                    return()
+                    return(invisible())
                 },
                 model.test = {
                     cat("Disparity evolution model fitting:\n")
-                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+
+                    ## Check the model call (to avoid garbage collection with do.call)
+                    if(class(x$call[[1]])[[1]] == "name") {
+                        call_text <- as.expression(x$call)
+                    } else {
+                        call_text <- "model.test(...) # Unknown call trace"
+                    }
+                    cat(paste0("Call: ", call_text, " \n\n"))
                     
                     print(x$aic.models)
 
                     cat(paste0("\nUse x$full.details for displaying the models details\n"))
                     cat(paste0("or summary(x) for summarising them.\n"))
 
-                    return()
+                    return(invisible())
                 },
                 model.sim = {
                     cat("Disparity evolution model simulation:\n")
@@ -105,7 +112,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         print(x$p.value)
                     }
 
-                    return()                    
+                    return(invisible())
                 },
                 dtt = {
                     if(length(x) != 2){
@@ -123,7 +130,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         print(c("Mean.dtt" = mean(x$dtt, na.rm = TRUE), "Mean.sim_MDI" = mean(x$sim_MDI, na.rm = TRUE), "var.sim_MDI" = var(x$sim_MDI, na.rm = TRUE)))
 
                         cat(paste0("\nUse plot.dispRity() to visualise."))
-                        return()
+                        return(invisible())
                     } else {
                         ## raw dtt
                         ## Fake an object with no attributes
@@ -132,7 +139,27 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         print(x_tmp)
                         cat(paste0("- attr(*, \"class\") = \"dispRity\" \"dtt\"\n"))
                         cat(paste0("Use plot.dispRity to visualise."))
+                        return(invisible())
                     }
+                },
+                test.metric = {
+                    cat("Metric testing:\n")
+                    cat(paste0("The following metric was tested: ", as.expression(x$call$metric), ".\n"))
+                    cat(paste0("The test was run on "))
+                    if(length(x$call$shifts) > 1) {
+                        cat(paste0("the ", paste0(x$call$shifts, collapse = ", "), " shifts"))
+                    } else {
+                        cat(paste0("the ", x$call$shifts, " shift"))
+                    }
+                    cat(paste0(" for ", x$call$replicates, " replicate", ifelse(x$call$replicates > 1, "s", "")))
+                    if(!is.null(x$models)) {
+                        cat(paste0(" using the following model:\n"))
+                        cat(as.character(as.expression(body(x$call$model))))
+                    } else {
+                        cat(paste0("."))
+                    }
+                    cat(paste0("\nUse summary(", x_name, ") or plot(",x_name, ") for more details."))
+                    return(invisible())
                 }
             )
         }
@@ -225,6 +252,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
         ## Print the disparity information
         if(any(names(x$call) == "disparity")) {
             cat(paste("Disparity was calculated as:", paste(as.character(x$call$disparity$metrics$name), collapse = ", ")))
+            if(x$call$disparity$metrics$between.groups) {
+                cat(" between groups")
+            }
             cat(".\n")
         }
     }

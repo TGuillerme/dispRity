@@ -117,12 +117,20 @@ The time-slicing method implemented in `chrono.subsets` (unfortunately not Open 
 
 > Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. [doi:10.1111/pala.12364](https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364).
 
+Furthermore, don't forget to cite `R`:
+
+> R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Bonus: you can also cite `ape` since the `dispRity` package heavily relies on it:
+
+> Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.
+
 
 ### Why is it important to cite us?
 
-Aside from how science works (if you're using a method from a specific, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
+Aside from how science works (if you're using a method from a specific paper, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?
 
-All the people involve in making the `dispRity` package happen do it enthusiastically and freely and most amazingly not asking anything in return!
+All the people involve in making the `dispRity` package happened to do it enthusiastically, freely and most amazingly without asking anything in return!
 I created the package with this idea in mind and I am still sticking to it.
 However, academia (the institutions and people producing science around the globe) is unfortunately not optimal at many level (some might even say "broken"): high impact papers attract big grants that attract high impact papers and big grants again, all this along with livelihood, permanent position and job security.
 Unfortunately however, method development has a hard time to catch up with the current publish or perish system: constantly updating the `dispRity` package and this manual is hugely time consuming (but really fun!) and that is not even taking into account maintenance and helping users.

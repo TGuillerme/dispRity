@@ -559,7 +559,7 @@ test_that("chrono.subsets works with multiPhylo", {
 
     expect_is(test, "dispRity")
     expect_equal(names(test), c("matrix", "call", "subsets"))
-    expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
+    expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
     expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))
@@ -785,4 +785,16 @@ test_that("fast internal functions work", {
     expect_equal(res2[[1]][,3], c(1,1,.5,1))
 })
 
+test_that("infinite loop blocker for get.percent.age", {
+   ## Testing data
+    matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(3, 4, 5)))
+    rownames(matrix) <- paste0("t", 1:12)
+    test_tree <- stree(12, type = "right")
+    test_tree$edge.length <- rep(1, Nedge(test_tree))
+    test_tree$root.time <- 12
+
+    ## custom subsets
+    error <- capture_error(chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran"))
+    expect_equal(error[[1]], "Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.")
+})
 

@@ -1,0 +1,260 @@
+---
+title: "dispRity workshop"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+This is the code that goes with the `dispRity` workshop.
+You can use it to follow along with the workshop instructions and modify the code to use your own data or adjust your own options.
+Most of the information about the workshop comes from the [`dispRity` manual](https://tguillerme.github.io/dispRity).
+You can also always find more documentation about the functions used here using the `R` inbuilt manual by typing `?function.name`.
+
+#### `R` level
+
+In this workshop I will assume you are already familiar with basic `R`. The basic notions that I'll assume you know are:
+
+ * What is a package (e.g. `ape` or `dispRity`)
+ * What is an object (e.g. `this_object <- 1`)
+ * What is an object's class (e.g. the class `"matrix"` or `"phylo"`)
+ * What is a function (e.g. the function `mean(c(1,2))`)
+ * How to access function manuals (e.g. `?mean`)
+
+Let's get into it.
+First we'll want to download and install the package:
+
+```{r}
+library(dispRity)
+```
+
+## Data
+
+To follow this tutorial you can use the inbuilt `dispRity`:
+
+```{r}
+## Loading the inbuilt data
+data(BeckLee_mat50)
+data(BeckLee_tree)
+
+## The matrix
+my_matrix <- BeckLee_mat50
+
+## The tree
+my_tree <- BeckLee_tree
+```
+
+But you can always use your own data. You'll need:
+
+ * a matrix with rows being your observations (species, sites, OTUs, etc.) and columns being your traits (e.g. PC scores)
+ * a phylogenetic tree with the tip names matching the matrix row names
+
+For making it easier to follow the tutorial you can name your matrix `my_matrix` and your tree `my_tree`. If you're missing either the tree or the matrix, you can find below two function to simulate either:
+
+```{r eval = FALSE}
+## Functions to get simulate a PCO looking like matrix from a tree
+i.need.a.matrix <- function(tree) {
+    matrix <- space.maker(elements = Ntip(tree), dimensions = Ntip(tree), distribution = rnorm,
+                          scree = rev(cumsum(rep(1/Ntip(tree), Ntip(tree)))))
+    rownames(matrix) <- tree$tip.label
+    return(matrix)
+}
+
+## Function to simulate a tree
+i.need.a.tree <- function(matrix) {
+    tree <- rtree(nrow(matrix))
+    tree$root.time <- max(tree.age(tree)$age)
+    tree$tip.label <- rownames(matrix)
+    tree$node.label <- paste0("n", 1:(nrow(matrix)-1))
+    return(tree)
+}
+## You can verify if both the matrix and the tree labels match using
+clean.data(my_matrix, my_tree)
+```
+
+## Disparity per groups analysis
+
+This is the code for the simple disparity per group analysis:
+
+```{r}
+## Creating a list of groups
+my_groups <- crown.stem(my_tree, inc.nodes = FALSE)
+
+## Creating a dispRity object that contains group information
+trait_space <- custom.subsets(my_matrix, group = my_groups)
+
+## Bootstrapping
+trait_space_bs <- boot.matrix(trait_space)
+
+## Measuring disparity
+disparity_groups <- dispRity(trait_space_bs, metric = c(sum, variances))
+
+## Summarizing the results
+summary(disparity_groups)
+
+## Plotting the results
+plot(disparity_groups)
+
+## Testing the difference between both groups
+test.dispRity(disparity_groups, test = t.test)
+```
+
+#### Bonus tip
+
+If you're using a good text editor to write your research (e.g. `LaTeX`, markdown, etc... not Word), you can use the the `knitr::kable` function to directly print out the summary tables in a format for your research project. For example for this markdown vignette:
+
+```{r}
+knitr::kable(summary(disparity_groups))
+```
+
+## Disparity through time analysis
+
+### Making up some node data
+
+This section here will generate some data for your nodes in the tree. _DO NOT TRY THIS AT HOME_. Or, less patronisingly, we will use some within-PCA ancestral states estimations, there are some cases when this method is totally valid but this is not always the case. You can find our opinion on this paper [Section 3-d](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199#d1e934). I will personally advice against this technique in publications (but you should do what you think is best for your question and data - don't list to me).
+
+```{r}
+## Wrapping function for running a quick and dirty ancestral character estimation
+quick.n.dirty.ace <- function(matrix, tree) {
+    apply(matrix, 2,
+          function(trait, tree) return(ape::ace(trait, phy = tree)$ace),
+          tree = tree)
+}
+
+## Running the ACE
+node_traits <- quick.n.dirty.ace(my_matrix, my_tree)
+
+## Combining both matrices
+my_matrix_nodes <- rbind(my_matrix, node_traits)
+
+## Adding node labels to the tree
+my_tree$node.label <- rownames(node_traits)
+
+## Adding a root time to the tree (if missing)
+if(is.null(my_tree$root.time)) {
+    my_tree$root.time <- max(tree.age(my_tree)$age)
+}
+```
+
+### Disparity through time analysis
+
+```{r}
+## Creating a time-sliced trait space
+trait_space <- chrono.subsets(my_matrix_nodes, tree = my_tree,
+                              method = "continuous",
+                              model  = "proximity",
+                              time = 9)
+
+## Bootstrapping the data
+trait_space_bs <- boot.matrix(trait_space)
+
+## Measuring disparity
+disparity_time <- dispRity(trait_space_bs, metric = c(sum, variances))
+
+## Summarizing the results
+summary(disparity_time)
+
+## Plotting the results
+plot(disparity_time)
+
+## Testing the difference between both groups
+test.dispRity(disparity_time, test = wilcox.test,
+              comparisons = "sequential",
+              correction = "bonferroni")
+```
+
+### Making some fancy plots
+
+The `plot.dispRity` function has many, many different functions. Many of them are your normal `plot` options (`main`, etc...) so check out the manual to make some more fancy plots.
+Alternatively, you can just extract the disparity data and 
+
+```{r}
+## Some fancier plot
+plot(disparity_time,
+     main = "Rainbows!",
+     cent.tend = sd,
+     quantiles = seq(from = 1, to = 99, by = 1),
+     col = c("black", rainbow(100)),
+     las = 2,
+     ylab = "My non descriptive disparity metric")
+legend("topleft", lty = 1, col = "black",
+       legend = "The standard deviation")
+```
+
+If you are a `ggplot`er, you can extract the data from the `dispRity` object using the `extract.dispRity` function. If you like `ggplot` and the `dispRity` package and feel like collaborating with me, please [drop me an email](mailto:guillert@tcd.ie) so that we can figure out a way to make a `ggplot` module to the package (and make you an author!).
+
+## Some more advanced stuff
+
+### `dtt` analysis
+
+
+```{r}
+## Some disparity through time analysis
+dispRity_dtt <- dtt.dispRity(data = my_matrix, metric = c(sum, variances),
+                             tree = my_tree, nsim = 100)
+
+## Print the data
+dispRity_dtt
+
+## Plot the data
+plot(dispRity_dtt)
+```
+
+[More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#dtt).
+
+### PERMANOVAs
+
+
+```{r, warning = FALSE}
+## Is there an effect of the factor "group" in the data matrix?
+adonis.dispRity(disparity_groups)
+
+## Is there an effect of the factor "time" in the data matrix?
+adonis.dispRity(disparity_time)
+```
+
+[More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#adonis).
+
+### Null testing
+
+
+```{r}
+## Is the data normally distributed in each group?
+results <- null.test(disparity_groups, replicates = 100, null.distrib = rnorm)
+plot(results)
+
+## Is the data log-normally distributed through time?
+results <- null.test(disparity_time, replicates = 100, null.distrib = rlnorm)
+plot(results)
+```
+
+[More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#null-test).
+
+### Model fitting
+
+> Note that this is an unpublished method. Please contact me (guillert@tcd.ie) if you are interested in using it in your study.
+
+```{r}
+## Testing the fit of different modes of disparity changes through time
+model.test.wrapper(disparity_time, model = c("BM", "OU", "EB", "Trend"))
+```
+
+[More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#model-fitting).
+
+## Some useful stuff
+
+### `dispRity` utility functions
+
+The package also provides a range of functions for modifying `dispRity` objects or extracting some useful information from it (e.g. on specific bootstrapped matrix, etc...). [More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/the-guts-of-the-disprity-package.html#utilities).
+
+### Other utility functions
+
+The package also provides some other functions that I find useful in disparity analysis but are not totally linked to disparity analysis. For example, a function for removing zero branch lengths from trees (`remove.zero.brlen`) or a function to calculate various matrix distance metrics (`char.diff`). [More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/other-functionalities.html).
+
+## What's next?
+
+The `dispRity` package is constantly updated with new functionalities, bug fixes and improved functions. You can follow the development of the package by following me on github ([TGuillerme](https://github.com/TGuillerme) - I also develop other ecology-evolution packages) or twitter ([@TGuillerme](https://twitter.com/TGuillerme) - I also tweet about other work related stuff).
+You can check what will be happening in the next CRAN version of the package by checking the [NEWS.md](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) on the master branch.
+And of course, you are more than welcome to [contact](mailto:guillert@tcd.ie) me if you have suggestions, ideas or wishes for improvements!
