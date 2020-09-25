@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.4.4 (2020-09-24)
+dispRity v1.4.9 (2020-09-25) *pre-release*
 =========================
 
 ### NEW FEATURES
@@ -46,6 +46,8 @@ dispRity v1.4.4 (2020-09-24)
   * **removed** option in `plot.dispRity`: the `elements.pch` option has now been removed. The `pch` of the plotted elements can now be passed like other options directly to elements (e.g. `elements = list(pch = 15)`).
   * **removed** option in `plot.dispRity`: the `dimensions`, `matrix`, `nclass` and `coeff` options have now been removed. Any options for dual class plots (`randtest`, `dtt`, `model.test`, `type = "preview"` etc...) are now handled through the generic `specific.args` argument.
   * *New* option in `dtt.dispRity`: `scale.time` allowing to scale the time axis (like in `geiger::dtt`) or not.
+  * when plotting `chrono.subsets` `dispRity` objects, the x label ticks are now rounded if possible (for nicer looking plots!).
+  * when using automatic `chrono.subsets` time slices, the name of the time slices (their age) is now rounded for aesthetics.
 
 
 ### BUG FIXES
