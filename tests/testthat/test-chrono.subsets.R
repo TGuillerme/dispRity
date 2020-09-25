@@ -559,7 +559,7 @@ test_that("chrono.subsets works with multiPhylo", {
 
     expect_is(test, "dispRity")
     expect_equal(names(test), c("matrix", "call", "subsets"))
-    expect_equal(names(test$subsets), c("9.31405078347417", "4.65702539173708", "0"))
+    expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
     expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))

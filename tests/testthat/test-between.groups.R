@@ -128,7 +128,7 @@ test_that("dispRity works for between.groups metrics", {
     results <- summary(test, quantiles = 2)
     expect_equal(dim(results), c(5, 7))
     expect_equal(colnames(results)[1:4], c("subsets", "n_1", "n_2", "obs"))
-    expect_equal(results[,1], c("133.51104:106.808832", "106.808832:80.106624", "80.106624:53.404416", "53.404416:26.702208", "26.702208:0" ))
+    expect_equal(results[,1], c("133.51:106.81", "106.81:80.11", "80.11:53.4", "53.4:26.7", "26.7:0" ))
     expect_null(plot(test, elements = list(col = c("red", "blue"))))
 
 

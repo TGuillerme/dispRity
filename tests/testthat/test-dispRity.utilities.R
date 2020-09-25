@@ -271,7 +271,7 @@ test_that("get.subsets", {
         names(test$subsets)
         ,names(subsets_full$subsets)[1:2])
 
-    test <- get.subsets(bootstrapped_data, subsets = "66.75552")
+    test <- get.subsets(bootstrapped_data, subsets = "66.76")
     expect_is(
         test
         ,"dispRity")

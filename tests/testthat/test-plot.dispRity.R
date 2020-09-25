@@ -123,7 +123,7 @@ test_that("get.plot.params works", {
     expect_is(plot_params$disparity$data, c("matrix", "array"))
     expect_equal(dim(plot_params$disparity$data), c(100, 7))
 
-error <- capture_error(get.plot.params(data = disparity, data_params = get.data.params(disparity),
+    error <- capture_error(get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
                                   quantiles = c(50, 75, 95, 99),
                                   elements_args = list(elements = FALSE),

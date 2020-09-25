@@ -305,7 +305,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
 
         ## Set up time
-        time <- seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0))
+        time <- round(seq(from = tmax, to = t0, length.out = time + ifelse(method == "discrete", 1, 0)), 2)
     }
 
     ## time vector must go from past to present
