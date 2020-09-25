@@ -83,7 +83,14 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 },
                 model.test = {
                     cat("Disparity evolution model fitting:\n")
-                    cat(paste0("Call: ", as.expression(x$call), " \n\n"))
+
+                    ## Check the model call (to avoid garbage collection with do.call)
+                    if(class(x$call[[1]])[[1]] == "name") {
+                        call_text <- as.expression(x$call)
+                    } else {
+                        call_text <- "model.test(...) # Unknown call trace"
+                    }
+                    cat(paste0("Call: ", call_text, " \n\n"))
                     
                     print(x$aic.models)
 
