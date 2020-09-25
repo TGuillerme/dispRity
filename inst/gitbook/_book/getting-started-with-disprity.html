@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-07-16" />
+<meta name="date" content="2020-09-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -167,12 +167,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
-<li class="chapter" data-level="4.4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#make.metric"><i class="fa fa-check"></i><b>4.4.2</b> <code>make.metric</code></a></li>
-<li class="chapter" data-level="4.4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-in-the-disprity-function"><i class="fa fa-check"></i><b>4.4.3</b> Metrics in the <code>dispRity</code> function</a></li>
-<li class="chapter" data-level="4.4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-implemented-in-disprity"><i class="fa fa-check"></i><b>4.4.4</b> Metrics implemented in <code>dispRity</code></a></li>
-<li class="chapter" data-level="4.4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#equations-and-implementations"><i class="fa fa-check"></i><b>4.4.5</b> Equations and implementations</a></li>
-<li class="chapter" data-level="4.4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#using-the-different-disparity-metrics"><i class="fa fa-check"></i><b>4.4.6</b> Using the different disparity metrics</a></li>
-<li class="chapter" data-level="4.4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#which-disparity-metric-to-choose"><i class="fa fa-check"></i><b>4.4.7</b> Which disparity metric to choose?</a></li>
+<li class="chapter" data-level="4.4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#betweengroupmetricsexplain"><i class="fa fa-check"></i><b>4.4.2</b> Between groups metrics</a></li>
+<li class="chapter" data-level="4.4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#makemetric"><i class="fa fa-check"></i><b>4.4.3</b> <code>make.metric</code></a></li>
+<li class="chapter" data-level="4.4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-in-the-disprity-function"><i class="fa fa-check"></i><b>4.4.4</b> Metrics in the <code>dispRity</code> function</a></li>
+<li class="chapter" data-level="4.4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#metrics-implemented-in-disprity"><i class="fa fa-check"></i><b>4.4.5</b> Metrics implemented in <code>dispRity</code></a></li>
+<li class="chapter" data-level="4.4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#equations-and-implementations"><i class="fa fa-check"></i><b>4.4.6</b> Equations and implementations</a></li>
+<li class="chapter" data-level="4.4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#using-the-different-disparity-metrics"><i class="fa fa-check"></i><b>4.4.7</b> Using the different disparity metrics</a></li>
+<li class="chapter" data-level="4.4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#which-disparity-metric-to-choose"><i class="fa fa-check"></i><b>4.4.8</b> Which disparity metric to choose?</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a><ul>
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
@@ -313,11 +314,11 @@ This function simply takes Procrustes aligned data and performs an ordination:</
 <a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">## Ordinating this data</span></a>
 <a class="sourceLine" id="cb3-11" data-line-number="11"><span class="kw">geomorph.ordination</span>(procrustes)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <pre><code>##                PC1        PC2           PC3          PC4          PC5
-## [1,] -0.0369931363 0.05118247 -0.0016971082 -0.003128809 -0.010936371
-## [2,] -0.0007493738 0.05942082  0.0001371715 -0.002768680 -0.008117383
-## [3,]  0.0056004654 0.07419599 -0.0052612103 -0.005034566 -0.002746592
-## [4,] -0.0134808572 0.06463959 -0.0458436015 -0.007887369  0.009816827
-## [5,] -0.0334696244 0.06863518  0.0136292041  0.007359409  0.022347225</code></pre>
+## [1,] -0.0369930887 0.05118246 -0.0016971586 -0.003128881 -0.010935739
+## [2,] -0.0007493689 0.05942083  0.0001371682 -0.002768621 -0.008117767
+## [3,]  0.0056004751 0.07419599 -0.0052612189 -0.005034502 -0.002747104
+## [4,] -0.0134808326 0.06463958 -0.0458436274 -0.007887336  0.009817034
+## [5,] -0.0334696064 0.06863518  0.0136292227  0.007359383  0.022347215</code></pre>
 <p>Options for the ordination (from <code>?prcomp</code>) can be directly passed to this function to perform customised ordinations.
 Additionally you can give the function a <code>geomorph.data.frame</code> object.
 If the latter contains sorting information (i.e. factors), they can be directly used to make a customised <code>dispRity</code> object <a href="#customised-subsets">customised <code>dispRity</code> object</a>!</p>
@@ -339,7 +340,7 @@ For this, simply input a matrix in the <code>Claddis</code> format to the functi
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">require</span>(Claddis)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">## Ordinating the example data from Claddis</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(michaux_1989) </a></code></pre></div>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(michaux_<span class="dv">1989</span>)</a></code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
 ## Ancilla      0.000000e+00  4.154578e-01  0.2534942
 ## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
@@ -482,17 +483,17 @@ When displayed, these <code>dispRity</code> objects provide us with information 
 <a class="sourceLine" id="cb25-2" data-line-number="2">disparity_data</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
+##     133.51 - 89.01, 89.01 - 44.5, 44.5 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
 <p>We asked for three subsets (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.</p>
 <p>We can now summarise or plot the <code>disparity_data</code> object, or perform statistical tests on it (e.g. a simple <code>lm</code>):</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">## Summarising disparity through time</span></a>
 <a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">summary</span>(disparity_data)</a></code></pre></div>
-<pre><code>##                subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 133.51104 - 89.00736  5 2.123     1.775 1.017 1.496 1.942 2.123
-## 2  89.00736 - 44.50368 29 2.456     2.384 2.295 2.350 2.404 2.427
-## 3         44.50368 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466</code></pre>
+<pre><code>##          subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1 133.51 - 89.01  5 2.123     1.775 1.017 1.496 1.942 2.123
+## 2   89.01 - 44.5 29 2.456     2.384 2.295 2.350 2.404 2.427
+## 3       44.5 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466</code></pre>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
 <a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
@@ -509,10 +510,10 @@ When displayed, these <code>dispRity</code> objects provide us with information 
 ## -0.87430 -0.04100  0.01456  0.05318  0.41059 
 ## 
 ## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                 1.71217    0.01703  100.55   &lt;2e-16 ***
-## subsets44.50368 - 0         0.64824    0.02408   26.92   &lt;2e-16 ***
-## subsets89.00736 - 44.50368  0.66298    0.02408   27.53   &lt;2e-16 ***
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          1.71217    0.01703  100.55   &lt;2e-16 ***
+## subsets44.5 - 0      0.64824    0.02408   26.92   &lt;2e-16 ***
+## subsets89.01 - 44.5  0.66298    0.02408   27.53   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 

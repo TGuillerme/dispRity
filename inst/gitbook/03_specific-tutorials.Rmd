@@ -897,7 +897,7 @@ summary(dispRity(grouped_space, metric = point.dist,
 ## Measuring the distance between the elements of the second group
 ## and the centroid of the first group
 summary(dispRity(grouped_space, metric = point.dist,
-                 between.groups = list(c(2,1)))))
+                 between.groups = list(c(2,1))))
 
 ## Measuring the distance between the elements of the first group
 ## a point defined as the standard deviation of each column
