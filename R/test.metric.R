@@ -49,6 +49,18 @@
 #' ## Visualising the test
 #' plot(simple_test)
 #' 
+#' ## Applying the test directly on a disparity object
+#' data(disparity)
+#' median_centroid_test <- test.metric(disparity, shifts = "size")
+#' 
+#' ## Summarising the tests
+#' summary(median_centroid_test)
+#' 
+#' ## Visualising the test
+#' plot(median_centroid_test)
+#'
+#' 
+#' \dontrun{
 #' ## Note that the tests can take several minutes to run.
 #' 
 #' ## Testing the sum of variance on all shifts
@@ -60,16 +72,7 @@
 #' 
 #' ## Visualising the test
 #' plot(sum_var_test)
-#' 
-#' ## Applying the test directly on a disparity object
-#' data(disparity)
-#' median_centroid_test <- test.metric(disparity, shifts = "size")
-#' 
-#' ## Summarising the tests
-#' summary(median_centroid_test)
-#' 
-#' ## Visualising the test
-#' plot(median_centroid_test)
+#' }
 #'  
 #' @author Thomas Guillerme
 #' 

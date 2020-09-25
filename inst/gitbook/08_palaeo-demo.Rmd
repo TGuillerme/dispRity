@@ -212,7 +212,7 @@ We highly recommend using a metric that makes sense for your specific analysis a
 This is not a straightforward question but you can use the `test.metric` function to check your assumptions (more details [here](#disparity-metrics)): basically what `test.metric` does is modifying your morphospace using a null process of interest (e.g. changes in size) and checks whether your metric does indeed pick up that change.
 For example here, let see if the sum of variances picks up changes in size but not random changes:
 
-```{r}
+```{r, fig.height = 16, fig.width = 8}
 my_test <- test.metric(my_matrix, metric = c(sum, variances), shifts = c("random", "size"))
 summary(my_test)
 plot(my_test)

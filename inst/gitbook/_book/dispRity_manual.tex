@@ -113,7 +113,7 @@
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}),
 Mark Puttick (\href{mailto:marknputtick@gmail.com}{\nolinkurl{marknputtick@gmail.com}}) and
 Natalie Cooper (\href{mailto:natalie.cooper@nhm.ac.uk}{\nolinkurl{natalie.cooper@nhm.ac.uk}})}
-\date{2020-07-16}
+\date{2020-09-25}
 
 \begin{document}
 \maketitle
@@ -222,6 +222,18 @@ The time-slicing method implemented in \texttt{chrono.subsets} (unfortunately no
 
 \begin{quote}
 Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. \href{https://onlinelibrary.wiley.com/doi/abs/10.1111/pala.12364}{doi:10.1111/pala.12364}.
+\end{quote}
+
+Furthermore, don't forget to cite \texttt{R}:
+
+\begin{quote}
+R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL \url{https://www.R-project.org/}.
+\end{quote}
+
+Bonus: you can also cite \texttt{ape} since the \texttt{dispRity} package heavily relies on it:
+
+\begin{quote}
+Paradis E. \& Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.
 \end{quote}
 
 \hypertarget{why-is-it-important-to-cite-us}{%
@@ -371,11 +383,11 @@ This function simply takes Procrustes aligned data and performs an ordination:
 
 \begin{verbatim}
 ##                PC1        PC2           PC3          PC4          PC5
-## [1,] -0.0369931363 0.05118247 -0.0016971082 -0.003128809 -0.010936371
-## [2,] -0.0007493738 0.05942082  0.0001371715 -0.002768680 -0.008117383
-## [3,]  0.0056004654 0.07419599 -0.0052612103 -0.005034566 -0.002746592
-## [4,] -0.0134808572 0.06463959 -0.0458436015 -0.007887369  0.009816827
-## [5,] -0.0334696244 0.06863518  0.0136292041  0.007359409  0.022347225
+## [1,] -0.0369930887 0.05118246 -0.0016971586 -0.003128881 -0.010935739
+## [2,] -0.0007493689 0.05942083  0.0001371682 -0.002768621 -0.008117767
+## [3,]  0.0056004751 0.07419599 -0.0052612189 -0.005034502 -0.002747104
+## [4,] -0.0134808326 0.06463958 -0.0458436274 -0.007887336  0.009817034
+## [5,] -0.0334696064 0.06863518  0.0136292227  0.007359383  0.022347215
 \end{verbatim}
 
 Options for the ordination (from \texttt{?prcomp}) can be directly passed to this function to perform customised ordinations.
@@ -412,7 +424,7 @@ For this, simply input a matrix in the \texttt{Claddis} format to the function a
 \KeywordTok{require}\NormalTok{(Claddis)}
 
 \CommentTok{## Ordinating the example data from Claddis}
-\KeywordTok{Claddis.ordination}\NormalTok{(Michaux1989) }
+\KeywordTok{Claddis.ordination}\NormalTok{(michaux_}\DecValTok{1989}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -426,7 +438,7 @@ For this, simply input a matrix in the \texttt{Claddis} format to the function a
 
 Note that several options are available, namely which type of distance should be computed.
 See more info in the function manual (\texttt{?Claddis.ordination}).
-Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions \texttt{Claddis::MorphDistMatrix} and \texttt{stats::cmdscale}.
+Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions \texttt{Claddis::calculate\_morphological\_distances} and \texttt{stats::cmdscale}.
 
 \hypertarget{other-kinds-of-ordination-matrices}{%
 \subsection{Other kinds of ordination matrices}\label{other-kinds-of-ordination-matrices}}
@@ -660,7 +672,7 @@ When displayed, these \texttt{dispRity} objects provide us with information on t
 \begin{verbatim}
 ##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
+##     133.51 - 89.01, 89.01 - 44.5, 44.5 - 0.
 ## Data was bootstrapped 100 times (method:"full").
 ## Disparity was calculated as: metric.
 \end{verbatim}
@@ -677,10 +689,10 @@ We can now summarise or plot the \texttt{disparity\_data} object, or perform sta
 \end{Shaded}
 
 \begin{verbatim}
-##                subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 133.51104 - 89.00736  5 2.123     1.775 1.017 1.496 1.942 2.123
-## 2  89.00736 - 44.50368 29 2.456     2.384 2.295 2.350 2.404 2.427
-## 3         44.50368 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466
+##          subsets  n   obs bs.median  2.5%   25%   75% 97.5%
+## 1 133.51 - 89.01  5 2.123     1.775 1.017 1.496 1.942 2.123
+## 2   89.01 - 44.5 29 2.456     2.384 2.295 2.350 2.404 2.427
+## 3       44.5 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466
 \end{verbatim}
 
 \begin{Shaded}
@@ -711,10 +723,10 @@ We can now summarise or plot the \texttt{disparity\_data} object, or perform sta
 ## -0.87430 -0.04100  0.01456  0.05318  0.41059 
 ## 
 ## Coefficients:
-##                            Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)                 1.71217    0.01703  100.55   <2e-16 ***
-## subsets44.50368 - 0         0.64824    0.02408   26.92   <2e-16 ***
-## subsets89.00736 - 44.50368  0.66298    0.02408   27.53   <2e-16 ***
+##                     Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)          1.71217    0.01703  100.55   <2e-16 ***
+## subsets44.5 - 0      0.64824    0.02408   26.92   <2e-16 ***
+## subsets89.01 - 44.5  0.66298    0.02408   27.53   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -898,7 +910,7 @@ Note that we can also generate equivalent results by just telling the function t
 \begin{verbatim}
 ##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements in one matrix:
-##     133.51104 - 89.00736, 89.00736 - 44.50368, 44.50368 - 0.
+##     133.51 - 89.01, 89.01 - 44.5, 44.5 - 0.
 \end{verbatim}
 
 In this example, the taxa were split inside each time-bin according to their age.
@@ -1020,7 +1032,7 @@ More details about the differences between these methods can be found in \citet{
 \begin{verbatim}
 ##  ---- dispRity object ---- 
 ## 4 continuous (proximity) time subsets for 99 elements in one matrix:
-##     133.51104, 89.00736, 44.50368, 0.
+##     133.51, 89.01, 44.5, 0.
 \end{verbatim}
 
 \hypertarget{custom-subsets}{%
@@ -1365,8 +1377,140 @@ Note that the dimension of the output matrix doesn't need to match the the input
 ## 4 3.297110 3.993864 2.187412 0.000000
 \end{verbatim}
 
-\hypertarget{make.metric}{%
-\subsection{\texorpdfstring{\texttt{make.metric}}{make.metric}}\label{make.metric}}
+\hypertarget{betweengroupmetricsexplain}{%
+\subsection{Between groups metrics}\label{betweengroupmetricsexplain}}
+
+One specific category of metrics in the \texttt{dispRity} package is the between groups metrics.
+As the name suggest, these metrics can be used to calculate the disparity between groups rather than within the groups.
+These metrics follow the same classifications as the ``normal'' (within group) metrics with dimension-level 1, 2 and 3 between groups metrics.
+However, at the difference of the ``normal'' metrics, their input arguments must be \texttt{matrix} and \texttt{matrix2} (and of course any other additional arguments).
+For example, this metric measures the difference in mean between two matrices:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A simple example}
+\NormalTok{mean.difference <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix, matrix2) \{}
+  \KeywordTok{mean}\NormalTok{(matrix) }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(matrix2)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+You can find the list of implemented between groups metric \protect\hyperlink{betweengroupmetricslist}{here} or design them yourself for your specific needs (potentially using \protect\hyperlink{makemetric}{\texttt{make.metric}} for help).
+
+The function works by simply using the two available matrices, with no restriction in terms of dimensions (although you'd probably want both matrices to have the same number of dimensions)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A second matrix}
+\NormalTok{dummy_matrix2 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{runif}\NormalTok{(}\DecValTok{12}\NormalTok{), }\DecValTok{4}\NormalTok{, }\DecValTok{3}\NormalTok{)}
+
+\CommentTok{## The difference between groups}
+\KeywordTok{mean.difference}\NormalTok{(dummy_matrix, dummy_matrix2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.3194556
+\end{verbatim}
+
+Beyond this super simple example, it might probably be interesting to use this metric on \texttt{dispRity} objects, especially the ones from \protect\hyperlink{custom-subsets}{\texttt{custom.subsets}} and \protect\hyperlink{chrono-subsets}{\texttt{chrono.subsets}}.
+In fact, the \texttt{dispRity} function allows to apply the between groups metric directly to the \texttt{dispRity} objects using the \texttt{between.groups\ =\ TRUE} option.
+For example:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Combining both matrices}
+\NormalTok{big_matrix <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(dummy_matrix, dummy_matrix2)}
+\KeywordTok{rownames}\NormalTok{(big_matrix) <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\DecValTok{8}
+
+\CommentTok{## Making a dispRity object with both groups}
+\NormalTok{grouped_matrix <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(big_matrix,}
+                                 \DataTypeTok{group =} \KeywordTok{c}\NormalTok{(}\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{), }\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{)))}
+
+\CommentTok{## Calculating the mean difference between groups}
+\NormalTok{(mean_differences <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(grouped_matrix,}
+                              \DataTypeTok{metric =}\NormalTok{ mean.difference,}
+                              \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  ---- dispRity object ---- 
+## 2 customised subsets for 8 elements in one matrix with 3 dimensions:
+##     1, 2.
+## Disparity was calculated as: mean.difference between groups.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Summarising the object}
+\KeywordTok{summary}\NormalTok{(mean_differences)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2 obs
+## 1     1:2   4   4   0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Note how the summary table now indicates}
+\CommentTok{## the number of elements for each group}
+\end{Highlighting}
+\end{Shaded}
+
+For \texttt{dispRity} objects generated by \texttt{custom.subsets}, the \texttt{dispRity} function will by default apply the metric on the groups in a pairwise fashion.
+For example, if the object contains multiple groups, all groups will be compared to each other:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## A dispRity object with multiple groups}
+\NormalTok{grouped_matrix <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(big_matrix,}
+                                 \DataTypeTok{group =} \KeywordTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{ =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{),}
+                                           \StringTok{"B"}\NormalTok{ =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{),}
+                                           \StringTok{"C"}\NormalTok{ =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DecValTok{2}\OperatorTok{:}\DecValTok{6}\NormalTok{), }
+                                           \StringTok{"D"}\NormalTok{ =}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{8}\NormalTok{)))}
+
+\CommentTok{## Measuring disparity between all groups}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_matrix, }\DataTypeTok{metric =}\NormalTok{ mean.difference,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2    obs
+## 1     A:B   4   4  0.000
+## 2     A:C   4   5 -0.172
+## 3     A:D   4   8 -0.160
+## 4     B:C   4   5 -0.172
+## 5     B:D   4   8 -0.160
+## 6     C:D   5   8  0.012
+\end{verbatim}
+
+For \texttt{dispRity} objects generated by \texttt{chrono.subsets} (not shown here), the \texttt{dispRity} function will by default apply the metric on the groups in a serial way (group 1 vs.~group 2, group 2 vs.~group 3, group 3 vs.~group 4, etc\ldots{}).
+However, in both cases (for objects from \texttt{custom.subsets} or \texttt{chrono.subsets}) it is possible to manually specific the list of pairs of comparisons through their ID numbers:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring disparity between specific groups}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_matrix, }\DataTypeTok{metric =}\NormalTok{ mean.difference,}
+                 \DataTypeTok{between.groups =} \KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2    obs
+## 1     A:C   4   5 -0.172
+## 2     C:A   5   4  0.172
+## 3     D:A   8   4  0.160
+\end{verbatim}
+
+Note that in any case, the order of the comparison can matter.
+In our example, it is obvious that \texttt{mean(matrix)\ -\ mean(matrix2)} is not the same as \texttt{mean(matrix2)\ -\ mean(matrix)}.
+
+\hypertarget{makemetric}{%
+\subsection{\texorpdfstring{\texttt{make.metric}}{make.metric}}\label{makemetric}}
 
 Of course, functions can be more complex and involve multiple operations such as the \texttt{centroids} function (see \texttt{?dispRity.metric}) that calculates the Euclidean distance between each element and the centroid of the ordinated space.
 The \texttt{make.metric} function implemented in \texttt{dispRity} is designed to help test and find the dimension-level of the functions.
@@ -1642,6 +1786,15 @@ The functional evenness (the minimal spanning tree distances evenness)\strut
 \begin{minipage}[t]{0.07\columnwidth}\raggedright
 1\strut
 \end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedright
+\texttt{group.dist}\strut
+\end{minipage} & \begin{minipage}[t]{0.64\columnwidth}\raggedright
+The distance between two groups\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedright
+\texttt{dispRity}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\raggedright
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedright
 \texttt{mode.val}\strut
 \end{minipage} & \begin{minipage}[t]{0.64\columnwidth}\raggedright
 The modal value\strut
@@ -1674,6 +1827,15 @@ The distance to specific neighbours (e.g.~the nearest neighbours - by default)\s
 The pairwise distances between elements\strut
 \end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedright
 \href{https://cran.r-project.org/web/packages/vegan/index.html}{\texttt{vegan}}\texttt{::vegist}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\raggedright
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedright
+\texttt{point.dist}\strut
+\end{minipage} & \begin{minipage}[t]{0.64\columnwidth}\raggedright
+The distance between one group and the point of another group\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedright
+\texttt{dispRity}\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.07\columnwidth}\raggedright
 2\strut
@@ -2425,6 +2587,118 @@ Since both the functions \texttt{angles} and \texttt{deviations} effectively run
 Note that depending on your dataset, using and \texttt{aov} could be completely inappropriate!
 In doubt, it's probably better to enter your \texttt{base} (for \texttt{angles}) or your \texttt{hyperplane} (for \texttt{deviations}) manually so you're sure you know what the function is measuring.
 
+\hypertarget{betweengroupmetricslist}{%
+\subsubsection{Between group metrics}\label{betweengroupmetricslist}}
+
+You can find detailed explanation on how between group metrics work \protect\hyperlink{betweengroupmetricsexplain}{here}.
+
+\hypertarget{group.dist}{%
+\paragraph{\texorpdfstring{\texttt{group.dist}}{group.dist}}\label{group.dist}}
+
+The \texttt{group.dist} metric allows to measure the distance between two groups in the multidimensional space.
+This function needs to intake several groups and use the option \texttt{between.groups\ =\ TRUE} in the \texttt{dispRity} function.
+It calculates the vector normal distance (euclidean) between two groups and returns 0 if that distance is negative.
+Note that it is possible to set up which quantiles to consider for calculating the distances between groups.
+For example, one might be interested in only considering the 95\% CI for each group.
+This can be done through the option \texttt{probs\ =\ c(0.025,\ 0.975)} that is passed to the \texttt{quantile} function.
+It is also possible to use this function to measure the distance between the groups centroids by calculating the 50\% quantile (\texttt{probs\ =\ c(0.5)}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Creating a dispRity object with two groups}
+\NormalTok{grouped_space <-}\StringTok{ }\KeywordTok{custom.subsets}\NormalTok{(dummy_space,}
+                      \DataTypeTok{group =} \KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{6}\OperatorTok{:}\DecValTok{10}\NormalTok{)))}
+
+\CommentTok{## Measuring the minimum distance between both groups}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ group.dist,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2 obs
+## 1     1:2   5   5   0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring the centroid distance between both groups}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ group.dist,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{probs =} \FloatTok{0.5}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2   obs
+## 1     1:2   5   5 0.708
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring the distance between both group's 75% CI}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ group.dist,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{probs =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2   obs
+## 1     1:2   5   5 0.059
+\end{verbatim}
+
+\hypertarget{point.dist}{%
+\paragraph{\texorpdfstring{\texttt{point.dist}}{point.dist}}\label{point.dist}}
+
+The metric measures the distance between the elements in one group (\texttt{matrix}) and a point calculated from a second group (\texttt{matrix2}).
+By default this point is the centroid but can be any point defined by a function passed to the \texttt{point} argument.
+For example, the centroid of \texttt{matrix2} is the mean of each column of that matrix so \texttt{point\ =\ colMeans} (default).
+This function also takes the \texttt{method} argument like previous one described above to measure either the \texttt{"euclidean"} (default) or the \texttt{"manhattan"} distances:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring the distance between the elements of the first group}
+\CommentTok{## and the centroid of the second group}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ point.dist,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2 obs.median  2.5%   25%   75% 97.5%
+## 1     1:2   5   5      2.182 1.304 1.592 2.191 3.355
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring the distance between the elements of the second group}
+\CommentTok{## and the centroid of the first group}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ point.dist,}
+                 \DataTypeTok{between.groups =} \KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2 obs.median 2.5%   25%   75% 97.5%
+## 1     2:1   5   5      1.362 0.76 1.296 1.505 1.985
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Measuring the distance between the elements of the first group}
+\CommentTok{## a point defined as the standard deviation of each column}
+\CommentTok{## in the second group}
+\NormalTok{sd.point <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix2) \{}\KeywordTok{apply}\NormalTok{(matrix2, }\DecValTok{2}\NormalTok{, sd)\}}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(grouped_space, }\DataTypeTok{metric =}\NormalTok{ point.dist,}
+                 \DataTypeTok{point =}\NormalTok{ sd.point, }\DataTypeTok{method =} \StringTok{"manhattan"}\NormalTok{,}
+                 \DataTypeTok{between.groups =} \OtherTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   subsets n_1 n_2 obs.median  2.5%   25%   75% 97.5%
+## 1     1:2   5   5      4.043 2.467 3.567 4.501 6.884
+\end{verbatim}
+
 \hypertarget{which-disparity-metric-to-choose}{%
 \subsection{Which disparity metric to choose?}\label{which-disparity-metric-to-choose}}
 
@@ -2493,13 +2767,13 @@ A good disparity metric for your dataset will typically have no trend in the \te
 
 \begin{verbatim}
 ##             10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
-## random     0.87 0.94 0.94 0.96 0.98 0.99 0.98 0.99 0.99 0.99 8.865689e-04
-## size.inner 0.14 0.27 0.40 0.50 0.61 0.69 0.81 0.89 0.97 0.99 9.721885e-03
-## size.outer 0.98 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 6.554908e-05
+## random     0.94 0.97 0.97 0.97 0.99 0.99 0.98 0.99 0.99 0.99 4.877831e-04
+## size.inner 0.11 0.21 0.30 0.43 0.54 0.69 0.84 0.96 0.97 0.99 1.084153e-02
+## size.outer 0.97 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 9.563056e-05
 ##                 p_value  R^2(adj)
-## random     3.260146e-06 0.5282832
-## size.inner 5.709484e-27 0.9841710
-## size.outer 1.925262e-05 0.4664502
+## random     1.073231e-05 0.4875973
+## size.inner 7.322307e-24 0.9736180
+## size.outer 1.345568e-03 0.2871013
 \end{verbatim}
 
 \begin{Shaded}
@@ -2509,7 +2783,7 @@ A good disparity metric for your dataset will typically have no trend in the \te
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 \hypertarget{summarising-disprity-data-plots}{%
 \section{Summarising dispRity data (plots)}\label{summarising-disprity-data-plots}}
@@ -2574,10 +2848,10 @@ These objects are easy to summarise as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 7.342     6.065 3.507 5.337 6.647 6.821
-## 2      80 19 7.629     7.248 6.921 7.158 7.333 7.529
-## 3      40 15 7.866     7.371 6.706 7.234 7.517 7.689
-## 4       0 10 8.610     7.828 6.824 7.460 8.055 8.359
+## 1     120  5 7.342     5.989 2.956 5.102 6.626 6.821
+## 2      80 19 7.629     7.233 6.965 7.159 7.335 7.470
+## 3      40 15 7.866     7.304 6.758 7.132 7.481 7.763
+## 4       0 10 8.610     7.879 6.788 7.563 8.110 8.424
 \end{verbatim}
 
 Information about the number of elements in each subset and the observed (i.e.~non-bootstrapped) disparity are also calculated.
@@ -2591,12 +2865,12 @@ This is specifically handy when rarefying the data for example:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1   crown 30 2.526     2.446 2.387 2.419 2.463 2.494
-## 2   crown 29    NA     2.442 2.370 2.417 2.461 2.493
-## 3   crown 28    NA     2.441 2.378 2.424 2.458 2.489
-## 4   crown 27    NA     2.439 2.352 2.417 2.467 2.502
-## 5   crown 26    NA     2.445 2.357 2.419 2.461 2.490
-## 6   crown 25    NA     2.444 2.378 2.424 2.467 2.500
+## 1   crown 30 2.526     2.444 2.381 2.419 2.467 2.494
+## 2   crown 29    NA     2.442 2.371 2.416 2.464 2.490
+## 3   crown 28    NA     2.445 2.383 2.422 2.462 2.487
+## 4   crown 27    NA     2.442 2.350 2.421 2.462 2.488
+## 5   crown 26    NA     2.444 2.363 2.420 2.464 2.488
+## 6   crown 25    NA     2.446 2.369 2.422 2.464 2.492
 \end{verbatim}
 
 The summary functions can also take various options such as:
@@ -2624,10 +2898,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.sd    6%   94%
-## 1     120  5 7.342 1.021 4.342 6.813
-## 2      80 19 7.629 0.151 6.976 7.434
-## 3      40 15 7.866 0.248 6.942 7.662
-## 4       0 10 8.610 0.419 7.104 8.233
+## 1     120  5 7.342 1.007 4.239 6.813
+## 2      80 19 7.629 0.138 7.009 7.429
+## 3      40 15 7.866 0.272 6.803 7.674
+## 4       0 10 8.610 0.432 6.997 8.304
 \end{verbatim}
 
 \begin{Shaded}
@@ -2647,10 +2921,10 @@ These options can easily be changed from the defaults as follows:
 
 \begin{verbatim}
 ##   subsets  n     obs bs.median    2.5%     25%     75%   97.5%
-## 1     120  5 7.34225   6.06530 3.50734 5.33670 6.64742 6.82077
-## 2      80 19 7.62873   7.24822 6.92061 7.15772 7.33335 7.52929
-## 3      40 15 7.86581   7.37055 6.70624 7.23365 7.51733 7.68934
-## 4       0 10 8.60986   7.82777 6.82380 7.46034 8.05503 8.35863
+## 1     120  5 7.34225   5.98901 2.95648 5.10176 6.62558 6.82077
+## 2      80 19 7.62873   7.23272 6.96478 7.15877 7.33495 7.46965
+## 3      40 15 7.86581   7.30382 6.75836 7.13189 7.48088 7.76282
+## 4       0 10 8.60986   7.87923 6.78752 7.56334 8.10972 8.42449
 \end{verbatim}
 
 Note that the summary table is a \texttt{data.frame}, hence it is as easy to modify as any dataframe using \texttt{dplyr}.
@@ -2709,7 +2983,7 @@ Additionally, when the data is rarefied, one can indicate which level of rarefac
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2738,7 +3012,7 @@ Since \texttt{plot.dispRity} uses the arguments from the generic \texttt{plot} m
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2766,7 +3040,86 @@ In addition to the classic \texttt{plot} arguments, the function can also take a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-65-1.pdf}
+\begin{verbatim}
+## Warning in plot.window(...): "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in plot.xy(xy, type, ...): "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in axis(side = side, at = at, labels = labels, ...): "chrono.subsets" is
+## not a graphical parameter
+
+## Warning in axis(side = side, at = at, labels = labels, ...): "chrono.subsets" is
+## not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in box(...): "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(...): "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
+## "chrono.subsets" is not a graphical parameter
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in plot.xy(xy.coords(x, y), type = type, ...): "chrono.subsets" is not a
+## graphical parameter
+\end{verbatim}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2794,7 +3147,7 @@ For comparing results, it is also possible to add a plot to the existent plot by
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-73-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2815,7 +3168,7 @@ Finally, if your data has been fully rarefied, it is also possible to easily loo
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2871,12 +3224,12 @@ For example custom subsets \emph{vs.} time subsets:
 \CommentTok{## Default plotting}
 \KeywordTok{plot}\NormalTok{(cust_subsets)}
 \CommentTok{## Plotting with more arguments}
-\KeywordTok{plot}\NormalTok{(time_subsets, }\DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{),}
+\KeywordTok{plot}\NormalTok{(time_subsets, }\DataTypeTok{specific.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)),}
      \DataTypeTok{main =} \StringTok{"Some }\CharTok{\textbackslash{}"}\StringTok{low}\CharTok{\textbackslash{}"}\StringTok{ dimensions"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 \begin{quote}
 DISCLAIMER: This functionality can be handy for exploring the data (e.g.~to visually check whether the subset attribution worked) but it might be misleading on how the data is \emph{actually} distributed in the multidimensional space!
@@ -2897,7 +3250,7 @@ However you can always force the \texttt{preview} option using the following:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \hypertarget{testing-disparity-hypotheses}{%
 \section{Testing disparity hypotheses}\label{testing-disparity-hypotheses}}
@@ -2943,19 +3296,19 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 \begin{verbatim}
 ## [[1]]
 ##              statistic: t
-## crown : stem     52.63941
+## crown : stem     55.10727
 ## 
 ## [[2]]
 ##              parameter: df
-## crown : stem      159.0633
+## crown : stem      180.4283
 ## 
 ## [[3]]
 ##                    p.value
-## crown : stem 1.519027e-102
+## crown : stem 8.157149e-115
 ## 
 ## [[4]]
 ##                   stderr
-## crown : stem 0.006024669
+## crown : stem 0.005575056
 \end{verbatim}
 
 \begin{Shaded}
@@ -2972,13 +3325,13 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 ##  Welch Two Sample t-test
 ## 
 ## data:  dots[[1L]][[1L]] and dots[[2L]][[1L]]
-## t = 52.639, df = 159.06, p-value < 2.2e-16
+## t = 55.107, df = 180.43, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.3052363 0.3290337
+##  0.2962254 0.3182268
 ## sample estimates:
 ## mean of x mean of y 
-##  2.442870  2.125735
+##  2.441620  2.134394
 \end{verbatim}
 
 \begin{Shaded}
@@ -2993,15 +3346,15 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 \begin{verbatim}
 ## [[1]]
 ##          statistic: W
-## 120 : 80          158
-## 80 : 40          3188
-## 40 : 0           2121
+## 120 : 80          152
+## 80 : 40          4059
+## 40 : 0           1607
 ## 
 ## [[2]]
 ##               p.value
-## 120 : 80 8.195983e-32
-## 80 : 40  2.877242e-05
-## 40 : 0   6.051372e-12
+## 120 : 80 6.878147e-32
+## 80 : 40  6.468413e-02
+## 40 : 0   3.420473e-16
 \end{verbatim}
 
 \begin{Shaded}
@@ -3019,9 +3372,9 @@ Here we are using the variables generated in the \protect\hyperlink{summarising-
 
 \begin{verbatim}
 ##                    bhatt.coeff
-## 120 - 80 : 80 - 40   0.0000000
-## 120 - 80 : 40 - 0    0.1519349
-## 80 - 40 : 40 - 0     0.5869679
+## 120 - 80 : 80 - 40  0.00000000
+## 120 - 80 : 40 - 0   0.09350209
+## 80 - 40 : 40 - 0    0.62049247
 \end{verbatim}
 
 Because of the modular design of the package, tests can always be made by the user (the same way disparity metrics can be user made).
@@ -3252,11 +3605,11 @@ Unfortunately, this implementation is slower that \texttt{geiger::dtt} (so if yo
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Plotting the results}
-\KeywordTok{plot}\NormalTok{(dispRity_dtt, }\DataTypeTok{fig.width=}\DecValTok{8}\NormalTok{, }\DataTypeTok{fig.height=}\DecValTok{8}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(dispRity_dtt)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 Note that, like in the original \texttt{dtt} function, it is possible to change the evolutionary model (see \texttt{?geiger::sim.char} documentation).
 
@@ -3318,7 +3671,7 @@ These results have an attributed \texttt{dispRity} and \texttt{randtest} class a
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 For more details on generating spaces see the \protect\hyperlink{Simulating-multidimensional-spaces}{\texttt{space.maker}} function tutorial.
 
@@ -3327,6 +3680,12 @@ For more details on generating spaces see the \protect\hyperlink{Simulating-mult
 
 The code used for these models is based on those developed by Gene Hunt \citep{hunt2006fitting, hunt2012measuring, hunt2015simple}.
 So we acknowledge and thank Gene Hunt for developing these models and writing the original R code that served as inspiration for these models.
+
+\begin{quote}
+DISCLAIMER: this method of analysing disparity has not been published yet and has not been peer reviewed. Caution should be used in interpreting these results: it is unclear what ``a disparity curve fitting a Brownian motion'' actually means biologically.
+\end{quote}
+
+As Malcolm said in Jurassic Park: ``although the examples within this chapter all work and produce solid tested results (from an algorithm point of view), that doesn't mean you should use it'' (or something along those lines).
 
 \hypertarget{simple-modes-of-disparity-change-through-time}{%
 \subsection{Simple modes of disparity change through time}\label{simple-modes-of-disparity-change-through-time}}
@@ -3349,7 +3708,7 @@ For example we may have a null expectation of time-invariant change in disparity
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
+## Running Stasis model...Done. Log-likelihood = -69.301
 \end{verbatim}
 
 We can see the standard output from \texttt{model.test}.
@@ -3370,7 +3729,7 @@ For example, to ignore Bartlett's test and pool variances manually we would do t
 \end{Shaded}
 
 \begin{verbatim}
-## Running Stasis model...Done. Log-likelihood = -68.176
+## Running Stasis model...Done. Log-likelihood = -68.37
 \end{verbatim}
 
 However, unless you have good reason to choose otherwise it is recommended to use the default of \texttt{pool.variance\ =\ NULL}:
@@ -3386,7 +3745,7 @@ However, unless you have good reason to choose otherwise it is recommended to us
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
+## Running Stasis model...Done. Log-likelihood = -69.301
 \end{verbatim}
 
 \begin{Shaded}
@@ -3400,13 +3759,13 @@ However, unless you have good reason to choose otherwise it is recommended to us
 ## Call: model.test(data = BeckLee_disparity, model = "Stasis", pool.variance = NULL) 
 ## 
 ##            aicc delta_aicc weight_aicc
-## Stasis 142.2864          0           1
+## Stasis 142.7041          0           1
 ## 
 ## Use x$full.details for displaying the models details
 ## or summary(x) for summarising them.
 \end{verbatim}
 
-The remaining output gives us the log-likelihood of the Stasis model of -59.501 (you may notice this change when we pooled variances above).
+The remaining output gives us the log-likelihood of the Stasis model of -69.3 (you may notice this change when we pooled variances above).
 The output also gives us the small sample Akaike Information Criterion (AICc), the delta AICc (the distance from the best fitting model), and the AICc weights (\textasciitilde{}the relative support of this model compared to all models, scaled to one).
 
 These are all metrics of relative fit, so when we test a single model they are not useful.
@@ -3420,11 +3779,11 @@ By using the function summary in \texttt{dispRity} we can see the maximum likeli
 
 \begin{verbatim}
 ##         aicc delta_aicc weight_aicc log.lik param theta.1 omega
-## Stasis 142.3          0           1   -69.1     2     7.8   0.2
+## Stasis 142.7          0           1   -69.3     2     7.8   0.2
 \end{verbatim}
 
 So we again see the AICc, delta AICc, AICc weight, and the log-likelihood we saw previously.
-We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = 0.01) and the mean (theta.1 = 3.4).
+We now also see the number of parameters from the model (2: theta and omega), and their estimates so the variance (omega = 0.2) and the mean (theta.1 = 7.8).
 
 The \texttt{model.test} function is designed to test relative model fit, so we need to test more than one model to make relative comparisons.
 So let's compare to the fit of the Stasis model to another model with two parameters: the Brownian motion.
@@ -3441,8 +3800,8 @@ The easier way to compare these models is to simply add \texttt{"BM"} to the \te
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
-## Running BM model...Done. Log-likelihood = 109.829
+## Running Stasis model...Done. Log-likelihood = -69.301
+## Running BM model...Done. Log-likelihood = 110.297
 \end{verbatim}
 
 \begin{Shaded}
@@ -3455,16 +3814,16 @@ The easier way to compare these models is to simply add \texttt{"BM"} to the \te
 ## Disparity evolution model fitting:
 ## Call: model.test(data = BeckLee_disparity, model = c("Stasis", "BM")) 
 ## 
-##             aicc delta_aicc  weight_aicc
-## Stasis  142.2864   357.8437 1.973499e-78
-## BM     -215.5573     0.0000 1.000000e+00
+##             aicc delta_aicc weight_aicc
+## Stasis  142.7041   359.1955 1.00389e-78
+## BM     -216.4915     0.0000 1.00000e+00
 ## 
 ## Use x$full.details for displaying the models details
 ## or summary(x) for summarising them.
 \end{verbatim}
 
 Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and AICc weight Brownian motion has a much better relative fit to these data than the Stasis model.
-Brownian motion has a relative AICc fit 366 units better than Stasis, and virtually has a AICc weight of 1.
+Brownian motion has a relative AICc fit359.2 units better than Stasis, and has a AICc weight of 1.
 
 We can also all the information about the relative fit of models alongside the maximum likelihood estimates of model parameters using the summary function
 
@@ -3476,8 +3835,8 @@ We can also all the information about the relative fit of models alongside the m
 
 \begin{verbatim}
 ##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
-## Stasis  142      357.8           0   -69.1     2    7.85 0.173              NA
-## BM     -216        0.0           1   109.8     2      NA    NA           7.359
+## Stasis  143      359.2           0   -69.3     2   7.849 0.174              NA
+## BM     -216        0.0           1   110.3     2      NA    NA           7.356
 ##        sigma squared
 ## Stasis            NA
 ## BM             0.003
@@ -3516,11 +3875,11 @@ Alternatively, we could test all available models single modes: Stasis, Brownian
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
-## Running BM model...Done. Log-likelihood = 109.829
-## Running OU model...Done. Log-likelihood = 112.204
-## Running Trend model...Done. Log-likelihood = 112.207
-## Running EB model...Done. Log-likelihood = 101.124
+## Running Stasis model...Done. Log-likelihood = -69.301
+## Running BM model...Done. Log-likelihood = 110.297
+## Running OU model...Done. Log-likelihood = 112.722
+## Running Trend model...Done. Log-likelihood = 112.724
+## Running EB model...Done. Log-likelihood = 101.396
 \end{verbatim}
 
 \begin{Shaded}
@@ -3531,15 +3890,15 @@ Alternatively, we could test all available models single modes: Stasis, Brownian
 
 \begin{verbatim}
 ##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
-## Stasis  142      360.5       0.000   -69.1     2    7.85 0.173              NA
-## BM     -216        2.7       0.165   109.8     2      NA    NA           7.359
-## OU     -216        2.1       0.213   112.2     4      NA    NA           7.351
-## Trend  -218        0.0       0.622   112.2     3      NA    NA           7.351
-## EB     -196       22.2       0.000   101.1     3      NA    NA           8.610
+## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
+## BM     -216        2.8       0.158   110.3     2      NA    NA           7.356
+## OU     -217        2.1       0.215   112.7     4      NA    NA           7.347
+## Trend  -219        0.0       0.627   112.7     3      NA    NA           7.348
+## EB     -197       22.7       0.000   101.4     3      NA    NA           8.610
 ##        sigma squared alpha optima.1 trend eb
 ## Stasis            NA    NA       NA    NA NA
 ## BM             0.003    NA       NA    NA NA
-## OU             0.003     0     67.2    NA NA
+## OU             0.003     0    74.57    NA NA
 ## Trend          0.003    NA       NA 0.011 NA
 ## EB             0.001    NA       NA    NA  0
 \end{verbatim}
@@ -3576,14 +3935,14 @@ Is this a trend of increasing or decreasing disparity through time? One way to f
 
 \begin{verbatim}
 ##            aicc      delta_aicc     weight_aicc         log.lik           param 
-##        -218.000           0.000           0.622         112.200           3.000 
+##        -219.000           0.000           0.627         112.700           3.000 
 ##         theta.1           omega ancestral state   sigma squared           alpha 
-##              NA              NA           7.351           0.003              NA 
+##              NA              NA           7.348           0.003              NA 
 ##        optima.1           trend              eb 
 ##              NA           0.011              NA
 \end{verbatim}
 
-This show a positive trend (0.01) of increasing disparity through time.
+This show a positive trend (0.011) of increasing disparity through time.
 
 \hypertarget{plot-and-run-simulation-tests-in-a-single-step}{%
 \subsection{Plot and run simulation tests in a single step}\label{plot-and-run-simulation-tests-in-a-single-step}}
@@ -3608,11 +3967,11 @@ This can all be done using the function \texttt{model.test.wrapper}, and we will
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
-## Running BM model...Done. Log-likelihood = 109.829
-## Running OU model...Done. Log-likelihood = 112.204
-## Running Trend model...Done. Log-likelihood = 112.207
-## Running EB model...Done. Log-likelihood = 101.124
+## Running Stasis model...Done. Log-likelihood = -69.301
+## Running BM model...Done. Log-likelihood = 110.297
+## Running OU model...Done. Log-likelihood = 112.722
+## Running Trend model...Done. Log-likelihood = 112.724
+## Running EB model...Done. Log-likelihood = 101.396
 \end{verbatim}
 
 \begin{figure}
@@ -3632,30 +3991,30 @@ This can all be done using the function \texttt{model.test.wrapper}, and we will
 
 \begin{verbatim}
 ##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
-## Trend  -218        0.0       0.622   112.2     3      NA    NA           7.351
-## OU     -216        2.1       0.213   112.2     4      NA    NA           7.351
-## BM     -216        2.7       0.165   109.8     2      NA    NA           7.359
-## EB     -196       22.2       0.000   101.1     3      NA    NA           8.610
-## Stasis  142      360.5       0.000   -69.1     2    7.85 0.173              NA
+## Trend  -219        0.0       0.627   112.7     3      NA    NA           7.348
+## OU     -217        2.1       0.215   112.7     4      NA    NA           7.347
+## BM     -216        2.8       0.158   110.3     2      NA    NA           7.356
+## EB     -197       22.7       0.000   101.4     3      NA    NA           8.610
+## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
 ##        sigma squared alpha optima.1 trend eb median p value lower p value
-## Trend          0.003    NA       NA 0.011 NA     0.90859141   0.907092907
-## OU             0.003     0     67.2    NA NA     0.91758242   0.915084915
-## BM             0.003    NA       NA    NA NA     0.33916084   0.329670330
-## EB             0.001    NA       NA    NA  0     0.06493506   0.000999001
-## Stasis            NA    NA       NA    NA NA     1.00000000   1.000000000
+## Trend          0.003    NA       NA 0.011 NA     0.88061938   0.879120879
+## OU             0.003     0    74.57    NA NA     0.89710290   0.896103896
+## BM             0.003    NA       NA    NA NA     0.20229770   0.185814186
+## EB             0.001    NA       NA    NA  0     0.06393606   0.000999001
+## Stasis            NA    NA       NA    NA NA     0.99900100   0.999000999
 ##        upper p value
-## Trend      0.9100899
-## OU         0.9200799
-## BM         0.3486513
-## EB         0.1288711
-## Stasis     1.0000000
+## Trend      0.8821179
+## OU         0.8981019
+## BM         0.2187812
+## EB         0.1268731
+## Stasis     0.9990010
 \end{verbatim}
 
 From this plot we can see the empirical estimates of disparity through time (pink) compared to the predictive data based upon the simulations using the estimated parameters from each model.
 There is no significant differences between the empirical data and simulated data, except for the Early Burst model.
 
 Trend is the best-fitting model but the plot suggests the OU model also follows a trend-like pattern.
-This is because the optima for the OU model (5.7) is different to the ancestral state 2.835 and outside the observed value.
+This is because the optima for the OU model (74.57) is different to the ancestral state (7.347) and outside the observed value.
 This is potentially unrealistic, and one way to alleviate this issue is to set the optima of the OU model to equal the ancestral estimate - this is the normal practice for OU models in comparative phylogenetics.
 To set the optima to the ancestral value we change the argument \texttt{fixed.optima\ =\ TRUE}:
 
@@ -3670,11 +4029,11 @@ To set the optima to the ancestral value we change the argument \texttt{fixed.op
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
-## Running BM model...Done. Log-likelihood = 109.829
-## Running OU model...Done. Log-likelihood = 109.829
-## Running Trend model...Done. Log-likelihood = 112.207
-## Running EB model...Done. Log-likelihood = 101.124
+## Running Stasis model...Done. Log-likelihood = -69.301
+## Running BM model...Done. Log-likelihood = 110.297
+## Running OU model...Done. Log-likelihood = 110.297
+## Running Trend model...Done. Log-likelihood = 112.724
+## Running EB model...Done. Log-likelihood = 101.396
 \end{verbatim}
 
 \begin{figure}
@@ -3694,17 +4053,17 @@ To set the optima to the ancestral value we change the argument \texttt{fixed.op
 
 \begin{verbatim}
 ##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
-## Trend  -218        0.0       0.736   112.2     3      NA    NA           7.351
-## BM     -216        2.7       0.196   109.8     2      NA    NA           7.359
-## OU     -213        4.8       0.068   109.8     3      NA    NA           7.359
-## EB     -196       22.2       0.000   101.1     3      NA    NA           8.610
-## Stasis  142      360.5       0.000   -69.1     2    7.85 0.173              NA
+## Trend  -219        0.0       0.746   112.7     3      NA    NA           7.348
+## BM     -216        2.8       0.188   110.3     2      NA    NA           7.356
+## OU     -214        4.9       0.066   110.3     3      NA    NA           7.356
+## EB     -197       22.7       0.000   101.4     3      NA    NA           8.610
+## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
 ##        sigma squared alpha trend eb median p value lower p value upper p value
-## Trend          0.003    NA 0.011 NA     0.91358641   0.911088911     0.9160839
-## BM             0.003    NA    NA NA     0.31368631   0.305694306     0.3216783
-## OU             0.003     0    NA NA     0.31268731   0.298701299     0.3266733
-## EB             0.001    NA    NA  0     0.06693307   0.000999001     0.1328671
-## Stasis            NA    NA    NA NA     0.99800200   0.998001998     0.9980020
+## Trend          0.003    NA 0.011 NA     0.87462537   0.874125874     0.8751249
+## BM             0.003    NA    NA NA     0.31718282   0.310689311     0.3236763
+## OU             0.003     0    NA NA     0.35214785   0.342657343     0.3616384
+## EB             0.001    NA    NA  0     0.06493506   0.000999001     0.1288711
+## Stasis            NA    NA    NA NA     0.99850150   0.998001998     0.9990010
 \end{verbatim}
 
 The relative fit of the OU model is decreased by constraining the fit of the optima to equal the ancestral state value.
@@ -3737,10 +4096,10 @@ We will constrain the optima of OU model in the first time begin (i.e, pre-66 My
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running BM model...Done. Log-likelihood = 109.829
-## Running Trend model...Done. Log-likelihood = 112.207
-## Running OU model...Done. Log-likelihood = 109.829
-## Running multi.OU model...Done. Log-likelihood = 112.174
+## Running BM model...Done. Log-likelihood = 110.297
+## Running Trend model...Done. Log-likelihood = 112.724
+## Running OU model...Done. Log-likelihood = 110.297
+## Running multi.OU model...Done. Log-likelihood = 112.639
 \end{verbatim}
 
 \begin{figure}
@@ -3760,20 +4119,20 @@ We will constrain the optima of OU model in the first time begin (i.e, pre-66 My
 
 \begin{verbatim}
 ##          aicc delta_aicc weight_aicc log.lik param ancestral state
-## Trend    -218      0.000       0.592   112.2     3           7.351
-## multi.OU -216      2.205       0.196   112.2     4           7.348
-## BM       -216      2.651       0.157   109.8     2           7.359
-## OU       -213      4.754       0.055   109.8     3           7.359
+## Trend    -219      0.000       0.604   112.7     3           7.348
+## multi.OU -217      2.310       0.190   112.6     4           7.347
+## BM       -216      2.751       0.153   110.3     2           7.356
+## OU       -214      4.855       0.053   110.3     3           7.356
 ##          sigma squared trend alpha optima.2 median p value lower p value
-## Trend            0.003 0.011    NA       NA      0.9105894     0.9090909
-## multi.OU         0.003    NA 0.001    17.71      0.8341658     0.8321678
-## BM               0.003    NA    NA       NA      0.2827173     0.2707293
-## OU               0.003    NA 0.000       NA      0.3136863     0.3006993
+## Trend            0.003 0.011    NA       NA      0.8831169     0.8801199
+## multi.OU         0.003    NA 0.001    17.62      0.9240759     0.9230769
+## BM               0.003    NA    NA       NA      0.3031968     0.2917083
+## OU               0.003    NA 0.000       NA      0.2962038     0.2877123
 ##          upper p value
-## Trend        0.9120879
-## multi.OU     0.8361638
-## BM           0.2947053
-## OU           0.3266733
+## Trend        0.8861139
+## multi.OU     0.9250749
+## BM           0.3146853
+## OU           0.3046953
 \end{verbatim}
 
 The multi-OU model shows an increase an optima at the Cretaceous-Palaeogene boundary, indicating a shift in disparity.
@@ -3818,11 +4177,11 @@ This is easier to see with an example:
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running BM:OU model...Done. Log-likelihood = 105.676
-## Running Stasis:OU model...Done. Log-likelihood = 89.617
-## Running BM:Stasis model...Done. Log-likelihood = 22.638
-## Running OU:Trend model...Done. Log-likelihood = 109.661
-## Running Stasis:BM model...Done. Log-likelihood = 89.617
+## Running BM:OU model...Done. Log-likelihood = 106.025
+## Running Stasis:OU model...Done. Log-likelihood = 88.283
+## Running BM:Stasis model...Done. Log-likelihood = 23.403
+## Running OU:Trend model...Done. Log-likelihood = 110.016
+## Running Stasis:BM model...Done. Log-likelihood = 88.283
 \end{verbatim}
 
 \begin{figure}
@@ -3842,23 +4201,23 @@ This is easier to see with an example:
 
 \begin{verbatim}
 ##           aicc delta_aicc weight_aicc log.lik param ancestral state
-## OU:Trend  -211        0.0       0.982   109.7     4           7.436
-## BM:OU     -203        8.0       0.018   105.7     4           7.430
-## Stasis:BM -173       37.9       0.000    89.6     3              NA
-## Stasis:OU -169       42.3       0.000    89.6     5              NA
-## BM:Stasis  -37      174.0       0.000    22.6     4           7.367
+## OU:Trend  -212        0.0       0.982   110.0     4           7.433
+## BM:OU     -204        8.0       0.018   106.0     4           7.428
+## Stasis:BM -170       41.3       0.000    88.3     3              NA
+## Stasis:OU -166       45.6       0.000    88.3     5              NA
+## BM:Stasis  -38      173.2       0.000    23.4     4           7.361
 ##           sigma squared alpha optima.1 theta.1 omega trend median p value
-## OU:Trend          0.003  0.05       NA      NA    NA 0.018      0.1813187
-## BM:OU             0.003  0.00     8.61      NA    NA    NA      0.5219780
-## Stasis:BM         0.005    NA       NA   7.513 0.007    NA      0.9995005
-## Stasis:OU         0.005  0.00     8.61   7.513 0.007    NA      0.9950050
-## BM:Stasis         0.001    NA       NA   8.100 0.167    NA      0.9995005
+## OU:Trend          0.003 0.048       NA      NA    NA 0.018      0.1263736
+## BM:OU             0.003 0.000     8.61      NA    NA    NA      0.5194805
+## Stasis:BM         0.005    NA       NA   7.511 0.008    NA      0.9985015
+## Stasis:OU         0.005 0.000     8.61   7.511 0.008    NA      1.0000000
+## BM:Stasis         0.001    NA       NA   8.101 0.166    NA      1.0000000
 ##           lower p value upper p value
-## OU:Trend      0.1508492     0.2117882
-## BM:OU         0.5124875     0.5314685
-## Stasis:BM     0.9990010     1.0000000
-## Stasis:OU     0.9940060     0.9960040
-## BM:Stasis     0.9990010     1.0000000
+## OU:Trend     0.09390609     0.1588412
+## BM:OU        0.50849151     0.5304695
+## Stasis:BM    0.99800200     0.9990010
+## Stasis:OU    1.00000000     1.0000000
+## BM:Stasis    1.00000000     1.0000000
 \end{verbatim}
 
 \hypertarget{model.test.sim}{%
@@ -3910,12 +4269,12 @@ This model can then be summarised and plotted as most \texttt{dispRity} objects:
 
 \begin{verbatim}
 ##   subsets   n var      median      2.5%        25%       75%    97.5%
-## 1      50 100 0.1 -0.06022641 -1.963569 -0.7361336 0.5556715 1.806730
-## 2      49 100 0.1 -0.10009306 -2.799025 -1.0670018 0.8782825 2.693583
-## 3      48 100 0.1 -0.06417243 -3.594213 -1.3070097 1.1305024 3.272569
-## 4      47 100 0.1 -0.10602238 -3.949521 -1.4363010 1.2203141 3.931000
-## 5      46 100 0.1 -0.08233437 -4.277897 -1.5791755 1.3803883 4.507491
-## 6      45 100 0.1 -0.13572079 -5.115647 -1.7791878 1.6248197 5.144023
+## 1      50 100 0.1 -0.06195918 -1.963569 -0.7361336 0.5556715 1.806730
+## 2      49 100 0.1 -0.09905061 -2.799025 -1.0670018 0.8836605 2.693583
+## 3      48 100 0.1 -0.06215828 -3.594213 -1.3070097 1.1349712 3.272569
+## 4      47 100 0.1 -0.10602238 -3.949521 -1.4363010 1.2234625 3.931000
+## 5      46 100 0.1 -0.09016928 -4.277897 -1.5791755 1.3889584 4.507491
+## 6      45 100 0.1 -0.13183180 -5.115647 -1.7791878 1.6270527 5.144023
 \end{verbatim}
 
 \begin{Shaded}
@@ -3953,11 +4312,11 @@ Let's see that using the simple example from the start:
 \begin{verbatim}
 ## Evidence of equal variance (Bartlett's test of equal variances p = 0).
 ## Variance is not pooled.
-## Running Stasis model...Done. Log-likelihood = -69.092
-## Running BM model...Done. Log-likelihood = 109.829
-## Running OU model...Done. Log-likelihood = 112.204
-## Running Trend model...Done. Log-likelihood = 112.207
-## Running EB model...Done. Log-likelihood = 101.124
+## Running Stasis model...Done. Log-likelihood = -69.301
+## Running BM model...Done. Log-likelihood = 110.297
+## Running OU model...Done. Log-likelihood = 112.722
+## Running Trend model...Done. Log-likelihood = 112.724
+## Running EB model...Done. Log-likelihood = 101.396
 \end{verbatim}
 
 \begin{Shaded}
@@ -3968,21 +4327,21 @@ Let's see that using the simple example from the start:
 
 \begin{verbatim}
 ##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
-## Stasis  142      360.5       0.000   -69.1     2    7.85 0.173              NA
-## BM     -216        2.7       0.165   109.8     2      NA    NA           7.359
-## OU     -216        2.1       0.213   112.2     4      NA    NA           7.351
-## Trend  -218        0.0       0.622   112.2     3      NA    NA           7.351
-## EB     -196       22.2       0.000   101.1     3      NA    NA           8.610
+## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
+## BM     -216        2.8       0.158   110.3     2      NA    NA           7.356
+## OU     -217        2.1       0.215   112.7     4      NA    NA           7.347
+## Trend  -219        0.0       0.627   112.7     3      NA    NA           7.348
+## EB     -197       22.7       0.000   101.4     3      NA    NA           8.610
 ##        sigma squared alpha optima.1 trend eb
 ## Stasis            NA    NA       NA    NA NA
 ## BM             0.003    NA       NA    NA NA
-## OU             0.003     0     67.2    NA NA
+## OU             0.003     0    74.57    NA NA
 ## Trend          0.003    NA       NA 0.011 NA
 ## EB             0.001    NA       NA    NA  0
 \end{verbatim}
 
 As seen before, the Trend model fitted this dataset the best.
-To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with \texttt{model.test} (here the ancestral state being 2.839, the sigma squared beeing 0.002 and the trend of 0.01), we can simply pass this model to \texttt{model.test.sim}:
+To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with \texttt{model.test} (here the ancestral state being 7.348, the sigma squared being 0.003 and the trend of 0.011), we can simply pass this model to \texttt{model.test.sim}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3998,11 +4357,11 @@ To simulate what 1000 Trend models would look like using the same parameters as 
 ## 
 ## Model simulated (1000 times):
 ##       aicc log.lik param ancestral state sigma squared trend
-## Trend -218   112.2     3           7.351         0.003 0.011
+## Trend -219   112.7     3           7.348         0.003 0.011
 ## 
 ## Rank envelope test
-##  p-value of the test: 0.8926074 (ties method: midrank)
-##  p-interval         : (0.8901099, 0.8951049)
+##  p-value of the test: 0.9100899 (ties method: midrank)
+##  p-interval         : (0.9090909, 0.9110889)
 \end{verbatim}
 
 By default, the model simulated is the one with the lowest AICc (\texttt{model.rank\ =\ 1}) but it is possible to choose any ranked model, for example, the OU (second one):
@@ -4022,11 +4381,11 @@ By default, the model simulated is the one with the lowest AICc (\texttt{model.r
 ## 
 ## Model simulated (1000 times):
 ##    aicc log.lik param ancestral state sigma squared alpha optima.1
-## OU -216   112.2     4           7.351         0.003     0     67.2
+## OU -217   112.7     4           7.347         0.003     0    74.57
 ## 
 ## Rank envelope test
-##  p-value of the test: 0.9145854 (ties method: midrank)
-##  p-interval         : (0.9120879, 0.9170829)
+##  p-value of the test: 0.9280719 (ties method: midrank)
+##  p-interval         : (0.9260739, 0.9300699)
 \end{verbatim}
 
 And as the example above, the simulated data can be plotted or summarised:
@@ -4039,12 +4398,12 @@ And as the example above, the simulated data can be plotted or summarised:
 
 \begin{verbatim}
 ##   subsets n        var   median     2.5%      25%      75%    97.5%
-## 1     120 5 0.01631914 7.356491 7.235143 7.316730 7.395525 7.465372
-## 2     119 5 0.04643984 7.366083 7.143222 7.296351 7.437144 7.566711
-## 3     118 6 0.05046056 7.380333 7.154251 7.292713 7.453115 7.597831
-## 4     117 6 0.05046056 7.386478 7.155320 7.296002 7.470177 7.642180
-## 5     116 6 0.05046056 7.401900 7.132633 7.304599 7.491075 7.687746
-## 6     115 7 0.04350899 7.409183 7.138164 7.315990 7.508291 7.673525
+## 1     120 5 0.01631914 7.348075 7.231232 7.313069 7.385333 7.464852
+## 2     119 5 0.04643984 7.362865 7.153818 7.283894 7.433260 7.575644
+## 3     118 6 0.05046056 7.369372 7.145172 7.294395 7.445663 7.590236
+## 4     117 7 0.04350899 7.382069 7.162817 7.309938 7.463409 7.616709
+## 5     116 7 0.04350899 7.395776 7.156362 7.303411 7.478723 7.636784
+## 6     115 7 0.04350899 7.403348 7.140018 7.316870 7.495152 7.663307
 \end{verbatim}
 
 \begin{Shaded}
@@ -4055,12 +4414,12 @@ And as the example above, the simulated data can be plotted or summarised:
 
 \begin{verbatim}
 ##   subsets n        var   median     2.5%      25%      75%    97.5%
-## 1     120 5 0.01631914 7.351696 7.240861 7.313905 7.394605 7.468138
-## 2     119 5 0.04643984 7.361700 7.159821 7.285102 7.430381 7.582189
-## 3     118 6 0.05046056 7.369258 7.151986 7.298974 7.447188 7.596437
-## 4     117 6 0.05046056 7.387994 7.130935 7.297468 7.472679 7.619424
-## 5     116 6 0.05046056 7.394188 7.120600 7.298956 7.490619 7.666784
-## 6     115 7 0.04350899 7.408545 7.134649 7.320088 7.495243 7.680981
+## 1     120 5 0.01631914 7.346611 7.237717 7.306529 7.385920 7.461692
+## 2     119 5 0.04643984 7.360011 7.141851 7.280214 7.434398 7.575244
+## 3     118 6 0.05046056 7.360682 7.151237 7.284007 7.447447 7.588620
+## 4     117 7 0.04350899 7.374461 7.138736 7.294629 7.454979 7.613769
+## 5     116 7 0.04350899 7.384222 7.121296 7.299917 7.474302 7.653173
+## 6     115 7 0.04350899 7.393006 7.117418 7.300322 7.492401 7.668906
 \end{verbatim}
 
 \begin{Shaded}
@@ -4124,10 +4483,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
-## 1     120  5      2.419     2.033 1.010 1.873 2.537 2.774
-## 2      80 19      2.704     2.638 2.306 2.509 2.719 2.871
-## 3      40 15      2.658     2.618 2.211 2.466 2.755 2.995
-## 4       0 10      2.776     2.632 1.951 2.490 2.868 3.036
+## 1     120  5      2.419     2.016 0.771 1.833 2.534 2.826
+## 2      80 19      2.704     2.637 2.278 2.507 2.719 2.866
+## 3      40 15      2.658     2.608 2.138 2.469 2.751 2.995
+## 4       0 10      2.776     2.633 1.990 2.507 2.865 3.024
 \end{verbatim}
 
 \begin{Shaded}
@@ -4139,10 +4498,10 @@ And we can now compare the differences between these methods:
 
 \begin{verbatim}
 ##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     120  5 2.419     2.098 1.010 1.520 2.480 2.531
-## 2      80 19 2.704     2.638 2.516 2.597 2.655 2.681
-## 3      40 15 2.658     2.621 2.472 2.577 2.667 2.739
-## 4       0 10 2.776     2.634 2.295 2.599 2.726 2.834
+## 1     120  5 2.419     2.054 0.769 1.472 2.479 2.511
+## 2      80 19 2.704     2.632 2.498 2.584 2.657 2.694
+## 3      40 15 2.658     2.603 2.453 2.546 2.640 2.727
+## 4       0 10 2.776     2.637 2.344 2.602 2.732 2.816
 \end{verbatim}
 
 We can see that the summary message for the distribution is slightly different than before.
@@ -4164,7 +4523,7 @@ Another, maybe more intuitive way, to compare both approaches for measuring disp
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-95-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-102-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4188,12 +4547,12 @@ We can then test for differences in the resulting distributions using \texttt{te
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.2728730
-## 120 : 40   0.3627770
-## 120 : 0    0.2734892
-## 80 : 40    0.8639626
-## 80 : 0     0.7092988
-## 40 : 0     0.7564104
+## 120 : 80   0.2473744
+## 120 : 40   0.3174902
+## 120 : 0    0.2430578
+## 80 : 40    0.8884724
+## 80 : 0     0.7300308
+## 40 : 0     0.7905910
 \end{verbatim}
 
 In this case, we are looking at the probability of overlap of the distribution of median distances from centroids among each pair of time slices.
@@ -4217,12 +4576,12 @@ One solution, therefore, is to look at the full distribution:
 
 \begin{verbatim}
 ##          bhatt.coeff
-## 120 : 80   0.5813969
-## 120 : 40   0.6076080
-## 120 : 0    0.6936868
-## 80 : 40    0.9168096
-## 80 : 0     0.7685458
-## 40 : 0     0.8921268
+## 120 : 80   0.5876711
+## 120 : 40   0.6839318
+## 120 : 0    0.6698242
+## 80 : 40    0.9342875
+## 80 : 0     0.8101990
+## 40 : 0     0.9047420
 \end{verbatim}
 
 These results show the actual overlap among all the measured distances from centroids concatenated across all the bootstraps.
@@ -4246,12 +4605,12 @@ A second solution is to compare the distributions to each other \emph{for each r
 
 \begin{verbatim}
 ##          bhatt.coeff      2.5%       25%       75%     97.5%
-## 120 : 80   0.2812496 0.0000000 0.1777047 0.3870164 0.5801444
-## 120 : 40   0.2869917 0.0000000 0.1908248 0.3952578 0.5992978
-## 120 : 0    0.3116809 0.0000000 0.2000000 0.4455151 0.7571531
-## 80 : 40    0.5893015 0.2706616 0.4765591 0.7107793 0.8732238
-## 80 : 0     0.3864182 0.0000000 0.2431237 0.5110285 0.7678626
-## 40 : 0     0.4814593 0.1277969 0.3649844 0.5922686 0.7998286
+## 120 : 80   0.2583422 0.0000000 0.1777047 0.3554093 0.5711015
+## 120 : 40   0.2856187 0.0000000 0.1632993 0.3956796 0.6394904
+## 120 : 0    0.2721329 0.0000000 0.0000000 0.4000000 0.6828427
+## 80 : 40    0.6301796 0.2804982 0.5203597 0.7595814 0.9137747
+## 80 : 0     0.4461998 0.1025978 0.3297102 0.5788354 0.7595156
+## 40 : 0     0.5165282 0.1414214 0.3703942 0.6526281 0.8565749
 \end{verbatim}
 
 These results show the median overlap among pairs of distributions in the first column (\texttt{bhatt.coeff}) and then the distribution of these overlaps among each pair of bootstraps.
@@ -4372,7 +4731,7 @@ And visualise the differences:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-101-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 As expected, the results are pretty similar in pattern but different in terms of scale.
 The median centroids distance is expressed in km in the ``Distance differences'' plots and in Euclidean units of variation in the ``Ordinated differences'' plots.
@@ -4540,7 +4899,7 @@ This results show the effect of considering a tree distribution: in the first ca
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
 
 Note that in this example, the nodes are actually even different in each tree! The node \texttt{n4} for example, is not direct descendent of \texttt{t4} and \texttt{t6} in all trees!
 To fix that, it is possible to input a list of trees and a list of matrices that correspond to each tree in \texttt{chrono.subsets} by using the \texttt{bind.data\ =\ TRUE} option.
@@ -4835,7 +5194,7 @@ Here is a simple two dimensional example:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-111-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-118-1.pdf}
 
 Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:
 
@@ -4892,7 +5251,7 @@ The maximum boundary is equivalent to the radius of the circle (it removes coord
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-120-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4942,7 +5301,7 @@ I suggest using the excellent \texttt{scatterplot3d} package to play around and 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-114-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-121-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4992,7 +5351,7 @@ For example, we can extract the parameters of the \texttt{BeckLee\_mat50} ordina
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-115-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-122-1.pdf}
 
 It is now possible to simulate a space using these observed arguments to test several hypothesis:
 
@@ -5035,7 +5394,7 @@ It is now possible to simulate a space using these observed arguments to test se
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-116-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-123-1.pdf}
 
 If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.
 
@@ -5050,8 +5409,8 @@ You'll find a brief description of each of them (alphabetically) here:
 \section{\texorpdfstring{\texttt{char.diff}}{char.diff}}\label{char.diff}}
 
 This is yet another function for calculating distance matrices.
-There are many functions for calculating pairwise distance matrices in \texttt{R} (\texttt{stats::dist}, \texttt{vegan::vegdist}, \texttt{cluster::daisy} or \texttt{Claddis::MorphDistMatrix}) but this one is the \texttt{dispRity} one.
-It is slightly different to the ones mentioned above (though not that dissimilar from \texttt{Claddis::MorphDistMatrix}) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).
+There are many functions for calculating pairwise distance matrices in \texttt{R} (\texttt{stats::dist}, \texttt{vegan::vegdist}, \texttt{cluster::daisy} or \texttt{Claddis::calculate\_morphological\_distances}) but this one is the \texttt{dispRity} one.
+It is slightly different to the ones mentioned above (though not that dissimilar from \texttt{Claddis::calculate\_morphological\_distances}) in the fact that it focuses on comparing discrete morphological characters and tries to solve all the problems linked to these kind of matrices (especially dealing with special tokens).
 
 The function intakes a matrix with either \texttt{numeric} or \texttt{integer} (\texttt{NA} included) or matrices with \texttt{character} that are indeed \texttt{integers} (e.g.\texttt{"0"} and \texttt{"1"}).
 It then uses a \href{https://en.wikipedia.org/wiki/Bitwise_operations_in_C}{bitwise operations} architecture implemented in \texttt{C} that renders the function pretty fast and pretty modular.
@@ -5098,7 +5457,7 @@ This means it can easily be plotted via the disparity package:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-119-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-126-1.pdf}
 
 You can check all the numerous plotting options in the \texttt{?plot.char.diff} manual (it won't be developed here).
 
@@ -5273,7 +5632,7 @@ This function outputs the cleaned data and trees (if cleaning was needed) and a 
 ## Phylogenetic tree with 4 tips and 3 internal nodes.
 ## 
 ## Tip labels:
-## [1] "D" "B" "E" "C"
+##   D, B, E, C
 ## 
 ## Rooted; includes branch lengths.
 ## 
@@ -5368,7 +5727,7 @@ This can be useful when getting pairwise comparisons and if you'd like to see at
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-128-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-135-1.pdf}
 
 Here blue squares are ones that have a high value and orange ones the ones that have low values.
 Note that the values plotted correspond the first column of the data as designated by \texttt{what\ =\ 1}.
@@ -5384,7 +5743,7 @@ It is also possible to add some tokens or symbols to quickly highlight to specif
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-129-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-136-1.pdf}
 
 This function can also be used as a binary display when running a series of pairwise t-tests.
 For example, the following script runs a wilcoxon test between the time-slices from the \texttt{disparity} example dataset and displays in black which pairs of slices have a p-value below 0.05:
@@ -5402,7 +5761,7 @@ For example, the following script runs a wilcoxon test between the time-slices f
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-130-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-137-1.pdf}
 
 \hypertarget{reduce.matrix}{%
 \section{\texorpdfstring{\texttt{reduce.matrix}}{reduce.matrix}}\label{reduce.matrix}}
@@ -5427,7 +5786,7 @@ For example, if we have a patchy matrix like so (where the black squares represe
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-131-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-138-1.pdf}
 
 We can use the \texttt{reduce.matrix} to double check whether any rows cannot be compared.
 The functions needs as an input the type of distance that will be used, say a \texttt{"gower"} distance:
@@ -5455,7 +5814,7 @@ We can not remove the rows 1 and 9 and see if that improved the overlap:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-133-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-140-1.pdf}
 
 \hypertarget{slice.tree}{%
 \section{\texorpdfstring{\texttt{slice.tree}}{slice.tree}}\label{slice.tree}}
@@ -5488,7 +5847,7 @@ The function works by using at least a tree, a slice age and a model:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-134-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-141-1.pdf}
 
 \hypertarget{slide.nodes-and-remove.zero.brlen}{%
 \section{\texorpdfstring{\texttt{slide.nodes} and \texttt{remove.zero.brlen}}{slide.nodes and remove.zero.brlen}}\label{slide.nodes-and-remove.zero.brlen}}
@@ -5519,7 +5878,7 @@ You can move the node ``down'' (towards the roots) using a negative value.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-135-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-142-1.pdf}
 
 The \texttt{remove.zero.brlen} is a ``clever'' wrapping function that uses the \texttt{slide.nodes} function to stochastically remove zero branch lengths across a whole tree.
 This function will slide nodes up or down in successive postorder traversals (i.e.~going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
@@ -5579,7 +5938,7 @@ By default it is trying to slide the nodes using 1\% of the minimum branch lengt
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-136-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-143-1.pdf}
 
 \hypertarget{tree.age}{%
 \section{\texorpdfstring{\texttt{tree.age}}{tree.age}}\label{tree.age}}
@@ -6173,7 +6532,7 @@ A classical way to represent this ordinated data would be to use two dimensional
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-153-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-160-1.pdf}
 
 This shows the distribution of the different species in the petal-space along the two first axis of variation.
 This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA).
@@ -6189,7 +6548,7 @@ If we look at the two other axis we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-154-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-161-1.pdf}
 
 Additionally, these two represented dimensions do not represent a biological reality \emph{per se}; i.e.~the values on the first dimension do not represent a continuous trait (e.g.~petal length), instead they just represent the ordinations of correlations between the data and some factors.
 
@@ -6303,7 +6662,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-159-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-166-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!
 
@@ -6398,7 +6757,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-161-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-168-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6409,7 +6768,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-162-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-169-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or uniform.
 This is expected because of the simplicity of these parameters.
@@ -6496,7 +6855,7 @@ The ordinated matrix will represent our full morphospace, i.e.~all the mammalian
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-163-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-170-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap} package!
@@ -6509,7 +6868,7 @@ You can have an even nicer looking tree if you use the \texttt{strap} package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-164-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-171-1.pdf}
 
 \hypertarget{setting-up-your-own-data}{%
 \subsection{Setting up your own data}\label{setting-up-your-own-data}}
@@ -6815,7 +7174,7 @@ For example here, let see if the sum of variances picks up changes in size but n
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-171-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-178-1.pdf}
 
 We see that changes in the inner size (see \citet{moms} for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!
 
@@ -6914,7 +7273,7 @@ For that we can use the \texttt{plot} S3 function to plot the \texttt{dispRity} 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-174-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-181-1.pdf}
 
 Nice. The curves look pretty similar.
 
@@ -7093,7 +7452,7 @@ This automatically generates a \texttt{dispRity} object with the information of 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-179-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-186-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7123,7 +7482,7 @@ To choose which metric would cover best these two aspects, please check the \cit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-180-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-187-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7133,13 +7492,13 @@ To choose which metric would cover best these two aspects, please check the \cit
 
 \begin{verbatim}
 ##            10%  20%  30%  40%  50%  60%  70% 80%  90% 100%         slope
-## random       0 0.01 0.00 0.01 0.01 0.00 0.01   0 0.01    0  4.157767e-07
+## random       0 0.01 0.00 0.01 0.01 0.00 0.01   0 0.01    0  4.157791e-07
 ## size.inner  NA   NA 0.00 0.00 0.00 0.00 0.00   0 0.00    0  2.372016e-05
 ## size.outer  NA 0.01 0.01 0.01 0.01 0.01 0.01   0 0.00    0 -3.003051e-05
 ##                 p_value    R^2(adj)
-## random     8.809019e-01 -0.03486933
-## size.inner 2.275777e-06  0.62938868
-## size.outer 1.385063e-08  0.71980024
+## random     8.809012e-01 -0.03486932
+## size.inner 2.275776e-06  0.62938871
+## size.outer 1.385063e-08  0.71980023
 \end{verbatim}
 
 \begin{Shaded}
@@ -7151,7 +7510,7 @@ To choose which metric would cover best these two aspects, please check the \cit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-180-2.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-187-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7162,12 +7521,12 @@ To choose which metric would cover best these two aspects, please check the \cit
 \begin{verbatim}
 ##                  10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
 ## random          1.24 1.09 1.06 1.00 1.04 1.01 1.01 1.01 1.00    1 -0.001947709
-## position.bottom 1.50 1.37 1.18 1.14 1.00 1.10 1.10 1.07 1.04    1 -0.004863532
-## position.top    2.36 2.02 1.64 1.20 1.00 1.04 1.03 1.01 1.01    1 -0.014565974
+## position.bottom 1.50 1.37 1.18 1.14 1.00 1.10 1.10 1.07 1.04    1 -0.004863535
+## position.top    2.36 2.02 1.64 1.20 1.00 1.04 1.03 1.01 1.01    1 -0.014565973
 ##                      p_value  R^2(adj)
-## random          5.727158e-05 0.4248051
-## position.bottom 6.449682e-08 0.6550392
-## position.top    3.195344e-08 0.7006964
+## random          5.727156e-05 0.4248051
+## position.bottom 6.449634e-08 0.6550394
+## position.top    3.195342e-08 0.7006964
 \end{verbatim}
 
 You can see \protect\hyperlink{test-metric}{here} for more details on the \texttt{test.metric} function but basically these graphs are showing that there is a relation between changes in size and in position for each metric.
@@ -7204,7 +7563,7 @@ We can visualise the results using the \texttt{plot} function on the resulting d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-182-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-189-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]

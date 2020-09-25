@@ -897,7 +897,7 @@ summary(dispRity(grouped_space, metric = point.dist,
 ## Measuring the distance between the elements of the second group
 ## and the centroid of the first group
 summary(dispRity(grouped_space, metric = point.dist,
-                 between.groups = list(c(2,1)))))
+                 between.groups = list(c(2,1))))
 
 ## Measuring the distance between the elements of the first group
 ## a point defined as the standard deviation of each column
@@ -1181,7 +1181,7 @@ par(mfrow = c(1,2))
 ## Default plotting
 plot(cust_subsets)
 ## Plotting with more arguments
-plot(time_subsets, dimensions = c(4,5),
+plot(time_subsets, specific.args = list(dimensions = c(1,2)),
      main = "Some \"low\" dimensions")
 ```
 
@@ -1338,7 +1338,7 @@ dispRity_dtt <- dtt.dispRity(data = geiger_data$dat,
                              nsim = 100)
 
 ## Plotting the results
-plot(dispRity_dtt, fig.width=8, fig.height=8)
+plot(dispRity_dtt)
 ```
 
 Note that, like in the original `dtt` function, it is possible to change the evolutionary model (see `?geiger::sim.char` documentation).

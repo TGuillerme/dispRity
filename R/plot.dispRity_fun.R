@@ -32,7 +32,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     }
 
     ## Find the observed data rows (that are not rarefactions)
-    observed_data <- !is.na(summarised_data[,"obs"])
+    observed_data <- !is.na(summarised_data[,(2+ifelse(data_params$between.groups, 2, 1))])
     if(any(!observed_data)) {
         ## Find NAs in the last column
         last_col_na <- is.na(summarised_data[, ncol(summarised_data)])
