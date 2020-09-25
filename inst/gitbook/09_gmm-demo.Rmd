@@ -82,7 +82,7 @@ Two aspects of disparity that would be interesting for our question (is there a 
 
 To choose which metric would cover best these two aspects, please check the @moms paper and associated [app](https://tguillerme.shinyapps.io/moms/). Here we are going to use the procrustes variance (`geomorph::morphol.disparity`) for measuring the size of the trait space and the average displacements [@moms] for the position in the trait space.
 
-```{r}
+```{r, fig.width = 8, fig.height = 16}
 ## Defining a the procrustes variance metric
 ## (as in geomorph::morphol.disparity)
 proc.var <- function(matrix) {sum(matrix^2)/nrow(matrix)}

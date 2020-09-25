@@ -1563,17 +1563,8 @@ For example custom subsets <em>vs.</em> time subsets:</p>
 <a class="sourceLine" id="cb258-3" data-line-number="3"><span class="co">## Default plotting</span></a>
 <a class="sourceLine" id="cb258-4" data-line-number="4"><span class="kw">plot</span>(cust_subsets)</a>
 <a class="sourceLine" id="cb258-5" data-line-number="5"><span class="co">## Plotting with more arguments</span></a>
-<a class="sourceLine" id="cb258-6" data-line-number="6"><span class="kw">plot</span>(time_subsets, <span class="dt">dimensions =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb258-6" data-line-number="6"><span class="kw">plot</span>(time_subsets, <span class="dt">specific.args =</span> <span class="kw">list</span>(<span class="dt">dimensions =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)),</a>
 <a class="sourceLine" id="cb258-7" data-line-number="7">     <span class="dt">main =</span> <span class="st">&quot;Some </span><span class="ch">\&quot;</span><span class="st">low</span><span class="ch">\&quot;</span><span class="st"> dimensions&quot;</span>)</a></code></pre></div>
-<pre><code>## Warning in plot.window(...): &quot;dimensions&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy, type, ...): &quot;dimensions&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;dimensions&quot; is not
-## a graphical parameter
-
-## Warning in axis(side = side, at = at, labels = labels, ...): &quot;dimensions&quot; is not
-## a graphical parameter</code></pre>
-<pre><code>## Warning in box(...): &quot;dimensions&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in title(...): &quot;dimensions&quot; is not a graphical parameter</code></pre>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-75-1.png" width="768" /></p>
 <blockquote>
 <p>DISCLAIMER: This functionality can be handy for exploring the data (e.g. to visually check whether the subset attribution worked) but it might be misleading on how the data is <em>actually</em> distributed in the multidimensional space!
@@ -1581,12 +1572,12 @@ Groups that don’t overlap on two set dimensions can totally overlap in all oth
 </blockquote>
 <p>For <code>dispRity</code> objects that do contain disparity data, the default option is to plot your disparity data.
 However you can always force the <code>preview</code> option using the following:</p>
-<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb264-2" data-line-number="2"><span class="co">## Default plotting</span></a>
-<a class="sourceLine" id="cb264-3" data-line-number="3"><span class="kw">plot</span>(disparity_time_slices, <span class="dt">main =</span> <span class="st">&quot;Disparity through time&quot;</span>)</a>
-<a class="sourceLine" id="cb264-4" data-line-number="4"><span class="co">## Plotting with more arguments</span></a>
-<a class="sourceLine" id="cb264-5" data-line-number="5"><span class="kw">plot</span>(disparity_time_slices, <span class="dt">type =</span> <span class="st">&quot;preview&quot;</span>,</a>
-<a class="sourceLine" id="cb264-6" data-line-number="6">     <span class="dt">main =</span> <span class="st">&quot;Two first dimensions of the trait space&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb259-2" data-line-number="2"><span class="co">## Default plotting</span></a>
+<a class="sourceLine" id="cb259-3" data-line-number="3"><span class="kw">plot</span>(disparity_time_slices, <span class="dt">main =</span> <span class="st">&quot;Disparity through time&quot;</span>)</a>
+<a class="sourceLine" id="cb259-4" data-line-number="4"><span class="co">## Plotting with more arguments</span></a>
+<a class="sourceLine" id="cb259-5" data-line-number="5"><span class="kw">plot</span>(disparity_time_slices, <span class="dt">type =</span> <span class="st">&quot;preview&quot;</span>,</a>
+<a class="sourceLine" id="cb259-6" data-line-number="6">     <span class="dt">main =</span> <span class="st">&quot;Two first dimensions of the trait space&quot;</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-76-1.png" width="768" /></p>
 </div>
 </div>
@@ -1611,8 +1602,8 @@ This argument can be empty (no correction applied) or can contain one of the cor
 <p>Note that the <code>test.dispRity</code> algorithm deals with some classical test outputs (<code>h.test</code>, <code>lm</code> and <code>numeric</code> vector) and summarises the test output.
 It is, however, possible to get the full detailed output by using the options <code>details = TRUE</code>.</p>
 <p>Here we are using the variables generated in the <a href="#summarising-dispRity-data-plots">section above</a>:</p>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb265-1" data-line-number="1"><span class="co">## T-test to test for a difference in disparity between crown and stem mammals</span></a>
-<a class="sourceLine" id="cb265-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test)</a></code></pre></div>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb260-1" data-line-number="1"><span class="co">## T-test to test for a difference in disparity between crown and stem mammals</span></a>
+<a class="sourceLine" id="cb260-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test)</a></code></pre></div>
 <pre><code>## [[1]]
 ##              statistic: t
 ## crown : stem     55.10727
@@ -1628,8 +1619,8 @@ It is, however, possible to get the full detailed output by using the options <c
 ## [[4]]
 ##                   stderr
 ## crown : stem 0.005575056</code></pre>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" data-line-number="1"><span class="co">## Performing the same test but with the detailed t.test output</span></a>
-<a class="sourceLine" id="cb267-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb262-1" data-line-number="1"><span class="co">## Performing the same test but with the detailed t.test output</span></a>
+<a class="sourceLine" id="cb262-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_crown_stem, <span class="dt">test =</span> t.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 
@@ -1643,10 +1634,10 @@ It is, however, possible to get the full detailed output by using the options <c
 ## sample estimates:
 ## mean of x mean of y 
 ##  2.441620  2.134394</code></pre>
-<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" data-line-number="1"><span class="co">## Wilcoxon test applied to time sliced disparity with sequential comparisons,</span></a>
-<a class="sourceLine" id="cb269-2" data-line-number="2"><span class="co">## with Bonferroni correction</span></a>
-<a class="sourceLine" id="cb269-3" data-line-number="3"><span class="kw">test.dispRity</span>(disparity_time_slices, <span class="dt">test =</span> wilcox.test,</a>
-<a class="sourceLine" id="cb269-4" data-line-number="4">              <span class="dt">comparisons =</span> <span class="st">&quot;sequential&quot;</span>, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" data-line-number="1"><span class="co">## Wilcoxon test applied to time sliced disparity with sequential comparisons,</span></a>
+<a class="sourceLine" id="cb264-2" data-line-number="2"><span class="co">## with Bonferroni correction</span></a>
+<a class="sourceLine" id="cb264-3" data-line-number="3"><span class="kw">test.dispRity</span>(disparity_time_slices, <span class="dt">test =</span> wilcox.test,</a>
+<a class="sourceLine" id="cb264-4" data-line-number="4">              <span class="dt">comparisons =</span> <span class="st">&quot;sequential&quot;</span>, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##          statistic: W
 ## 120 : 80          152
@@ -1658,9 +1649,9 @@ It is, however, possible to get the full detailed output by using the options <c
 ## 120 : 80 6.878147e-32
 ## 80 : 40  6.468413e-02
 ## 40 : 0   3.420473e-16</code></pre>
-<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb271-1" data-line-number="1"><span class="co">## Measuring the overlap between distributions in the time bins (using the</span></a>
-<a class="sourceLine" id="cb271-2" data-line-number="2"><span class="co">## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)</span></a>
-<a class="sourceLine" id="cb271-3" data-line-number="3"><span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb266-1" data-line-number="1"><span class="co">## Measuring the overlap between distributions in the time bins (using the</span></a>
+<a class="sourceLine" id="cb266-2" data-line-number="2"><span class="co">## implemented Bhattacharyya Coefficient function - see ?bhatt.coeff)</span></a>
+<a class="sourceLine" id="cb266-3" data-line-number="3"><span class="kw">test.dispRity</span>(disparity_time_bins, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_time_bins, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This can inflate Type I error!</code></pre>
 <pre><code>##                    bhatt.coeff
@@ -1680,23 +1671,23 @@ The <code>adonis.dispRity</code> function uses the information from the <code>di
 <li>If the object contains customised subsets, it applies the default formula <code>matrix ~ group</code> testing the effect of <code>group</code> as a predictor on <code>matrix</code> (called from the <code>dispRity</code> object as <code>data$matrix</code> see <a href="#The-dispRity-object-content"><code>dispRitu</code> object details</a>)</li>
 <li>If the object contains time subsets, it applies the default formula <code>matrix ~ time</code> testing the effect of <code>time</code> as a predictor (were the different levels of <code>time</code> are the different time slices/bins)</li>
 </ul>
-<div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb274-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb274-2" data-line-number="2"><span class="co">## Generating a random character matrix</span></a>
-<a class="sourceLine" id="cb274-3" data-line-number="3">character_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="kw">rtree</span>(<span class="dv">20</span>), <span class="dv">50</span>,</a>
-<a class="sourceLine" id="cb274-4" data-line-number="4">                               <span class="dt">rates =</span> <span class="kw">c</span>(rnorm, <span class="dv">1</span>, <span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb274-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb274-6" data-line-number="6"><span class="co">## Calculating the distance matrix</span></a>
-<a class="sourceLine" id="cb274-7" data-line-number="7">distance_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">dist</span>(character_matrix))</a>
-<a class="sourceLine" id="cb274-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb274-9" data-line-number="9"><span class="co">## Creating two groups</span></a>
-<a class="sourceLine" id="cb274-10" data-line-number="10">random_groups &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;group1&quot;</span> =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;group2&quot;</span> =<span class="st"> </span><span class="dv">11</span><span class="op">:</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb274-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb274-12" data-line-number="12"><span class="co">## Generating a dispRity object</span></a>
-<a class="sourceLine" id="cb274-13" data-line-number="13">random_disparity &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(distance_matrix, random_groups)</a></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb269-2" data-line-number="2"><span class="co">## Generating a random character matrix</span></a>
+<a class="sourceLine" id="cb269-3" data-line-number="3">character_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="kw">rtree</span>(<span class="dv">20</span>), <span class="dv">50</span>,</a>
+<a class="sourceLine" id="cb269-4" data-line-number="4">                               <span class="dt">rates =</span> <span class="kw">c</span>(rnorm, <span class="dv">1</span>, <span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb269-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb269-6" data-line-number="6"><span class="co">## Calculating the distance matrix</span></a>
+<a class="sourceLine" id="cb269-7" data-line-number="7">distance_matrix &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">dist</span>(character_matrix))</a>
+<a class="sourceLine" id="cb269-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb269-9" data-line-number="9"><span class="co">## Creating two groups</span></a>
+<a class="sourceLine" id="cb269-10" data-line-number="10">random_groups &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;group1&quot;</span> =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="st">&quot;group2&quot;</span> =<span class="st"> </span><span class="dv">11</span><span class="op">:</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb269-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb269-12" data-line-number="12"><span class="co">## Generating a dispRity object</span></a>
+<a class="sourceLine" id="cb269-13" data-line-number="13">random_disparity &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(distance_matrix, random_groups)</a></code></pre></div>
 <pre><code>## Warning: custom.subsets is applied on what seems to be a distance matrix.
 ## The resulting matrices won&#39;t be distance matrices anymore!</code></pre>
-<div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb276-1" data-line-number="1"><span class="co">## Running a default NPMANOVA</span></a>
-<a class="sourceLine" id="cb276-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(random_disparity)</a></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb271-1" data-line-number="1"><span class="co">## Running a default NPMANOVA</span></a>
+<a class="sourceLine" id="cb271-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(random_disparity)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## vegan::adonis(formula = matrix ~ group, data = random_disparity,      method = &quot;euclidean&quot;) 
@@ -1712,20 +1703,20 @@ The <code>adonis.dispRity</code> function uses the information from the <code>di
 ## Total     19     220.4                 1.00000</code></pre>
 <p>Of course, it is possible to pass customised formulas if the disparity object contains more more groups.
 In that case the predictors must correspond to the names of the groups explained data must be set as <code>matrix</code>:</p>
-<div class="sourceCode" id="cb278"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb278-1" data-line-number="1"><span class="co">## Creating two groups with two states each</span></a>
-<a class="sourceLine" id="cb278-2" data-line-number="2">groups &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb278-3" data-line-number="3">                                        <span class="kw">rep</span>(<span class="dv">2</span>,<span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb278-4" data-line-number="4">                                        <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dv">10</span>)),</a>
-<a class="sourceLine" id="cb278-5" data-line-number="5">                        <span class="dt">nrow =</span> <span class="dv">20</span>, <span class="dt">ncol =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb278-6" data-line-number="6">                        <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">paste0</span>(<span class="st">&quot;t&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>),</a>
-<a class="sourceLine" id="cb278-7" data-line-number="7">                                        <span class="kw">c</span>(<span class="st">&quot;g1&quot;</span>, <span class="st">&quot;g2&quot;</span>))))</a>
-<a class="sourceLine" id="cb278-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb278-9" data-line-number="9"><span class="co">## Creating the dispRity object</span></a>
-<a class="sourceLine" id="cb278-10" data-line-number="10">multi_groups &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(distance_matrix, groups)</a></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb273-1" data-line-number="1"><span class="co">## Creating two groups with two states each</span></a>
+<a class="sourceLine" id="cb273-2" data-line-number="2">groups &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="dt">data =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb273-3" data-line-number="3">                                        <span class="kw">rep</span>(<span class="dv">2</span>,<span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb273-4" data-line-number="4">                                        <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dv">10</span>)),</a>
+<a class="sourceLine" id="cb273-5" data-line-number="5">                        <span class="dt">nrow =</span> <span class="dv">20</span>, <span class="dt">ncol =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb273-6" data-line-number="6">                        <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">paste0</span>(<span class="st">&quot;t&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>),</a>
+<a class="sourceLine" id="cb273-7" data-line-number="7">                                        <span class="kw">c</span>(<span class="st">&quot;g1&quot;</span>, <span class="st">&quot;g2&quot;</span>))))</a>
+<a class="sourceLine" id="cb273-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb273-9" data-line-number="9"><span class="co">## Creating the dispRity object</span></a>
+<a class="sourceLine" id="cb273-10" data-line-number="10">multi_groups &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(distance_matrix, groups)</a></code></pre></div>
 <pre><code>## Warning: custom.subsets is applied on what seems to be a distance matrix.
 ## The resulting matrices won&#39;t be distance matrices anymore!</code></pre>
-<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" data-line-number="1"><span class="co">## Running the NPMANOVA</span></a>
-<a class="sourceLine" id="cb280-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(multi_groups, matrix <span class="op">~</span><span class="st"> </span>g1 <span class="op">+</span><span class="st"> </span>g2)</a></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb275-1" data-line-number="1"><span class="co">## Running the NPMANOVA</span></a>
+<a class="sourceLine" id="cb275-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(multi_groups, matrix <span class="op">~</span><span class="st"> </span>g1 <span class="op">+</span><span class="st"> </span>g2)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## vegan::adonis(formula = matrix ~ g1 + g2, data = multi_groups,      method = &quot;euclidean&quot;) 
@@ -1742,15 +1733,15 @@ In that case the predictors must correspond to the names of the groups explained
 ## Total     19     220.4                 1.00000</code></pre>
 <p>Finally, it is possible to use objects generated by <code>chrono.subsets</code>.
 In this case, <code>adonis.dispRity</code> will applied the <code>matrix ~ time</code> formula by default:</p>
-<div class="sourceCode" id="cb282"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb282-1" data-line-number="1"><span class="co">## Creating time series</span></a>
-<a class="sourceLine" id="cb282-2" data-line-number="2">time_subsets &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(BeckLee_mat50, BeckLee_tree,</a>
-<a class="sourceLine" id="cb282-3" data-line-number="3">                               <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,</a>
-<a class="sourceLine" id="cb282-4" data-line-number="4">                               <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb282-5" data-line-number="5">                               <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">85</span>, <span class="dv">65</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb282-6" data-line-number="6">                               <span class="dt">FADLAD =</span> BeckLee_ages)</a>
-<a class="sourceLine" id="cb282-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb282-8" data-line-number="8"><span class="co">## Running the NPMANOVA with time as a predictor</span></a>
-<a class="sourceLine" id="cb282-9" data-line-number="9"><span class="kw">adonis.dispRity</span>(time_subsets)</a></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb277-1" data-line-number="1"><span class="co">## Creating time series</span></a>
+<a class="sourceLine" id="cb277-2" data-line-number="2">time_subsets &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(BeckLee_mat50, BeckLee_tree,</a>
+<a class="sourceLine" id="cb277-3" data-line-number="3">                               <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>,</a>
+<a class="sourceLine" id="cb277-4" data-line-number="4">                               <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb277-5" data-line-number="5">                               <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">85</span>, <span class="dv">65</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb277-6" data-line-number="6">                               <span class="dt">FADLAD =</span> BeckLee_ages)</a>
+<a class="sourceLine" id="cb277-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb277-8" data-line-number="8"><span class="co">## Running the NPMANOVA with time as a predictor</span></a>
+<a class="sourceLine" id="cb277-9" data-line-number="9"><span class="kw">adonis.dispRity</span>(time_subsets)</a></code></pre></div>
 <pre><code>## Warning in adonis.dispRity(time_subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix[[1]])).
 ## Make sure that this is the desired methodological approach!</code></pre>
@@ -1772,8 +1763,8 @@ In this case, <code>adonis.dispRity</code> will applied the <code>matrix ~ time<
 <p>Note that the function warns you that the input data was transformed into a distance matrix.
 This is reflected in the Call part of the output (<code>formula = dist(matrix) ~ time</code>).</p>
 <p>To use each time subset as a separate predictor, you can use the <code>matrix ~ chrono.subsets</code> formula; this is equivalent to <code>matrix ~ first_time_subset + second_time_subset + ...</code>:</p>
-<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb285-1" data-line-number="1"><span class="co">## Running the NPMANOVA with each time bin as a predictor</span></a>
-<a class="sourceLine" id="cb285-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(time_subsets, matrix <span class="op">~</span><span class="st"> </span>chrono.subsets)</a></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" data-line-number="1"><span class="co">## Running the NPMANOVA with each time bin as a predictor</span></a>
+<a class="sourceLine" id="cb280-2" data-line-number="2"><span class="kw">adonis.dispRity</span>(time_subsets, matrix <span class="op">~</span><span class="st"> </span>chrono.subsets)</a></code></pre></div>
 <pre><code>## Warning in adonis.dispRity(time_subsets, matrix ~ chrono.subsets): The input data for adonis.dispRity was not a distance matrix.
 ## The results are thus based on the distance matrix for the input data (i.e. dist(data$matrix[[1]])).
 ## Make sure that this is the desired methodological approach!</code></pre>
@@ -1799,39 +1790,19 @@ This is reflected in the Call part of the output (<code>formula = dist(matrix) ~
 <p>The <code>dtt</code> function from the <code>geiger</code> package is also often used to compare a trait’s disparity observed in living taxa to the disparity of a simulated trait based on a given phylogeny.
 The <code>dispRity</code> package proposes a wrapper function for <code>geiger::dtt</code>, <code>dtt.dispRity</code> that allows the use of any disparity metric.
 Unfortunately, this implementation is slower that <code>geiger::dtt</code> (so if you’re using the metrics implemented in <code>geiger</code> prefer the original version) and, as the original function, is limited to ultrametric trees (only living taxa!)…</p>
-<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" data-line-number="1"><span class="kw">require</span>(geiger)</a></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb283-1" data-line-number="1"><span class="kw">require</span>(geiger)</a></code></pre></div>
 <pre><code>## Loading required package: geiger</code></pre>
-<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" data-line-number="1">geiger_data &lt;-<span class="st"> </span><span class="kw">get</span>(<span class="kw">data</span>(geospiza))</a>
-<a class="sourceLine" id="cb290-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb290-3" data-line-number="3"><span class="co">## Calculate the disparity of the dataset using the sum of variance</span></a>
-<a class="sourceLine" id="cb290-4" data-line-number="4">dispRity_dtt &lt;-<span class="st"> </span><span class="kw">dtt.dispRity</span>(<span class="dt">data =</span> geiger_data<span class="op">$</span>dat,</a>
-<a class="sourceLine" id="cb290-5" data-line-number="5">                             <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances),</a>
-<a class="sourceLine" id="cb290-6" data-line-number="6">                             <span class="dt">tree =</span> geiger_data<span class="op">$</span>phy,</a>
-<a class="sourceLine" id="cb290-7" data-line-number="7">                             <span class="dt">nsim =</span> <span class="dv">100</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb285-1" data-line-number="1">geiger_data &lt;-<span class="st"> </span><span class="kw">get</span>(<span class="kw">data</span>(geospiza))</a>
+<a class="sourceLine" id="cb285-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb285-3" data-line-number="3"><span class="co">## Calculate the disparity of the dataset using the sum of variance</span></a>
+<a class="sourceLine" id="cb285-4" data-line-number="4">dispRity_dtt &lt;-<span class="st"> </span><span class="kw">dtt.dispRity</span>(<span class="dt">data =</span> geiger_data<span class="op">$</span>dat,</a>
+<a class="sourceLine" id="cb285-5" data-line-number="5">                             <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances),</a>
+<a class="sourceLine" id="cb285-6" data-line-number="6">                             <span class="dt">tree =</span> geiger_data<span class="op">$</span>phy,</a>
+<a class="sourceLine" id="cb285-7" data-line-number="7">                             <span class="dt">nsim =</span> <span class="dv">100</span>)</a></code></pre></div>
 <pre><code>## Warning in dtt.dispRity(data = geiger_data$dat, metric = c(sum, variances), :
 ## The following tip(s) was not present in the data: olivacea.</code></pre>
-<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb292-2" data-line-number="2"><span class="kw">plot</span>(dispRity_dtt, <span class="dt">fig.width=</span><span class="dv">8</span>, <span class="dt">fig.height=</span><span class="dv">8</span>)</a></code></pre></div>
-<pre><code>## Warning in plot.window(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.window(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy, type, ...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy, type, ...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.width&quot; is not
-## a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.height&quot; is not
-## a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.width&quot; is not
-## a graphical parameter</code></pre>
-<pre><code>## Warning in axis(side = side, at = at, labels = labels, ...): &quot;fig.height&quot; is not
-## a graphical parameter</code></pre>
-<pre><code>## Warning in box(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in box(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in title(...): &quot;fig.width&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in title(...): &quot;fig.height&quot; is not a graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;fig.width&quot; is not a
-## graphical parameter</code></pre>
-<pre><code>## Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;fig.height&quot; is not a
-## graphical parameter</code></pre>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb287-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb287-2" data-line-number="2"><span class="kw">plot</span>(dispRity_dtt)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-82-1.png" width="672" /></p>
 <p>Note that, like in the original <code>dtt</code> function, it is possible to change the evolutionary model (see <code>?geiger::sim.char</code> documentation).</p>
 </div>
@@ -1840,18 +1811,18 @@ Unfortunately, this implementation is slower that <code>geiger::dtt</code> (so i
 <p>This test is equivalent to the test performed in <span class="citation">Díaz et al. (<a href="#ref-diaz2016global">2016</a>)</span>.
 It compares the disparity measured in the observed space to the disparity measured in a set of simulated spaces.
 These simulated spaces can be built with based on the hypothesis assumptions: for example, we can test whether our space is normal.</p>
-<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb307-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb307-2" data-line-number="2"><span class="co">## A &quot;normal&quot; multidimensional space with 50 dimensions and 10 elements</span></a>
-<a class="sourceLine" id="cb307-3" data-line-number="3">normal_space &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">1000</span>), <span class="dt">ncol =</span> <span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb307-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb307-5" data-line-number="5"><span class="co">## Calculating the disparity as the average pairwise distances</span></a>
-<a class="sourceLine" id="cb307-6" data-line-number="6">obs_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(normal_space,</a>
-<a class="sourceLine" id="cb307-7" data-line-number="7">                          <span class="dt">metric =</span> <span class="kw">c</span>(mean, pairwise.dist))</a></code></pre></div>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb288-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb288-2" data-line-number="2"><span class="co">## A &quot;normal&quot; multidimensional space with 50 dimensions and 10 elements</span></a>
+<a class="sourceLine" id="cb288-3" data-line-number="3">normal_space &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">1000</span>), <span class="dt">ncol =</span> <span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb288-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb288-5" data-line-number="5"><span class="co">## Calculating the disparity as the average pairwise distances</span></a>
+<a class="sourceLine" id="cb288-6" data-line-number="6">obs_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(normal_space,</a>
+<a class="sourceLine" id="cb288-7" data-line-number="7">                          <span class="dt">metric =</span> <span class="kw">c</span>(mean, pairwise.dist))</a></code></pre></div>
 <pre><code>## Warning in check.dispRity.data(data): Row names have been automatically added to
 ## data.</code></pre>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb309-1" data-line-number="1"><span class="co">## Testing against 100 randomly generated normal spaces</span></a>
-<a class="sourceLine" id="cb309-2" data-line-number="2">(results &lt;-<span class="st"> </span><span class="kw">null.test</span>(obs_disparity, <span class="dt">replicates =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb309-3" data-line-number="3">                      <span class="dt">null.distrib =</span> rnorm))</a></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb290-1" data-line-number="1"><span class="co">## Testing against 100 randomly generated normal spaces</span></a>
+<a class="sourceLine" id="cb290-2" data-line-number="2">(results &lt;-<span class="st"> </span><span class="kw">null.test</span>(obs_disparity, <span class="dt">replicates =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb290-3" data-line-number="3">                      <span class="dt">null.distrib =</span> rnorm))</a></code></pre></div>
 <pre><code>## Monte-Carlo test
 ## Call: [1] &quot;dispRity::null.test&quot;
 ## 
@@ -1866,8 +1837,8 @@ These simulated spaces can be built with based on the hypothesis assumptions: fo
 <p>Here the results show that disparity measured in our observed space is not significantly different than the one measured in a normal space.
 We can then propose that our observed space is normal!</p>
 <p>These results have an attributed <code>dispRity</code> and <code>randtest</code> class and can be plotted as <code>randtest</code> objects using the <code>dispRity</code> S3 <code>plot</code> method:</p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb311-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb311-2" data-line-number="2"><span class="kw">plot</span>(results, <span class="dt">main =</span> <span class="st">&quot;Is this space normal?&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb292-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb292-2" data-line-number="2"><span class="kw">plot</span>(results, <span class="dt">main =</span> <span class="st">&quot;Is this space normal?&quot;</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-84-1.png" width="768" /></p>
 <p>For more details on generating spaces see the <a href="#Simulating-multidimensional-spaces"><code>space.maker</code></a> function tutorial.</p>
 </div>
@@ -1887,9 +1858,9 @@ So we acknowledge and thank Gene Hunt for developing these models and writing th
 <p>Changes in disparity-through-time can follow a range of models, such as random walks, stasis, constrained evolution, trends, or an early burst model of evolution.
 We will start with by fitting the simplest modes of evolution to our data.
 For example we may have a null expectation of time-invariant change in disparity in which values fluctuate with a variance around the mean - this would be best describe by a Stasis model:</p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb312-1" data-line-number="1"><span class="co">## Loading premade disparity data</span></a>
-<a class="sourceLine" id="cb312-2" data-line-number="2"><span class="kw">data</span>(BeckLee_disparity)</a>
-<a class="sourceLine" id="cb312-3" data-line-number="3">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb293-1" data-line-number="1"><span class="co">## Loading premade disparity data</span></a>
+<a class="sourceLine" id="cb293-2" data-line-number="2"><span class="kw">data</span>(BeckLee_disparity)</a>
+<a class="sourceLine" id="cb293-3" data-line-number="3">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity, <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301</code></pre>
@@ -1900,18 +1871,18 @@ Here we have p &lt; 0.05, so variance is not pooled between samples.</p>
 <p>By default <code>model.test</code> will use Bartlett’s test to assess for homogeneity of variances, and then use this to decide to pool variances or not.
 This is ignored if the argument <code>pool.variance</code> in <code>model.test</code> is changed from the default <code>NULL</code> to <code>TRUE</code> or <code>FALSE</code>.
 For example, to ignore Bartlett’s test and pool variances manually we would do the following:</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb314-1" data-line-number="1">disp_time_pooled &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb314-2" data-line-number="2">                               <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>,</a>
-<a class="sourceLine" id="cb314-3" data-line-number="3">                               <span class="dt">pool.variance =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb295-1" data-line-number="1">disp_time_pooled &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb295-2" data-line-number="2">                               <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>,</a>
+<a class="sourceLine" id="cb295-3" data-line-number="3">                               <span class="dt">pool.variance =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Running Stasis model...Done. Log-likelihood = -68.37</code></pre>
 <p>However, unless you have good reason to choose otherwise it is recommended to use the default of <code>pool.variance = NULL</code>:</p>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb316-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb316-2" data-line-number="2">                        <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>,</a>
-<a class="sourceLine" id="cb316-3" data-line-number="3">                        <span class="dt">pool.variance =</span> <span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb297-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb297-2" data-line-number="2">                        <span class="dt">model =</span> <span class="st">&quot;Stasis&quot;</span>,</a>
+<a class="sourceLine" id="cb297-3" data-line-number="3">                        <span class="dt">pool.variance =</span> <span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301</code></pre>
-<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb318-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb299-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>## Disparity evolution model fitting:
 ## Call: model.test(data = BeckLee_disparity, model = &quot;Stasis&quot;, pool.variance = NULL) 
 ## 
@@ -1924,7 +1895,7 @@ For example, to ignore Bartlett’s test and pool variances manually we would do
 The output also gives us the small sample Akaike Information Criterion (AICc), the delta AICc (the distance from the best fitting model), and the AICc weights (~the relative support of this model compared to all models, scaled to one).</p>
 <p>These are all metrics of relative fit, so when we test a single model they are not useful.
 By using the function summary in <code>dispRity</code> we can see the maximum likelihood estimates of the model parameters:</p>
-<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb320-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb301"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb301-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
 <pre><code>##         aicc delta_aicc weight_aicc log.lik param theta.1 omega
 ## Stasis 142.7          0           1   -69.3     2     7.8   0.2</code></pre>
 <p>So we again see the AICc, delta AICc, AICc weight, and the log-likelihood we saw previously.
@@ -1933,13 +1904,13 @@ We now also see the number of parameters from the model (2: theta and omega), an
 So let’s compare to the fit of the Stasis model to another model with two parameters: the Brownian motion.
 Brownian motion assumes a constant mean that is equal to the ancestral estimate of the sequence, and the variance around this mean increases linearly with time.
 The easier way to compare these models is to simply add <code>&quot;BM&quot;</code> to the <code>models</code> vector argument:</p>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb322-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb322-2" data-line-number="2">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb303-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb303-2" data-line-number="2">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301
 ## Running BM model...Done. Log-likelihood = 110.297</code></pre>
-<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb324-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb305-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>## Disparity evolution model fitting:
 ## Call: model.test(data = BeckLee_disparity, model = c(&quot;Stasis&quot;, &quot;BM&quot;)) 
 ## 
@@ -1952,7 +1923,7 @@ The easier way to compare these models is to simply add <code>&quot;BM&quot;</co
 <p>Et voilà! Here we can see by the log-likelihood, AICc, delta AICc, and AICc weight Brownian motion has a much better relative fit to these data than the Stasis model.
 Brownian motion has a relative AICc fit359.2 units better than Stasis, and has a AICc weight of 1.</p>
 <p>We can also all the information about the relative fit of models alongside the maximum likelihood estimates of model parameters using the summary function</p>
-<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb326-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb307-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
 <pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
 ## Stasis  143      359.2           0   -69.3     2   7.849 0.174              NA
 ## BM     -216        0.0           1   110.3     2      NA    NA           7.356
@@ -1961,7 +1932,7 @@ Brownian motion has a relative AICc fit359.2 units better than Stasis, and has a
 ## BM             0.003</code></pre>
 <p>Not that because the parameters per models differ, the summary includes <code>NA</code> for inapplicable parameters per models (e.g. the theta and omega parameters from the Stasis models are inapplicable for a Brownian motion model).</p>
 <p>We can plot the relative fit of our models using the <code>plot</code> function</p>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" data-line-number="1"><span class="kw">plot</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb309-1" data-line-number="1"><span class="kw">plot</span>(disp_time)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plot1"></span>
 <img src="dispRity_manual_files/figure-html/plot1-1.png" alt="relative fit (AICc weight) of Stasis and Brownian models of disparity through time" width="576" />
 <p class="caption">
@@ -1970,8 +1941,8 @@ Figure 4.1: relative fit (AICc weight) of Stasis and Brownian models of disparit
 </div>
 <p>Here we see and overwhelming support for the Brownian motion model.</p>
 <p>Alternatively, we could test all available models single modes: Stasis, Brownian motion, Ornstein-Uhlenbeck (evolution constrained to an optima), Trend (increasing or decreasing mean through time), and Early Burst (exponentially decreasing rate through time)</p>
-<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb329-2" data-line-number="2">                  <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb310-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb310-2" data-line-number="2">                  <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301
@@ -1979,7 +1950,7 @@ Figure 4.1: relative fit (AICc weight) of Stasis and Brownian models of disparit
 ## Running OU model...Done. Log-likelihood = 112.722
 ## Running Trend model...Done. Log-likelihood = 112.724
 ## Running EB model...Done. Log-likelihood = 101.396</code></pre>
-<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb331-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb312-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
 <pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
 ## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
 ## BM     -216        2.8       0.158   110.3     2      NA    NA           7.356
@@ -1993,7 +1964,7 @@ Figure 4.1: relative fit (AICc weight) of Stasis and Brownian models of disparit
 ## Trend          0.003    NA       NA 0.011 NA
 ## EB             0.001    NA       NA    NA  0</code></pre>
 <p>These models indicate support for a Trend model, and we can plot the relative support of all model AICc weights.</p>
-<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb333-1" data-line-number="1"><span class="kw">plot</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb314-1" data-line-number="1"><span class="kw">plot</span>(disp_time)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plot2"></span>
 <img src="dispRity_manual_files/figure-html/plot2-1.png" alt="relative fit (AICc weight) of various modes of evolution" width="576" />
 <p class="caption">
@@ -2005,7 +1976,7 @@ Figure 4.2: relative fit (AICc weight) of various modes of evolution
 For example OU can be really well supported but with an alpha parameter really close to 0, making it effectively a BM model <span class="citation">(Cooper et al. <a href="#ref-Cooper2016">2016</a>)</span>.</p>
 </blockquote>
 <p>Is this a trend of increasing or decreasing disparity through time? One way to find out is to look at the summary function for the Trend model:</p>
-<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" data-line-number="1"><span class="kw">summary</span>(disp_time)[<span class="st">&quot;Trend&quot;</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb315-1" data-line-number="1"><span class="kw">summary</span>(disp_time)[<span class="st">&quot;Trend&quot;</span>,]</a></code></pre></div>
 <pre><code>##            aicc      delta_aicc     weight_aicc         log.lik           param 
 ##        -219.000           0.000           0.627         112.700           3.000 
 ##         theta.1           omega ancestral state   sigma squared           alpha 
@@ -2023,9 +1994,9 @@ For example OU can be really well supported but with an alpha parameter really c
 <p>The predictive tests use the maximum likelihood estimates of model parameters to simulate a number of datasets (default = 1000), and analyse whether this is significantly different to the empirical input data using the Rank Envelope test <span class="citation">(Murrell <a href="#ref-murrell2018global">2018</a>)</span>.
 Finally we can plot the empirical data, simulated data, and the Rank Envelope test p values.
 This can all be done using the function <code>model.test.wrapper</code>, and we will set the argument <code>show.p = TRUE</code> so <em>p</em> values from the Rank Envelope test are printed on the plot:</p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb336-2" data-line-number="2">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),</a>
-<a class="sourceLine" id="cb336-3" data-line-number="3">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb317-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb317-2" data-line-number="2">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),</a>
+<a class="sourceLine" id="cb317-3" data-line-number="3">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301
@@ -2039,7 +2010,7 @@ This can all be done using the function <code>model.test.wrapper</code>, and we 
 Figure 4.3: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models
 </p>
 </div>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb319-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
 ## Trend  -219        0.0       0.627   112.7     3      NA    NA           7.348
 ## OU     -217        2.1       0.215   112.7     4      NA    NA           7.347
@@ -2064,9 +2035,9 @@ There is no significant differences between the empirical data and simulated dat
 This is because the optima for the OU model (74.57) is different to the ancestral state (7.347) and outside the observed value.
 This is potentially unrealistic, and one way to alleviate this issue is to set the optima of the OU model to equal the ancestral estimate - this is the normal practice for OU models in comparative phylogenetics.
 To set the optima to the ancestral value we change the argument <code>fixed.optima = TRUE</code>:</p>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb340-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb340-2" data-line-number="2">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),</a>
-<a class="sourceLine" id="cb340-3" data-line-number="3">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb321-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb321-2" data-line-number="2">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>),</a>
+<a class="sourceLine" id="cb321-3" data-line-number="3">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301
@@ -2080,7 +2051,7 @@ To set the optima to the ancestral value we change the argument <code>fixed.opti
 Figure 4.4: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for Trend, OU, BM, EB, and Stasis models with the optima of the OU model set to equal the ancestral value
 </p>
 </div>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb342-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb323-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
 ## Trend  -219        0.0       0.746   112.7     3      NA    NA           7.348
 ## BM     -216        2.8       0.188   110.3     2      NA    NA           7.356
@@ -2106,12 +2077,12 @@ The timing of a shift in mode can be based on an a prior expectation, such as a 
 Here we will compare the relative fit of Brownian motion, Trend, Ornstein-Uhlenbeck and a multi-mode Ornstein Uhlenbck model in which the optima changes at 66 million years ago, the Cretaceous-Palaeogene boundary.</p>
 <p>For example, we could be testing the hypothesis that the extinction of non-avian dinosaurs allowed mammals to go from scurrying in the undergrowth (low optima/low disparity) to dominating all habitats (high optima/high disparity).
 We will constrain the optima of OU model in the first time begin (i.e, pre-66 Mya) to equal the ancestral value:</p>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb344-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb344-2" data-line-number="2">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),</a>
-<a class="sourceLine" id="cb344-3" data-line-number="3">                                <span class="dt">time.split =</span> <span class="dv">66</span>,</a>
-<a class="sourceLine" id="cb344-4" data-line-number="4">                                <span class="dt">pool.variance =</span> <span class="ot">NULL</span>,</a>
-<a class="sourceLine" id="cb344-5" data-line-number="5">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb344-6" data-line-number="6">                                <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb325"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb325-1" data-line-number="1">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb325-2" data-line-number="2">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),</a>
+<a class="sourceLine" id="cb325-3" data-line-number="3">                                <span class="dt">time.split =</span> <span class="dv">66</span>,</a>
+<a class="sourceLine" id="cb325-4" data-line-number="4">                                <span class="dt">pool.variance =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb325-5" data-line-number="5">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb325-6" data-line-number="6">                                <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running BM model...Done. Log-likelihood = 110.297
@@ -2124,7 +2095,7 @@ We will constrain the optima of OU model in the first time begin (i.e, pre-66 My
 Figure 4.5: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for BM, Trend, OU, and multi OU models with a shift in optima allowed at 66 Ma
 </p>
 </div>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb327"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb327-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>##          aicc delta_aicc weight_aicc log.lik param ancestral state
 ## Trend    -219      0.000       0.604   112.7     3           7.348
 ## multi.OU -217      2.310       0.190   112.6     4           7.347
@@ -2145,27 +2116,27 @@ However, this model does not fit as well as a model in which there is an increas
 We can also fit a model in which the we specify a heterogeneous model but we do not give a <code>time.split</code>.
 In this instance the model will test all splits that have at least 10 time slices on either side of the split.
 That’s 102 potential time shifts in this example dataset so be warned, the following code will estimate 105 models!</p>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb348-1" data-line-number="1"><span class="co">## An example of a time split model in which all potential splits are tested</span></a>
-<a class="sourceLine" id="cb348-2" data-line-number="2"><span class="co">## </span><span class="al">WARNING</span><span class="co">: this will take between 20 minutes and half and hour to run!</span></a>
-<a class="sourceLine" id="cb348-3" data-line-number="3">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb348-4" data-line-number="4">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),</a>
-<a class="sourceLine" id="cb348-5" data-line-number="5">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" data-line-number="1"><span class="co">## An example of a time split model in which all potential splits are tested</span></a>
+<a class="sourceLine" id="cb329-2" data-line-number="2"><span class="co">## </span><span class="al">WARNING</span><span class="co">: this will take between 20 minutes and half and hour to run!</span></a>
+<a class="sourceLine" id="cb329-3" data-line-number="3">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb329-4" data-line-number="4">                        <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;multi.OU&quot;</span>),</a>
+<a class="sourceLine" id="cb329-5" data-line-number="5">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>As well as specifying a multi-OU model we can run any combination of models.
 For example we could fit a model at the Cretaceous-Palaeogene boundary that goes from an OU to a BM model, a Trend to an OU model, a Stasis to a Trend model or any combination you want to use.
 The only model that can’t be used in combination is a multi-OU model.</p>
 <p>These can be introduced by changing the input for the models into a list, and supplying a vector with the two models.
 This is easier to see with an example:</p>
-<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" data-line-number="1"><span class="co">## The models to test</span></a>
-<a class="sourceLine" id="cb349-2" data-line-number="2">my_models &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>),</a>
-<a class="sourceLine" id="cb349-3" data-line-number="3">                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;OU&quot;</span>),</a>
-<a class="sourceLine" id="cb349-4" data-line-number="4">                  <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Stasis&quot;</span>),</a>
-<a class="sourceLine" id="cb349-5" data-line-number="5">                  <span class="kw">c</span>(<span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>),</a>
-<a class="sourceLine" id="cb349-6" data-line-number="6">                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))</a>
-<a class="sourceLine" id="cb349-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb349-8" data-line-number="8"><span class="co">## Testing the models</span></a>
-<a class="sourceLine" id="cb349-9" data-line-number="9">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb349-10" data-line-number="10">                                <span class="dt">model =</span> my_models, <span class="dt">time.split =</span> <span class="dv">66</span>,</a>
-<a class="sourceLine" id="cb349-11" data-line-number="11">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb330-1" data-line-number="1"><span class="co">## The models to test</span></a>
+<a class="sourceLine" id="cb330-2" data-line-number="2">my_models &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>),</a>
+<a class="sourceLine" id="cb330-3" data-line-number="3">                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;OU&quot;</span>),</a>
+<a class="sourceLine" id="cb330-4" data-line-number="4">                  <span class="kw">c</span>(<span class="st">&quot;BM&quot;</span>, <span class="st">&quot;Stasis&quot;</span>),</a>
+<a class="sourceLine" id="cb330-5" data-line-number="5">                  <span class="kw">c</span>(<span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>),</a>
+<a class="sourceLine" id="cb330-6" data-line-number="6">                  <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>))</a>
+<a class="sourceLine" id="cb330-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb330-8" data-line-number="8"><span class="co">## Testing the models</span></a>
+<a class="sourceLine" id="cb330-9" data-line-number="9">disp_time &lt;-<span class="st"> </span><span class="kw">model.test.wrapper</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb330-10" data-line-number="10">                                <span class="dt">model =</span> my_models, <span class="dt">time.split =</span> <span class="dv">66</span>,</a>
+<a class="sourceLine" id="cb330-11" data-line-number="11">                                <span class="dt">show.p =</span> <span class="ot">TRUE</span>, <span class="dt">fixed.optima =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running BM:OU model...Done. Log-likelihood = 106.025
@@ -2179,7 +2150,7 @@ This is easier to see with an example:</p>
 Figure 4.6: Empirical disparity through time (pink), simulate data based on estimated model parameters (grey), delta AICc, and range of p values from the Rank Envelope test for a variety of models with a shift in optima allowed at 66 Ma
 </p>
 </div>
-<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" data-line-number="1">disp_time</a></code></pre></div>
+<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb332-1" data-line-number="1">disp_time</a></code></pre></div>
 <pre><code>##           aicc delta_aicc weight_aicc log.lik param ancestral state
 ## OU:Trend  -212        0.0       0.982   110.0     4           7.433
 ## BM:OU     -204        8.0       0.018   106.0     4           7.428
@@ -2209,12 +2180,12 @@ In practice, this function runs two main functions from the <code>dispRity</code
 </ul>
 <p>The <code>model.test.sim</code> allows to simulate disparity evolution given a <code>dispRity</code> object input (as in <code>model.test.wrapper</code>) or given a model and its specification.
 For example, it is possible to simulate a simple Brownian motion model (or any of the other models or models combination described above):</p>
-<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" data-line-number="1"><span class="co">## A simple BM model</span></a>
-<a class="sourceLine" id="cb353-2" data-line-number="2">model_simulation &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> <span class="st">&quot;BM&quot;</span>,</a>
-<a class="sourceLine" id="cb353-3" data-line-number="3">                                   <span class="dt">time.span =</span> <span class="dv">50</span>, <span class="dt">variance =</span> <span class="fl">0.1</span>,</a>
-<a class="sourceLine" id="cb353-4" data-line-number="4">                                   <span class="dt">sample.size =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb353-5" data-line-number="5">                                   <span class="dt">parameters =</span> <span class="kw">list</span>(<span class="dt">ancestral.state =</span> <span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb353-6" data-line-number="6">model_simulation</a></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" data-line-number="1"><span class="co">## A simple BM model</span></a>
+<a class="sourceLine" id="cb334-2" data-line-number="2">model_simulation &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> <span class="st">&quot;BM&quot;</span>,</a>
+<a class="sourceLine" id="cb334-3" data-line-number="3">                                   <span class="dt">time.span =</span> <span class="dv">50</span>, <span class="dt">variance =</span> <span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb334-4" data-line-number="4">                                   <span class="dt">sample.size =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb334-5" data-line-number="5">                                   <span class="dt">parameters =</span> <span class="kw">list</span>(<span class="dt">ancestral.state =</span> <span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb334-6" data-line-number="6">model_simulation</a></code></pre></div>
 <pre><code>## Disparity evolution model simulation:
 ## Call: model.test.sim(sim = 1000, model = &quot;BM&quot;, time.span = 50, variance = 0.1, sample.size = 100, parameters = list(ancestral.state = 0)) 
 ## 
@@ -2223,8 +2194,8 @@ For example, it is possible to simulate a simple Brownian motion model (or any o
 <p>This will simulate 1000 Brownian motions for 50 units of time with 100 sampled elements, a variance of 0.1 and an ancestral state of 0.
 We can also pass multiple models in the same way we did it for <code>model.test</code>
 This model can then be summarised and plotted as most <code>dispRity</code> objects:</p>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb355-1" data-line-number="1"><span class="co">## Displaying the 5 first rows of the summary</span></a>
-<a class="sourceLine" id="cb355-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(model_simulation))</a></code></pre></div>
+<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" data-line-number="1"><span class="co">## Displaying the 5 first rows of the summary</span></a>
+<a class="sourceLine" id="cb336-2" data-line-number="2"><span class="kw">head</span>(<span class="kw">summary</span>(model_simulation))</a></code></pre></div>
 <pre><code>##   subsets   n var      median      2.5%        25%       75%    97.5%
 ## 1      50 100 0.1 -0.06195918 -1.963569 -0.7361336 0.5556715 1.806730
 ## 2      49 100 0.1 -0.09905061 -2.799025 -1.0670018 0.8836605 2.693583
@@ -2232,8 +2203,8 @@ This model can then be summarised and plotted as most <code>dispRity</code> obje
 ## 4      47 100 0.1 -0.10602238 -3.949521 -1.4363010 1.2234625 3.931000
 ## 5      46 100 0.1 -0.09016928 -4.277897 -1.5791755 1.3889584 4.507491
 ## 6      45 100 0.1 -0.13183180 -5.115647 -1.7791878 1.6270527 5.144023</code></pre>
-<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb357-1" data-line-number="1"><span class="co">## Plotting the simulations</span></a>
-<a class="sourceLine" id="cb357-2" data-line-number="2"><span class="kw">plot</span>(model_simulation)</a></code></pre></div>
+<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" data-line-number="1"><span class="co">## Plotting the simulations</span></a>
+<a class="sourceLine" id="cb338-2" data-line-number="2"><span class="kw">plot</span>(model_simulation)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plot7"></span>
 <img src="dispRity_manual_files/figure-html/plot7-1.png" alt="A simulated Brownian motion" width="576" />
 <p class="caption">
@@ -2245,9 +2216,9 @@ Figure 4.7: A simulated Brownian motion
 <h4><span class="header-section-number">4.7.4.1</span> Simulating tested models</h4>
 <p>Maybe more interestingly though, it is possible to pass the output of <code>model.test</code> directly to <code>model.test.sim</code> to simulate the models that fits the data the best and calculate the Rank Envelope test <em>p</em> value.
 Let’s see that using the simple example from the start:</p>
-<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" data-line-number="1"><span class="co">## Fitting multiple models on the data set</span></a>
-<a class="sourceLine" id="cb358-2" data-line-number="2">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
-<a class="sourceLine" id="cb358-3" data-line-number="3">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb339-1" data-line-number="1"><span class="co">## Fitting multiple models on the data set</span></a>
+<a class="sourceLine" id="cb339-2" data-line-number="2">disp_time &lt;-<span class="st"> </span><span class="kw">model.test</span>(<span class="dt">data =</span> BeckLee_disparity,</a>
+<a class="sourceLine" id="cb339-3" data-line-number="3">                    <span class="dt">model =</span> <span class="kw">c</span>(<span class="st">&quot;Stasis&quot;</span>, <span class="st">&quot;BM&quot;</span>, <span class="st">&quot;OU&quot;</span>, <span class="st">&quot;Trend&quot;</span>, <span class="st">&quot;EB&quot;</span>))</a></code></pre></div>
 <pre><code>## Evidence of equal variance (Bartlett&#39;s test of equal variances p = 0).
 ## Variance is not pooled.
 ## Running Stasis model...Done. Log-likelihood = -69.301
@@ -2255,7 +2226,7 @@ Let’s see that using the simple example from the start:</p>
 ## Running OU model...Done. Log-likelihood = 112.722
 ## Running Trend model...Done. Log-likelihood = 112.724
 ## Running EB model...Done. Log-likelihood = 101.396</code></pre>
-<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb341-1" data-line-number="1"><span class="kw">summary</span>(disp_time)</a></code></pre></div>
 <pre><code>##        aicc delta_aicc weight_aicc log.lik param theta.1 omega ancestral state
 ## Stasis  143      361.9       0.000   -69.3     2   7.849 0.174              NA
 ## BM     -216        2.8       0.158   110.3     2      NA    NA           7.356
@@ -2270,9 +2241,9 @@ Let’s see that using the simple example from the start:</p>
 ## EB             0.001    NA       NA    NA  0</code></pre>
 <p>As seen before, the Trend model fitted this dataset the best.
 To simulate what 1000 Trend models would look like using the same parameters as the ones estimated with <code>model.test</code> (here the ancestral state being 7.348, the sigma squared being 0.003 and the trend of 0.011), we can simply pass this model to <code>model.test.sim</code>:</p>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" data-line-number="1"><span class="co">## Simulating 1000 Trend model with the observed parameters</span></a>
-<a class="sourceLine" id="cb362-2" data-line-number="2">sim_trend &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time)</a>
-<a class="sourceLine" id="cb362-3" data-line-number="3">sim_trend</a></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb343-1" data-line-number="1"><span class="co">## Simulating 1000 Trend model with the observed parameters</span></a>
+<a class="sourceLine" id="cb343-2" data-line-number="2">sim_trend &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time)</a>
+<a class="sourceLine" id="cb343-3" data-line-number="3">sim_trend</a></code></pre></div>
 <pre><code>## Disparity evolution model simulation:
 ## Call: model.test.sim(sim = 1000, model = disp_time) 
 ## 
@@ -2284,10 +2255,10 @@ To simulate what 1000 Trend models would look like using the same parameters as 
 ##  p-value of the test: 0.9100899 (ties method: midrank)
 ##  p-interval         : (0.9090909, 0.9110889)</code></pre>
 <p>By default, the model simulated is the one with the lowest AICc (<code>model.rank = 1</code>) but it is possible to choose any ranked model, for example, the OU (second one):</p>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" data-line-number="1"><span class="co">## Simulating 1000 OU model with the observed parameters</span></a>
-<a class="sourceLine" id="cb364-2" data-line-number="2">sim_OU &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time,</a>
-<a class="sourceLine" id="cb364-3" data-line-number="3">                         <span class="dt">model.rank =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb364-4" data-line-number="4">sim_OU</a></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb345-1" data-line-number="1"><span class="co">## Simulating 1000 OU model with the observed parameters</span></a>
+<a class="sourceLine" id="cb345-2" data-line-number="2">sim_OU &lt;-<span class="st"> </span><span class="kw">model.test.sim</span>(<span class="dt">sim =</span> <span class="dv">1000</span>, <span class="dt">model =</span> disp_time,</a>
+<a class="sourceLine" id="cb345-3" data-line-number="3">                         <span class="dt">model.rank =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb345-4" data-line-number="4">sim_OU</a></code></pre></div>
 <pre><code>## Disparity evolution model simulation:
 ## Call: model.test.sim(sim = 1000, model = disp_time, model.rank = 2) 
 ## 
@@ -2299,7 +2270,7 @@ To simulate what 1000 Trend models would look like using the same parameters as 
 ##  p-value of the test: 0.9280719 (ties method: midrank)
 ##  p-interval         : (0.9260739, 0.9300699)</code></pre>
 <p>And as the example above, the simulated data can be plotted or summarised:</p>
-<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">summary</span>(sim_trend))</a></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb347-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">summary</span>(sim_trend))</a></code></pre></div>
 <pre><code>##   subsets n        var   median     2.5%      25%      75%    97.5%
 ## 1     120 5 0.01631914 7.348075 7.231232 7.313069 7.385333 7.464852
 ## 2     119 5 0.04643984 7.362865 7.153818 7.283894 7.433260 7.575644
@@ -2307,7 +2278,7 @@ To simulate what 1000 Trend models would look like using the same parameters as 
 ## 4     117 7 0.04350899 7.382069 7.162817 7.309938 7.463409 7.616709
 ## 5     116 7 0.04350899 7.395776 7.156362 7.303411 7.478723 7.636784
 ## 6     115 7 0.04350899 7.403348 7.140018 7.316870 7.495152 7.663307</code></pre>
-<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb368-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">summary</span>(sim_OU))</a></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" data-line-number="1"><span class="kw">head</span>(<span class="kw">summary</span>(sim_OU))</a></code></pre></div>
 <pre><code>##   subsets n        var   median     2.5%      25%      75%    97.5%
 ## 1     120 5 0.01631914 7.346611 7.237717 7.306529 7.385920 7.461692
 ## 2     119 5 0.04643984 7.360011 7.141851 7.280214 7.434398 7.575244
@@ -2315,12 +2286,12 @@ To simulate what 1000 Trend models would look like using the same parameters as 
 ## 4     117 7 0.04350899 7.374461 7.138736 7.294629 7.454979 7.613769
 ## 5     116 7 0.04350899 7.384222 7.121296 7.299917 7.474302 7.653173
 ## 6     115 7 0.04350899 7.393006 7.117418 7.300322 7.492401 7.668906</code></pre>
-<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" data-line-number="1"><span class="co">## The trend model with some graphical options</span></a>
-<a class="sourceLine" id="cb370-2" data-line-number="2"><span class="kw">plot</span>(sim_trend, <span class="dt">xlab =</span> <span class="st">&quot;Time (Mya)&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;sum of variances&quot;</span>,</a>
-<a class="sourceLine" id="cb370-3" data-line-number="3">    <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#F65205&quot;</span>, <span class="st">&quot;#F38336&quot;</span>, <span class="st">&quot;#F7B27E&quot;</span>))</a>
-<a class="sourceLine" id="cb370-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb370-5" data-line-number="5"><span class="co">## Adding the observed disparity through time</span></a>
-<a class="sourceLine" id="cb370-6" data-line-number="6"><span class="kw">plot</span>(BeckLee_disparity, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#3E9CBA&quot;</span>, <span class="st">&quot;#98D4CF90&quot;</span>, <span class="st">&quot;#BFE4E390&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" data-line-number="1"><span class="co">## The trend model with some graphical options</span></a>
+<a class="sourceLine" id="cb351-2" data-line-number="2"><span class="kw">plot</span>(sim_trend, <span class="dt">xlab =</span> <span class="st">&quot;Time (Mya)&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;sum of variances&quot;</span>,</a>
+<a class="sourceLine" id="cb351-3" data-line-number="3">    <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#F65205&quot;</span>, <span class="st">&quot;#F38336&quot;</span>, <span class="st">&quot;#F7B27E&quot;</span>))</a>
+<a class="sourceLine" id="cb351-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb351-5" data-line-number="5"><span class="co">## Adding the observed disparity through time</span></a>
+<a class="sourceLine" id="cb351-6" data-line-number="6"><span class="kw">plot</span>(BeckLee_disparity, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;#3E9CBA&quot;</span>, <span class="st">&quot;#98D4CF90&quot;</span>, <span class="st">&quot;#BFE4E390&quot;</span>))</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:plot8"></span>
 <img src="dispRity_manual_files/figure-html/plot8-1.png" alt="The best fitted model (Trend) and the observed disparity through time" width="576" />
 <p class="caption">
@@ -2338,24 +2309,24 @@ This value can be pseudo-replicated (bootstrapped) to obtain a distribution of t
 However, another way to perform disparity analysis is to use the <em>whole distribution</em> rather than just a summary metric (e.g. the variances or the ranges).</p>
 <p>This is possible in the <code>dispRity</code> package by calculating disparity as a dimension-level 2 metric only!
 Let’s have a look using our <a href="#summarising-dispRity-data-plots">previous example</a> of bootstrapped time slices but by measuring the distances between each taxon and their centroid as disparity.</p>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1"><span class="co">## Measuring disparity as a whole distribution</span></a>
-<a class="sourceLine" id="cb371-2" data-line-number="2">disparity_centroids &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_time_slices, </a>
-<a class="sourceLine" id="cb371-3" data-line-number="3">                                <span class="dt">metric =</span> centroids)</a></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb352-1" data-line-number="1"><span class="co">## Measuring disparity as a whole distribution</span></a>
+<a class="sourceLine" id="cb352-2" data-line-number="2">disparity_centroids &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_time_slices, </a>
+<a class="sourceLine" id="cb352-3" data-line-number="3">                                <span class="dt">metric =</span> centroids)</a></code></pre></div>
 <p>The resulting disparity object is of dimension-level 2, so it can easily be transformed into a dimension-level 1 object by, for example, measuring the median distance of all these distributions:</p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" data-line-number="1"><span class="co">## Measuring median disparity in each time slice</span></a>
-<a class="sourceLine" id="cb372-2" data-line-number="2">disparity_centroids_median &lt;-<span class="st"> </span><span class="kw">dispRity</span>(disparity_centroids,</a>
-<a class="sourceLine" id="cb372-3" data-line-number="3">                                       <span class="dt">metric =</span> median)</a></code></pre></div>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" data-line-number="1"><span class="co">## Measuring median disparity in each time slice</span></a>
+<a class="sourceLine" id="cb353-2" data-line-number="2">disparity_centroids_median &lt;-<span class="st"> </span><span class="kw">dispRity</span>(disparity_centroids,</a>
+<a class="sourceLine" id="cb353-3" data-line-number="3">                                       <span class="dt">metric =</span> median)</a></code></pre></div>
 <p>And we can now compare the differences between these methods:</p>
-<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" data-line-number="1"><span class="co">## Summarising both disparity measurements:</span></a>
-<a class="sourceLine" id="cb373-2" data-line-number="2"><span class="co">## The distributions:</span></a>
-<a class="sourceLine" id="cb373-3" data-line-number="3"><span class="kw">summary</span>(disparity_centroids)</a></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb354-1" data-line-number="1"><span class="co">## Summarising both disparity measurements:</span></a>
+<a class="sourceLine" id="cb354-2" data-line-number="2"><span class="co">## The distributions:</span></a>
+<a class="sourceLine" id="cb354-3" data-line-number="3"><span class="kw">summary</span>(disparity_centroids)</a></code></pre></div>
 <pre><code>##   subsets  n obs.median bs.median  2.5%   25%   75% 97.5%
 ## 1     120  5      2.419     2.016 0.771 1.833 2.534 2.826
 ## 2      80 19      2.704     2.637 2.278 2.507 2.719 2.866
 ## 3      40 15      2.658     2.608 2.138 2.469 2.751 2.995
 ## 4       0 10      2.776     2.633 1.990 2.507 2.865 3.024</code></pre>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" data-line-number="1"><span class="co">## The summary of the distributions (as median)</span></a>
-<a class="sourceLine" id="cb375-2" data-line-number="2"><span class="kw">summary</span>(disparity_centroids_median)</a></code></pre></div>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb356-1" data-line-number="1"><span class="co">## The summary of the distributions (as median)</span></a>
+<a class="sourceLine" id="cb356-2" data-line-number="2"><span class="kw">summary</span>(disparity_centroids_median)</a></code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1     120  5 2.419     2.054 0.769 1.472 2.479 2.511
 ## 2      80 19 2.704     2.632 2.498 2.584 2.657 2.694
@@ -2365,19 +2336,19 @@ Let’s have a look using our <a href="#summarising-dispRity-data-plots">previou
 Here <code>summary</code> also displays the observed central tendency (i.e. the central tendency of the measured distributions).
 Note that, as expected, this central tendency is the same in both metrics!</p>
 <p>Another, maybe more intuitive way, to compare both approaches for measuring disparity is to plot the distributions:</p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co">## Graphical parameters</span></a>
-<a class="sourceLine" id="cb377-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb377-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb377-4" data-line-number="4"><span class="co">## Plotting both disparity measurements</span></a>
-<a class="sourceLine" id="cb377-5" data-line-number="5"><span class="kw">plot</span>(disparity_centroids,</a>
-<a class="sourceLine" id="cb377-6" data-line-number="6">     <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)</a>
-<a class="sourceLine" id="cb377-7" data-line-number="7"><span class="kw">plot</span>(disparity_centroids_median,</a>
-<a class="sourceLine" id="cb377-8" data-line-number="8">     <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" data-line-number="1"><span class="co">## Graphical parameters</span></a>
+<a class="sourceLine" id="cb358-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb358-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb358-4" data-line-number="4"><span class="co">## Plotting both disparity measurements</span></a>
+<a class="sourceLine" id="cb358-5" data-line-number="5"><span class="kw">plot</span>(disparity_centroids,</a>
+<a class="sourceLine" id="cb358-6" data-line-number="6">     <span class="dt">ylab =</span> <span class="st">&quot;Distribution of all the distances&quot;</span>)</a>
+<a class="sourceLine" id="cb358-7" data-line-number="7"><span class="kw">plot</span>(disparity_centroids_median,</a>
+<a class="sourceLine" id="cb358-8" data-line-number="8">     <span class="dt">ylab =</span> <span class="st">&quot;Distribution of the medians of all the distances&quot;</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-102-1.png" width="768" /></p>
-<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb378-1" data-line-number="1"><span class="kw">par</span>(op)</a></code></pre></div>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb359-1" data-line-number="1"><span class="kw">par</span>(op)</a></code></pre></div>
 <p>We can then test for differences in the resulting distributions using <code>test.dispRity</code> and the <code>bhatt.coeff</code> test as described above.</p>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" data-line-number="1"><span class="co">## Probability of overlap in the distribution of medians</span></a>
-<a class="sourceLine" id="cb379-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids_median, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" data-line-number="1"><span class="co">## Probability of overlap in the distribution of medians</span></a>
+<a class="sourceLine" id="cb360-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids_median, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids_median, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
@@ -2392,8 +2363,8 @@ In other words, we are measuring whether the medians from each bootstrap pseudo-
 But of course, we might be interested in the actual distribution of the distances from the centroid rather than simply their central tendencies.
 This can be problematic depending on the research question asked since we are effectively comparing non-independent medians distributions (because of the pseudo-replication).</p>
 <p>One solution, therefore, is to look at the full distribution:</p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1"><span class="co">## Probability of overlap for the full distributions</span></a>
-<a class="sourceLine" id="cb382-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb363-1" data-line-number="1"><span class="co">## Probability of overlap for the full distributions</span></a>
+<a class="sourceLine" id="cb363-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff)</a></code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff): Multiple p-values will be calculated without adjustment!
 ## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff
@@ -2407,9 +2378,9 @@ This can be problematic depending on the research question asked since we are ef
 For example, when comparing the slices 120 and 80, we are effectively comparing the 5 <span class="math inline">\(\times\)</span> 100 distances (the distances of the five elements in slice 120 bootstrapped 100 times) to the 19 <span class="math inline">\(\times\)</span> 100 distances from slice 80.
 However, this can also be problematic for some specific tests since the <em>n</em> <span class="math inline">\(\times\)</span> 100 distances are also pseudo-replicates and thus are still not independent.</p>
 <p>A second solution is to compare the distributions to each other <em>for each replicate</em>:</p>
-<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" data-line-number="1"><span class="co">## Boostrapped probability of overlap for the full distributions</span></a>
-<a class="sourceLine" id="cb385-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff,</a>
-<a class="sourceLine" id="cb385-3" data-line-number="3">              <span class="dt">concatenate =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" data-line-number="1"><span class="co">## Boostrapped probability of overlap for the full distributions</span></a>
+<a class="sourceLine" id="cb366-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_centroids, <span class="dt">test =</span> bhatt.coeff,</a>
+<a class="sourceLine" id="cb366-3" data-line-number="3">              <span class="dt">concatenate =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## Warning in test.dispRity(disparity_centroids, test = bhatt.coeff, concatenate = FALSE): Multiple p-values will be calculated without adjustment!
 ## This can inflate Type I error!</code></pre>
 <pre><code>##          bhatt.coeff      2.5%       25%       75%     97.5%
@@ -2431,68 +2402,68 @@ This is a common approach in palaeobiology, morphometrics or ecology but ordinat
 It is totally possible to perform the same analysis detailed above using other types of matrices as long as your elements are rows in your matrix.</p>
 <p>For example, we can use the data set <code>eurodist</code>, an <code>R</code> inbuilt dataset that contains the distances (in km) between European cities.
 We can check for example, if Northern European cities are closer to each other than Southern ones:</p>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="co">## Making the eurodist data set into a matrix (rather than &quot;dist&quot; object)</span></a>
-<a class="sourceLine" id="cb388-2" data-line-number="2">eurodist &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(eurodist)</a>
-<a class="sourceLine" id="cb388-3" data-line-number="3">eurodist[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" data-line-number="1"><span class="co">## Making the eurodist data set into a matrix (rather than &quot;dist&quot; object)</span></a>
+<a class="sourceLine" id="cb369-2" data-line-number="2">eurodist &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(eurodist)</a>
+<a class="sourceLine" id="cb369-3" data-line-number="3">eurodist[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <pre><code>##           Athens Barcelona Brussels Calais Cherbourg
 ## Athens         0      3313     2963   3175      3339
 ## Barcelona   3313         0     1318   1326      1294
 ## Brussels    2963      1318        0    204       583
 ## Calais      3175      1326      204      0       460
 ## Cherbourg   3339      1294      583    460         0</code></pre>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" data-line-number="1"><span class="co">## The two groups of cities</span></a>
-<a class="sourceLine" id="cb390-2" data-line-number="2">Northern &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Brussels&quot;</span>, <span class="st">&quot;Calais&quot;</span>, <span class="st">&quot;Cherbourg&quot;</span>, <span class="st">&quot;Cologne&quot;</span>, <span class="st">&quot;Copenhagen&quot;</span>,</a>
-<a class="sourceLine" id="cb390-3" data-line-number="3">              <span class="st">&quot;Hamburg&quot;</span>, <span class="st">&quot;Hook of Holland&quot;</span>, <span class="st">&quot;Paris&quot;</span>, <span class="st">&quot;Stockholm&quot;</span>)</a>
-<a class="sourceLine" id="cb390-4" data-line-number="4">Southern &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Athens&quot;</span>, <span class="st">&quot;Barcelona&quot;</span>, <span class="st">&quot;Geneva&quot;</span>, <span class="st">&quot;Gibraltar&quot;</span>, <span class="st">&quot;Lisbon&quot;</span>, <span class="st">&quot;Lyons&quot;</span>,</a>
-<a class="sourceLine" id="cb390-5" data-line-number="5">              <span class="st">&quot;Madrid&quot;</span>, <span class="st">&quot;Marseilles&quot;</span>, <span class="st">&quot;Milan&quot;</span>, <span class="st">&quot;Munich&quot;</span>, <span class="st">&quot;Rome&quot;</span>, <span class="st">&quot;Vienna&quot;</span>)</a>
-<a class="sourceLine" id="cb390-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb390-7" data-line-number="7"><span class="co">## Creating the subset dispRity object</span></a>
-<a class="sourceLine" id="cb390-8" data-line-number="8">eurodist_subsets &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(eurodist, <span class="dt">group =</span> <span class="kw">list</span>(<span class="st">&quot;Northern&quot;</span> =<span class="st"> </span>Northern,</a>
-<a class="sourceLine" id="cb390-9" data-line-number="9">                                                        <span class="st">&quot;Southern&quot;</span> =<span class="st"> </span>Southern))</a></code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" data-line-number="1"><span class="co">## The two groups of cities</span></a>
+<a class="sourceLine" id="cb371-2" data-line-number="2">Northern &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Brussels&quot;</span>, <span class="st">&quot;Calais&quot;</span>, <span class="st">&quot;Cherbourg&quot;</span>, <span class="st">&quot;Cologne&quot;</span>, <span class="st">&quot;Copenhagen&quot;</span>,</a>
+<a class="sourceLine" id="cb371-3" data-line-number="3">              <span class="st">&quot;Hamburg&quot;</span>, <span class="st">&quot;Hook of Holland&quot;</span>, <span class="st">&quot;Paris&quot;</span>, <span class="st">&quot;Stockholm&quot;</span>)</a>
+<a class="sourceLine" id="cb371-4" data-line-number="4">Southern &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Athens&quot;</span>, <span class="st">&quot;Barcelona&quot;</span>, <span class="st">&quot;Geneva&quot;</span>, <span class="st">&quot;Gibraltar&quot;</span>, <span class="st">&quot;Lisbon&quot;</span>, <span class="st">&quot;Lyons&quot;</span>,</a>
+<a class="sourceLine" id="cb371-5" data-line-number="5">              <span class="st">&quot;Madrid&quot;</span>, <span class="st">&quot;Marseilles&quot;</span>, <span class="st">&quot;Milan&quot;</span>, <span class="st">&quot;Munich&quot;</span>, <span class="st">&quot;Rome&quot;</span>, <span class="st">&quot;Vienna&quot;</span>)</a>
+<a class="sourceLine" id="cb371-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb371-7" data-line-number="7"><span class="co">## Creating the subset dispRity object</span></a>
+<a class="sourceLine" id="cb371-8" data-line-number="8">eurodist_subsets &lt;-<span class="st"> </span><span class="kw">custom.subsets</span>(eurodist, <span class="dt">group =</span> <span class="kw">list</span>(<span class="st">&quot;Northern&quot;</span> =<span class="st"> </span>Northern,</a>
+<a class="sourceLine" id="cb371-9" data-line-number="9">                                                        <span class="st">&quot;Southern&quot;</span> =<span class="st"> </span>Southern))</a></code></pre></div>
 <pre><code>## Warning: custom.subsets is applied on what seems to be a distance matrix.
 ## The resulting matrices won&#39;t be distance matrices anymore!</code></pre>
-<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" data-line-number="1"><span class="co">## Bootstrapping and rarefying to 9 elements (the number of Northern cities)</span></a>
-<a class="sourceLine" id="cb392-2" data-line-number="2">eurodist_bs &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(eurodist_subsets, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a>
-<a class="sourceLine" id="cb392-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb392-4" data-line-number="4"><span class="co">## Measuring disparity as the median distance from group&#39;s centroid</span></a>
-<a class="sourceLine" id="cb392-5" data-line-number="5">euro_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(eurodist_bs, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</a>
-<a class="sourceLine" id="cb392-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb392-7" data-line-number="7"><span class="co">## Testing the differences using a simple wilcox.test</span></a>
-<a class="sourceLine" id="cb392-8" data-line-number="8">euro_diff &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_disp, <span class="dt">test =</span> wilcox.test)</a>
-<a class="sourceLine" id="cb392-9" data-line-number="9">euro_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_disp, <span class="dt">test =</span> wilcox.test, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" data-line-number="1"><span class="co">## Bootstrapping and rarefying to 9 elements (the number of Northern cities)</span></a>
+<a class="sourceLine" id="cb373-2" data-line-number="2">eurodist_bs &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(eurodist_subsets, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a>
+<a class="sourceLine" id="cb373-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb373-4" data-line-number="4"><span class="co">## Measuring disparity as the median distance from group&#39;s centroid</span></a>
+<a class="sourceLine" id="cb373-5" data-line-number="5">euro_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(eurodist_bs, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</a>
+<a class="sourceLine" id="cb373-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb373-7" data-line-number="7"><span class="co">## Testing the differences using a simple wilcox.test</span></a>
+<a class="sourceLine" id="cb373-8" data-line-number="8">euro_diff &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_disp, <span class="dt">test =</span> wilcox.test)</a>
+<a class="sourceLine" id="cb373-9" data-line-number="9">euro_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_disp, <span class="dt">test =</span> wilcox.test, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a></code></pre></div>
 <p>We can compare this approach to an ordination one:</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="co">## Ordinating the eurodist matrix</span></a>
-<a class="sourceLine" id="cb393-2" data-line-number="2">euro_ord &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="kw">nrow</span>(eurodist) <span class="op">-</span><span class="st"> </span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" data-line-number="1"><span class="co">## Ordinating the eurodist matrix</span></a>
+<a class="sourceLine" id="cb374-2" data-line-number="2">euro_ord &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="kw">nrow</span>(eurodist) <span class="op">-</span><span class="st"> </span><span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## Warning in cmdscale(eurodist, k = nrow(eurodist) - 2): only 11 of the first 19
 ## eigenvalues are &gt; 0</code></pre>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" data-line-number="1"><span class="co">## Calculating disparity on the bootstrapped and rarefied subset data</span></a>
-<a class="sourceLine" id="cb395-2" data-line-number="2">euro_ord_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(<span class="kw">custom.subsets</span>(euro_ord, <span class="dt">group =</span></a>
-<a class="sourceLine" id="cb395-3" data-line-number="3">        <span class="kw">list</span>(<span class="st">&quot;Northern&quot;</span> =<span class="st"> </span>Northern, <span class="st">&quot;Southern&quot;</span> =<span class="st"> </span>Southern)), <span class="dt">rarefaction =</span> <span class="dv">9</span>),</a>
-<a class="sourceLine" id="cb395-4" data-line-number="4">        <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</a>
-<a class="sourceLine" id="cb395-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb395-6" data-line-number="6"><span class="co">## Testing the differences using a simple wilcox.test</span></a>
-<a class="sourceLine" id="cb395-7" data-line-number="7">euro_ord_diff &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_ord_disp, <span class="dt">test =</span> wilcox.test)</a>
-<a class="sourceLine" id="cb395-8" data-line-number="8">euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_ord_disp, <span class="dt">test =</span> wilcox.test, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb376-1" data-line-number="1"><span class="co">## Calculating disparity on the bootstrapped and rarefied subset data</span></a>
+<a class="sourceLine" id="cb376-2" data-line-number="2">euro_ord_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(<span class="kw">custom.subsets</span>(euro_ord, <span class="dt">group =</span></a>
+<a class="sourceLine" id="cb376-3" data-line-number="3">        <span class="kw">list</span>(<span class="st">&quot;Northern&quot;</span> =<span class="st"> </span>Northern, <span class="st">&quot;Southern&quot;</span> =<span class="st"> </span>Southern)), <span class="dt">rarefaction =</span> <span class="dv">9</span>),</a>
+<a class="sourceLine" id="cb376-4" data-line-number="4">        <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</a>
+<a class="sourceLine" id="cb376-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb376-6" data-line-number="6"><span class="co">## Testing the differences using a simple wilcox.test</span></a>
+<a class="sourceLine" id="cb376-7" data-line-number="7">euro_ord_diff &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_ord_disp, <span class="dt">test =</span> wilcox.test)</a>
+<a class="sourceLine" id="cb376-8" data-line-number="8">euro_ord_diff_rar &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(euro_ord_disp, <span class="dt">test =</span> wilcox.test, <span class="dt">rarefaction =</span> <span class="dv">9</span>)</a></code></pre></div>
 <p>And visualise the differences:</p>
-<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" data-line-number="1"><span class="co">## Plotting the differences</span></a>
-<a class="sourceLine" id="cb396-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb396-3" data-line-number="3"><span class="co">## Plotting the normal disparity</span></a>
-<a class="sourceLine" id="cb396-4" data-line-number="4"><span class="kw">plot</span>(euro_disp, <span class="dt">main =</span> <span class="st">&quot;Distance differences&quot;</span>)</a>
-<a class="sourceLine" id="cb396-5" data-line-number="5"><span class="co">## Adding the p-value</span></a>
-<a class="sourceLine" id="cb396-6" data-line-number="6"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">4000</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_diff[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>)))</a>
-<a class="sourceLine" id="cb396-7" data-line-number="7"><span class="co">## Plotting the rarefied disparity</span></a>
-<a class="sourceLine" id="cb396-8" data-line-number="8"><span class="kw">plot</span>(euro_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Distance differences (rarefied)&quot;</span>)</a>
-<a class="sourceLine" id="cb396-9" data-line-number="9"><span class="co">## Adding the p-value</span></a>
-<a class="sourceLine" id="cb396-10" data-line-number="10"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">4000</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>)))</a>
-<a class="sourceLine" id="cb396-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb396-12" data-line-number="12"><span class="co">## Plotting the ordinated disparity</span></a>
-<a class="sourceLine" id="cb396-13" data-line-number="13"><span class="kw">plot</span>(euro_ord_disp, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences&quot;</span>)</a>
-<a class="sourceLine" id="cb396-14" data-line-number="14"><span class="co">## Adding the p-value</span></a>
-<a class="sourceLine" id="cb396-15" data-line-number="15"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</a>
-<a class="sourceLine" id="cb396-16" data-line-number="16"><span class="co">## Plotting the rarefied disparity</span></a>
-<a class="sourceLine" id="cb396-17" data-line-number="17"><span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)</a>
-<a class="sourceLine" id="cb396-18" data-line-number="18"><span class="co">## Adding the p-value</span></a>
-<a class="sourceLine" id="cb396-19" data-line-number="19"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</a></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" data-line-number="1"><span class="co">## Plotting the differences</span></a>
+<a class="sourceLine" id="cb377-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb377-3" data-line-number="3"><span class="co">## Plotting the normal disparity</span></a>
+<a class="sourceLine" id="cb377-4" data-line-number="4"><span class="kw">plot</span>(euro_disp, <span class="dt">main =</span> <span class="st">&quot;Distance differences&quot;</span>)</a>
+<a class="sourceLine" id="cb377-5" data-line-number="5"><span class="co">## Adding the p-value</span></a>
+<a class="sourceLine" id="cb377-6" data-line-number="6"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">4000</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_diff[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>)))</a>
+<a class="sourceLine" id="cb377-7" data-line-number="7"><span class="co">## Plotting the rarefied disparity</span></a>
+<a class="sourceLine" id="cb377-8" data-line-number="8"><span class="kw">plot</span>(euro_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Distance differences (rarefied)&quot;</span>)</a>
+<a class="sourceLine" id="cb377-9" data-line-number="9"><span class="co">## Adding the p-value</span></a>
+<a class="sourceLine" id="cb377-10" data-line-number="10"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">4000</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>)))</a>
+<a class="sourceLine" id="cb377-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb377-12" data-line-number="12"><span class="co">## Plotting the ordinated disparity</span></a>
+<a class="sourceLine" id="cb377-13" data-line-number="13"><span class="kw">plot</span>(euro_ord_disp, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences&quot;</span>)</a>
+<a class="sourceLine" id="cb377-14" data-line-number="14"><span class="co">## Adding the p-value</span></a>
+<a class="sourceLine" id="cb377-15" data-line-number="15"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</a>
+<a class="sourceLine" id="cb377-16" data-line-number="16"><span class="co">## Plotting the rarefied disparity</span></a>
+<a class="sourceLine" id="cb377-17" data-line-number="17"><span class="kw">plot</span>(euro_ord_disp, <span class="dt">rarefaction =</span> <span class="dv">9</span>, <span class="dt">main =</span> <span class="st">&quot;Ordinated differences (rarefied)&quot;</span>)</a>
+<a class="sourceLine" id="cb377-18" data-line-number="18"><span class="co">## Adding the p-value</span></a>
+<a class="sourceLine" id="cb377-19" data-line-number="19"><span class="kw">text</span>(<span class="fl">1.5</span>, <span class="dv">1400</span>, <span class="kw">paste0</span>(<span class="st">&quot;p=&quot;</span>,<span class="kw">round</span>(euro_ord_diff_rar[[<span class="dv">2</span>]][[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">5</span>) ))</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-108-1.png" width="1152" /></p>
 <p>As expected, the results are pretty similar in pattern but different in terms of scale.
 The median centroids distance is expressed in km in the “Distance differences” plots and in Euclidean units of variation in the “Ordinated differences” plots.</p>
@@ -2501,18 +2472,18 @@ The median centroids distance is expressed in km in the “Distance differences�
 <h2><span class="header-section-number">4.10</span> Disparity from multiple matrices (and multiple trees!)</h2>
 <p>Since the version <code>1.4</code> of this package, it is possible to use multiple trees and multiple matrices in <code>dispRity</code> objects.
 To use multiple matrices, this is rather easy: just supply a list of matrices to any of the <code>dispRity</code> functions and, as long as they have the same size and the same rownames they will be handled as a distribution of matrices.</p>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb397-2" data-line-number="2"><span class="co">## Creating 3 matrices with 4 dimensions and 10 elements each (called t1, t2, t3, etc...)</span></a>
-<a class="sourceLine" id="cb397-3" data-line-number="3">matrix_list &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">3</span>, <span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">40</span>), <span class="dv">10</span>, <span class="dv">4</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">paste0</span>(<span class="st">&quot;t&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>))),</a>
-<a class="sourceLine" id="cb397-4" data-line-number="4">                         <span class="dt">simplify =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb397-5" data-line-number="5"><span class="kw">class</span>(matrix_list) <span class="co"># This is a list of matrices</span></a></code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb378-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb378-2" data-line-number="2"><span class="co">## Creating 3 matrices with 4 dimensions and 10 elements each (called t1, t2, t3, etc...)</span></a>
+<a class="sourceLine" id="cb378-3" data-line-number="3">matrix_list &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">3</span>, <span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">40</span>), <span class="dv">10</span>, <span class="dv">4</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">paste0</span>(<span class="st">&quot;t&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>))),</a>
+<a class="sourceLine" id="cb378-4" data-line-number="4">                         <span class="dt">simplify =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb378-5" data-line-number="5"><span class="kw">class</span>(matrix_list) <span class="co"># This is a list of matrices</span></a></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" data-line-number="1"><span class="co">## Measuring some disparity metric on one of the matrices</span></a>
-<a class="sourceLine" id="cb399-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">dispRity</span>(matrix_list[[<span class="dv">1</span>]], <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" data-line-number="1"><span class="co">## Measuring some disparity metric on one of the matrices</span></a>
+<a class="sourceLine" id="cb380-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">dispRity</span>(matrix_list[[<span class="dv">1</span>]], <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n  obs
 ## 1       1 10 3.32</code></pre>
-<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" data-line-number="1"><span class="co">## Measuring the same disparity metric on the three matrices</span></a>
-<a class="sourceLine" id="cb401-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">dispRity</span>(matrix_list, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" data-line-number="1"><span class="co">## Measuring the same disparity metric on the three matrices</span></a>
+<a class="sourceLine" id="cb382-2" data-line-number="2"><span class="kw">summary</span>(<span class="kw">dispRity</span>(matrix_list, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1       1 10       3.32 3.044 3.175 3.381 3.435</code></pre>
 <p>As you can see, when measuring the sum of variances on multiple matrices, we now have a distribution of sum of variances rather than a single observed value.</p>
@@ -2520,97 +2491,97 @@ To use multiple matrices, this is rather easy: just supply a list of matrices to
 This can be useful if you want to use a tree posterior distribution rather than a single consensus tree.
 These trees can be passed to <code>chrono.subsets</code> as a <code>&quot;multiPhylo&quot;</code> object (with the same node and tip labels in each tree).
 First let’s define a function to generate multiple trees with the same labels and root ages:</p>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb403-2" data-line-number="2"><span class="co">## Matches the trees and the matrices</span></a>
-<a class="sourceLine" id="cb403-3" data-line-number="3"><span class="co">## A bunch of trees</span></a>
-<a class="sourceLine" id="cb403-4" data-line-number="4">make.tree &lt;-<span class="st"> </span><span class="cf">function</span>(n, <span class="dt">fun =</span> rtree) {</a>
-<a class="sourceLine" id="cb403-5" data-line-number="5">    <span class="co">## Make the tree</span></a>
-<a class="sourceLine" id="cb403-6" data-line-number="6">    tree &lt;-<span class="st"> </span><span class="kw">fun</span>(n)</a>
-<a class="sourceLine" id="cb403-7" data-line-number="7">    tree &lt;-<span class="st"> </span><span class="kw">chronos</span>(tree, <span class="dt">quiet =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb403-8" data-line-number="8">                    <span class="dt">calibration =</span> <span class="kw">makeChronosCalib</span>(tree, <span class="dt">age.min =</span> <span class="dv">10</span>, <span class="dt">age.max =</span> <span class="dv">10</span>))</a>
-<a class="sourceLine" id="cb403-9" data-line-number="9">    <span class="kw">class</span>(tree) &lt;-<span class="st"> &quot;phylo&quot;</span></a>
-<a class="sourceLine" id="cb403-10" data-line-number="10">    <span class="co">## Add the node labels</span></a>
-<a class="sourceLine" id="cb403-11" data-line-number="11">    tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">Nnode</span>(tree))</a>
-<a class="sourceLine" id="cb403-12" data-line-number="12">    <span class="co">## Add the root time</span></a>
-<a class="sourceLine" id="cb403-13" data-line-number="13">    tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages)</a>
-<a class="sourceLine" id="cb403-14" data-line-number="14">    <span class="kw">return</span>(tree)</a>
-<a class="sourceLine" id="cb403-15" data-line-number="15">}</a>
-<a class="sourceLine" id="cb403-16" data-line-number="16">trees &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">3</span>, <span class="kw">make.tree</span>(<span class="dv">10</span>), <span class="dt">simplify =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb384-2" data-line-number="2"><span class="co">## Matches the trees and the matrices</span></a>
+<a class="sourceLine" id="cb384-3" data-line-number="3"><span class="co">## A bunch of trees</span></a>
+<a class="sourceLine" id="cb384-4" data-line-number="4">make.tree &lt;-<span class="st"> </span><span class="cf">function</span>(n, <span class="dt">fun =</span> rtree) {</a>
+<a class="sourceLine" id="cb384-5" data-line-number="5">    <span class="co">## Make the tree</span></a>
+<a class="sourceLine" id="cb384-6" data-line-number="6">    tree &lt;-<span class="st"> </span><span class="kw">fun</span>(n)</a>
+<a class="sourceLine" id="cb384-7" data-line-number="7">    tree &lt;-<span class="st"> </span><span class="kw">chronos</span>(tree, <span class="dt">quiet =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb384-8" data-line-number="8">                    <span class="dt">calibration =</span> <span class="kw">makeChronosCalib</span>(tree, <span class="dt">age.min =</span> <span class="dv">10</span>, <span class="dt">age.max =</span> <span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb384-9" data-line-number="9">    <span class="kw">class</span>(tree) &lt;-<span class="st"> &quot;phylo&quot;</span></a>
+<a class="sourceLine" id="cb384-10" data-line-number="10">    <span class="co">## Add the node labels</span></a>
+<a class="sourceLine" id="cb384-11" data-line-number="11">    tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">Nnode</span>(tree))</a>
+<a class="sourceLine" id="cb384-12" data-line-number="12">    <span class="co">## Add the root time</span></a>
+<a class="sourceLine" id="cb384-13" data-line-number="13">    tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages)</a>
+<a class="sourceLine" id="cb384-14" data-line-number="14">    <span class="kw">return</span>(tree)</a>
+<a class="sourceLine" id="cb384-15" data-line-number="15">}</a>
+<a class="sourceLine" id="cb384-16" data-line-number="16">trees &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">3</span>, <span class="kw">make.tree</span>(<span class="dv">10</span>), <span class="dt">simplify =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## Warning: false convergence (8)</code></pre>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="kw">class</span>(trees) &lt;-<span class="st"> &quot;multiPhylo&quot;</span></a>
-<a class="sourceLine" id="cb405-2" data-line-number="2">trees</a></code></pre></div>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" data-line-number="1"><span class="kw">class</span>(trees) &lt;-<span class="st"> &quot;multiPhylo&quot;</span></a>
+<a class="sourceLine" id="cb386-2" data-line-number="2">trees</a></code></pre></div>
 <pre><code>## 3 phylogenetic trees</code></pre>
 <p>We can now simulate some ancestral states for the matrices in the example above to have multiple matrices associated with the multiple trees.</p>
-<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" data-line-number="1"><span class="co">## A function for running the ancestral states estimations</span></a>
-<a class="sourceLine" id="cb407-2" data-line-number="2">do.ace &lt;-<span class="st"> </span><span class="cf">function</span>(tree, matrix) {</a>
-<a class="sourceLine" id="cb407-3" data-line-number="3">    <span class="co">## Run one ace</span></a>
-<a class="sourceLine" id="cb407-4" data-line-number="4">    fun.ace &lt;-<span class="st"> </span><span class="cf">function</span>(character, tree) {</a>
-<a class="sourceLine" id="cb407-5" data-line-number="5">        results &lt;-<span class="st"> </span><span class="kw">ace</span>(character, <span class="dt">phy =</span> tree)<span class="op">$</span>ace</a>
-<a class="sourceLine" id="cb407-6" data-line-number="6">        <span class="kw">names</span>(results) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">Nnode</span>(tree))</a>
-<a class="sourceLine" id="cb407-7" data-line-number="7">        <span class="kw">return</span>(results)</a>
-<a class="sourceLine" id="cb407-8" data-line-number="8">    }</a>
-<a class="sourceLine" id="cb407-9" data-line-number="9">    <span class="co">## Run all ace</span></a>
-<a class="sourceLine" id="cb407-10" data-line-number="10">    <span class="kw">return</span>(<span class="kw">rbind</span>(matrix, <span class="kw">apply</span>(matrix, <span class="dv">2</span>, fun.ace, <span class="dt">tree =</span> tree)))</a>
-<a class="sourceLine" id="cb407-11" data-line-number="11">}</a>
-<a class="sourceLine" id="cb407-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb407-13" data-line-number="13"><span class="co">## All matrices</span></a>
-<a class="sourceLine" id="cb407-14" data-line-number="14">matrices &lt;-<span class="st"> </span><span class="kw">mapply</span>(do.ace, trees, matrix_list, <span class="dt">SIMPLIFY =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" data-line-number="1"><span class="co">## A function for running the ancestral states estimations</span></a>
+<a class="sourceLine" id="cb388-2" data-line-number="2">do.ace &lt;-<span class="st"> </span><span class="cf">function</span>(tree, matrix) {</a>
+<a class="sourceLine" id="cb388-3" data-line-number="3">    <span class="co">## Run one ace</span></a>
+<a class="sourceLine" id="cb388-4" data-line-number="4">    fun.ace &lt;-<span class="st"> </span><span class="cf">function</span>(character, tree) {</a>
+<a class="sourceLine" id="cb388-5" data-line-number="5">        results &lt;-<span class="st"> </span><span class="kw">ace</span>(character, <span class="dt">phy =</span> tree)<span class="op">$</span>ace</a>
+<a class="sourceLine" id="cb388-6" data-line-number="6">        <span class="kw">names</span>(results) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">Nnode</span>(tree))</a>
+<a class="sourceLine" id="cb388-7" data-line-number="7">        <span class="kw">return</span>(results)</a>
+<a class="sourceLine" id="cb388-8" data-line-number="8">    }</a>
+<a class="sourceLine" id="cb388-9" data-line-number="9">    <span class="co">## Run all ace</span></a>
+<a class="sourceLine" id="cb388-10" data-line-number="10">    <span class="kw">return</span>(<span class="kw">rbind</span>(matrix, <span class="kw">apply</span>(matrix, <span class="dv">2</span>, fun.ace, <span class="dt">tree =</span> tree)))</a>
+<a class="sourceLine" id="cb388-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb388-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb388-13" data-line-number="13"><span class="co">## All matrices</span></a>
+<a class="sourceLine" id="cb388-14" data-line-number="14">matrices &lt;-<span class="st"> </span><span class="kw">mapply</span>(do.ace, trees, matrix_list, <span class="dt">SIMPLIFY =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Let’s first see an example of time-slicing with one matrix and multiple trees.
 This assumes that your tip values (observed) and node values (estimated) are fixed with no error on them.
 It also assumes that the nodes in the matrix always corresponds to the node in the trees (in other words, the tree topologies are fixed):</p>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="co">## Making three &quot;proximity&quot; time slices across one tree</span></a>
-<a class="sourceLine" id="cb408-2" data-line-number="2">one_tree &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices[[<span class="dv">1</span>]], trees[[<span class="dv">1</span>]],</a>
-<a class="sourceLine" id="cb408-3" data-line-number="3">                           <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
-<a class="sourceLine" id="cb408-4" data-line-number="4">                           <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb408-5" data-line-number="5"><span class="co">## Making three &quot;proximity&quot; time slices across the three trees</span></a>
-<a class="sourceLine" id="cb408-6" data-line-number="6">three_tree &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices[[<span class="dv">1</span>]], trees,</a>
-<a class="sourceLine" id="cb408-7" data-line-number="7">                             <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
-<a class="sourceLine" id="cb408-8" data-line-number="8">                             <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb408-9" data-line-number="9"><span class="co">## Measuring disparity as the sum of variances and summarising it</span></a>
-<a class="sourceLine" id="cb408-10" data-line-number="10"><span class="kw">summary</span>(<span class="kw">dispRity</span>(one_tree, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" data-line-number="1"><span class="co">## Making three &quot;proximity&quot; time slices across one tree</span></a>
+<a class="sourceLine" id="cb389-2" data-line-number="2">one_tree &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices[[<span class="dv">1</span>]], trees[[<span class="dv">1</span>]],</a>
+<a class="sourceLine" id="cb389-3" data-line-number="3">                           <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
+<a class="sourceLine" id="cb389-4" data-line-number="4">                           <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb389-5" data-line-number="5"><span class="co">## Making three &quot;proximity&quot; time slices across the three trees</span></a>
+<a class="sourceLine" id="cb389-6" data-line-number="6">three_tree &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices[[<span class="dv">1</span>]], trees,</a>
+<a class="sourceLine" id="cb389-7" data-line-number="7">                             <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
+<a class="sourceLine" id="cb389-8" data-line-number="8">                             <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>, <span class="dt">time =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb389-9" data-line-number="9"><span class="co">## Measuring disparity as the sum of variances and summarising it</span></a>
+<a class="sourceLine" id="cb389-10" data-line-number="10"><span class="kw">summary</span>(<span class="kw">dispRity</span>(one_tree, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n   obs
 ## 1     8.3  3 0.080
 ## 2    4.15  5 2.903
 ## 3       0 10 3.320</code></pre>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">dispRity</span>(three_tree, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">dispRity</span>(three_tree, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1     7.9  3      0.250 0.088 0.165 0.307 0.360
 ## 2    3.95  5      0.256 0.133 0.191 1.579 2.771
 ## 3       0 10      3.320 3.320 3.320 3.320 3.320</code></pre>
 <p>This results show the effect of considering a tree distribution: in the first case (<code>one_tree</code>) the time slice at 3.95 Mya has a sum of variances of 2.9 but this values goes down to 0.256 in the second case (<code>three_tree</code>) which is due to the differences in branch lengths distributions:</p>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb412-2" data-line-number="2">slices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">7.9</span>, <span class="fl">3.95</span>, <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb412-3" data-line-number="3">fun.plot &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
-<a class="sourceLine" id="cb412-4" data-line-number="4">  <span class="kw">plot</span>(tree)</a>
-<a class="sourceLine" id="cb412-5" data-line-number="5">  <span class="kw">nodelabels</span>(tree<span class="op">$</span>node.label, <span class="dt">cex =</span> <span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb412-6" data-line-number="6">  <span class="kw">axisPhylo</span>()</a>
-<a class="sourceLine" id="cb412-7" data-line-number="7">  <span class="kw">abline</span>(<span class="dt">v =</span> tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span>slices)</a>
-<a class="sourceLine" id="cb412-8" data-line-number="8">}</a>
-<a class="sourceLine" id="cb412-9" data-line-number="9">silent &lt;-<span class="st"> </span><span class="kw">lapply</span>(trees, fun.plot)</a></code></pre></div>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb393-2" data-line-number="2">slices &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">7.9</span>, <span class="fl">3.95</span>, <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb393-3" data-line-number="3">fun.plot &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
+<a class="sourceLine" id="cb393-4" data-line-number="4">  <span class="kw">plot</span>(tree)</a>
+<a class="sourceLine" id="cb393-5" data-line-number="5">  <span class="kw">nodelabels</span>(tree<span class="op">$</span>node.label, <span class="dt">cex =</span> <span class="fl">0.8</span>)</a>
+<a class="sourceLine" id="cb393-6" data-line-number="6">  <span class="kw">axisPhylo</span>()</a>
+<a class="sourceLine" id="cb393-7" data-line-number="7">  <span class="kw">abline</span>(<span class="dt">v =</span> tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span>slices)</a>
+<a class="sourceLine" id="cb393-8" data-line-number="8">}</a>
+<a class="sourceLine" id="cb393-9" data-line-number="9">silent &lt;-<span class="st"> </span><span class="kw">lapply</span>(trees, fun.plot)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-113-1.png" width="672" /></p>
 <p>Note that in this example, the nodes are actually even different in each tree! The node <code>n4</code> for example, is not direct descendent of <code>t4</code> and <code>t6</code> in all trees!
 To fix that, it is possible to input a list of trees and a list of matrices that correspond to each tree in <code>chrono.subsets</code> by using the <code>bind.data = TRUE</code> option.
 In this case, the matrices need to all have the same row names and the trees all need the same labels as before:</p>
-<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="co">## Making three &quot;proximity&quot; time slices across three trees and three bound matrices</span></a>
-<a class="sourceLine" id="cb413-2" data-line-number="2">bound_data &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices, trees,</a>
-<a class="sourceLine" id="cb413-3" data-line-number="3">                             <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
-<a class="sourceLine" id="cb413-4" data-line-number="4">                             <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,</a>
-<a class="sourceLine" id="cb413-5" data-line-number="5">                             <span class="dt">time =</span> <span class="dv">3</span>,</a>
-<a class="sourceLine" id="cb413-6" data-line-number="6">                             <span class="dt">bind.data =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb413-7" data-line-number="7"><span class="co">## Making three &quot;proximity&quot; time slices across three trees and three matrices</span></a>
-<a class="sourceLine" id="cb413-8" data-line-number="8">unbound_data &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices, trees,</a>
-<a class="sourceLine" id="cb413-9" data-line-number="9">                               <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
-<a class="sourceLine" id="cb413-10" data-line-number="10">                               <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,</a>
-<a class="sourceLine" id="cb413-11" data-line-number="11">                               <span class="dt">time =</span> <span class="dv">3</span>,</a>
-<a class="sourceLine" id="cb413-12" data-line-number="12">                               <span class="dt">bind.data =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb413-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb413-14" data-line-number="14"><span class="co">## Measuring disparity as the sum of variances and summarising it</span></a>
-<a class="sourceLine" id="cb413-15" data-line-number="15"><span class="kw">summary</span>(<span class="kw">dispRity</span>(bound_data, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" data-line-number="1"><span class="co">## Making three &quot;proximity&quot; time slices across three trees and three bound matrices</span></a>
+<a class="sourceLine" id="cb394-2" data-line-number="2">bound_data &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices, trees,</a>
+<a class="sourceLine" id="cb394-3" data-line-number="3">                             <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
+<a class="sourceLine" id="cb394-4" data-line-number="4">                             <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,</a>
+<a class="sourceLine" id="cb394-5" data-line-number="5">                             <span class="dt">time =</span> <span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb394-6" data-line-number="6">                             <span class="dt">bind.data =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb394-7" data-line-number="7"><span class="co">## Making three &quot;proximity&quot; time slices across three trees and three matrices</span></a>
+<a class="sourceLine" id="cb394-8" data-line-number="8">unbound_data &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(matrices, trees,</a>
+<a class="sourceLine" id="cb394-9" data-line-number="9">                               <span class="dt">method =</span> <span class="st">&quot;continuous&quot;</span>,</a>
+<a class="sourceLine" id="cb394-10" data-line-number="10">                               <span class="dt">model =</span> <span class="st">&quot;proximity&quot;</span>,</a>
+<a class="sourceLine" id="cb394-11" data-line-number="11">                               <span class="dt">time =</span> <span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb394-12" data-line-number="12">                               <span class="dt">bind.data =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb394-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb394-14" data-line-number="14"><span class="co">## Measuring disparity as the sum of variances and summarising it</span></a>
+<a class="sourceLine" id="cb394-15" data-line-number="15"><span class="kw">summary</span>(<span class="kw">dispRity</span>(bound_data, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n obs.median  2.5%   25%   75% 97.5%
 ## 1     7.9  3       0.08 0.076 0.078 0.273 0.447
 ## 2    3.95  5       1.79 0.353 1.034 2.347 2.848
 ## 3       0 10       3.32 3.044 3.175 3.381 3.435</code></pre>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">dispRity</span>(unbound_data, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" data-line-number="1"><span class="kw">summary</span>(<span class="kw">dispRity</span>(unbound_data, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
 <pre><code>##   subsets  n obs.median 2.5%  25%  75% 97.5%
 ## 1     7.9  3       0.79 0.48 0.63 0.83  0.85
 ## 2    3.95  5       3.25 1.36 2.25 3.94  4.56

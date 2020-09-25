@@ -3224,34 +3224,10 @@ For example custom subsets \emph{vs.} time subsets:
 \CommentTok{## Default plotting}
 \KeywordTok{plot}\NormalTok{(cust_subsets)}
 \CommentTok{## Plotting with more arguments}
-\KeywordTok{plot}\NormalTok{(time_subsets, }\DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{),}
+\KeywordTok{plot}\NormalTok{(time_subsets, }\DataTypeTok{specific.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{dimensions =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)),}
      \DataTypeTok{main =} \StringTok{"Some }\CharTok{\textbackslash{}"}\StringTok{low}\CharTok{\textbackslash{}"}\StringTok{ dimensions"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning in plot.window(...): "dimensions" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy, type, ...): "dimensions" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "dimensions" is not
-## a graphical parameter
-
-## Warning in axis(side = side, at = at, labels = labels, ...): "dimensions" is not
-## a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in box(...): "dimensions" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in title(...): "dimensions" is not a graphical parameter
-\end{verbatim}
 
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-75-1.pdf}
 
@@ -3629,71 +3605,9 @@ Unfortunately, this implementation is slower that \texttt{geiger::dtt} (so if yo
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Plotting the results}
-\KeywordTok{plot}\NormalTok{(dispRity_dtt, }\DataTypeTok{fig.width=}\DecValTok{8}\NormalTok{, }\DataTypeTok{fig.height=}\DecValTok{8}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(dispRity_dtt)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning in plot.window(...): "fig.width" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.window(...): "fig.height" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy, type, ...): "fig.width" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy, type, ...): "fig.height" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "fig.width" is not
-## a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "fig.height" is not
-## a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "fig.width" is not
-## a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "fig.height" is not
-## a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in box(...): "fig.width" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in box(...): "fig.height" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in title(...): "fig.width" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in title(...): "fig.height" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy.coords(x, y), type = type, ...): "fig.width" is not a
-## graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy.coords(x, y), type = type, ...): "fig.height" is not a
-## graphical parameter
-\end{verbatim}
 
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-82-1.pdf}
 
