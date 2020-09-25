@@ -35,7 +35,8 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
     if(!missing(rarefaction)) {
         sample_length <- rep(rarefaction, length(central_tendency))
     } else {
-        sample_length <- summary_table$n[which(!is.na(summary_table[,3]))]
+        # sample_length <- summary_table$n[which(!is.na(summary_table[,3]))]
+        sample_length <- summary_table$n
     }
 
     ## Samples
@@ -45,13 +46,26 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
         subsets <- seq(1:length(data$subsets))
     }
     
-    subsets_out <- max(subsets) - subsets
+    subsets_out <- rev(max(subsets) - subsets)
+
+    ## Remove NAs
+    if(any(all_nas <- (is.na(central_tendency) | is.na(variance)))) {
+        ## Fixing orthograph for warning message
+        plural_s <- ifelse(length(which(all_nas)) > 1, "s", "")
+        plural_is <- ifelse(length(which(all_nas)) > 1, "are", "is")
+        warning(paste0("The following subset", plural_s, " contains NA and ", plural_is, " removed: ", paste0(rev(subsets)[all_nas], collapse = ", ")), ".")
+        ## Update everything
+        central_tendency <- central_tendency[!all_nas]
+        variance <- variance[!all_nas]
+        sample_length <- sample_length[!all_nas]
+        subsets_out <- subsets_out[!all_nas]
+    }
 
     ## Returns the data
     return(list("central_tendency" = central_tendency,
                 "variance" = variance,
                 "sample_size" = sample_length,
-                "subsets" = rev(subsets_out)))
+                "subsets" = subsets_out))
 }
 
 

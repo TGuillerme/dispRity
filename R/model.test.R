@@ -169,7 +169,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
             
             all.times <- max(model_test_input[[4]]) - model_test_input[[4]]                
 
-            if(length(all.times) > 31) {
+            if(length(all.times) >= 30) {
                 
                 ten.times <- all.times[(9: (length(all.times) - 11))]
                 run.time.split <- TRUE
@@ -232,7 +232,7 @@ model.test <- function(data, model, pool.variance = NULL, time.split = NULL, fix
 
     ## Get the model names
     names(weight_aicc) <- names(delta_aicc) <- names(aicc) <- names(aic) <- names(models_out) <- model_names
-    
+
     ## Generate the output format
     output <- list("aic.models" = cbind(aicc, delta_aicc, weight_aicc), "full.details" = models_out, "call" = match_call, "model.data" = model_test_input, "fixed.optima" = fixed.optima, "subsets" = subsets_names)
     class(output) <- c("dispRity", "model.test")
