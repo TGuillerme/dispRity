@@ -3,7 +3,7 @@ Release:
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.4.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.5-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 
@@ -12,12 +12,12 @@ Development (master):
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.4.4-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.5-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
 
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.3.3-6666ff.svg)](https://cran.r-project.org/)
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-4.0.0-6666ff.svg)](https://cran.r-project.org/)
 [![cran version](http://www.r-pkg.org/badges/version/dispRity)](https://cran.r-project.org/package=dispRity)
 [![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/dispRity)](https://github.com/metacran/cranlogs.app)
 ![](http://cranlogs.r-pkg.org/badges/dispRity)
@@ -71,27 +71,25 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 <!-- biorXiv preprint -->
 
 ## Latest patch notes
-* 2020/05/05 v1.4 *getting faster*
+* 2020/09/25 v1.5 *between groups*
 
-  * *New* metric: `angles`, a dimension level 2 metric that measures the angle of the main axis of each dimension in a matrix (in slopes, angles or degrees).
-  * *New* metric: `deviations`, a dimension level 2 metric that measures the deviation of each element from a hyperplane.
-  * Completely rewritten `char.diff` function. It now uses a way faster bitwise comparison architecture and comes with different distance methods as well as modular optional arguments on how to treat various special tokens (`"?"`, `"-"`, `"&"`, etc.). This also allows many more distance methods (now including `"hamming"`, `"manhattan"`, `"comparable"`, `"euclidean"`, `"maximum"` and `"mord"`).
-  * all `dispRity` functions can now intake a single `"matrix"` or a `"list"` of matrices with the same row names and dimensions. The disparity is then calculated directly on all the matrices and summarised as before through `summary.dispRity`. This option can be used to add uncertainty to disparity calculations. For example in `chrono.subsets` you can now provide a list of trees and a list of associated ancestral state estimates; or for `custom.subsets` you can provide a list of matrices with different values representing different estimations of the traits.
-  * update `reduce.matrix` to work with `vegan::vegdist` version 2.5-6 (thanks to [Jari Oksanen for the fix](https://github.com/TGuillerme/dispRity/pull/85)).
-  * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
-  * updated `...` argument bug PR#16223.
-  * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
-  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
-  * greatly improved speed of `chrono.subsets` with `method = "continuous` (now > 1000 times faster!).
-  * minor warning message fix for `plot.dispRity` with time slices.
-  * removed `paleotree` package dependency (though the links to this excellent package are still there!).
-  * increased `R` version requirement to `3.5`.
-  * `...` in `summary.dispRity` are now directly passed to `cent.tend` (e.g. `na.rm = TRUE`).
-  * added some time improvements in several phylo functions based on the `castor` package.
-  * updated all the package demo data to fit the new `dispRity` object architecture (see above). Note that this might effect the exact results of calculations using these demo datasets.
-  * you can now specify the dimensions of the matrix to make a disparity metric in `make.metric` through the `data.dim` option. 
-  * metrics passed in `dispRity` are now tested using the input data dimensions.
-  * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
+  * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
+  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to Gavin Thomas for the suggestion).
+  * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
+  * the `dispRity` function can now use `"between.groups"` metrics to calculate disparity between groups rather than within groups. The `make.metric` function is now modified to allow detection of metrics that can be applied between groups.
+  * *New* metric: `group.dist`, a dimension level 1 metric for between groups that measures the distance between two groups. By default, this is the minimum distance but the function takes the `probs` argument allowing the distance to be between, says, the 95% CI (`probs = c(0.025, 0.975))`) or between the centroids (`probs = c(0.5)`).
+  * *New* metric: `point.dist`, a dimension level 2 metric for between groups that measures the distance between the rows in `matrix` to a point in `matrix2`. That point is the centroid by default but the `point` argument can take any function.
+  * The `dispRity` package now depends on `R (>= 4.0.0)`.
+  * Many updates to the `dispRity` manual.
+  * Many minor speed improvements across the package
+  * Simplified syntax for the internal `plot.dispRity` S3 methods (for a potential `ggpRity`?). These changes should not be apparent at the user level but see the two removed options below:
+  * **removed** option in `plot.dispRity`: the `chrono.subsets` option (`TRUE`/`FALSE`) has now been removed. The time-slicing-ness is now automatically detected or can be specified by the user normally through `xlab`.
+  * **removed** option in `plot.dispRity`: the `ylim`, `ylab`, `xlab` and `col` options have now been removed. They are now handled through `...` as normal generic `plot(...)` arguments.
+  * **removed** option in `plot.dispRity`: the `elements.pch` option has now been removed. The `pch` of the plotted elements can now be passed like other options directly to elements (e.g. `elements = list(pch = 15)`).
+  * **removed** option in `plot.dispRity`: the `dimensions`, `matrix`, `nclass` and `coeff` options have now been removed. Any options for dual class plots (`randtest`, `dtt`, `model.test`, `type = "preview"` etc...) are now handled through the generic `specific.args` argument.
+  * *New* option in `dtt.dispRity`: `scale.time` allowing to scale the time axis (like in `geiger::dtt`) or not.
+  * when plotting `chrono.subsets` `dispRity` objects, the x label ticks are now rounded if possible (for nicer looking plots!).
+  * when using automatic `chrono.subsets` time slices, the name of the time slices (their age) is now rounded for aesthetics.
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
