@@ -144,13 +144,13 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
         }
 
 	    obs.data <- cbind(models.out$model.data$subsets, models.out$model.data$central_tendency)
-	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim)))), obs.data[,2])
+	    max.range <- range(c(sapply(outputs, function(x) range(unlist(x[[1]]$sim))), obs.data[,2]))
 	    op <- par(mfrow = c(ceiling(sqrt(n.models)), round(sqrt(n.models))))
 	    
 	    for(one_model in 1:n.models) {
 
             ## Plot the simualted model
-	    	plot(outputs[[one_model]], ylim = max.range, col = dots$col, xlab = dots$xlab, ylab = dots$ylab, main = paste0(rownames(results)[one_model], " (Delta aicc = ", round(results[one_model,2], digits = 2) ,")"))
+	    	plot(outputs[[one_model]], ylim = max.range, col = dots$col, ...)
 
             ## Plot the observed data
 	    	lines(obs.data[,2], col = col.obs, lwd = lwd.obs)

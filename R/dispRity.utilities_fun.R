@@ -84,8 +84,8 @@ check.subsets <- function(subsets, data) {
                     if(any(is.na(match(subsets, names(data$subsets))))) {
 
                         subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
-                        orthograph <- ifelse(length(subsets) == 1, "Subset", "Subsets")
-                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), "not found."))
+                        orthograph <- ifelse(length(subsets) == 1, "Subset ", "Subsets ")
+                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), " not found."))
 
                     }
                 } else {

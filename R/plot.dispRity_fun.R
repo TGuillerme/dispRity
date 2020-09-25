@@ -499,7 +499,18 @@ plot.continuous <- function(plot_params, data_params, add, density) {
         do.call(plot, plot_args)
 
         ## Add the axis labels
-        axis(1, 1:plot_params$helpers$n_points, plot_params$disparity$names[,"subsets"])
+        options(warn = -1)
+        try_round <- as.numeric(plot_params$disparity$names[,"subsets"])
+        options(warn = 0)
+
+        if(all(is.na(try_round))) {
+            ## Keep the ticks as they are
+            x_ticks <- plot_params$disparity$names[,"subsets"]
+        } else {
+            rounding <- 3-max(nchar(round(try_round)))
+            x_ticks <- round(try_round, digits = ifelse(rounding < 0, 0, rounding))
+        }
+        axis(1, 1:plot_params$helpers$n_points, x_ticks)
     } else {
         ## Plot the line
         do.call(lines, plot_args)
@@ -937,12 +948,10 @@ plot.model.test <- function(data, ...) {
 ## Plotting the model simulation results
 plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
 
-    ## Get inherited subsets (if exist)
-    if(!is.null(data$subsets)) {
-        subset_names <- rev(data$subsets)
-    } else {
-        subset_names <- rev(data$simulation.data$fix$subsets)
-    }
+    dots <- list(...)
+
+    ## Get inherited subsets (always from simulations to avoid NAs)
+    subset_names <- rev(data$simulation.data$fix$subsets)
 
     ## Set up the data parameters
     data_params <- list("distribution"   = TRUE,
@@ -951,15 +960,29 @@ plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
                         "between.groups" = FALSE,
                         "elements"       = subset_names,
                         "model.sim"      = TRUE)
-    
+    ## Model names
+    if(is.null(dots$main)) {
+        ## Get the title
+        if(is(data$model, "character")) {
+            plot_main <- data$model
+        } else {
+            plot_main <- paste0(rownames(data$model)[1], " model\nAICc: ", data$model[1, "aicc"], "; log.lik: ", data$model[1, "log.lik"])
+        }
+    } else {
+        plot_main <- dots$main
+    }
+
     ## Get the plotting parameters
+    options(warn = -1)
     plot_params <- get.plot.params(data, data_params, cent.tend, quantiles,
-                                   rarefaction_level = NULL,
-                                   type = "continuous",
-                                   elements_args = list(elements = FALSE),
-                                   observed_args = list(observed = FALSE),
-                                   ylab = paste0("Simulated data (", data$call[[3]], ")"),
-                                   xlab = "Time to the present")
+                    rarefaction_level = NULL,
+                    type = "continuous",
+                    elements_args = list(elements = FALSE),
+                    observed_args = list(observed = FALSE),
+                    xlab = ifelse(is.null(dots$xlab), "Time", dots$xlab),
+                    ylab = ifelse(is.null(dots$ylab), "Disparity", dots$ylab),
+                    main = plot_main)
+    options(warn = 0)
 
     ## Plot the simulated data
     plot.continuous(plot_params, data_params, add = add, density = density)
