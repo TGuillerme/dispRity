@@ -86,7 +86,7 @@ summary(median_centroid_test)
 plot(median_centroid_test)
 
 
-#' \dontrun{
+\dontrun{
 ## Note that the tests can take several minutes to run.
 
 ## Testing the sum of variance on all shifts
