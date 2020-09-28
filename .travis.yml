@@ -18,6 +18,9 @@ branches:
   except:
     - CRAN
 
+# cache packages to speed up build
+cache: packages
+
 # Code coverage
 r_packages:
   - covr
