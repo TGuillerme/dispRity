@@ -22,6 +22,12 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
+dispRity v1.5.1 (2020-09-29)
+=========================
+
+### MINOR IMPROVEMENT
+
+  * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
 
 dispRity v1.5.0 (2020-09-25) *between groups*
 =========================

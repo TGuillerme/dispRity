@@ -48,7 +48,12 @@ If you're using the `master` branch, see the [patch notes](https://github.com/TG
 
 The package is available in the [CRAN Task Views in Phylogenetics](https://CRAN.R-project.org/view=Phylogenetics).
 
-[How do I know which version to choose?](https://rawgit.com/TGuillerme/dispRity/master/inst/gitbook/_book/index.html#version)
+> Can't install the latest version of `dispRity` from the CRAN? 
+
+The latest `dispRity` package version 1.5 requires R 4.0 to run. If you don't have your R version updated to 4.0 you can either:
+  * 1) update your R version to the latest; this is  suggested: since the amazing R CRAN team always update their software for a good reason (and for free!);
+  * 2) if for some reason you really can't update your R version, you can simply download the released github version of the package using: `devtools::install_github("TGuillerme/dispRity", ref = "release")`.
+
 
 ## Vignettes and manuals
 
