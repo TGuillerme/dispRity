@@ -162,7 +162,7 @@ check.dispRity.data <- function(data) {
         all_classes <- unique(unlist(lapply(data, class)))
         
         # fix: Rv3 has 1 class for matrix, Rv4 2 (matrix & array)
-        if(!all(all_classes && c("matrix", "array"))) {
+        if(!all(all_classes %in% c("matrix", "array"))) {
             stop.call(match_call$data, is_error)
         } 
         ## Check the dimensions
