@@ -138,10 +138,10 @@ Examples of papers using the `dispRity` package
 
 The `dispRity` package was cited in [these papers](https://scholar.google.co.uk/scholar?cites=13311379491028410826&as_sdt=2005&sciodt=0,5&hl=en). Below is a list of specific papers using specific functionalities. These papers do not _only_ use the functionalities highlighted here (and the author do much more awesome science!) but this is just a list of references if you want an independent guide on how to use these functions:
 
-#### Measuring disparity with `dispRity`
+#### Measuring disparity with `dispRity` (using multiple metrics!)
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&sciodt=0%2C5&as_ylo=2020&cites=13311379491028410826&scipsc=&q=Early+high+rates+and+disparity+in+the+evolution+of+ichthyosaurs&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
-Moon BC, Stubbs TL. Early high rates and disparity in the evolution of ichthyosaurs. *Communications biology*. **2020** [DOI: 10.1038/s42003-020-0779-6](https://www.nature.com/articles/s42003-020-0779-6)
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+stem-archosaur+evolutionary+radiation+in+South+America&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
+Ezcurra MD, Montefeltro FC, Pinheiro FL, Trotteyn MJ, Gentil AR, Lehmann OE, Pradelli LA. The stem-archosaur evolutionary radiation in South America. Journal of South American Earth Sciences. 2020 Oct 7:102935. *Journal of South American Earth Sciences*. **2020** [DOI: 10.1016/j.jsames.2020.102935](https://www.sciencedirect.com/science/article/pii/S0895981120304788#bib109)
 
 #### Using different time binning with `chrono.subsets`
 
