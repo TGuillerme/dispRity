@@ -198,6 +198,8 @@ boot.matrix(BeckLee_mat50, bootstraps = 20,
             rarefaction = c(6:8, 3))
 ```
 
+> Note that using the `rarefaction` argument also bootstraps the data. In these examples, the function bootstraps the data (without rarefaction) AND also bootstraps the data with the different rarefaction levels.
+
 One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
 When missing, all dimensions from the ordinated matrix are used.
 
