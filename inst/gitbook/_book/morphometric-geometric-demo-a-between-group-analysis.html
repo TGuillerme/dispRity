@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-11-02" />
+<meta name="date" content="2020-11-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -289,14 +289,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">10.1</span> Before starting</h2>
 <p>Here we are going to use the <code>geomorph</code> <code>plethodon</code> dataset that is a set of 12 2D landmark coordinates for 40 specimens from two species of salamanders.
 This section will really quickly cover how to make a Procrustes sumperimposition analysis and create a <code>geomorph</code> data.frame to have data ready for the <code>dispRity</code> package.</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" data-line-number="1"><span class="co">## Loading geomorph</span></a>
-<a class="sourceLine" id="cb564-2" data-line-number="2"><span class="kw">library</span>(geomorph)</a>
-<a class="sourceLine" id="cb564-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb564-4" data-line-number="4"><span class="co">## Loading the plethodon dataset</span></a>
-<a class="sourceLine" id="cb564-5" data-line-number="5"><span class="kw">data</span>(plethodon)</a>
-<a class="sourceLine" id="cb564-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb564-7" data-line-number="7"><span class="co">## Running a simple Procrustes superimposition</span></a>
-<a class="sourceLine" id="cb564-8" data-line-number="8">gpa_plethodon &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land)</a></code></pre></div>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb538-1" data-line-number="1"><span class="co">## Loading geomorph</span></a>
+<a class="sourceLine" id="cb538-2" data-line-number="2"><span class="kw">library</span>(geomorph)</a>
+<a class="sourceLine" id="cb538-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb538-4" data-line-number="4"><span class="co">## Loading the plethodon dataset</span></a>
+<a class="sourceLine" id="cb538-5" data-line-number="5"><span class="kw">data</span>(plethodon)</a>
+<a class="sourceLine" id="cb538-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb538-7" data-line-number="7"><span class="co">## Running a simple Procrustes superimposition</span></a>
+<a class="sourceLine" id="cb538-8" data-line-number="8">gpa_plethodon &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land)</a></code></pre></div>
 <pre><code>## 
   |                                                                            
   |                                                                      |   0%
@@ -306,13 +306,13 @@ This section will really quickly cover how to make a Procrustes sumperimposition
   |============================                                          |  40%
   |                                                                            
   |======================================================================| 100%</code></pre>
-<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb566-1" data-line-number="1"><span class="co">## Making a geomorph data frame object with the species and sites attributes</span></a>
-<a class="sourceLine" id="cb566-2" data-line-number="2">gdf_plethodon &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(gpa_plethodon,</a>
-<a class="sourceLine" id="cb566-3" data-line-number="3">                                     <span class="dt">species =</span> plethodon<span class="op">$</span>species,</a>
-<a class="sourceLine" id="cb566-4" data-line-number="4">                                     <span class="dt">site =</span> plethodon<span class="op">$</span>site)</a></code></pre></div>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb540-1" data-line-number="1"><span class="co">## Making a geomorph data frame object with the species and sites attributes</span></a>
+<a class="sourceLine" id="cb540-2" data-line-number="2">gdf_plethodon &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(gpa_plethodon,</a>
+<a class="sourceLine" id="cb540-3" data-line-number="3">                                     <span class="dt">species =</span> plethodon<span class="op">$</span>species,</a>
+<a class="sourceLine" id="cb540-4" data-line-number="4">                                     <span class="dt">site =</span> plethodon<span class="op">$</span>site)</a></code></pre></div>
 <p>You can of course use your very own landmark coordinates dataset (though you will have to do some modifications in the scripts that will come below - they will be easy though!).</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb567-1" data-line-number="1"><span class="co">## You can replace the gdf_plethodon by your own geomorph data frame!</span></a>
-<a class="sourceLine" id="cb567-2" data-line-number="2">my_geomorph_data &lt;-<span class="st"> </span>gdf_plethodon</a></code></pre></div>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb541-1" data-line-number="1"><span class="co">## You can replace the gdf_plethodon by your own geomorph data frame!</span></a>
+<a class="sourceLine" id="cb541-2" data-line-number="2">my_geomorph_data &lt;-<span class="st"> </span>gdf_plethodon</a></code></pre></div>
 <div id="the-morphospace-1" class="section level3">
 <h3><span class="header-section-number">10.1.1</span> The morphospace</h3>
 <p>The first step of every disparity analysis is to define your morphospace.</p>
@@ -323,18 +323,18 @@ This section will really quickly cover how to make a Procrustes sumperimposition
 <p>OK, now we can go to the <em>second</em> step of every disparity analysis: defining the morphospace.
 Here we will define it with the ordination of all possible Procrustes superimposed plethodon landmark coordinates.
 You can do this directly in <code>dispRity</code> using the <code>geomorph.ordination</code> function that can input a geomorph data frame:</p>
-<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb568-1" data-line-number="1"><span class="co">## The morphospace</span></a>
-<a class="sourceLine" id="cb568-2" data-line-number="2">morphospace &lt;-<span class="st"> </span><span class="kw">geomorph.ordination</span>(gdf_plethodon)</a></code></pre></div>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb542-1" data-line-number="1"><span class="co">## The morphospace</span></a>
+<a class="sourceLine" id="cb542-2" data-line-number="2">morphospace &lt;-<span class="st"> </span><span class="kw">geomorph.ordination</span>(gdf_plethodon)</a></code></pre></div>
 <p>This automatically generates a <code>dispRity</code> object with the information of each groups. You can find more information about <code>dispRity</code> objects <a href="the-guts-of-the-disprity-package.html#disprity-object">here</a> but basically it summarises the content of your object without spamming your R console and is associated with many utility functions like <code>summary</code> or <code>plot</code>. For example here you can quickly visualise the two first dimensions of your space using the <code>plot</code> function:</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" data-line-number="1"><span class="co">## The dispRity object</span></a>
-<a class="sourceLine" id="cb569-2" data-line-number="2">morphospace</a></code></pre></div>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb543-1" data-line-number="1"><span class="co">## The dispRity object</span></a>
+<a class="sourceLine" id="cb543-2" data-line-number="2">morphospace</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 customised subsets for 40 elements in one matrix:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb571-1" data-line-number="1"><span class="co">## Plotting the morphospace</span></a>
-<a class="sourceLine" id="cb571-2" data-line-number="2"><span class="kw">plot</span>(morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb545-1" data-line-number="1"><span class="co">## Plotting the morphospace</span></a>
+<a class="sourceLine" id="cb545-2" data-line-number="2"><span class="kw">plot</span>(morphospace)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-186-1.png" width="672" /></p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb572-1" data-line-number="1"><span class="co">## Note that this only displays the two last groups (site.Allo and site.Symp) since they overlap!</span></a></code></pre></div>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb546-1" data-line-number="1"><span class="co">## Note that this only displays the two last groups (site.Allo and site.Symp) since they overlap!</span></a></code></pre></div>
 <p>The <code>dispRity</code> package function comes with a lot of documentation of examples so don’t hesitate to type <code>plot.dispRity</code> to check more plotting options.</p>
 </div>
 </div>
@@ -343,15 +343,15 @@ You can do this directly in <code>dispRity</code> using the <code>geomorph.ordin
 <p>Now that we have our morphospace, we can think about what we want to measure.
 Two aspects of disparity that would be interesting for our question (is there a difference in disparity between the different species of salamanders and between the different sites?) would be the differences in size in the morphospace (do both groups occupy the same amount of morphospace) and position in the morphospace (do the do groups occupy the same position in the morphospace?).</p>
 <p>To choose which metric would cover best these two aspects, please check the <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms">2020</a>)</span> paper and associated <a href="https://tguillerme.shinyapps.io/moms/">app</a>. Here we are going to use the procrustes variance (<code>geomorph::morphol.disparity</code>) for measuring the size of the trait space and the average displacements <span class="citation">(Thomas Guillerme, Puttick, et al. <a href="#ref-moms">2020</a>)</span> for the position in the trait space.</p>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb573-1" data-line-number="1"><span class="co">## Defining a the procrustes variance metric</span></a>
-<a class="sourceLine" id="cb573-2" data-line-number="2"><span class="co">## (as in geomorph::morphol.disparity)</span></a>
-<a class="sourceLine" id="cb573-3" data-line-number="3">proc.var &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {<span class="kw">sum</span>(matrix<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span><span class="kw">nrow</span>(matrix)}</a>
-<a class="sourceLine" id="cb573-4" data-line-number="4"><span class="co">## The size metric</span></a>
-<a class="sourceLine" id="cb573-5" data-line-number="5">test_size &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> proc.var,</a>
-<a class="sourceLine" id="cb573-6" data-line-number="6">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</a>
-<a class="sourceLine" id="cb573-7" data-line-number="7"><span class="kw">plot</span>(test_size)</a></code></pre></div>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb547-1" data-line-number="1"><span class="co">## Defining a the procrustes variance metric</span></a>
+<a class="sourceLine" id="cb547-2" data-line-number="2"><span class="co">## (as in geomorph::morphol.disparity)</span></a>
+<a class="sourceLine" id="cb547-3" data-line-number="3">proc.var &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {<span class="kw">sum</span>(matrix<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span><span class="kw">nrow</span>(matrix)}</a>
+<a class="sourceLine" id="cb547-4" data-line-number="4"><span class="co">## The size metric</span></a>
+<a class="sourceLine" id="cb547-5" data-line-number="5">test_size &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> proc.var,</a>
+<a class="sourceLine" id="cb547-6" data-line-number="6">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</a>
+<a class="sourceLine" id="cb547-7" data-line-number="7"><span class="kw">plot</span>(test_size)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-187-1.png" width="768" /></p>
-<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb574-1" data-line-number="1"><span class="kw">summary</span>(test_size)</a></code></pre></div>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb548-1" data-line-number="1"><span class="kw">summary</span>(test_size)</a></code></pre></div>
 <pre><code>##             10%  20%  30%  40%  50%  60%  70% 80% 90% 100%         slope
 ## random     0.01 0.01 0.00 0.00 0.00 0.00 0.00   0   0    0 -1.118941e-06
 ## size.inner   NA   NA 0.00 0.00 0.00 0.00 0.00   0   0    0  2.372016e-05
@@ -360,12 +360,12 @@ Two aspects of disparity that would be interesting for our question (is there a 
 ## random     6.743408e-01 -0.02908684
 ## size.inner 2.275776e-06  0.62938871
 ## size.outer 1.385063e-08  0.71980023</code></pre>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb576-1" data-line-number="1"><span class="co">## The position metric</span></a>
-<a class="sourceLine" id="cb576-2" data-line-number="2">test_position &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements),</a>
-<a class="sourceLine" id="cb576-3" data-line-number="3">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;position&quot;</span>))</a>
-<a class="sourceLine" id="cb576-4" data-line-number="4"><span class="kw">plot</span>(test_position)</a></code></pre></div>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb550-1" data-line-number="1"><span class="co">## The position metric</span></a>
+<a class="sourceLine" id="cb550-2" data-line-number="2">test_position &lt;-<span class="st"> </span><span class="kw">test.metric</span>(morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements),</a>
+<a class="sourceLine" id="cb550-3" data-line-number="3">                         <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;position&quot;</span>))</a>
+<a class="sourceLine" id="cb550-4" data-line-number="4"><span class="kw">plot</span>(test_position)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-187-2.png" width="768" /></p>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb577-1" data-line-number="1"><span class="kw">summary</span>(test_position)</a></code></pre></div>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb551-1" data-line-number="1"><span class="kw">summary</span>(test_position)</a></code></pre></div>
 <pre><code>##                  10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
 ## random          1.08 1.02 1.11 1.01 1.00 1.01 1.00 1.00 1.00    1 -0.002053952
 ## position.bottom 1.51 1.28 1.20 1.14 1.00 1.09 1.10 1.07 1.04    1 -0.004658626
@@ -380,28 +380,28 @@ Note that there are some caveats here but the selection of the metric is just fo
 The <code>dispRity</code> package always automatically sorts the dimensions levels: it will always run dimensions level 3 &gt; dimensions level 2 &gt; and dimensions level 1. In this case both <code>c(mean, displacements)</code> and <code>c(mean, displacements)</code> will result in actually running <code>mean(displacements(matrix))</code>.
 Alternatively you can define your metric prior to the disparity analysis like we did for the <code>proc.var</code> function.</p>
 <p>Anyways, we can measure disparity using these two metrics on all the groups as follows:</p>
-<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb579-1" data-line-number="1"><span class="co">## Bootstrapped disparity</span></a>
-<a class="sourceLine" id="cb579-2" data-line-number="2">disparity_size &lt;-<span class="st">  </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> proc.var)</a>
-<a class="sourceLine" id="cb579-3" data-line-number="3">disparity_position &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements))</a></code></pre></div>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb553-1" data-line-number="1"><span class="co">## Bootstrapped disparity</span></a>
+<a class="sourceLine" id="cb553-2" data-line-number="2">disparity_size &lt;-<span class="st">  </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> proc.var)</a>
+<a class="sourceLine" id="cb553-3" data-line-number="3">disparity_position &lt;-<span class="st"> </span><span class="kw">dispRity</span>(<span class="kw">boot.matrix</span>(morphospace), <span class="dt">metric =</span> <span class="kw">c</span>(mean, displacements))</a></code></pre></div>
 <p>Note that here we use the <code>boot.matrix</code> function for quickly bootstrapping the matrix.
 This is not an essential step in this kind of analysis but it allows to “reduce” the effect of outliers and create a distribution of disparity measures (rather than single point estimates).</p>
 </div>
 <div id="analyse-the-results" class="section level2">
 <h2><span class="header-section-number">10.3</span> Analyse the results</h2>
 <p>We can visualise the results using the <code>plot</code> function on the resulting disparity objects (or summarising them using <code>summary</code>):</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb580-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb580-3" data-line-number="3"><span class="kw">plot</span>(disparity_size, <span class="dt">main =</span> <span class="st">&quot;group sizes&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a>
-<a class="sourceLine" id="cb580-4" data-line-number="4"><span class="kw">plot</span>(disparity_position, <span class="dt">main =</span> <span class="st">&quot;group positions&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb554-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb554-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb554-3" data-line-number="3"><span class="kw">plot</span>(disparity_size, <span class="dt">main =</span> <span class="st">&quot;group sizes&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb554-4" data-line-number="4"><span class="kw">plot</span>(disparity_position, <span class="dt">main =</span> <span class="st">&quot;group positions&quot;</span>, <span class="dt">las =</span> <span class="dv">2</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-189-1.png" width="672" /></p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" data-line-number="1"><span class="co">## Summarising the results</span></a>
-<a class="sourceLine" id="cb581-2" data-line-number="2"><span class="kw">summary</span>(disparity_size)</a></code></pre></div>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb555-1" data-line-number="1"><span class="co">## Summarising the results</span></a>
+<a class="sourceLine" id="cb555-2" data-line-number="2"><span class="kw">summary</span>(disparity_size)</a></code></pre></div>
 <pre><code>##         subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1  species.Jord 20 0.005     0.005 0.004 0.005 0.005 0.006
 ## 2 species.Teyah 20 0.005     0.005 0.004 0.005 0.005 0.006
 ## 3     site.Allo 20 0.004     0.004 0.003 0.003 0.004 0.004
 ## 4     site.Symp 20 0.006     0.006 0.006 0.006 0.007 0.007</code></pre>
-<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" data-line-number="1"><span class="kw">summary</span>(disparity_position)</a></code></pre></div>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb557-1" data-line-number="1"><span class="kw">summary</span>(disparity_position)</a></code></pre></div>
 <pre><code>##         subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1  species.Jord 20 1.096     1.141 1.060 1.108 1.178 1.375
 ## 2 species.Teyah 20 1.070     1.095 1.042 1.069 1.132 1.384
@@ -409,8 +409,8 @@ This is not an essential step in this kind of analysis but it allows to “reduc
 ## 4     site.Symp 20 1.168     1.208 1.156 1.183 1.253 1.415</code></pre>
 <p>Just from looking at the data, we can guess that there is not much difference in terms of morphospace occupancy and position for the species but there is on for the sites (allopatric or sympatric).
 We can test it using a simple non-parametric mean difference test (e.g. <code>wilcox.test</code>) using the <code>dispRity</code> package.</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" data-line-number="1"><span class="co">## Testing the differences</span></a>
-<a class="sourceLine" id="cb585-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_size, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb559-1" data-line-number="1"><span class="co">## Testing the differences</span></a>
+<a class="sourceLine" id="cb559-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_size, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                              statistic: W
 ## species.Jord : species.Teyah         4476
@@ -428,7 +428,7 @@ We can test it using a simple non-parametric mean difference test (e.g. <code>wi
 ## species.Teyah : site.Allo    1.848444e-31
 ## species.Teyah : site.Symp    2.852025e-30
 ## site.Allo : site.Symp        1.537286e-33</code></pre>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" data-line-number="1"><span class="kw">test.dispRity</span>(disparity_position, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb561-1" data-line-number="1"><span class="kw">test.dispRity</span>(disparity_position, <span class="dt">test =</span> wilcox.test, <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                              statistic: W
 ## species.Jord : species.Teyah         7070

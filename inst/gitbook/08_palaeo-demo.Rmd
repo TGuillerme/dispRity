@@ -250,7 +250,7 @@ quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 ## Plotting the bootstrapped and rarefied results
 plot(disparity, type = "continuous", main = "bootstrapped results")
 plot(disparity, type = "continuous", main = "rarefied results",
-     rarefaciton = minimum_size)
+     rarefaction = minimum_size)
 ```
 
 Nice. The curves look pretty similar.
