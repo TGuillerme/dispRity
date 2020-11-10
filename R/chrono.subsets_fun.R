@@ -162,8 +162,12 @@ recursive.combine.list <- function(list) {
 ## Slice tree table
 fast.slice.table <- function(slice, tree) {
 
+    ## Get the root.time number of digits
+    # rounding <- nchar(sub("^.+[.]", "", sub("0+$", "", tree$root.time)))
+    rounding <- 3
+
     ## Get slice time
-    slice_time <- round(tree$root.time - slice, 9)
+    slice_time <- round(tree$root.time - slice, rounding)
 
     ## Root slice
     if(slice_time == 0) {
@@ -172,7 +176,7 @@ fast.slice.table <- function(slice, tree) {
     }
 
     ## Get nodes and tips ages
-    node_age <- round(castor::get_all_distances_to_root(tree), 9)
+    node_age <- round(castor::get_all_distances_to_root(tree), rounding)
 
     ## Find the edges that are crossed
     crossed_edges <- which((node_age[ tree$edge[, 1] ] < slice_time) & (node_age[tree$edge[, 2] ] >= slice_time))
