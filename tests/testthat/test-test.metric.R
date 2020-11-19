@@ -65,7 +65,7 @@ test_that("test.metric works", {
                         shifts = c("random", "size", "density", "position"), verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
     expect_equal(names(test), c("call", "results", "models"))
-    expect_equal(names(test$results), c("random", "size.inner", "size.outer", "density.higher", "density.lower", "position.bottom", "position.top"))
+    expect_equal(names(test$results), c("random", "size.inner", "size.outer", "density.higher", "density.lower", "position.top", "position.bottom"))
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
 

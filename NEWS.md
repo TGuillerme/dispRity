@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.2 (2020-11-10)
+dispRity v1.5.3 (2020-11-19)
 =========================
 
 ### MINOR IMPROVEMENT
@@ -32,6 +32,7 @@ dispRity v1.5.2 (2020-11-10)
 ### BUG FIXES
 
   * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to [Mario Corio](https://mariocoiro.wordpress.com/) for finding this one).
+  * Fixed bug in `test.metric` plots that now display correctly the "top" and "bottom" changes for the "position" shift.
 
 dispRity v1.5.0 (2020-09-25) *between groups*
 =========================
