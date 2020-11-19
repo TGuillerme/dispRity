@@ -50,21 +50,6 @@ NULL
 #' @seealso BeckLee_disparity disparity
 NULL
 
-# #' McClean dataset
-# #'
-# #' Example datasets from McClean (unpublished).
-# #'
-# #' \itemize{
-# #'   \item \code{ordination} The ordinated matrix based on 40 sites and 20 dimensions
-# #'   \item \code{treatment} A vector of \code{character} treatment types (\code{"a"} or \code{"b"})
-# #'   \item \code{depth} A vector of \code{numeric} depth types (\code{1} or \code{2})
-# #' }
-# #'
-# #' @format one matrix and two vectors.
-# #' @name McClean_data
-# #' @seealso BeckLee_data disparity
-# NULL
-
 #' disparity
 #'
 #' An example of a \code{dispRity} object.
@@ -134,3 +119,56 @@ NULL
 #' }
 # save(BeckLee_disparity, file = "../Data/BeckLee_disparity.rda")
 NULL
+
+
+#' @title Demo datasets
+#'
+#' @description A set six trait spaces with different groups and different dimensions.
+#'
+#' @details
+#' 
+#' The content of these datasets and the pipeline to build them is described in details in Guillerme et al 2020.
+#' 
+#' \itemize{
+#'   \item \code{Beck2014} A palaeobiology study of mammals. The data is a 105 dimensions ordination (PCO) of the distances between 106 mammals based on discrete morphological characters.
+#'   \item \code{Wright2017} A palaeobiology study of crinoids. The data is a 41 dimensions ordination (PCO) of the distances between 42 crinoids based on discrete morphological characters.
+#'   \item \code{Marcy2016} A geometric morphometric study of gophers (rodents). The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 454 gopher skulls.
+#'   \item \code{Hopkins2016} A geometric morphometric study of trilobites. The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 46 trilobites cephala.
+#'   \item \code{Jones2015} An ecological landscape study. The data is a 47 dimensions ordination (PCO) of the Jaccard distances between 48 field sites based on species composition.
+#'   \item \code{Healy2019} A life history analysis of the pace of life in animals. The data is a 6 dimensions ordination (PCA) of 6 life history traits from 285 animal species.
+#' }
+#' 
+#' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452}
+#' @references Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
+#' @references Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society B: Biological Sciences, 281(1793), 20141278.
+#' @references Wright, D. F. (2017). Bayesian estimation of fossil phylogenies and the evolution of early to middle Paleozoic crinoids (Echinodermata). Journal of Paleontology, 91(4), 799-814.
+#' @references Marcy, A. E., Hadly, E. A., Sherratt, E., Garland, K., & Weisbecker, V. (2016). Getting a head in hard soils: convergent skull evolution and divergent allometric patterns explain shape variation in a highly diverse genus of pocket gophers (Thomomys). BMC evolutionary biology, 16(1), 207.
+#' @references Hopkins, M.J. and Pearson, J.K., 2016. Non-linear ontogenetic shape change in Cryptolithus tesselatus (Trilobita) using three-dimensional geometric morphometrics. Palaeontologia Electronica, 19(3), pp.1-54.
+#' @references Jones, N. T., Germain, R. M., Grainger, T. N., Hall, A. M., Baldwin, L., & Gilbert, B. (2015). Dispersal mode mediates the effect of patch size and patch connectivity on metacommunity diversity. Journal of Ecology, 103(4), 935-944.
+#' @references Healy, K., Ezard, T.H., Jones, O.R., Salguero-Gomez, R. and Buckley, Y.M., 2019. Animal life history is shaped by the pace of life and the distribution of age-specific mortality and reproduction. Nature ecology & evolution, p.1.
+#' 
+#' @name demo_data
+#' 
+#' @examples
+#' data(demo_data)
+#' 
+#' ## Loading the Beck and Lee 2014 demo data
+#' demo_data$beck
+#' 
+#' ## Loading the Wright 2017 demo data
+#' demo_data$wright
+#'
+#' ## Loading the Marcy et al. 2015 demo data
+#' demo_data$marcy
+#' 
+#' ## Loading the Hopkins and Pearson 2016 demo data
+#' demo_data$hopkins
+#' 
+#' ## Loading the Jones et al. 2015 demo data
+#' demo_data$jones
+#' 
+#' ## Loading the Healy et al. 2019 demo data
+#' demo_data$healy
+ 
+NULL
+
