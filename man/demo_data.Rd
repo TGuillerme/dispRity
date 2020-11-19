@@ -13,12 +13,12 @@ A set six trait spaces with different groups and different dimensions.
 The content of these datasets and the pipeline to build them is described in details in Guillerme et al 2020.
 
 \itemize{
-  \item \code{Beck2014} A palaeobiology study of mammals. The data is a 105 dimensions ordination (PCO) of the distances between 106 mammals based on discrete morphological characters.
-  \item \code{Wright2017} A palaeobiology study of crinoids. The data is a 41 dimensions ordination (PCO) of the distances between 42 crinoids based on discrete morphological characters.
-  \item \code{Marcy2016} A geometric morphometric study of gophers (rodents). The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 454 gopher skulls.
-  \item \code{Hopkins2016} A geometric morphometric study of trilobites. The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 46 trilobites cephala.
-  \item \code{Jones2015} An ecological landscape study. The data is a 47 dimensions ordination (PCO) of the Jaccard distances between 48 field sites based on species composition.
-  \item \code{Healy2019} A life history analysis of the pace of life in animals. The data is a 6 dimensions ordination (PCA) of 6 life history traits from 285 animal species.
+  \item \code{beck} A palaeobiology study of mammals. The data is a 105 dimensions ordination (PCO) of the distances between 106 mammals based on discrete morphological characters.
+  \item \code{wright} A palaeobiology study of crinoids. The data is a 41 dimensions ordination (PCO) of the distances between 42 crinoids based on discrete morphological characters.
+  \item \code{marcy} A geometric morphometric study of gophers (rodents). The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 454 gopher skulls.
+  \item \code{hopkins} A geometric morphometric study of trilobites. The data is a 134 dimensions ordination (PCA) the Procrustes superimposition of landmarks from 46 trilobites cephala.
+  \item \code{jones} An ecological landscape study. The data is a 47 dimensions ordination (PCO) of the Jaccard distances between 48 field sites based on species composition.
+  \item \code{healy} A life history analysis of the pace of life in animals. The data is a 6 dimensions ordination (PCA) of 6 life history traits from 285 animal species.
 }
 }
 \examples{
