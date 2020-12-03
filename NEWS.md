@@ -22,12 +22,21 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.1 (2020-09-29)
+dispRity v1.5.3 (2020-11-19)
 =========================
+
+### NEW FEATURES
+
+ * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020]() and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://www.researchgate.net/profile/Melanie_Hopkins3/publication/320543447_Non-linear_ontogenetic_shape_change_in_Cryptolithus_tesselatus_Trilobita_using_three-dimensional_geometric_morphometrics/links/59f7307d0f7e9b553ebd5e03/Non-linear-ontogenetic-shape-change-in-Cryptolithus-tesselatus-Trilobita-using-three-dimensional-geometric-morphometrics.pdf), [Jones et al. 2015](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2745.12405), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
 
 ### MINOR IMPROVEMENT
 
   * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
+
+### BUG FIXES
+
+  * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to [Mario Corio](https://mariocoiro.wordpress.com/) for finding this one).
+  * Fixed bug in `test.metric` plots that now display correctly the "top" and "bottom" changes for the "position" shift.
 
 dispRity v1.5.0 (2020-09-25) *between groups*
 =========================

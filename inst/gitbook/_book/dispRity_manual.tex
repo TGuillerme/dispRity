@@ -113,7 +113,7 @@
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}}),
 Mark Puttick (\href{mailto:marknputtick@gmail.com}{\nolinkurl{marknputtick@gmail.com}}) and
 Natalie Cooper (\href{mailto:natalie.cooper@nhm.ac.uk}{\nolinkurl{natalie.cooper@nhm.ac.uk}})}
-\date{2020-09-25}
+\date{2020-11-10}
 
 \begin{document}
 \maketitle
@@ -128,7 +128,7 @@ Natalie Cooper (\href{mailto:natalie.cooper@nhm.ac.uk}{\nolinkurl{natalie.cooper
 This is a package for measuring disparity (aka multidimensional space occupancy) in \texttt{R}.
 It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
 Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is \emph{not} restricted to any type of matrices!
-This manual is based on the version 1.4.
+This manual is based on the version 1.5.
 
 \hypertarget{what-is-disprity}{%
 \section{\texorpdfstring{What is \texttt{dispRity}?}{What is dispRity?}}\label{what-is-disprity}}
@@ -169,7 +169,7 @@ Alternatively, for the most up to data version and some functionalities not comp
 \end{Highlighting}
 \end{Shaded}
 
-Note this uses the \texttt{release} branch (1.4).
+Note this uses the \texttt{release} branch (1.5).
 For the piping-hot (but potentially unstable) version, you can change the argument \texttt{ref\ =\ release} to \texttt{ref\ =\ master}.
 \texttt{dispRity} depends mainly on the \texttt{ape} package and uses functions from several other packages (\texttt{ade4}, \texttt{geometry}, \texttt{grDevices}, \texttt{hypervolume}, \texttt{paleotree}, \texttt{snow}, \texttt{Claddis}, \texttt{geomorph} and \texttt{RCurl}).
 
@@ -1160,6 +1160,10 @@ It can also be set to one or more \texttt{numeric} values to only rarefy to the 
 ## 50 elements in one matrix with 48 dimensions.
 ## Data was bootstrapped 20 times (method:"full") and rarefied to 6, 7, 8, 3 elements.
 \end{verbatim}
+
+\begin{quote}
+Note that using the \texttt{rarefaction} argument also bootstraps the data. In these examples, the function bootstraps the data (without rarefaction) AND also bootstraps the data with the different rarefaction levels.
+\end{quote}
 
 One other argument is \texttt{dimensions} that specifies how many dimensions from the matrix should be used for further analysis.
 When missing, all dimensions from the ordinated matrix are used.
@@ -3033,91 +3037,12 @@ In addition to the classic \texttt{plot} arguments, the function can also take a
     \DataTypeTok{quantiles =} \KeywordTok{c}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{10}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{10}\NormalTok{)),}
     \DataTypeTok{cent.tend =}\NormalTok{ sd, }\DataTypeTok{type =} \StringTok{"c"}\NormalTok{, }\DataTypeTok{elements =} \OtherTok{TRUE}\NormalTok{,}
     \DataTypeTok{col =} \KeywordTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{, }\KeywordTok{rainbow}\NormalTok{(}\DecValTok{10}\NormalTok{)),}
-    \DataTypeTok{ylab =} \KeywordTok{c}\NormalTok{(}\StringTok{"Disparity"}\NormalTok{, }\StringTok{"Diversity"}\NormalTok{), }\DataTypeTok{chrono.subsets =} \OtherTok{FALSE}\NormalTok{,}
+    \DataTypeTok{ylab =} \KeywordTok{c}\NormalTok{(}\StringTok{"Disparity"}\NormalTok{, }\StringTok{"Diversity"}\NormalTok{),}
     \DataTypeTok{xlab =} \StringTok{"Time (in in units from past to present)"}\NormalTok{,}
     \DataTypeTok{observed =} \OtherTok{TRUE}\NormalTok{,}
     \DataTypeTok{main =} \StringTok{"Many more options..."}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning in plot.window(...): "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy, type, ...): "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in axis(side = side, at = at, labels = labels, ...): "chrono.subsets" is
-## not a graphical parameter
-
-## Warning in axis(side = side, at = at, labels = labels, ...): "chrono.subsets" is
-## not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in box(...): "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in title(...): "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in (function (x, y = NULL, density = NULL, angle = 45, border = NULL, :
-## "chrono.subsets" is not a graphical parameter
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in plot.xy(xy.coords(x, y), type = type, ...): "chrono.subsets" is not a
-## graphical parameter
-\end{verbatim}
 
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-72-1.pdf}
 
@@ -4682,18 +4607,9 @@ We can compare this approach to an ordination one:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Ordinating the eurodist matrix}
-\NormalTok{euro_ord <-}\StringTok{ }\KeywordTok{cmdscale}\NormalTok{(eurodist, }\DataTypeTok{k =} \KeywordTok{nrow}\NormalTok{(eurodist) }\OperatorTok{-}\StringTok{ }\DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\CommentTok{## Ordinating the eurodist matrix (with 11 dimensions)}
+\NormalTok{euro_ord <-}\StringTok{ }\KeywordTok{cmdscale}\NormalTok{(eurodist, }\DataTypeTok{k =} \DecValTok{11}\NormalTok{)}
 
-\begin{verbatim}
-## Warning in cmdscale(eurodist, k = nrow(eurodist) - 2): only 11 of the first 19
-## eigenvalues are > 0
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{## Calculating disparity on the bootstrapped and rarefied subset data}
 \NormalTok{euro_ord_disp <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(}\KeywordTok{boot.matrix}\NormalTok{(}\KeywordTok{custom.subsets}\NormalTok{(euro_ord, }\DataTypeTok{group =}
         \KeywordTok{list}\NormalTok{(}\StringTok{"Northern"}\NormalTok{ =}\StringTok{ }\NormalTok{Northern, }\StringTok{"Southern"}\NormalTok{ =}\StringTok{ }\NormalTok{Southern)), }\DataTypeTok{rarefaction =} \DecValTok{9}\NormalTok{),}
@@ -6776,7 +6692,7 @@ This is expected because of the simplicity of these parameters.
 \hypertarget{palaeobiology-demo-disparity-through-time-and-within-groups}{%
 \chapter{Palaeobiology demo: disparity-through-time and within groups}\label{palaeobiology-demo-disparity-through-time-and-within-groups}}
 
-This demo aims to give quick overview of the \texttt{dispRity} package (v.1.4) for palaeobiology analyses of disparity, including disparity through time analyses.
+This demo aims to give quick overview of the \texttt{dispRity} package (v.1.5) for palaeobiology analyses of disparity, including disparity through time analyses.
 
 This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from \citet{beckancient2014}.
 
@@ -6985,28 +6901,14 @@ We will also provide to the function a table containing the first and last occur
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Creating the vector of time bins ages}
-\NormalTok{(time_bins <-}\StringTok{ }\KeywordTok{rev}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{0}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{20}\NormalTok{)))}
-\end{Highlighting}
-\end{Shaded}
+\NormalTok{time_bins <-}\StringTok{ }\KeywordTok{rev}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{0}\NormalTok{, }\DataTypeTok{to =} \DecValTok{100}\NormalTok{, }\DataTypeTok{by =} \DecValTok{20}\NormalTok{))}
 
-\begin{verbatim}
-## [1] 100  80  60  40  20   0
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{## Splitting the morphospace using the chrono.subsets function}
-\NormalTok{(binned_morphospace <-}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ my_matrix, }\DataTypeTok{tree =}\NormalTok{ my_tree,}
+\NormalTok{binned_morphospace <-}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ my_matrix, }\DataTypeTok{tree =}\NormalTok{ my_tree,}
     \DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{, }\DataTypeTok{time =}\NormalTok{ time_bins, }\DataTypeTok{inc.nodes =} \OtherTok{FALSE}\NormalTok{,}
-    \DataTypeTok{FADLAD =}\NormalTok{ my_fadlad))}
+    \DataTypeTok{FADLAD =}\NormalTok{ my_fadlad)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-\end{verbatim}
 
 The output object is a \texttt{dispRity} object (see more about that \protect\hyperlink{The-guts-of-the-dispRity-package}{here}.
 In brief, \texttt{dispRity} objects are lists of different elements (i.e.~disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the \texttt{R} console with superfluous output.
@@ -7090,43 +6992,14 @@ The \texttt{boot.matrix} function bootstraps the \texttt{dispRity} object and th
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Bootstrapping each time subset 100 times (default)}
-\NormalTok{(boot_bin_morphospace <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(binned_morphospace))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:"full").
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{## Getting the minimum number of rows (i.e. taxa) in the time subsets}
-\KeywordTok{min}\NormalTok{(}\KeywordTok{size.subsets}\NormalTok{(boot_bin_morphospace))}
-\end{Highlighting}
-\end{Shaded}
+\NormalTok{minimum_size <-}\StringTok{ }\KeywordTok{min}\NormalTok{(}\KeywordTok{size.subsets}\NormalTok{(binned_morphospace))}
 
-\begin{verbatim}
-## [1] 6
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{## Bootstrapping each time subset 100 times and rarefying them }
-\NormalTok{(rare_bin_morphospace <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(binned_morphospace, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{,}
-    \DataTypeTok{rarefaction =} \DecValTok{6}\NormalTok{))}
+\NormalTok{rare_bin_morphospace <-}\StringTok{ }\KeywordTok{boot.matrix}\NormalTok{(binned_morphospace, }\DataTypeTok{bootstraps =} \DecValTok{100}\NormalTok{,}
+    \DataTypeTok{rarefaction =}\NormalTok{ minimum_size)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:"full") and rarefied to 6 elements.
-\end{verbatim}
 
 \begin{quote}
 Note how information is adding up to the \texttt{dispRity} object.
@@ -7159,13 +7032,13 @@ For example here, let see if the sum of variances picks up changes in size but n
 
 \begin{verbatim}
 ##             10%  20%  30%  40%  50%  60%  70%  80%  90% 100%         slope
-## random     2.59 2.47 2.52 2.52 2.51 2.53 2.52 2.52 2.51 2.52 -5.969668e-05
-## size.inner 2.23 2.23 2.25 2.28 2.31 2.35 2.39 2.43 2.48 2.52  3.656145e-03
-## size.outer 2.45 2.51 2.55 2.64 2.52 2.62 2.60 2.57 2.54 2.52  3.197697e-04
-##                 p_value    R^2(adj)
-## random     7.901693e-01 -0.03305151
-## size.inner 5.138104e-18  0.95020115
-## size.outer 4.129151e-01 -0.01113691
+## random     2.59 2.56 2.53 2.51 2.53 2.49 2.51 2.52 2.52 2.52 -0.0002816154
+## size.inner 2.23 2.19 2.25 2.28   NA 2.35 2.39 2.44 2.47 2.52  0.0037493613
+## size.outer 2.50 2.54 2.59 2.60 2.52 2.62 2.60 2.57 2.52 2.52  0.0003060366
+##                 p_value     R^2(adj)
+## random     2.232307e-01  0.018663764
+## size.inner 1.064444e-18  0.966641721
+## size.outer 3.474469e-01 -0.003002325
 \end{verbatim}
 
 \begin{Shaded}
@@ -7186,33 +7059,10 @@ Anyways, let's calculate the sum of variances on our bootstrapped and rarefied m
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Calculating disparity for the bootstrapped data}
-\NormalTok{(boot_disparity <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(boot_bin_morphospace, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances)))}
+\CommentTok{## Calculating disparity for the bootstrapped and rarefied data}
+\NormalTok{disparity <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(rare_bin_morphospace , }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances))}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:"full").
-## Disparity was calculated as: c(sum, variances).
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{## Calculating disparity for the rarefied data}
-\NormalTok{(rare_disparity <-}\StringTok{ }\KeywordTok{dispRity}\NormalTok{(rare_bin_morphospace, }\DataTypeTok{metric =} \KeywordTok{c}\NormalTok{(sum, variances)))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:"full") and rarefied to 6 elements.
-## Disparity was calculated as: c(sum, variances).
-\end{verbatim}
 
 To display the actual calculated scores, we need to summarise the disparity object using the S3 method \texttt{summary} that is applied to a \texttt{dispRity} object (see \texttt{?summary.dispRity} for more details).
 By the way, as for any \texttt{R} package, you can refer to the help files for each individual function for more details.
@@ -7220,36 +7070,21 @@ By the way, as for any \texttt{R} package, you can refer to the help files for e
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Summarising the disparity results}
-\KeywordTok{summary}\NormalTok{(boot_disparity)}
+\KeywordTok{summary}\NormalTok{(disparity)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 100 - 80  8 2.207     1.962 1.615 1.876 2.017 2.172
-## 2  80 - 60 15 2.315     2.158 1.975 2.100 2.207 2.297
-## 3  60 - 40 13 2.435     2.257 2.080 2.202 2.297 2.361
-## 4  40 - 20  6 2.604     2.165 1.587 2.032 2.320 2.472
-## 5   20 - 0 10 2.491     2.238 1.992 2.136 2.326 2.408
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{summary}\NormalTok{(rare_disparity)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 2.207     1.975 1.672 1.905 2.059 2.129
-## 2 100 - 80  6    NA     1.933 1.369 1.811 2.082 2.230
-## 3  80 - 60 15 2.315     2.144 1.991 2.084 2.196 2.289
-## 4  80 - 60  6    NA     2.187 1.827 2.061 2.312 2.465
-## 5  60 - 40 13 2.435     2.271 2.103 2.205 2.311 2.370
-## 6  60 - 40  6    NA     2.249 1.733 2.108 2.368 2.507
-## 7  40 - 20  6 2.604     2.191 1.370 2.053 2.329 2.452
-## 8   20 - 0 10 2.491     2.262 1.927 2.166 2.318 2.426
-## 9   20 - 0  6    NA     2.288 1.743 2.130 2.354 2.515
+## 2 100 - 80  6    NA     1.923 1.477 1.768 2.065 2.222
+## 3  80 - 60 15 2.315     2.167 1.979 2.111 2.227 2.308
+## 4  80 - 60  6    NA     2.167 1.831 2.055 2.300 2.460
+## 5  60 - 40 13 2.435     2.244 2.006 2.183 2.304 2.384
+## 6  60 - 40  6    NA     2.284 1.683 2.140 2.383 2.532
+## 7  40 - 20  6 2.604     2.206 1.628 2.026 2.388 2.604
+## 8   20 - 0 10 2.491     2.257 1.958 2.170 2.326 2.421
+## 9   20 - 0  6    NA     2.302 1.766 2.143 2.366 2.528
 \end{verbatim}
 
 \begin{quote}
@@ -7268,8 +7103,9 @@ For that we can use the \texttt{plot} S3 function to plot the \texttt{dispRity} 
 \KeywordTok{quartz}\NormalTok{(}\DataTypeTok{width =} \DecValTok{10}\NormalTok{, }\DataTypeTok{height =} \DecValTok{5}\NormalTok{) ; }\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =}\NormalTok{ (}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)), }\DataTypeTok{bty =} \StringTok{"n"}\NormalTok{)}
 
 \CommentTok{## Plotting the bootstrapped and rarefied results}
-\KeywordTok{plot}\NormalTok{(boot_disparity, }\DataTypeTok{type =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"bootstrapped results"}\NormalTok{)}
-\KeywordTok{plot}\NormalTok{(rare_disparity, }\DataTypeTok{type =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"rarefied results"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(disparity, }\DataTypeTok{type =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"bootstrapped results"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(disparity, }\DataTypeTok{type =} \StringTok{"continuous"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"rarefied results"}\NormalTok{,}
+     \DataTypeTok{rarefaction =}\NormalTok{ minimum_size)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -7293,7 +7129,7 @@ Also, we need to apply a p-value correction (e.g.~Bonferroni correction) to corr
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Testing the differences between bins in the bootstrapped dataset.}
-\KeywordTok{test.dispRity}\NormalTok{(boot_disparity, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{comparison =} \StringTok{"sequential"}\NormalTok{,}
+\KeywordTok{test.dispRity}\NormalTok{(disparity, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{comparison =} \StringTok{"sequential"}\NormalTok{,}
     \DataTypeTok{correction =} \StringTok{"bonferroni"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -7301,41 +7137,41 @@ Also, we need to apply a p-value correction (e.g.~Bonferroni correction) to corr
 \begin{verbatim}
 ## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          791
-## 80 - 60 : 60 - 40          1946
-## 60 - 40 : 40 - 20          6208
-## 40 - 20 : 20 - 0           4225
+## 100 - 80 : 80 - 60          730
+## 80 - 60 : 60 - 40          2752
+## 60 - 40 : 40 - 20          5461
+## 40 - 20 : 20 - 0           4506
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 3.362697e-24
-## 80 - 60 : 60 - 40  3.437652e-13
-## 60 - 40 : 40 - 20  1.269261e-02
-## 40 - 20 : 20 - 0   2.337298e-01
+## 100 - 80 : 80 - 60 7.081171e-25
+## 80 - 60 : 60 - 40  1.593988e-07
+## 60 - 40 : 40 - 20  1.000000e+00
+## 40 - 20 : 20 - 0   9.115419e-01
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Testing the differences between bins in the rarefied dataset.}
-\KeywordTok{test.dispRity}\NormalTok{(rare_disparity, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{comparison =} \StringTok{"sequential"}\NormalTok{,}
-    \DataTypeTok{correction =} \StringTok{"bonferroni"}\NormalTok{)}
+\KeywordTok{test.dispRity}\NormalTok{(disparity, }\DataTypeTok{test =}\NormalTok{ wilcox.test, }\DataTypeTok{comparison =} \StringTok{"sequential"}\NormalTok{,}
+    \DataTypeTok{correction =} \StringTok{"bonferroni"}\NormalTok{, }\DataTypeTok{rarefaction  =}\NormalTok{ minimum_size)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          963
-## 80 - 60 : 60 - 40          1553
-## 60 - 40 : 40 - 20          5975
-## 40 - 20 : 20 - 0           4288
+## 100 - 80 : 80 - 60         1518
+## 80 - 60 : 60 - 40          3722
+## 60 - 40 : 40 - 20          5676
+## 40 - 20 : 20 - 0           4160
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 2.415081e-22
-## 80 - 60 : 60 - 40  1.491356e-16
-## 60 - 40 : 40 - 20  6.904555e-02
-## 40 - 20 : 20 - 0   3.285062e-01
+## 100 - 80 : 80 - 60 7.158946e-17
+## 80 - 60 : 60 - 40  7.199018e-03
+## 60 - 40 : 40 - 20  3.953427e-01
+## 40 - 20 : 20 - 0   1.609715e-01
 \end{verbatim}
 
 Here our results show significant changes in disparity through time between all time bins (all p-values \textless{} 0.05).
@@ -7363,7 +7199,7 @@ You can even come up with your own ideas, implementations and modifications of t
 \hypertarget{morphometric-geometric-demo-a-between-group-analysis}{%
 \chapter{Morphometric geometric demo: a between group analysis}\label{morphometric-geometric-demo-a-between-group-analysis}}
 
-This demo aims to give quick overview of the \texttt{dispRity} package (v.1.4) for palaeobiology analyses of disparity, including disparity through time analyses.
+This demo aims to give quick overview of the \texttt{dispRity} package (v.1.5) for palaeobiology analyses of disparity, including disparity through time analyses.
 
 This demo showcases a typical between groups geometric morphometric analysis: we are going to test whether the disparity in two species of salamander (plethodons!) are different and in which ways they are different.
 
@@ -7491,12 +7327,12 @@ To choose which metric would cover best these two aspects, please check the \cit
 \end{Shaded}
 
 \begin{verbatim}
-##            10%  20%  30%  40%  50%  60%  70% 80%  90% 100%         slope
-## random       0 0.01 0.00 0.01 0.01 0.00 0.01   0 0.01    0  4.157791e-07
-## size.inner  NA   NA 0.00 0.00 0.00 0.00 0.00   0 0.00    0  2.372016e-05
-## size.outer  NA 0.01 0.01 0.01 0.01 0.01 0.01   0 0.00    0 -3.003051e-05
+##             10%  20%  30%  40%  50%  60%  70% 80% 90% 100%         slope
+## random     0.01 0.01 0.00 0.00 0.00 0.00 0.00   0   0    0 -1.118941e-06
+## size.inner   NA   NA 0.00 0.00 0.00 0.00 0.00   0   0    0  2.372016e-05
+## size.outer   NA 0.01 0.01 0.01 0.01 0.01 0.01   0   0    0 -3.003051e-05
 ##                 p_value    R^2(adj)
-## random     8.809012e-01 -0.03486932
+## random     6.743408e-01 -0.02908684
 ## size.inner 2.275776e-06  0.62938871
 ## size.outer 1.385063e-08  0.71980023
 \end{verbatim}
@@ -7520,13 +7356,13 @@ To choose which metric would cover best these two aspects, please check the \cit
 
 \begin{verbatim}
 ##                  10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
-## random          1.24 1.09 1.06 1.00 1.04 1.01 1.01 1.01 1.00    1 -0.001947709
-## position.bottom 1.50 1.37 1.18 1.14 1.00 1.10 1.10 1.07 1.04    1 -0.004863535
-## position.top    2.36 2.02 1.64 1.20 1.00 1.04 1.03 1.01 1.01    1 -0.014565973
+## random          1.08 1.02 1.11 1.01 1.00 1.01 1.00 1.00 1.00    1 -0.002053952
+## position.bottom 1.51 1.28 1.20 1.14 1.00 1.09 1.10 1.07 1.04    1 -0.004658626
+## position.top    2.36 2.02 1.64 1.31 1.16 1.04 1.03 1.01 1.01    1 -0.014065613
 ##                      p_value  R^2(adj)
-## random          5.727156e-05 0.4248051
-## position.bottom 6.449634e-08 0.6550394
-## position.top    3.195342e-08 0.7006964
+## random          2.495483e-03 0.2570989
+## position.bottom 1.817501e-07 0.6144292
+## position.top    7.818485e-10 0.7633148
 \end{verbatim}
 
 You can see \protect\hyperlink{test-metric}{here} for more details on the \texttt{test.metric} function but basically these graphs are showing that there is a relation between changes in size and in position for each metric.
@@ -7577,7 +7413,7 @@ We can visualise the results using the \texttt{plot} function on the resulting d
 ## 1  species.Jord 20 0.005     0.005 0.004 0.005 0.005 0.006
 ## 2 species.Teyah 20 0.005     0.005 0.004 0.005 0.005 0.006
 ## 3     site.Allo 20 0.004     0.004 0.003 0.003 0.004 0.004
-## 4     site.Symp 20 0.006     0.006 0.006 0.006 0.006 0.007
+## 4     site.Symp 20 0.006     0.006 0.006 0.006 0.007 0.007
 \end{verbatim}
 
 \begin{Shaded}
@@ -7588,10 +7424,10 @@ We can visualise the results using the \texttt{plot} function on the resulting d
 
 \begin{verbatim}
 ##         subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1  species.Jord 20 1.096     1.132 1.068 1.101 1.162 1.308
-## 2 species.Teyah 20 1.070     1.106 1.036 1.072 1.179 1.398
-## 3     site.Allo 20 1.377     1.404 1.306 1.366 1.462 1.545
-## 4     site.Symp 20 1.168     1.215 1.149 1.189 1.264 1.414
+## 1  species.Jord 20 1.096     1.141 1.060 1.108 1.178 1.375
+## 2 species.Teyah 20 1.070     1.095 1.042 1.069 1.132 1.384
+## 3     site.Allo 20 1.377     1.418 1.312 1.383 1.450 1.534
+## 4     site.Symp 20 1.168     1.208 1.156 1.183 1.253 1.415
 \end{verbatim}
 
 Just from looking at the data, we can guess that there is not much difference in terms of morphospace occupancy and position for the species but there is on for the sites (allopatric or sympatric).
@@ -7607,20 +7443,20 @@ We can test it using a simple non-parametric mean difference test (e.g. \texttt{
 \begin{verbatim}
 ## [[1]]
 ##                              statistic: W
-## species.Jord : species.Teyah         4421
-## species.Jord : site.Allo             9805
-## species.Jord : site.Symp               43
-## species.Teyah : site.Allo            9860
-## species.Teyah : site.Symp             294
+## species.Jord : species.Teyah         4476
+## species.Jord : site.Allo             9889
+## species.Jord : site.Symp               32
+## species.Teyah : site.Allo            9838
+## species.Teyah : site.Symp             257
 ## site.Allo : site.Symp                   0
 ## 
 ## [[2]]
 ##                                   p.value
-## species.Jord : species.Teyah 9.450517e-01
-## species.Jord : site.Allo     4.810990e-31
-## species.Jord : site.Symp     5.564894e-33
-## species.Teyah : site.Allo    9.734110e-32
-## species.Teyah : site.Symp    8.160120e-30
+## species.Jord : species.Teyah 1.000000e+00
+## species.Jord : site.Allo     4.161646e-32
+## species.Jord : site.Symp     4.008542e-33
+## species.Teyah : site.Allo    1.848444e-31
+## species.Teyah : site.Symp    2.852025e-30
 ## site.Allo : site.Symp        1.537286e-33
 \end{verbatim}
 
@@ -7633,21 +7469,21 @@ We can test it using a simple non-parametric mean difference test (e.g. \texttt{
 \begin{verbatim}
 ## [[1]]
 ##                              statistic: W
-## species.Jord : species.Teyah         5957
-## species.Jord : site.Allo               88
-## species.Jord : site.Symp             1204
-## species.Teyah : site.Allo             313
-## species.Teyah : site.Symp            1668
-## site.Allo : site.Symp                9497
+## species.Jord : species.Teyah         7070
+## species.Jord : site.Allo              202
+## species.Jord : site.Symp             1747
+## species.Teyah : site.Allo             194
+## species.Teyah : site.Symp            1125
+## site.Allo : site.Symp                9592
 ## 
 ## [[2]]
 ##                                   p.value
-## species.Jord : species.Teyah 1.166035e-01
-## species.Jord : site.Allo     2.113709e-32
-## species.Jord : site.Symp     1.076944e-19
-## species.Teyah : site.Allo    1.395623e-29
-## species.Teyah : site.Symp    2.368729e-15
-## site.Allo : site.Symp        2.656987e-27
+## species.Jord : species.Teyah 2.560873e-06
+## species.Jord : site.Allo     5.888370e-31
+## species.Jord : site.Symp     1.145363e-14
+## species.Teyah : site.Allo    4.673980e-31
+## species.Teyah : site.Symp    1.729461e-20
+## site.Allo : site.Symp        1.977835e-28
 \end{verbatim}
 
 So by applying the tests we see a difference in terms of position between each groups and differences in size between groups but between the species.

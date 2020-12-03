@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-09-25" />
+<meta name="date" content="2020-11-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -283,7 +283,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="palaeobiology-demo-disparity-through-time-and-within-groups" class="section level1">
 <h1><span class="header-section-number">9</span> Palaeobiology demo: disparity-through-time and within groups</h1>
-<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.4) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
+<p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.5) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
 <p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.</p>
 <div id="before-starting" class="section level2">
 <h2><span class="header-section-number">9.1</span> Before starting</h2>
@@ -293,16 +293,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details.
 Briefly, this dataset contains an ordinated matrix of the Gower distance between 50 mammals based (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
-<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb524-1" data-line-number="1"><span class="co">## Loading demo and the package data</span></a>
-<a class="sourceLine" id="cb524-2" data-line-number="2"><span class="kw">library</span>(dispRity)</a>
-<a class="sourceLine" id="cb524-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb524-4" data-line-number="4"><span class="co">## Setting the random seed for repeatability</span></a>
-<a class="sourceLine" id="cb524-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
-<a class="sourceLine" id="cb524-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb524-7" data-line-number="7"><span class="co">## Loading the ordinated matrix/morphospace:</span></a>
-<a class="sourceLine" id="cb524-8" data-line-number="8"><span class="kw">data</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb524-9" data-line-number="9"><span class="kw">data</span>(BeckLee_mat99)</a>
-<a class="sourceLine" id="cb524-10" data-line-number="10"><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" data-line-number="1"><span class="co">## Loading demo and the package data</span></a>
+<a class="sourceLine" id="cb506-2" data-line-number="2"><span class="kw">library</span>(dispRity)</a>
+<a class="sourceLine" id="cb506-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb506-4" data-line-number="4"><span class="co">## Setting the random seed for repeatability</span></a>
+<a class="sourceLine" id="cb506-5" data-line-number="5"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb506-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb506-7" data-line-number="7"><span class="co">## Loading the ordinated matrix/morphospace:</span></a>
+<a class="sourceLine" id="cb506-8" data-line-number="8"><span class="kw">data</span>(BeckLee_mat50)</a>
+<a class="sourceLine" id="cb506-9" data-line-number="9"><span class="kw">data</span>(BeckLee_mat99)</a>
+<a class="sourceLine" id="cb506-10" data-line-number="10"><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
 <pre><code>##                    [,1]        [,2]        [,3]       [,4]        [,5]
 ## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 -0.18825039
 ## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 -0.28510479
@@ -310,13 +310,13 @@ The ordinated matrix will represent our full morphospace, i.e. all the mammalia
 ## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 -0.39962626
 ## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 -0.37385914
 ## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 -0.34857351</code></pre>
-<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb526-1" data-line-number="1"><span class="kw">dim</span>(BeckLee_mat50)</a></code></pre></div>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb508-1" data-line-number="1"><span class="kw">dim</span>(BeckLee_mat50)</a></code></pre></div>
 <pre><code>## [1] 50 48</code></pre>
-<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb528-1" data-line-number="1"><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></a>
-<a class="sourceLine" id="cb528-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb528-3" data-line-number="3"><span class="co">## Showing a list of first and last occurrences data for some fossils</span></a>
-<a class="sourceLine" id="cb528-4" data-line-number="4"><span class="kw">data</span>(BeckLee_ages)</a>
-<a class="sourceLine" id="cb528-5" data-line-number="5"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb510-1" data-line-number="1"><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></a>
+<a class="sourceLine" id="cb510-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb510-3" data-line-number="3"><span class="co">## Showing a list of first and last occurrences data for some fossils</span></a>
+<a class="sourceLine" id="cb510-4" data-line-number="4"><span class="kw">data</span>(BeckLee_ages)</a>
+<a class="sourceLine" id="cb510-5" data-line-number="5"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -324,16 +324,16 @@ The ordinated matrix will represent our full morphospace, i.e. all the mammalia
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb530-1" data-line-number="1"><span class="co">## Plotting a phylogeny</span></a>
-<a class="sourceLine" id="cb530-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
-<a class="sourceLine" id="cb530-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
-<a class="sourceLine" id="cb530-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb512-1" data-line-number="1"><span class="co">## Plotting a phylogeny</span></a>
+<a class="sourceLine" id="cb512-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
+<a class="sourceLine" id="cb512-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</a>
+<a class="sourceLine" id="cb512-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-170-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
-<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</a>
-<a class="sourceLine" id="cb531-2" data-line-number="2">strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb513-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</a>
+<a class="sourceLine" id="cb513-2" data-line-number="2">strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-171-1.png" width="672" /></p>
 </div>
 <div id="setting-up-your-own-data" class="section level3">
@@ -355,56 +355,56 @@ We won’t cover it here but you can also use lists of matrices and list of tree
 <li>A table of first and last occurrences data (FADLAD)</li>
 </ul>
 <p>If you are missing any of these, fear not, here are a couple of functions to simulate the missing data, it will surely make your results look funky but it’ll let you go through the tutorial.</p>
-<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb532-1" data-line-number="1"><span class="co">## Functions to get simulate a PCO looking like matrix from a tree</span></a>
-<a class="sourceLine" id="cb532-2" data-line-number="2">i.need.a.matrix &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
-<a class="sourceLine" id="cb532-3" data-line-number="3">    matrix &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Ntip</span>(tree), <span class="dt">dimensions =</span> <span class="kw">Ntip</span>(tree), <span class="dt">distribution =</span> rnorm,</a>
-<a class="sourceLine" id="cb532-4" data-line-number="4">                          <span class="dt">scree =</span> <span class="kw">rev</span>(<span class="kw">cumsum</span>(<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="kw">Ntip</span>(tree), <span class="kw">Ntip</span>(tree)))))</a>
-<a class="sourceLine" id="cb532-5" data-line-number="5">    <span class="kw">rownames</span>(matrix) &lt;-<span class="st"> </span>tree<span class="op">$</span>tip.label</a>
-<a class="sourceLine" id="cb532-6" data-line-number="6">    <span class="kw">return</span>(matrix)</a>
-<a class="sourceLine" id="cb532-7" data-line-number="7">}</a>
-<a class="sourceLine" id="cb532-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb532-9" data-line-number="9"><span class="co">## Function to simulate a tree</span></a>
-<a class="sourceLine" id="cb532-10" data-line-number="10">i.need.a.tree &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {</a>
-<a class="sourceLine" id="cb532-11" data-line-number="11">    tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="kw">nrow</span>(matrix))</a>
-<a class="sourceLine" id="cb532-12" data-line-number="12">    tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>age)</a>
-<a class="sourceLine" id="cb532-13" data-line-number="13">    tree<span class="op">$</span>tip.label &lt;-<span class="st"> </span><span class="kw">rownames</span>(matrix)</a>
-<a class="sourceLine" id="cb532-14" data-line-number="14">    tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb532-15" data-line-number="15">    <span class="kw">return</span>(tree)</a>
-<a class="sourceLine" id="cb532-16" data-line-number="16">}</a>
-<a class="sourceLine" id="cb532-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb532-18" data-line-number="18"><span class="co">## Function to simulate some &quot;node&quot; data</span></a>
-<a class="sourceLine" id="cb532-19" data-line-number="19">i.need.node.data &lt;-<span class="st"> </span><span class="cf">function</span>(matrix, tree) {</a>
-<a class="sourceLine" id="cb532-20" data-line-number="20">    matrix_node &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Nnode</span>(tree), <span class="dt">dimensions =</span> <span class="kw">ncol</span>(matrix),</a>
-<a class="sourceLine" id="cb532-21" data-line-number="21">                               <span class="dt">distribution =</span> rnorm, <span class="dt">scree =</span> <span class="kw">apply</span>(matrix, <span class="dv">2</span>, var))</a>
-<a class="sourceLine" id="cb532-22" data-line-number="22">    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(tree<span class="op">$</span>node.label)) {</a>
-<a class="sourceLine" id="cb532-23" data-line-number="23">        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span>tree<span class="op">$</span>node.label</a>
-<a class="sourceLine" id="cb532-24" data-line-number="24">    } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb532-25" data-line-number="25">        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb532-26" data-line-number="26">    }</a>
-<a class="sourceLine" id="cb532-27" data-line-number="27">    <span class="kw">return</span>(<span class="kw">rbind</span>(matrix, matrix_node))</a>
-<a class="sourceLine" id="cb532-28" data-line-number="28">}</a>
-<a class="sourceLine" id="cb532-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb532-30" data-line-number="30"><span class="co">## Function to simulate some &quot;FADLAD&quot; data</span></a>
-<a class="sourceLine" id="cb532-31" data-line-number="31">i.need.FADLAD &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
-<a class="sourceLine" id="cb532-32" data-line-number="32">    tree_ages &lt;-<span class="st"> </span><span class="kw">tree.age</span>(tree)[<span class="dv">1</span><span class="op">:</span><span class="kw">Ntip</span>(tree),]</a>
-<a class="sourceLine" id="cb532-33" data-line-number="33">    <span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">FAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">LAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">row.names =</span> tree_ages[,<span class="dv">2</span>]))</a>
-<a class="sourceLine" id="cb532-34" data-line-number="34">}</a></code></pre></div>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb514-1" data-line-number="1"><span class="co">## Functions to get simulate a PCO looking like matrix from a tree</span></a>
+<a class="sourceLine" id="cb514-2" data-line-number="2">i.need.a.matrix &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
+<a class="sourceLine" id="cb514-3" data-line-number="3">    matrix &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Ntip</span>(tree), <span class="dt">dimensions =</span> <span class="kw">Ntip</span>(tree), <span class="dt">distribution =</span> rnorm,</a>
+<a class="sourceLine" id="cb514-4" data-line-number="4">                          <span class="dt">scree =</span> <span class="kw">rev</span>(<span class="kw">cumsum</span>(<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="kw">Ntip</span>(tree), <span class="kw">Ntip</span>(tree)))))</a>
+<a class="sourceLine" id="cb514-5" data-line-number="5">    <span class="kw">rownames</span>(matrix) &lt;-<span class="st"> </span>tree<span class="op">$</span>tip.label</a>
+<a class="sourceLine" id="cb514-6" data-line-number="6">    <span class="kw">return</span>(matrix)</a>
+<a class="sourceLine" id="cb514-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb514-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb514-9" data-line-number="9"><span class="co">## Function to simulate a tree</span></a>
+<a class="sourceLine" id="cb514-10" data-line-number="10">i.need.a.tree &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {</a>
+<a class="sourceLine" id="cb514-11" data-line-number="11">    tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="kw">nrow</span>(matrix))</a>
+<a class="sourceLine" id="cb514-12" data-line-number="12">    tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>age)</a>
+<a class="sourceLine" id="cb514-13" data-line-number="13">    tree<span class="op">$</span>tip.label &lt;-<span class="st"> </span><span class="kw">rownames</span>(matrix)</a>
+<a class="sourceLine" id="cb514-14" data-line-number="14">    tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb514-15" data-line-number="15">    <span class="kw">return</span>(tree)</a>
+<a class="sourceLine" id="cb514-16" data-line-number="16">}</a>
+<a class="sourceLine" id="cb514-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb514-18" data-line-number="18"><span class="co">## Function to simulate some &quot;node&quot; data</span></a>
+<a class="sourceLine" id="cb514-19" data-line-number="19">i.need.node.data &lt;-<span class="st"> </span><span class="cf">function</span>(matrix, tree) {</a>
+<a class="sourceLine" id="cb514-20" data-line-number="20">    matrix_node &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Nnode</span>(tree), <span class="dt">dimensions =</span> <span class="kw">ncol</span>(matrix),</a>
+<a class="sourceLine" id="cb514-21" data-line-number="21">                               <span class="dt">distribution =</span> rnorm, <span class="dt">scree =</span> <span class="kw">apply</span>(matrix, <span class="dv">2</span>, var))</a>
+<a class="sourceLine" id="cb514-22" data-line-number="22">    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(tree<span class="op">$</span>node.label)) {</a>
+<a class="sourceLine" id="cb514-23" data-line-number="23">        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span>tree<span class="op">$</span>node.label</a>
+<a class="sourceLine" id="cb514-24" data-line-number="24">    } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb514-25" data-line-number="25">        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb514-26" data-line-number="26">    }</a>
+<a class="sourceLine" id="cb514-27" data-line-number="27">    <span class="kw">return</span>(<span class="kw">rbind</span>(matrix, matrix_node))</a>
+<a class="sourceLine" id="cb514-28" data-line-number="28">}</a>
+<a class="sourceLine" id="cb514-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb514-30" data-line-number="30"><span class="co">## Function to simulate some &quot;FADLAD&quot; data</span></a>
+<a class="sourceLine" id="cb514-31" data-line-number="31">i.need.FADLAD &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</a>
+<a class="sourceLine" id="cb514-32" data-line-number="32">    tree_ages &lt;-<span class="st"> </span><span class="kw">tree.age</span>(tree)[<span class="dv">1</span><span class="op">:</span><span class="kw">Ntip</span>(tree),]</a>
+<a class="sourceLine" id="cb514-33" data-line-number="33">    <span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">FAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">LAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">row.names =</span> tree_ages[,<span class="dv">2</span>]))</a>
+<a class="sourceLine" id="cb514-34" data-line-number="34">}</a></code></pre></div>
 <p>You can use these functions for the generating the data you need. For example</p>
-<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" data-line-number="1"><span class="co">## Aaaaah I don&#39;t have FADLAD data!</span></a>
-<a class="sourceLine" id="cb533-2" data-line-number="2">my_FADLAD &lt;-<span class="st"> </span><span class="kw">i.need.FADLAD</span>(tree)</a>
-<a class="sourceLine" id="cb533-3" data-line-number="3"><span class="co">## Sorted.</span></a></code></pre></div>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb515-1" data-line-number="1"><span class="co">## Aaaaah I don&#39;t have FADLAD data!</span></a>
+<a class="sourceLine" id="cb515-2" data-line-number="2">my_FADLAD &lt;-<span class="st"> </span><span class="kw">i.need.FADLAD</span>(tree)</a>
+<a class="sourceLine" id="cb515-3" data-line-number="3"><span class="co">## Sorted.</span></a></code></pre></div>
 <p>In the end this is what your data should be named to facilitate the rest of this tutorial (fill in yours here):</p>
-<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb534-1" data-line-number="1"><span class="co">## A matrix with tip data</span></a>
-<a class="sourceLine" id="cb534-2" data-line-number="2">my_matrix &lt;-<span class="st"> </span>BeckLee_mat50</a>
-<a class="sourceLine" id="cb534-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb534-4" data-line-number="4"><span class="co">## A phylogenetic tree </span></a>
-<a class="sourceLine" id="cb534-5" data-line-number="5">my_tree &lt;-<span class="st"> </span>BeckLee_tree</a>
-<a class="sourceLine" id="cb534-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb534-7" data-line-number="7"><span class="co">## A matrix with tip and node data</span></a>
-<a class="sourceLine" id="cb534-8" data-line-number="8">my_tip_node_matrix &lt;-<span class="st"> </span>BeckLee_mat99</a>
-<a class="sourceLine" id="cb534-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb534-10" data-line-number="10"><span class="co">## A table of first and last occurrences data (FADLAD)</span></a>
-<a class="sourceLine" id="cb534-11" data-line-number="11">my_fadlad &lt;-<span class="st"> </span>BeckLee_ages</a></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb516-1" data-line-number="1"><span class="co">## A matrix with tip data</span></a>
+<a class="sourceLine" id="cb516-2" data-line-number="2">my_matrix &lt;-<span class="st"> </span>BeckLee_mat50</a>
+<a class="sourceLine" id="cb516-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb516-4" data-line-number="4"><span class="co">## A phylogenetic tree </span></a>
+<a class="sourceLine" id="cb516-5" data-line-number="5">my_tree &lt;-<span class="st"> </span>BeckLee_tree</a>
+<a class="sourceLine" id="cb516-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb516-7" data-line-number="7"><span class="co">## A matrix with tip and node data</span></a>
+<a class="sourceLine" id="cb516-8" data-line-number="8">my_tip_node_matrix &lt;-<span class="st"> </span>BeckLee_mat99</a>
+<a class="sourceLine" id="cb516-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb516-10" data-line-number="10"><span class="co">## A table of first and last occurrences data (FADLAD)</span></a>
+<a class="sourceLine" id="cb516-11" data-line-number="11">my_fadlad &lt;-<span class="st"> </span>BeckLee_ages</a></code></pre></div>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2">
@@ -416,24 +416,21 @@ Basically, the full morphospace represents the total number of morphologies acro
 <p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>).
 In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present.
 We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
-<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb535-1" data-line-number="1"><span class="co">## Creating the vector of time bins ages</span></a>
-<a class="sourceLine" id="cb535-2" data-line-number="2">(time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>)))</a></code></pre></div>
-<pre><code>## [1] 100  80  60  40  20   0</code></pre>
-<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb537-1" data-line-number="1"><span class="co">## Splitting the morphospace using the chrono.subsets function</span></a>
-<a class="sourceLine" id="cb537-2" data-line-number="2">(binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> my_matrix, <span class="dt">tree =</span> my_tree,</a>
-<a class="sourceLine" id="cb537-3" data-line-number="3">    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb537-4" data-line-number="4">    <span class="dt">FADLAD =</span> my_fadlad))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb517-1" data-line-number="1"><span class="co">## Creating the vector of time bins ages</span></a>
+<a class="sourceLine" id="cb517-2" data-line-number="2">time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>))</a>
+<a class="sourceLine" id="cb517-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb517-4" data-line-number="4"><span class="co">## Splitting the morphospace using the chrono.subsets function</span></a>
+<a class="sourceLine" id="cb517-5" data-line-number="5">binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> my_matrix, <span class="dt">tree =</span> my_tree,</a>
+<a class="sourceLine" id="cb517-6" data-line-number="6">    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb517-7" data-line-number="7">    <span class="dt">FADLAD =</span> my_fadlad)</a></code></pre></div>
 <p>The output object is a <code>dispRity</code> object (see more about that <a href="#The-guts-of-the-dispRity-package">here</a>.
 In brief, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the <code>R</code> console with superfluous output.
 It also allows easy plotting/summarising/analysing for repeatability down the line but we will not go into this right now.</p>
-<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb539-1" data-line-number="1"><span class="co">## Printing the class of the object</span></a>
-<a class="sourceLine" id="cb539-2" data-line-number="2"><span class="kw">class</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb518-1" data-line-number="1"><span class="co">## Printing the class of the object</span></a>
+<a class="sourceLine" id="cb518-2" data-line-number="2"><span class="kw">class</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb541-1" data-line-number="1"><span class="co">## Printing the content of the object</span></a>
-<a class="sourceLine" id="cb541-2" data-line-number="2"><span class="kw">str</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb520-1" data-line-number="1"><span class="co">## Printing the content of the object</span></a>
+<a class="sourceLine" id="cb520-2" data-line-number="2"><span class="kw">str</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## List of 3
 ##  $ matrix :List of 1
 ##   ..$ : num [1:50, 1:48] -0.561 -0.419 -0.834 -0.771 -0.832 ...
@@ -455,10 +452,10 @@ It also allows easy plotting/summarising/analysing for repeatability down the li
 ##   ..$ 20 - 0  :List of 1
 ##   .. ..$ elements: int [1:10, 1] 36 37 38 32 33 34 50 48 29 30
 ##  - attr(*, &quot;class&quot;)= chr &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb543-1" data-line-number="1"><span class="kw">names</span>(binned_morphospace)</a></code></pre></div>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb522-1" data-line-number="1"><span class="kw">names</span>(binned_morphospace)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;  &quot;call&quot;    &quot;subsets&quot;</code></pre>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb545-1" data-line-number="1"><span class="co">## Printing the object as a dispRity class</span></a>
-<a class="sourceLine" id="cb545-2" data-line-number="2">binned_morphospace</a></code></pre></div>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb524-1" data-line-number="1"><span class="co">## Printing the object as a dispRity class</span></a>
+<a class="sourceLine" id="cb524-2" data-line-number="2">binned_morphospace</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements in one matrix:
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
@@ -471,22 +468,12 @@ It also allows easy plotting/summarising/analysing for repeatability down the li
 <p>Once we obtain our different time subsets, we can bootstrap and rarefy them (i.e. pseudo-replicating the data).
 The bootstrapping allows us to make each subset more robust to outliers and the rarefaction allows us to compare subsets with the same number of taxa to remove sampling biases (i.e. more taxa in one subset than the others).
 The <code>boot.matrix</code> function bootstraps the <code>dispRity</code> object and the <code>rarefaction</code> option within performs rarefaction.</p>
-<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb547-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times (default)</span></a>
-<a class="sourceLine" id="cb547-2" data-line-number="2">(boot_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:&quot;full&quot;).</code></pre>
-<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb549-1" data-line-number="1"><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></a>
-<a class="sourceLine" id="cb549-2" data-line-number="2"><span class="kw">min</span>(<span class="kw">size.subsets</span>(boot_bin_morphospace))</a></code></pre></div>
-<pre><code>## [1] 6</code></pre>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb551-1" data-line-number="1"><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></a>
-<a class="sourceLine" id="cb551-2" data-line-number="2">(rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb551-3" data-line-number="3">    <span class="dt">rarefaction =</span> <span class="dv">6</span>))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.</code></pre>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb526-1" data-line-number="1"><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></a>
+<a class="sourceLine" id="cb526-2" data-line-number="2">minimum_size &lt;-<span class="st"> </span><span class="kw">min</span>(<span class="kw">size.subsets</span>(binned_morphospace))</a>
+<a class="sourceLine" id="cb526-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb526-4" data-line-number="4"><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></a>
+<a class="sourceLine" id="cb526-5" data-line-number="5">rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb526-6" data-line-number="6">    <span class="dt">rarefaction =</span> minimum_size)</a></code></pre></div>
 <blockquote>
 <p>Note how information is adding up to the <code>dispRity</code> object.</p>
 </blockquote>
@@ -504,58 +491,39 @@ We highly recommend using a metric that makes sense for your specific analysis a
 </blockquote>
 <p>This is not a straightforward question but you can use the <code>test.metric</code> function to check your assumptions (more details <a href="details-of-specific-functions.html#disparity-metrics">here</a>): basically what <code>test.metric</code> does is modifying your morphospace using a null process of interest (e.g. changes in size) and checks whether your metric does indeed pick up that change.
 For example here, let see if the sum of variances picks up changes in size but not random changes:</p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb553-1" data-line-number="1">my_test &lt;-<span class="st"> </span><span class="kw">test.metric</span>(my_matrix, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances), <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</a>
-<a class="sourceLine" id="cb553-2" data-line-number="2"><span class="kw">summary</span>(my_test)</a></code></pre></div>
+<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" data-line-number="1">my_test &lt;-<span class="st"> </span><span class="kw">test.metric</span>(my_matrix, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances), <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</a>
+<a class="sourceLine" id="cb527-2" data-line-number="2"><span class="kw">summary</span>(my_test)</a></code></pre></div>
 <pre><code>##             10%  20%  30%  40%  50%  60%  70%  80%  90% 100%         slope
-## random     2.59 2.47 2.52 2.52 2.51 2.53 2.52 2.52 2.51 2.52 -5.969668e-05
-## size.inner 2.23 2.23 2.25 2.28 2.31 2.35 2.39 2.43 2.48 2.52  3.656145e-03
-## size.outer 2.45 2.51 2.55 2.64 2.52 2.62 2.60 2.57 2.54 2.52  3.197697e-04
-##                 p_value    R^2(adj)
-## random     7.901693e-01 -0.03305151
-## size.inner 5.138104e-18  0.95020115
-## size.outer 4.129151e-01 -0.01113691</code></pre>
-<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb555-1" data-line-number="1"><span class="kw">plot</span>(my_test)</a></code></pre></div>
+## random     2.59 2.56 2.53 2.51 2.53 2.49 2.51 2.52 2.52 2.52 -0.0002816154
+## size.inner 2.23 2.19 2.25 2.28   NA 2.35 2.39 2.44 2.47 2.52  0.0037493613
+## size.outer 2.50 2.54 2.59 2.60 2.52 2.62 2.60 2.57 2.52 2.52  0.0003060366
+##                 p_value     R^2(adj)
+## random     2.232307e-01  0.018663764
+## size.inner 1.064444e-18  0.966641721
+## size.outer 3.474469e-01 -0.003002325</code></pre>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" data-line-number="1"><span class="kw">plot</span>(my_test)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-178-1.png" width="768" /></p>
 <p>We see that changes in the inner size (see <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms">2020</a>)</span> for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!</p>
 <p>As you’ve noted, the sum of variances is defined in <code>test.metric</code> as <code>c(sum, variances)</code>. This is a core bit of the <code>dispRity</code> package were you can define your own metric as a function or a set of functions.
 You can find more info about this in the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a> but in brief, the <code>dispRity</code> package considers metrics by their “dimensions” level which corresponds to what they output. For example, the function <code>sum</code> is a dimension level 1 function because no matter the input it outputs a single value (the sum), <code>variances</code> on the other hand is a dimension level 2 function because it will output the variance of each column in a matrix (an example of a dimensions level 3 would be the function <code>var</code> that outputs a matrix).
 The <code>dispRity</code> package always automatically sorts the dimensions levels: it will always run dimensions level 3 &gt; dimensions level 2 &gt; and dimensions level 1. In this case both <code>c(sum, variances)</code> and <code>c(variances, sum)</code> will result in actually running <code>sum(variances(matrix))</code>.</p>
 <p>Anyways, let’s calculate the sum of variances on our bootstrapped and rarefied morphospaces:</p>
-<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb556-1" data-line-number="1"><span class="co">## Calculating disparity for the bootstrapped data</span></a>
-<a class="sourceLine" id="cb556-2" data-line-number="2">(boot_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(boot_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:&quot;full&quot;).
-## Disparity was calculated as: c(sum, variances).</code></pre>
-<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb558-1" data-line-number="1"><span class="co">## Calculating disparity for the rarefied data</span></a>
-<a class="sourceLine" id="cb558-2" data-line-number="2">(rare_disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace, <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances)))</a></code></pre></div>
-<pre><code>##  ---- dispRity object ---- 
-## 5 discrete time subsets for 50 elements in one matrix with 48 dimensions:
-##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.
-## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 6 elements.
-## Disparity was calculated as: c(sum, variances).</code></pre>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb530-1" data-line-number="1"><span class="co">## Calculating disparity for the bootstrapped and rarefied data</span></a>
+<a class="sourceLine" id="cb530-2" data-line-number="2">disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace , <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</a></code></pre></div>
 <p>To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied to a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).
 By the way, as for any <code>R</code> package, you can refer to the help files for each individual function for more details.</p>
-<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb560-1" data-line-number="1"><span class="co">## Summarising the disparity results</span></a>
-<a class="sourceLine" id="cb560-2" data-line-number="2"><span class="kw">summary</span>(boot_disparity)</a></code></pre></div>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" data-line-number="1"><span class="co">## Summarising the disparity results</span></a>
+<a class="sourceLine" id="cb531-2" data-line-number="2"><span class="kw">summary</span>(disparity)</a></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 100 - 80  8 2.207     1.962 1.615 1.876 2.017 2.172
-## 2  80 - 60 15 2.315     2.158 1.975 2.100 2.207 2.297
-## 3  60 - 40 13 2.435     2.257 2.080 2.202 2.297 2.361
-## 4  40 - 20  6 2.604     2.165 1.587 2.032 2.320 2.472
-## 5   20 - 0 10 2.491     2.238 1.992 2.136 2.326 2.408</code></pre>
-<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb562-1" data-line-number="1"><span class="kw">summary</span>(rare_disparity)</a></code></pre></div>
-<pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1 100 - 80  8 2.207     1.975 1.672 1.905 2.059 2.129
-## 2 100 - 80  6    NA     1.933 1.369 1.811 2.082 2.230
-## 3  80 - 60 15 2.315     2.144 1.991 2.084 2.196 2.289
-## 4  80 - 60  6    NA     2.187 1.827 2.061 2.312 2.465
-## 5  60 - 40 13 2.435     2.271 2.103 2.205 2.311 2.370
-## 6  60 - 40  6    NA     2.249 1.733 2.108 2.368 2.507
-## 7  40 - 20  6 2.604     2.191 1.370 2.053 2.329 2.452
-## 8   20 - 0 10 2.491     2.262 1.927 2.166 2.318 2.426
-## 9   20 - 0  6    NA     2.288 1.743 2.130 2.354 2.515</code></pre>
+## 2 100 - 80  6    NA     1.923 1.477 1.768 2.065 2.222
+## 3  80 - 60 15 2.315     2.167 1.979 2.111 2.227 2.308
+## 4  80 - 60  6    NA     2.167 1.831 2.055 2.300 2.460
+## 5  60 - 40 13 2.435     2.244 2.006 2.183 2.304 2.384
+## 6  60 - 40  6    NA     2.284 1.683 2.140 2.383 2.532
+## 7  40 - 20  6 2.604     2.206 1.628 2.026 2.388 2.604
+## 8   20 - 0 10 2.491     2.257 1.958 2.170 2.326 2.421
+## 9   20 - 0  6    NA     2.302 1.766 2.143 2.366 2.528</code></pre>
 <blockquote>
 <p>The <code>summary.dispRity</code> function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function’s manual for more details.</p>
 </blockquote>
@@ -564,12 +532,13 @@ By the way, as for any <code>R</code> package, you can refer to the help files f
 <h3><span class="header-section-number">9.2.4</span> Plotting the results</h3>
 <p>It is sometimes easier to visualise the results in a plot than in a table.
 For that we can use the <code>plot</code> S3 function to plot the <code>dispRity</code> objects (see <code>?plot.dispRity</code> for more details).</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" data-line-number="1"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb564-2" data-line-number="2"><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb564-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb564-4" data-line-number="4"><span class="co">## Plotting the bootstrapped and rarefied results</span></a>
-<a class="sourceLine" id="cb564-5" data-line-number="5"><span class="kw">plot</span>(boot_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</a>
-<a class="sourceLine" id="cb564-6" data-line-number="6"><span class="kw">plot</span>(rare_disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb533-1" data-line-number="1"><span class="co">## Graphical options</span></a>
+<a class="sourceLine" id="cb533-2" data-line-number="2"><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
+<a class="sourceLine" id="cb533-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb533-4" data-line-number="4"><span class="co">## Plotting the bootstrapped and rarefied results</span></a>
+<a class="sourceLine" id="cb533-5" data-line-number="5"><span class="kw">plot</span>(disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</a>
+<a class="sourceLine" id="cb533-6" data-line-number="6"><span class="kw">plot</span>(disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>,</a>
+<a class="sourceLine" id="cb533-7" data-line-number="7">     <span class="dt">rarefaction =</span> minimum_size)</a></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-181-1.png" width="1152" /></p>
 <p>Nice. The curves look pretty similar.</p>
 <blockquote>
@@ -583,38 +552,38 @@ We can test, for example, if mammalian disparity changed significantly through t
 To do so, we can compare the means of each time-bin in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em>, and whether this is in turn equal to the disparity in bin <em>n+2</em>, etc.
 Because our data is temporally autocorrelated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and pseudoreplicated (i.e. each bootstrap draw creates non-independent time subsets because they are all based on the same time subsets), we apply a non-parametric mean comparison: the <code>wilcox.test</code>.
 Also, we need to apply a p-value correction (e.g. Bonferroni correction) to correct for multiple testing (see <code>?p.adjust</code> for more details).</p>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb565-1" data-line-number="1"><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></a>
-<a class="sourceLine" id="cb565-2" data-line-number="2"><span class="kw">test.dispRity</span>(boot_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
-<a class="sourceLine" id="cb565-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb534-1" data-line-number="1"><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></a>
+<a class="sourceLine" id="cb534-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb534-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          791
-## 80 - 60 : 60 - 40          1946
-## 60 - 40 : 40 - 20          6208
-## 40 - 20 : 20 - 0           4225
+## 100 - 80 : 80 - 60          730
+## 80 - 60 : 60 - 40          2752
+## 60 - 40 : 40 - 20          5461
+## 40 - 20 : 20 - 0           4506
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 3.362697e-24
-## 80 - 60 : 60 - 40  3.437652e-13
-## 60 - 40 : 40 - 20  1.269261e-02
-## 40 - 20 : 20 - 0   2.337298e-01</code></pre>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb567-1" data-line-number="1"><span class="co">## Testing the differences between bins in the rarefied dataset.</span></a>
-<a class="sourceLine" id="cb567-2" data-line-number="2"><span class="kw">test.dispRity</span>(rare_disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
-<a class="sourceLine" id="cb567-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</a></code></pre></div>
+## 100 - 80 : 80 - 60 7.081171e-25
+## 80 - 60 : 60 - 40  1.593988e-07
+## 60 - 40 : 40 - 20  1.000000e+00
+## 40 - 20 : 20 - 0   9.115419e-01</code></pre>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb536-1" data-line-number="1"><span class="co">## Testing the differences between bins in the rarefied dataset.</span></a>
+<a class="sourceLine" id="cb536-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</a>
+<a class="sourceLine" id="cb536-3" data-line-number="3">    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>, <span class="dt">rarefaction  =</span> minimum_size)</a></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
-## 100 - 80 : 80 - 60          963
-## 80 - 60 : 60 - 40          1553
-## 60 - 40 : 40 - 20          5975
-## 40 - 20 : 20 - 0           4288
+## 100 - 80 : 80 - 60         1518
+## 80 - 60 : 60 - 40          3722
+## 60 - 40 : 40 - 20          5676
+## 40 - 20 : 20 - 0           4160
 ## 
 ## [[2]]
 ##                         p.value
-## 100 - 80 : 80 - 60 2.415081e-22
-## 80 - 60 : 60 - 40  1.491356e-16
-## 60 - 40 : 40 - 20  6.904555e-02
-## 40 - 20 : 20 - 0   3.285062e-01</code></pre>
+## 100 - 80 : 80 - 60 7.158946e-17
+## 80 - 60 : 60 - 40  7.199018e-03
+## 60 - 40 : 40 - 20  3.953427e-01
+## 40 - 20 : 20 - 0   1.609715e-01</code></pre>
 <p>Here our results show significant changes in disparity through time between all time bins (all p-values &lt; 0.05).
 However, when looking at the rarefied results, there is no significant difference between the time bins in the Palaeogene (60-40 to 40-20 Mya), suggesting that the differences detected in the first test might just be due to the differences in number of taxa sampled (13 or 6 taxa) in each time bin.</p>
 </div>

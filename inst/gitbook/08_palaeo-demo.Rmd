@@ -151,12 +151,12 @@ We will also provide to the function a table containing the first and last occur
 
 ```{r}
 ## Creating the vector of time bins ages
-(time_bins <- rev(seq(from = 0, to = 100, by = 20)))
+time_bins <- rev(seq(from = 0, to = 100, by = 20))
 
 ## Splitting the morphospace using the chrono.subsets function
-(binned_morphospace <- chrono.subsets(data = my_matrix, tree = my_tree,
+binned_morphospace <- chrono.subsets(data = my_matrix, tree = my_tree,
     method = "discrete", time = time_bins, inc.nodes = FALSE,
-    FADLAD = my_fadlad))
+    FADLAD = my_fadlad)
 ```
 
 The output object is a `dispRity` object (see more about that [here](#The-guts-of-the-dispRity-package).
@@ -184,15 +184,12 @@ The bootstrapping allows us to make each subset more robust to outliers and the 
 The `boot.matrix` function bootstraps the `dispRity` object and the `rarefaction` option within performs rarefaction.
 
 ```{r}
-## Bootstrapping each time subset 100 times (default)
-(boot_bin_morphospace <- boot.matrix(binned_morphospace))
-
 ## Getting the minimum number of rows (i.e. taxa) in the time subsets
-min(size.subsets(boot_bin_morphospace))
+minimum_size <- min(size.subsets(binned_morphospace))
 
 ## Bootstrapping each time subset 100 times and rarefying them 
-(rare_bin_morphospace <- boot.matrix(binned_morphospace, bootstraps = 100,
-    rarefaction = 6))
+rare_bin_morphospace <- boot.matrix(binned_morphospace, bootstraps = 100,
+    rarefaction = minimum_size)
 ```
 
 > Note how information is adding up to the `dispRity` object.
@@ -227,11 +224,8 @@ The `dispRity` package always automatically sorts the dimensions levels: it will
 Anyways, let's calculate the sum of variances on our bootstrapped and rarefied morphospaces:
 
 ```{r}
-## Calculating disparity for the bootstrapped data
-(boot_disparity <- dispRity(boot_bin_morphospace, metric = c(sum, variances)))
-
-## Calculating disparity for the rarefied data
-(rare_disparity <- dispRity(rare_bin_morphospace, metric = c(sum, variances)))
+## Calculating disparity for the bootstrapped and rarefied data
+disparity <- dispRity(rare_bin_morphospace , metric = c(sum, variances))
 ```
 
 To display the actual calculated scores, we need to summarise the disparity object using the S3 method `summary` that is applied to a `dispRity` object (see `?summary.dispRity` for more details).
@@ -239,8 +233,7 @@ By the way, as for any `R` package, you can refer to the help files for each ind
 
 ```{r}
 ## Summarising the disparity results
-summary(boot_disparity)
-summary(rare_disparity)
+summary(disparity)
 ```
 
 > The `summary.dispRity` function comes with many options on which values to calculate (central tendency and quantiles) and on how many digits to display. Refer to the function's manual for more details.
@@ -255,8 +248,9 @@ For that we can use the `plot` S3 function to plot the `dispRity` objects (see `
 quartz(width = 10, height = 5) ; par(mfrow = (c(1,2)), bty = "n")
 
 ## Plotting the bootstrapped and rarefied results
-plot(boot_disparity, type = "continuous", main = "bootstrapped results")
-plot(rare_disparity, type = "continuous", main = "rarefied results")
+plot(disparity, type = "continuous", main = "bootstrapped results")
+plot(disparity, type = "continuous", main = "rarefied results",
+     rarefaction = minimum_size)
 ```
 
 Nice. The curves look pretty similar.
@@ -273,12 +267,12 @@ Also, we need to apply a p-value correction (e.g. Bonferroni correction) to corr
 
 ```{r}
 ## Testing the differences between bins in the bootstrapped dataset.
-test.dispRity(boot_disparity, test = wilcox.test, comparison = "sequential",
+test.dispRity(disparity, test = wilcox.test, comparison = "sequential",
     correction = "bonferroni")
 
 ## Testing the differences between bins in the rarefied dataset.
-test.dispRity(rare_disparity, test = wilcox.test, comparison = "sequential",
-    correction = "bonferroni")
+test.dispRity(disparity, test = wilcox.test, comparison = "sequential",
+    correction = "bonferroni", rarefaction  = minimum_size)
 ```
 
 Here our results show significant changes in disparity through time between all time bins (all p-values < 0.05).

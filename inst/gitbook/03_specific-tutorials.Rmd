@@ -198,6 +198,8 @@ boot.matrix(BeckLee_mat50, bootstraps = 20,
             rarefaction = c(6:8, 3))
 ```
 
+> Note that using the `rarefaction` argument also bootstraps the data. In these examples, the function bootstraps the data (without rarefaction) AND also bootstraps the data with the different rarefaction levels.
+
 One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
 When missing, all dimensions from the ordinated matrix are used.
 
@@ -1113,7 +1115,7 @@ plot(disparity_time_slices,
     quantiles = c(seq(from = 10, to = 100, by = 10)),
     cent.tend = sd, type = "c", elements = TRUE,
     col = c("black", rainbow(10)),
-    ylab = c("Disparity", "Diversity"), chrono.subsets = FALSE,
+    ylab = c("Disparity", "Diversity"),
     xlab = "Time (in in units from past to present)",
     observed = TRUE,
     main = "Many more options...")
@@ -1815,8 +1817,8 @@ euro_diff_rar <- test.dispRity(euro_disp, test = wilcox.test, rarefaction = 9)
 We can compare this approach to an ordination one:
 
 ```{r}
-## Ordinating the eurodist matrix
-euro_ord <- cmdscale(eurodist, k = nrow(eurodist) - 2)
+## Ordinating the eurodist matrix (with 11 dimensions)
+euro_ord <- cmdscale(eurodist, k = 11)
 
 ## Calculating disparity on the bootstrapped and rarefied subset data
 euro_ord_disp <- dispRity(boot.matrix(custom.subsets(euro_ord, group =
