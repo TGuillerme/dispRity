@@ -1,5 +1,5 @@
 #TEST disparity through time wrapper
-context("dispRity.wrapper")
+#context("dispRity.wrapper")
 
 #Test
 test_that("Wrapping works", {

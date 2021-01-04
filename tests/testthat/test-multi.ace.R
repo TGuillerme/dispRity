@@ -1,4 +1,4 @@
-context("multi.ace")
+#context("multi.ace")
 
 ## Test
 test_that("multi.ace works", {

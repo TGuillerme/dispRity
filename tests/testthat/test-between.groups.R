@@ -1,6 +1,6 @@
 # TESTING dispRity
 
-context("between.groups (inc. S3)")
+#context("between.groups (inc. S3)")
 
 test_that("dispRity works for between.groups metrics", {
 

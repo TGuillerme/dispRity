@@ -1,6 +1,6 @@
 # TESTING ordination
 
-context("ordinations")
+#context("ordinations")
 
 
 # Loading Claddis

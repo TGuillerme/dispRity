@@ -1,4 +1,4 @@
-context("reduce.space")
+#context("reduce.space")
 
 # stop("DEBUG")
 # library(testthat)

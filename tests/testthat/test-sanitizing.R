@@ -1,6 +1,6 @@
 ## TEST sanitizing
 
-context("sanitizing")
+#context("sanitizing")
 
 ## Testing class.check
 ## examples

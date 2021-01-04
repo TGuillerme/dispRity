@@ -1,6 +1,6 @@
 # TESTING dispRity
 
-context("dispRity")
+#context("dispRity")
 
 data(BeckLee_mat99)
 data(BeckLee_ages)

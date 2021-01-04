@@ -1,6 +1,6 @@
 #TESTING plot.dispRity
 
-context("pair.plot") 
+#context("pair.plot") 
 
 ## Loading the data
 data("disparity")

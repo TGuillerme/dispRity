@@ -1,4 +1,4 @@
-context("char.diff")
+#context("char.diff")
 
 test_that("translate.xyz works", {
 

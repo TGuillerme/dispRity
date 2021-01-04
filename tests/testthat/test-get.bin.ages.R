@@ -1,6 +1,6 @@
 ## TEST tree.age
 
-context("get.bin.ages")
+#context("get.bin.ages")
 
 ## Testing tree.age_table
 ## example

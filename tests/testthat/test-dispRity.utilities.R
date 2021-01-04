@@ -1,4 +1,4 @@
-context("dispRity.utilities")
+#context("dispRity.utilities")
 
 ## utilities internals
 test_that("utilities internal: extract.disparity.values", {

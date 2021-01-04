@@ -1,6 +1,6 @@
 ## TESTING boot.matrix
 
-context("boot.dispRity")
+#context("boot.dispRity")
 
 data(BeckLee_mat50)
 data <- BeckLee_mat50

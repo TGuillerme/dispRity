@@ -1,6 +1,6 @@
 #TESTING make.metric
 
-context("make.metric")
+#context("make.metric")
 
 #Loading the data
 #load("test_data.Rda")

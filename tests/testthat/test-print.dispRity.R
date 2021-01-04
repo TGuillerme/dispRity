@@ -1,6 +1,6 @@
 #TESTING print.dispRity
 
-context("print.dispRity") 
+#context("print.dispRity") 
 
 ## Loading the data
 data("disparity")

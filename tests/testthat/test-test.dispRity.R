@@ -1,6 +1,6 @@
 #TESTING test.dispRity
 
-context("test.dispRity")
+#context("test.dispRity")
 
 test_that("test.list.lapply.distributions internal fun", {
     my_list_of_comp <- list(c(1,2), c(2,1))

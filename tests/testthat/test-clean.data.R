@@ -1,5 +1,5 @@
 # TEST clean.data
-context("clean.data")
+#context("clean.data")
 
 # Testing clean.tree.table
 tree <- rtree(6, tip.label = LETTERS[1:6])

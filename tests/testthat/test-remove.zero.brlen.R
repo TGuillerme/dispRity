@@ -1,4 +1,4 @@
-context("remove.zero.brlen")
+#context("remove.zero.brlen")
 
 ## Test
 test_that("remove.zero.brlen works", {

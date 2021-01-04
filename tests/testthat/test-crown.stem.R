@@ -1,6 +1,6 @@
 ## TEST tree.age
 
-context("crown.stem")
+#context("crown.stem")
 
 ## Data
 data(BeckLee_tree)

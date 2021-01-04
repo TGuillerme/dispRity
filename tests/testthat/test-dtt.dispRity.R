@@ -1,6 +1,6 @@
 #TESTING dtt.dispRity
 
-context("dtt.dispRity")
+#context("dtt.dispRity")
 
 test_that("dispRity and dtt give the same results", {
 

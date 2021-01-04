@@ -1,5 +1,5 @@
 #TESTING model.test
-context("model.test")
+#context("model.test")
 
 ## Select model data
 load("model_test_data.Rda")

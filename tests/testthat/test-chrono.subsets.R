@@ -1,6 +1,6 @@
 ## TESTING chrono.subsets
 
-context("chrono.subsets")
+#context("chrono.subsets")
 
 data(BeckLee_tree)
 data(BeckLee_mat50)

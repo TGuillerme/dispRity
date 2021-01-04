@@ -1,6 +1,6 @@
 ## TESTING custom.subsets
 
-context("custom.subsets")
+#context("custom.subsets")
 
 data <- matrix(data = rnorm(10*9), nrow = 10, ncol = 9)
 rownames(data) <- letters[1:10]

@@ -1,6 +1,6 @@
 # TESTING summary.dispRity
 
-context("summary.dispRity")
+#context("summary.dispRity")
  
 # Loading the data
 data(BeckLee_mat50)
