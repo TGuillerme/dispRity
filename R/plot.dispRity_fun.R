@@ -1169,7 +1169,7 @@ plot.test.metric <- function(data, specific.args, ...) {
             fit <- add.fit(model_groups[[one_plot]][[1]])
             ## Slope for the first model
             add.slope(model_groups[[one_plot]][[1]], col = col_vector[1])
-            
+
             ## Get the eventual second fit
             if(!is.null(model_groups[[one_plot]][[1]])) {
                 ## Fit for the second model
