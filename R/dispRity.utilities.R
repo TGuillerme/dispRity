@@ -624,6 +624,30 @@ size.subsets <- function(data) {
     return(unlist(lapply(data$subsets, function(x) nrow(x$elements))))
 }
 
+
+#' @title Number of subsets.
+#'
+#' @description Getting the number of subsets from a dispRity object.
+#'
+#' @param data A \code{dispRity} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' 
+#' ## What are the number of elements per subsets?
+#' n.subsets(disparity)
+#' 
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+n.subsets <- function(data) {
+    ## Getting the size of subsets
+    return(length(data$subsets))
+}
+
+
 #' @title Getting the time subsets from at and after an extinction event
 #'
 #' @description Getting the reference (pre-extinction) and the comparison (post-extinction) time subsets

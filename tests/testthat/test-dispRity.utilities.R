@@ -591,3 +591,8 @@ test_that("extinction.subsets works", {
     expect_equal(extinction.subsets(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111.2592), c(1,2))
     expect_equal(extinction.subsets(chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 6, inc.nodes = TRUE), 111), c(1,2))
 })
+
+test_that("n.subset works", {
+    data(disparity)
+    expect_equal(n.subsets(disparity), 7)
+})
