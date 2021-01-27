@@ -105,7 +105,7 @@ plot(sum_var_test)
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 }
 \seealso{
-\code{\link{reduce.space}} \code{\link{dispRity}}
+\code{\link{reduce.space}} \code{\link{dispRity}} \code{\link{plot.dispRity}}
 }
 \author{
 Thomas Guillerme

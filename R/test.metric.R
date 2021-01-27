@@ -33,7 +33,7 @@
 #' @return
 #' This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).  
 #'
-#' @seealso \code{\link{reduce.space}} \code{\link{dispRity}}
+#' @seealso \code{\link{reduce.space}} \code{\link{dispRity}} \code{\link{plot.dispRity}}
 #' 
 #' @examples
 #' ## Creating a 2D uniform space

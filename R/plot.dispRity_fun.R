@@ -1078,10 +1078,10 @@ plot.test.metric <- function(data, specific.args, ...) {
     if(length(legend_args == 2) && !is.null(names(legend_args[[1]])) && !is.null(names(legend_args[[2]]))) {
         if(names(legend_args[[1]]) == names(legend_args[[2]])) {
             legend_args_1 <- legend_args[[1]]
-            legend_args_2 <- legend_args[[2]]
+            legend_args_2 <- legend_args_2_base <- legend_args[[2]]
         }
     } else {
-        legend_args_1 <- legend_args_2 <- legend_args
+        legend_args_1 <- legend_args_2 <- legend_args_2_base <- legend_args
     }
 
 
@@ -1197,6 +1197,8 @@ plot.test.metric <- function(data, specific.args, ...) {
                     }
                     ## Plot the legend
                     do.call(legend, legend_args_2)
+                    ## Reinitialise the legend
+                    legend_args_2 <- legend_args_2_base
                 }
             }
         }
