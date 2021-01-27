@@ -1021,17 +1021,61 @@ plot.test.metric <- function(data, specific.args, ...) {
         }
     }
 
+    ## Detect whether to plot the shift steps or not
+    shift_plots <- is.null(data$saved_steps)
+    if(shift_plots) {
+        ## Find which steps to plot
+        if(!is.null(specific.args$visualise.steps)) {
+            check.class(specific.args$visualise.steps, c("numeric", "integer"))
+            steps_to_visualise <- specific.args$visualise.steps
+            if(any(check <- steps_to_visualise > n.subsets(data$saved_steps[[1]]))) {
+                paste0("Impossible to display the step", ifelse(sum(check) > 1, "s ", " "), paste0(steps_to_visualise[check], collapse = ", "), "because the test only contains ",  n.subsets(data$saved_steps[[1]]), " steps.")
+            }
+        } else {
+            steps_to_visualise <- floor(seq(from = 1, to = n.subsets(data$saved_steps[[1]]) - 1, length.out = 4))
+        }
+        n_steps <- length(steps_to_visualise)
+    }
+
     ## Setting plot window size
     group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
 
     ## Separating the plots in different groups (per plot windows)
     n_plots <- length(unique(group_plot))
-    if(n_plots > 1){
-        ## Correct the number of plots if only 3
-        plot_size <- ifelse(n_plots == 3, 4, n_plots)
 
-        ## Setting up plotting window
-        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
+    if(!shift_plots) {
+        if(n_plots > 1){
+            ## Correct the number of plots if only 3
+            plot_size <- ifelse(n_plots == 3, 4, n_plots)
+
+            ## Setting up plotting window
+            op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
+        }
+    } else {    
+        ## Create the template of step plots
+        steps_plots <- results_plots <- base_matrix <- matrix(0, ceiling(sqrt(n_steps)), floor(sqrt(n_steps)), byrow = TRUE)
+        steps_plots[1:n_steps] <- 1:n_steps
+        steps_plots[1:n_steps] <- steps_plots[1:n_steps] + n_plots
+        ## Create the template for the normal plots
+        results_plots <- base_matrix
+        results_plots[] <- 1
+        ## Create the columns of for layout template
+        if(n_plots > 1) {
+            for(i in 2:n_plots) {
+                ## Add a row to the step plots
+                tmp <- base_matrix
+                tmp[1:n_steps] <- steps_plots[1:n_steps] + max(steps_plots[1:n_steps], na.rm = TRUE) + 1 - min(steps_plots[1:n_steps], na.rm = TRUE)
+                steps_plots <- rbind(steps_plots, tmp)
+                ## Add a row to the normal plots
+                tmp <- base_matrix
+                tmp[] <- i
+                results_plots <- rbind(results_plots, tmp)
+            }
+        }
+
+        ## Create the layout
+        set_layout <- layout(cbind(results_plots, steps_plots))
+        # layout.show(set_layout)
     }
 
     ## Get the plotting arguments
@@ -1202,6 +1246,54 @@ plot.test.metric <- function(data, specific.args, ...) {
                 }
             }
         }
+    }
+
+    ## Add the steps visualisation
+    if(shift_plots) {
+
+        ## List of plot margins
+        mar_base <- c(2,2,2,1)
+        xaxts <- yaxts <- rep("n", n_steps)
+        yaxts[1:nrow(base_matrix)] <- "s"
+        xaxts[c(nrow(base_matrix), length(base_matrix))] <- "s"
+
+        ## Select the shifts
+        if(length(data$saved_steps)/2 != round(length(data$saved_steps)/2)) {
+            ## There is the random one
+            shift_list <- c(1, seq(from = 2, to = length(data$saved_steps), by = 2))
+        } else {
+            ## There is no random one
+            shift_list <- c(seq(from = 1, to = length(data$saved_steps), by = 2))
+        }
+
+        ## Loop through the shifts
+        for(shift in shift_list) {
+
+            ## Loop through the different steps
+            for(step in 1:n_steps){
+                ## Selecting the subsets
+                step_preview <- get.subsets(data$saved_steps[[shift]],steps_to_visualise[step])
+                ## Making a new subset without the negatives
+                step_preview$subsets$negatives$elements <- matrix((1:nrow(step_preview$matrix[[1]]))[-c(step_preview$subsets[[1]]$elements)], ncol = 1)
+
+                ## Default title
+                step_name <- names(step_preview$subsets)[1]
+                ## Selecting the colours and the title
+                if(names(data$saved_steps)[[shift]] == "random") {
+                    select_col <- c(plot_args$col[1], "grey")
+                    step_name <- paste0(step_name, "%")
+                } else {
+                    select_col <- plot_args$col[-1]
+                    step_name <- paste0(step_name, "% - ", as.character(100-as.numeric(step_name)), "%")
+                }
+                                    
+                ## Plotting the shift preview
+                par(mar = mar_base)
+                plot.dispRity(step_preview, type = "preview", col = select_col, specific.args = list(legend = FALSE), main = step_name,xaxt = xaxts[step], yaxt = yaxts[step])
+            }
+        }
+        ## Reset the default plot margins
+        par(mar = c(5, 4, 4, 2) + 0.1)
     }
 
     ## Restoring the parameters

@@ -11,7 +11,8 @@
 #' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.
 #' @param steps The number of steps in the space reduction to output between 10\% and 100\%. By default \code{steps = 10}.
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
-#' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#' @param verbose A \code{logical} value indicating whether to be verbose (\code{TRUE}) or not (\code{FALSE}; default).
+#' @param save.steps A \code{logical} value indicating whether to save the data for visualising the the shift steps if plotting the results (\code{TRUE}) or not (\code{FALSE}; default).
 #' 
 #' @details
 #' For the three non-random shifts: \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}, the function returns both of shifts as:
@@ -58,12 +59,11 @@
 #' 
 #' ## Visualising the test
 #' plot(median_centroid_test)
-#'
 #' 
 #' \dontrun{
 #' ## Note that the tests can take several minutes to run.
 #' 
-#' ## Testing the sum of variance on all shifts
+#' ## Testing the sum of variance on all shifts 
 #' sum_var_test <- test.metric(space, metric = c(sum, variances),
 #'                             shifts = c("random", "size", "density", "position"))
 #' 
@@ -72,6 +72,18 @@
 #' 
 #' ## Visualising the test
 #' plot(sum_var_test)
+#' 
+#' ## Re-running the test on two shifts with data saving for visualisation
+#' median_centroid_test <- test.metric(space, shifts = c("random", "size"), save.steps = TRUE)
+#' 
+#' ## Visualising the tests results and display the shifts visualisation
+#' plot(median_centroid_test)
+#'
+#' ## Visualising the tests results with several specific options
+#' plot(median_centroid_test,
+#'      specific.args = list(legend = list(list(x = "bottomright"),
+#'                                         list(x = "topright"   )),
+#'                           visualise.steps = c(1,4,5)))
 #' }
 #'  
 #' @author Thomas Guillerme
@@ -80,7 +92,7 @@
 #' Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 
 
-test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE) {
+test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE, save.steps = FALSE) {
 
     ## Saving the call
     match_call <- match.call()
@@ -187,7 +199,14 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
                  "model" = model,
                  "metric" = if(is.null(metric_name)){match_call$metric} else {metric_name})
 
-    output <- list("call" = call, "results" = results_list, "models" = models)
+    ## Save the steps
+    if(save.steps) {
+        saved_steps <- all_reductions[[1]]
+    } else {
+        saved_steps <- NULL
+    }
+
+    output <- list("call" = call, "results" = results_list, "models" = models, "saved_steps" = saved_steps)
     class(output) <- c("dispRity", "test.metric")
 
     return(output)

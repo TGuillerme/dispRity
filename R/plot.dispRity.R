@@ -28,6 +28,7 @@
 #' \itemize{
 #'      \item if \code{type = "preview"}, the default is \code{specific.args = list(dimensions = c(1,2), matrix = 1)} where \code{dimensions} designates which dimensions to plot and \code{matrix} which specific matrix from \code{data} to plot.
 #'      \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.
+#'      \item if data is a \code{"test.metric"} result that was obtained with the option \code{save.steps = TRUE} (see \code{\link{test.metric}}), it is possible to specify which steps to by specifying the following specific argument: \code{specific.args = list(visualise.steps = c(1,4,5))} for visualising steps 1, 4 and 5 of the different shifts. By default, if the \code{"test.metric"} was obtained with the option \code{save.steps = TRUE}, four steps are displayed.
 #' }
 #'
 #' @examples
@@ -58,7 +59,11 @@
 #' ## Observed data with graphical details
 #' plot(disparity, observed = list("pch" = 19, col = "blue", cex = 4))
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}.
+#' ## For plotting dispRity objects with the dual classes "randtest", "dtt",
+#' ## "model.test", "model.sim" and "test.metric" see the examples
+#' ## in the specific function manuals from the "See also" section above
+#' 
+#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{null.test}}, \code{\link{dispRity.dtt}}, \code{\link{model.test}}, \code{\link{model.test.sim}}, \code{\link{test.metric}}
 #'
 #' @author Thomas Guillerme
 
