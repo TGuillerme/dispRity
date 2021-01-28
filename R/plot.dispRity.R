@@ -63,7 +63,7 @@
 #' ## "model.test", "model.sim" and "test.metric" see the examples
 #' ## in the specific function manuals from the "See also" section above
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{null.test}}, \code{\link{dispRity.dtt}}, \code{\link{model.test}}, \code{\link{model.test.sim}}, \code{\link{test.metric}}
+#' @seealso \code{\link{dispRity}}, \code{\link{summary.dispRity}}, \code{\link{null.test}}, \code{\link{dtt.dispRity}}, \code{\link{model.test}}, \code{\link{model.test.sim}}, \code{\link{test.metric}}
 #'
 #' @author Thomas Guillerme
 

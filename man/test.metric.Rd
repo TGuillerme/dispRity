@@ -14,7 +14,8 @@ test.metric(
   replicates = 3,
   steps = 10,
   dimensions,
-  verbose = FALSE
+  verbose = FALSE,
+  save.steps = FALSE
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ test.metric(
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
-\item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+\item{verbose}{A \code{logical} value indicating whether to be verbose (\code{TRUE}) or not (\code{FALSE}; default).}
+
+\item{save.steps}{A \code{logical} value indicating whether to save the data for visualising the the shift steps if plotting the results (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \value{
 This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).
@@ -85,11 +88,10 @@ summary(median_centroid_test)
 ## Visualising the test
 plot(median_centroid_test)
 
-
 \dontrun{
 ## Note that the tests can take several minutes to run.
 
-## Testing the sum of variance on all shifts
+## Testing the sum of variance on all shifts 
 sum_var_test <- test.metric(space, metric = c(sum, variances),
                             shifts = c("random", "size", "density", "position"))
 
@@ -98,6 +100,18 @@ summary(sum_var_test)
 
 ## Visualising the test
 plot(sum_var_test)
+
+## Re-running the test on two shifts with data saving for visualisation
+median_centroid_test <- test.metric(space, shifts = c("random", "size"), save.steps = TRUE)
+
+## Visualising the tests results and display the shifts visualisation
+plot(median_centroid_test)
+
+## Visualising the tests results with several specific options
+plot(median_centroid_test,
+     specific.args = list(legend = list(list(x = "bottomright"),
+                                        list(x = "topright"   )),
+                          visualise.steps = c(1,4,5)))
 }
  
 }

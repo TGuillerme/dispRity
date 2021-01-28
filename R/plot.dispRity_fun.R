@@ -1022,14 +1022,14 @@ plot.test.metric <- function(data, specific.args, ...) {
     }
 
     ## Detect whether to plot the shift steps or not
-    shift_plots <- is.null(data$saved_steps)
+    shift_plots <- !is.null(data$saved_steps)
     if(shift_plots) {
         ## Find which steps to plot
         if(!is.null(specific.args$visualise.steps)) {
             check.class(specific.args$visualise.steps, c("numeric", "integer"))
             steps_to_visualise <- specific.args$visualise.steps
             if(any(check <- steps_to_visualise > n.subsets(data$saved_steps[[1]]))) {
-                paste0("Impossible to display the step", ifelse(sum(check) > 1, "s ", " "), paste0(steps_to_visualise[check], collapse = ", "), "because the test only contains ",  n.subsets(data$saved_steps[[1]]), " steps.")
+                stop(paste0("Impossible to display the step", ifelse(sum(check) > 1, "s ", " "), paste0(steps_to_visualise[check], collapse = ", "), " because the test only contains ",  n.subsets(data$saved_steps[[1]]), " steps."), call. = FALSE)
             }
         } else {
             steps_to_visualise <- floor(seq(from = 1, to = n.subsets(data$saved_steps[[1]]) - 1, length.out = 4))
@@ -1053,9 +1053,11 @@ plot.test.metric <- function(data, specific.args, ...) {
         }
     } else {    
         ## Create the template of step plots
-        steps_plots <- results_plots <- base_matrix <- matrix(0, ceiling(sqrt(n_steps)), floor(sqrt(n_steps)), byrow = TRUE)
+        steps_to_consider <- ifelse(n_steps == 3, 4, n_steps)
+        steps_plots <- results_plots <- base_matrix <- matrix(0, ceiling(sqrt(steps_to_consider)), floor(sqrt(steps_to_consider)), byrow = TRUE)
         steps_plots[1:n_steps] <- 1:n_steps
         steps_plots[1:n_steps] <- steps_plots[1:n_steps] + n_plots
+        steps_plots <- t(steps_plots)
         ## Create the template for the normal plots
         results_plots <- base_matrix
         results_plots[] <- 1
@@ -1076,6 +1078,8 @@ plot.test.metric <- function(data, specific.args, ...) {
         ## Create the layout
         set_layout <- layout(cbind(results_plots, steps_plots))
         # layout.show(set_layout)
+        ## Parameter backup
+        op_tmp <- NULL
     }
 
     ## Get the plotting arguments
@@ -1251,7 +1255,7 @@ plot.test.metric <- function(data, specific.args, ...) {
     ## Add the steps visualisation
     if(shift_plots) {
 
-        ## List of plot margins
+        ## List of plot margins
         mar_base <- c(2,2,2,1)
         xaxts <- yaxts <- rep("n", n_steps)
         yaxts[1:nrow(base_matrix)] <- "s"
@@ -1297,7 +1301,7 @@ plot.test.metric <- function(data, specific.args, ...) {
     }
 
     ## Restoring the parameters
-    if(n_plots > 1) {
+    if(n_plots > 1 && !is.null(op_tmp)) {
         par(op_tmp)
     }
 }

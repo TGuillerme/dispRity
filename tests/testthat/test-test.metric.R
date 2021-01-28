@@ -46,8 +46,6 @@ test_that("test.metric works", {
     output <- capture_messages(test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE))
     expect_equal(output, c("Running the space reductions:", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "Done.\n"                      , "Calculating disparity:", ".", ".", ".", "Done.\n"))
 
-
-
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(3, 10))
     expect_is(summary(test), "matrix")
@@ -128,17 +126,16 @@ test_that("test.metric works", {
     expect_is(test$saved_steps[[1]], "dispRity")
 
     ## Visualising the tests results and display the shifts visualisation
-    plot(test)
+    expect_null(plot(test))
 
     error <- capture_error(plot(test, specific.args = list(visualise.steps = c(1, 11, 12))))
-    expect_equal(error[[1]], "Impossible to display the step 11, 12, because the test only contains 10 steps.")
-    
+    expect_equal(error[[1]], "Impossible to display the steps 11, 12 because the test only contains 10 steps.")
+    test <- test.metric(space, metric = c(sum, variances), shifts = c("density", "size"), save.steps = TRUE)
+    expect_null(plot(test))
 
     ## Visualising the tests results with several specific options
-    plot(median_centroid_test,
-         specific.args = list(legend = list(list(x = "bottomright"),
-                                            list(x = "topright"   )),
-                              visualise.steps = c(1,4,5)))
+    expect_null(plot(test,
+         specific.args = list(visualise.steps = c(1,4,5))))
 
 
 
