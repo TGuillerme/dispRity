@@ -1258,8 +1258,8 @@ plot.test.metric <- function(data, specific.args, ...) {
         ## List of plot margins
         mar_base <- c(2,2,2,1)
         xaxts <- yaxts <- rep("n", n_steps)
-        yaxts[1:nrow(base_matrix)] <- "s"
-        xaxts[c(nrow(base_matrix), length(base_matrix))] <- "s"
+        yaxts[c(nrow(base_matrix), length(base_matrix))-1] <- "s"
+        xaxts[c(ncol(base_matrix)+1, length(base_matrix))] <- "s"
 
         ## Select the shifts
         if(length(data$saved_steps)/2 != round(length(data$saved_steps)/2)) {

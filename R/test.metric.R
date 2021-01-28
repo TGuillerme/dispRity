@@ -73,17 +73,17 @@
 #' ## Visualising the test
 #' plot(sum_var_test)
 #' 
+#' ## Creating a 2D uniform space
+#' space <- space.maker(300, 2, runif)
+#' 
 #' ## Re-running the test on two shifts with data saving for visualisation
-#' median_centroid_test <- test.metric(space, shifts = c("random", "size"), save.steps = TRUE)
+#' median_centroid_test <- test.metric(space,
+#'                                     metric = c(median, centroids),
+#'                                     shifts = c("random", "size"),
+#'                                     save.steps = TRUE)
 #' 
 #' ## Visualising the tests results and display the shifts visualisation
 #' plot(median_centroid_test)
-#'
-#' ## Visualising the tests results with several specific options
-#' plot(median_centroid_test,
-#'      specific.args = list(legend = list(list(x = "bottomright"),
-#'                                         list(x = "topright"   )),
-#'                           visualise.steps = c(1,4,5)))
 #' }
 #'  
 #' @author Thomas Guillerme
