@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projection
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -62,6 +62,8 @@
 #'   \item \code{neighbours}: calculates the distance to a neighbour (Foote 1990). By default this is the distance to the nearest neighbour (\code{which = min}) but can be set to any dimension level - 1 function (e.g. \code{which = mean} gives the distance to the most average neighbour). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
 #'
 #'   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#'
+#'   \item \code{projection}: projects each element on a vector defined as (\code{point1}, \code{point2}) and returns either their position on that axis (\code{measure = "position"}; default) or their distance from that axis (\code{measure = "distance"}). By default \code{point1} is the centre of the space (\code{point1 = c(0, 0, ...)}) and \code{point2} is the centroid of the matrix \code{colMeans(matrix)}. Coordinates for \code{point1} and \code{point2} can be either a single \code{numeric} value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 #'
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
@@ -269,6 +271,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?neighbours\n")
     cat("?pairwise.dist\n")
     cat("?point.dist\n")
+    cat("?projection\n")
     cat("?ranges\n")
     cat("?radius\n")
     cat("?variances\n")
@@ -569,6 +572,15 @@ func.div <- function(matrix) {
     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
 }
 
+
+## Select the right slope function
+get.slope.significant <- function(X, base_angle) {
+    model <- lm(base_angle ~ X)
+    return(ifelse(summary(model)[[4]][[8]] < 0.05, model$coefficients[[2]], 0))
+}
+get.slope.nonsignificant <- function(X, base_angle) {
+    lm(base_angle ~ X)$coefficients[[2]]
+}
 ## Angles measurements
 angles <- function(matrix, unit = "degree", base = 0, significant = FALSE) {
 
@@ -581,15 +593,6 @@ angles <- function(matrix, unit = "degree", base = 0, significant = FALSE) {
 
     ## Generate the base angle (slope/radian/angle = 0)
     base_angle <- seq_len(nrow(matrix))
-
-    ## Select the right slope function
-    get.slope.significant <- function(X, base_angle) {
-        model <- lm(base_angle ~ X)
-        return(ifelse(summary(model)[[4]][[8]] < 0.05, model$coefficients[[2]], 0))
-    }
-    get.slope.nonsignificant <- function(X, base_angle) {
-        lm(base_angle ~ X)$coefficients[[2]]
-    }
     if(significant) {
         get.slope <- get.slope.significant
     } else {
@@ -674,8 +677,8 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
 ## Functions for the group.distance function
 ## Function for centreing a matrix on one specific centroid
 centre.matrix <- function(matrix, group) {
-    centre <- colMeans(matrix[group,])
-    matrix - rep(centre, rep.int(nrow(matrix), ncol(matrix)))
+    centre <- colMeans(matrix[group, , drop = FALSE])
+    return(matrix - rep(centre, rep.int(nrow(matrix), ncol(matrix))))
 }
 ## Function for getting the projected lengths
 get.proj.length <- function(point, centroid, length) {
@@ -685,7 +688,6 @@ get.proj.length <- function(point, centroid, length) {
 quantiles.per.groups <- function(group, lengths, probs) {
     return(quantile(lengths[group], probs = probs))
 }
-
 ## Euclidean distance between two groups
 group.dist <- function(matrix, matrix2, probs = c(0,1)) {
     ## Make the combined matrix
@@ -727,6 +729,15 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
     ## Calculate centroid distance with a single centroid
     return(apply(matrix, 1, fun.dist, centroid = centroid))
 }
+
+## Projection of elements on an axis
+projection <- function(matrix, point1, point2, measure = "position") {
+
+    ## Check pracma::affineproj
+
+}
+
+
 
 #' @title Nodes coordinates
 #'

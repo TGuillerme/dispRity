@@ -4,7 +4,7 @@
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?projection\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2")
 })
@@ -779,4 +779,131 @@ test_that("point.dist", {
     test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
     test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
     expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
+})
+
+test_that("projection", {
+
+## Simple 1D test
+matrix <- matrix(c(0,1,2,0,0,0), 3, 2)
+# plot(matrix)
+rownames(matrix) <- LETTERS[1:3]
+
+
+
+
+## Angle between two vectors
+vector.angle <- function(v1, v2, degree = TRUE) {
+    angle <- acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2))))
+    if(degree) {
+        return(angle *180/pi)
+    } else {
+        angle
+    }
+}
+## Rotate a matrix along one axis
+rotate.matrix <- function(matrix, angle) {
+    ## The rotation matrix
+    rot_matrix <- c(cos(angle), sin(angle), -sin(angle), cos(angle))
+    rot_matrix <- matrix(rot_matrix, 2, 2)
+    warning("DEBUG: rotate.matrix: only 2D")
+    # Check https://en.wikipedia.org/wiki/Rotation_matrix for 3D+
+    return(matrix %*% rot_matrix)
+}
+## Projection of elements on an axis
+projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position") {
+
+    stop("PROTYPE: projection")
+
+    ## Get the point1
+    if(length(point1) == 1) {
+        point1 <- rep(point1, ncol(matrix))
+    }
+
+    ## Get the base vector
+    base_vector <- rbind(point1, point2)
+
+    ## Centre the matrix on point1
+    if(sum(point1) != 0) {
+        stop("TODO: centre matrix")
+    }
+
+    ## Get the base angle
+    base_angle <- vector.angle(base_vector[2,], c(1,0), degree = FALSE)
+
+    ## Change the angle directionality (if needed)
+    if(base_vector[2,2] < 0) {
+        warning("DEBUG: projection: 2D only")
+        base_angle <- base_angle * -1
+    }
+
+    ## Rotate and scale the matrix + vector
+    space <- rbind(matrix, base_vector)
+    space <- rotate.matrix(space, angle = base_angle)
+    space <- space/dist(space[-c(1:nrow(matrix)),])
+    matrix <- space[1:nrow(matrix), ]
+    base_vector <- space[-c(1:nrow(matrix)), ]
+
+    # "position" #distance on
+    # "distance" #distance from
+    # "angle"    #angle between
+
+    ## Project the vectors
+    projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = ncol(matrix)))
+    angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
+
+    ## Measure the thingy
+    values <- switch(measure,
+        "position" = { #distance on
+            ## Measure the position on the vectors and their orientation
+            apply(projections, 1, dist) * ifelse(angles > 90, -1, 1)
+        },
+        "distance" = { #distance from
+            ## Get the rejection distance
+            apply(matrix - projections, 1, dist)
+        },
+        "degrees"  = {
+            angles
+        },
+        "radians"  = {
+            angles/180*pi  
+        })
+
+    return(values)
+}
+
+  
+
+# ## Position default (from 0 to centroid)
+# expect_equal(projection(matrix), c(0, 1, 2))
+# ## Distance default (from 0 to centroid)
+# expect_equal(projection(matrix, measure = "distance"), c(0, 0, 0))
+# ## Position from 0 to 1)
+# expect_equal(projection(matrix, point2 = c(1, 0)), c(0, 0.5, 1))
+# ## Distance default (from 0 to centroid)
+# expect_equal(projection(matrix, point2 = c(1, 0), measure = "distance"), c(0, 0, 0))
+# ## Position from -1 to 1)
+# expect_equal(projection(matrix, point1 = c(-1, 0), point2 = c(1, 0)), c(0.5, 0.75, 1))
+
+
+
+
+## Simple 2D test
+matrix <- matrix(c(1,2,3,1,2,3), 3, 2)
+# plot(matrix)
+
+# ## Position default (from 0 to centroid)
+# expect_equal(projection(matrix), c(0, 1, 2))
+# ## Distance default (from 0 to centroid)
+# expect_equal(projection(matrix, measure = "distance"), c(0, 0, 0))
+# ## Position from 0 to 1)
+# expect_equal(projection(matrix, point2 = c(1, 0)), c(0, 0.5, 1))
+# ## Distance default (from 0 to centroid)
+# expect_equal(projection(matrix, point2 = c(1, 0), measure = "distance"), c(0, 0, 0))
+# ## Position from -1 to 1)
+# expect_equal(projection(matrix, point1 = c(-1, 0), point2 = c(1, 0)), c(0.5, 0.75, 1))
+
+
+
+
+   
 })

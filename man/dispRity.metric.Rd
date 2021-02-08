@@ -28,6 +28,7 @@
 \alias{deviations}
 \alias{group.dist}
 \alias{point.dist}
+\alias{projection}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -94,6 +95,8 @@ The currently implemented dimension-level 2 metrics are:
   \item \code{neighbours}: calculates the distance to a neighbour (Foote 1990). By default this is the distance to the nearest neighbour (\code{which = min}) but can be set to any dimension level - 1 function (e.g. \code{which = mean} gives the distance to the most average neighbour). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
 
   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+
+  \item \code{projection}: projects each element on a vector defined as (\code{point1}, \code{point2}) and returns either their position on that axis (\code{measure = "position"}; default) or their distance from that axis (\code{measure = "distance"}). By default \code{point1} is the centre of the space (\code{point1 = c(0, 0, ...)}) and \code{point2} is the centroid of the matrix \code{colMeans(matrix)}. Coordinates for \code{point1} and \code{point2} can be either a single \code{numeric} value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 
   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 
