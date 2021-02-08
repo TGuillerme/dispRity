@@ -57,7 +57,7 @@ The parameters for each reduction type algorithms are:
      \item \code{"size"} parameters: a list of \code{parameters$centre}, the centre from which to count the radius (if missing, is set to \code{0}); and \code{parameters$radius}, the radius for removal.
      \item \code{"density"} parameters: a list of \code{parameters$what} "close" (default) for close neighbours or "distant" for distant ones; \code{parameters$diameter} the diameter for considering closeness or distance; \code{parameters$output} either "singles" or "pairs" to return the pairs of neighbours or one of them only (the first).
      \item \code{"position"} parameters: a list of \code{parameters$value}, value the threshold value from which to remove elements.
-     \item \code{"evenness"} parameters: a list of \code{parameters$bw}, a bandwith selector function (\code{\link[stats]{bw.nrd0}} by default).
+     \item \code{"evenness"} parameters: a list of \code{parameters$bw}, a bandwith selector function (\code{\link[stats]{bw.nrd0}} by default); and \code{parameters$power} a scaling factor for exaggerating the flatting/narrowing of the curve (the counts are set to this parameter exponent: default is \code{1}).
 }
 
 See Guillerme et al. 2020 and https://github.com/TGuillerme/moms for details.
@@ -65,7 +65,7 @@ See Guillerme et al. 2020 and https://github.com/TGuillerme/moms for details.
 \examples{
 set.seed(1)
 ## Creating a two dimensional space
-space <- dispRity::space.maker(100, 2, distribution = stats::rnorm)
+space <- space.maker(100, 2, distribution = stats::rnorm)
 
 ## Generating the four types of reductions
 random <- reduce.space(space, "random", remove = 0.5)

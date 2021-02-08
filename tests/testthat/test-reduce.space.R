@@ -116,48 +116,56 @@ test_that("reduce.space works", {
     expect_equal(length(test), 300)
     expect_equal(length(which(test)), 210)
 
-    # ## Evenness test visual
-    # visualise.evenness <- function(space, remove) {
+    ## Evenness with exageration
+    set.seed(1)
+    test2 <- reduce.space(space, type = "evenness", remove = 0.5, parameters = list(power = 2))
+    expect_equal(length(test2), 300)
+    expect_equal(length(which(test2)), 150)
 
-    #     selected <- reduce.space(space, type = "evenness", remove = remove)
+    ## Evenness test visual
+    visualise.evenness <- function(space, remove, ...) {
 
-    #     nf <- layout(matrix(c(2,0,1,3),2,2,byrow = TRUE), c(2.5,1.5), c(1.5,2.5), TRUE)
+        selected <- reduce.space(space, type = "evenness", remove = remove, ...)
 
-    #     ## Plotting the points
-    #     par(mar = c(3,3,1,1))
-    #     plot(space[!selected,], pch = 19, col = "blue")
-    #     points(space[selected,], pch = 19, col = "orange")
+        nf <- layout(matrix(c(2,0,1,3),2,2,byrow = TRUE), c(2.5,1.5), c(1.5,2.5), TRUE)
 
-    #     ## Plotting the distributions
-    #     all_range <- range(c(space))
-    #     band_width <- bw.nrd0(c(space))
-    #     bin_breaks <- seq(from = min(c(space)), to = max(c(space) + band_width), by = band_width) 
-    #     x_hist_all <- hist(space[,1], breaks = bin_breaks, plot = FALSE)
-    #     y_hist_all <- hist(space[,2], breaks = bin_breaks, plot = FALSE)
-    #     x_hist_sel <- hist(space[selected,1], breaks = bin_breaks, plot = FALSE)
-    #     x_hist_rem <- hist(space[!selected,1], breaks = bin_breaks, plot = FALSE)
-    #     y_hist_sel <- hist(space[selected,2], breaks = bin_breaks, plot = FALSE)
-    #     y_hist_rem <- hist(space[!selected,2], breaks = bin_breaks, plot = FALSE)
+        ## Plotting the points
+        par(mar = c(3,3,1,1))
+        plot(space[!selected,], pch = 19, col = "blue")
+        points(space[selected,], pch = 19, col = "orange")
 
-    #     top <- max(c(x_hist_all$counts, y_hist_all$counts))
+        ## Plotting the distributions
+        all_range <- range(c(space))
+        band_width <- bw.nrd0(c(space))
+        bin_breaks <- seq(from = min(c(space)), to = max(c(space) + band_width), by = band_width) 
+        x_hist_all <- hist(space[,1], breaks = bin_breaks, plot = FALSE)
+        y_hist_all <- hist(space[,2], breaks = bin_breaks, plot = FALSE)
+        x_hist_sel <- hist(space[selected,1], breaks = bin_breaks, plot = FALSE)
+        x_hist_rem <- hist(space[!selected,1], breaks = bin_breaks, plot = FALSE)
+        y_hist_sel <- hist(space[selected,2], breaks = bin_breaks, plot = FALSE)
+        y_hist_rem <- hist(space[!selected,2], breaks = bin_breaks, plot = FALSE)
 
-    #     par(mar = c(0,3,1,1))
-    #     barplot(x_hist_all$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "grey")
-    #     barplot(x_hist_sel$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "orange", add = TRUE)
-    #     barplot(x_hist_rem$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "blue", add = TRUE, density = 75)
+        top <- max(c(x_hist_all$counts, y_hist_all$counts))
 
-    #     par(mar = c(0,3,1,1))
-    #     barplot(y_hist_all$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "grey", horiz = TRUE)
-    #     barplot(y_hist_sel$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "orange", add = TRUE, horiz = TRUE)
-    #     barplot(y_hist_rem$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "blue", add = TRUE, horiz = TRUE, density = 75)
-    # }
+        par(mar = c(0,3,1,1))
+        barplot(x_hist_all$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "grey")
+        barplot(x_hist_sel$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "orange", add = TRUE)
+        barplot(x_hist_rem$counts, axes = FALSE, ylim = c(0, top), space = 0, col = "blue", add = TRUE, density = 75)
 
-    # ## Both distributions are around 50% of the total distribution (in grey)
-    # visualise.evenness(space, remove = 0.5)
-    # ## We've flattened the curve for the orange distribution!
-    # visualise.evenness(space, remove = 0.8)
-    # ## same for the blue one
-    # visualise.evenness(space, remove = 0.2)
+        par(mar = c(0,3,1,1))
+        barplot(y_hist_all$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "grey", horiz = TRUE)
+        barplot(y_hist_sel$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "orange", add = TRUE, horiz = TRUE)
+        barplot(y_hist_rem$counts, axes = FALSE, xlim = c(0, top), space = 0, col = "blue", add = TRUE, horiz = TRUE, density = 75)
+    }
+
+    ## Both distributions are around 50% of the total distribution (in grey)
+    visualise.evenness(space, remove = 0.5)
+    ## We've flattened the curve for the orange distribution!
+    visualise.evenness(space, remove = 0.8)
+    ## same for the blue one
+    visualise.evenness(space, remove = 0.2)
+    ## With exageration
+    visualise.evenness(space, remove = 0.5, parameters = list(power = 2))
 
 })
 
