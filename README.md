@@ -132,6 +132,8 @@ Acknowledgments
 -------
 Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
 
+If you use the `dispRity` pacakge for morphological disparity analyses, you should also check the excellent [`Claddis`](https://github.com/graemetlloyd/Claddis) package!
+
 
 Examples of papers using the `dispRity` package
 -------
@@ -178,4 +180,7 @@ Skeels A. The Ecological and Evolutionary Drivers of Spatial Biodiversity Patter
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 Taverne M, Fabre AC, King‐Gillies N, Krajnović M, Lisičić D, Martin L, Michal L, Petricioli D, Štambuk A, Tadić Z, Vigliotti C. Diet variability among insular populations of Podarcis lizards reveals diverse strategies to face resource‐limited environments. *Ecology and Evolution*. **2019** [DOI:10.1002/ece3.5626](https://onlinelibrary.wiley.com/doi/pdf/10.1002/ece3.5626).
 
+#### Disparity analyses jointly using the `dispRity` and [`Claddis`](https://github.com/graemetlloyd/Claddis) packages
 
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+patterns+and+modes+of+the+evolution+of+disparity+in+Mesozoic+birds&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Wang M, Lloyd GT, Zhang C, Zhou Z. The patterns and modes of the evolution of disparity in Mesozoic birds. Proceedings of the Royal Society B. **2021** [DOI:10;288(1944):20203105](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2020.3105?casa_token=YSmPfapjEssAAAAA%3AYU3ya5sGZnwhtEkR5eP_UPUN7cJp8BR_HOoJ3vW3qfY_BUNI_FFXFrkc0-sVO5cl7iAaG8qpj4WLxA)
