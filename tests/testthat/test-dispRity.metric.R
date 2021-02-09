@@ -800,17 +800,28 @@ vector.angle <- function(v1, v2, degree = TRUE) {
         angle
     }
 }
-## Rotate a matrix along one axis
-rotate.matrix <- function(matrix, angle) {
-    ## The rotation matrix
-    rot_matrix <- c(cos(angle), sin(angle), -sin(angle), cos(angle))
-    rot_matrix <- matrix(rot_matrix, 2, 2)
-    warning("DEBUG: rotate.matrix: only 2D")
-    # Check https://en.wikipedia.org/wiki/Rotation_matrix for 3D+
-    return(matrix %*% rot_matrix)
+## Rotate a matrix along one axis (dim_proj)
+rotate.matrix <- function(matrix, angle, dimension, tol= 12) {
+    ## The dimensionality
+    dim <- ncol(matrix)
+    ## The axis rotation matrix
+    axis_rotation <- matrix(c(cos(angle), sin(angle), -sin(angle), cos(angle)), 2, 2)
+    ## The whole nD rotation matrix
+    rotation_matrix <- matrix(0, dim, dim)
+    diag(rotation_matrix) <- 1
+    
+    warning("DEBUG: rotate.matrix: only on x axis", call. = FALSE)
+    ## Apply the rotation on the x axis
+    rotation_matrix[c(dim-1, dim), c(dim-1, dim)] <- axis_rotation
+
+    ## Rotate the matrix
+    matrix <- matrix %*% rotation_matrix
+
+    ## Round the results
+    return(round(matrix, digits = tol))
 }
 ## Projection of elements on an axis
-projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position") {
+projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
 
     stop("PROTYPE: projection")
 
@@ -824,22 +835,35 @@ projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = 
 
     ## Centre the matrix on point1
     if(sum(point1) != 0) {
-        stop("TODO: centre matrix")
+        ## Centre all the space
+        space <- rbind(matrix, base_vector)
+        space <- space - rep(point1, rep.int(nrow(space), ncol(space)))
+        ## Re-attribute the centred variables
+        matrix <- space[1:nrow(matrix), ]
+        base_vector <- space[-c(1:nrow(matrix)), ]
+        point1 <- base_vector[1,]
+        point2 <- base_vector[2,]
     }
 
+    ## Find the closest dimension to project on
+    warning("DEBUG: projections: always projects on x axis")
+    dim_proj <- c(1, rep(0, (ncol(matrix)-1)))
+    # dim_proj <- as.numeric(abs(base_vector[2,]) == min(abs(base_vector[2,])))
+
     ## Get the base angle
-    base_angle <- vector.angle(base_vector[2,], c(1,0), degree = FALSE)
+    base_angle <- vector.angle(base_vector[2,], dim_proj, degree = FALSE)
 
     ## Change the angle directionality (if needed)
-    if(base_vector[2,2] < 0) {
-        warning("DEBUG: projection: 2D only")
+    if(base_vector[2, dim_proj] < 0) {
         base_angle <- base_angle * -1
     }
 
     ## Rotate and scale the matrix + vector
     space <- rbind(matrix, base_vector)
-    space <- rotate.matrix(space, angle = base_angle)
-    space <- space/dist(space[-c(1:nrow(matrix)),])
+    space <- rotate.matrix(space, angle = base_angle, dimension = dim_proj)
+    if(scaled) {
+        space <- space/dist(space[-c(1:nrow(matrix)),])
+    }
     matrix <- space[1:nrow(matrix), ]
     base_vector <- space[-c(1:nrow(matrix)), ]
 
@@ -849,6 +873,7 @@ projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = 
 
     ## Project the vectors
     projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = ncol(matrix)))
+    ##TODO: add divided by ||a|| for non-scaled option
     angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
 
     ## Measure the thingy
@@ -871,7 +896,151 @@ projection <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = 
     return(values)
 }
 
-  
+
+
+## 3D visual test
+
+library(rgl)
+matrix <- point1 <- point2 <- base_vector <- projections <- rejections <- base_angl <- NULL
+set.seed(2) #1,4
+for(i in 1:10) {
+    test(seed = i, n = 2) #2, 4, 7
+    Sys.sleep(0.5)
+}
+test <- function(seed, n) {
+    set.seed(seed)
+    if(n == 3) {
+        matrix <- matrix(rnorm(15), 5, 3)
+    } else {
+        matrix <- matrix(rnorm(10), 5, 2)
+    }
+    rownames(matrix) <- letters[1:5]
+
+    ## Base plot for visualisation
+    plot.base <- function(matrix, base_vector, lim) {
+
+        if(missing(lim)) {
+            lim <- ceiling(max(abs(range(matrix))))
+            lim <- c(-lim, lim)
+        }
+
+        if(ncol(matrix) == 3) {
+            plot3d(NULL, xlim = lim, ylim =lim, zlim = lim, xlab = "", ylab = "", zlab = "")
+            segments3d(x = lim, y = c(0, 0), z = c(0, 0), col = "grey")
+            text3d(x = min(lim)*0.9, y = 0, z = 0, texts = "X", col = "grey")
+            segments3d(x = c(0,0), y = lim, z = c(0, 0), col = "grey")
+            text3d(x = 0, y = min(lim)*0.9, z = 0, texts = "Y", col = "grey")
+            segments3d(x = c(0,0), y = c(0,0), z = lim, col = "grey")
+            text3d(x = 0, y = 0, z = min(lim)*0.9, texts = "Z", col = "grey")
+            ## Add the original points
+            text3d(matrix, texts = rownames(matrix), col = "grey")
+            segments3d(base_vector, col = "grey")
+        } else {
+            plot(NULL, xlim = lim, ylim = lim, xlab = "x", ylab = "y")
+            abline(v = 0, col = "grey")
+            abline(h = 0, col = "grey")
+            text(matrix[,1:2], labels = rownames(matrix), col = "grey")
+            lines(base_vector, col = "grey")
+        }
+    }
+    plot.recentred <- function(matrix, base_vector) {
+        if(ncol(matrix) == 3) {
+            text3d(matrix, texts = rownames(matrix), col = "black")
+            for(i in 1:nrow(matrix)) {
+                segments3d(rbind(c(0,0,0), matrix[i,]), col ="grey")
+            }
+            segments3d(base_vector, col = "black")
+        } else {
+            text(matrix, labels = rownames(matrix), col = "black")
+            for(i in 1:nrow(matrix)) {
+                lines(rbind(c(0,0), matrix[i,]), col = "grey")
+            }
+            lines(base_vector, col = "black")
+        }
+    }
+    plot.projections <- function(matrix, projections, rejections) {
+        if(ncol(matrix) == 3) {
+            for(i in 1:nrow(matrix)) {
+                ## Plot the projections
+                segments3d(rbind(c(0,0,0), projections[i,]), col = "red")
+                ## Plot the rejection
+                segments3d(rbind(projections[i, ], rejections[i,]+projections[i, ]), col = "green")                
+            }
+
+        } else {
+            for(i in 1:nrow(matrix)) {
+                ## Plot the projections
+                lines(rbind(c(0,0), projections[i,]), col = "red")
+                ## Plot the rejection
+                lines(rbind(projections[i, ], rejections[i,]+projections[i, ]), col = "green")
+            }        
+        }
+    }
+
+        point1 <- matrix["d",]
+        point2 <- matrix["e",]
+
+        ## Getting the base vector
+        base_vector <- rbind(point1, point2)
+
+    plot.base(matrix, base_vector)
+
+        ## Centre all the space
+        space <- rbind(matrix, base_vector)
+        space <- space - rep(point1, rep.int(nrow(space), ncol(space)))
+        ## Re-attribute the centred variables
+        matrix <- space[1:nrow(matrix), ]
+        base_vector <- space[-c(1:nrow(matrix)), ]
+
+        ## Find the closest dimension to project on
+        dim_proj <- c(1, rep(0, (ncol(matrix)-1)))
+        #dim_proj <- as.numeric(abs(base_vector[2,]) == min(abs(base_vector[2,])))
+        ## Get the base angle
+        base_angle <- vector.angle(base_vector[2,], dim_proj, degree = FALSE)
+
+        ## Change the angle directionality (if needed)
+        # if(base_vector[2, dim_proj] < 0 && base_angle*180/pi < 90) {
+        #     base_angle <- base_angle * -1
+        # }
+        if(90 < base_angle*180/pi && base_angle*180/pi <= 180) {
+            base_angle <- base_angle * -1
+        }
+
+        ## Rotate and scale the matrix + vector
+        space <- rbind(matrix, base_vector)
+        rot_space <- rotate.matrix(space, angle = base_angle, dimension = dim_proj)
+        if(any(rot_space[nrow(rot_space), !dim_proj] != 0)) {
+            ## Rotate the other way!
+            space <- rotate.matrix(space, angle = -base_angle, dimension = dim_proj)
+        } else {
+            space <- rot_space 
+        }
+
+        space <- space/dist(space[-c(1:nrow(matrix)),])
+        matrix <- space[1:nrow(matrix), ]
+        base_vector <- space[-c(1:nrow(matrix)), ]
+
+    plot.recentred(matrix, base_vector)
+
+        ## Projecting
+        ## Project the vectors
+        # projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+        project <- function(row, base) {
+            geometry::dot(base, row, d = 2)/(sqrt(sum(base^2))) * base
+        }
+        projections <- t(apply(matrix, 1, project, base_vector[2,]))
+        angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
+
+        ## Rejections
+        rejections <- matrix - projections
+
+    plot.projections(matrix, projections, rejections)
+}
+
+
+
+
+
 
 # ## Position default (from 0 to centroid)
 # expect_equal(projection(matrix), c(0, 1, 2))
