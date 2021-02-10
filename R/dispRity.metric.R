@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projection
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -63,7 +63,15 @@
 #'
 #'   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
-#'   \item \code{projection}: projects each element on a vector defined as (\code{point1}, \code{point2}) and returns either their position on that axis (\code{measure = "position"}; default) or their distance from that axis (\code{measure = "distance"}). By default \code{point1} is the centre of the space (\code{point1 = c(0, 0, ...)}) and \code{point2} is the centroid of the matrix \code{colMeans(matrix)}. Coordinates for \code{point1} and \code{point2} can be either a single \code{numeric} value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
+#'   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
+#'  \itemize{
+#'      \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
+#'      \item code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
+#'      \item code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
+#'      \item code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+#'  }
+#' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
+#' Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
 #'
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
@@ -271,7 +279,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?neighbours\n")
     cat("?pairwise.dist\n")
     cat("?point.dist\n")
-    cat("?projection\n")
+    cat("?projections\n")
     cat("?ranges\n")
     cat("?radius\n")
     cat("?variances\n")
@@ -730,12 +738,94 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
     return(apply(matrix, 1, fun.dist, centroid = centroid))
 }
 
-## Projection of elements on an axis
-projection <- function(matrix, point1, point2, measure = "position") {
-
-    ## Check pracma::affineproj
-
+## Angle between two vectors
+vector.angle <- function(v1, v2, degree = TRUE) {
+    angle <- acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2))))
+    if(degree) {
+        return(angle *180/pi)
+    } else {
+        angle
+    }
 }
+## Rotate a matrix along one axis (y)
+get.rotation.matrix <- function(x, y){
+    ## This magic comes from https://stackoverflow.com/questions/42520301/find-rotation-matrix-of-one-vector-to-another-using-r/42542385#42542385
+    ## following: https://math.stackexchange.com/questions/598750/finding-the-rotation-matrix-in-n-dimensions
+    u <- x/sqrt(sum(x^2))
+
+    v <- y-sum(u*y)*u
+    v <- v/sqrt(sum(v^2))
+
+    cost <- sum(x*y)/sqrt(sum(x^2))/sqrt(sum(y^2))
+    sint <- sqrt(1-cost^2);
+
+    return(diag(length(x)) - u %*% t(u) - v %*% t(v) + cbind(u,v) %*% matrix(c(cost,-sint,sint,cost), 2) %*% t(cbind(u,v)))
+}
+## Projection of elements on an axis
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
+
+    ## Get the point1
+    if(length(point1) == 1) {
+        point1 <- rep(point1, ncol(matrix))
+    }
+
+    ## Get the base vector
+    base_vector <- rbind(point1, point2)
+
+    ## Get all the space (with the two last rows being the base vectors)
+    space <- rbind(matrix, base_vector)
+
+    ## Centre the matrix on point1
+    if(sum(point1) != 0) {
+        ## Centre all the space
+        space <- space - rep(point1, rep.int(nrow(space), ncol(space)))
+        ## Re-attribute the centred variables
+        matrix <- space[1:nrow(matrix), ]
+        base_vector <- space[-c(1:nrow(matrix)), ]
+    }
+
+    ## Scale the space
+    if(scaled) {
+        ## The scaled space
+        space <- space/dist(space[-c(1:nrow(matrix)),])
+    }
+
+    ## Rotate the matrix on the x-axis
+    space <- space %*% get.rotation.matrix(base_vector[2, ], c(dist(space[-c(1:nrow(matrix)),]), rep(0, (ncol(matrix)-1))))
+    
+    ## Re-attributing the matrix and the vector
+    matrix <- space[1:nrow(matrix),]
+    base_vector <- space[-c(1:nrow(matrix)),]
+
+    ## Project the vectors
+    projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+    angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
+    angles <- ifelse(is.nan(angles), 0, angles)
+
+    # "position" #distance on
+    # "distance" #distance from
+    # "angle"    #angle between
+
+    ## Measure the thingy
+    values <- switch(measure,
+        "position" = { #distance on
+            ## Measure the position on the vectors and their orientation
+            projections[,1]
+        },
+        "distance" = { #distance from
+            ## Get the rejection distance
+            apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+        },
+        "degrees"  = {
+            c(angles)
+        },
+        "radians"  = {
+            c(angles/180*pi)
+        })
+
+    return(values)
+}
+
 
 
 
