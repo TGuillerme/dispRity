@@ -336,7 +336,7 @@ The function works by simply using the two available matrices, with no restricti
 ## A second matrix
 dummy_matrix2 <- matrix(runif(12), 4, 3)
 
-## The difference between groups
+## The difference between groups
 mean.difference(dummy_matrix, dummy_matrix2)
 ```
 
@@ -504,6 +504,7 @@ Level | Name | Description | Source |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
 2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
+2 | `projections` | The distance *on* (projection) or *from* (rejection) an arbitrary vector | `dispRity` |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
@@ -550,6 +551,13 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
+    projection_{on} = \| \overrightarrow{i} \cdot \overrightarrow{b} \|
+\end{equation}
+\begin{equation}
+    projection_{from} = \| \overrightarrow{i} - \overrightarrow{i} \cdot \overrightarrow{b} \|
+\end{equation}
+
+\begin{equation}
     radius = |\frac{\sum_{i=1}^{n}d_i}{n} - f(\mathbf{v}d)|
 \end{equation}
 
@@ -575,7 +583,9 @@ $Centroid_{k}$ is their mean,
 $Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
 $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
 *R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid),
-and $Reference_{k}$ is an arbitrary point's coordinates (usually 0).
+$Reference_{k}$ is an arbitrary point's coordinates (usually 0),
+\overrightarrow{b} is the vector defined by (`(point1, point2)`),
+and \overrightarrow{i} is the vector defined by (`(point1, i)` where `i` is any row of the matrix).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -655,7 +665,7 @@ summary(dispRity(dummy_space, metric = quantiles))
 
 ## By default, the quantile calculated is the 95%
 ## (i.e. 95% of the data on each axis)
-## this can be changed using the option quantile:
+## this can be changed using the option quantile:
 summary(dispRity(dummy_space, metric = quantiles, quantile = 50))
 
 ## Calculating the radius of each dimension in the ordinated space
@@ -700,7 +710,7 @@ The `mode.val` function measures the modal value of the matrix:
 ## Calculating the ordinated space's diagonal
 summary(dispRity(dummy_space, metric = diagonal))
 
-## Calculating the modal value of the matrix
+## Calculating the modal value of the matrix
 summary(dispRity(dummy_space, metric = mode.val))
 ```
 
@@ -849,6 +859,51 @@ summary(dispRity(dummy_space[, c(1:2)], metric = deviations,
 Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
+
+#### Projections: elaboration and exploration
+
+The `projections` metric calculates the geometric projection and corresponding rejection of all the rows in a matrix on an arbitrary vector (respectively the distance *on* and the distance *from* that vector). The function is based on @aguilera2004's n-dimensional rotation algorithm to use linear algebra in mutidimensional spaces. The projection or rejection can be seen as respectively the elaboration and exploration scores on a trajectory (*sensu* @endler2005).
+
+By default, the vector (e.g. a trajectory, an axis), on which the data is projected is the one going from the centre of the space (coordinates 0,0, ...) and the centroid of the matrix.
+However, we advice you do define this axis to something more meaningful using the `point1` and `point2` options, to create the vector (the vector's norm will be `dist(point1, point2)` and its direction will be from `point1` towards `point2`).
+
+```{r}
+## The elaboration on the axis defined by the first and
+## second row in the dummy_space
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,]))
+
+## The exploration on the same axis
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,],
+                              measure = "distance"))
+```
+
+By default, the vector `(point1, point2)` is used as unit vector of the projections (i.e. the Euclidean distance between `(point1, point2)` is set to 1) meaning that a projection value (`"distance"` or `"position"`) of *X* means *X* times the distance between `point1` and `point2`.
+If you want use the unit vector of the input matrix or are using a space where Euclidean distances are non-sensical, you can remove this option using `scale = FALSE`:
+
+```{r}
+## The elaboration on the same axis using the dummy_space's
+## unit vector
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,],
+                              scale = FALSE))
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Between group metrics {#betweengroupmetricslist}
 
@@ -1257,7 +1312,7 @@ This can be done on `dispRity` objects using the `adonis.dispRity` wrapper funct
 Basically, this function takes the exact same arguments as `adonis` and a `dispRity` object for data and performs a PERMANOVA based on the distance matrix of the multidimensional space (unless the multidimensional space was already defined as a distance matrix).
 The `adonis.dispRity` function uses the information from the `dispRity` object to generate default formulas:
 
-  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
+  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
   * If the object contains time subsets, it applies the default formula `matrix ~ time` testing the effect of `time` as a predictor (were the different levels of `time` are the different time slices/bins)
 
 ```{r}
@@ -1592,7 +1647,7 @@ my_models <- list(c("BM", "OU"),
                   c("OU", "Trend"),
                   c("Stasis", "BM"))
 
-## Testing the models
+## Testing the models
 disp_time <- model.test.wrapper(data = BeckLee_disparity,
                                 model = my_models, time.split = 66,
                                 show.p = TRUE, fixed.optima = TRUE)
@@ -1890,7 +1945,7 @@ set.seed(1)
 ## Matches the trees and the matrices
 ## A bunch of trees
 make.tree <- function(n, fun = rtree) {
-    ## Make the tree
+    ## Make the tree
     tree <- fun(n)
     tree <- chronos(tree, quiet = TRUE,
                     calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
@@ -1921,7 +1976,7 @@ do.ace <- function(tree, matrix) {
     return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
 }
 
-## All matrices
+## All matrices
 matrices <- mapply(do.ace, trees, matrix_list, SIMPLIFY = FALSE)
 ```
 
