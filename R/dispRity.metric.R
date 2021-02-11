@@ -66,9 +66,9 @@
 #'   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
 #'  \itemize{
 #'      \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
-#'      \item code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
-#'      \item code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
-#'      \item code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+#'      \item \code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
+#'      \item \code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
+#'      \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
 #'  }
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 #' Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
@@ -227,6 +227,17 @@
 #' ## The manhattan distance from the rows dummy_matrix
 #' ## to the standard deviation of dummy_matrix2
 #' point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
+#' 
+#' ## projections
+#' ## The distances on the vector defined from the centre of
+#' ## the matrix to its centroid (default)
+#' projections(dummy_matrix)
+#' ## The distances from the vector defined from the third
+#' ## element of the matrix to the point of coordinated
+#' ## c(1,1,1, ...) the matrix to its centroid (default)
+#' projections(dummy_matrix, measure = "distance",
+#'             point1 = dummy_matrix[3, ],
+#'             point2 = 1)
 #'
 #' ## quantiles
 #' ## The 95 quantiles
@@ -751,6 +762,7 @@ vector.angle <- function(v1, v2, degree = TRUE) {
 get.rotation.matrix <- function(x, y){
     ## This magic comes from https://stackoverflow.com/questions/42520301/find-rotation-matrix-of-one-vector-to-another-using-r/42542385#42542385
     ## following: https://math.stackexchange.com/questions/598750/finding-the-rotation-matrix-in-n-dimensions
+    ## Also this: http://wscg.zcu.cz/wscg2004/Papers_2004_Short/N29.pdf
     u <- x/sqrt(sum(x^2))
 
     v <- y-sum(u*y)*u
@@ -764,9 +776,12 @@ get.rotation.matrix <- function(x, y){
 ## Projection of elements on an axis
 projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
 
-    ## Get the point1
+    ## Get the point1 and point2
     if(length(point1) == 1) {
         point1 <- rep(point1, ncol(matrix))
+    }
+    if(length(point2) == 1) {
+        point2 <- rep(point2, ncol(matrix))
     }
 
     ## Get the base vector
@@ -790,8 +805,14 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         space <- space/dist(space[-c(1:nrow(matrix)),])
     }
 
-    ## Rotate the matrix on the x-axis
-    space <- space %*% get.rotation.matrix(base_vector[2, ], c(dist(space[-c(1:nrow(matrix)),]), rep(0, (ncol(matrix)-1))))
+    ## Get the base vector axis (x) and the projection vector (former unit vector; y)
+    x <- base_vector[2, ]
+    y <- c(sqrt(sum(base_vector[2,]^2)), rep(0, (ncol(matrix)-1)))
+    ## If the base vector and the unit vector are different...
+    if(any(x != y)) {
+        ## ...rotate the matrix on the x-axis
+        space <- space %*% get.rotation.matrix(x, y)
+    }
     
     ## Re-attributing the matrix and the vector
     matrix <- space[1:nrow(matrix),]
@@ -799,8 +820,11 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
 
     ## Project the vectors
     projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
-    angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
-    angles <- ifelse(is.nan(angles), 0, angles)
+    ## Calculate the angles
+    if(measure == "degree" || measure == "radian") {
+        angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
+        angles <- ifelse(is.nan(angles), 0, angles)
+    }
 
     # "position" #distance on
     # "distance" #distance from
@@ -816,14 +840,14 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
             ## Get the rejection distance
             apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
         },
-        "degrees"  = {
+        "degree"  = {
             c(angles)
         },
-        "radians"  = {
+        "radian"  = {
             c(angles/180*pi)
         })
 
-    return(values)
+    return(unname(values))
 }
 
 

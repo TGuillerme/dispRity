@@ -99,9 +99,9 @@ The currently implemented dimension-level 2 metrics are:
   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
  \itemize{
      \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
-     \item code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
-     \item code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
-     \item code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+     \item \code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
+     \item \code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
+     \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
  }
 By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
@@ -247,6 +247,17 @@ mean(point.dist(dummy_matrix, dummy_matrix2))
 ## The manhattan distance from the rows dummy_matrix
 ## to the standard deviation of dummy_matrix2
 point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
+
+## projections
+## The distances on the vector defined from the centre of
+## the matrix to its centroid (default)
+projections(dummy_matrix)
+## The distances from the vector defined from the third
+## element of the matrix to the point of coordinated
+## c(1,1,1, ...) the matrix to its centroid (default)
+projections(dummy_matrix, measure = "distance",
+            point1 = dummy_matrix[3, ],
+            point2 = 1)
 
 ## quantiles
 ## The 95 quantiles
