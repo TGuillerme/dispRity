@@ -164,7 +164,12 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
             elements <- nrow(space)
             ## Return a portion of the space
             to_remove <- sample(1:elements, elements*remove)
-            return(1:elements %in% to_remove)
+            ## Name the output list
+            output <- 1:elements %in% to_remove
+            if(!is.null(rownames(space))) {
+                names(output) <- rownames(output)
+            }
+            return(output)
         },
         size = {
             ## Type function

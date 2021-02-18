@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.6 (2021-02-11)
+dispRity v1.5.7 (2021-02-18)
 =========================
 
 ### NEW FEATURES
@@ -35,6 +35,7 @@ dispRity v1.5.6 (2021-02-11)
 ### MINOR IMPROVEMENT
 
   * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
+  * `reduce.space` `"random"` algorithm now outputs a named logical vector (like the other algorithms!).
 
 ### BUG FIXES
 
