@@ -167,7 +167,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
             ## Name the output list
             output <- 1:elements %in% to_remove
             if(!is.null(rownames(space))) {
-                names(output) <- rownames(output)
+                names(output) <- rownames(space)
             }
             return(output)
         },
