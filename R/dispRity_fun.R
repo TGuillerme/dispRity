@@ -103,12 +103,12 @@ get.row.col <- function(x, row, col = NULL) {
 decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
     if(is.null(nrow)) {
         ## Normal decompose
-        return(fun(one_matrix[bootstrap, dimensions], ...))
+        return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], ...))
     } else {
         ## Serial decompose
         return(
-            fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions],
-                matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions],
+            fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
+                matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
                 ...)
             )
     }

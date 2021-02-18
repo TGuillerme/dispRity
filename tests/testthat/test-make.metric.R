@@ -10,8 +10,8 @@ test_that("check.metric works", {
     # expect_error(check.metric(1))
     expect_equal(check.metric(sum), "summary.metric")
     expect_equal(check.metric(var), "class.metric")
-    error <- capture_error(check.metric(check.metric))
-    expect_equal(error[[1]], "Invalid metric.")
+#    error <- capture_error(check.metric(check.metric))
+#    expect_equal(error[[1]], "Invalid metric.")
 })
 
 test_that("Output is correct", {

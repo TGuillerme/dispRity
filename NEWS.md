@@ -77,6 +77,7 @@ dispRity v1.5.0 (2020-09-25) *between groups*
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
   * Fixed a bug in `chrono.subsets` where ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
   * Fixed a bug in `chrono.subsets` where the `"*.split"` methods would bug if the last slice is through a single edge.
+  * Fixed a bug in `dispRity` where some 1D matrices could loose their class for certain metrics.
 
 dispRity v1.4.0 *getting faster* (2020-05-05)
 =========================
