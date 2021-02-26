@@ -19,7 +19,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "Contains only a matrix 1x1."
+        "Contains a matrix 1x1."
     ))
 
     ## Time subsets

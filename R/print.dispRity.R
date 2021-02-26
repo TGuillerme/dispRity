@@ -175,7 +175,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 cat(" ---- dispRity object ---- \n")
                 dims <- dim(x$matrix[[1]])
                 n_matrices <- length(x$matrix)
-                cat(paste0("Contains only ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
+                cat(paste0("Contains ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
             } else {
                 cat("Empty dispRity object.\n")
             }

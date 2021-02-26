@@ -36,6 +36,7 @@ dispRity v1.5.7 (2021-02-18)
 
   * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
   * `reduce.space` `"random"` algorithm now outputs a named logical vector (like the other algorithms!).
+  * remove the `"only"` text when printing `dispRity` objects that contains "only" matrices (even though that can be 10k matrices!)
 
 ### BUG FIXES
 
