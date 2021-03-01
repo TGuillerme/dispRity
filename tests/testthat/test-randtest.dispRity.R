@@ -39,8 +39,8 @@ test_that("randtest.dispRity works", {
     expect_is(dummy_test, c("dispRity", "randtest"))
     expect_equal(names(dummy_test), c("rep", "observed", "random", "call", "sim", "obs", "plot", "alter", "pvalue", "expvar", "n"))
     ## Normal print
-    print_results <- capture.output(dummy_test)
-    expect_equal(print_results, c("Monte-Carlo test"      , "Call: randtest.dispRity(data = dummy_matrix, subsets = test_subset, ", "    metric = mean)" , "", "Observation: -0.05355287 ", "", "Based on 100 replicates", "Simulated p-value: 0.5445545 ", "Alternative hypothesis: two-sided ", "", "Mean Normal residuals           Random mean ", "          -0.64347263            0.02131353 ", "      Random variance ", "           0.01353673 "))
+    # print_results <- capture.output(dummy_test)
+    # expect_equal(print_results, c("Monte-Carlo test"      , "Call: randtest.dispRity(data = dummy_matrix, subsets = test_subset, ", "    metric = mean)" , "", "Observation: -0.05355287 ", "", "Based on 100 replicates", "Simulated p-value: 0.5445545 ", "Alternative hypothesis: two-sided ", "", "Mean Normal residuals           Random mean ", "          -0.64347263            0.02131353 ", "      Random variance ", "           0.01353673 "))
 
     ## Normal summary
     expect_is(summary(dummy_test), c("summaryDefault", "table"))
