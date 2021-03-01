@@ -58,7 +58,7 @@ bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
 sum_variances <- dispRity(bootstrapped_data, metric = c(sum, variances))
 ## Testing against normal distribution
 results <- null.test(sum_variances, replicates = 100, null.distrib = rnorm)
-results ; plot(results)
+summary(results) ; plot(results)
 
 }
 \references{

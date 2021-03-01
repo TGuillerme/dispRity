@@ -134,7 +134,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(summary_results)
         }
         
-        # Model sim summary
+        ## Model sim summary
         if(is(data, "model.sim")) {
 
             # if(recall){
@@ -158,7 +158,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(output_table)
         }
 
-
+        ## test.metric summary
         if(is(data, "test.metric")) {
 
             ## Summary table
@@ -202,6 +202,12 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             }
 
             return(all_results)
+        }
+
+        ## randtest summary
+        if(is(data, "randtest")) {
+            table <- make.randtest.table(data)
+            return(round(table, digits = ifelse(digits== "default", 2, digits)))
         }
 
         ## No dual class summary available

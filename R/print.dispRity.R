@@ -67,7 +67,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
-                        element$call <- "dispRity::null.test"
+                        if(element$call != "dispRity.randtest") {
+                            element$call <- "dispRity::null.test"
+                        }
                         return(element)
                     }
                     x <- lapply(x, remove.call)

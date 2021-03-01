@@ -83,7 +83,7 @@ test.dispRity(disparity_var, test = t.test, comparisons = "pairwise",
 
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}.
+\code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}, \code{\link{randtest.dispRity}}
 }
 \author{
 Thomas Guillerme
