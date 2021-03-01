@@ -57,7 +57,7 @@
 #'      concatenate = FALSE, correction = "bonferroni",
 #'      conc.quantiles = c(mean, c(95, 5)))
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}, \code{\link{randtest.dispRity}} 
 # \code{\link{sequential.test}}
 #'
 #' @author Thomas Guillerme
@@ -238,6 +238,11 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         #adonis.dispRity(data)
     }
 
+    if(length(grep("randtest", as.character(match_call$test))) > 0) {
+
+        return(randtest.dispRity(data, ...))
+        #adonis.dispRity(data)
+    }
 
     ## Extracting the data (sends error if data is not bootstrapped)
     if(is_distribution && !is_bootstrapped) {
