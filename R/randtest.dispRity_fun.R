@@ -1,4 +1,12 @@
-one.randtest <- function(results, replicates, resample, alternative) {
+make.lapply.loop.resample <- function(one_subset, replicates, pop_size) {
+    return(list("elements" = one_subset, replicate(replicates, sample(1:pop_size, length(one_subset), replace = TRUE))))
+}
+
+make.lapply.loop.nosample <- function(one_subset, replicates, pop_size) {
+    return(list("elements" = one_subset, replicate(replicates, sample((1:pop_size)[-one_subset], length(one_subset), replace = TRUE))))
+}
+
+one.randtest <- function(results, replicates, resample, alternative, get.p.value, match_call) {
     observed <- c(results$elements)
     simulated <- c(results[[2]])
 
@@ -33,7 +41,7 @@ one.randtest <- function(results, replicates, resample, alternative) {
     res$alter <- alternative
     res$pvalue <- p_value
     res$expvar <- test_results
-    
+
     class(res) <- "randtest"
     return(res)
 }

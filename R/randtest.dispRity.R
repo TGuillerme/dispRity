@@ -3,14 +3,18 @@
 #' @description Performs a random test (aka permutation test) on a \code{matrix} or a \code{dispRity} object.
 #'
 #' @param data The \code{matrix} to draw from.
-#' @param subset A \code{vector} of elements to test (or a \code{list} of \code{vectors}).
+#' @param subsets A \code{vector} of elements to test (or a \code{list} of \code{vectors}).
 #' @param replicates A \code{numeric} value for the number of replicates (\code{default = 100}).
 #' @param metric A \code{function} to be the statistic to apply to the subset.
-#' @param resample \code{logical} wether to resample the full distribution (\code{TRUE}) or the distribution without the subset (\code{FALSE}).
-#' @param alternative The alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.
+#' @param resample \code{logical} whether to resample the full distribution (\code{TRUE}) or the distribution without the subset (\code{FALSE}).
+#' @param alter The alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.
 #' @param ... optional arguments to be passed to \code{metric}.
 #' 
-#' @details First, the \code{metric} (statistic) is applied to the \code{subset} sampled from the \code{data} (population).
+#' @details 
+#' This test checks whether the metric calculated on a given subset of the data is significantly different from the metric calculated on any random subset of the same size.
+#' In other words: does the given subset have a clearly different disparity value than the rest of the data?
+#' 
+#' First, the \code{metric} (statistic) is applied to the \code{subset} sampled from the \code{data} (population).
 #' Second, the \code{metric} is applied to random equally sized subsets from the \code{data}.
 #' If the observed difference falls out of the random differences distribution, the differences are significant.
 #' This algorithm is based on a similar procedure than in \code{link[ade4]{rantest}}.
@@ -32,7 +36,7 @@
 #'                                 metric = mean)
 #' dummy_test ; plot(dummy_test)
 #' 
-#' ## Applying this on dispRity objects
+#' ## Applying this on dispRity objects
 #' data(disparity)
 #' test_disparity <- test.dispRity(disparity,
 #'                                 test = randtest.dispRity)
@@ -47,79 +51,81 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-#' @importFrom stats sd var rnorm
-#' @importFrom graphics hist
 
-randtest <- function(data, subsets, metric, replicates, resample = TRUE, alternative = "two-sided", ...) {
+randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample = TRUE, alter = "two-sided", ...) {
     match_call <- match.call()
+    args <- list(...)
 
     ## Sanitizing
     ## Distribution and subset
-    data_class <- check.class(data, c("numeric", "dispRity"))
+    data_class <- check.class(data, c("matrix", "dispRity"))
+    inherits_metrics <- inherits_subsets <- FALSE
 
     if(data_class == "dispRity") {
         pop_size <- nrow(data$matrix[[1]])
 
         if(missing(subsets)) {
             ## Take subsets from the dispRity object
-            subsets <- 
+            subsets <- lapply(data$subsets, function(x) return(x$elements))
+            sub_names <- names(subsets)
             inherits_subsets <- TRUE
-        } else {
-            inherits_subsets <- FALSE
         }
+
         if(missing(metric)) {
             ## Take metric from the dispRity object
-            metric <-
-            inherits_metric <- TRUE
-        } else {
-            inherits_metric <- FALSE
+            metric <- get.metric.from.call(data, what = "fun")
+            # args <- get.metric.from.call(data, what = "args")
         }
-        if(missing(replicates)) {
-            ## Take metric from the dispRity object
-            # replicates <-
-        } 
 
     } else {
-
         ## Check the data
-        check.class(data, "matrix", " must be a matrix or a dispRity object.")
         pop_size <- nrow(data)
         pop_names <- rownames(data)
-        if(pop_names) {
+        if(is.null(pop_names)) {
             pop_names <- rownames(data) <- 1:pop_size
         }
 
+        ## Making the data into a dispRity like format
+        data <- list(matrix = list(data), call = list(dimensions = ncol(data)))
+    }
 
+    if(!inherits_subsets) {
         ## Check the subsets
+        sub_names <- names(subsets)
         if(!is(subsets, "list")) {
+            ## Make the subsets into a list
             subsets <- list(matrix(subsets, ncol = 1))
+        } else {
+            ## Make the subsets into a matrix list
+            subsets <- lapply(subsets, function(x) matrix(x, ncol = 1))
         }
         all.checks <- function(one_subset, pop_size, pop_names) {
             return(((is(one_subset, "numeric") || is(one_subset, "integer") || is(one_subset, "character")) && length(one_subset) > pop_size) || all(one_subset %in% pop_names))
         }
-        if(any(!unlist(lapply(subsets, all.checks)))) {
-            stop("Subset must be a vector or a list of vector of integers or numeric values that can not exceed the number of rows in data.")
+        if(any(!unlist(lapply(subsets, all.checks, pop_size, pop_names)))) {
+            stop("Subsets must be a vector or a list of vector of integers or numeric values that can not exceed the number of rows in data.", call. = FALSE)
         }
-
-        ## Check the metric
-        metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data), ...)
     }
+
+    ## Check the metric
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)$levels
 
     ## Replicates
     check.class(replicates, c("numeric", "integer"))
     check.length(replicates, 1, msg = " must be a single numeric value.")
     if(replicates < 1) {
-        stop("At least one replicate must be run.")
+        stop("At least one replicate must be run.", call. = FALSE)
     }
 
     ## Resample
     check.class(resample, "logical")
+    make.lapply.loop <- ifelse(resample, make.lapply.loop.resample, make.lapply.loop.nosample)
 
-    ## Check alternative
-    check.method(alternative, c("two-sided", "greater", "lesser"), msg = "alternative")
+    ## Check alter
+    check.method(alter, c("two-sided", "greater", "lesser"), msg = "alter")
     
     ## Set the p-value
-    get.p.value <- switch(alternative,
+    get.p.value <- switch(alter,
         "two-sided" = function(random, observed, replicates) {
             ## Centring the randoms and observed
             center_random <- abs(random - mean(random))
@@ -143,21 +149,30 @@ randtest <- function(data, subsets, metric, replicates, resample = TRUE, alterna
     verbose <- metric_is_between.groups <- FALSE
 
     ## Make the lapply loop
-    make.lapply.loop <- function(one_subset) {
-        return(list("elements" =one_subset, replicate(replicates, sample(1:pop_size, length(one_subset), replace = resample))))
-    }
-    lapply_loop <- lapply(subsets, make.lapply.loop)
+    lapply_loop <- lapply(subsets, make.lapply.loop, replicates, pop_size)
     
-    ## Calculate all the disparity values
+    ## Calculate all the disparity values
     disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups, ...)
 
     ## Get the observed values
-    results <- lapply(disparity, one.randtest, replicates, resample, alternative)
-    
+    results <- lapply(disparity, one.randtest, replicates, resample, alter, get.p.value, match_call)
+    add.n <- function(one_res, one_sub) {
+        one_res$n <- nrow(one_sub)
+        class(one_res) <- "randtest"
+        return(one_res)
+    }
+    results <- mapply(add.n, results, subsets, SIMPLIFY = FALSE)
+
     if(length(results) == 1) {
         return(results[[1]])
     } else {
+        ## For match_call
+        results <- lapply(results, function(x) {x$call <- "dispRity.randtest"; x})
+        ## Add names to the results (if any)
+        if(!is.null(sub_names)) {
+            names(results) <- sub_names
+        }
         class(results) <- c("dispRity", "randtest")
+        return(results)
     }
-
 }

@@ -78,7 +78,7 @@ export(model.test)
 export(model.test.sim)
 export(model.test.wrapper)
 export(null.test)
-# export(randtest.dispRity)
+export(randtest.dispRity)
 # export(sequential.test)
 
 ##dispRity object utilities
