@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist phylo.projections projections
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -63,6 +63,19 @@
 #'
 #'   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
+#' 
+#'   \item \code{phylo.projections}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
+#'      \itemize{
+#'          \item \code{"root"}: the root of the tree (the first element in phy$node.label);
+#'          \item \code{"ancestor"}: the element's most recent ancestor;
+#'          \item \code{"tips"}: the centroid of the tips;
+#'          \item \code{"nodes"}: the centroid of all the nodes;
+#'          \item \code{"livings"}: the centroid of the tips the furthest from the root;
+#'          \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
+#'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
+#'          \item or a user defined function that with the inputs \code{matrix} and \code{phy} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
+#'      }
+#' 
 #'   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
 #'  \itemize{
 #'      \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
@@ -88,6 +101,7 @@
 #' The currently implemented between.groups metrics are:
 #' \itemize{
 #'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#' 
 #' 
 #' \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #' 
@@ -228,6 +242,32 @@
 #' ## to the standard deviation of dummy_matrix2
 #' point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
 #' 
+#' ## phylo.projections
+#' ## Making a dummy tree with node labels
+#' dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+#' ## Naming the elements in the matrix
+#' named_matrix <- dummy_matrix
+#' rownames(named_matrix) <- c(dummy_tree$tip.label,
+#'                             dummy_tree$node.label)
+#' ## The projection on the vector defined from the root of
+#' ## the tree to the ancestor of each element in the matrix
+#' phylo.projections(named_matrix, dummy_tree,
+#'                   type = c("root", "ancestor"))
+#' ## The rejection from the vector defined from the centroid
+#' ## of the nodes to the centroids of the tips
+#' phylo.projections(named_matrix, dummy_tree,
+#'                   type = c("nodes", "tips"),
+#'                   measure = "distance")
+#' ## A user function that define coordinates based on the 
+#' ## centroid of the three first nodes
+#' user.fun <- function(matrix, phy, row = NULL) {
+#'      return(colMeans(matrix[phy$node.label[1:3], ]))
+#' }
+#' ## The projection on the vector defined by the coordinates
+#' ## 0,0,0 and a user defined function
+#' phylo.projections(named_matrix, dummy_tree,
+#'                   type = c(0, user.fun))
+#' 
 #' ## projections
 #' ## The distances on the vector defined from the centre of
 #' ## the matrix to its centroid (default)
@@ -290,6 +330,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("?neighbours\n")
     cat("?pairwise.dist\n")
     cat("?point.dist\n")
+    cat("?phylo.projections\n")
     cat("?projections\n")
     cat("?ranges\n")
     cat("?radius\n")
@@ -795,7 +836,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         ## Centre all the space
         space <- space - rep(point1, rep.int(nrow(space), ncol(space)))
         ## Re-attribute the centred variables
-        matrix <- space[1:nrow(matrix), ]
+        matrix <- space[1:nrow(matrix), , drop = FALSE]
         base_vector <- space[-c(1:nrow(matrix)), ]
     }
 
@@ -815,7 +856,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     }
     
     ## Re-attributing the matrix and the vector
-    matrix <- space[1:nrow(matrix),]
+    matrix <- space[1:nrow(matrix), , drop = FALSE]
     base_vector <- space[-c(1:nrow(matrix)),]
 
     ## Project the vectors
@@ -850,6 +891,93 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     return(unname(values))
 }
 
+## Select the root coords
+get.root <- function(matrix, phy, row = NULL) {
+    return(matrix[phy$node.label[1], ])
+}
+## Select the elements' ancestor coords
+get.ancestor <- function(matrix, phy, row) {
+    ## Get the row name
+    row_name <- rownames(matrix)[row]
+    if(row_name == phy$node.label[1]) {
+        ## If the row is the root, return itself
+        return(matrix[phy$node.label[1], ])
+    } else {
+        ## Return the ancestor
+        return(matrix[phy$node.label[phy$edge[phy$edge[,2] %in% which(c(phy$tip.label, phy$node.label) %in% row_name), 1] - Ntip(phy)], ])
+    }
+}
+## Select the tips centroid coords
+get.tips <- function(matrix, phy, row = NULL) {
+    return(colMeans(matrix[phy$tip.label, ]))
+}
+## Select the nodes centroid coords
+get.nodes <- function(matrix, phy, row = NULL) {
+    return(colMeans(matrix[phy$node.label, ]))
+}
+## Select the livings centroid coords
+get.livings <- function(matrix, phy, row = NULL) {
+    elements_depths <- node.depth.edgelength(phy)
+    return(colMeans(matrix[which(elements_depths == max(elements_depths)), , drop = FALSE]))
+}
+## Select the fossils centroid coords
+get.fossils <- function(matrix, phy, row = NULL) {
+    elements_depths <- node.depth.edgelength(phy)
+    return(colMeans(matrix[which(elements_depths != max(elements_depths)), , drop = FALSE]))
+}
+## sapply wrapper for phylo.projections
+sapply.projections <- function(row, matrix, phy, from, to, ...) {
+    return(projections(matrix[row, , drop = FALSE], point1 = from(matrix, phy, row), point2 = to(matrix, phy, row), ...))
+}
+
+## Projection of elements on an axis
+phylo.projections <- function(matrix, phy, type = c("root","ancestor"), ...) {
+ 
+    ## Tracking whether the from_to is invariable or not
+    invariables <- c(FALSE, FALSE)
+    ## Select the to and from vectors
+    from_to <- list()
+    for(i in 1:2) {
+        if(is(type[[i]], "character")) {
+            invariables[[i]] <- ifelse(type[i] == "ancestor", FALSE, TRUE)
+            ## Type is an inbuilt function
+            from_to[[i]] <- switch(type[i],
+                        "root"     = get.root,
+                        "ancestor" = get.ancestor,
+                        "tips"     = get.tips,
+                        "nodes"    = get.nodes,
+                        "livings"  = get.livings,
+                        "fossils"  = get.fossils)
+        } else {
+            if(is(type[[i]], "function")) {
+                ## Type is a user function
+                from_to[[i]] <- type[[i]]
+                ## Assume the user function is variable
+                invariables[[i]] <- FALSE
+            } else {
+                if(is(type[[i]], "numeric") || is(type[[i]], "integer")) {
+                    n_dim <- ncol(matrix)
+                    var_out <- rep(type[[i]], n_dim)[1:n_dim]
+                    ## Type is a number: functionise type
+                    from_to[[i]] <- function(matrix, phy, row) {
+                        return(var_out)
+                    }
+                    invariables[[i]] <- TRUE
+                } else {
+                    stop("type must be a list of containing functions, numeric values or one of the following inbuilt: \"root\", \"ancestor\", \"tips\", \"nodes\", \"livings\" or \"fossils\".", call. = FALSE)
+                }
+            }
+        }
+    }
+
+    if(all(invariables)) {
+        ## Point1 and point2 are invariant
+        return(projections(matrix, point1 = from_to[[1]](matrix, phy), point2 = from_to[[2]](matrix, phy), ...))
+    } else {
+        ## Apply the to and from to each row
+        return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, phy =phy, from = from_to[[1]], to = from_to[[2]], ...))
+    }
+}
 
 #' @title Nodes coordinates
 #'

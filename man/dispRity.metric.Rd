@@ -28,6 +28,7 @@
 \alias{deviations}
 \alias{group.dist}
 \alias{point.dist}
+\alias{phylo.projections}
 \alias{projections}
 \title{Disparity metrics}
 \usage{
@@ -96,6 +97,19 @@ The currently implemented dimension-level 2 metrics are:
 
   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
+
+  \item \code{phylo.projections}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
+     \itemize{
+         \item \code{"root"}: the root of the tree (the first element in phy$node.label);
+         \item \code{"ancestor"}: the element's most recent ancestor;
+         \item \code{"tips"}: the centroid of the tips;
+         \item \code{"nodes"}: the centroid of all the nodes;
+         \item \code{"livings"}: the centroid of the tips the furthest from the root;
+         \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
+         \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
+         \item or a user defined function that with the inputs \code{matrix} and \code{phy} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
+     }
+
   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
  \itemize{
      \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
@@ -121,6 +135,7 @@ Furtheremore, by default, the space is scaled so that the vector (\code{point1},
 The currently implemented between.groups metrics are:
 \itemize{
    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+
 
 \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
@@ -247,6 +262,32 @@ mean(point.dist(dummy_matrix, dummy_matrix2))
 ## The manhattan distance from the rows dummy_matrix
 ## to the standard deviation of dummy_matrix2
 point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
+
+## phylo.projections
+## Making a dummy tree with node labels
+dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+## Naming the elements in the matrix
+named_matrix <- dummy_matrix
+rownames(named_matrix) <- c(dummy_tree$tip.label,
+                            dummy_tree$node.label)
+## The projection on the vector defined from the root of
+## the tree to the ancestor of each element in the matrix
+phylo.projections(named_matrix, dummy_tree,
+                  type = c("root", "ancestor"))
+## The rejection from the vector defined from the centroid
+## of the nodes to the centroids of the tips
+phylo.projections(named_matrix, dummy_tree,
+                  type = c("nodes", "tips"),
+                  measure = "distance")
+## A user function that define coordinates based on the 
+## centroid of the three first nodes
+user.fun <- function(matrix, phy, row = NULL) {
+     return(colMeans(matrix[phy$node.label[1:3], ]))
+}
+## The projection on the vector defined by the coordinates
+## 0,0,0 and a user defined function
+phylo.projections(named_matrix, dummy_tree,
+                  type = c(0, user.fun))
 
 ## projections
 ## The distances on the vector defined from the centre of

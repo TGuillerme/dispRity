@@ -4,7 +4,7 @@
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?phylo.projections\n?projections\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2")
 })
@@ -781,7 +781,7 @@ test_that("point.dist", {
     expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
 })
 
-test_that("projection", {
+test_that("projections", {
 
     ## Simple 1D test
     matrix <- matrix(c(0,1,2,0,0,0), 3, 2)
@@ -826,4 +826,57 @@ test_that("projection", {
     expect_equal_round(test_res, c(106.11636, 99.19498,105.32585, 104.94005, 0), 3)
     test_res <- projections(test, measure = "radian")
     expect_equal_round(test_res, c(1.100621, 1.177726, 1.069398, 1.146989, 1.079798), 3)
+})
+
+test_that("phylo.projections", {
+    
+    set.seed(1)
+    matrix <- matrix(rnorm(90), 9, 10)
+    phy <- rtree(5)
+    phy <- makeNodeLabel(phy, prefix = "n")
+    phy2 <- root(phy, 1)
+    rownames(matrix) <- c(phy$tip.label, phy$node.label)
+    ## Test get.root
+    expect_equal(get.root(row = 1, matrix = matrix, phy = phy), matrix["n1", ])
+    expect_equal(get.root(row = 6, matrix = matrix, phy = phy), matrix["n1", ])
+    expect_equal(get.root(row = 6, matrix = matrix, phy = phy2), matrix["n2", ])
+    ## Test get.anc
+    expect_equal(get.ancestor(row = 1, matrix = matrix, phy = phy), matrix["n2", ])
+    expect_equal(get.ancestor(row = 2, matrix = matrix, phy = phy), matrix["n2", ])
+    expect_equal(get.ancestor(row = 3, matrix = matrix, phy = phy), matrix["n3", ])
+    ## Root is root
+    expect_equal(get.ancestor(row = 6, matrix = matrix, phy = phy), matrix["n1", ])
+    ## Test get.tips
+    expect_equal(get.tips(row = 1, matrix = matrix, phy = phy), colMeans(matrix[1:5, ]))
+    expect_equal(get.tips(row = 2, matrix = matrix, phy = phy), colMeans(matrix[1:5, ]))
+    ## Test get.nodes
+    expect_equal(get.nodes(row = 1, matrix = matrix, phy = phy), colMeans(matrix[-c(1:5), ]))
+    expect_equal(get.nodes(row = 2, matrix = matrix, phy = phy), colMeans(matrix[-c(1:5), ]))
+    ## Test get.livings
+    expect_equal(get.livings(row = 1, matrix = matrix, phy = phy), matrix["t1", ])
+    expect_equal(get.livings(row = 2, matrix = matrix, phy = phy), matrix["t1", ])
+    ## Test get.fossils
+    expect_equal(get.fossils(row = 1, matrix = matrix, phy = phy), colMeans(matrix[-5, ]))
+    expect_equal(get.fossils(row = 2, matrix = matrix, phy = phy), colMeans(matrix[-5, ]))
+    ## Test sapply.projections
+    expect_equal(sapply.projections(row = 1, matrix = matrix, phy = phy, from = get.root, to = get.livings),
+                projections(matrix[1, , drop = FALSE], point1 = get.root(matrix, phy), point2 = get.livings(matrix, phy)))
+    expect_equal(sapply.projections(row = 5, matrix = matrix, phy = phy, from = get.root, to = get.livings), 1)
+    ## Test fun
+
+    ## Making a dummy tree with node labels
+    set.seed(8)
+    dummy_matrix <- matrix(rnorm(90), 9, 10)
+    dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+    named_matrix <- dummy_matrix
+    rownames(named_matrix) <- c(dummy_tree$tip.label,
+                                dummy_tree$node.label)
+    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
+    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
+    user.fun <- function(matrix, phy, row = NULL) {
+         return(colMeans(matrix[phy$node.label[1:3], ]))
+    }
+    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+
+
 })
