@@ -28,6 +28,7 @@ dispRity v1.5.8 (2021-03-01)
 ### NEW FEATURES
 
  * *New* metric: `projections` that allows to measure elements' projection on an arbitrary axis (or their distance from this axis with `measure = "distance"`).
+ * *New* metric: `phylo.projections` that allows to measure elements' projection on axis between elements of a given tree.
  * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
  * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
  * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
