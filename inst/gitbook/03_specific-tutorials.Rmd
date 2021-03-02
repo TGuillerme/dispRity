@@ -504,6 +504,7 @@ Level | Name | Description | Source |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
 2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
+2 | `phylo.projections` | The `projections` metric but where the vector can be based on a tree | `dispRity` |
 2 | `projections` | The distance *on* (projection) or *from* (rejection) an arbitrary vector | `dispRity` |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
@@ -860,7 +861,7 @@ Since both the functions `angles` and `deviations` effectively run a `lm` or `gl
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
 
-#### Projections: elaboration and exploration
+#### Projections and phylo.projections: elaboration and exploration
 
 The `projections` metric calculates the geometric projection and corresponding rejection of all the rows in a matrix on an arbitrary vector (respectively the distance *on* and the distance *from* that vector). The function is based on @aguilera2004's n-dimensional rotation algorithm to use linear algebra in mutidimensional spaces. The projection or rejection can be seen as respectively the elaboration and exploration scores on a trajectory (*sensu* @endler2005).
 
@@ -893,8 +894,54 @@ summary(dispRity(dummy_space, metric = projections,
                               scale = FALSE))
 ```
 
+The `phylo.projections` is the same as the `projections` metric but allows to determine the vector (`(point1, point2)`) using a tree rather than manually entering these points.
+The function intakes the exact same options as the `projections` function described above at the exception of `point1` and `point2`.
+Instead it takes a the argument `type` that designates the type of vector to draw from the data based on a phylogenetic tree `phy`.
+The argument `type` can be a pair of any of the following inputs:
 
+ * `"root"`: to automatically use the coordinates of the root of the tree (the first element in `phy$node.label`);
+ * `"ancestor"`: to automatically use the coordinates of the elements' (i.e. any row in the matrix) most recent ancestor;
+ * `"tips"`: to automatically use the coordinates from the centroid of all tips;
+ * `"nodes"`: to automatically use the coordinates from the centroid of all nodes;
+ * `"livings"`: to automatically use the coordinates from the centroid of all "living" tips (i.e. the tips that are the furthest away from the root);
+ * `"fossils"`: to automatically use the coordinates from the centroid of all "fossil" tips and nodes (i.e. not the "living" ones);
+ *  any numeric values that can be interpreted as `point1` and `point2` in `projections` (e.g. `0`, `c(0, 1.2, 3/4)`, etc.);
+ *  or a user defined function that with the inputs `matrix` and `phy` and `row` (the element's ID, i.e. the row number in `matrix`).
 
+For example, if you want to measure the projection of each element in the matrix (tips and nodes) on the axis from the root of the tree to each element's most recent ancestor, you can define the vector as `type = c("root", "ancestor")`.
+
+```{r}
+## Adding a extra row to dummy matrix (to match dummy_tree)
+tree_space <- rbind(dummy_space, root = rnorm(5))
+## Creating a random dummy tree (with labels matching the ones from tree_space)
+dummy_tree <- rtree(6)
+dummy_tree$tip.label <- rownames(tree_space)[1:6]
+dummy_tree$node.label <- rownames(tree_space)[rev(7:11)]
+
+## Measuring the disparity as the projection of each element
+## on its root-ancestor vector
+summary(dispRity(tree_space, metric = phylo.projections,
+                             phy    = dummy_tree,
+                             type   = c("root", "ancestor")))
+```
+
+Of course you can also use any other options from the projections function:
+
+```{r}
+## A user defined function that's returns the centroid of
+## the first three nodes
+fun.root <- function(matrix, phy, row = NULL) {
+  return(colMeans(matrix[phy$node.label[1:3], ]))
+}
+## Measuring the unscaled rejection from the vector from the
+## centroid of the three first nodes
+## to the coordinates of the first tip
+summary(dispRity(tree_space, metric  = phylo.projections,
+                             phy     = dummy_tree,
+                             measure = "distance",
+                             type    = list(fun.root,
+                                            tree_space[1, ])))
+```
 
 
 
