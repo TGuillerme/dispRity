@@ -25,6 +25,12 @@ object
 	|		|
 	|		\---$arg = class:"list"
 	|
+	\---$phy* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
+	|	|
+	|	\---[[1]] = class:"phylo" (the first tree)
+	|   |
+	|   \---[[...]] = class:"phylo" (any additional trees)	
+	|
 	\---$subsets* = class:"list" (subsets as a list)
 	|	|
 	|	\---[[1]]* = class:"list" (first item in subsets list)
