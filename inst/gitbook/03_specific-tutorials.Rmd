@@ -861,7 +861,7 @@ Since both the functions `angles` and `deviations` effectively run a `lm` or `gl
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
 
-#### Projections and phylo.projections: elaboration and exploration
+#### Projections and phylo projections: elaboration and exploration
 
 The `projections` metric calculates the geometric projection and corresponding rejection of all the rows in a matrix on an arbitrary vector (respectively the distance *on* and the distance *from* that vector). The function is based on @aguilera2004's n-dimensional rotation algorithm to use linear algebra in mutidimensional spaces. The projection or rejection can be seen as respectively the elaboration and exploration scores on a trajectory (*sensu* @endler2005).
 
