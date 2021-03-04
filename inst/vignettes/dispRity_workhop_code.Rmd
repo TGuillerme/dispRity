@@ -22,6 +22,7 @@ In this workshop I will assume you are already familiar with basic `R`. The basi
  * What is an object's class (e.g. the class `"matrix"` or `"phylo"`)
  * What is a function (e.g. the function `mean(c(1,2))`)
  * How to access function manuals (e.g. `?mean`)
+ * How to input data in `R` (e.g. using `read.csv`)
 
 Let's get into it.
 First we'll want to download and install the package:
