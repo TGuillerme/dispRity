@@ -7,6 +7,7 @@
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @param data A \code{matrix}.
+#' @param phy Optional, a \code{phylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' 
@@ -19,9 +20,12 @@
 #'
 #' 
 #' @author Thomas Guillerme
-make.dispRity <- function(data, call, subsets) {
+make.dispRity <- function(data, phy, call, subsets) {
     ## Make the empty object
-    dispRity_object <- list("matrix" = list(NULL) , "call" = list(), "subsets" = list())
+    dispRity_object <- list("matrix" = list(NULL) ,
+                            "phy" = list(NULL),
+                            "call" = list(),
+                            "subsets" = list())
 
     ## Add the matrix
     if(!missing(data)) {
@@ -31,10 +35,20 @@ make.dispRity <- function(data, call, subsets) {
             list = {dispRity_object$matrix <- data})
     }
 
-    ## Add the call
+    ## Add the tree
     if(!missing(call)) {
         check.class(call, "list")
         dispRity_object$call <- call
+    }
+
+    ## Add the call
+    if(!missing(phy)) {
+        class_phy <- check.class(phy, c("multiPhylo", "phylo"))
+        if(class_phy == "multiPhylo") {
+            dispRity_object$phy <- phy
+        } else {
+            dispRity_object$phy <- list(phy)
+        }
     }
 
     ## Add the subsets
@@ -53,6 +67,7 @@ make.dispRity <- function(data, call, subsets) {
 #' @description Fills a \code{dispRity} object using the data from its matrix
 #'
 #' @param data A \code{dispRity} object.
+#' @param phy A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)
 #' 
 #' @examples
 #' ## An empty dispRity object (with a matrix)
@@ -61,27 +76,37 @@ make.dispRity <- function(data, call, subsets) {
 #' ## A dispRity object with a matrix of 4*3
 #' fill.dispRity(empty)
 #' 
+#' ## A dispRity object with a tree
+#' my_tree <- rtree(4, tip.label = c(1:4))
+#' fill.dispRity(empty, phy = my_tree)
+#' 
 #' @author Thomas Guillerme
 #' 
-fill.dispRity <- function(data) {
+fill.dispRity <- function(data, phy = NULL) {
 
     ## Data have a matrix
-    data$matrix <- check.dispRity.data(data$matrix)
+    if(!is.null(data)) {
+        data$matrix <- check.dispRity.data(data$matrix)
 
-    ## Dimensions
-    if(length(data$call$dimensions) == 0) {
-        data$call$dimensions <- ncol(data$matrix[[1]])
-    }
+        ## Dimensions
+        if(length(data$call$dimensions) == 0) {
+            data$call$dimensions <- ncol(data$matrix[[1]])
+        }
 
-    ## Fill empty subsets
-    if(length(data$subsets) == 0) {
-        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
-    } else {
-        for(subsets in 2:length(data$subsets)) {
-            data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
+        ## Fill empty subsets
+        if(length(data$subsets) == 0) {
+            data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
+        } else {
+            for(subsets in 2:length(data$subsets)) {
+                data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
+            }
         }
     }
 
+    if(!is.null(phy)) {
+        ## Add the trees
+        data$phy <- check.dispRity.phy(phy, data = data)
+    }
     return(data)
 }
 

@@ -9,6 +9,8 @@ make.dispRity(data, call, subsets)
 \arguments{
 \item{data}{A \code{matrix}.}
 
+\item{phy}{Optional, a \code{phylo} object.}
+
 \item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}

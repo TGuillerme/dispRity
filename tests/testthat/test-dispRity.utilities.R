@@ -104,6 +104,12 @@ test_that("make.matrix", {
     expect_is(
         test1$subsets
         ,"list")
+    expect_is(
+        test1$phy
+        ,"list")
+    expect_equal(
+        test1$phy[[1]]
+        ,NULL)
 
     data_test <- matrix(rnorm(12), ncol = 3)
 
@@ -127,6 +133,12 @@ test_that("make.matrix", {
     expect_equal(
         length(unlist(test2))
         , 12)
+    expect_is(
+        test1$phy
+        ,"list")
+    expect_equal(
+        test1$phy[[1]]
+        ,NULL)
 
     test3 <- make.dispRity(data = list(data_test))
 
@@ -153,6 +165,21 @@ test_that("make.matrix", {
     expect_equal(
         length(unlist(test4))
         , 24)
+
+    test5 <- make.dispRity(data = data_test, phy = rtree(5))
+    expect_is(
+        test5$phy
+        ,"list")
+    expect_is(
+        test5$phy[[1]]
+        ,"phylo")    
+    test6 <- make.dispRity(data = data_test, phy = rmtree(5, 5))
+    expect_is(
+        test6$phy
+        ,"multiPhylo")
+    expect_is(
+        test6$phy[[1]]
+        ,"phylo")    
 })
 
 ## fill.dispRity
@@ -197,6 +224,70 @@ test_that("fill.dispRity", {
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix[[1]]))
+
+    ## Filling trees
+
+    ## One tree one data
+    phy <- makeNodeLabel(rtree(5))
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    test <- fill.dispRity(make.dispRity(data = data, phy = phy))
+
+    ## Basic works
+    expect_is(test, "dispRity")
+    expect_is(test$phy, "list")
+    expect_is(test$phy[[1]], "phylo")
+    expect_equal(length(test$phy), 1)
+    expect_equal(length(test$matrix), 1)
+
+    ## Multiple tree one data
+    phy <- makeNodeLabel(rtree(5))
+    phy <- list(phy, phy)
+    class(phy) <- "multiPhylo"
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    test <- fill.dispRity(make.dispRity(data = data, phy = phy))
+
+    ## multiple trees works
+    expect_is(test, "dispRity")
+    expect_is(test$phy, "multiPhylo")
+    expect_is(test$phy[[1]], "phylo")
+    expect_equal(length(test$phy), 2)
+    expect_equal(length(test$matrix), 1)
+
+    ## One tree multiple data
+    phy <- makeNodeLabel(rtree(5))
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    test <- fill.dispRity(make.dispRity(data = list(data, data), phy = phy))
+
+    ## One tree multiple data works
+    expect_is(test, "dispRity")
+    expect_is(test$phy, "list")
+    expect_is(test$phy[[1]], "phylo")
+    expect_equal(length(test$phy), 1)
+    expect_equal(length(test$matrix), 2)
+
+    ## multiple tree multiple data
+    phy <- makeNodeLabel(rtree(5))
+    phy <- list(phy, phy)
+    class(phy) <- "multiPhylo"
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+
+    ## multiple tree multiple data works
+    test <- fill.dispRity(phy = phy, data = make.dispRity(data = list(data, data)))
+    expect_is(test, "dispRity")
+    expect_is(test$phy, "multiPhylo")
+    expect_is(test$phy[[1]], "phylo")
+    expect_equal(length(test$phy), 2)
+    expect_equal(length(test$matrix), 2)
+
+    ## Also works with just tips
+    my_tree <- rtree(6)
+    my_data <- matrix(0, ncol = 2, nrow = 6, dimnames = list(c(my_tree$tip.label)))
+    test <- fill.dispRity(phy = my_tree, data = make.dispRity(my_data))
+    expect_is(test, "dispRity")
+    expect_is(test$phy, "multiPhylo")
+    expect_is(test$phy[[1]], "phylo")
+    expect_equal(length(test$phy), 1)
+    expect_equal(length(test$matrix), 1)
 })
 
 ## matrix.dispRity
