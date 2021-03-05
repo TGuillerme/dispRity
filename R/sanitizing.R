@@ -193,3 +193,42 @@ check.dispRity.data <- function(data) {
     return(data)
 }
 
+## Checks whether the tree is in the correct format
+check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
+    
+    ## Check class
+    phy_class <- check.class(phy, c("phylo", "multiPhylo"))
+    ## Convert into a list (not multiPhylo if it's a single tree)
+    if(phy_class == "phylo") {
+        phy <- list(phy)
+        class(phy) <- "multiPhylo"
+    }
+
+    ## Inc.nodes toggle
+    inc.nodes <- unique(unlist(lapply(phy, function(x) !is.null(x$node.label))))
+    if(length(inc.nodes) > 1) {
+        stop("All trees should have node labels or no node labels.", call. = FALSE)
+    }
+
+    ## Match with the data
+    if(!missing(data) && !is.null(data$matrix[[1]])) {
+        ## Match the data and the trees?
+        pass.fun <- function(cleaned) return(!all(is.na(cleaned$dropped_tips), is.na(cleaned$dropped_rows)))
+        if(!bind.trees) {
+            cleanings <- lapply(data$matrix, clean.data, phy, inc.nodes = inc.nodes)
+        } else {
+            if(length(phy) != length(data$matrix)) {
+                stop("The number of matrices and trees must be the same to bind them.", call. = FALSE)
+            }
+            cleanings <- mapply(cleand.data, data$matrix, phy, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+        }
+        if(any(not_pass <- unlist(lapply(cleanings, pass.fun)))) {
+            ## Stop!
+            stop("The data is not matching the tree labels (you can use ?clean.data to match both data and tree).", call. = FALSE)
+        }
+    }
+
+    ## Add to the dispRity object
+    data$phy <- phy
+    return(data)
+}
