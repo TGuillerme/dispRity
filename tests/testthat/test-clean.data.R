@@ -4,7 +4,7 @@
 # Testing clean.tree.table
 tree <- rtree(6, tip.label = LETTERS[1:6])
 data <- matrix(data =c(rnorm(4), runif(4)), 4, 2, dimnames = list(LETTERS[2:5]))
-test <- clean.tree.table(tree, data)
+test <- clean.tree.table(tree, data, inc.nodes = FALSE)
 test_that("clean.tree.table works", {
     # Errors
     expect_error(
@@ -122,7 +122,7 @@ test_that("clean.data works", {
     expect_equal(clean.data(dummy_data, multi_tree)$dropped_rows, NA)
 })
 
-## Clean.data with nodes
+## Clean.data with nodes
 test_that("clean.data works with nodes", {
     tree0 <- rtree(5)
     tree1 <- makeNodeLabel(rtree(5))
@@ -140,7 +140,7 @@ test_that("clean.data works with nodes", {
     error <- capture_error(clean.data(data, tree010, inc.nodes = TRUE))
     expect_equal(error[[1]], "Impossible to use check the nodes in the trees 1, 3 because the tree has no nodes. Set the option inc.nodes = FALSE, or add node labels to the tree (e.g. using ape::makeNodeLabels(...)).")
 
-    ## All good
+    ## All good
     test <- clean.data(data, tree1, inc.nodes = TRUE)
     expect_true(is.na(test$dropped_tips))
     expect_true(is.na(test$dropped_rows))
@@ -149,7 +149,7 @@ test_that("clean.data works with nodes", {
     error <- capture_error(clean.data(data, tree2, inc.nodes = TRUE))
     expect_equal(error[[1]], "Node bob not found in the data (nodes cannot be trimmed automatically).")
 
-    ## Error in the 2nd tree
+    ## Error in the 2nd tree
     error <- capture_error(clean.data(data, tree12, inc.nodes = TRUE))
     expect_equal(error[[1]], "Node bob from tree 2 not found in the data. (nodes cannot be trimmed automatically).")
 

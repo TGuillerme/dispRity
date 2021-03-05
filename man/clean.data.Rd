@@ -4,18 +4,23 @@
 \alias{clean.data}
 \title{Cleaning phylogenetic data}
 \usage{
-clean.data(data, tree)
+clean.data(data, tree, inc.nodes = FALSE)
 }
 \arguments{
 \item{data}{A \code{data.frame} or \code{matrix} with the elements names as row names.}
 
 \item{tree}{A \code{phylo} or \code{multiPhylo} object.}
+
+\item{inc.nodes}{Logical, whether to check if the nodes in \code{tree} are also present in \code{data} (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \value{
 A \code{list} containing the cleaned data and tree(s) and information on the eventual dropped tips and rows.
 }
 \description{
 Cleans a table/tree to match with a given table/tree
+}
+\details{
+Note if \code{inc.nodes} is set to \code{TRUE}, the function outputs an error message if there is no matching.
 }
 \examples{
 ##Creating a set of different trees
