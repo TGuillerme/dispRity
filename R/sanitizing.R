@@ -204,10 +204,17 @@ check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
         class(phy) <- "multiPhylo"
     }
 
-    ## Inc.nodes toggle
+    ## Inc.nodes toggle
     inc.nodes <- unique(unlist(lapply(phy, function(x) !is.null(x$node.label))))
     if(length(inc.nodes) > 1) {
         stop("All trees should have node labels or no node labels.", call. = FALSE)
+    }
+
+    ## Make the data into "dispRity" format for testing
+    if(!missing(data) && is(data, "matrix")) {
+        if(!is(data, "dispRity")) {
+            data <- list(matrix = list(data))
+        }
     }
 
     ## Match with the data

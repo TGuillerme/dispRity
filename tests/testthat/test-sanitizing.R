@@ -252,7 +252,7 @@ test_that("check.dispRity.phy works", {
     phy <- list(phy, phy)
     class(phy) <- "multiPhylo"
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
-    data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+    # data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
 
     ## Not all trees have node labels
     phy_error <- phy
