@@ -243,11 +243,9 @@ test_that("check.dispRity.phy works", {
     expect_equal(error[[1]], "phy must be of class phylo or multiPhylo.")
     ## Basic works
     test <- check.dispRity.phy(phy = phy, data = data)
-    expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
-    expect_equal(length(test$matrix), 1)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 1)
 
     ## Multiple tree one data
     phy <- makeNodeLabel(rtree(5))
@@ -263,11 +261,9 @@ test_that("check.dispRity.phy works", {
     expect_equal(error[[1]], "All trees should have node labels or no node labels.")
     ## multiple trees works
     test <- check.dispRity.phy(phy = phy, data = data)
-    expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 2)
-    expect_equal(length(test$matrix), 1)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 2)
 
     ## One tree multiple data
     phy <- makeNodeLabel(rtree(5))
@@ -276,11 +272,9 @@ test_that("check.dispRity.phy works", {
 
     ## One tree multiple data works
     test <- check.dispRity.phy(phy = phy, data = data)
-    expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
-    expect_equal(length(test$matrix), 2)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 1)
 
     ## multiple tree multiple data
     phy <- makeNodeLabel(rtree(5))
@@ -291,9 +285,7 @@ test_that("check.dispRity.phy works", {
 
     ## multiple tree multiple data works
     test <- check.dispRity.phy(phy = phy, data = data)
-    expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 2)
-    expect_equal(length(test$matrix), 2)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 2)
 })

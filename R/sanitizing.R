@@ -228,7 +228,5 @@ check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
         }
     }
 
-    ## Add to the dispRity object
-    data$phy <- phy
-    return(data)
+    return(phy)
 }
