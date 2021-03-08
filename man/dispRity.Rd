@@ -25,6 +25,8 @@ dispRity(
 \item{between.groups}{A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+
+\item{phy}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

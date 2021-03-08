@@ -2,9 +2,6 @@
 #' @aliases time.series time.subsets
 #'
 #' @description Splits the data into a chronological (time) subsets list.
-#' 
-#' @usage chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
-#'                     FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE)
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
@@ -16,15 +13,9 @@
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
+#' @param attach.phy Logical, whether to attach the \code{tree} argument to the output (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
 #' 
-#' @return
-#' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
-#' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
-#'
-#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #'  
 #' @details
