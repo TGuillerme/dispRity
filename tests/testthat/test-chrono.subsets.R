@@ -321,11 +321,11 @@ test_that("Output format is correct", {
     ## Length
     expect_equal(
         length(out_test)
-        , 3)
+        , 4)
     ## Names
     expect_equal(
         names(out_test)
-        , c("matrix", "call", "subsets")
+        , c("matrix", "phy", "call", "subsets")
         )
 })
 
@@ -342,7 +342,7 @@ test_that("Example works", {
     ex1 <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex1)
-        , 3)
+        , 4)
     expect_is(
         ex1$matrix[[1]]
         ,"matrix")
@@ -359,7 +359,7 @@ test_that("Example works", {
     ex2 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex2)
-        , 3)
+        , 4)
     expect_is(
         ex2$matrix[[1]]
         ,"matrix")
@@ -376,7 +376,7 @@ test_that("Example works", {
     ex3 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex3)
-        , 3)
+        , 4)
     expect_is(
         ex3$matrix[[1]]
         ,"matrix")
@@ -558,7 +558,7 @@ test_that("chrono.subsets works with multiPhylo", {
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
 
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("matrix", "call", "subsets"))
+    expect_equal(names(test), c("matrix", "phy", "call", "subsets"))
     expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))

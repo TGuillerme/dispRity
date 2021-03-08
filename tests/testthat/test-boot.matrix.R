@@ -111,7 +111,7 @@ test_that("No bootstraps", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         as.vector(test$subsets[[1]][[1]])
         , seq(1:nrow(test$matrix[[1]])))
@@ -147,7 +147,7 @@ test_that("5 bootstraps", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
         , ncol(test$matrix[[1]]))
@@ -172,7 +172,7 @@ test_that("5 bootstraps, rarefaction = 5", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
         , ncol(test$matrix[[1]]))
@@ -233,7 +233,7 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
         , ncol(test$matrix[[1]]))
