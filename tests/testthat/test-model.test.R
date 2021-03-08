@@ -11,7 +11,7 @@ test_that("internal functions work", {
     data(disparity)
 
     ## Calculate the variance for metric !level1
-    test <- select.model.list(disparity, observed = TRUE, cent.tend = median)
+    expect_warning(test <- select.model.list(disparity, observed = TRUE, cent.tend = median))
     expect_is(test, "list")
     expect_equal(length(test), 4)
 
