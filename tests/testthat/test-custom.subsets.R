@@ -97,7 +97,7 @@ test_that("custom.subsets works", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_is(
         test$matrix[[1]]
         , "matrix")
@@ -128,7 +128,7 @@ test_that("Different group inputs gives the same output", {
         , "dispRity")
     expect_equal(
         unique(unlist(lapply(list(cust1, cust2, cust3), length)))
-        , 3)
+        , 4)
 
     expect_true(
         all(as.vector(cust1$subsets[[1]]$elements) == as.vector(cust2$subsets[[1]]$elements))
