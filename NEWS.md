@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.8 (2021-03-01)
+dispRity v1.5.8 (2021-03-09) <!-- *dispRitree* -->
 =========================
 
 ### NEW FEATURES
@@ -40,6 +40,7 @@ dispRity v1.5.8 (2021-03-01)
   * `reduce.space` `"random"` algorithm now outputs a named logical vector (like the other algorithms!).
   * remove the `"only"` text when printing `dispRity` objects that contains "only" matrices (even though that can be 10k matrices!).
   * added a dedicated behaviour to `summary.dispRity` for `"dispRity"` `"randtest"` objects to output "ready-to-publish" result tables.
+  * some error messages have been updated to be slightly more useful.
 
 ### BUG FIXES
 

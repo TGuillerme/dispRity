@@ -157,7 +157,7 @@ check.dispRity.data <- function(data) {
     ## Switch between cases
     if(data_class == "list") {
         ## Error message
-        is_error <- " must be matrix or a list of matrices with the same dimensions and row names."
+        is_error <- " must be matrix or a list of matrices with the same dimensions and unique row names."
         ## Check the classes
         all_classes <- unique(unlist(lapply(data, class)))
         if(!all(all_classes %in% c("matrix", "array"))) {

@@ -177,13 +177,13 @@ test_that("check.dispRity.data works", {
     error <- capture_error(check.dispRity.data("a"))
     expect_equal(error[[1]], "data must be of class matrix or data.frame or list.")
     error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a")))
-    expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and unique row names.")
     error2 <- list(matrix(c(1,2)), matrix(c(1,2,3)))
     error <- capture_error(check.dispRity.data(error2))
-    expect_equal(error[[1]], "error2 must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "error2 must be matrix or a list of matrices with the same dimensions and unique row names.")
     error3 <- list(matrix(c(1,2), dimnames = list(c(1:2), 1)), matrix(c(1,2), dimnames = list(c(3:4), 1)))
     error <- capture_error(check.dispRity.data(error3))
-    expect_equal(error[[1]], "error3 must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "error3 must be matrix or a list of matrices with the same dimensions and unique row names.")
 
     ## Matrix input
     bob <- matrix(c(1,2))
