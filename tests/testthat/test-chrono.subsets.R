@@ -581,7 +581,7 @@ test_that("chrono.subsets works with multiple matrices", {
     data_wrong <- list(BeckLee_mat50, BeckLee_mat99)
 
     error <- capture_error(test <- chrono.subsets(data_wrong, tree = BeckLee_tree, method = "discrete", time = 4))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
     expect_warning(test <- chrono.subsets(data, tree = BeckLee_tree, method = "discrete", time = 4))
     
     expect_is(test, "dispRity")
@@ -609,9 +609,9 @@ test_that("chrono.subsets works with multiple matrices", {
     rownames(matrices_wrong2[[3]])[11] <- "root" 
 
     error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
     error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
 
     ## Test working fine
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
