@@ -94,6 +94,9 @@ export(matrix.dispRity)
 export(rescale.dispRity)
 export(size.subsets)
 export(sort.dispRity)
+export(add.phy)
+export(get.phy)
+export(remove.phy)
 
 ##Package utilities
 export(clean.data)

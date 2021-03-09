@@ -3,7 +3,7 @@ Change the structure in:
  - [x] disparity_object
  - [x] make.dispRity
  - [x] clean.data (inc.nodes option)
- - [ ] fill.dispRity 
+ - [x] fill.dispRity 
  - [ ] chrono.subsets
  - [ ] custom.subsets
  - [ ] dispRity
@@ -15,7 +15,7 @@ Change the structure in:
  - [ ] plot.dispRity 
     - [ ] tree networks if multiple trees?
  - [ ] Update dispRity.utilities
- - [ ] Add utilities get.tree and add.tree
+ - [x] Add utilities get.phy and add.phy and remove.phy
  - [ ] Update the data using make.demo.data
  - [ ] Update the manual
     - [ ] get.tree entry
@@ -23,8 +23,23 @@ Change the structure in:
  - [ ] Update dtt.dispRity
  - [ ] Update dispRity.wrapper
 
-# Minor
+
+# NEWS
+
+# New features
+ * `dispRity` objects now have a reserved `$phy` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `phy` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `phy` component of the `dispRity` object, you can now use the new utility functions `add.phy`, `get.phy` and `remove.phy`.
+
+# Minor improvements
  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
+
+
+
+
+
+
+
+
+# Manual
 
 ## Adding phylogenies to `dispRity` objects (*dispRitree!*)
 

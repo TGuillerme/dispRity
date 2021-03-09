@@ -777,3 +777,56 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
     return(extinction_subset)
 
 }
+
+#' @name add.phy
+#' @aliases get.phy remove.phy
+#' 
+#' @title Add, get or remove phy
+#'
+#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
+#'
+#' @param data A \code{dispRity} object.
+#' @param phy A \code{phylo} or \code{mutiPhylo} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' ## Loading a tree
+#' data(BeckLee_tree)
+#' 
+#' ## Adding the tree to the dispRity object
+#' (disparitree <- add.phy(phy = BeckLee_tree, data = disparity))
+#' 
+#' ## Extracting the tree
+#' get.phy(disparitree)
+#' 
+#' ## Removing the tree from the dispRity object
+#' remove.phy(disparitree)
+#' 
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+add.phy <- function(data, phy) {
+    ## Add the tree
+    if(is.null(data$phy)) {
+        data$phy <- check.dispRity.phy(phy = phy, data = data)
+    } else {
+        data$phy <- check.dispRity.phy(phy = c(get.tree(data$phy), phy), data = data)
+    }
+    return(data)
+}
+get.phy <- function(data) {
+    ## Return the tree
+    tree <- data$phy
+    if(length(tree) == 1) {
+        return(tree[[1]])
+    } else {
+        return(tree)
+    }
+}
+remove.phy <- function(data) {
+    ## Remove the tree
+    data$phy <- list(NULL)
+    return(data)
+}

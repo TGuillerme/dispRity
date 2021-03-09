@@ -216,8 +216,8 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 } else {
                     cat(paste0(" in one matrix"), sep = "")
                 }
-
                 if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
+                if(!is.null(x$phy[[1]])) {cat(" and ") ; print(x$phy)}
                 cat(":\n")
                 if(length(subsets) > 5) {
                     cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
@@ -233,9 +233,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 cat(paste0(" in one matrix"), sep = "")
             }
             if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
-            cat(".\n")
+            if(!is.null(x$phy[[1]])) {cat(" and ") ; print(x$phy)} else {cat(".\n")}
         }
-        
+    
         ## Print the bootstrap information
         if(any(names(x$call) == "bootstrap")) {
             if(x$call$bootstrap[[1]] != 0) {
