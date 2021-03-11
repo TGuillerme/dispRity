@@ -99,7 +99,7 @@ Check out the documentation [here](https://rawcdn.githack.com/TGuillerme/moms/ma
 For that we can simply upload our trait space in `moms` and test our different metrics to measure our different hypotheses.
 
 ```{r}
-## Saving our space as a matrix (with column names and row names)
+## Saving our space as a matrix (with column names and row names)
 write.csv(my_matrix, file = "moms_space.csv")
 ```
 
