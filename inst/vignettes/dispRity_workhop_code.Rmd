@@ -77,7 +77,8 @@ clean.data(my_matrix, my_tree)
 
 ## Disparity per groups analysis
 
-This is the code for the simple disparity per group analysis:
+This is the code for the simple disparity per group analysis.
+The hypothesis we will test will be: "Is the crown mammal's morphospace bigger than stem mammal's one?"
 
 ```{r}
 ## Creating a list of groups
@@ -88,7 +89,23 @@ trait_space <- custom.subsets(my_matrix, group = my_groups)
 
 ## Bootstrapping
 trait_space_bs <- boot.matrix(trait_space)
+```
 
+### Which disparity metric do we need?
+
+This is a tricky one and depends on your question, but thankfully we can ask [`moms`](https://tguillerme.shinyapps.io/moms/) to help us!
+Check out the documentation [here](https://rawcdn.githack.com/TGuillerme/moms/master/inst/moms_vignette.html).
+
+For that we can simply upload our trait space in `moms` and test our different metrics to measure our different hypotheses.
+
+```{r}
+## Saving our space as a matrix (with column names and row names)
+write.csv(my_matrix, file = "moms_space.csv")
+```
+
+Here for our hypotheses, we are interested in volume or size of the trait space occupied (i.e. "Is the crown mammal's morphospace bigger than stem mammal's one?") and we can see that the sum of variance metric works relatively well to capture changes in volume.
+
+```{r}
 ## Measuring disparity
 disparity_groups <- dispRity(trait_space_bs, metric = c(sum, variances))
 
@@ -114,7 +131,7 @@ knitr::kable(summary(disparity_groups))
 
 ### Making up some node data
 
-This section here will generate some data for your nodes in the tree. _DO NOT TRY THIS AT HOME_. Or, less patronisingly, we will use some within-PCA ancestral states estimations, there are some cases when this method is totally valid but this is not always the case. You can find our opinion on this paper [Section 3-d](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199#d1e934). I will personally advice against this technique in publications (but you should do what you think is best for your question and data - don't list to me).
+This section here will generate some data for your nodes in the tree. _DO NOT TRY THIS AT HOME_. Or, less patronisingly, we will use some within-PCA ancestral states estimations, there are some cases when this method is totally valid but this is not always the case. You can find our opinion on this paper [Section 3-d](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199#d1e934). I will personally be really cautious about using this approach if you don't know what you are doing (but you should do what you think is best for your question and data - don't list to me).
 
 ```{r}
 ## Wrapping function for running a quick and dirty ancestral character estimation
