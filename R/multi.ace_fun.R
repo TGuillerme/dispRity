@@ -47,7 +47,7 @@ convert.char.table <- function(character, character_states) {
 }
 
 ## Set up the characters arguments for one tree
-make.args <- function(character, character_states, model, castor.options, cores) {
+make.args <- function(character, character_states, model, castor.options, cores, estimation.details) {
     ## Get the list of arguments
     castor_args <- list(tip_states = NULL,
                         Nstates = length(character_states),
@@ -55,7 +55,8 @@ make.args <- function(character, character_states, model, castor.options, cores)
                         tip_priors = character,
                         check_input = FALSE,
                         Ntrials = 1,
-                        Nthreads = cores)
+                        Nthreads = cores,
+                        details = estimation.details)
     ## Add options
     if(!is.null(castor.options)) {
         castor.options <- c(castor_args, castor.options)
@@ -90,8 +91,19 @@ castor.ace <- function(castor_args) {
     castor_args <- dropped[[1]]
     dropped <- dropped[[2]]
 
+    ## Get whether to extract details or not
+    extract_details <- castor_args$details
+    castor_args$details <- NULL
+
     ## Run the ace
     estimation <- do.call(castor::asr_mk_model, castor_args)
+
+    ## Return details if needed
+    if(!is.null(extract_details)) {
+        details <- estimation[extract_details]
+    } else {
+        details <- NULL
+    }
 
 #     stop("DEBUG multi.ace_fun::castor.ace")
 
@@ -133,7 +145,7 @@ castor.ace <- function(castor_args) {
         rownames(estimation) <- castor_args$tree$node.label
     }
 
-    return(list(results = estimation, success = success, dropped = dropped))
+    return(list(results = estimation, success = success, dropped = dropped, details = details))
 }
 
 ## Update names and trees a posteriori
@@ -141,8 +153,13 @@ add.state.names <- function(estimation, character_states, tree) {
     ## Update the estimation names
     colnames(estimation$results) <- character_states
 
-    if(!is.null(estimation$dropped)) {
+    if(!is.null(estimation$details$transition_matrix)) {
         ## Update the estimations table
+        rownames(estimation$details$transition_matrix) <- colnames(estimation$details$transition_matrix) <- character_states
+    }
+    if(!is.null(estimation$details$ancestral_likelihoods)) {
+        ## Update the estimation names
+        colnames(estimation$details$ancestral_likelihoods) <- character_states
     }
 
     return(estimation)
@@ -174,6 +191,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
 
     ## Separating the estimations
     success <- unlist(lapply(ancestral_estimations, function(estimation) return(estimation$success)))
+    estimations_details <- lapply(ancestral_estimations, function(estimation) return(estimation$details))
     ancestral_estimations <- lapply(ancestral_estimations, function(estimation) return(estimation$results))
     if(any(!success)) {
         warning(paste0("Impossible to fit the model for the following character(s): ", paste(which(!success), collapse = ", "), ".\nThe ancestral estimated values are set to uncertain (all states equiprobable)."))
@@ -225,6 +243,19 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
     }
     ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
 
+    ## Sort the details list
+    if(!is.null(args_list[[1]]$details)) {
+        ## Extract the details into multiple lists
+        extracted_details <- names(estimations_details[[1]])
+        estimations_details_out <- list()
+        for(one_detail in 1:length(extracted_details)) {
+            estimations_details_out[[one_detail]] <- lapply(estimations_details, `[[`, one_detail)
+        }
+        names(estimations_details_out) <- extracted_details
+    } else {
+        estimations_details_out <- NULL
+    }
+
     if(verbose) cat(" Done.\n")
-    return(ancestral_states)
+    return(list(results = ancestral_states, details = estimations_details_out))
 }
