@@ -201,7 +201,19 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
 
     ## Save the steps
     if(save.steps) {
-        saved_steps <- all_reductions[[1]]
+        ## Counting the failures in one replicate (accross all shifts)
+        count.fails <- function(one_rep){
+            unlist(lapply(lapply(one_rep, check.content), function(x) sum(!x)))
+        }
+        ## Checking the content in all subsets from one shift from one replicate
+        check.content <- function(one_shift){
+            unlist(lapply(one_shift$subsets, lapply,  nrow)) > 0
+        }
+        ## Check which replicate worked best
+        fails_pre_rep <- unlist(lapply(lapply(all_reductions, count.fails), sum))
+
+        ## Saving the reduction that worked best
+        saved_steps <- all_reductions[[which(fails_pre_rep == min(fails_pre_rep))[1]]]
     } else {
         saved_steps <- NULL
     }

@@ -144,6 +144,21 @@ test_that("multi.ace works", {
                             output = "something"))
     expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix.")
 
+
+    error <- capture_error(multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = TRUE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            output = "list",
+                            estimation.details = c("bob")))
+    expect_equal(error[[1]], "estimation.details must be one of the following: success, Nstates, transition_matrix, loglikelihood, ancestral_likelihoods.")
+
+
     expect_is(results, "list")
     expect_is(results[[1]], "list")
     expect_is(results[[1]][[1]], "character")
@@ -324,6 +339,35 @@ test_that("multi.ace works", {
     my_spec_behaviours$weirdtoken   <- function(x,y) return(c(1,2))
     branch_lengths <- rnorm(28)^2
     my_models <- c(rep("ER", 25), rep("SYM", 25))
+
+    ## Output details
+    set.seed(8) 
+    matrix_test <- sim.morpho(rcoal(6), characters = 10, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    tree_test <- rmtree(2, 6)
+    matrix_complex <- matrix_test
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
+    results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = TRUE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix"))
+    expect_is(results, "list")
+    expect_equal(names(results), c("estimations", "details"))
+    expect_is(results$estimations, "list")
+    expect_is(results$estimations[[1]], "matrix")
+    expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
+    expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
+    expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+ 
+
 
     ## Test1
     # test <- capture.output(ancestral_states <- multi.ace(matrix_complex, multiple_trees,
