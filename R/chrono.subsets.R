@@ -117,6 +117,9 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## TREE (1)
     ## tree must be a phylo object
+
+    ## TODO: if tree is missing but object has tree, then use that tree
+
     if(!missing(tree)) {
         tree_class <- check.class(tree, c("phylo", "multiPhylo"))
         is_multiPhylo <- ifelse(tree_class == "multiPhylo", TRUE, FALSE)
@@ -175,8 +178,16 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
     } else {
+
         ## Default tree list
         is_multiPhylo <- FALSE
+
+        ## If the data has a tree attached, use that one
+        if(!is.null(data$phy[[1]])) {
+            tree <- data$phy
+            tree.age_tree <- lapply(tree, tree.age)
+            is_multiPhylo <- length(data$phy) > 1
+        }
     }
 
     ## METHOD
@@ -433,5 +444,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     #time_subsets <- c(make.origin.subsets(data), time_subsets)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))
+    if(!tree_was_missing) {
+        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets, phy = tree))    
+    } else {
+        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))        
+    }
+
 }
