@@ -4,7 +4,7 @@
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?phylo.projections\n?projections\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.phy\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2")
 })
@@ -810,7 +810,7 @@ test_that("projections", {
     expect_equal_round(test_res, c(1.100621, 1.177726, 1.069398, 1.146989, 1.079798), 3)
 })
 
-test_that("phylo.projections", {
+test_that("projections.phy ", {
     
     set.seed(1)
     matrix <- matrix(rnorm(90), 9, 10)
@@ -853,12 +853,31 @@ test_that("phylo.projections", {
     named_matrix <- dummy_matrix
     rownames(named_matrix) <- c(dummy_tree$tip.label,
                                 dummy_tree$node.label)
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
+    expect_equal_round(projections.phy (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
+    expect_equal_round(projections.phy (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
     user.fun <- function(matrix, phy, row = NULL) {
          return(colMeans(matrix[phy$node.label[1:3], ]))
     }
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+    expect_equal_round(projections.phy (named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+})
 
+test_that("edge.length.tree works", {
+    ## A ladderized tree
+    tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
+    tree$edge.length <- rep(1, 7+6)
+    tree$node.label <- letters[1:6]
+    ## An empty matrix (with the right elements)
+    matrix1 <- matrix(NA, nrow = 7, ncol = 2)
+    rownames(matrix1) <- tree$tip.label
+    matrix2 <- matrix(NA, nrow = 7+6, ncol = 2)
+    rownames(matrix2) <- c(tree$tip.label, tree$node.label)
 
+    expect_equal(edge.length.tree(matrix1, tree), c(6,6,5,4,3,2,1))
+    expect_equal(edge.length.tree(matrix2, tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5))
+    expect_equal(edge.length.tree(matrix2[c(1,3,5,7,10),], tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5)[c(1,3,5,7,10)])
+    expect_equal(edge.length.tree(matrix1, tree, to.root = FALSE), rep(1, 7))
+    expect_equal(edge.length.tree(matrix2, tree, to.root = FALSE), rep(1, 7+6))
+    expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,1))
+    tree$edge.length[c(3,7)] <- 10
+    expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,10))
 })
