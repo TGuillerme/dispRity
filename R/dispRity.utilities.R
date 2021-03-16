@@ -2,8 +2,6 @@
 
 #' @title Creates a \code{dispRity} object.
 #' 
-#' @usage make.dispRity(data, call, subsets)
-#'
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @param data A \code{matrix}.

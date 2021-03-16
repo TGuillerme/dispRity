@@ -4,15 +4,8 @@
 #' @description Splits the data into a customized subsets list.
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.
-#'
-#' @return
-#' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
-#' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
-#'
-#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
+#' @param group Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
+#' @param tree Optional, a \code{phylo} or \code{multiPhylo} object to attach to the resulting \code{dispRity} data.
 #' 
 #' @details
 #' Note that every element from the input data can be assigned to multiple groups!
@@ -57,7 +50,7 @@
 # group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-custom.subsets <- function(data, group) {
+custom.subsets <- function(data, group, tree) {
 
     ## Saving the call
     match_call <- match.call()
@@ -83,8 +76,9 @@ custom.subsets <- function(data, group) {
         if(is(group, "list")) {
             group_class <- "list"
         } else {
-            if(is(group, "phylo")) {
 
+            if(is(group, "phylo")) {
+                tree <- group
                 group_class <- "phylo"
                 ## Matching the tree and the data
                 if(any(is.na(match(group$tip.label, rownames(data[[1]]))))) {
@@ -210,6 +204,12 @@ custom.subsets <- function(data, group) {
     
     }
 
-    ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list))
+    ## Attach the tree
+    if(group_class == "phylo" || !missing(tree)) {
+        ## Output as a dispRity object (with tree)
+        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list, phy = tree))
+    } else {
+        ## Output as a dispRity object
+        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list))
+    }
 }

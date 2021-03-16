@@ -4,7 +4,7 @@
 \alias{make.dispRity}
 \title{Creates a \code{dispRity} object.}
 \usage{
-make.dispRity(data, call, subsets)
+make.dispRity(data, phy, call, subsets)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
