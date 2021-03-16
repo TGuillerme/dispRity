@@ -9,7 +9,7 @@ object
 	|   |
 	|   \---[[...]] = class:"matrix" (any additional matrices)
 	|
-	\---$phy* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
+	\---$tree* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
 	|	|
 	|	\---[[1]] = class:"phylo" (the first tree)
 	|   |

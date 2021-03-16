@@ -5,7 +5,7 @@
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @param data A \code{matrix}.
-#' @param phy Optional, a \code{phylo} object.
+#' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' 
@@ -18,10 +18,10 @@
 #'
 #' 
 #' @author Thomas Guillerme
-make.dispRity <- function(data, phy, call, subsets) {
+make.dispRity <- function(data, tree, call, subsets) {
     ## Make the empty object
     dispRity_object <- list("matrix" = list(NULL) ,
-                            "phy" = list(NULL),
+                            "tree" = list(NULL),
                             "call" = list(),
                             "subsets" = list())
 
@@ -40,14 +40,14 @@ make.dispRity <- function(data, phy, call, subsets) {
     }
 
     ## Add the call
-    if(!missing(phy)) {
-        class_phy <- check.class(phy, c("multiPhylo", "phylo"))
-        if(class_phy == "multiPhylo") {
-            dispRity_object$phy <- phy
+    if(!missing(tree)) {
+        class_tree <- check.class(tree, c("multiPhylo", "phylo"))
+        if(class_tree == "multiPhylo") {
+            dispRity_object$tree <- tree
         } else {
-            phy <- list(phy)
-            class(phy) <- "multiPhylo"
-            dispRity_object$phy <- phy
+            tree <- list(tree)
+            class(tree) <- "multiPhylo"
+            dispRity_object$tree <- tree
         }
     }
 
@@ -67,7 +67,7 @@ make.dispRity <- function(data, phy, call, subsets) {
 #' @description Fills a \code{dispRity} object using the data from its matrix
 #'
 #' @param data A \code{dispRity} object.
-#' @param phy A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)
+#' @param tree A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)
 #' 
 #' @examples
 #' ## An empty dispRity object (with a matrix)
@@ -78,11 +78,11 @@ make.dispRity <- function(data, phy, call, subsets) {
 #' 
 #' ## A dispRity object with a tree
 #' my_tree <- rtree(4, tip.label = c(1:4))
-#' fill.dispRity(empty, phy = my_tree)
+#' fill.dispRity(empty, tree = my_tree)
 #' 
 #' @author Thomas Guillerme
 #' 
-fill.dispRity <- function(data, phy = NULL) {
+fill.dispRity <- function(data, tree = NULL) {
 
     ## Data have a matrix
     if(!is.null(data)) {
@@ -103,9 +103,9 @@ fill.dispRity <- function(data, phy = NULL) {
         }
     }
 
-    if(!is.null(phy)) {
+    if(!is.null(tree)) {
         ## Add the trees
-        data$phy <- check.dispRity.phy(phy, data = data)
+        data$tree <- check.dispRity.tree(tree, data = data)
     }
     return(data)
 }
@@ -778,15 +778,15 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
 }
 
-#' @name add.phy
-#' @aliases get.phy remove.phy
+#' @name add.tree
+#' @aliases get.tree remove.tree
 #' 
-#' @title Add, get or remove phy
+#' @title Add, get or remove tree
 #'
 #' @description Adding, extracting or removing the tree component from a \code{dispRity} object
 #'
 #' @param data A \code{dispRity} object.
-#' @param phy A \code{phylo} or \code{mutiPhylo} object.
+#' @param tree A \code{phylo} or \code{mutiPhylo} object.
 #' 
 #' @examples
 #' ## Loading a dispRity object
@@ -795,38 +795,38 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 #' data(BeckLee_tree)
 #' 
 #' ## Adding the tree to the dispRity object
-#' (disparitree <- add.phy(phy = BeckLee_tree, data = disparity))
+#' (disparitree <- add.tree(tree = BeckLee_tree, data = disparity))
 #' 
 #' ## Extracting the tree
-#' get.phy(disparitree)
+#' get.tree(disparitree)
 #' 
 #' ## Removing the tree from the dispRity object
-#' remove.phy(disparitree)
+#' remove.tree(disparitree)
 #' 
 #' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
 
-add.phy <- function(data, phy) {
+add.tree <- function(data, tree) {
     ## Add the tree
-    if(is.null(data$phy[[1]])) {
-        data$phy <- check.dispRity.phy(phy = phy, data = data)
+    if(is.null(data$tree[[1]])) {
+        data$tree <- check.dispRity.tree(tree = tree, data = data)
     } else {
-        data$phy <- check.dispRity.phy(phy = c(get.phy(data$phy), phy), data = data)
+        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
     }
     return(data)
 }
-get.phy <- function(data) {
+get.tree <- function(data) {
     ## Return the tree
-    tree <- data$phy
+    tree <- data$tree
     if(length(tree) == 1) {
         return(tree[[1]])
     } else {
         return(tree)
     }
 }
-remove.phy <- function(data) {
+remove.tree <- function(data) {
     ## Remove the tree
-    data$phy <- list(NULL)
+    data$tree <- list(NULL)
     return(data)
 }

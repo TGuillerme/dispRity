@@ -4,12 +4,12 @@
 \alias{fill.dispRity}
 \title{Fills a \code{dispRity} object.}
 \usage{
-fill.dispRity(data, phy = NULL)
+fill.dispRity(data, tree = NULL)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{phy}{A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)}
+\item{tree}{A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)}
 }
 \description{
 Fills a \code{dispRity} object using the data from its matrix
@@ -23,7 +23,7 @@ fill.dispRity(empty)
 
 ## A dispRity object with a tree
 my_tree <- rtree(4, tip.label = c(1:4))
-fill.dispRity(empty, phy = my_tree)
+fill.dispRity(empty, tree = my_tree)
 
 }
 \author{

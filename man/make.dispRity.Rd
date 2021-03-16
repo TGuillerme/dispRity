@@ -4,12 +4,12 @@
 \alias{make.dispRity}
 \title{Creates a \code{dispRity} object.}
 \usage{
-make.dispRity(data, phy, call, subsets)
+make.dispRity(data, tree, call, subsets)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
 
-\item{phy}{Optional, a \code{phylo} object.}
+\item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object.}
 
 \item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 

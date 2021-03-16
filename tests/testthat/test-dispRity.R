@@ -468,9 +468,9 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(-0.007, 0.005))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.007, 0.008))
-    expect_equal(as.vector(summary(test3)$obs), c(-0.003, 0.003))
+    expect_equal(as.vector(summary(test1)$obs), c(-0.005, -0.003))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.005, 0.002))
+    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.003))
 })
 
 test_that("dispRity works with function recycling", {

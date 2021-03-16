@@ -231,60 +231,60 @@ test_that("check.dispRity.data works", {
     expect_equal(rownames(test[[2]]), c("1","2"))
 })
 
-## Test check.dispRity.phy
-test_that("check.dispRity.phy works", {    
+## Test check.dispRity.tree
+test_that("check.dispRity.tree works", {    
     ## One tree one data
-    phy <- makeNodeLabel(rtree(5))
+    tree <- makeNodeLabel(rtree(5))
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
     data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
 
     ## Basic error
-    error <- capture_error(check.dispRity.phy(phy = "phy", data = data))
-    expect_equal(error[[1]], "phy must be of class phylo or multiPhylo.")
-    ## Basic works
-    test <- check.dispRity.phy(phy = phy, data = data)
+    error <- capture_error(check.dispRity.tree(tree = "tree", data = data))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    ## Basic works
+    test <- check.dispRity.tree(tree = tree, data = data)
     expect_is(test, "multiPhylo")
     expect_is(test[[1]], "phylo")
     expect_equal(length(test), 1)
 
     ## Multiple tree one data
-    phy <- makeNodeLabel(rtree(5))
-    phy <- list(phy, phy)
-    class(phy) <- "multiPhylo"
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
     # data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
 
     ## Not all trees have node labels
-    phy_error <- phy
-    phy_error[[1]]$node.label <- NULL
-    error <- capture_error(check.dispRity.phy(phy = phy_error, data = data))
+    tree_error <- tree
+    tree_error[[1]]$node.label <- NULL
+    error <- capture_error(check.dispRity.tree(tree = tree_error, data = data))
     expect_equal(error[[1]], "All trees should have node labels or no node labels.")
     ## multiple trees works
-    test <- check.dispRity.phy(phy = phy, data = data)
+    test <- check.dispRity.tree(tree = tree, data = data)
     expect_is(test, "multiPhylo")
     expect_is(test[[1]], "phylo")
     expect_equal(length(test), 2)
 
     ## One tree multiple data
-    phy <- makeNodeLabel(rtree(5))
+    tree <- makeNodeLabel(rtree(5))
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
     data <- fill.dispRity(make.dispRity(data = check.dispRity.data(list(data, data))))
 
     ## One tree multiple data works
-    test <- check.dispRity.phy(phy = phy, data = data)
+    test <- check.dispRity.tree(tree = tree, data = data)
     expect_is(test, "multiPhylo")
     expect_is(test[[1]], "phylo")
     expect_equal(length(test), 1)
 
     ## multiple tree multiple data
-    phy <- makeNodeLabel(rtree(5))
-    phy <- list(phy, phy)
-    class(phy) <- "multiPhylo"
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
     data <- fill.dispRity(make.dispRity(data = check.dispRity.data(list(data, data))))
 
     ## multiple tree multiple data works
-    test <- check.dispRity.phy(phy = phy, data = data)
+    test <- check.dispRity.tree(tree = tree, data = data)
     expect_is(test, "multiPhylo")
     expect_is(test[[1]], "phylo")
     expect_equal(length(test), 2)

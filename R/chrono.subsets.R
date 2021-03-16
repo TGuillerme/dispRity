@@ -179,10 +179,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         is_multiPhylo <- FALSE
 
         ## If the data has a tree attached, use that one
-        if(!is.null(data$phy[[1]])) {
-            tree <- data$phy
+        if(!is.null(data$tree[[1]])) {
+            tree <- data$tree
             tree.age_tree <- lapply(tree, tree.age)
-            is_multiPhylo <- length(data$phy) > 1
+            is_multiPhylo <- length(data$tree) > 1
         }
     }
 
@@ -441,7 +441,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## Output as a dispRity object
     if(!tree_was_missing) {
-        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets, phy = tree))    
+        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets, tree = tree))    
     } else {
         return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))        
     }

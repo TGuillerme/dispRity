@@ -226,8 +226,8 @@ test_that("clade subsets works", {
     expect_equal(nrow(with_nodes$subsets[[1]]$elements), nrow(BeckLee_mat99))
 
     ## Expect the trees are present
-    expect_is(without_nodes$phy[[1]], "phylo")
-    expect_is(with_nodes$phy[[1]], "phylo")
+    expect_is(without_nodes$tree[[1]], "phylo")
+    expect_is(with_nodes$tree[[1]], "phylo")
 })
 
 
@@ -243,17 +243,17 @@ test_that("custom.subsets detects distance matrices", {
 })
 
 
-test_that("custom.subsets works with phy", {
+test_that("custom.subsets works with tree", {
     data(BeckLee_mat50)
     data(BeckLee_mat99)
     data(BeckLee_tree)
     test <- custom.subsets(data = BeckLee_mat50, group = list(c(1:5), c(5,7)), tree = BeckLee_tree)
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
     test <- custom.subsets(data = BeckLee_mat99, group = list(c(1:5), c(5,7)), tree = BeckLee_tree)
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
     test <- custom.subsets(data = BeckLee_mat99, group = list(c(1:5), c(5,7)), tree = c(BeckLee_tree, BeckLee_tree, BeckLee_tree))
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 3)
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 3)
 })

@@ -1,4 +1,4 @@
-# Developer function for making the disparity data
+# # #Developer function for making the disparity data
 # make.demo.data_BeckLeeXXX <- function() {
 
 #     file.remove("../data/BeckLee_tree.rda")

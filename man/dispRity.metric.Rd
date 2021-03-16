@@ -11,7 +11,7 @@
 \alias{centroids}
 \alias{mode.val}
 \alias{ellipse.volume}
-\alias{edge.length.phy}
+\alias{edge.length.tree}
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
@@ -30,7 +30,7 @@
 \alias{group.dist}
 \alias{point.dist}
 \alias{projections}
-\alias{projections.phy}
+\alias{projections.tree}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -94,7 +94,7 @@ The currently implemented dimension-level 2 metrics are:
 \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3,)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extract arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
-  \item \code{edge.length.phy}: calculates the edge length from a given tree for each elements present in the matrix. Each edge length is either measured between the element and the root of the tree (\code{to.root = TRUE} ; default) or between the element and its last ancestor (\code{to.root = FALSE}))
+  \item \code{edge.length.tree}: calculates the edge length from a given tree for each elements present in the matrix. Each edge length is either measured between the element and the root of the tree (\code{to.root = TRUE} ; default) or between the element and its last ancestor (\code{to.root = FALSE}))
 
 
   \item \code{neighbours}: calculates the distance to a neighbour (Foote 1990). By default this is the distance to the nearest neighbour (\code{which = min}) but can be set to any dimension level - 1 function (e.g. \code{which = mean} gives the distance to the most average neighbour). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
@@ -111,16 +111,16 @@ The currently implemented dimension-level 2 metrics are:
 By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
 
-  \item \code{projections.phy}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
+  \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
      \itemize{
-         \item \code{"root"}: the root of the tree (the first element in phy$node.label);
+         \item \code{"root"}: the root of the tree (the first element in tree$node.label);
          \item \code{"ancestor"}: the element's most recent ancestor;
          \item \code{"tips"}: the centroid of the tips;
          \item \code{"nodes"}: the centroid of all the nodes;
          \item \code{"livings"}: the centroid of the tips the furthest from the root;
          \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
-         \item or a user defined function that with the inputs \code{matrix} and \code{phy} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
+         \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
      }
 
   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
@@ -277,7 +277,7 @@ projections(dummy_matrix, measure = "distance",
             point1 = dummy_matrix[3, ],
             point2 = 1)
 
-## projections.phy
+## projections.tree
 ## Making a dummy tree with node labels
 dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
 ## Naming the elements in the matrix
@@ -286,21 +286,21 @@ rownames(named_matrix) <- c(dummy_tree$tip.label,
                             dummy_tree$node.label)
 ## The projection on the vector defined from the root of
 ## the tree to the ancestor of each element in the matrix
-projections.phy(named_matrix, dummy_tree,
+projections.tree(named_matrix, dummy_tree,
                   type = c("root", "ancestor"))
 ## The rejection from the vector defined from the centroid
 ## of the nodes to the centroids of the tips
-projections.phy(named_matrix, dummy_tree,
+projections.tree(named_matrix, dummy_tree,
                   type = c("nodes", "tips"),
                   measure = "distance")
 ## A user function that define coordinates based on the 
 ## centroid of the three first nodes
-user.fun <- function(matrix, phy, row = NULL) {
-     return(colMeans(matrix[phy$node.label[1:3], ]))
+user.fun <- function(matrix, tree, row = NULL) {
+     return(colMeans(matrix[tree$node.label[1:3], ]))
 }
 ## The projection on the vector defined by the coordinates
 ## 0,0,0 and a user defined function
-projections.phy(named_matrix, dummy_tree,
+projections.tree(named_matrix, dummy_tree,
                   type = c(0, user.fun))
 
 ## quantiles

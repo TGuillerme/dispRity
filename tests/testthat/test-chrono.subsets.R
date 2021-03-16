@@ -325,7 +325,7 @@ test_that("Output format is correct", {
     ## Names
     expect_equal(
         names(out_test)
-        , c("matrix", "phy", "call", "subsets")
+        , c("matrix", "tree", "call", "subsets")
         )
 })
 
@@ -431,8 +431,8 @@ test_that("chrono.subsets works without tree", {
     }
 
     ## Tree is saved accordingly
-    expect_null(no_tree$phy[[1]])
-    expect_is(with_tree$phy[[1]], "phylo")
+    expect_null(no_tree$tree[[1]])
+    expect_is(with_tree$tree[[1]], "phylo")
 })
 
 test_that("t0 works", {
@@ -562,7 +562,7 @@ test_that("chrono.subsets works with multiPhylo", {
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
 
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("matrix", "phy", "call", "subsets"))
+    expect_equal(names(test), c("matrix", "tree", "call", "subsets"))
     expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
@@ -579,9 +579,9 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
 
     ## The output saves the tree
-    expect_is(test$phy, "multiPhylo")
-    expect_equal(test$phy[[1]]$edge.length, tree[[1]]$edge.length)
-    expect_equal(test$phy[[2]]$edge.length, tree[[2]]$edge.length)
+    expect_is(test$tree, "multiPhylo")
+    expect_equal(test$tree[[1]]$edge.length, tree[[1]]$edge.length)
+    expect_equal(test$tree[[2]]$edge.length, tree[[2]]$edge.length)
 
 })
 
@@ -636,10 +636,10 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
 
     ## The output saves the tree
-    expect_is(test$phy, "multiPhylo")
-    expect_equal(test$phy[[1]]$edge.length, trees[[1]]$edge.length)
-    expect_equal(test$phy[[2]]$edge.length, trees[[2]]$edge.length)
-    expect_equal(test$phy[[3]]$edge.length, trees[[3]]$edge.length)
+    expect_is(test$tree, "multiPhylo")
+    expect_equal(test$tree[[1]]$edge.length, trees[[1]]$edge.length)
+    expect_equal(test$tree[[2]]$edge.length, trees[[2]]$edge.length)
+    expect_equal(test$tree[[3]]$edge.length, trees[[3]]$edge.length)
 
 })
 

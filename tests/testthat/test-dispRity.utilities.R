@@ -105,10 +105,10 @@ test_that("make.matrix", {
         test1$subsets
         ,"list")
     expect_is(
-        test1$phy
+        test1$tree
         ,"list")
     expect_equal(
-        test1$phy[[1]]
+        test1$tree[[1]]
         ,NULL)
 
     data_test <- matrix(rnorm(12), ncol = 3)
@@ -134,10 +134,10 @@ test_that("make.matrix", {
         length(unlist(test2))
         , 12)
     expect_is(
-        test1$phy
+        test1$tree
         ,"list")
     expect_equal(
-        test1$phy[[1]]
+        test1$tree[[1]]
         ,NULL)
 
     test3 <- make.dispRity(data = list(data_test))
@@ -166,19 +166,19 @@ test_that("make.matrix", {
         length(unlist(test4))
         , 24)
 
-    test5 <- make.dispRity(data = data_test, phy = rtree(5))
+    test5 <- make.dispRity(data = data_test, tree = rtree(5))
     expect_is(
-        test5$phy
+        test5$tree
         ,"multiPhylo")
     expect_is(
-        test5$phy[[1]]
+        test5$tree[[1]]
         ,"phylo")    
-    test6 <- make.dispRity(data = data_test, phy = rmtree(5, 5))
+    test6 <- make.dispRity(data = data_test, tree = rmtree(5, 5))
     expect_is(
-        test6$phy
+        test6$tree
         ,"multiPhylo")
     expect_is(
-        test6$phy[[1]]
+        test6$tree[[1]]
         ,"phylo")    
 })
 
@@ -228,65 +228,65 @@ test_that("fill.dispRity", {
     ## Filling trees
 
     ## One tree one data
-    phy <- makeNodeLabel(rtree(5))
+    tree <- makeNodeLabel(rtree(5))
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
-    test <- fill.dispRity(make.dispRity(data = data, phy = phy))
+    test <- fill.dispRity(make.dispRity(data = data, tree = tree))
 
     ## Basic works
     expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
     expect_equal(length(test$matrix), 1)
 
     ## Multiple tree one data
-    phy <- makeNodeLabel(rtree(5))
-    phy <- list(phy, phy)
-    class(phy) <- "multiPhylo"
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
-    test <- fill.dispRity(make.dispRity(data = data, phy = phy))
+    test <- fill.dispRity(make.dispRity(data = data, tree = tree))
 
     ## multiple trees works
     expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 2)
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 2)
     expect_equal(length(test$matrix), 1)
 
     ## One tree multiple data
-    phy <- makeNodeLabel(rtree(5))
+    tree <- makeNodeLabel(rtree(5))
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
-    test <- fill.dispRity(make.dispRity(data = list(data, data), phy = phy))
+    test <- fill.dispRity(make.dispRity(data = list(data, data), tree = tree))
 
     ## One tree multiple data works
     expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
     expect_equal(length(test$matrix), 2)
 
     ## multiple tree multiple data
-    phy <- makeNodeLabel(rtree(5))
-    phy <- list(phy, phy)
-    class(phy) <- "multiPhylo"
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
 
     ## multiple tree multiple data works
-    test <- fill.dispRity(phy = phy, data = make.dispRity(data = list(data, data)))
+    test <- fill.dispRity(tree = tree, data = make.dispRity(data = list(data, data)))
     expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 2)
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 2)
     expect_equal(length(test$matrix), 2)
 
     ## Also works with just tips
     my_tree <- rtree(6)
     my_data <- matrix(0, ncol = 2, nrow = 6, dimnames = list(c(my_tree$tip.label)))
-    test <- fill.dispRity(phy = my_tree, data = make.dispRity(my_data))
+    test <- fill.dispRity(tree = my_tree, data = make.dispRity(my_data))
     expect_is(test, "dispRity")
-    expect_is(test$phy, "multiPhylo")
-    expect_is(test$phy[[1]], "phylo")
-    expect_equal(length(test$phy), 1)
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
     expect_equal(length(test$matrix), 1)
 })
 
@@ -429,7 +429,7 @@ test_that("extract.dispRity", {
         ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
-        ,4.15871)
+        ,4.09234)
 
     test <- extract.dispRity(data, observed = FALSE)
     expect_is(
@@ -692,15 +692,15 @@ test_that("tree utilities works", {
     data(BeckLee_mat99)
     disparity <- dispRity(BeckLee_mat99, metric = mean)
     data(BeckLee_tree)
-    expect_null(disparity$phy[[1]])
-    disparitree <- add.phy(phy = BeckLee_tree, data = disparity)
-    disparitree2 <- add.phy(phy = c(BeckLee_tree, BeckLee_tree, BeckLee_tree), data = disparity)
-    expect_is(disparitree$phy, "multiPhylo")
-    expect_is(disparitree2$phy, "multiPhylo")
-    tree <- get.phy(disparitree)
+    expect_null(disparity$tree[[1]])
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparity)
+    disparitree2 <- add.tree(tree = c(BeckLee_tree, BeckLee_tree, BeckLee_tree), data = disparity)
+    expect_is(disparitree$tree, "multiPhylo")
+    expect_is(disparitree2$tree, "multiPhylo")
+    tree <- get.tree(disparitree)
     expect_is(tree, "phylo")
-    tree <- get.phy(disparitree2)
+    tree <- get.tree(disparitree2)
     expect_is(tree, "multiPhylo")
-    expect_null(remove.phy(disparitree)$phy[[1]])
-    expect_null(remove.phy(disparitree2)$phy[[1]])
+    expect_null(remove.tree(disparitree)$tree[[1]])
+    expect_null(remove.tree(disparitree2)$tree[[1]])
 })

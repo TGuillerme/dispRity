@@ -194,18 +194,18 @@ check.dispRity.data <- function(data) {
 }
 
 ## Checks whether the tree is in the correct format
-check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
+check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
     
     ## Check class
-    phy_class <- check.class(phy, c("phylo", "multiPhylo"))
+    tree_class <- check.class(tree, c("phylo", "multiPhylo"))
     ## Convert into a list (not multiPhylo if it's a single tree)
-    if(phy_class == "phylo") {
-        phy <- list(phy)
-        class(phy) <- "multiPhylo"
+    if(tree_class == "phylo") {
+        tree <- list(tree)
+        class(tree) <- "multiPhylo"
     }
 
     ## Inc.nodes toggle
-    inc.nodes <- unique(unlist(lapply(phy, function(x) !is.null(x$node.label))))
+    inc.nodes <- unique(unlist(lapply(tree, function(x) !is.null(x$node.label))))
     if(length(inc.nodes) > 1) {
         stop("All trees should have node labels or no node labels.", call. = FALSE)
     }
@@ -222,12 +222,12 @@ check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
         ## Match the data and the trees?
         pass.fun <- function(cleaned) return(!all(is.na(cleaned$dropped_tips), is.na(cleaned$dropped_rows)))
         if(!bind.trees) {
-            cleanings <- lapply(data$matrix, clean.data, phy, inc.nodes = inc.nodes)
+            cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
         } else {
-            if(length(phy) != length(data$matrix)) {
+            if(length(tree) != length(data$matrix)) {
                 stop("The number of matrices and trees must be the same to bind them.", call. = FALSE)
             }
-            cleanings <- mapply(cleand.data, data$matrix, phy, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+            cleanings <- mapply(cleand.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
         }
         if(any(not_pass <- unlist(lapply(cleanings, pass.fun)))) {
             ## Stop!
@@ -235,5 +235,5 @@ check.dispRity.phy <- function(phy, data, bind.trees = FALSE) {
         }
     }
 
-    return(phy)
+    return(tree)
 }

@@ -207,7 +207,7 @@ custom.subsets <- function(data, group, tree) {
     ## Attach the tree
     if(group_class == "phylo" || !missing(tree)) {
         ## Output as a dispRity object (with tree)
-        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list, phy = tree))
+        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list, tree = tree))
     } else {
         ## Output as a dispRity object
         return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list))
