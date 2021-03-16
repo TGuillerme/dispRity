@@ -13,7 +13,6 @@
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
-#' @param attach.phy Logical, whether to attach the \code{tree} argument to the output (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
 #' 
 #' 
@@ -117,9 +116,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## TREE (1)
     ## tree must be a phylo object
-
-    ## TODO: if tree is missing but object has tree, then use that tree
-
     if(!missing(tree)) {
         tree_class <- check.class(tree, c("phylo", "multiPhylo"))
         is_multiPhylo <- ifelse(tree_class == "multiPhylo", TRUE, FALSE)

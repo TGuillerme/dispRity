@@ -4,7 +4,7 @@ Change the structure in:
  - [x] make.dispRity
  - [x] clean.data (inc.nodes option)
  - [x] fill.dispRity 
- - [ ] chrono.subsets
+ - [x] chrono.subsets
  - [ ] custom.subsets
  - [ ] dispRity
  - [ ] make.metric
@@ -16,7 +16,7 @@ Change the structure in:
     - [ ] tree networks if multiple trees?
  - [ ] Update dispRity.utilities
  - [x] Add utilities get.phy and add.phy and remove.phy
- - [ ] Update the data using make.demo.data
+ - [x] Update the data using make.demo.data
  - [ ] Update the manual
     - [ ] get.tree entry
     - [ ] phy as a part of dispRity entry
