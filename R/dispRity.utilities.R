@@ -47,7 +47,9 @@ make.dispRity <- function(data, phy, call, subsets) {
         if(class_phy == "multiPhylo") {
             dispRity_object$phy <- phy
         } else {
-            dispRity_object$phy <- list(phy)
+            phy <- list(phy)
+            class(phy) <- "multiPhylo"
+            dispRity_object$phy <- phy
         }
     }
 

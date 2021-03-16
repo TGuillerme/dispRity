@@ -169,7 +169,7 @@ test_that("make.matrix", {
     test5 <- make.dispRity(data = data_test, phy = rtree(5))
     expect_is(
         test5$phy
-        ,"list")
+        ,"multiPhylo")
     expect_is(
         test5$phy[[1]]
         ,"phylo")    
@@ -234,7 +234,7 @@ test_that("fill.dispRity", {
 
     ## Basic works
     expect_is(test, "dispRity")
-    expect_is(test$phy, "list")
+    expect_is(test$phy, "multiPhylo")
     expect_is(test$phy[[1]], "phylo")
     expect_equal(length(test$phy), 1)
     expect_equal(length(test$matrix), 1)
@@ -260,7 +260,7 @@ test_that("fill.dispRity", {
 
     ## One tree multiple data works
     expect_is(test, "dispRity")
-    expect_is(test$phy, "list")
+    expect_is(test$phy, "multiPhylo")
     expect_is(test$phy[[1]], "phylo")
     expect_equal(length(test$phy), 1)
     expect_equal(length(test$matrix), 2)

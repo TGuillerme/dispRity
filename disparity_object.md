@@ -9,6 +9,12 @@ object
 	|   |
 	|   \---[[...]] = class:"matrix" (any additional matrices)
 	|
+	\---$phy* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
+	|	|
+	|	\---[[1]] = class:"phylo" (the first tree)
+	|   |
+	|   \---[[...]] = class:"phylo" (any additional trees)	
+	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|
 	|	\---$subsets = class:"character"
@@ -25,11 +31,6 @@ object
 	|		|
 	|		\---$arg = class:"list"
 	|
-	\---$phy* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
-	|	|
-	|	\---[[1]] = class:"phylo" (the first tree)
-	|   |
-	|   \---[[...]] = class:"phylo" (any additional trees)	
 	|
 	\---$subsets* = class:"list" (subsets as a list)
 	|	|
