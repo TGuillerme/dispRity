@@ -809,10 +809,10 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
 add.phy <- function(data, phy) {
     ## Add the tree
-    if(is.null(data$phy)) {
+    if(is.null(data$phy[[1]])) {
         data$phy <- check.dispRity.phy(phy = phy, data = data)
     } else {
-        data$phy <- check.dispRity.phy(phy = c(get.tree(data$phy), phy), data = data)
+        data$phy <- check.dispRity.phy(phy = c(get.phy(data$phy), phy), data = data)
     }
     return(data)
 }
