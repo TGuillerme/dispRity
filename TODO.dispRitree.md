@@ -5,33 +5,42 @@ Change the structure in:
  - [x] clean.data (inc.nodes option)
  - [x] fill.dispRity 
  - [x] chrono.subsets
- - [ ] custom.subsets
+ - [x] custom.subsets
+ - [x] make.metric
  - [ ] dispRity
- - [ ] make.metric
  - [ ] Update metrics
-    - [ ] dispRity.metric.R/phylo.projections
+    - [x] dispRity.metric.R/projections.tree (phylo.projections)
     - [ ] dispRity.metric.R/ancestral.dist
- - [ ] print.dispRity
+    - [x] dispRity.metric.R/edge.length.tree 
+ - [x] print.dispRity
  - [ ] plot.dispRity 
     - [ ] tree networks if multiple trees?
  - [ ] Update dispRity.utilities
- - [x] Add utilities get.phy and add.phy and remove.phy
+ - [x] Add utilities get.tree and add.tree and remove.tree
  - [x] Update the data using make.demo.data
  - [ ] Update the manual
     - [ ] get.tree entry
-    - [ ] phy as a part of dispRity entry
+    - [ ] tree as a part of dispRity entry
  - [ ] Update dtt.dispRity
  - [ ] Update dispRity.wrapper
+
+ - [ ] Update (fix?) `group.dist` to use `get.rotation.matrix`
+ - [ ] Update (fix?) `deviations` to use `get.rotation.matrix`
+
 
 
 # NEWS
 
 # New features
- * `dispRity` objects now have a reserved `$phy` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `phy` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `phy` component of the `dispRity` object, you can now use the new utility functions `add.phy`, `get.phy` and `remove.phy`.
+ * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
+ * ... `projections`
+ * *New* metric: `projections.tree` that allows to measure elements' projection on axis between elements of a given tree.
+ * *New* metric: `edge.length.tree` the edge length from each element given a tree (with the option `to.root = TRUE/FALSE` to measure the edge length from the element to the root of the tree (default = TRUE) or the nearest ancestor (FALSE).
+
 
 # Minor improvements
  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
-
+ * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
 
 
 
@@ -44,6 +53,6 @@ Change the structure in:
 ## Adding phylogenies to `dispRity` objects (*dispRitree!*)
 
 If phylogeny is going to be an important part of your disparity analyses, you can attach a tree or a list of trees (classes `"phylo"` or `"multiPhylo"`) to your `dispRity` object.
-These trees will then be fixed and used where possible throughout your analyses (e.g. when using `chrono.subsets` or disparity metrics based using the argument `phy`).
+These trees will then be fixed and used where possible throughout your analyses (e.g. when using `chrono.subsets` or disparity metrics based using the argument `tree`).
 You can attach trees in different ways, either voluntarily (using @@@) or throughout your analyses through specific functions (@@@).
 The tree labels must match the rownames in the data. If the tree has only tip labels, then only these need to be matched, if the tree or the data also has node labels, they must match as well.

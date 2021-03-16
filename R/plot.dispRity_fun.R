@@ -893,7 +893,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
         ## Check the central tendency
         check.class(cent.tend, "function")
         ## The function must work
-        if(make.metric(cent.tend, silent = TRUE) != "level1") {
+        if(make.metric(cent.tend, silent = TRUE)$type != "level1") {
             stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
         }
 

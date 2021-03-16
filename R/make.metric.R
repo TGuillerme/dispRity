@@ -7,6 +7,7 @@
 #' @param silent \code{logical}; if \code{FALSE} (default), the function will be verbose and give no output; if \code{TRUE}, the function will only output the function's dimension-level.
 #' @param check.between.groups \code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used between groups or not. If \code{FALSE} (default) the function only outputs the metric level.
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
+#' @param tree optional, a \code{phylo} object.
 #'
 #' @details
 #' This function tests:
@@ -49,9 +50,7 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 #'
 #' @author Thomas Guillerme
-
-
-make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim) {
+make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL) {
     ## Sanitizing
     ## fun
     check.class(fun, "function")
@@ -61,48 +60,61 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     ## Getting the function name
     match_call <- match.call()
 
-    ## Special case if function is deviations
-    if(!missing(data.dim)) {
-        matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
-        matrix_test <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
-    } else {
-        ## making the testing matrix
-        matrix <- matrix(rnorm(20), 5,4)
-        matrix_text <- "matrix(rnorm(20), 5,4)"
+    ## Building the matrix
+    if(missing(data.dim)) {
+        data.dim <- c(5, 4)
     }
+    matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
+    matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
+
 
     ## Testing the metric
     test <- NULL
     op <- options(warn = -1)
 
-    ## Detecting a between.groups arguments
-    is_between.groups <- FALSE
+    ## Get the metric arguments
     arguments <- names(formals(fun))
-    if(length(arguments) > 1) {
-        if(arguments[1] == "matrix" && arguments[2] == "matrix2") {
-            is_between.groups <- TRUE
-        }
-    }
+
+    ## Detecting a between.groups and phylo arguments
+    is_between.groups <- all(c("matrix", "matrix2") %in% arguments)
+    is_phylo <- "tree" %in% arguments
 
     ## Skip the dots if the dots has a tree argument
-    if(!is.null(names(dots)) && ("tree" %in% names(dots) || "phy" %in% names(dots))) {
-        if(is_between.groups) {
-            test <- try(test <- fun(matrix = matrix, matrix2 = matrix), silent = TRUE)
-        } else {
-            test <- try(test <- fun(matrix), silent = TRUE)
-        }
-    } else {
+    if(!is_phylo) {
+        ## Test the metric
         if(is_between.groups) {
             test <- try(fun(matrix = matrix, matrix2 = matrix, ...), silent = TRUE)
         } else {
             test <- try(fun(matrix, ...), silent = TRUE)
         }
+    } else {
+        ## Build a dummy tree to match the data
+        tree <- makeNodeLabel(rcoal(nrow(matrix)/2+1))
+        ## Adjust the row numbers in the matrix if needed
+        if((diff <- (Ntip(tree) + Nnode(tree)) - nrow(matrix)) != 0) {
+            if(diff < 0) {
+                ## Remove a row
+                matrix <- matrix[diff,]
+            } else {
+                ## Add a number of rows (usually 1!)
+                matrix <- rbind(matrix, matrix(rnorm(data.dim[2]*diff), nrow = diff))
+            }
+        }
+        ## Add the rownames to the matrix to match the tree
+        rownames(matrix) <- c(tree$tip.label, tree$node.label)
+        ## Test the metric
+        if(is_between.groups) {
+            test <- try(fun(matrix = matrix, matrix2 = matrix, tree = tree, ...), silent = TRUE)
+        } else {
+            test <- try(fun(matrix, tree = tree, ...), silent = TRUE)
+        }        
     }
     options(op)
 
+
     if(any("try-error" %in% test) || any(is.na(test))) {
         if(!silent) {
-            stop.call(match_call$fun, paste0("(", matrix_text, ")\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
+            stop.call(match_call$fun, paste0("(", matrix_text, ")\nThe problem may also come from the optional arguments (...)", ifelse(is_phylo, " or the tree", " "), " in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
         }
     } else {
 
@@ -149,9 +161,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     if(silent == TRUE) {
         if(check.between.groups) {
-            return(list("type" = fun_type, "between.groups" = is_between.groups))
+            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo))
         } else {
-            return(fun_type)
+            return(list("type" = fun_type, "tree" = is_phylo))
         }
     } else {
         return(invisible())
