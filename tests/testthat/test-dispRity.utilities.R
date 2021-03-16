@@ -37,7 +37,7 @@ test_that("utilities internal: merge.two.subsets", {
     test <- merge.two.subsets(1,2, data)
 
     expect_is(test, "dispRity")
-    expect_equal(length(test), 4)
+    expect_equal(length(test), 5)
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets),length(data$subsets)-1)
     expect_equal(names(test$subsets)[1], paste(names(data$subsets)[1:2], collapse = "-"))
@@ -429,7 +429,7 @@ test_that("extract.dispRity", {
         ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
-        ,8.60986)
+        ,4.15871)
 
     test <- extract.dispRity(data, observed = FALSE)
     expect_is(
@@ -689,9 +689,10 @@ test_that("n.subset works", {
 })
 
 test_that("tree utilities works", {
-    data(disparity)
+    data(BeckLee_mat99)
+    disparity <- dispRity(BeckLee_mat99, metric = mean)
     data(BeckLee_tree)
-    expect_null(disparity$phy)
+    expect_null(disparity$phy[[1]])
     disparitree <- add.phy(phy = BeckLee_tree, data = disparity)
     disparitree2 <- add.phy(phy = c(BeckLee_tree, BeckLee_tree, BeckLee_tree), data = disparity)
     expect_is(disparitree$phy, "multiPhylo")

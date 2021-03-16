@@ -607,11 +607,11 @@ test_that("chrono.subsets works with multiple matrices", {
     test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
     expect_is(test, "dispRity")
     test_print <- capture_output(print(test))
-    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices and 1 phylogenetic tree\n    5, 2.5, 0.")
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices with 1 phylogenetic tree\n    5, 2.5, 0.")
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
     expect_is(test, "dispRity")
     test_print <- capture_output(print(test))
-    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix and 3 phylogenetic trees\n    5, 2.5, 0.")
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix with 3 phylogenetic trees\n    5, 2.5, 0.")
 
 
     matrices_wrong1 <- matrices_wrong2 <- matrices
@@ -813,8 +813,4 @@ test_that("infinite loop blocker for get.percent.age", {
     ## custom subsets
     error <- capture_error(chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran"))
     expect_equal(error[[1]], "Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.")
-})
-
-test_that("works with inherited trees", {
-    
 })

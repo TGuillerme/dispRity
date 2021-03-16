@@ -28,7 +28,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements in one matrix:",
+        "2 discrete time subsets for 50 elements in one matrix with 1 phylogenetic tree",
         "    100 - 90, 90 - 50."
     ))
 
@@ -37,7 +37,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements in one matrix:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix with 1 phylogenetic tree",
         "     100, 90, 80, 70, 50 ..."
     ))
 
@@ -67,7 +67,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements in one matrix with 48 dimensions:",
+        "2 discrete time subsets for 50 elements in one matrix with 48 dimensions with 1 phylogenetic tree",
         "    100 - 90, 90 - 50.",
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
@@ -87,7 +87,7 @@ test_that("normal printing", {
     expect_equal(capture.output(disparity), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree",
         "     90, 80, 70, 60, 50 ...",
         "Data was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
         "Disparity was calculated as: c(median, centroids)."

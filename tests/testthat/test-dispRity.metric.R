@@ -504,24 +504,6 @@ test_that("neighbours", {
         )
 })
 
-test_that("neighbours", {
-    set.seed(1)
-    matrix <- matrix(rnorm(50), 5, 10)
-    
-    ## Default behaviour
-    expect_equal(
-        round(neighbours(matrix), digits = 5),
-        round(c(2.63603, 2.31036, 2.58740, 4.00868, 2.31036), digits = 5)
-        )
-    expect_equal(
-        round(neighbours(matrix, method = "manhattan"), digits = 5),
-        round(c(6.14827, 6.14827, 7.44352, 9.98804, 6.40357), digits = 5)
-        )
-    expect_equal(
-        round(neighbours(matrix, which = max), digits = 5),
-        round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
-        )
-})
 
 test_that("func.eve", {
     set.seed(1)
@@ -778,7 +760,7 @@ test_that("point.dist", {
     data(BeckLee_mat99)
     test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
     test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
-    expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
+    expect_equal(summary(test2)$obs.median, c(1.886, 1.792, 1.842, 1.959, 1.847, 1.942, 2.021, 1.904, 2.089))
 })
 
 test_that("projections", {
