@@ -876,7 +876,7 @@ test_that("edge.length.tree works", {
     expect_equal(edge.length.tree(matrix2, tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5))
     expect_equal(edge.length.tree(matrix2[c(1,3,5,7,10),], tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5)[c(1,3,5,7,10)])
     expect_equal(edge.length.tree(matrix1, tree, to.root = FALSE), rep(1, 7))
-    expect_equal(edge.length.tree(matrix2, tree, to.root = FALSE), rep(1, 7+6))
+    expect_equal(edge.length.tree(matrix2, tree, to.root = FALSE), c(rep(1, 7), 0, rep(1,5)))
     expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,1))
     tree$edge.length[c(3,7)] <- 10
     expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,10))

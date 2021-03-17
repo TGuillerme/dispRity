@@ -451,7 +451,7 @@ neighbours <- function(matrix, which = min, method = "euclidean") {
 
 
 ## Calculate the mode of a vector
-mode.val <- function(matrix){
+mode.val <- function(matrix, ...){
     return(as.numeric(names(sort(-table(matrix))[1])))
 }
 
@@ -739,11 +739,12 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
 edge.length.tree <- function(matrix, tree, to.root = TRUE) {
     if(to.root) {
         ## Get the distances to the root
-        return(castor::get_all_distances_to_root(tree)[c(tree$tip.label, tree$node.label) %in% rownames(matrix)])
+        out <- castor::get_all_distances_to_root(tree)[match(rownames(matrix), c(tree$tip.label, tree$node.label))]
     } else {
         ## Get just the edge length
-        return(tree$edge.length[tree$edge[,2] %in% match(rownames(matrix), c(tree$tip.label, tree$node.label))])
+        out <- tree$edge.length[match(match(rownames(matrix), c(tree$tip.label, tree$node.label)), tree$edge[,2])]
     }
+    return(ifelse(is.na(out),0, out))
 }
 
 ## Functions for the group.distance function
