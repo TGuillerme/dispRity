@@ -724,24 +724,44 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 
 test_that("dispRity works with the tree component", {
 
-    # ## A ladderized tree
-    # tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
-    # tree$edge.length <- rep(1, 7+6)
-    # tree$node.label <- letters[1:6]
-    # ## An empty matrix (with the right elements)
-    # matrix <- matrix(NA, nrow = 7+6, ncol = 2)
-    # rownames(matrix) <- c(tree$tip.label, tree$node.label)
+    ## A ladderized tree
+    tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
+    tree$edge.length <- rep(1, 7+6)
+    tree$node.label <- letters[1:6]
+    ## An empty matrix (with the right elements)
+    matrix <- matrix(rnorm((7+6)*2), nrow = 7+6, ncol = 2)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
 
-    # ## Simple test
-    # test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
-    # expect_equal(test$disparity[[1]], edge.length.tree(matrix, tree))
+    ## Simple test
+    test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix, tree))
+    test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix, tree))
 
-    # ## Test from previous metric
-    # mean.edge.length.tree <- function(matrix, tree) {
-    #     mean(edge.length.tree(matrix, tree))
-    # }
-    # data <- dispRity(data = matrix, metric = centroids)
-    # test <- dispRity(data = data, metric = mean.edge.length.tree, tree = tree)
+    ## Simple test with custom subsets
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]))
+    test <- dispRity(data = data, metric = edge.length.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix[LETTERS[1:5], ], tree))
+    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
+
+    ## Simple test with custom subsets and bootstraps
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]))
+    test <- dispRity(data = boot.matrix(data, rarefaction = 4), metric = edge.length.tree, tree = tree)
+    expect_null(plot(test))
+
+    ## Test from previous metric
+    ntips <- function(matrix, tree) {
+        Ntip(tree)
+    }
+    data <- dispRity(data = matrix, metric = centroids)
+    expect_equal(sort(data$disparity[[1]][[1]]), unname(sort(centroids(matrix))))
+    # test <- dispRity(data = data, metric = ntips, tree = tree)
+
+    ## Works with multiple matrices and single tree
+
+    ## Works with multiple trees and single matrix
+
+    ## Works with multiple matrices and trees
 
     # ## From inherited tree
     # data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)

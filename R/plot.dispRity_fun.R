@@ -20,11 +20,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     ## Set up the plotting data
     ## Summarise the data
     if(is.null(data_params$model.sim)) {
-        if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        # if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        #     summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+        # } else {
             summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
-        } else {
-            summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
-        }
+        # }
     } else {
         summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
         ## Making a fake obs column

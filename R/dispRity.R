@@ -136,6 +136,11 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(is.null(data$matrix[[1]])) {
             stop.call(match_call$data, " must contain a matrix or a list of matrices.")
         }
+        ## Adding tree (if possible)
+        if(!is.null(tree)) {
+            data <- add.tree(data, tree = check.dispRity.tree(tree, data = data))
+        }
+
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
             data$call$dimensions <- ncol(data$matrix[[1]])
