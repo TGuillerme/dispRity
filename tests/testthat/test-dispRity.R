@@ -732,8 +732,9 @@ test_that("dispRity works with the tree component", {
     # matrix <- matrix(NA, nrow = 7+6, ncol = 2)
     # rownames(matrix) <- c(tree$tip.label, tree$node.label)
 
-    ## Simple test
+    # ## Simple test
     # test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
+    # expect_equal(test$disparity[[1]], edge.length.tree(matrix, tree))
 
     # ## Test from previous metric
     # mean.edge.length.tree <- function(matrix, tree) {

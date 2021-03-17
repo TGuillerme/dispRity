@@ -10,7 +10,8 @@ dispRity(
   dimensions,
   ...,
   between.groups = FALSE,
-  verbose = FALSE
+  verbose = FALSE,
+  tree = NULL
 )
 }
 \arguments{
@@ -26,7 +27,7 @@ dispRity(
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
-\item{phy}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.}
+\item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.}
 }
 \value{
 This function outputs a \code{dispRity} object containing:

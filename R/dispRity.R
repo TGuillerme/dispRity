@@ -116,6 +116,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## ----------------------
     
     ## Saving the call
+
     match_call <- match.call()
     dots <- list(...)
 
@@ -145,7 +146,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
-    # metric_is_tree <- unlist(metrics_list$tree)
+    metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
 
     ## Stop if data already contains disparity and metric is not level1
@@ -352,7 +353,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...), #metric_is_tree
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
                             SIMPLIFY = FALSE)
         # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
@@ -363,7 +364,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...) #metric_is_tree
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
 
         #TG: Note for understanding the disparity lapply routine:
         # The lapply_loop ("list") contains the row names to analyse for each subsest (in one + n matrices: the observed one and the bootstrapped/rarefied ones)
