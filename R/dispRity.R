@@ -5,10 +5,11 @@
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
-#' @param phy \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
+
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
@@ -109,7 +110,7 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
-dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE){#, parallel) {
+dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -122,7 +123,13 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Check data input
     if(!is(data, "dispRity")) {
-        data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+        ## Adding the tree
+        if(!is.null(tree)) {
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
+        } else {
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+            # data <- fill.dispRity(make.dispRity(data = data))
+        }
     } else {
         ## Making sure matrix exist
         if(is.null(data$matrix[[1]])) {
@@ -135,9 +142,10 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
+    # metric_is_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
 
     ## Stop if data already contains disparity and metric is not level1
@@ -344,7 +352,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...), #metric_is_tree
                             SIMPLIFY = FALSE)
         # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
@@ -355,8 +363,11 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...) #metric_is_tree
 
+        #TG: Note for understanding the disparity lapply routine:
+        # The lapply_loop ("list") contains the row names to analyse for each subsest (in one + n matrices: the observed one and the bootstrapped/rarefied ones)
+        # The lapply_loop is fed to lapply.wrapper that controls
     }
 
     # }
