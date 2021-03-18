@@ -103,6 +103,10 @@ get.row.col <- function(x, row, col = NULL) {
 
 
 ## Applying the function to one matrix (or two if nrow is not null)
+# one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
+# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
     if(is.null(nrow)) {
         ## Normal decompose
@@ -117,6 +121,11 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
     }
 }
 ## Same as decompose but including the tree argument
+# one_matrix <- matrices[[1]] ; warning("DEBUG: dispRity_fun")
+# one_tree <- trees[[1]] ; warning("DEBUG: dispRity_fun")
+# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+# dimensions <- 1:data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, ...) {
     if(is.null(nrow)) {
         ## Normal decompose
@@ -132,6 +141,7 @@ decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nro
 }
 
 ## Calculates disparity from a bootstrap table
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
 decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, ...) {
 
     ## Return NA if no data
@@ -209,7 +219,10 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
     }
 }
 
-## Calculating the disparity for a bootstrap matrix 
+## Calculating the disparity for a bootstrap matrix
+# one_subsets_bootstrap <- lapply_loop[[1]][[1]] ; warning("DEBUG: dispRity_fun")
+# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
+# one_subsets_bootstrap <- subsets[[1]] ; warning("DEBUG: dispRity_fun")
 disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
@@ -261,6 +274,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 
 ## Lapply wrapper for disparity.bootstraps function
+# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps

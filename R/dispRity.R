@@ -116,10 +116,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## ----------------------
     
     ## Saving the call
-
     match_call <- match.call()
     dots <- list(...)
-
     # warning("DEBUG") ; return(match_call)
 
     ## Check data input
@@ -370,10 +368,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     } else {
         ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
-
-        #TG: Note for understanding the disparity lapply routine:
-        # The lapply_loop ("list") contains the row names to analyse for each subsest (in one + n matrices: the observed one and the bootstrapped/rarefied ones)
-        # The lapply_loop is fed to lapply.wrapper that controls
+        #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
     }
 
     # }
