@@ -136,6 +136,11 @@ expect_equal_round <- function(x, y, digits) {
     testthat::expect_equal(round(x, digits), round(y, digits))
 }
 
+## Function for automatically add rownames (used in both branches below)
+add.rownames <- function(x) {
+    rownames(x) <- seq(1:nrow(x))
+    return(x)
+}
 ## Checks whether the data is a matrix or a list
 check.dispRity.data <- function(data) {
     match_call <- match.call()
@@ -147,11 +152,7 @@ check.dispRity.data <- function(data) {
         data <- as.matrix(data)
     }
 
-    ## Function for automatically add rownames (used in both branches below)
-    add.rownames <- function(x) {
-        rownames(x) <- seq(1:nrow(x))
-        return(x)
-    }
+    ## Adding rownames
     row_warning <- paste0("Row names have been automatically added to ", as.expression(match_call$data), ".")
 
     ## Switch between cases
@@ -179,8 +180,9 @@ check.dispRity.data <- function(data) {
             if(length(check_rows) != all_dim[1]) {
                 stop.call(match_call$data, is_error)
             }
-            ## Sort the rownames
-            data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
+            ## Sort the rownames softly (i.e. in the order of the first matrix)
+            data <- lapply(data, function(x, order) x[order, , drop = FALSE], order = rownames(data[[1]]))
+            # data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
         }
     } else {
         ## Eventually add rownames

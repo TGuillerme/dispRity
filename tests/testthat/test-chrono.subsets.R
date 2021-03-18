@@ -630,7 +630,7 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_is(test$matrix, "list")
     expect_equal(length(test$matrix), 3)
     expect_is(test$matrix[[1]], "matrix")
-    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_equal(rownames(test$matrix[[1]]), rownames(matrices[[1]]))
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets), 3)
     expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
