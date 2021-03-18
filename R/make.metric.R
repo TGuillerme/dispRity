@@ -67,7 +67,6 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
     matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
 
-
     ## Testing the metric
     test <- NULL
     op <- options(warn = -1)
@@ -112,7 +111,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     options(op)
 
 
-    if(any("try-error" %in% test) || any(is.na(test))) {
+    if(any("try-error" %in% test)){#} || any(is.na(test))) {
         if(!silent) {
             stop.call(match_call$fun, paste0("(", matrix_text, ")\nThe problem may also come from the optional arguments (...)", ifelse(is_phylo, " or the tree", " "), " in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
         }
