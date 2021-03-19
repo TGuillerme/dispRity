@@ -87,6 +87,7 @@
 #'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
 #'          \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
 #'      }
+#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{full.matrix = my_matrix}.
 #' 
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
@@ -939,12 +940,12 @@ get.fossils <- function(matrix, tree, row = NULL) {
     return(colMeans(matrix[which(elements_depths != max(elements_depths)), , drop = FALSE]))
 }
 ## sapply wrapper for projections.tree
-sapply.projections <- function(row, matrix, tree, from, to, ...) {
-    return(projections(matrix[row, , drop = FALSE], point1 = from(matrix, tree, row), point2 = to(matrix, tree, row), ...))
+sapply.projections <- function(row, matrix, tree, from, to, full.matrix = matrix, ...) {
+    return(projections(matrix[row, , drop = FALSE], point1 = from(full.matrix, tree, row), point2 = to(full.matrix, tree, row), ...))
 }
 
 ## Projection of elements on an axis
-projections.tree <- function(matrix, tree, type = c("root","ancestor"), ...) {
+projections.tree <- function(matrix, tree, type = c("root","ancestor"), full.matrix = matrix, ...) {
  
     ## Tracking whether the from_to is invariable or not
     invariables <- c(FALSE, FALSE)
@@ -985,10 +986,10 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), ...) {
 
     if(all(invariables)) {
         ## Point1 and point2 are invariant
-        return(projections(matrix, point1 = from_to[[1]](matrix, tree), point2 = from_to[[2]](matrix, tree), ...))
+        return(projections(matrix, point1 = from_to[[1]](full.matrix, tree), point2 = from_to[[2]](full.matrix, tree), ...))
     } else {
         ## Apply the to and from to each row
-        return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, tree = tree, from = from_to[[1]], to = from_to[[2]], ...))
+        return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, tree = tree, from = from_to[[1]], to = from_to[[2]], full.matrix, ...))
     }
 }
 
