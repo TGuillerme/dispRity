@@ -709,11 +709,6 @@ plot.preview <- function(data, specific.args, ...) {
         plot_args$ylim <- plot_lim
     }
 
-    ## Setting the pch
-    if(is.null(plot_args$pch)) {
-        plot_args$pch <- 19
-    }
-
     ## Get the number of colour groups
     n_groups <- length(data$subsets)
     n_groups <- ifelse(n_groups == 0, 1, n_groups)
@@ -731,14 +726,24 @@ plot.preview <- function(data, specific.args, ...) {
         }
     }
 
-    ## Make a colour classifier
+    ## Setting the pch
+    if(is.null(plot_args$pch)) {
+        plot_args$pch <- 19
+    }
+    if(length(plot_args$pch) != n_groups) {
+        plot_args$pch <- rep(plot_args$pch, n_groups)
+    }
+
+    ## Make a colour and pch classifier
     col_order <- plot_args$col
+    pch_order <- plot_args$pch
     if(n_groups > 1) {
         classifier <- rep(NA, nrow(data$matrix[[specific.args$matrix]]))
         for(class in 1:n_groups) {
             classifier[data$subsets[[class]]$elements[,1]] <- class
         }
         plot_args$col <- plot_args$col[classifier]
+        plot_args$pch <- plot_args$pch[classifier]
     }
 
     ## Plot the results
@@ -756,7 +761,7 @@ plot.preview <- function(data, specific.args, ...) {
             legend_args$col <- col_order
         }
         if(is.null(legend_args$pch)) {
-            legend_args$pch <- plot_args$pch
+            legend_args$pch <- pch_order
         }
         if(is.null(legend_args$cex)) {
             legend_args$cex <- 0.666

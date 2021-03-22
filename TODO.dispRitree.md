@@ -12,10 +12,11 @@ Change the structure in:
     - [x] dispRity.metric.R/projections.tree (phylo.projections)
     - [ ] dispRity.metric.R/ancestral.dist
     - [x] dispRity.metric.R/edge.length.tree 
+    - [ ] add example for edge.length.tree + manual entry
  - [x] print.dispRity
  - [ ] plot.dispRity 
     - [ ] tree networks if multiple trees?
- - [ ] Update dispRity.utilities
+ - [x] Update dispRity.utilities
  - [x] Add utilities get.tree and add.tree and remove.tree
  - [x] Update the data using make.demo.data
  - [ ] Update the manual
@@ -27,7 +28,9 @@ Change the structure in:
  - [ ] Update (fix?) `group.dist` to use `get.rotation.matrix`
  - [ ] Update (fix?) `deviations` to use `get.rotation.matrix`
 
-
+ - [ ] Update dimensions (and `data$call$dimension` to be a vector of dimensions)
+        ## Minor
+        * The `dimensions` option throughout the package (e.g. in the `dispRity` function) can now also be a vector of dimensions to take into consideration (e.g. `c(1,2,5)`).
 
 # NEWS
 
@@ -41,7 +44,7 @@ Change the structure in:
 # Minor improvements
  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
  * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
-
+ * Fixed bug in `plot` using `preview` when the given argument `pch` did not match the number of groups (the different `pch` arguments are now used correctly).
 
 
 
