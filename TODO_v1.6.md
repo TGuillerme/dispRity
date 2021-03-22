@@ -13,18 +13,14 @@ TODO list for v1.6 **dispRitree**
    - [ ] `ancestral.dist` @dispRitree
    - [ ] `phylo.projection` @dispRitree
 
-Change `$phy` in:
-
- *
-
-
-
-
  * [ ] `make.dispRity` now automatically tries to "*compactify*" matrices if possible to create a much lighter footprint in R's memory (using the argument `compact = TRUE`). The "*compactification*" works by factoring rows in list of matrices that are invariant (e.g. when the tips are constant and the nodes are variable). @compactify
  * [x] new statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects. @master
     - [x] associated `print.dispRity.randtest`
     - [x] associated `summary.dispRity.randtest`
     - [x] associated `plot.dispRity.randtest`
+
+ * [ ] Handle compactify and tree in `plot.preview`: compactify makes blurry plots (each matrix is plotted with 1/n_matrices transparency); dispRitree makes blurry tree shapes in the background (1/n_trees transparency).
+
 
 # Update manual
  - [ ] `phylo.projections`
