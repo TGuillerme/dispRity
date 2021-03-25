@@ -662,6 +662,14 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
               mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
     )
 
+    ## Works with unpaired number of trees and matrices
+    test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+    test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+
     ## Works with recycling dispRity objects
     vars <- dispRity(test, metric = variances)
     sumvars <- dispRity(test, metric = c(sum, variances))
@@ -768,15 +776,39 @@ test_that("dispRity works with the tree component", {
     expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
 
     ## More complex metric test
-    # test <- dispRity(data = data, metric = projections.tree, full.matrix = matrix)
-    # expect_equal(c(test$disparity[[1]][[1]]), projections.tree(matrix[LETTERS[1:5], ], tree, full.matrix = matrix))
-    # expect_equal(c(test$disparity[[1]][[2]]), projections.tree(matrix[letters[1:5], ], tree, full.matrix = matrix))
+    test <- dispRity(data = data, metric = projections.tree)
+    expect_equal(c(test$disparity[[1]][[1]]), projections.tree(matrix[LETTERS[1:5], ], tree, reference.data = matrix))
+    expect_equal(c(test$disparity[[2]][[1]]), projections.tree(matrix[letters[1:5], ], tree, reference.data = matrix))
 
     ## Works with multiple matrices and single tree
+    set.seed(1)
+    mulmatrix <- list(matrix, matrix, matrix)
+    mulmatrix[[1]][] <- rnorm((7+6)*2)
+    mulmatrix[[2]][] <- rnorm((7+6)*2)
+    mulmatrix[[3]][] <- rnorm((7+6)*2)
+    test <- dispRity(data = mulmatrix, metric = projections.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(mulmatrix[[1]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(mulmatrix[[2]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(mulmatrix[[3]], tree))
 
     ## Works with multiple trees and single matrix
+    set.seed(1)
+    tree2 <- rtree(dim(matrix)[1]/2+1)
+    tree3 <- rtree(dim(matrix)[1]/2+1)
+    tree2$tip.label <- tree3$tip.label <- LETTERS[1:7]
+    tree2$node.label <- tree3$node.label <- letters[1:6]
+
+    multree <- c(tree, tree2, tree3)
+    test <- dispRity(data = matrix, metric = projections.tree, tree = multree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(matrix, tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(matrix, tree2))    
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(matrix, tree3))
 
     ## Works with multiple matrices and trees
+    test <- dispRity(data = mulmatrix, metric = projections.tree, tree = multree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(mulmatrix[[1]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(mulmatrix[[2]], tree2))    
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(mulmatrix[[3]], tree3))
 
 
     # ## Test with between groups and tree

@@ -127,16 +127,34 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- 1:data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, ...) {
-    if(is.null(nrow)) {
-        ## Normal decompose
-        return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, ...))
+    ## Check if fun has a "reference.data" argument
+    if(!("reference.data" %in% formalArgs(fun))) {
+        ##Does not use reference.data
+        if(is.null(nrow)) {
+            ## Normal decompose
+            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, ...))
+        } else {
+            ## Serial decompose
+            return(
+                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
+                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
+                    tree    = one_tree, ...)
+                )
+        }
     } else {
-        ## Serial decompose
-        return(
-            fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
-                matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
-                tree    = one_tree, ...)
-            )
+        ## Uses reference.data
+        if(is.null(nrow)) {
+            ## Normal decompose
+            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, reference.data = one_matrix, ...))
+        } else {
+            ## Serial decompose
+            return(
+                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
+                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
+                    tree    = one_tree,
+                    reference.data = one_matrix, ...)
+                )
+        }
     }
 }
 
@@ -162,27 +180,20 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
                       recursive = FALSE))
     } else {
         ## Check whether the number of trees and matrices match
-        ## PLACEHOLDER for decompact(matrix)
-        matrices <- data$matrix
-        trees    <- data$tree
-        if((n_matrices <- length(matrices)) != (n_trees <- length(trees))) {
-            ## Match the trees and the matrices by multiplying them
-            matrices <- unlist(replicate(n_trees, matrices, simplify = FALSE), recursive = FALSE)
-            trees <- unlist(replicate(n_matrices, trees, simplify = FALSE), recursive = FALSE)
-        }
-        return(unlist(mapply(decompose.tree, matrices, trees,
-                   MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
+        ## Applying the decomposition to all trees and all matrices
+        return(do.call(cbind,
+            mapply(decompose.tree, data$matrix, data$tree,
+                    MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
                                    dimensions = 1:data$call$dimensions,
                                    fun        = fun,
                                    nrow       = nrow,
                                    ...),
-                   SIMPLIFY = FALSE),
-               recursive = FALSE))
-
+                    SIMPLIFY = FALSE)))
     }
 }
 
 ## Apply decompose matrix
+# fun = first_metric ; warning("DEBUG: dispRity_fun")
 decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
    
     if(is(one_subsets_bootstrap)[[1]] == "list") {
@@ -201,6 +212,10 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 
         ## one_subsets_bootstrap is a list (in example) on a single matrix
         results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, ...)
+
+        # one_subsets_bootstrap <- cbind(one_subsets_bootstrap, one_subsets_bootstrap)
+        # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree)
+
 
         ## Return the results
         if(is(results_out, "matrix")) {
@@ -301,11 +316,23 @@ split.lapply_loop <- function(lapply_loop, n_trees) {
 
 ## Split the data for bound tree/matrices
 split.data <- function(data) {
-    ## Splitting the different matrices
-    return(lapply(data$matrix, function(X)
-        list("matrix" = list(X),
-             "call" = list("dimensions" = data$call$dimensions))))
+
+    ## Extract the necessary variables
+    matrices   <- data$matrix
+    trees      <- data$tree
+
+    if((n_matrices <- length(matrices)) != (n_trees <- length(trees))) {
+        ## Match the trees and the matrices by multiplying them
+        matrices <- unlist(replicate(n_trees, matrices, simplify = FALSE), recursive = FALSE)
+        trees <- unlist(replicate(n_matrices, trees, simplify = FALSE), recursive = FALSE)
+    }
+    ## Splitting the different matrices and trees
+    return(mapply(function(matrix, tree, data) {return(list("matrix" = list(matrix), "tree" = c(tree), "call" = list("dimensions" = data$call$dimensions)))},
+        matrix = matrices,
+        tree   = trees,
+        MoreArgs = list(data = data), SIMPLIFY = FALSE))
 }
+
 ## Merge the data for bound tree/matrices
 recursive.merge <- function(list, bind = cbind) {
     while(length(list) > 1) {

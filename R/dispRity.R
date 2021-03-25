@@ -127,7 +127,6 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
         } else {
             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
-            # data <- fill.dispRity(make.dispRity(data = data))
         }
     } else {
         ## Making sure matrix exist
@@ -343,22 +342,32 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Running the multiple matrix mode
     # if(is_bound || length(data$matrix) > 1) {
-    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]))) {
 
-        ## Get the number of treesdata
-        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+    if(any( 
+          c(## Data is bound to a tree
+            is_bound,
+            ## Data has multiple matrices and the metric needs matrix decomp
+            length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]),
+            ## Data has multiple trees and the metric needs a tree
+            length(data$tree) > 1 && any(metric_has_tree)
+          )
+        )) {
 
         ## Make the lapply loops
+        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+        ## Splitting the lapply loop for bound trees 
         lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
 
         ## Make the matrix list
-        matrices_data <- split.data(data)
+        splitted_data <- split.data(data)
+
+        splitted_data[[1]]$call$dimensions
 
         ## mapply this
-        disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
+        disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
                             MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
