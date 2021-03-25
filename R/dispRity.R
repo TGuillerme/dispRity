@@ -135,6 +135,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         }
         ## Adding tree (if possible)
         if(!is.null(tree)) {
+            data <- remove.tree(data)
             data <- add.tree(data, tree = check.dispRity.tree(tree, data = data))
         }
 

@@ -811,13 +811,14 @@ test_that("dispRity works with the tree component", {
     expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(mulmatrix[[3]], tree3))
 
 
-    # ## Test with between groups and tree
-    # between.groups.edge.length.tree <- function(matrix, matrix2, tree) {
-    #     return(edege.length.tree(matrix, tree) - edege.length.tree(matrix2, tree))
-    # }
-    # test <- dispRity(data = matrix, metric = between.groups.edge.length.tree, tree = tree, between.groups = TRUE)
-    # test2 <- dispRity(test, metric = mean, tree = tree, between.groups = TRUE)
-
+    ## Test with between groups and tree
+    between.groups.edge.length.tree <- function(matrix, matrix2, tree) {
+        return(edge.length.tree(matrix, tree) - edge.length.tree(matrix2, tree))
+    }
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)
+    ## Working with matrix decomposition
+    test <- dispRity(data = data, metric = between.groups.edge.length.tree, tree = tree, between.groups = TRUE)
+    expect_equal(unlist(c(unname(summary(test)))), c("1:2", "5", "5", "3", "-0.8", "1", "5", "5.9"))
 })
 
 
