@@ -210,6 +210,19 @@ displacements(dummy_matrix, reference = c(1,2,3,4,5,6,7,8,9,10))
 ## displacement ratios from the centre (manhattan distance)
 displacements(dummy_matrix, method = "manhattan")
 
+## edge.length.tree
+## Making a dummy tree with node labels
+dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+## Naming the elements in the matrix
+named_matrix <- dummy_matrix
+rownames(named_matrix) <- c(dummy_tree$tip.label,
+                            dummy_tree$node.label)
+## The total edge length of each element in the matrix (to the root)
+edge.length.tree(named_matrix, tree = dummy_tree)
+
+## The edge lengths for each edge leading to the elements in the matrix
+edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
+
 ## ellipse.volume
 ## Ellipsoid volume of a matrix
 ellipse.volume(dummy_matrix)
