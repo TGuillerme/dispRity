@@ -495,6 +495,7 @@ Level | Name | Description | Source |
 2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
+1 | `edge.length.tree` | The edge lengths of the elements on a tree | `ape` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
 1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
@@ -504,7 +505,7 @@ Level | Name | Description | Source |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
 2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
-2 | `phylo.projections` | The `projections` metric but where the vector can be based on a tree | `dispRity` |
+2 | `projections.tree` | The `projections` metric but where the vector can be based on a tree | `dispRity` |
 2 | `projections` | The distance *on* (projection) or *from* (rejection) an arbitrary vector | `dispRity` |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
@@ -894,7 +895,7 @@ summary(dispRity(dummy_space, metric = projections,
                               scale = FALSE))
 ```
 
-The `phylo.projections` is the same as the `projections` metric but allows to determine the vector (`(point1, point2)`) using a tree rather than manually entering these points.
+The `projections.tree` is the same as the `projections` metric but allows to determine the vector (`(point1, point2)`) using a tree rather than manually entering these points.
 The function intakes the exact same options as the `projections` function described above at the exception of `point1` and `point2`.
 Instead it takes a the argument `type` that designates the type of vector to draw from the data based on a phylogenetic tree `phy`.
 The argument `type` can be a pair of any of the following inputs:
@@ -920,7 +921,7 @@ dummy_tree$node.label <- rownames(tree_space)[rev(7:11)]
 
 ## Measuring the disparity as the projection of each element
 ## on its root-ancestor vector
-summary(dispRity(tree_space, metric = phylo.projections,
+summary(dispRity(tree_space, metric = projections.tree,
                              phy    = dummy_tree,
                              type   = c("root", "ancestor")))
 ```
@@ -936,7 +937,7 @@ fun.root <- function(matrix, phy, row = NULL) {
 ## Measuring the unscaled rejection from the vector from the
 ## centroid of the three first nodes
 ## to the coordinates of the first tip
-summary(dispRity(tree_space, metric  = phylo.projections,
+summary(dispRity(tree_space, metric  = projections.tree,
                              phy     = dummy_tree,
                              measure = "distance",
                              type    = list(fun.root,
@@ -2087,3 +2088,11 @@ With the unbound data, the slices are done across the three trees and applied to
 As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
 
 
+## Disparity with trees: *dispRitree!*
+
+Since the package's version 1.5.10, trees can be directly att
+
+If phylogeny is going to be an important part of your disparity analyses, you can attach a tree or a list of trees (classes `"phylo"` or `"multiPhylo"`) to your `dispRity` object.
+These trees will then be fixed and used where possible throughout your analyses (e.g. when using `chrono.subsets` or disparity metrics based using the argument `tree`).
+You can attach trees in different ways, either voluntarily (using @@@) or throughout your analyses through specific functions (@@@).
+The tree labels must match the rownames in the data. If the tree has only tip labels, then only these need to be matched, if the tree or the data also has node labels, they must match as well.
