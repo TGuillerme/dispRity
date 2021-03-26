@@ -920,7 +920,7 @@ dummy_tree$tip.label <- rownames(tree_space)[1:6]
 dummy_tree$node.label <- rownames(tree_space)[rev(7:11)]
 
 ## Measuring the disparity as the projection of each element
-## on its root-ancestor vector
+## on its root-ancestor vector
 summary(dispRity(tree_space, metric = projections.tree,
                              phy    = dummy_tree,
                              type   = c("root", "ancestor")))
@@ -930,11 +930,11 @@ Of course you can also use any other options from the projections function:
 
 ```{r}
 ## A user defined function that's returns the centroid of
-## the first three nodes
+## the first three nodes
 fun.root <- function(matrix, phy, row = NULL) {
   return(colMeans(matrix[phy$node.label[1:3], ]))
 }
-## Measuring the unscaled rejection from the vector from the
+## Measuring the unscaled rejection from the vector from the
 ## centroid of the three first nodes
 ## to the coordinates of the first tip
 summary(dispRity(tree_space, metric  = projections.tree,
@@ -2090,7 +2090,61 @@ As we've seen before, this is incorrect in this case since the trees don't have 
 
 ## Disparity with trees: *dispRitree!*
 
-Since the package's version 1.5.10, trees can be directly att
+Since the package's version 1.5.10, trees can be directly attached to `dispRity` objects.
+This allows any function in the package that has an input argument called "`tree`" to automatically intake the tree from the `dispRity` object.
+This is especially useful for disparity metrics that requires calculations based on a phylogenetic tree (e.g. `ancestral.dist` or `projections.tree`) and if phylogeny (or phylogenie\*s\*) are going to be an important part of your analyses.
+
+Trees are attached to `dispRity` object as soon as they are called in any function of the package (e.g. as an argument in `chrono.subsets` or in `dispRity`) and are stored in `my_dispRity_object$tree`.
+You can always manually attach, detach or modify the tree parts of a `dispRity` object using the utility functions `get.tree` (to access the trees), `remove.tree` (to remove it) and `add.tree` (to... add trees!).
+The only requirement for this to work is that the labels in the tree must match the ones in the data.
+If the tree has node labels, their node labels must also match the data.
+Similarly if the data has entries for node labels, they must be present in the tree.
+
+Here is a quick demo on how attaching trees to `dispRity` objects can work and make your life easy: for example here we will measure how the sum of branch length changes through time when time slicing through some demo data with a acctran split time slice model (see more info [here](#chrono-subsets)).
+
+```{r}
+## Loading some demo data:
+## An ordinated matrix with node and tip labels
+data(BeckLee_mat99)
+## The corresponding tree with tip and node labels
+data(BeckLee_tree)
+## A list of tips ages for the fossil data
+data(BeckLee_ages)
+
+## Time slicing through the tree using the equal split algorithm
+time_slices <- chrono.subsets(data   = BeckLee_mat99,
+                              tree   = BeckLee_tree,
+                              FADLAD = BeckLee_ages,
+                              method = "continuous",
+                              model  = "acctran",
+                              time   = 15)
+
+## We can visualise the resulting trait space with the phylogeny
+## (using the specific argument as follows)
+plot(time_slices, type = "preview",
+     specific.args = list(tree = TRUE))
+## Note that some nodes are never selected thus explaining the branches not reaching them.
+```
+
+And we can then measure disparity as the sum of the edge length at each time slice on the bootstrapped data:
+
+```{r}
+## Measuring the sum of the edge length per slice
+sum_edge_length <- dispRity(boot.matrix(time_slices), metric = c(sum, edge.length.tree))
+## Summarising and plotting
+summary(sum_edge_length)
+plot(sum_edge_length)
+```
+
+
+Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
+
+
+
+
+
+
+
 
 If phylogeny is going to be an important part of your disparity analyses, you can attach a tree or a list of trees (classes `"phylo"` or `"multiPhylo"`) to your `dispRity` object.
 These trees will then be fixed and used where possible throughout your analyses (e.g. when using `chrono.subsets` or disparity metrics based using the argument `tree`).
