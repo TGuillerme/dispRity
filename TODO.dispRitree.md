@@ -15,9 +15,9 @@ Change the structure in:
     - [x] dispRity.metric.R/edge.length.tree 
     - [ ] add example for edge.length.tree + manual entry
  - [x] print.dispRity
- - [ ] plot.dispRity 
-    - [ ] tree networks if multiple trees?
-    - [ ] fuzzy spaces
+ - [x] plot.dispRity 
+    - [x] tree networks if multiple trees?
+    - [x] fuzzy spaces
  - [x] Update dispRity.utilities
  - [x] Add utilities get.tree and add.tree and remove.tree
  - [x] Update the data using make.demo.data
