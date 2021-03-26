@@ -13,7 +13,7 @@ Change the structure in:
     - [ ] dispRity.metric.R/ancestral.dist
         - [ ] add reference.data
     - [x] dispRity.metric.R/edge.length.tree 
-    - [ ] add example for edge.length.tree + manual entry
+    - [x] add example for edge.length.tree + manual entry
  - [x] print.dispRity
  - [x] plot.dispRity 
     - [x] tree networks if multiple trees?
@@ -21,9 +21,9 @@ Change the structure in:
  - [x] Update dispRity.utilities
  - [x] Add utilities get.tree and add.tree and remove.tree
  - [x] Update the data using make.demo.data
- - [ ] Update the manual
-    - [ ] get.tree entry
-    - [ ] tree as a part of dispRity entry
+ - [x] Update the manual
+    - [ ] get.tree + utilities entry
+    - [x] tree as a part of dispRity entry
  - [ ] Update dtt.dispRity
  - [ ] Update dispRity.wrapper
 
