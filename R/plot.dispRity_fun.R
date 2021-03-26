@@ -753,9 +753,17 @@ plot.preview <- function(data, specific.args, ...) {
     col_order <- plot_args$col
     pch_order <- plot_args$pch
     if(n_groups > 1) {
+        ## Get the list of subsets
+        subsets <- unlist(data$subsets, recursive = FALSE)
+        ## Make an empty classifier
         classifier <- rep(NA, nrow(data$matrix[[1]]))
         for(class in 1:n_groups) {
-            classifier[data$subsets[[class]]$elements[,1]] <- class
+            ## Store the selected subsets in the classifier (potentially overriding)
+            if(dim(subsets[[1]])[2] == 1) {
+                classifier[c(subsets[[class]])] <- class 
+            } else {
+                classifier[c(elements.sampler(subsets[[class]]))] <- class
+            }
         }
         plot_args$col <- plot_args$col[classifier]
         plot_args$pch <- plot_args$pch[classifier]
