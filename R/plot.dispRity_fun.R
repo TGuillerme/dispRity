@@ -795,19 +795,19 @@ plot.preview <- function(data, specific.args, ...) {
         }
 
         ## Plotting each tree
-        for(tree in specific.args$tree) {
+        for(one_tree in specific.args$tree) {
 
             ## Select the right data
             if(length(data$matrix) == length(specific.args$tree)) {
-                data_matrix <- data$matrix[[tree]]
+                data_matrix <- data$matrix[[one_tree]]
             } else {
                 data_matrix <- data$matrix[[1]]
             }
 
             ## Selecting the origin points for the tree
-            points_data <- data_matrix[, specific.args$dimensions][c(data$tree[[tree]]$tip.label, data$tree[[tree]]$node.label), ] 
+            points_data <- data_matrix[, specific.args$dimensions][c(data$tree[[one_tree]]$tip.label, data$tree[[one_tree]]$node.label), ] 
             ## Plotting all the edges
-            apply(data$tree[[tree]]$edge, 1, plot.edge,
+            apply(data$tree[[one_tree]]$edge, 1, plot.edge,
                   points_data = points_data,
                   params = lines_args)
         }
