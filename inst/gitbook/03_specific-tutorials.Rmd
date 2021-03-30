@@ -718,7 +718,7 @@ summary(dispRity(dummy_space, metric = mode.val))
 
 > This metric is only a Euclidean diagonal (mathematically valid) if the dimensions within the space are all orthogonal!
 
-#### Centroids, displacements, and ancestral distance metrics {#centroids}
+#### Centroids, displacements and ancestral distances metrics {#centroids}
 
 The `centroids` metric allows users to measure the position of the different elements compared to a fixed point in the ordinated space.
 By default, this function measures the distance between each element and their centroid (centre point):
@@ -769,23 +769,19 @@ summary(dispRity(dummy_space, metric = displacements,
                  reference = c(0,1,2,3,4)))
 ```
 
-The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor.
-Therefore this functions needs a tree and node coordinates as additional arguments:
+The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor (if `to.root = FALSE`; default) or to the root of the tree (`to.root = TRUE`).
+Therefore this function needs a matrix that contains tips and nodes and a tree as additional argument.
 
 ```{r}
 ## A generating a random tree with node labels
-tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+my_tree <- makeNodeLabel(rtree(5), prefix = "n")
 ## Adding the tip and node names to the matrix
 dummy_space2 <- dummy_space[-1,]
 rownames(dummy_space2) <- c(tree$tip.label, tree$node.label)
 
-## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(dummy_space2, tree,
-                                       full = TRUE)
-
 ## Calculating the distances from the ancestral nodes
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
-                           nodes.coords = all_anc_centroids)
+                           tree = my_tree)
 
 ## The ancestral distances distributions
 summary(ancestral_dist)
@@ -793,6 +789,7 @@ summary(ancestral_dist)
 ## Calculating disparity as the sum of the distances from all the ancestral nodes
 summary(dispRity(ancestral_dist, metric = sum))
 ```
+
 
 #### Minimal spanning tree length
 
@@ -943,15 +940,6 @@ summary(dispRity(tree_space, metric  = projections.tree,
                              type    = list(fun.root,
                                             tree_space[1, ])))
 ```
-
-
-
-
-
-
-
-
-
 
 #### Between group metrics {#betweengroupmetricslist}
 

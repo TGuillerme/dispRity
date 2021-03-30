@@ -85,7 +85,7 @@ The currently implemented dimension-level 1 metrics are:
 
 The currently implemented dimension-level 2 metrics are:
 \itemize{
-  \item \code{ancestral.dist}: calculates the distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+  \item \code{ancestral.dist}: calculates the distance between each elements coordinates in the matrix and their ancestors' coordinates (if \code{to.root = FALSE}; default) or to the root coordinates (if \code{to.root = TRUE}) for a given \code{tree}. The distance is calculate as Euclidean by default but can be changed through the \code{methods} argument (\code{method = "euclidean"}; default). Note that the matrix must contain data for both tips and nodes in the \code{tree}, otherwise you must provide a matrix to the argument \code{reference.data} that contains them. Note that if the function is used in \code{\link{dispRity}}, both the \code{tree} and \code{reference.data} can be automatically recycled from the \code{dispRity} object (if present).
 
   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (not that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 
@@ -159,14 +159,11 @@ dummy_matrix <- matrix(rnorm(90), 9, 10)
 rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
 ## Adding the tip and node names to the matris
 rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
-## Calculating the direct ancestral nodes
-direct_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = FALSE)
-## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = TRUE)
-## Calculating the distances from the direct ancestral nodes
-ancestral.dist(dummy_matrix, nodes.coords = direct_anc_centroids)
-## Calculating the distances from all the ancestral nodes
-ancestral.dist(dummy_matrix, nodes.coords = all_anc_centroids)
+## Calculating the distances to the ancestors
+ancestral.dist(dummy_matrix, tree = rand_tree)
+## Calculating the manhattan distances to the root
+ancestral.dist(dummy_matrix, tree = rand_tree,
+               to.root = TRUE, method = "manhattan")
 
 ## angles
 ## The angles in degrees of each axis

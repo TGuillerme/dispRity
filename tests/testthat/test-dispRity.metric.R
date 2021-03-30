@@ -371,26 +371,40 @@ test_that("ancestral.dist", {
     direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
     all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
 
-    test1 <- ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
-    test2 <- ancestral.dist(matrix, nodes.coords = all_anc_centroids)
+    ## Old version (deprecated!)
+
+    test1 <- ancestral.dist.deprecated(matrix, nodes.coords = direct_anc_centroids)
+    test2 <- ancestral.dist.deprecated(matrix, nodes.coords = all_anc_centroids)
 
     expect_equal(test1[6], c("n1" = 0))
     expect_equal(test2[6], c("n1" = 0))
     expect_lt(test1[1], test2[1])
     expect_equal(test1[7], test2[7])
 
-
     ## Ancestral dist without node coordinates
-    test3 <- ancestral.dist(matrix, tree = tree, full = TRUE)
-    expect_warning(test4 <- ancestral.dist(matrix))
+    test3 <- ancestral.dist.deprecated(matrix, tree = tree, full = TRUE)
+    expect_warning(test4 <- ancestral.dist.deprecated(matrix))
     expect_equal(names(test3), c(tree$tip.label, tree$node.label))
     expect_equal(names(test4), c(tree$tip.label, tree$node.label))
     expect_equal(test4, centroids(matrix))
     
     ## Ancestral dist with fixed node coordinates
-    test5 <- ancestral.dist(matrix, nodes.coords = rep(0, ncol(matrix)))
+    test5 <- ancestral.dist.deprecated(matrix, nodes.coords = rep(0, ncol(matrix)))
     expect_equal(test5, centroids(matrix, 0))
+    
+    ## New version
+    expect_equal_round(ancestral.dist(matrix, tree), c(t3 = 3.226549, t5 = 4.014473, t4 = 3.392561, t2 = 3.963446, t1 = 4.389945, n1 = 0.000000, n2 = 4.938898, n3 = 3.490736, n4 = 2.746763), 6)
+    expect_equal_round(ancestral.dist(matrix, tree, to.root = TRUE), c(t3 = 4.354400, t5 = 3.845289, t4 = 4.391939, t2 = 4.875274, t1 = 4.490714, n1 = 0.000000, n2 = 4.938898, n3 = 3.490736, n4 = 3.300742), 6)
+    ## Test with a dispRity object
+    test <- dispRity(matrix, metric = ancestral.dist, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), unname(ancestral.dist(matrix, tree)))
 
+    ## Works with time slices!
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = 5)
+    test <- dispRity(data, metric = ancestral.dist)
+    expect_equal(summary(test)$obs.median, c(2.457, 2.538, 2.677, 2.746, 2.741))
 })
 
 

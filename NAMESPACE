@@ -43,6 +43,7 @@ export(test.dispRity)
 export(test.metric)
 
 ##disparity metrics
+export(ancestral.dist.deprecated)
 export(ancestral.dist)
 export(angles)
 export(centroids)
