@@ -8,10 +8,10 @@ Change the structure in:
  - [x] custom.subsets
  - [x] make.metric
  - [x] dispRity
- - [ ] Update metrics
+ - [x] Update metrics
     - [x] dispRity.metric.R/projections.tree (phylo.projections)
-    - [ ] dispRity.metric.R/ancestral.dist
-        - [ ] add reference.data
+    - [x] dispRity.metric.R/ancestral.dist
+        - [x] add reference.data
     - [x] dispRity.metric.R/edge.length.tree 
     - [x] add example for edge.length.tree + manual entry
  - [x] print.dispRity
@@ -26,10 +26,8 @@ Change the structure in:
     - [x] tree as a part of dispRity entry
  - [ ] Update dtt.dispRity
  - [ ] Update dispRity.wrapper
-
  - [ ] Update (fix?) `group.dist` to use `get.rotation.matrix`
  - [ ] Update (fix?) `deviations` to use `get.rotation.matrix`
-
  - [ ] Update dimensions (and `data$call$dimension` to be a vector of dimensions)
         ## Minor
         * The `dimensions` option throughout the package (e.g. in the `dispRity` function) can now also be a vector of dimensions to take into consideration (e.g. `c(1,2,5)`).
@@ -48,6 +46,7 @@ Change the structure in:
  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
  * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
  * Fixed bug in `plot` using `preview` when the given argument `pch` did not match the number of groups (the different `pch` arguments are now used correctly).
+ * Completely revamped the `ancestral.dist` metric. The function is now much faster and much easier to use (due to the new `dispRity` object structure). The options `nodes.coords` has been removed and the option `full` is now changed by `to.root`. If you still really want to use the older version of `ancestral.dist` using `ancestral.dist.deprecated` though.
 
 
 
