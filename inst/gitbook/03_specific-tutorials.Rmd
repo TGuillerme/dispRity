@@ -2124,17 +2124,4 @@ summary(sum_edge_length)
 plot(sum_edge_length)
 ```
 
-
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
-
-
-
-
-
-
-
-
-If phylogeny is going to be an important part of your disparity analyses, you can attach a tree or a list of trees (classes `"phylo"` or `"multiPhylo"`) to your `dispRity` object.
-These trees will then be fixed and used where possible throughout your analyses (e.g. when using `chrono.subsets` or disparity metrics based using the argument `tree`).
-You can attach trees in different ways, either voluntarily (using @@@) or throughout your analyses through specific functions (@@@).
-The tree labels must match the rownames in the data. If the tree has only tip labels, then only these need to be matched, if the tree or the data also has node labels, they must match as well.

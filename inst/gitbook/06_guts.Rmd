@@ -181,6 +181,20 @@ head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
 ```
 
 
+#### `get.tree` `add.tree` and `remove.tree`
+
+These functions allow to manipulate the potential tree components of `dispRity` objects.
+
+```{r, eval = FALSE}
+## Getting the tree component of a dispRity object
+get.tree(disparity)
+
+## Removing the tree
+remove.tree(disparity)
+
+## Adding a tree
+add.tree(disparity, tree = BeckLee_tree)
+```
 
 
 ## The `dispRity` object content {#disprity-object}
