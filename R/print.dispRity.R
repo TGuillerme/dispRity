@@ -216,7 +216,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 } else {
                     cat(paste0(" in one matrix"), sep = "")
                 }
-                if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
+                if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
                 if(!is.null(x$tree[[1]])) {
                     cat(" with ") ; print(x$tree)
                 } else {
@@ -235,7 +235,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
             } else {
                 cat(paste0(" in one matrix"), sep = "")
             }
-            if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
+            if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
             if(!is.null(x$tree[[1]])) {cat(" with ") ; print(x$tree)} else {cat(".\n")}
         }
     

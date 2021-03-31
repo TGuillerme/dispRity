@@ -125,7 +125,7 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
 # one_tree <- trees[[1]] ; warning("DEBUG: dispRity_fun")
 # bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
-# dimensions <- 1:data$call$dimensions ; warning("DEBUG: dispRity_fun")
+# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, ...) {
     ## Check if fun has a "reference.data" argument
     if(!("reference.data" %in% formalArgs(fun))) {
@@ -173,7 +173,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
         ## Apply the fun, bootstrap and dimension on each matrix
         return(unlist(lapply(data$matrix, decompose,
                             bootstrap  = na.omit(one_subsets_bootstrap),
-                            dimensions = 1:data$call$dimensions,
+                            dimensions = data$call$dimensions,
                             fun        = fun,
                             nrow       = nrow,
                             ...),
@@ -184,7 +184,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
         return(do.call(cbind,
             mapply(decompose.tree, data$matrix, data$tree,
                     MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
-                                   dimensions = 1:data$call$dimensions,
+                                   dimensions = data$call$dimensions,
                                    fun        = fun,
                                    nrow       = nrow,
                                    ...),
@@ -206,7 +206,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 
     ## Decomposing the matrix
     if(use_array) {
-        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
+        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
  
     } else {
 

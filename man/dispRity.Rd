@@ -19,7 +19,7 @@ dispRity(
 
 \item{metric}{A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).}
 
-\item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
+\item{dimensions}{Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.}
 
 \item{...}{Optional arguments to be passed to the metric.}
 

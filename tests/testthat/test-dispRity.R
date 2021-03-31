@@ -96,9 +96,9 @@ test_that("decompose.matrix.wrapper", {
     decomp_matrix <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
 
     expect_is(decomp_array, "array")
-    expect_equal(dim(decomp_array), c(data$call$dimensions, data$call$dimensions, bs_max))
+    expect_equal(dim(decomp_array), c(length(data$call$dimensions), length(data$call$dimensions), bs_max))
     expect_is(decomp_matrix, "matrix")
-    expect_equal(dim(decomp_matrix), c(data$call$dimensions, bs_max))
+    expect_equal(dim(decomp_matrix), c(length(data$call$dimensions), bs_max))
 })
 
 test_that("disparity.bootstraps internal works", {
@@ -119,7 +119,7 @@ test_that("disparity.bootstraps internal works", {
     ## which should be recorded by the way
     expect_equal(
         dim(test0)
-        ,as.numeric(c(data$call$dimensions, data$call$dimensions, data$call$bootstrap[[1]])))
+        ,as.numeric(c(length(data$call$dimensions), length(data$call$dimensions), data$call$bootstrap[[1]])))
 
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
@@ -137,7 +137,7 @@ test_that("disparity.bootstraps internal works", {
     ## which should be recorded by the way
     expect_equal(
         dim(test1)
-        ,as.numeric(c(data$call$dimensions, data$call$bootstrap[[1]])))
+        ,as.numeric(c(length(data$call$dimensions), data$call$bootstrap[[1]])))
 
     ## Without matrix decomposition
     matrix_decomposition = FALSE
@@ -198,12 +198,11 @@ test_that("Sanitizing works", {
     )
     expect_equal(
         dispRity(data, c(sum, ranges), dimensions = 0.533333)$call$dimensions
-        , 26
+        , 1:26
     )
 
-    warn <- capture_warnings(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
-    expect_equal(dim, 48)
-    expect_equal(warn , "Dimension number too high: set to 48.")
+    error <- capture_error(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
+    expect_equal(error[[1]] , "Number of dimensions cannot be more than the number of columns in the matrix.")
 
     # Cannot stack metric level 1 on level 2:
     data(disparity)

@@ -90,7 +90,7 @@ fill.dispRity <- function(data, tree = NULL) {
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {
-            data$call$dimensions <- ncol(data$matrix[[1]])
+            data$call$dimensions <- 1:ncol(data$matrix[[1]])
         }
 
         ## Fill empty subsets
@@ -144,16 +144,16 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 
     ## Add the dimensions if missing
     if(is.null(data$call$dimensions)) {
-        data$call$dimensions <- ncol(data$matrix[[1]])
+        data$call$dimensions <- 1:ncol(data$matrix[[1]])
     }
 
     if(missing(subsets)) {
         return(data$matrix[[matrix]])
     } else {
         if(missing(rarefaction) || missing(bootstrap)) {
-            return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, data$call$dimensions])
         } else {
-            return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], data$call$dimensions])
         }
     }
 }

@@ -212,7 +212,7 @@ test_that("fill.dispRity", {
         , 12)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , 1:ncol(test$matrix[[1]]))
     expect_equal(
         as.vector(test$subsets[[1]]$elements)
         , 1:nrow(test$matrix[[1]]))

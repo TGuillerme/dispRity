@@ -97,7 +97,7 @@
 #     bs_subsets <- boot.matrix(time_subsets, bootstraps = 100)
 
 #     ## Calculating disparity
-#     BeckLee_disparity <- dispRity(bs_subsets, metric = c(sum, variances))
+#     BeckLee_disparity <- dispRity(bs_subsets, metric = c(sum, variances), verbose = TRUE)
 
 #     ## save the data
 #     save(BeckLee_disparity, file = "../data/BeckLee_disparity.rda")
