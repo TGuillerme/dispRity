@@ -78,7 +78,7 @@ clean.data <- function(data, tree, inc.nodes = FALSE) {
         cleaned_list <- lapply(tree, clean.tree.table, data = data, inc.nodes = inc.nodes)
 
         ## Check if all matched (no missing nodes)
-        all_matched <- unlist(lapply(cleaned_list, function(x) return(is(x, "list"))))
+        all_matched <- unlist(lapply(cleaned_list, function(x) return(methods::is(x, "list"))))
         if(any(!all_matched)) {
             
             ## Errors
