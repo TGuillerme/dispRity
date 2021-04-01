@@ -22,14 +22,17 @@ data(disparity)
 ## Loading a tree
 data(BeckLee_tree)
 
-## Adding the tree to the dispRity object
-(disparitree <- add.tree(tree = BeckLee_tree, data = disparity))
+## Removing  the tree from the dispRity object
+(tree_data <- remove.tree(disparity))
 
 ## Extracting the tree
-get.tree(disparitree)
+get.tree(tree_data) # is null
 
-## Removing the tree from the dispRity object
-remove.tree(disparitree)
+## Adding a tree to the disparity object
+tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+
+## Extracting the tree
+get.tree(tree_data) # is a "phylo" object
 
 }
 \seealso{

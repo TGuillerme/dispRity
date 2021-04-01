@@ -26,8 +26,6 @@ Change the structure in:
     - [x] tree as a part of dispRity entry
  - [x] Update dtt.dispRity
  - [x] Update dispRity.wrapper
- - [ ] Update (fix?) `group.dist` to use `get.rotation.matrix`
- - [ ] Update (fix?) `deviations` to use `get.rotation.matrix`
  - [x] Update dimensions (and `data$call$dimension` to be a vector of dimensions)
         
 
