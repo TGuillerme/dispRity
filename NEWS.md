@@ -57,6 +57,12 @@ dispRity v1.5.10 (2021-04-01) *dispRitree*
   * Fixed bug in `test.metric` plots that now display the R^2 values correctly.
   * Fixed bug in `tree.age` when the tree tips/node labels vector is longer than the actual number of tips/nodes in the tree.
 
+### DEPRECATED AND DEFUNCT
+
+  * Removed former version of `ancestral.dist` (see NEW FEATURES above).
+  * Removed `node.coordinates` function (no replacement; you must use a package version prior 1.5.10 to use this function).
+  * Removed `get.ancestors` function (no replacement; you must use a package version prior 1.5.10 to use this function).
+
 dispRity v1.5.0 (2020-09-25) *between groups*
 =========================
 
