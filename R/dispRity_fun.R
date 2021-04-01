@@ -1,3 +1,47 @@
+compact.matrix <- function(matrix_list) {
+    
+    ## Nothing to compact
+    if(length(matrix_list) == 1) {
+        return(matrix_list)
+    }
+
+    ## Finding the rows in common
+    common_names <- lapply(matrix_list, rownames)
+    while(length(common_names) > 2) {
+        common_names[[1]] <- intersect(common_names[[1]], common_names[[2]])
+        common_names[[2]] <- NULL
+    }
+    common_names <- common_names[[1]]
+
+    ## Finding the equal rows
+    get.equal.rows <- function(other_matrices, first_matrix, common_names) {
+        apply(other_matrices[common_names, ] == first_matrix[common_names, ], 1, all)
+    }
+    common_values <- lapply(matrix_list[-1], get.equal.rows, matrix_list[[1]], common_names)
+    while(length(common_values) > 2) {
+        common_values[[1]] <- common_values[[1]] & common_values[[2]]
+        common_values[[2]] <- NULL
+    }
+    common_values <- common_values[[1]]
+
+    ## Separating the matrices
+    remove.common <- function(matrix, common_values) {
+        return(matrix[!(rownames(matrix) %in% c(names(which(common_values)))), ])
+    }
+    common_matrix <- matrix_list[[1]][names(which(common_values)), ]
+    other_matrices <- lapply(matrix_list, remove.common, common_values)
+    return(unlist(list(list("common" = common_matrix), other_matrices), recursive = FALSE))
+}
+expand.matrix <- function(matrix_list) {
+    ## Simply return the matrix
+    if(is.null(names(matrix_list)) || names(matrix_list)[[1]] != "common") {
+        return(matrix_list)
+    } else {
+        return(lapply(matrix_list[-1], rbind, matrix_list$common))
+    }
+}
+
+
 get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)

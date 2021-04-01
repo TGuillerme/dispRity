@@ -821,64 +821,159 @@ test_that("dispRity works with the tree component", {
 })
 
 
-# test_that("dispRity compact works", {
+test_that("dispRity compact works", {
 
-#     compact.matrix <- function(matrix_list) {
-        
-#         ## Finding the rows in common
-#         common_names <- lapply(matrix_list, rownames)
-#         while(length(common_names) > 2) {
-#             common_names[[1]] <- intersect(common_names[[1]], common_names[[2]])
-#             common_names[[2]] <- NULL
-#         }
-#         common_names <- common_names[[1]]
+    mat1 <- matrix(rnorm(2000), 10, 200)
+    mat2 <- matrix(rnorm(2000), 10, 200)
+    mat3 <- matrix(rnorm(2400), 12, 200)
+    rownames(mat1) <- rownames(mat2) <- letters[1:10]
+    rownames(mat2)[10] <- "root"
+    rownames(mat3) <- letters[1:12]
+    ## a b d and e are common within all matrices
+    mat1[c("a", "b", "d", "e"),] -> mat2[c("a", "b", "d", "e"),] -> mat3[c("a", "b", "d", "e"),]
+    matrix_list <- list(mat1, mat2, mat3)
+    test1 <- compact.matrix(matrix_list)
+    test2 <- expand.matrix(test1)
 
-#         ## Finding the equal rows
-#         get.equal.rows <- function(other_matrices, first_matrix, common_names) {
-#             apply(other_matrices[common_names, ] == first_matrix[common_names, ], 1, all)
-#         }
-#         common_values <- lapply(matrix_list[-1], get.equal.rows, matrix_list[[1]], common_names)
-#         while(length(common_values) > 2) {
-#             common_values[[1]] <- common_values[[1]] & common_values[[2]]
-#             common_values[[2]] <- NULL
-#         }
-#         common_values <- common_values[[1]]
+    ## Compacting works (test1 is smaller)
+    expect_lt(object.size(test1), object.size(matrix_list))
+    expect_lt(object.size(test1), object.size(test2))
 
-#         ## Separating the matrices
-#         remove.common <- function(matrix, common_values) {
-#             return(matrix[!(rownames(matrix) %in% c(names(which(common_values)))), ])
-#         }
-#         common_matrix <- matrix_list[[1]][names(which(common_values)), ]
-#         other_matrices <- lapply(matrix_list, remove.common, common_values)
-#         return(unlist(list(list("common" = common_matrix), other_matrices), recursive = FALSE))
-#     }
-
-#     expand.matrix <- function(matrix_list) {
-#         ## Simply return the matrix
-#         if(names(matrix_list)[[1]] != "common") {
-#             return(matrix_list)
-#         } else {
-#             return(lapply(matrix_list[-1], rbind, matrix_list$common))
-#         }
-#     }
-
-    ##TODO: implementation: search/replace ...$matrix -> expand.matrix(...$matrix)
+    ## Test2 and matrix_list are the same
+    check <- function(x, y) return(all(x[sort(rownames(x)), ] == y[sort(rownames(y)), ]))
+    expect_true(all(mapply(check, test2, matrix_list)))
+    expect_true(mapply(check, expand.matrix(list(mat1)), list(mat1)))
+    expect_true(mapply(check, compact.matrix(list(mat1)), list(mat1)))
 
 
-#     mat1 <- matrix(rnorm(20), 10, 2)
-#     mat2 <- matrix(rnorm(20), 10, 2)
-#     mat3 <- matrix(rnorm(24), 12, 2)
-#     rownames(mat1) <- rownames(mat2) <- letters[1:10]
-#     rownames(mat2)[10] <- "root"
-#     rownames(mat3) <- letters[1:12]
-#     ## a b d and e are common within all matrices
-#     mat1[c("a", "b", "d", "e"),] -> mat2[c("a", "b", "d", "e"),] -> mat3[c("a", "b", "d", "e"),]
 
-#     matrix_list <- list(mat1, mat2, mat3)
+    #TODO: implementation: search/replace ...$matrix -> expand.matrix(...$matrix)
+    #TODO: implementation: search/replace data$matrix <- ...
+    #                                     data$matrix <- compact.matrix(...)
 
-#     test <- compact.matrix(matrix_list)
-#     test <- expand.matrix(test)
-# })
+# dispRity/R//adonis.dispRity.R
+# #' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
+#     matrix <- check.dist.matrix(data$matrix[[matrix_n]], method = method)
+#         warning(paste0("The input data for adonis.dispRity was not a distance matrix.\nThe results are thus based on the distance matrix for the input data (i.e. dist(data$matrix[[", matrix_n, "]])).\nMake sure that this is the desired methodological approach!"))
+
+# dispRity/R//adonis.dispRity_fun.R
+#         test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)), silent = TRUE)
+#             time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix[[1]]), dimnames = list(rownames(data$matrix)))
+#             groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), colnames)))
+# dispRity/R//adonis.dispRity_fun.R
+#         test <- try( factors_out <- data.frame(group = get.group.factors(one_group_variable, factors), row.names = rownames(data$matrix)), silent = TRUE)
+#             time_series <- matrix(FALSE, ncol = 1, nrow = nrow(data$matrix[[1]]), dimnames = list(rownames(data$matrix)))
+#             groups <- data.frame(matrix(as.factor(apply(groups, 1, function(row) return(na.omit(row)[1]))), ncol = 1, dimnames = list(rownames(data$matrix), colnames)))
+
+# dispRity/R//boot.matrix.R
+#             if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
+#                 missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
+#                     names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
+#             names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
+#             rarefaction <- seq(from = nrow(data$matrix[[1]]), to = 3)
+#             if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+#         if(any(dimensions > ncol(data$matrix[[1]]))) {
+#         data$call$dimensions <- 1:ncol(data$matrix[[1]])
+
+# dispRity/R//char.diff.R
+#             stop(paste0("When matrix argument is a list, it must contain only two elements.\nYou can convert ", as.expression(match_call$matrix), " to a matrix using:\n", as.expression(match_call$matrix), " <- do.call(rbind, ", as.expression(match_call$matrix), ")"))
+
+# dispRity/R//dispRity.R
+#         if(is.null(data$matrix[[1]])) {
+#             data$call$dimensions <- 1:ncol(data$matrix[[1]])
+#     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
+#     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
+#             if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+#         if(any(dimensions > ncol(data$matrix[[1]]))) {
+#     # if(is_bound || length(data$matrix) > 1) {
+#             length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]),
+
+# dispRity/R//dispRity.utilities.R
+#             matrix = {dispRity_object$matrix <- list(data)},
+#             list = {dispRity_object$matrix <- data})
+#         data$matrix <- check.dispRity.data(data$matrix)
+#             data$call$dimensions <- 1:ncol(data$matrix[[1]])
+#             data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
+#         data$call$dimensions <- 1:ncol(data$matrix[[1]])
+#         return(data$matrix[[matrix]])
+#             return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, data$call$dimensions])
+#             return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], data$call$dimensions])
+#     data_out <- list("matrix" = data$matrix, "call" = data$call, "subsets" = data$subsets[subsets])
+#         if(subsets > nrow(data$matrix[[1]])) {
+#             stop.call("", paste0("Minimum sample size (", subsets, ") cannot be greater than the number of elements in the matrix (", nrow(data$matrix[[1]]), ")."))
+
+# dispRity/R//dispRity_fun.R
+# # one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
+#     ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
+#         return(unlist(lapply(data$matrix, decompose,
+#             mapply(decompose.tree, data$matrix, data$tree,
+#     matrices   <- data$matrix
+
+# dispRity/R//dtt.dispRity.R
+#         data <- data$matrix
+
+# dispRity/R//model.test_fun.R
+#             variance <- sapply(data[[4]], function(x) var(data$matrix[[matrix]][x[[1]]], na.rm = TRUE))
+
+# dispRity/R//null.test.R
+#         test_out$n <- nrow(data$matrix[[1]])
+
+# dispRity/R//null.test_fun.R
+#                         space.maker(nrow(data$matrix[[1]]),
+#                         space.maker(nrow(data$matrix[[1]]),
+#                         space.maker(nrow(data$matrix[[1]]),
+#                         space.maker(nrow(data$matrix[[1]]),
+
+# dispRity/R//plot.char.diff.R
+#         stop.call(match_call$matrix, " must be a matrix.")
+
+# dispRity/R//plot.dispRity_fun.R
+#     if(is.null(specific.args$matrix)) {
+#         specific.args$matrix <- c(1:length(data$matrix))
+#     loading <- apply(do.call(rbind, lapply(data$matrix[specific.args$matrix], function(matrix) apply(matrix, 2, var, na.rm = TRUE))), 2, mean)
+#     plot_lim <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions)))
+#         classifier <- rep(NA, nrow(data$matrix[[1]]))
+#             if(length(data$matrix) == length(specific.args$tree)) {
+#                 data_matrix <- data$matrix[[one_tree]]
+#                 data_matrix <- data$matrix[[1]]
+#     for(matrix in specific.args$matrix) {
+#         if(length(specific.args$matrix) > 1) {
+#             point_args$col <- make.transparent(point_args$col, levels = length(specific.args$matrix)*2)
+#         point_args$x <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[1]]
+#         point_args$y <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[2]]
+#                 step_preview$subsets$negatives$elements <- matrix((1:nrow(step_preview$matrix[[1]]))[-c(step_preview$subsets[[1]]$elements)], ncol = 1)
+
+# dispRity/R//print.dispRity.R
+#             if(!is.null(x$matrix) && is(x$matrix[[1]], "matrix")) {
+#                 dims <- dim(x$matrix[[1]])
+#                 n_matrices <- length(x$matrix)
+#                     "discrete" = {cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))},
+#                     "continuous" = {cat(paste(length(subsets),  paste(method[1], " (", method[2],")", sep = ""), "time subsets for", nrow(x$matrix[[1]]), "elements"))},
+#                     "customised" = {cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))}
+#                 #     cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))    
+#                 #     cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))
+#                 if(length(x$matrix) > 1) {
+#                     cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+#             cat(paste(nrow(x$matrix[[1]]), "elements"))
+#             if(length(x$matrix) > 1) {
+#                 cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+
+# dispRity/R//randtest.dispRity.R
+#         pop_size <- nrow(data$matrix[[1]])
+#     metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)$levels
+
+# dispRity/R//sanitizing.R
+#     if(!missing(data) && !is.null(data$matrix[[1]])) {
+#             cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
+#             if(length(tree) != length(data$matrix)) {
+#             cleanings <- mapply(cleand.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+
+
+# dispRity/R//test.metric.R
+#         data <- data$matrix
+
+
+})
 
 
 
